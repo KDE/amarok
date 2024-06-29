@@ -51,25 +51,25 @@ QStringList
 EqualizerPresets::eqDefaultPresetsList()
 {
     QStringList presets;
-    presets << "Manual"
-            << "Classical"
-            << "Club"
-            << "Dance"
-            << "Full Bass"
-            << "Full Treble"
-            << "Full Bass + Treble"
-            << "Laptop/Headphones"
-            << "Large Hall"
-            << "Live"
-            << "Party"
-            << "Pop"
-            << "Reggae"
-            << "Rock"
-            << "Soft"
-            << "Ska"
-            << "Soft Rock"
-            << "Techno"
-            << "Zero";
+    presets << QStringLiteral("Manual")
+            << QStringLiteral("Classical")
+            << QStringLiteral("Club")
+            << QStringLiteral("Dance")
+            << QStringLiteral("Full Bass")
+            << QStringLiteral("Full Treble")
+            << QStringLiteral("Full Bass + Treble")
+            << QStringLiteral("Laptop/Headphones")
+            << QStringLiteral("Large Hall")
+            << QStringLiteral("Live")
+            << QStringLiteral("Party")
+            << QStringLiteral("Pop")
+            << QStringLiteral("Reggae")
+            << QStringLiteral("Rock")
+            << QStringLiteral("Soft")
+            << QStringLiteral("Ska")
+            << QStringLiteral("Soft Rock")
+            << QStringLiteral("Techno")
+            << QStringLiteral("Zero");
     return presets;
 }
 

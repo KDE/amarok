@@ -45,22 +45,22 @@ SqlWriteLabelCapability::setLabels( const QStringList &removedLabels, const QStr
     for ( int x = 0; x < newlabels.length(); x++)
     {
         //Check if all new labels are already in the Database
-        const QString checkQuery = "SELECT label FROM labels WHERE label=\"%1\"";
+        const QString checkQuery = QStringLiteral("SELECT label FROM labels WHERE label=\"%1\"");
         QStringList result = m_storage->query(  checkQuery.arg( m_storage->escape( newlabels.at( x ) ) ) );
 
         if ( result.isEmpty() )
         {
-            const QString newQuery = "INSERT INTO labels (label) VALUE(\"%1\")";
+            const QString newQuery = QStringLiteral("INSERT INTO labels (label) VALUE(\"%1\")");
             m_storage->query(  newQuery.arg( m_storage->escape( newlabels.at( x ) ) ) );
         }
 
         //Insert connection for every new label if not already there
-        const QString checkNewQuery = "SELECT label from urls_labels WHERE label=(SELECT id FROM labels WHERE label=\"%1\") AND url=(SELECT id FROM urls WHERE uniqueid=\"%2\")";
+        const QString checkNewQuery = QStringLiteral("SELECT label from urls_labels WHERE label=(SELECT id FROM labels WHERE label=\"%1\") AND url=(SELECT id FROM urls WHERE uniqueid=\"%2\")");
         result = m_storage->query(  checkNewQuery.arg( m_storage->escape( newlabels.at( x ) ), m_storage->escape( m_track->uidUrl() ) ) );
 
         if ( result.isEmpty() )
         {
-            const QString insertQuery = "INSERT INTO urls_labels (label,url) VALUE((SELECT id FROM labels WHERE label=\"%1\"),(SELECT id FROM urls WHERE uniqueid=\"%2\"))";
+            const QString insertQuery = QStringLiteral("INSERT INTO urls_labels (label,url) VALUE((SELECT id FROM labels WHERE label=\"%1\"),(SELECT id FROM urls WHERE uniqueid=\"%2\"))");
             m_storage->query(  insertQuery.arg( m_storage->escape( newlabels.at( x ) ), m_storage->escape( m_track->uidUrl() ) ) );
         }
     }
@@ -68,16 +68,16 @@ SqlWriteLabelCapability::setLabels( const QStringList &removedLabels, const QStr
     for ( int y = 0; y < removedLabels.length(); y++)
     {
         //Delete connections for every removed label
-        const QString removeQuery = "DELETE FROM urls_labels WHERE url=(SELECT id FROM urls WHERE uniqueid=\"%1\") AND label=(SELECT id FROM labels WHERE label=\"%2\")";
+        const QString removeQuery = QStringLiteral("DELETE FROM urls_labels WHERE url=(SELECT id FROM urls WHERE uniqueid=\"%1\") AND label=(SELECT id FROM labels WHERE label=\"%2\")");
         m_storage->query(  removeQuery.arg( m_storage->escape( m_track->uidUrl() ), m_storage->escape( removedLabels.at( y ) ) )  );
 
         //Check if label isn't used anymore
-        const QString checkQuery = "SELECT label FROM urls_labels where label=(SELECT id FROM labels WHERE label=\"%1\")";
+        const QString checkQuery = QStringLiteral("SELECT label FROM urls_labels where label=(SELECT id FROM labels WHERE label=\"%1\")");
         QStringList result = m_storage->query(  checkQuery.arg( m_storage->escape( removedLabels.at( y ) ) ) );
 
         if ( result.isEmpty() )
         {
-            const QString labelRemoveQuery = "DELETE FROM labels WHERE label=\"%1\"";
+            const QString labelRemoveQuery = QStringLiteral("DELETE FROM labels WHERE label=\"%1\"");
             m_storage->query(  labelRemoveQuery.arg( m_storage->escape( removedLabels.at( y ) ) ) );
         }
     }

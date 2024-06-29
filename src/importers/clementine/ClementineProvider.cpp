@@ -24,7 +24,7 @@ using namespace StatSyncing;
 ClementineProvider::ClementineProvider( const QVariantMap &config,
                                         ImporterManager *importer )
     : ImporterProvider( config, importer )
-    , m_connection( new ImporterSqlConnection( config.value( "dbPath" ).toString() ) )
+    , m_connection( new ImporterSqlConnection( config.value( QStringLiteral("dbPath") ).toString() ) )
 {
 }
 
@@ -48,10 +48,10 @@ ClementineProvider::writableTrackStatsData() const
 QSet<QString>
 ClementineProvider::artists()
 {
-    m_connection->query( "SELECT DISTINCT(artist) FROM songs" );
+    m_connection->query( QStringLiteral("SELECT DISTINCT(artist) FROM songs") );
 
     QSet<QString> result;
-    for( const QVariantList &row : m_connection->query( "SELECT DISTINCT(artist) FROM songs" ) )
+    for( const QVariantList &row : m_connection->query( QStringLiteral("SELECT DISTINCT(artist) FROM songs") ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -60,11 +60,11 @@ ClementineProvider::artists()
 TrackList
 ClementineProvider::artistTracks( const QString &artistName )
 {
-    const QString query = "SELECT filename, title, artist, album, composer, year, track, "
-            "disc, rating, lastplayed, playcount FROM songs WHERE artist = :artist";
+    const QString query = QStringLiteral("SELECT filename, title, artist, album, composer, year, track, "
+            "disc, rating, lastplayed, playcount FROM songs WHERE artist = :artist");
 
     QVariantMap bindValues;
-    bindValues.insert( ":artist", artistName );
+    bindValues.insert( QStringLiteral(":artist"), artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
            << Meta::valAlbum << Meta::valComposer << Meta::valYear << Meta::valTrackNr

@@ -26,7 +26,7 @@
 #include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <KIO/Job>
+#include <KIO/ListJob>
 #include <KFileItem>
 
 #include <QFileInfo>
@@ -199,7 +199,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
     }
 
     static const QSet<QString> remoteProtocols = QSet<QString>()
-            << "http" << "https" << "mms" << "smb"; // consider unifying with CollectionManager::trackForUrl()
+            << QStringLiteral("http") << QStringLiteral("https") << QStringLiteral("mms") << QStringLiteral("smb"); // consider unifying with CollectionManager::trackForUrl()
     if( m_flags.testFlag( RemotePlaylistsAreStreams ) && tracks.count() > 1
         && remoteProtocols.contains( playlist->uidUrl().scheme() ) )
     {

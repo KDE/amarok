@@ -76,7 +76,7 @@ int BookmarkTriangle::getTimeValue()
 void BookmarkTriangle::paintEvent ( QPaintEvent* )
 {
     QPainter p ( this );
-    p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( "blue_triangle", 10 , 10, "blue_triangle" ) ); // TODO: This doesn't work
+    p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( QStringLiteral("blue_triangle"), 10 , 10, QStringLiteral("blue_triangle") ) ); // TODO: This doesn't work
 }
 
 void BookmarkTriangle::showEvent ( QShowEvent * event )

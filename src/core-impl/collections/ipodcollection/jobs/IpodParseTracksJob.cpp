@@ -162,12 +162,12 @@ Meta::TrackList IpodParseTracksJob::findOrphanedTracks(const QSet< QString >& kn
     QStringList trackPatterns;
     for( const QString &suffix : m_coll->supportedFormats() )
     {
-        trackPatterns << QString( "*.%1" ).arg( suffix );
+        trackPatterns << QStringLiteral( "*.%1" ).arg( suffix );
     }
 
     Meta::TrackList orphanedTracks;
     QDir musicDir( musicDirPath );
-    for( QString subdir : musicDir.entryList( QStringList( "F??" ), QDir::Dirs | QDir::NoDotAndDotDot ) )
+    for( QString subdir : musicDir.entryList( QStringList( QStringLiteral("F??") ), QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
         if( m_aborted )
             return Meta::TrackList();

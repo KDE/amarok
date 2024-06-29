@@ -46,10 +46,10 @@ public:
         Q_UNUSED(m_service); // might be used again later
     }
 
-    QString sourceName() override { return "Ampache"; }
-    QString sourceDescription() override { return "The Ampache music server project: http://Ampache.org"; }
-    QPixmap emblem()  override { return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache.png" ) );  }
-    QString scalableEmblem()  override { return  QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache-scalable.svgz" );  }
+    QString sourceName() override { return QStringLiteral("Ampache"); }
+    QString sourceDescription() override { return QStringLiteral("The Ampache music server project: http://Ampache.org"); }
+    QPixmap emblem()  override { return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-ampache.png") ) );  }
+    QString scalableEmblem()  override { return  QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-ampache-scalable.svgz") );  }
     QString notPlayableReason() const override;
 
     int discNumber() const override { return m_discNumber; }
@@ -73,7 +73,7 @@ public:
 
     ~AmpacheAlbum() override;
 
-    QString downloadPrefix() const override { return "ampache"; }
+    QString downloadPrefix() const override { return QStringLiteral("ampache"); }
 
     void setCoverUrl( const QString &coverURL ) override;
     QString coverUrl() const override;

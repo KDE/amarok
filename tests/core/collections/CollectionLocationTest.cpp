@@ -74,7 +74,7 @@ void CollectionLocationTest::testSuccessfulCopy()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
+    map.insert( Meta::Field::URL,  QUrl(QStringLiteral("file:///IDoNotExist.mp3")) );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferSuccessful( file1 );
 
@@ -97,9 +97,9 @@ void CollectionLocationTest::testFailedCopy()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
+    map.insert( Meta::Field::URL,  QUrl(QStringLiteral("file:///IDoNotExist.mp3")) );
     Meta::TrackPtr file1( new MetaMock( map ) );
-    cl->transferError( file1, "Test of CollectionLocation" );
+    cl->transferError( file1, QStringLiteral("Test of CollectionLocation") );
 
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed"  );
     QCOMPARE( cl->count, 0 );
@@ -121,13 +121,13 @@ void CollectionLocationTest::testCopyMultipleTracks()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
+    map.insert( Meta::Field::URL,  QUrl(QStringLiteral("file:///IDoNotExist.mp3")) );
     Meta::TrackPtr file1( new MetaMock( map ) );
-    map.insert( Meta::Field::URL, QUrl("file:///IDoNotExistAsWell.mp3") );
+    map.insert( Meta::Field::URL, QUrl(QStringLiteral("file:///IDoNotExistAsWell.mp3")) );
     Meta::TrackPtr file2( new MetaMock( map )  );
-    map.insert( Meta::Field::URL, QUrl("file:///IDoNotExistAsWell.mp3") );
+    map.insert( Meta::Field::URL, QUrl(QStringLiteral("file:///IDoNotExistAsWell.mp3")) );
     Meta::TrackPtr file3( new MetaMock( map ) );
-    cl->transferError( file1, "Test of CollectionLocation" );
+    cl->transferError( file1, QStringLiteral("Test of CollectionLocation") );
     cl->transferSuccessful( file2 );
     cl->transferSuccessful( file3 );
 
@@ -150,9 +150,9 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
+    map.insert( Meta::Field::URL, QUrl(QStringLiteral("file:///IDoNotExist.mp3")) );
     Meta::TrackPtr file1( new MetaMock( map ) );
-    cl->transferError( file1, "Test of CollectionLocation" );
+    cl->transferError( file1, QStringLiteral("Test of CollectionLocation") );
     cl->transferSuccessful( file1 );
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
@@ -173,7 +173,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->count = 0;
     file1 = Meta::TrackPtr( new MetaMock( map ) );
     cl->transferSuccessful( file1 );
-    cl->transferError( file1, "Test of CollectionLocation" );
+    cl->transferError( file1, QStringLiteral("Test of CollectionLocation") );
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove after reversed method call");

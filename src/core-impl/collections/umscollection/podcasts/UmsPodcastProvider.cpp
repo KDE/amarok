@@ -102,7 +102,7 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
     destination = destination.adjusted(QUrl::StripTrailingSlash);
     destination.setPath(destination.path() + QLatin1Char('/') + ( Amarok::vfatPath( localFilePath.fileName() ) ));
 
-    debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path(),
+    debug() << QStringLiteral( "Copy episode \"%1\" to %2" ).arg( localFilePath.path(),
             destination.path() );
     KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
     connect( copyJob, &KJob::result, this, &UmsPodcastProvider::slotCopyComplete );
@@ -170,7 +170,7 @@ UmsPodcastProvider::prettyName() const
 QIcon
 UmsPodcastProvider::icon() const
 {
-    return QIcon::fromTheme("drive-removable-media-usb-pendrive");
+    return QIcon::fromTheme(QStringLiteral("drive-removable-media-usb-pendrive"));
 }
 
 Playlists::PlaylistList
@@ -191,8 +191,8 @@ UmsPodcastProvider::episodeActions( const PodcastEpisodeList &episodes )
 
     if( m_deleteEpisodeAction == nullptr )
     {
-        m_deleteEpisodeAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Episode" ), this );
-        m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_deleteEpisodeAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ), i18n( "&Delete Episode" ), this );
+        m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
         connect( m_deleteEpisodeAction, &QAction::triggered, this, &UmsPodcastProvider::slotDeleteEpisodes );
     }
     // set the episode list as data that we'll retrieve in the slot
@@ -330,9 +330,9 @@ UmsPodcastProvider::channelActions( const PodcastChannelList &channels )
 
     if( m_deleteChannelAction == nullptr )
     {
-        m_deleteChannelAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete "
+        m_deleteChannelAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ), i18n( "&Delete "
                 "Channel and Episodes" ), this );
-        m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_deleteChannelAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
         connect( m_deleteChannelAction, &QAction::triggered, this, &UmsPodcastProvider::slotDeleteChannels );
     }
     // set the episode list as data that we'll retrieve in the slot

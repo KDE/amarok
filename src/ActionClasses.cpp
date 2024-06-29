@@ -71,7 +71,7 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 {
     if( ac )
     {
-        QAction *a = (QAction*) ac->action( name );
+        QAction *a = (QAction*) ac->action( QLatin1String(name) );
         if( a && w ) w->addAction( a );
     }
 }
@@ -313,7 +313,7 @@ QString SelectAction::currentIcon() const
 }
 
 QString SelectAction::currentText() const {
-    return KSelectAction::currentText() + "<br /><br />" + i18n("Click to change");
+    return KSelectAction::currentText() + QStringLiteral("<br /><br />") + i18n("Click to change");
 }
 
 

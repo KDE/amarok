@@ -49,7 +49,7 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
 
     m_view->setItemDelegate( new PrettyTreeDelegate( m_view ) );
 
-    QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<int> levelNumbers = Amarok::config( QStringLiteral("Collection Browser") ).readEntry( "TreeCategory", QList<int>() );
     QList<CategoryId::CatMenuId> levels;
     for( int levelNumber : levelNumbers )
         levels << CategoryId::CatMenuId( levelNumber );

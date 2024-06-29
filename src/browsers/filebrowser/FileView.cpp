@@ -81,7 +81,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         return;
 
     //trying to do fancy stuff while showing places only leads to tears!
-    if( model()->objectName() == "PLACESMODEL" )
+    if( model()->objectName() == QStringLiteral("PLACESMODEL") )
     {
         e->accept();
         return;
@@ -153,7 +153,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    if( state() == QAbstractItemView::NoState && event->button() == Qt::MidButton )
+    if( state() == QAbstractItemView::NoState && event->button() == Qt::MiddleButton )
     {
         addIndexToPlaylist( index, Playlist::OnMiddleClickOnSelectedItems );
         event->accept();
@@ -186,7 +186,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
     }
 
     // swallow middle-button double-clicks
-    if( event->button() == Qt::MidButton )
+    if( event->button() == Qt::MiddleButton )
     {
         event->accept();
         return;
@@ -380,9 +380,9 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_appendAction )
     {
-        m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
+        m_appendAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-add-amarok") ), i18n( "&Add to Playlist" ),
                                       this );
-        m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+        m_appendAction->setProperty( "popupdropper_svg_id", QStringLiteral("append") );
         connect( m_appendAction, &QAction::triggered, this, &FileView::slotAppendToPlaylist );
     }
     if( type & PlaylistAction )
@@ -392,7 +392,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
     {
         m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these",
                                            "&Replace Playlist" ), this );
-        m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+        m_loadAction->setProperty( "popupdropper_svg_id", QStringLiteral("load") );
         connect( m_loadAction, &QAction::triggered, this, &FileView::slotReplacePlaylist );
     }
     if( type & PlaylistAction )
@@ -401,7 +401,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
     if( !m_moveToTrashAction )
     {
         m_moveToTrashAction = new QAction( QIcon::fromTheme( QStringLiteral("user-trash") ), i18n( "&Move to Trash" ), this );
-        m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
+        m_moveToTrashAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete_file") );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
         connect( m_moveToTrashAction, &QAction::triggered, this, &FileView::slotMoveToTrashWithoutModifiers );
@@ -412,7 +412,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
     if( !m_deleteAction )
     {
         m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("remove-amarok") ), i18n( "&Delete" ), this );
-        m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
+        m_deleteAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete_file") );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
         connect( m_deleteAction, &QAction::triggered, this, &FileView::slotDelete );
@@ -424,7 +424,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
     {
         m_editAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                     i18n( "&Edit Track Details" ), this );
-        m_editAction->setProperty( "popupdropper_svg_id", "edit" );
+        m_editAction->setProperty( "popupdropper_svg_id", QStringLiteral("edit") );
         connect( m_editAction, &QAction::triggered, this, &FileView::slotEditTracks );
     }
     if( type & EditAction )

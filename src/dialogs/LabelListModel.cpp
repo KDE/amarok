@@ -141,7 +141,7 @@ bool LabelListModel::insertRows( int position, int rows, const QModelIndex &pare
 
     for ( int row = 0; row < rows; ++row )
     {
-        m_labels.insert( position, "" );
+        m_labels.insert( position, QStringLiteral("") );
     }
 
     endInsertRows();

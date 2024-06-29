@@ -18,6 +18,7 @@
 #define MUSICDNSXMLPARSER_H
 
 #include <QDomDocument>
+#include <QObject>
 #include <QStringList>
 
 #include <ThreadWeaver/Job>

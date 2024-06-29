@@ -1095,7 +1095,7 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
 
     QString result;
     if( m_field )
-        result = fieldToString() + ':';
+        result = fieldToString() + QLatin1Char(':');
 
     switch( condition )
     {
@@ -1104,34 +1104,34 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
             if( isNumeric() )
                 result += strValue1;
             else
-                result += '=' + QString( "\"%1\"" ).arg( value );
+                result += QLatin1Char('=') + QStringLiteral( "\"%1\"" ).arg( value );
             if( invert )
-                result.prepend( QChar('-') );
+                result.prepend( QLatin1Char('-') );
             break;
         }
 
     case GreaterThan:
         {
-            result += '>' + strValue1;
+            result += QLatin1Char('>') + strValue1;
             if( invert )
-                result.prepend( QChar('-') );
+                result.prepend( QLatin1Char('-') );
             break;
         }
 
     case LessThan:
         {
-            result +='<' + strValue1;
+            result +=QLatin1Char('<') + strValue1;
             if( invert )
-                result.prepend( QChar('-') );
+                result.prepend( QLatin1Char('-') );
             break;
         }
 
     case Between:
         {
             if( invert )
-                result = QString( "%1<%2 OR %1>%3" ).arg( result, strValue1, strValue2 );
+                result = QStringLiteral( "%1<%2 OR %1>%3" ).arg( result, strValue1, strValue2 );
             else
-                result = QString( "%1>%2 AND %1<%3" ).arg( result, strValue1, strValue2 );
+                result = QStringLiteral( "%1>%2 AND %1<%3" ).arg( result, strValue1, strValue2 );
             break;
         }
 
@@ -1139,28 +1139,28 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     case NewerThan:
         {
             // a human readable time..
-            QChar strUnit = 's';
+            QChar strUnit = QLatin1Char('s');
             qint64 value = numValue;
             if( !(value % 60) ) {
-                strUnit = 'M';
+                strUnit = QLatin1Char('M');
                 value /= 60;
 
                 if( !(value % 60) ) {
-                    strUnit = 'h';
+                    strUnit = QLatin1Char('h');
                     value /= 60;
 
                     if( !(value % 24) ) {
-                        strUnit = 'd';
+                        strUnit = QLatin1Char('d');
                         value /= 24;
 
                         if( !(value % 365) ) {
-                            strUnit = 'y';
+                            strUnit = QLatin1Char('y');
                             value /= 365;
                         } else if( !(value % 30) ) {
-                            strUnit = 'm';
+                            strUnit = QLatin1Char('m');
                             value /= 30;
                         } else if( !(value % 7) ) {
-                            strUnit = 'w';
+                            strUnit = QLatin1Char('w');
                             value /= 7;
                         }
                     }
@@ -1168,19 +1168,19 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
             }
 
             if( condition == OlderThan )
-                result += '>' + QString::number(value) + strUnit;
+                result += QLatin1Char('>') + QString::number(value) + strUnit;
             else
-                result += '<' + QString::number(value) + strUnit;
+                result += QLatin1Char('<') + QString::number(value) + strUnit;
             if( invert )
-                result.prepend( QChar('-') );
+                result.prepend( QLatin1Char('-') );
             break;
         }
 
     case Contains:
         {
-            result += QString( "\"%1\"" ).arg( value );
+            result += QStringLiteral( "\"%1\"" ).arg( value );
             if( invert )
-                result.prepend( QChar('-') );
+                result.prepend( QLatin1Char('-') );
             break;
         }
     }

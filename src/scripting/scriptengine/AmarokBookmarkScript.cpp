@@ -55,10 +55,10 @@ AmarokBookmarkScript::AmarokBookmarkScript( QJSEngine *engine )
         return url;
     } );
 
-    QJSValue bookmarkGroupCtor = scriptObject.property("bookmarkGroupCtorWrapper");
+    QJSValue bookmarkGroupCtor = scriptObject.property(QStringLiteral("bookmarkGroupCtorWrapper"));
     m_engine->globalObject().setProperty( QStringLiteral("BookmarkGroup"), bookmarkGroupCtor );
 
-    QJSValue bookmarkCtor = scriptObject.property("bookmarkCtorWrapper");
+    QJSValue bookmarkCtor = scriptObject.property(QStringLiteral("bookmarkCtorWrapper"));
     m_engine->globalObject().setProperty( QStringLiteral("Bookmark"), bookmarkCtor );
 
     qRegisterMetaType<BookmarkGroupList>();

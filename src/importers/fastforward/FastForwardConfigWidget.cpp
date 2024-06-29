@@ -51,16 +51,16 @@ FastForwardConfigWidget::config() const
     const int enumId = metaObject()->indexOfEnumerator( "Driver" );
     QMetaEnum driverEnum = metaObject()->enumerator( enumId );
 
-    cfg.insert( "name", m_targetName->text() );
-    cfg.insert( "dbDriver", driverEnum.valueToKey(
+    cfg.insert( QStringLiteral("name"), m_targetName->text() );
+    cfg.insert( QStringLiteral("dbDriver"), driverEnum.valueToKey(
                     Driver( m_connectionType->currentIndex() ) ) );
 
-    cfg.insert( "dbPath", m_databaseLocation->text() );
-    cfg.insert( "dbName", m_databaseName->text() );
-    cfg.insert( "dbHost", m_hostname->text() );
-    cfg.insert( "dbUser", m_username->text() );
-    cfg.insert( "dbPass", m_password->text() );
-    cfg.insert( "dbPort", m_port->value() );
+    cfg.insert( QStringLiteral("dbPath"), m_databaseLocation->text() );
+    cfg.insert( QStringLiteral("dbName"), m_databaseName->text() );
+    cfg.insert( QStringLiteral("dbHost"), m_hostname->text() );
+    cfg.insert( QStringLiteral("dbUser"), m_username->text() );
+    cfg.insert( QStringLiteral("dbPass"), m_password->text() );
+    cfg.insert( QStringLiteral("dbPort"), m_port->value() );
 
     return cfg;
 }
@@ -81,16 +81,16 @@ FastForwardConfigWidget::connectionTypeChanged( const int index )
 void
 FastForwardConfigWidget::populateFields()
 {
-    m_targetName->setText( m_config.value( "name", "Amarok 1.4" ).toString() );
+    m_targetName->setText( m_config.value( QStringLiteral("name"), QStringLiteral("Amarok 1.4") ).toString() );
 
     const int enumId = metaObject()->indexOfEnumerator( "Driver" );
     QMetaEnum driverEnum = metaObject()->enumerator( enumId );
 
-    m_connectionType->insertItem( QMYSQL,  "MySQL" );
-    m_connectionType->insertItem( QPSQL,   "PostgreSQL" );
-    m_connectionType->insertItem( QSQLITE, "SQLite" );
+    m_connectionType->insertItem( QMYSQL,  QStringLiteral("MySQL") );
+    m_connectionType->insertItem( QPSQL,   QStringLiteral("PostgreSQL") );
+    m_connectionType->insertItem( QSQLITE, QStringLiteral("SQLite") );
 
-    const QByteArray dbDriver = m_config.value( "dbDriver",
+    const QByteArray dbDriver = m_config.value( QStringLiteral("dbDriver"),
                                          driverEnum.valueToKey( QSQLITE ) ).toByteArray();
 
     int index = driverEnum.keyToValue( dbDriver.constData() );
@@ -102,10 +102,10 @@ FastForwardConfigWidget::populateFields()
     const QString defaultPath = QDir::toNativeSeparators(
                 QDir::homePath() + QStringLiteral("/.kde/share/apps/amarok/collection.db") );
 
-    m_databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
-    m_databaseName->setText( m_config.value( "dbName", "amarokdb" ).toString() );
-    m_hostname->setText( m_config.value( "dbHost", "localhost" ).toString() );
-    m_username->setText( m_config.value( "dbUser", "amarokuser" ).toString() );
-    m_password->setText( m_config.value( "dbPass", "" ).toString() );
-    m_port->setValue( m_config.value( "dbPort", 3306 ).toInt() );
+    m_databaseLocation->setText( m_config.value( QStringLiteral("dbPath"), defaultPath ).toString() );
+    m_databaseName->setText( m_config.value( QStringLiteral("dbName"), QStringLiteral("amarokdb") ).toString() );
+    m_hostname->setText( m_config.value( QStringLiteral("dbHost"), QStringLiteral("localhost") ).toString() );
+    m_username->setText( m_config.value( QStringLiteral("dbUser"), QStringLiteral("amarokuser") ).toString() );
+    m_password->setText( m_config.value( QStringLiteral("dbPass"), QStringLiteral("") ).toString() );
+    m_port->setValue( m_config.value( QStringLiteral("dbPort"), 3306 ).toInt() );
 }

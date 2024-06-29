@@ -31,5 +31,5 @@ QString
 Collections::MySqlQueryMaker::escape(const QString &text ) const
 {
     QString str = text;
-    return str.replace("\\", "\\\\").replace( '\'', "''" );
+    return str.replace(QStringLiteral("\\"), QStringLiteral("\\\\")).replace( QLatin1Char('\''), QStringLiteral("''") );
 }

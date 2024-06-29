@@ -307,7 +307,7 @@ namespace Collections
         if( !m_filterMap.isEmpty() && m_filterMap.contains( value ) )
         {
             QString newFilter = m_filterMap.value( value );
-            newFilter.append( QString( " " ) ).append( filter );
+            newFilter.append( QStringLiteral( " " ) ).append( filter );
             m_filterMap.insert( value, newFilter );
         }
         else

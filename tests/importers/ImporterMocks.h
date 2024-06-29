@@ -59,7 +59,6 @@ public:
     MOCK_METHOD( QString, prettyName, (), (const, override) );
     MOCK_METHOD( QIcon, icon, (), (const, override) );
     MOCK_METHOD( StatSyncing::ProviderConfigWidget*, configWidget, (const QVariantMap&), (override) );
-    MOCK_CONST_METHOD0( pluginInfo, KPluginInfo() );
     MOCK_METHOD( StatSyncing::ImporterProviderPtr, newInstance, (const QVariantMap&), (override) );
 };
 

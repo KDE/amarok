@@ -31,7 +31,7 @@ class MockTrack : public Meta::Track
     public:
     MockTrack() : Meta::Track()
     {
-        ON_CALL( *this, name() ).WillByDefault( Return( "" ) );
+        ON_CALL( *this, name() ).WillByDefault( Return( QStringLiteral("") ) );
         ON_CALL( *this, notPlayableReason() ).WillByDefault( Return( QString() ) );
         ON_CALL( *this, artist() ).WillByDefault( Return( Meta::ArtistPtr() ) );
         ON_CALL( *this, album() ).WillByDefault( Return( Meta::AlbumPtr() ) );

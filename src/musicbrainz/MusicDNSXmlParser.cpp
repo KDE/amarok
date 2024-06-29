@@ -23,7 +23,7 @@
 MusicDNSXmlParser::MusicDNSXmlParser( QString &doc )
                     : QObject()
                     , ThreadWeaver::Job()
-                    , m_doc( "musicdns" )
+                    , m_doc( QStringLiteral("musicdns") )
 {
     m_doc.setContent( doc );
 }
@@ -58,14 +58,14 @@ MusicDNSXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver
 QStringList
 MusicDNSXmlParser::puid()
 {
-    return ( m_puid.isEmpty() )?m_puid << "00000000-0000-0000-0000-000000000000":m_puid;
+    return ( m_puid.isEmpty() )?m_puid << QStringLiteral("00000000-0000-0000-0000-000000000000"):m_puid;
 }
 
 void
 MusicDNSXmlParser::parseElement( const QDomElement &e )
 {
     QString elementName = e.tagName();
-    if( elementName == "track" )
+    if( elementName == QStringLiteral("track") )
         parseTrack( e );
     else
         parseChildren( e );
@@ -95,7 +95,7 @@ MusicDNSXmlParser::parseTrack( const QDomElement &e )
         {
             dElement = dNode.toElement();
 
-            if( dElement.tagName() == "puid-list" )
+            if( dElement.tagName() == QStringLiteral("puid-list") )
                 parsePUIDList( dElement );
         }
         dNode = dNode.nextSibling();
@@ -114,7 +114,7 @@ MusicDNSXmlParser::parsePUIDList( const QDomElement &e )
         {
             dElement = dNode.toElement();
 
-            if( dElement.tagName() == "puid" )
+            if( dElement.tagName() == QStringLiteral("puid") )
                 parsePUID( dElement );
         }
         dNode = dNode.nextSibling();
@@ -124,9 +124,9 @@ MusicDNSXmlParser::parsePUIDList( const QDomElement &e )
 void
 MusicDNSXmlParser::parsePUID( const QDomElement &e )
 {
-    if( e.hasAttribute( "id" ) )
+    if( e.hasAttribute( QStringLiteral("id") ) )
     {
-        QString id = e.attribute( "id" );
+        QString id = e.attribute( QStringLiteral("id") );
         if( id.isEmpty() )
             return;
         m_puid << id;

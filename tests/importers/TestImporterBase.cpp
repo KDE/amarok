@@ -46,14 +46,14 @@ TestImporterBase::hasOddRatings() const
 { \
     if( !( fieldmask & metavalue ) ) \
     { \
-        const QString msg = QString( "Tested provider does not support %1 metadata" ) \
+        const QString msg = QStringLiteral( "Tested provider does not support %1 metadata" ) \
                                                 .arg( Meta::nameForField( metavalue ) ); \
         QSKIP( msg.toLocal8Bit().constData(), SkipAll ); \
     } \
 } do {} while(false)
 
 #define amarokProviderSkipIfNoMysqld( provider ) \
-    if( QString( provider->prettyName() ) == "Amarok2Test" ) \
+    if( QString( provider->prettyName() ) == QStringLiteral("Amarok2Test") ) \
         if( !QFileInfo( QStringLiteral("/usr/sbin/mysqld") ).isExecutable() ) \
             QSKIP( "/usr/sbin/mysqld not executable, skipping Amarok provider tests", \
                    SkipAll )
@@ -64,7 +64,7 @@ TestImporterBase::titleShouldBeCaseSensitive()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "caseSensitiveTitle";
+    const QString artist = QStringLiteral("caseSensitiveTitle");
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackNames;
@@ -72,9 +72,9 @@ TestImporterBase::titleShouldBeCaseSensitive()
         trackNames.insert( track->name() );
 
     QCOMPARE( trackNames.size(), 3 );
-    QVERIFY( trackNames.contains( "title" ) );
-    QVERIFY( trackNames.contains( "Title" ) );
-    QVERIFY( trackNames.contains( "tiTle" ) );
+    QVERIFY( trackNames.contains( QStringLiteral("title") ) );
+    QVERIFY( trackNames.contains( QStringLiteral("Title") ) );
+    QVERIFY( trackNames.contains( QStringLiteral("tiTle") ) );
 }
 
 void
@@ -84,7 +84,7 @@ TestImporterBase::artistShouldBeCaseSensitive()
     amarokProviderSkipIfNoMysqld( provider );
 
     const QVector<QString> artists = QVector<QString>()
-            << "caseSensitiveArtist" << "casesensitiveartist" << "caseSensitiveartist";
+            << QStringLiteral("caseSensitiveArtist") << QStringLiteral("casesensitiveartist") << QStringLiteral("caseSensitiveartist");
 
     for( auto const &artist : artists )
     {
@@ -100,7 +100,7 @@ TestImporterBase::albumShouldBeCaseSensitive()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "caseSensitiveAlbum";
+    const QString artist = QStringLiteral("caseSensitiveAlbum");
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackAlbums;
@@ -108,9 +108,9 @@ TestImporterBase::albumShouldBeCaseSensitive()
         trackAlbums.insert( track->album() );
 
     QCOMPARE( trackAlbums.size(), 3 );
-    QVERIFY( trackAlbums.contains( "album" ) );
-    QVERIFY( trackAlbums.contains( "Album" ) );
-    QVERIFY( trackAlbums.contains( "alBum" ) );
+    QVERIFY( trackAlbums.contains( QStringLiteral("album") ) );
+    QVERIFY( trackAlbums.contains( QStringLiteral("Album") ) );
+    QVERIFY( trackAlbums.contains( QStringLiteral("alBum") ) );
 }
 
 void
@@ -120,7 +120,7 @@ TestImporterBase::composerShouldBeCaseSensitive()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
-    const QString artist = "caseSensitiveComposer";
+    const QString artist = QStringLiteral("caseSensitiveComposer");
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackComposers;
@@ -128,9 +128,9 @@ TestImporterBase::composerShouldBeCaseSensitive()
         trackComposers.insert( track->composer() );
 
     QCOMPARE( trackComposers.size(), 3 );
-    QVERIFY( trackComposers.contains( "composer" ) );
-    QVERIFY( trackComposers.contains( "Composer" ) );
-    QVERIFY( trackComposers.contains( "comPoser" ) );
+    QVERIFY( trackComposers.contains( QStringLiteral("composer") ) );
+    QVERIFY( trackComposers.contains( QStringLiteral("Composer") ) );
+    QVERIFY( trackComposers.contains( QStringLiteral("comPoser") ) );
 }
 
 void
@@ -139,12 +139,12 @@ TestImporterBase::titleShouldSupportUTF()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "utfTitle";
+    const QString artist = QStringLiteral("utfTitle");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-    QCOMPARE( tracks.front()->name(), QString::fromWCharArray( L"\xF906\xF907\xF908" ) );
+    QCOMPARE( tracks.front()->name(), QString::fromWCharArray( L"\xF906\xF907\xF908") );
 }
 
 void
@@ -167,12 +167,12 @@ TestImporterBase::albumShouldSupportUTF()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "utfAlbum";
+    const QString artist = QStringLiteral("utfAlbum");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-    QCOMPARE( tracks.front()->album(), QString::fromWCharArray( L"\xF903\xF904\xF905" ) );
+    QCOMPARE( tracks.front()->album(), QString::fromWCharArray( L"\xF903\xF904\xF905") );
 }
 
 void
@@ -182,13 +182,13 @@ TestImporterBase::composerShouldSupportUTF()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
-    const QString artist = "utfComposer";
+    const QString artist = QStringLiteral("utfComposer");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
     QCOMPARE( tracks.front()->composer(),
-              QString::fromWCharArray( L"\xF900\xF901\xF902" ) );
+              QString::fromWCharArray( L"\xF900\xF901\xF902") );
 }
 
 void
@@ -197,12 +197,12 @@ TestImporterBase::titleShouldSupportMultipleWords()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "multiWordTitle";
+    const QString artist = QStringLiteral("multiWordTitle");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-    QCOMPARE( tracks.front()->name(), QString( "ti tl e" ) );
+    QCOMPARE( tracks.front()->name(), QStringLiteral( "ti tl e") );
 }
 
 void
@@ -211,7 +211,7 @@ TestImporterBase::artistShouldSupportMultipleWords()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "multi Word Artist";
+    const QString artist = QStringLiteral("multi Word Artist");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -225,12 +225,12 @@ TestImporterBase::albumShouldSupportMultipleWords()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "multiWordAlbum";
+    const QString artist = QStringLiteral("multiWordAlbum");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-    QCOMPARE( tracks.front()->album(), QString( "al b um" ) );
+    QCOMPARE( tracks.front()->album(), QStringLiteral( "al b um") );
 }
 
 void
@@ -240,12 +240,12 @@ TestImporterBase::composerShouldSupportMultipleWords()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
-    const QString artist = "multiWordComposer";
+    const QString artist = QStringLiteral("multiWordComposer");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 1 );
-    QCOMPARE( tracks.front()->composer(), QString( "com po ser" ) );
+    QCOMPARE( tracks.front()->composer(), QStringLiteral( "com po ser") );
 }
 
 void
@@ -254,7 +254,7 @@ TestImporterBase::titleShouldBeWhitespaceTrimmed()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "trimTitle";
+    const QString artist = QStringLiteral("trimTitle");
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackNames;
@@ -262,9 +262,9 @@ TestImporterBase::titleShouldBeWhitespaceTrimmed()
         trackNames.insert( track->name() );
 
     QCOMPARE( trackNames.size(), 3 );
-    QVERIFY( trackNames.contains( "title1" ) );
-    QVERIFY( trackNames.contains( "title2" ) );
-    QVERIFY( trackNames.contains( "title3" ) );
+    QVERIFY( trackNames.contains( QStringLiteral("title1") ) );
+    QVERIFY( trackNames.contains( QStringLiteral("title2") ) );
+    QVERIFY( trackNames.contains( QStringLiteral("title3") ) );
 }
 
 void
@@ -273,7 +273,7 @@ TestImporterBase::artistShouldBeWhitespaceTrimmed()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "trimArtist";
+    const QString artist = QStringLiteral("trimArtist");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -289,14 +289,14 @@ TestImporterBase::albumShouldBeWhitespaceTrimmed()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "trimAlbum";
+    const QString artist = QStringLiteral("trimAlbum");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 3 );
 
     for( auto const &track : tracks )
-        QCOMPARE( track->album(), QString( "album" ) );
+        QCOMPARE( track->album(), QStringLiteral( "album") );
 }
 
 void
@@ -306,14 +306,14 @@ TestImporterBase::composerShouldBeWhitespaceTrimmed()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
-    const QString artist = "trimComposer";
+    const QString artist = QStringLiteral("trimComposer");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 3 );
 
     for( auto const &track : tracks )
-        QCOMPARE( track->composer(), QString( "composer" ) );
+        QCOMPARE( track->composer(), QStringLiteral( "composer") );
 }
 
 void
@@ -322,7 +322,7 @@ TestImporterBase::albumShouldBeUnsetIfTagIsUnset()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "albumUnset";
+    const QString artist = QStringLiteral("albumUnset");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -337,7 +337,7 @@ TestImporterBase::composerShouldBeUnsetIfTagIsUnset()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valComposer );
 
-    const QString artist = "composerUnset";
+    const QString artist = QStringLiteral("composerUnset");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -352,7 +352,7 @@ TestImporterBase::yearShouldBeUnsetIfTagIsUnset()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valYear );
 
-    const QString artist = "yearUnset";
+    const QString artist = QStringLiteral("yearUnset");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -367,7 +367,7 @@ TestImporterBase::trackShouldBeUnsetIfTagIsUnset()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valTrackNr );
 
-    const QString artist = "trackUnset";
+    const QString artist = QStringLiteral("trackUnset");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -382,7 +382,7 @@ TestImporterBase::discShouldBeUnsetIfTagIsUnset()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( provider->reliableTrackMetaData(), Meta::valDiscNr );
 
-    const QString artist = "discUnset";
+    const QString artist = QStringLiteral("discUnset");
     QVERIFY( provider->artists().contains( artist ) );
 
     const TrackList tracks = provider->artistTracks( artist );
@@ -401,7 +401,7 @@ TestImporterBase::checkStatistics( const QString &artist )
     for( auto const &track : provider->artistTracks( artist ) )
         trackForName.insert( track->name(), track );
 
-    const QString testName( QTest::currentDataTag() );
+    const QString testName( QLatin1String( QTest::currentDataTag() ) );
     QCOMPARE( trackForName.size(), 10 );
     QVERIFY( trackForName.contains( testName ) );
 
@@ -451,7 +451,7 @@ TestImporterBase::tracksShouldHaveStatistics_data()
 void
 TestImporterBase::tracksShouldHaveStatistics()
 {
-    checkStatistics( "testStatistics" );
+    checkStatistics( QStringLiteral("testStatistics") );
 }
 
 void
@@ -481,14 +481,14 @@ TestImporterBase::tracksShouldBehaveNicelyWithNoStatistics_data()
 void
 TestImporterBase::tracksShouldBehaveNicelyWithNoStatistics()
 {
-    checkStatistics( "testStatisticsNotSet" );
+    checkStatistics( QStringLiteral("testStatisticsNotSet") );
 }
 
 void TestImporterBase::labels( const ProviderPtr &provider, const QString &trackName )
 {
     m_lbl.clear();
 
-    const QString artist = "testStatistics";
+    const QString artist = QStringLiteral("testStatistics");
 
     QVERIFY( provider->artists().contains( artist ) );
 
@@ -510,10 +510,10 @@ TestImporterBase::tracksShouldWorkWithSingleLabel()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
 
-    labels( provider, "title0" );
+    labels( provider, QStringLiteral("title0") );
 
     QCOMPARE( m_lbl.size(), 1 );
-    QVERIFY( m_lbl.contains( "singleTag" ) );
+    QVERIFY( m_lbl.contains( QStringLiteral("singleTag") ) );
 }
 
 void
@@ -523,11 +523,11 @@ TestImporterBase::tracksShouldWorkWithMultipleLabels()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
 
-    labels( provider, "title1" );
+    labels( provider, QStringLiteral("title1") );
 
     QCOMPARE( m_lbl.size(), 2 );
-    QVERIFY( m_lbl.contains( "multiple" ) );
-    QVERIFY( m_lbl.contains( "tags" ) );
+    QVERIFY( m_lbl.contains( QStringLiteral("multiple") ) );
+    QVERIFY( m_lbl.contains( QStringLiteral("tags") ) );
 }
 
 void
@@ -537,11 +537,11 @@ TestImporterBase::tracksShouldWorkWithCaseSensitiveLabels()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
 
-    labels( provider, "title2" );
+    labels( provider, QStringLiteral("title2") );
 
     QCOMPARE( m_lbl.size(), 2 );
-    QVERIFY( m_lbl.contains( "caseSensitive" ) );
-    QVERIFY( m_lbl.contains( "casesensitive" ) );
+    QVERIFY( m_lbl.contains( QStringLiteral("caseSensitive") ) );
+    QVERIFY( m_lbl.contains( QStringLiteral("casesensitive") ) );
 }
 
 void
@@ -551,7 +551,7 @@ TestImporterBase::tracksShouldWorkWithUTFLabels()
     amarokProviderSkipIfNoMysqld( provider );
     skipIfNoSupport( reliableStatistics(), Meta::valLabel );
 
-    labels( provider, "title3" );
+    labels( provider, QStringLiteral("title3") );
 
     QCOMPARE( m_lbl.size(), 1 );
     QVERIFY( m_lbl.contains( QString::fromWCharArray( L"\x2622" ) ) );
@@ -563,7 +563,7 @@ TestImporterBase::providerShouldReturnNoTracksForNonexistentArtist()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "I'mNotHere";
+    const QString artist = QStringLiteral("I'mNotHere");
     QVERIFY( !provider->artists().contains( artist ) );
     QVERIFY( provider->artistTracks( artist ).isEmpty() );
 }
@@ -574,7 +574,7 @@ TestImporterBase::providerShouldNotBreakOnLittleBobbyTables()
     ProviderPtr provider( getProvider() );
     amarokProviderSkipIfNoMysqld( provider );
 
-    const QString artist = "Robert'); DROP TABLE students;--";
+    const QString artist = QStringLiteral("Robert'); DROP TABLE students;--");
     QVERIFY( !provider->artists().contains( artist ) );
     QVERIFY( provider->artistTracks( artist ).isEmpty() );
 }
@@ -639,27 +639,27 @@ TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem_data()
     QTest::newRow( "Replace all" ) << "title0" << "testStatistics"
                                    << QDateTime::fromSecsSinceEpoch( now - 100 )
                                    << QDateTime::fromSecsSinceEpoch( now + 100 )
-                                   << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+                                   << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 
     QTest::newRow( "Add all" ) << "title0" << "testStatisticsNotSet"
                                << QDateTime::fromSecsSinceEpoch( now - 100 )
                                << QDateTime::fromSecsSinceEpoch(now + 100 )
-                               << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+                               << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 
     QTest::newRow( "Add some 1" ) << "title2" << "testStatisticsNotSet"
                                   << QDateTime::fromSecsSinceEpoch( now - 100 )
                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
-                                  << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+                                  << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 
     QTest::newRow( "Add some 1" ) << "title4" << "testStatisticsNotSet"
                                   << QDateTime::fromSecsSinceEpoch( now - 100 )
                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
-                                  << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+                                  << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 
     QTest::newRow( "Add some 1" ) << "title6" << "testStatisticsNotSet"
                                   << QDateTime::fromSecsSinceEpoch( now - 100 )
                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
-                                  << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
+                                  << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 }
 
 void
@@ -770,7 +770,7 @@ TestImporterBase::commitAfterSettingFirstPlayedShouldSaveIt()
     QFETCH( QString, title );
     QFETCH( QDateTime, newFirstPlayed );
 
-    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    TrackPtr track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
 
     const Meta::FieldHash data = saveData( track );
@@ -778,7 +778,7 @@ TestImporterBase::commitAfterSettingFirstPlayedShouldSaveIt()
     track->commit();
     provider->commitTracks();
 
-    track = trackForName( provider, title, "testStatisticsNotSet" );
+    track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
     QCOMPARE( track->firstPlayed(), newFirstPlayed );
     verifyEqualExcept( data, track, Meta::valFirstPlayed );
@@ -815,7 +815,7 @@ TestImporterBase::commitAfterSettingLastPlayedShouldSaveIt()
     QFETCH( QString, title );
     QFETCH( QDateTime, newLastPlayed );
 
-    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    TrackPtr track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
 
     const Meta::FieldHash data = saveData( track );
@@ -823,7 +823,7 @@ TestImporterBase::commitAfterSettingLastPlayedShouldSaveIt()
     track->commit();
     provider->commitTracks();
 
-    track = trackForName( provider, title, "testStatisticsNotSet" );
+    track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
     QCOMPARE( track->lastPlayed(), newLastPlayed );
     verifyEqualExcept( data, track, Meta::valLastPlayed );
@@ -858,7 +858,7 @@ TestImporterBase::commitAfterSettingRatingShouldSaveIt()
     QFETCH( QString, title );
     QFETCH( int, newRating );
 
-    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    TrackPtr track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
 
     const Meta::FieldHash data = saveData( track );
@@ -869,7 +869,7 @@ TestImporterBase::commitAfterSettingRatingShouldSaveIt()
     if( !hasOddRatings() && (newRating & 1) )
         ++newRating;
 
-    track = trackForName( provider, title, "testStatisticsNotSet" );
+    track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
     QCOMPARE( track->rating(), newRating );
     verifyEqualExcept( data, track, Meta::valRating );
@@ -904,7 +904,7 @@ TestImporterBase::commitAfterSettingPlaycountShouldSaveIt()
     QFETCH( QString, title );
     QFETCH( int, newPlayCount );
 
-    TrackPtr track = trackForName( provider, title, "testStatisticsNotSet" );
+    TrackPtr track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
 
     const Meta::FieldHash data = saveData( track );
@@ -912,7 +912,7 @@ TestImporterBase::commitAfterSettingPlaycountShouldSaveIt()
     track->commit();
     provider->commitTracks();
 
-    track = trackForName( provider, title, "testStatisticsNotSet" );
+    track = trackForName( provider, title, QStringLiteral("testStatisticsNotSet") );
     QVERIFY( track );
     QCOMPARE( track->playCount(), newPlayCount );
     verifyEqualExcept( data, track, Meta::valPlaycount );
@@ -924,19 +924,19 @@ TestImporterBase::commitAfterSettingLabelsShouldSaveThem_data()
     QTest::addColumn<QString>( "title" );
     QTest::addColumn<QStringList>( "newLabels" );
 
-    QTest::newRow( "Add new label" ) << "title4" << ( QStringList() << "singleTag2" );
-    QTest::newRow( "Add existing label" ) << "title5" << ( QStringList() << "singleTag" );
-    QTest::newRow( "Add labels" ) << "title6" << ( QStringList() << "multi" << "labels" );
+    QTest::newRow( "Add new label" ) << "title4" << ( QStringList() << QStringLiteral("singleTag2") );
+    QTest::newRow( "Add existing label" ) << "title5" << ( QStringList() << QStringLiteral("singleTag") );
+    QTest::newRow( "Add labels" ) << "title6" << ( QStringList() << QStringLiteral("multi") << QStringLiteral("labels") );
     QTest::newRow( "Add existing labels" ) << "title7"
-                                           << ( QStringList() << "multiple" << "labels" );
+                                           << ( QStringList() << QStringLiteral("multiple") << QStringLiteral("labels") );
     QTest::newRow( "Add case-sensitive labels" ) << "title8"
-                                                 << ( QStringList() << "cs" << "Cs" );
+                                                 << ( QStringList() << QStringLiteral("cs") << QStringLiteral("Cs") );
 
-    QTest::newRow( "Replace all labels" ) << "title1" << ( QStringList() << "a" << "l" );
+    QTest::newRow( "Replace all labels" ) << "title1" << ( QStringList() << QStringLiteral("a") << QStringLiteral("l") );
     QTest::newRow( "Replace some labels" ) << "title1"
-                                           << ( QStringList() << "a" << "tags" );
+                                           << ( QStringList() << QStringLiteral("a") << QStringLiteral("tags") );
     QTest::newRow( "Add additional labels" ) << "title1"
-                                      << ( QStringList() << "multiple" << "tags" << "2" );
+                                      << ( QStringList() << QStringLiteral("multiple") << QStringLiteral("tags") << QStringLiteral("2") );
 
     QTest::newRow( "Remove labels 1" ) << "title0" << QStringList();
     QTest::newRow( "Remove labels 2" ) << "title1" << QStringList();
@@ -953,7 +953,7 @@ TestImporterBase::commitAfterSettingLabelsShouldSaveThem()
     QFETCH( QString, title );
     QFETCH( QStringList, newLabels );
 
-    TrackPtr track = trackForName( provider, title, "testStatistics" );
+    TrackPtr track = trackForName( provider, title, QStringLiteral("testStatistics") );
     QVERIFY( track );
 
     const Meta::FieldHash data = saveData( track );
@@ -961,7 +961,7 @@ TestImporterBase::commitAfterSettingLabelsShouldSaveThem()
     track->commit();
     provider->commitTracks();
 
-    track = trackForName( provider, title, "testStatistics" );
+    track = trackForName( provider, title, QStringLiteral("testStatistics") );
     QVERIFY( track );
     QCOMPARE( track->labels(), QSet<QString> ( newLabels.begin(), newLabels.end() ) );
     verifyEqualExcept( data, track, Meta::valLabel );

@@ -71,21 +71,21 @@ RhythmboxProvider::artistTracks( const QString &artistName )
 void
 RhythmboxProvider::readXml( const QString &byArtist )
 {
-    QFile dbFile( m_config.value( "dbPath" ).toString() );
+    QFile dbFile( m_config.value( QStringLiteral("dbPath") ).toString() );
     if( dbFile.open( QIODevice::ReadOnly ) )
     {
         QXmlStreamReader xml( &dbFile );
         if( xml.readNextStartElement() )
         {
-            if( xml.name() == "rhythmdb" )
+            if( xml.name() ==  QStringLiteral("rhythmdb") )
             {
-                if( xml.attributes().value("version") != "1.8" )
+                if( xml.attributes().value("version") !=  QStringLiteral("1.8") )
                     warning() << __PRETTY_FUNCTION__ << "unsupported database version";
 
                 readRhythmdb( xml, byArtist );
             }
             else
-                xml.raiseError( "the database file is ill-formatted" );
+                xml.raiseError( QStringLiteral("the database file is ill-formatted") );
         }
 
         if( xml.hasError() )
@@ -99,11 +99,11 @@ RhythmboxProvider::readXml( const QString &byArtist )
 void
 RhythmboxProvider::readRhythmdb( QXmlStreamReader &xml, const QString &byArtist )
 {
-    Q_ASSERT( xml.isStartElement() && xml.name() == "rhythmdb" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("rhythmdb") );
 
     while( xml.readNextStartElement() )
     {
-        if( xml.name() == "entry" && xml.attributes().value( "type" ) == "song" )
+        if( xml.name() == QStringLiteral("entry") && xml.attributes().value( "type" ) == QStringLiteral("song") )
             readSong( xml, byArtist );
         else
             xml.skipCurrentElement();
@@ -113,7 +113,7 @@ RhythmboxProvider::readRhythmdb( QXmlStreamReader &xml, const QString &byArtist 
 void
 RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
 {
-    Q_ASSERT( xml.isStartElement() && xml.name() == "entry" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("entry") );
 
     Meta::FieldHash metadata;
     QString currentArtist;
@@ -123,33 +123,33 @@ RhythmboxProvider::readSong( QXmlStreamReader &xml, const QString &byArtist )
     {
         if( byArtist.isEmpty() && currentArtist.isEmpty() )
         {
-            if( xml.name() == "artist" )
+            if( xml.name() == QStringLiteral("artist") )
                 currentArtist = readValue( xml );
             else
                 xml.skipCurrentElement();
         }
         else if( currentArtist.isEmpty() || currentArtist == byArtist )
         {
-            if( xml.name() == "title" )
+            if( xml.name() == QStringLiteral("title") )
                 metadata.insert( Meta::valTitle, readValue( xml ) );
-            else if( xml.name() == "artist" )
+            else if( xml.name() == QStringLiteral("artist") )
             {
                 currentArtist = readValue( xml );
                 metadata.insert( Meta::valArtist, currentArtist );
             }
-            else if( xml.name() == "album" )
+            else if( xml.name() == QStringLiteral("album") )
                 metadata.insert( Meta::valAlbum, readValue( xml ) );
-            else if( xml.name() == "track-number" )
+            else if( xml.name() == QStringLiteral("track-number") )
                 metadata.insert( Meta::valTrackNr, readValue( xml ) );
-            else if( xml.name() == "disc-number" )
+            else if( xml.name() == QStringLiteral("disc-number") )
                 metadata.insert( Meta::valDiscNr, readValue( xml ) );
-            else if( xml.name() == "rating" )
+            else if( xml.name() == QStringLiteral("rating") )
                 metadata.insert( Meta::valRating, readValue( xml ) );
-            else if( xml.name() == "last-played" )
+            else if( xml.name() == QStringLiteral("last-played") )
                 metadata.insert( Meta::valLastPlayed, readValue( xml ) );
-            else if( xml.name() == "play-count" )
+            else if( xml.name() == QStringLiteral("play-count") )
                 metadata.insert( Meta::valPlaycount, readValue( xml ) );
-            else if( xml.name() == "location" )
+            else if( xml.name() == QStringLiteral("location") )
                 location = readValue( xml );
             else
                 xml.skipCurrentElement();
@@ -179,13 +179,13 @@ void
 RhythmboxProvider::writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer,
                               const QMap<QString, Meta::FieldHash> &dirtyData )
 {
-    Q_ASSERT( reader.isStartElement() && reader.name() == "entry" );
+    Q_ASSERT( reader.isStartElement() && reader.name() == QStringLiteral("entry") );
 
     Meta::FieldHash metadata;
     QString location;
 
     writer.writeCurrentToken( reader );
-    while( !reader.isEndElement() || reader.name() != "entry" )
+    while( !reader.isEndElement() || reader.name() != QStringLiteral("entry") )
     {
         reader.readNext();
 
@@ -201,21 +201,21 @@ RhythmboxProvider::writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer
 
         if( reader.isStartElement() )
         {
-            if( reader.name() == "rating" )
+            if( reader.name() == QStringLiteral("rating") )
                 metadata.insert( Meta::valRating, readValue( reader ) );
-            else if( reader.name() == "last-played" )
+            else if( reader.name() == QStringLiteral("last-played") )
                 metadata.insert( Meta::valLastPlayed, readValue( reader ) );
-            else if( reader.name() == "play-count" )
+            else if( reader.name() == QStringLiteral("play-count") )
                 metadata.insert( Meta::valPlaycount, readValue( reader ) );
-            else if( reader.name() == "location" )
+            else if( reader.name() == QStringLiteral("location") )
             {
                 location = readValue( reader );
-                writer.writeTextElement( "location", location );
+                writer.writeTextElement( QStringLiteral("location"), location );
             }
             else
                 writer.writeCurrentToken( reader );
         }
-        else if( !reader.isEndElement() || reader.name() != "entry" )
+        else if( !reader.isEndElement() || reader.name() != QStringLiteral("entry") )
             writer.writeCurrentToken( reader );
     }
 
@@ -224,12 +224,12 @@ RhythmboxProvider::writeSong( QXmlStreamReader &reader, QXmlStreamWriter &writer
         metadata = dirtyData.value( location );
 
     if( metadata.value( Meta::valRating ).toInt() != 0 )
-        writer.writeTextElement( "rating", metadata.value( Meta::valRating ).toString() );
+        writer.writeTextElement( QStringLiteral("rating"), metadata.value( Meta::valRating ).toString() );
     if( metadata.value( Meta::valLastPlayed ).toUInt() != 0 )
-        writer.writeTextElement( "last-played",
+        writer.writeTextElement( QStringLiteral("last-played"),
                                  metadata.value( Meta::valLastPlayed ).toString() );
     if( metadata.value( Meta::valPlaycount ).toInt() != 0 )
-        writer.writeTextElement( "play-count",
+        writer.writeTextElement( QStringLiteral("play-count"),
                                  metadata.value( Meta::valPlaycount ).toString() );
 
     writer.writeCurrentToken( reader );
@@ -253,7 +253,7 @@ RhythmboxProvider::commitTracks()
     QMap<QString, Meta::FieldHash> dirtyData;
     dirtyData.swap( m_dirtyData );
 
-    QFile dbFile( m_config.value( "dbPath" ).toString() );
+    QFile dbFile( m_config.value( QStringLiteral("dbPath") ).toString() );
     if( !dbFile.open( QIODevice::ReadOnly ) )
     {
         warning() << __PRETTY_FUNCTION__ << dbFile.fileName() << "is not readable";
@@ -283,7 +283,7 @@ RhythmboxProvider::commitTracks()
         }
 
         if( reader.isStartElement() && reader.name() == QStringLiteral("entry") &&
-            reader.attributes().value( "type" ) == QStringLiteral("song") )
+            reader.attributes().value( QStringLiteral("type") ) == QStringLiteral("song") )
             writeSong( reader, writer, dirtyData );
         else if( reader.isStartDocument() ) // writeCurrentToken doesn't add 'standalone'
             writer.writeStartDocument( reader.documentVersion().toString(),
@@ -293,7 +293,7 @@ RhythmboxProvider::commitTracks()
     }
 
     const QString dbName = dbFile.fileName();
-    QFile::remove( dbName + ".bak" );
-    dbFile.rename( dbName + ".bak" );
+    QFile::remove( dbName + QStringLiteral(".bak") );
+    dbFile.rename( dbName + QStringLiteral(".bak") );
     tmpFile.copy( dbName );
 }

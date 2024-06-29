@@ -23,10 +23,10 @@
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( BansheeImporterFactory,
                                       "amarok_importer-banshee.json",
-                                      "BansheeImporter",
+                                      QStringLiteral("BansheeImporter"),
                                       i18n( "Banshee" ),
                                       i18n( "Banshee Statistics Importer" ),
-                                      QIcon::fromTheme( "view-importers-banshee-amarok" ),
+                                      QIcon::fromTheme( QStringLiteral("view-importers-banshee-amarok") ),
                                       StatSyncing::BansheeConfigWidget,
                                       StatSyncing::BansheeProvider )
 

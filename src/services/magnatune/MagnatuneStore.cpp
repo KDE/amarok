@@ -72,12 +72,12 @@ void MagnatuneServiceFactory::init()
 
 QString MagnatuneServiceFactory::name()
 {
-    return "Magnatune.com";
+    return QStringLiteral("Magnatune.com");
 }
 
 KConfigGroup MagnatuneServiceFactory::config()
 {
-    return Amarok::config( "Service_Magnatune" );
+    return Amarok::config( QStringLiteral("Service_Magnatune") );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     //initTopPanel( );
 
     setShortDescription( i18n( "\"Fair trade\" online music store" ) );
-    setIcon( QIcon::fromTheme( "view-services-magnatune-amarok" ) );
+    setIcon( QIcon::fromTheme( QStringLiteral("view-services-magnatune-amarok") ) );
 
     // xgettext: no-c-format
     setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project receives a 10% commission. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
@@ -277,7 +277,7 @@ void MagnatuneStore::initBottomPanel()
     }
 
     m_downloadAlbumButton->setObjectName( "downloadButton" );
-    m_downloadAlbumButton->setIcon( QIcon::fromTheme( "download-amarok" ) );
+    m_downloadAlbumButton->setIcon( QIcon::fromTheme( QStringLiteral("download-amarok") ) );
     
     connect( m_downloadAlbumButton, &QPushButton::clicked, this, &MagnatuneStore::download );
 
@@ -543,7 +543,7 @@ void MagnatuneStore::moodMapReady(const QMap< QString, int > &map)
         weights << map.value( key );
 
         QString escapedKey = key;
-        escapedKey.replace( QLatin1Char(' '), "%20" );
+        escapedKey.replace( QLatin1Char(' '), QStringLiteral("%20") );
         QVariantMap action;
         action["component"]  = "/ServicePluginManager";
         action["function"] = "sendMessage";
@@ -705,7 +705,7 @@ void MagnatuneStore::removeFromFavorites( const QString &sku )
     if( !config.isMember() )
         return;
 
-    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=remove_api&sku=%4";
+    QString url = QStringLiteral("http://%1:%2@%3.magnatune.com/member/favorites?action=remove_api&sku=%4");
     url = url.arg( config.username(), config.password(), config.membershipPrefix(), sku );
 
     debug() << "favorites url: " << url;

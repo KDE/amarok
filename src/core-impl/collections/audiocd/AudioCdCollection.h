@@ -106,7 +106,7 @@ private:
     void readAudioCdSettings();
 
     // Helper function to build the audiocd url.
-    QUrl audiocdUrl( const QString &path = "" ) const;
+    QUrl audiocdUrl( const QString &path = QStringLiteral("") ) const;
     // The file name of the track without extension
     QString trackBaseFileName( int i ) const;
     // The file name of the track in .wav format

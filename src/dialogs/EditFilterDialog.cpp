@@ -34,15 +34,15 @@
 #define OR_TOKEN Meta::valCustom  + 1
 #define AND_TOKEN Meta::valCustom + 2
 
-#define AND_TOKEN_CONSTRUCT new Token( i18n( "AND" ), "filename-and-amarok", AND_TOKEN )
-#define OR_TOKEN_CONSTRUCT new Token( i18n( "OR" ), "filename-divider", OR_TOKEN )
-#define SIMPLE_TEXT_CONSTRUCT new Token( i18n( "Simple text" ), "media-track-edit-amarok", 0 )
+#define AND_TOKEN_CONSTRUCT new Token( i18n( "AND" ), QStringLiteral("filename-and-amarok"), AND_TOKEN )
+#define OR_TOKEN_CONSTRUCT new Token( i18n( "OR" ), QStringLiteral("filename-divider"), OR_TOKEN )
+#define SIMPLE_TEXT_CONSTRUCT new Token( i18n( "Simple text" ), QStringLiteral("media-track-edit-amarok"), 0 )
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : QDialog( parent )
     , m_ui( new Ui::EditFilterDialog )
     , m_curToken( nullptr )
-    , m_separator( " AND " )
+    , m_separator( QStringLiteral(" AND ") )
     , m_isUpdating()
 {
     setWindowTitle( i18n( "Edit Filter" ) );
@@ -207,9 +207,9 @@ void
 EditFilterDialog::slotSeparatorChange()
 {
     if( m_ui->rbAnd->isChecked() )
-        m_separator = QString( " AND " );
+        m_separator = QStringLiteral( " AND " );
     else
-        m_separator = QString( " OR " );
+        m_separator = QStringLiteral( " OR " );
 
     updateSearchEdit();
 }
@@ -315,8 +315,8 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 auto date = QLocale().toDate( strTime, QLocale::ShortFormat );
 
                 // parse date using a backup standard independent from local settings
-                QRegularExpression shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
-                QRegularExpression longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
+                QRegularExpression shortDateReg(QStringLiteral("(\\d{1,2})[-.](\\d{1,2})"));
+                QRegularExpression longDateReg(QStringLiteral("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})"));
                 // NOTE for absolute time specifications numValue is a unix timestamp,
                 // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
                 if( date.isValid() )
@@ -348,37 +348,37 @@ EditFilterDialog::updateDropTarget( const QString &text )
                         {
                             tmp += c;
                         }
-                        else if( c == 'y' )
+                        else if( c == QLatin1Char('y') )
                         {
                             years += tmp.toInt();
                             tmp.clear();
                         }
-                        else if( c == 'm' )
+                        else if( c == QLatin1Char('m') )
                         {
                             months += tmp.toInt();
                             tmp.clear();
                         }
-                        else if( c == 'w' )
+                        else if( c == QLatin1Char('w') )
                         {
                             days += tmp.toInt() * 7;
                             tmp.clear();
                         }
-                        else if( c == 'd' )
+                        else if( c == QLatin1Char('d') )
                         {
                             days += tmp.toInt();
                             tmp.clear();
                         }
-                        else if( c == 'h' )
+                        else if( c == QLatin1Char('h') )
                         {
                             secs += tmp.toInt() * 60 * 60;
                             tmp.clear();
                         }
-                        else if( c == 'M' )
+                        else if( c == QLatin1Char('M') )
                         {
                             secs += tmp.toInt() * 60;
                             tmp.clear();
                         }
-                        else if( c == 's' )
+                        else if( c == QLatin1Char('s') )
                         {
                             secs += tmp.toInt();
                             tmp.clear();
@@ -483,12 +483,12 @@ EditFilterDialog::filter()
     {
         if( token->value() == OR_TOKEN )
         {
-            filterString.append( " OR " );
+            filterString.append( QStringLiteral(" OR ") );
             join = false;
         }
         else if( token->value() == AND_TOKEN )
         {
-            filterString.append( " AND " );
+            filterString.append( QStringLiteral(" AND ") );
             join = false;
         }
         else

@@ -57,7 +57,7 @@ namespace The
 }
 
 MoodbarManager::MoodbarManager()
-    : m_cache( new KImageCache( "Amarok-moodbars", 10 * 1024 ) )
+    : m_cache( new KImageCache( QStringLiteral("Amarok-moodbars"), 10 * 1024 ) )
     , m_lastPaintMode( 0 )
 {
     connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &MoodbarManager::paletteChanged );
@@ -153,7 +153,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
 
     //Do we already have this pixmap cached?
     const QString pixmapKey = QStringLiteral( "mood:%1-%2x%3%4" ).arg( track->uidUrl(), QString::number( width ),
-                                                                QString::number( height ), QString( rtl?"r":"" ) );
+                                                                QString::number( height ), QString( rtl?QStringLiteral("r"):QStringLiteral("") ) );
     QPixmap moodbar;
 
     if( m_cache->findPixmap( pixmapKey, &moodbar ) )
@@ -508,14 +508,14 @@ QString MoodbarManager::moodPath( const QString &trackPath ) const
 {
     QStringList parts = trackPath.split( QLatin1Char('.') );
     parts.takeLast();
-    parts.append( "mood" );
-    QString moodPath = parts.join( "." );
+    parts.append( QStringLiteral("mood") );
+    QString moodPath = parts.join( QStringLiteral(".") );
     
     //now prepend the filename with .
     const QFileInfo fileInfo( moodPath );
     const QString fileName = fileInfo.fileName();
 
-    return moodPath.replace( fileName, '.' + fileName );
+    return moodPath.replace( fileName, QLatin1Char('.') + fileName );
 }
 
 void MoodbarManager::paletteChanged( const QPalette &palette )

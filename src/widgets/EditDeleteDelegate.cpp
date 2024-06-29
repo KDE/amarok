@@ -46,8 +46,8 @@ void EditDeleteDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         //paint our custom stuff in the leftover space
         //but only if this is the item that the mouse is over...
 
-        const QIcon editIcon( "configure" );
-        const QIcon deleteIcon( "edit-delete" );
+        const QIcon editIcon( QStringLiteral("configure") );
+        const QIcon deleteIcon( QStringLiteral("edit-delete") );
 
         QPixmap editPixmap = editIcon.pixmap( ICON_WIDTH, ICON_WIDTH );
         QPixmap deletePixmap = deleteIcon.pixmap( ICON_WIDTH, ICON_WIDTH );

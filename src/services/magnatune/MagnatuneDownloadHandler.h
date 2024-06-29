@@ -19,7 +19,6 @@
 
 #include <QObject>
 #include <kio/job.h>
-#include <kio/jobclasses.h>
 
 #include "MagnatuneAlbumDownloader.h"
 #include "MagnatuneDownloadDialog.h"

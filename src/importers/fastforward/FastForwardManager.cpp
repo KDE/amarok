@@ -21,7 +21,7 @@
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( FastForwardImporterFactory,
                                       "amarok_importer-fastforward.json",
-                                      "FastForwardImporter",
+                                      QStringLiteral("FastForwardImporter"),
                                       i18n( "Amarok 1.4 (FastForward)" ),
                                       i18n( "Amarok 1.4 Statistics Importer" ),
                                       QIcon::fromTheme( QStringLiteral("amarok") ),

@@ -75,7 +75,7 @@ MediaDeviceCache::refreshCache()
         debug() << "Found Solid::DeviceInterface::PortableMediaPlayer with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
         m_type[device.udi()] = MediaDeviceCache::SolidPMPType;
-        m_name[device.udi()] = device.vendor() + " - " + device.product();
+        m_name[device.udi()] = device.vendor() + QStringLiteral(" - ") + device.product();
     }
     deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
     for( const Solid::Device &device : deviceList )
@@ -115,7 +115,7 @@ MediaDeviceCache::refreshCache()
         if( device.as<Solid::StorageDrive>() )
         {
             m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
-            m_name[device.udi()] = device.vendor() + " - " + device.product();
+            m_name[device.udi()] = device.vendor() + QStringLiteral(" - ") + device.product();
         }
     }
     deviceList = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDisc );
@@ -130,14 +130,14 @@ MediaDeviceCache::refreshCache()
         {
             debug() << "device is an Audio CD";
             m_type[device.udi()] = MediaDeviceCache::SolidAudioCdType;
-            m_name[device.udi()] = device.vendor() + " - " + device.product();
+            m_name[device.udi()] = device.vendor() + QStringLiteral(" - ") + device.product();
         }
     }
-    KConfigGroup config = Amarok::config( "PortableDevices" );
+    KConfigGroup config = Amarok::config( QStringLiteral("PortableDevices") );
     const QStringList manualDeviceKeys = config.entryMap().keys();
     for( const QString &udi : manualDeviceKeys )
     {
-        if( udi.startsWith( "manual" ) )
+        if( udi.startsWith( QStringLiteral("manual") ) )
         {
             debug() << "Found manual device with udi = " << udi;
             m_type[udi] = MediaDeviceCache::ManualType;
@@ -161,7 +161,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     {
         debug() << "device is an Audio CD";
         m_type[udi] = MediaDeviceCache::SolidAudioCdType;
-        m_name[udi] = device.vendor() + " - " + device.product();
+        m_name[udi] = device.vendor() + QStringLiteral(" - ") + device.product();
     }
     else if( ssa )
     {
@@ -187,13 +187,13 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     {
         debug() << "device is a Storage drive, still need a volume";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
-        m_name[udi] = device.vendor() + " - " + device.product();
+        m_name[udi] = device.vendor() + QStringLiteral(" - ") + device.product();
     }
     else if( device.is<Solid::PortableMediaPlayer>() )
     {
         debug() << "device is a PMP";
         m_type[udi] = MediaDeviceCache::SolidPMPType;
-        m_name[udi] = device.vendor() + " - " + device.product();
+        m_name[udi] = device.vendor() + QStringLiteral(" - ") + device.product();
     }
     else if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
     {
@@ -205,16 +205,16 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
          * @see IpodConnectionAssistant::identify() for a quirk that is currently also
          * needed for proper identification of iPhone-like devices.
          */
-        if ( !device.product().contains("iPod") && !device.product().contains("iPhone"))
+        if ( !device.product().contains( QStringLiteral("iPod" )) && !device.product().contains( QStringLiteral("iPhone") ))
         {
-            if( !properties.contains("info.capabilities") )
+            if( !properties.contains(QStringLiteral("info.capabilities")) )
             {
                 debug() << "udi " << udi << " does not describe a portable media player or storage volume";
                 return;
             }
     
-            const QStringList capabilities = properties["info.capabilities"].toStringList();
-            if( !capabilities.contains("afc") )
+            const QStringList capabilities = properties[QStringLiteral("info.capabilities")].toStringList();
+            if( !capabilities.contains(QStringLiteral("afc")) )
             {
                 debug() << "udi " << udi << " does not describe a portable media player or storage volume";
                 return;
@@ -223,7 +223,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
 
         debug() << "udi" << udi << "is AFC capable (Apple mobile device)";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
-        m_name[udi] = device.vendor() + " - " + device.product();
+        m_name[udi] = device.vendor() + QStringLiteral(" - ") + device.product();
     }
     else
     {
@@ -303,7 +303,7 @@ MediaDeviceCache::deviceName( const QString &udi ) const
     {
         return m_name[udi];
     }
-    return "ERR_NO_NAME"; //Should never happen!
+    return QStringLiteral("ERR_NO_NAME"); //Should never happen!
 }
 
 const QString
@@ -349,7 +349,7 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
         debug() << "Could convert parent to PortableMediaPlayer, returning true";
         return true;
     }
-    if( QFile::exists( ssa->filePath() + QLatin1Char('/') + ".is_audio_player" ) )
+    if( QFile::exists( ssa->filePath() + QLatin1Char('/') + QStringLiteral(".is_audio_player") ) )
     {
         return true;
     }

@@ -33,7 +33,7 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, const Meta::AlbumPtr 
 {
     connect( this, &BookmarkAlbumAction::triggered, this, &BookmarkAlbumAction::slotTriggered );
     setIcon( QIcon::fromTheme(QStringLiteral("bookmark-new")) );
-    setProperty( "popupdropper_svg_id", "lastfm" );
+    setProperty( "popupdropper_svg_id", QStringLiteral("lastfm") );
 }
 
 void
@@ -49,7 +49,7 @@ BookmarkArtistAction::BookmarkArtistAction( QObject *parent, const Meta::ArtistP
 {
     connect( this, &BookmarkArtistAction::triggered, this, &BookmarkArtistAction::slotTriggered );
     setIcon( QIcon::fromTheme(QStringLiteral("bookmark-new")) );
-    setProperty( "popupdropper_svg_id", "lastfm" );
+    setProperty( "popupdropper_svg_id", QStringLiteral("lastfm") );
 }
 
 void

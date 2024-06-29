@@ -23,7 +23,8 @@
 #include <QNetworkConfigurationManager>
 #endif
 
-#include <KIO/Job>
+#include <KIO/MkdirJob>
+#include <KIO/FileCopyJob>
 
 PodcastImageFetcher::PodcastImageFetcher()
 {
@@ -122,23 +123,22 @@ PodcastImageFetcher::run()
     }
 #endif
 
-    foreach( Podcasts::PodcastChannelPtr channel, m_channels )
+    for( Podcasts::PodcastChannelPtr channel : m_channels )
     {
         QUrl channelImageUrl = channel->imageUrl();
         // KIO::file_copy in KF5 needs scheme
         if (channelImageUrl.isRelative() && channelImageUrl.host().isEmpty()) {
-            channelImageUrl.setScheme("file");
+            channelImageUrl.setScheme( QStringLiteral("file") );
         }
 
         QUrl cachedPath = cachedImagePath( channel );
         KIO::mkdir( cachedPath.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash) );
         KIO::FileCopyJob *job = KIO::file_copy(channelImageUrl, cachedPath,
                                                -1, KIO::HideProgressInfo | KIO::Overwrite );
-        //remove channel from the todo list
-        m_channels.removeAll( channel );
         m_jobChannelMap.insert( job, channel );
         connect( job, &KIO::FileCopyJob::finished, this, &PodcastImageFetcher::slotDownloadFinished );
     }
+    m_channels.clear();
 
     //TODO: episodes
 }

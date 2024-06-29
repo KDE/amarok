@@ -33,7 +33,7 @@
 QTEST_GUILESS_MAIN( TestMetaTrack )
 
 TestMetaTrack::TestMetaTrack()
-    : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )
+    : m_trackPath( dataPath( QStringLiteral("/data/audio/Platz 01.mp3") ) )
 {
     KLocalizedString::setApplicationDomain("amarok-test");
 }
@@ -45,15 +45,15 @@ TestMetaTrack::~TestMetaTrack()
 QString
 TestMetaTrack::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestMetaTrack::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
     QString oldPath = m_trackPath;
-    m_trackPath = m_tempDir.path() + "TestMetaTrack-testTrack.mp3";
+    m_trackPath = m_tempDir.path() + QStringLiteral("TestMetaTrack-testTrack.mp3");
     QVERIFY( QFile::copy( oldPath, m_trackPath ) );
 
     m_testTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(m_trackPath) );
@@ -67,7 +67,7 @@ void TestMetaTrack::initTestCase()
 
 void TestMetaTrack::testPrettyName()
 {
-    QCOMPARE( m_testTrack1->prettyName(), QString( "Platz 01" ) );
+    QCOMPARE( m_testTrack1->prettyName(), QStringLiteral( "Platz 01" ) );
 }
 
 void TestMetaTrack::testPlayableUrl()
@@ -92,32 +92,32 @@ void TestMetaTrack::testIsPlayable()
 
 void TestMetaTrack::testAlbum()
 {
-    QCOMPARE( m_testTrack1->album()->name() , QString( "" ) );
+    QCOMPARE( m_testTrack1->album()->name() , QStringLiteral( "" ) );
 }
 
 void TestMetaTrack::testArtist()
 {
-    QCOMPARE( m_testTrack1->artist()->name(), QString( "Free Music Charts" ) );
+    QCOMPARE( m_testTrack1->artist()->name(), QStringLiteral( "Free Music Charts" ) );
 }
 
 void TestMetaTrack::testComposer()
 {
-    QCOMPARE( m_testTrack1->composer()->name(), QString( "" ) );
+    QCOMPARE( m_testTrack1->composer()->name(), QStringLiteral( "" ) );
 }
 
 void TestMetaTrack::testGenre()
 {
-    QCOMPARE( m_testTrack1->genre()->name(), QString( "Vocal" ) );
+    QCOMPARE( m_testTrack1->genre()->name(), QStringLiteral( "Vocal" ) );
 }
 
 void TestMetaTrack::testYear()
 {
-    QCOMPARE( m_testTrack1->year()->name(), QString( "2010" ) );
+    QCOMPARE( m_testTrack1->year()->name(), QStringLiteral( "2010" ) );
 }
 
 void TestMetaTrack::testComment()
 {
-    QCOMPARE( m_testTrack1->comment(), QString( "" ) );
+    QCOMPARE( m_testTrack1->comment(), QStringLiteral( "" ) );
 }
 
 void TestMetaTrack::testSetAndGetScore()
@@ -189,12 +189,12 @@ void TestMetaTrack::testDiscNumber()
 
 void TestMetaTrack::testLastPlayed()
 {
-    QCOMPARE( m_testTrack1->statistics()->lastPlayed().toString(), "" );
+    QCOMPARE( m_testTrack1->statistics()->lastPlayed().toString(), QStringLiteral("") );
 }
 
 void TestMetaTrack::testFirstPlayed()
 {
-    QCOMPARE( m_testTrack1->statistics()->firstPlayed().toString(), "" );
+    QCOMPARE( m_testTrack1->statistics()->firstPlayed().toString(), QStringLiteral("") );
 }
 
 void TestMetaTrack::testPlayCount()
@@ -211,13 +211,13 @@ void TestMetaTrack::testReplayGain()
 
     // Track03 contains gain value of inf; make sure it is ignored. BUG 486084
     Meta::TrackPtr albumTrack3;
-    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
+    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track03.ogg") )) );
     QCOMPARE( int(albumTrack3->replayGain( Meta::ReplayGain_Track_Gain ) ), 0 );
 }
 
 void TestMetaTrack::testType()
 {
-    QCOMPARE( m_testTrack1->type(), QString( "mp3" ) );
+    QCOMPARE( m_testTrack1->type(), QStringLiteral( "mp3" ) );
 }
 
 void TestMetaTrack::testInCollection()
@@ -233,16 +233,16 @@ void TestMetaTrack::testCollection()
 void TestMetaTrack::testSetAndGetCachedLyrics()
 {
     /* TODO: setCachedLyrics is not yet implemented
-    QCOMPARE( m_testTrack1->cachedLyrics(), QString( "" ) );
+    QCOMPARE( m_testTrack1->cachedLyrics(), QStringLiteral( "" ) );
 
     m_testTrack1->setCachedLyrics( "test" );
-    QCOMPARE( m_testTrack1->cachedLyrics(), QString( "test" ) );
+    QCOMPARE( m_testTrack1->cachedLyrics(), QStringLiteral( "test" ) );
 
     m_testTrack1->setCachedLyrics( "aäaüoöß" );
-    QCOMPARE( m_testTrack1->cachedLyrics(), QString( "aäaüoöß" ) );
+    QCOMPARE( m_testTrack1->cachedLyrics(), QStringLiteral( "aäaüoöß" ) );
 
     m_testTrack1->setCachedLyrics( "" );
-    QCOMPARE( m_testTrack1->cachedLyrics(), QString( "" ) );
+    QCOMPARE( m_testTrack1->cachedLyrics(), QStringLiteral( "" ) );
     */
 }
 
@@ -256,9 +256,9 @@ void TestMetaTrack::testLessThan()
 {
     Meta::TrackPtr albumTrack1, albumTrack2, albumTrack3;
 
-    albumTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track02.ogg" )) );
-    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
+    albumTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track01.ogg") )) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track02.ogg") )) );
+    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track03.ogg") )) );
 
     QVERIFY( albumTrack1 );
     QVERIFY( albumTrack2 );

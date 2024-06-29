@@ -404,7 +404,7 @@ Meta::Field::xesamFullToPrettyFieldName( const QString &name )
     else if( name == XESAM_ID )
         return Meta::Field::UNIQUEID;
     else
-        return "xesamFullToPrettyName: unknown name " + name;
+        return QStringLiteral("xesamFullToPrettyName: unknown name ") + name;
 }
 
 

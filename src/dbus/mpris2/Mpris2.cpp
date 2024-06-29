@@ -42,7 +42,7 @@ Mpris2::Mpris2( QObject *parent )
     // and the name is already taken. In that event the MPRIS2 spec wants the
     // following:
     if (!success) {
-        mpris2Name = mpris2Name + ".instance" + QString::number( getpid() );
+        mpris2Name = mpris2Name + QStringLiteral(".instance") + QString::number( getpid() );
         success = QDBusConnection::sessionBus().registerService( mpris2Name );
     }
 

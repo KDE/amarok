@@ -94,7 +94,7 @@ AmarokProcIO::AmarokProcIO ( QObject *parent )
 bool 
 AmarokProcIO::writeStdin (const QString &line)
 {
-    return write( codec->fromUnicode( line + '\n' ) ) > 0;
+    return write( codec->fromUnicode( line + QLatin1Char('\n') ) ) > 0;
 }
 
 int 

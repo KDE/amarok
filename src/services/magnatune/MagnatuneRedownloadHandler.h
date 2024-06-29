@@ -23,6 +23,7 @@
 #include "MagnatuneRedownloadDialog.h"
 
 #include <QObject>
+#include <KIO/StoredTransferJob>
 
 /**
 This class handles the redownloading of previously downloaded albums

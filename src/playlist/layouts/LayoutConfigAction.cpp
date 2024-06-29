@@ -38,7 +38,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : QAction( parent )
     , m_layoutDialog( nullptr )
 {
-    QIcon actionIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
+    QIcon actionIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/playlist-layouts-22.png")) ) );    //TEMPORARY ICON
     setIcon( actionIcon );
     m_layoutMenu = new QMenu( parent );
     setMenu( m_layoutMenu );

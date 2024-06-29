@@ -112,26 +112,26 @@ ClementineTrack::doCommit( const qint64 fields )
 
     if( fields & Meta::valLastPlayed )
     {
-        updates << "lastplayed = :lastplayed";
-        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
+        updates << QStringLiteral("lastplayed = :lastplayed");
+        bindValues.insert( QStringLiteral(":lastplayed"), m_statistics.value( Meta::valLastPlayed ) );
     }
     if( fields & Meta::valRating )
     {
-        updates << "rating = :rating";
-        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        updates << QStringLiteral("rating = :rating");
+        bindValues.insert( QStringLiteral(":rating"), m_statistics.value( Meta::valRating ) );
     }
     if( fields & Meta::valPlaycount )
     {
-        updates << "playcount = :playcount";
-        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        updates << QStringLiteral("playcount = :playcount");
+        bindValues.insert( QStringLiteral(":playcount"), m_statistics.value( Meta::valPlaycount ) );
     }
 
     if( !updates.empty() )
     {
-        const QString query = "UPDATE songs SET " + updates.join(", ") +
-                              " WHERE filename = :name";
+        const QString query = QStringLiteral("UPDATE songs SET ") + updates.join(QStringLiteral(", ")) +
+                              QStringLiteral(" WHERE filename = :name");
 
-        bindValues.insert( ":name", m_filename );
+        bindValues.insert( QStringLiteral(":name"), m_filename );
         m_connection->query( query, bindValues );
     }
 }

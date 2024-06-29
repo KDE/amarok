@@ -218,7 +218,8 @@ AmarokWindowScript::setFont( const QFont &font )
 void
 AmarokWindowScript::showToolTip()
 {
-    foreach( QWidget *widget, The::mainWindow()->findChildren<QWidget*>() )
+    auto list = The::mainWindow()->findChildren<QWidget*>();
+    for( QWidget *widget : list )
     {
         widget->setToolTip( widget->objectName() );
         widget->installEventFilter( ToolTipEventFilter::instance() );

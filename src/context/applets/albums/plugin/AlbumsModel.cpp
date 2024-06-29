@@ -65,10 +65,10 @@ AlbumsModel::data( const QModelIndex &index, int role ) const
             int year     = album->data( AlbumYearRole ).toInt();
 
             QStringList texts;
-            texts << ((year > 0) ? QString( "%1 (%2)" ).arg( name, QString::number(year) ) : name).toHtmlEscaped();
+            texts << ((year > 0) ? QStringLiteral( "%1 (%2)" ).arg( name, QString::number(year) ) : name).toHtmlEscaped();
             texts << album->data( AlbumLengthRole ).toString().toHtmlEscaped();
 
-            return texts.join("<br>");
+            return texts.join(QStringLiteral("<br>"));
         }
 
         if( const auto track = dynamic_cast<const TrackItem *>( item ) )
@@ -76,16 +76,16 @@ AlbumsModel::data( const QModelIndex &index, int role ) const
             bool isCompilation = track->data( AlbumCompilationRole ).toBool();
             const QString &name = track->data( NameRole ).toString();
             const QString &artist = track->data( TrackArtistRole ).toString();
-            QString length = " (" + Meta::msToPrettyTime( track->data( TrackLengthRole ).toInt() ) + ')';
-            QString number = track->data( TrackNumberRole ).toString() + ". ";
-            QString middle = isCompilation ? QString( "%1 - %2" ).arg( artist, name ) : name;
+            QString length = QStringLiteral(" (") + Meta::msToPrettyTime( track->data( TrackLengthRole ).toInt() ) + QLatin1Char(')');
+            QString number = track->data( TrackNumberRole ).toString() + QStringLiteral(". ");
+            QString middle = isCompilation ? QStringLiteral( "%1 - %2" ).arg( artist, name ) : name;
 
             QString ret = QStringList( { number, middle, length } ).join( QLatin1Char(' ') ).toHtmlEscaped();
             // Styling to indicate current track and artist in listings
             if( track->bold() )
-                ret = "<b>" + ret + "</b>";
+                ret = QStringLiteral("<b>") + ret + QStringLiteral("</b>");
             if( track->italic() )
-                ret = "<i>" + ret + "</i>";
+                ret = QStringLiteral("<i>") + ret + QStringLiteral("</i>");
             return ret;
         }
     }

@@ -35,7 +35,7 @@ AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
     globalObject().setProperty( internalObject, scriptObject );
     QJSValue setTimeoutObject = scriptObject.property( QStringLiteral("setTimeout") );
     Q_ASSERT( !setTimeoutObject.isUndefined() );
-    Q_ASSERT( !globalObject().property( internalObject ).property( "invokableDeprecatedCall" ).isUndefined() );
+    Q_ASSERT( !globalObject().property( internalObject ).property( QStringLiteral("invokableDeprecatedCall") ).isUndefined() );
     globalObject().setProperty( QStringLiteral("setTimeout"), setTimeoutObject );
 }
 
@@ -44,7 +44,7 @@ AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString 
 {
     const QString objName = QStringLiteral( "%1%2" ).arg( name, QString::number( QRandomGenerator::global()->generate() ) );
     globalObject().property( internalObject ).setProperty( objName, property );
-    const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
+    const QString command = QStringLiteral( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\
                                                                             enumerable : true,\
                                                                             configurable : false} );" )
@@ -55,7 +55,7 @@ AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString 
 void
 AmarokScriptEngine::invokableDeprecatedCall( const QString &call )
 {
-    warning() << "Deprecated function " + call;
+    warning() << "Deprecated function " << call;
     Q_EMIT deprecatedCall( call );
 }
 

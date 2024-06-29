@@ -31,9 +31,9 @@ ProviderPtr
 TestFastForwardImporter::getProvider()
 {
     QVariantMap cfg = FastForwardConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbDriver", "QSQLITE" );
-    cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                          "/../tests/importers_files/collection.db" );
+    cfg.insert( QStringLiteral("dbDriver"), QStringLiteral("QSQLITE") );
+    cfg.insert( QStringLiteral("dbPath"), QString( QCoreApplication::applicationDirPath() +
+                          QStringLiteral("/../tests/importers_files/collection.db") ) );
 
     return ProviderPtr( new FastForwardProvider( cfg, nullptr ) );
 }
@@ -42,15 +42,15 @@ ProviderPtr
 TestFastForwardImporter::getWritableProvider()
 {
     QDir base( QCoreApplication::applicationDirPath() );
-    base.mkpath( "importers_tmp" );
+    base.mkpath( QStringLiteral("importers_tmp") );
 
-    const QString dst = base.filePath( "importers_tmp/collection.db" );
+    const QString dst = base.filePath( QStringLiteral("importers_tmp/collection.db") );
     QFile( dst ).remove();
-    QFile( base.filePath( "../tests/importers_files/collection.db" ) ).copy( dst );
+    QFile( base.filePath( QStringLiteral("../tests/importers_files/collection.db") ) ).copy( dst );
 
     QVariantMap cfg = FastForwardConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbDriver", "QSQLITE" );
-    cfg.insert( "dbPath", dst );
+    cfg.insert( QStringLiteral("dbDriver"), QStringLiteral("QSQLITE") );
+    cfg.insert( QStringLiteral("dbPath"), dst );
 
     return ProviderPtr( new FastForwardProvider( cfg, nullptr ) );
 }
@@ -100,16 +100,16 @@ TestFastForwardImporter::configWidgetShouldSetDriverNameAsConfigResult()
     FastForwardConfigWidget widget( m_cfg );
 
     widget.m_connectionType->setCurrentIndex( FastForwardConfigWidget::QSQLITE );
-    QCOMPARE( widget.config().value( "dbDriver" ).toString(),
-              QString( "QSQLITE" ) );
+    QCOMPARE( widget.config().value( QStringLiteral("dbDriver") ).toString(),
+              QStringLiteral( "QSQLITE" ) );
 
     widget.m_connectionType->setCurrentIndex( FastForwardConfigWidget::QMYSQL );
-    QCOMPARE( widget.config().value( "dbDriver" ).toString(),
-              QString( "QMYSQL" ) );
+    QCOMPARE( widget.config().value( QStringLiteral("dbDriver") ).toString(),
+              QStringLiteral( "QMYSQL" ) );
 
     widget.m_connectionType->setCurrentIndex( FastForwardConfigWidget::QPSQL );
-    QCOMPARE( widget.config().value( "dbDriver" ).toString(),
-              QString( "QPSQL" ) );
+    QCOMPARE( widget.config().value( QStringLiteral("dbDriver") ).toString(),
+              QStringLiteral( "QPSQL" ) );
 }
 
 void
@@ -123,41 +123,41 @@ TestFastForwardImporter::configWidgetShouldShowSqliteAsDefault()
 void
 TestFastForwardImporter::configWidgetShouldNotBreakOnNonsenseInitialValues()
 {
-    m_cfg.insert( "dbDriver", 19 );
-    m_cfg.insert( "dbName", QColor( Qt::red ) );
-    m_cfg.insert( "dbPort", "nonsensePort" );
+    m_cfg.insert( QStringLiteral("dbDriver"), 19 );
+    m_cfg.insert( QStringLiteral("dbName"), QColor( Qt::red ) );
+    m_cfg.insert( QStringLiteral("dbPort"), QStringLiteral("nonsensePort") );
 
     FastForwardConfigWidget widget( m_cfg );
     QVERIFY( !widget.m_databaseName->text().isEmpty() );
 
     const QList<QString> validDrivers = QList<QString>()
-            << "QSQLITE" << "QMYSQL" << "QPSQL";
+            << QStringLiteral("QSQLITE") << QStringLiteral("QMYSQL") << QStringLiteral("QPSQL");
 
-    QVERIFY( validDrivers.contains( widget.config().value( "dbDriver" ).toString() ) );
+    QVERIFY( validDrivers.contains( widget.config().value( QStringLiteral("dbDriver") ).toString() ) );
 }
 
 void
 TestFastForwardImporter::configWidgetShouldReadSavedConfig()
 {
-    m_cfg.insert( "dbDriver", "QPSQL" );
-    m_cfg.insert( "dbName", "MyName" );
-    m_cfg.insert( "dbPort", 19 );
-    m_cfg.insert( "name", "theName" );
+    m_cfg.insert( QStringLiteral("dbDriver"), QStringLiteral("QPSQL") );
+    m_cfg.insert( QStringLiteral("dbName"), QStringLiteral("MyName") );
+    m_cfg.insert( QStringLiteral("dbPort"), 19 );
+    m_cfg.insert( QStringLiteral("name"), QStringLiteral("theName") );
 
     FastForwardConfigWidget widget( m_cfg );
 
     QCOMPARE( widget.m_connectionType->currentIndex(),
               static_cast<int>( FastForwardConfigWidget::QPSQL ) );
 
-    QCOMPARE( widget.m_databaseName->text(), QString( "MyName" ) );
+    QCOMPARE( widget.m_databaseName->text(), QStringLiteral( "MyName" ) );
     QCOMPARE( widget.m_port->value(), 19 );
-    QCOMPARE( widget.m_targetName->text(), QString( "theName" ) );
+    QCOMPARE( widget.m_targetName->text(), QStringLiteral( "theName" ) );
 }
 
 void
 TestFastForwardImporter::providerShouldHandleNonexistentDbFile()
 {
-    m_cfg.insert( "dbPath", "/Im/sure/this/wont/exist" );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("/Im/sure/this/wont/exist") );
 
     FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -166,7 +166,7 @@ TestFastForwardImporter::providerShouldHandleNonexistentDbFile()
 void
 TestFastForwardImporter::providerShouldHandleInvalidDbFile()
 {
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
+    m_cfg.insert( QStringLiteral("dbPath"), QApplication::applicationFilePath() );
 
     FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -175,8 +175,8 @@ TestFastForwardImporter::providerShouldHandleInvalidDbFile()
 void
 TestFastForwardImporter::providerShouldHandleExternalConnectionError()
 {
-    m_cfg.insert( "dbDriver", "QMYSQL" );
-    m_cfg.insert( "dbHost", "I hope this isn't a valid hostname" );
+    m_cfg.insert( QStringLiteral("dbDriver"), QStringLiteral("QMYSQL") );
+    m_cfg.insert( QStringLiteral("dbHost"), QStringLiteral("I hope this isn't a valid hostname") );
 
     FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -185,9 +185,9 @@ TestFastForwardImporter::providerShouldHandleExternalConnectionError()
 void
 TestFastForwardImporter::providerShouldHandleErroneousConfigValues()
 {
-    m_cfg.insert( "dbDriver", 19 );
-    m_cfg.insert( "dbName", QColor( Qt::red ) );
-    m_cfg.insert( "dbPort", "nonsensePort" );
+    m_cfg.insert( QStringLiteral("dbDriver"), 19 );
+    m_cfg.insert( QStringLiteral("dbName"), QColor( Qt::red ) );
+    m_cfg.insert( QStringLiteral("dbPort"), QStringLiteral("nonsensePort") );
 
     FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );

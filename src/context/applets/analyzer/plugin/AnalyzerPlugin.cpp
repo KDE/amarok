@@ -33,7 +33,7 @@ class AnalyzerPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char* uri) override
     {
-        Q_ASSERT(uri == QLatin1String("org.kde.amarok.analyzer"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.amarok.analyzer"));
 
         qmlRegisterUncreatableType<Analyzer::Base>(uri, 1, 0, "Analyzer", QStringLiteral("Analyzer is an uncreatable type. Use its derived classes instead"));
         qmlRegisterType<BlockAnalyzer>(uri, 1, 0, "BlockAnalyzer");

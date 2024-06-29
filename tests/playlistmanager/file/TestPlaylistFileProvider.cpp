@@ -41,7 +41,7 @@ TestPlaylistFileProvider::TestPlaylistFileProvider()
 
 void TestPlaylistFileProvider::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
     m_testPlaylistFileProvider = new Playlists::PlaylistFileProvider();
     QVERIFY( m_testPlaylistFileProvider );
 
@@ -80,7 +80,7 @@ void TestPlaylistFileProvider::testSave_data()
 void TestPlaylistFileProvider::testSave()
 {
     Meta::TrackList tempTrackList;
-    const QUrl trackUrl = QUrl::fromLocalFile(dataPath( "data/audio/Platz 01.mp3" ));
+    const QUrl trackUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/Platz 01.mp3") ));
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
     QCOMPARE( tempTrackList.size(), 1 );
 
@@ -90,10 +90,10 @@ void TestPlaylistFileProvider::testSave()
     Playlists::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, name );
     QVERIFY( testPlaylist );
 
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + result ) );
+    QVERIFY( QFile::exists( Amarok::saveLocation( QStringLiteral("playlists") ) + result ) );
     QCOMPARE( testPlaylist->name(), QString( result ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + result );
+    QFile::remove( Amarok::saveLocation( QStringLiteral("playlists") ) + result );
 }
 
 void TestPlaylistFileProvider::testImportAndDeletePlaylists()
@@ -102,11 +102,11 @@ void TestPlaylistFileProvider::testImportAndDeletePlaylists()
     Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 0 );
 
-    QVERIFY( QFile::exists( dataPath( "data/playlists/test.m3u" ) ) );
-    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + "/test.m3u" );
-    QVERIFY( QFile::exists( QDir::tempPath() + "/test.m3u" ) );
+    QVERIFY( QFile::exists( dataPath( QStringLiteral("data/playlists/test.m3u") ) ) );
+    QFile::copy( dataPath( QStringLiteral("data/playlists/test.m3u") ), QDir::tempPath() + QStringLiteral("/test.m3u") );
+    QVERIFY( QFile::exists( QDir::tempPath() + QStringLiteral("/test.m3u") ) );
 
-    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + "/test.m3u") ) );
+    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + QStringLiteral("/test.m3u")) ) );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
@@ -121,17 +121,17 @@ void TestPlaylistFileProvider::testRename()
     Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 0 );
 
-    QVERIFY( QFile::exists( dataPath( "data/playlists/test.m3u" ) ) );
-    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + "/test.m3u" );
-    QVERIFY( QFile::exists( QDir::tempPath() + "/test.m3u" ) );
+    QVERIFY( QFile::exists( dataPath( QStringLiteral("data/playlists/test.m3u") ) ) );
+    QFile::copy( dataPath( QStringLiteral("data/playlists/test.m3u") ), QDir::tempPath() + QStringLiteral("/test.m3u") );
+    QVERIFY( QFile::exists( QDir::tempPath() + QStringLiteral("/test.m3u") ) );
 
-    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + "/test.m3u") ) );
+    QVERIFY( m_testPlaylistFileProvider->import( QUrl::fromLocalFile( QDir::tempPath() + QStringLiteral("/test.m3u") ) ) );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
     m_testPlaylistFileProvider->renamePlaylist( tempList.at( 0 ), "New Test Name" );
     tempList = m_testPlaylistFileProvider->playlists();
-    QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name.m3u" ) );
+    QCOMPARE( tempList.at( 0 )->name(), QStringLiteral( "New Test Name.m3u" ) );
 
     m_testPlaylistFileProvider->deletePlaylists( tempList );
     tempList = m_testPlaylistFileProvider->playlists();
@@ -140,18 +140,18 @@ void TestPlaylistFileProvider::testRename()
 
 QString TestPlaylistFileProvider::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestPlaylistFileProvider::removeTestPlaylist()
 {
-    const QString m3u = Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u";
+    const QString m3u = Amarok::saveLocation( QStringLiteral("playlists") ) + QStringLiteral("Amarok Test Playlist.m3u");
     if( QFile::exists( m3u ) )
         QFile::remove( m3u );
 }
 
 void TestPlaylistFileProvider::removeConfigPlaylistEntries()
 {
-    KConfigGroup config = Amarok::config( "Loaded Playlist Files" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Loaded Playlist Files") );
     config.deleteGroup();
 }

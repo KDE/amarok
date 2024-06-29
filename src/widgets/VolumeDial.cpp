@@ -204,10 +204,10 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
 void VolumeDial::renderIcons()
 {
     //double size svg render to have better looking high-dpi toolbar
-    m_icon[0] = The::svgHandler()->renderSvg( "Muted",      width()*2, height()*2, "Muted",      true );
-    m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width()*2, height()*2, "Volume_low", true );
-    m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width()*2, height()*2, "Volume_mid", true );
-    m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width()*2, height()*2, "Volume",     true );
+    m_icon[0] = The::svgHandler()->renderSvg( QStringLiteral("Muted"),      width()*2, height()*2, QStringLiteral("Muted"),      true );
+    m_icon[1] = The::svgHandler()->renderSvg( QStringLiteral("Volume_low"), width()*2, height()*2, QStringLiteral("Volume_low"), true );
+    m_icon[2] = The::svgHandler()->renderSvg( QStringLiteral("Volume_mid"), width()*2, height()*2, QStringLiteral("Volume_mid"), true );
+    m_icon[3] = The::svgHandler()->renderSvg( QStringLiteral("Volume"),     width()*2, height()*2, QStringLiteral("Volume"),     true );
     if( layoutDirection() == Qt::RightToLeft )
     {
         for ( int i = 0; i < 4; ++i )

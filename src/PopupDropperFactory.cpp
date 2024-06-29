@@ -64,7 +64,7 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent, bool i
     if( !pd )
         return nullptr;
 
-    pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    pd->setSvgRenderer( The::svgHandler()->getRenderer( QStringLiteral("amarok/images/pud_items.svg") ) );
     pd->setQuitOnDragLeave( false );
     pd->setFadeInTime( 500 );
     pd->setFadeOutTime( 300 );
@@ -90,7 +90,7 @@ PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
     PopupDropperItem* pdi = new PopupDropperItem();
     pdi->setAction( action );
     QString text = pdi->text();
-    text.remove( QChar('&') );
+    text.remove( QLatin1Char('&') );
     pdi->setText( text );
     adjustItem( pdi );
     return pdi;

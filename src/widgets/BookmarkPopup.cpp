@@ -41,7 +41,7 @@ BookmarkPopup::BookmarkPopup (QWidget* parent, const QString &label, BookmarkTri
     m_overDelete = false;
     m_isEditMode = false;
 
-    m_deleteIcon = QIcon::fromTheme( "edit-delete" );
+    m_deleteIcon = QIcon::fromTheme( QStringLiteral("edit-delete") );
     adjustWidth();
 
     m_edit = new QLineEdit ( m_label, nullptr );
@@ -103,7 +103,7 @@ void BookmarkPopup::paintEvent ( QPaintEvent* event )
     p.drawPixmap ( m_deleteIconRect.x(), m_deleteIconRect.y(), m_deleteIcon.pixmap ( 16 ) );
 
     p.setOpacity ( 1 );
-    p.drawPixmap ( 5, 1, The::svgHandler()->renderSvg ( "bookmarks", 6, 20, "bookmarks" ) );
+    p.drawPixmap ( 5, 1, The::svgHandler()->renderSvg ( QStringLiteral("bookmarks"), 6, 20, QStringLiteral("bookmarks") ) );
 
     p.setPen ( Qt::gray );
     rect = QRect ( 15, 3, m_width, m_lineHeight );

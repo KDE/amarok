@@ -46,10 +46,10 @@ TestSqlCollection::initTestCase()
     m_mpmMock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( m_mpmMock );
 
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (1, 1, './IDoNotExist.mp3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (2, 2, './IDoNotExistAsWell.mp3');" );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath) VALUES (1, 1, './IDoNotExist.mp3');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath) VALUES (2, 2, './IDoNotExistAsWell.mp3');") );
 
-    m_storage->query( "INSERT INTO tracks(id, url,title) VALUES ( 1,1,'test1');" );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id, url,title) VALUES ( 1,1,'test1');") );
 }
 
 void

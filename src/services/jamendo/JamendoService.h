@@ -24,7 +24,6 @@
 
 #include "core/support/Amarok.h"
 #include <kio/job.h>
-#include <kio/jobclasses.h>
 
 class JamendoServiceFactory : public ServiceFactory
 {

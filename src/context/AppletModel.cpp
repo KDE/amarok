@@ -27,7 +27,6 @@
 
 #include <KPackage/Package>
 #include <KPackage/PackageLoader>
-#include <KPluginInfo>
 
 #include <algorithm>
 
@@ -40,7 +39,7 @@ class Context::AppletPackage : public KPackage::Package
 public:
     AppletPackage(const KPackage::Package &package) : KPackage::Package(package) {}
 
-    bool operator==(const AppletPackage &p)
+    bool operator==(const AppletPackage &p) const
     {
         return metadata() == p.metadata();
     }
@@ -183,7 +182,7 @@ void AppletModel::setAppletCollapsed(const QString& id, bool collapsed)
     auto package = findPackage(id);
     if (package.isValid())
     {
-        Amarok::config(QStringLiteral("Context")).writeEntry(id + "_collapsed", collapsed);
+        Amarok::config(QStringLiteral("Context")).writeEntry(id + QStringLiteral("_collapsed"), collapsed);
         int row = m_packages.indexOf(package);
         auto index = createIndex(row, 0);
         Q_EMIT dataChanged(index, index, QVector<int>{Collapsed});

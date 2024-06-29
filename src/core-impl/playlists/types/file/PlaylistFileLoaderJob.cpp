@@ -25,7 +25,7 @@
 
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KIO/Job>
+#include <KIO/FileCopyJob>
 
 #include <QFile>
 #include <QFileInfo>
@@ -70,11 +70,11 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
                 i18n("Downloading remote playlist" ) );
         if( playlist->isLoadingAsync() )
             // job is started automatically by KIO
-            connect( job, &KIO::FileCopyJob::finished, this, &PlaylistFileLoaderJob::slotDonwloadFinished );
+            connect( job, &KIO::FileCopyJob::finished, this, &PlaylistFileLoaderJob::slotDownloadFinished );
         else
         {
             job->exec();
-            slotDonwloadFinished( job );
+            slotDownloadFinished( job );
         }
     }
 }
@@ -121,7 +121,7 @@ PlaylistFileLoaderJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWe
 }
 
 void
-PlaylistFileLoaderJob::slotDonwloadFinished( KJob *job )
+PlaylistFileLoaderJob::slotDownloadFinished( KJob *job )
 {
     if( job->error() )
     {

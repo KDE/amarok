@@ -71,7 +71,6 @@ ImporterMocks::initTestCase()
 {
     DefaultValue<QString>::Set( QString() );
     DefaultValue<QIcon>::Set( QIcon() );
-    DefaultValue<KPluginInfo>::Set( KPluginInfo() );
 
     m_engineController = new EngineController;
     Amarok::Components::setEngineController( m_engineController );
@@ -84,10 +83,10 @@ ImporterMocks::init()
     ON_CALL( *m_mockManager, newInstance( _ ) )
             .WillByDefault( Invoke( m_mockManager, &MockManager::concreteNewInstance ) );
 
-    ON_CALL( *m_mockManager, type() ).WillByDefault( Return( "randomType" ) );
+    ON_CALL( *m_mockManager, type() ).WillByDefault( Return( QStringLiteral("randomType") ) );
 
     QVariantMap cfg;
-    cfg["uid"] = QString( "providerUid" );
+    cfg[QStringLiteral("uid")] = QStringLiteral( "providerUid" );
     m_mockProvider = new NiceMock<MockProvider>( cfg, m_mockManager );
 
     m_mockController = new NiceMock<MockController>;
@@ -107,13 +106,13 @@ ImporterMocks::cleanup()
     delete m_mockController;
     m_mockController = nullptr;
 
-    Amarok::config( "Importers" ).deleteGroup();
+    Amarok::config( QStringLiteral("Importers") ).deleteGroup();
 }
 
 void
 ImporterMocks::cleanupTestCase()
 {
-    Amarok::config( "StatSyncing" ).deleteGroup();
+    Amarok::config( QStringLiteral("StatSyncing") ).deleteGroup();
     Amarok::Components::setEngineController( nullptr );
     delete m_engineController;
 }

@@ -44,31 +44,31 @@ AmarokTrack::doCommit( const qint64 fields )
     QVariantMap bindValues;
     if( fields & Meta::valFirstPlayed )
     {
-        updates << "createdate = :createdate";
-        bindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
+        updates << QStringLiteral("createdate = :createdate");
+        bindValues.insert( QStringLiteral(":createdate"), m_statistics.value( Meta::valFirstPlayed ) );
     }
     if( fields & Meta::valLastPlayed )
     {
-        updates << "accessdate = :accessdate";
-        bindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
+        updates << QStringLiteral("accessdate = :accessdate");
+        bindValues.insert( QStringLiteral(":accessdate"), m_statistics.value( Meta::valLastPlayed ) );
     }
     if( fields & Meta::valRating )
     {
-        updates << "rating = :rating";
-        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        updates << QStringLiteral("rating = :rating");
+        bindValues.insert( QStringLiteral(":rating"), m_statistics.value( Meta::valRating ) );
     }
     if( fields & Meta::valPlaycount )
     {
-        updates << "playcount = :playcount";
-        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        updates << QStringLiteral("playcount = :playcount");
+        bindValues.insert( QStringLiteral(":playcount"), m_statistics.value( Meta::valPlaycount ) );
     }
 
     if( !updates.isEmpty() )
     {
-        const QString query = "UPDATE statistics SET " + updates.join(", ") +
-                              " WHERE url = :url";
+        const QString query = QStringLiteral("UPDATE statistics SET ") + updates.join(QStringLiteral(", ")) +
+                              QStringLiteral(" WHERE url = :url");
 
-        bindValues.insert( ":url", m_urlId );
+        bindValues.insert( QStringLiteral(":url"), m_urlId );
         m_connection->query( query, bindValues, &ok );
         if( !ok )
         {
@@ -84,8 +84,8 @@ AmarokTrack::doCommit( const qint64 fields )
         for( const QString &label : m_labels )
         {
             QVariantMap bindValues;
-            bindValues.insert( ":label", label );
-            m_connection->query( "INSERT IGNORE INTO labels (label) VALUES ( :label )",
+            bindValues.insert( QStringLiteral(":label"), label );
+            m_connection->query( QStringLiteral("INSERT IGNORE INTO labels (label) VALUES ( :label )"),
                                  bindValues, &ok );
             if( !ok )
             {
@@ -97,8 +97,8 @@ AmarokTrack::doCommit( const qint64 fields )
         // Drop all labels for the track
         {
             QVariantMap bindValues;
-            bindValues.insert( ":url", m_urlId );
-            m_connection->query( "DELETE QUICK FROM urls_labels WHERE url = :url", bindValues,
+            bindValues.insert( QStringLiteral(":url"), m_urlId );
+            m_connection->query(QStringLiteral( "DELETE QUICK FROM urls_labels WHERE url = :url"), bindValues,
                                  &ok );
             if( !ok )
             {
@@ -110,12 +110,12 @@ AmarokTrack::doCommit( const qint64 fields )
         // Add labels
         for( const QString &label : m_labels )
         {
-            const QString query = "INSERT INTO urls_labels (url, label) VALUES ( :url, "
-                                  "(SELECT id FROM labels WHERE label = :label ))";
+            const QString query = QStringLiteral("INSERT INTO urls_labels (url, label) VALUES ( :url, "
+                                  "(SELECT id FROM labels WHERE label = :label ))");
 
             QVariantMap bindValues;
-            bindValues.insert( ":url", m_urlId );
-            bindValues.insert( ":label", label );
+            bindValues.insert( QStringLiteral(":url"), m_urlId );
+            bindValues.insert( QStringLiteral(":label"), label );
 
             m_connection->query( query, bindValues, &ok );
             if( !ok )

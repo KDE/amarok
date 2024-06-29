@@ -251,7 +251,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
         for ( int i = 0; i < numberOfTracks; i++ )
         {
-            QString prefix = "TTITLE" + QString::number( i ) + '=';
+            QString prefix = "TTITLE" + QString::number( i ) + QLatin1Char('=');
             debug() << "prefix: " << prefix;
             QString trackName = tracksBlockList.at( i );
             trackName = trackName.remove( prefix );

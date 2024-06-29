@@ -36,10 +36,10 @@ ProviderPtr
 TestAmarokImporter::getProvider()
 {
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
-    cfg.insert( "name", "Amarok2Test" );
-    cfg.insert( "embedded", true );
-    cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                          "/../tests/importers_files/amarok2_mysqle" );
+    cfg.insert( QStringLiteral("name"), QStringLiteral("Amarok2Test") );
+    cfg.insert( QStringLiteral("embedded"), true );
+    cfg.insert( QStringLiteral("dbPath"), QString( QCoreApplication::applicationDirPath() +
+                          QStringLiteral("/../tests/importers_files/amarok2_mysqle") ) );
 
     return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
@@ -48,10 +48,10 @@ ProviderPtr
 TestAmarokImporter::getWritableProvider()
 {
     QDir base( QCoreApplication::applicationDirPath() );
-    QDir files( base.filePath( "../tests/importers_files" ) );
-    QDir tmp( base.filePath( "importers_tmp" ) );
+    QDir files( base.filePath( QStringLiteral("../tests/importers_files") ) );
+    QDir tmp( base.filePath( QStringLiteral("importers_tmp") ) );
 
-    QList<QString> dirs = QList<QString>() << "amarok2_mysqle" << "amarok2_mysqle/amarok";
+    QList<QString> dirs = QList<QString>() << QStringLiteral("amarok2_mysqle") << QStringLiteral("amarok2_mysqle/amarok");
     for( auto const &subdir : dirs )
     {
         tmp.mkpath( subdir );
@@ -67,9 +67,9 @@ TestAmarokImporter::getWritableProvider()
     }
 
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
-    cfg.insert( "name", "Amarok2Test" );
-    cfg.insert( "embedded", true );
-    cfg.insert( "dbPath", tmp.filePath( "amarok2_mysqle" ) );
+    cfg.insert( QStringLiteral("name"), QStringLiteral("Amarok2Test") );
+    cfg.insert( QStringLiteral("embedded"), true );
+    cfg.insert( QStringLiteral("dbPath"), tmp.filePath( QStringLiteral("amarok2_mysqle") ) );
 
     return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
@@ -92,7 +92,7 @@ TestAmarokImporter::init()
 {
     KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = AmarokConfigWidget( QVariantMap() ).config();
-    m_cfg.insert( "embedded", true );
+    m_cfg.insert( QStringLiteral("embedded"), true );
 }
 
 void
@@ -121,10 +121,10 @@ TestAmarokImporter::configWidgetShouldNotSetDriver()
     AmarokConfigWidget widget( m_cfg );
 
     widget.m_connectionType->setCurrentIndex( AmarokConfigWidget::Embedded );
-    QVERIFY( !widget.config().contains( "dbDriver" ) );
+    QVERIFY( !widget.config().contains( QStringLiteral("dbDriver") ) );
 
     widget.m_connectionType->setCurrentIndex( AmarokConfigWidget::External );
-    QVERIFY( !widget.config().contains( "dbDriver" ) );
+    QVERIFY( !widget.config().contains( QStringLiteral("dbDriver") ) );
 }
 
 void
@@ -139,9 +139,9 @@ TestAmarokImporter::configWidgetShouldShowExternalAsDefault()
 void
 TestAmarokImporter::configWidgetShouldNotBreakOnNonsenseInitialValues()
 {
-    m_cfg.insert( "dbName", QColor( Qt::red ) );
-    m_cfg.insert( "dbPort", "nonsensePort" );
-    m_cfg.insert( "dbPath", reinterpret_cast<qptrdiff>( this ) );
+    m_cfg.insert( QStringLiteral("dbName"), QColor( Qt::red ) );
+    m_cfg.insert( QStringLiteral("dbPort"), QStringLiteral("nonsensePort") );
+    m_cfg.insert( QStringLiteral("dbPath"), reinterpret_cast<qptrdiff>( this ) );
 
     AmarokConfigWidget widget( m_cfg );
 
@@ -152,20 +152,20 @@ TestAmarokImporter::configWidgetShouldNotBreakOnNonsenseInitialValues()
 void
 TestAmarokImporter::configWidgetShouldReadSavedConfig()
 {
-    m_cfg.insert( "embedded", true );
-    m_cfg.insert( "dbName", "MyName" );
-    m_cfg.insert( "dbPort", 19 );
-    m_cfg.insert( "name", "theName" );
+    m_cfg.insert( QStringLiteral("embedded"), true );
+    m_cfg.insert( QStringLiteral("dbName"), QStringLiteral("MyName") );
+    m_cfg.insert( QStringLiteral("dbPort"), 19 );
+    m_cfg.insert( QStringLiteral("name"), QStringLiteral("theName") );
     AmarokConfigWidget widget( m_cfg );
 
     QCOMPARE( widget.m_connectionType->currentIndex(),
               static_cast<int>( AmarokConfigWidget::Embedded ) );
 
-    QCOMPARE( widget.m_databaseName->text(), QString( "MyName" ) );
+    QCOMPARE( widget.m_databaseName->text(), QStringLiteral( "MyName" ) );
     QCOMPARE( widget.m_port->value(), 19 );
-    QCOMPARE( widget.m_targetName->text(), QString( "theName" ) );
+    QCOMPARE( widget.m_targetName->text(), QStringLiteral( "theName" ) );
 
-    m_cfg.insert( "embedded", false );
+    m_cfg.insert( QStringLiteral("embedded"), false );
     AmarokConfigWidget widgetExternal( m_cfg );
 
     QCOMPARE( widgetExternal.m_connectionType->currentIndex(),
@@ -175,12 +175,12 @@ TestAmarokImporter::configWidgetShouldReadSavedConfig()
 void
 TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
 {
-    if( !QFileInfo( "/usr/sbin/mysqld" ).isExecutable() )
+    if( !QFileInfo( QStringLiteral("/usr/sbin/mysqld") ).isExecutable() )
         QSKIP( "/usr/sbin/mysqld is not executable", SkipAll );
 
-    m_cfg.insert( "dbDriver", "QPSQL" );
-    m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                            "/../tests/importers_files/amarok2_mysqle" );
+    m_cfg.insert( QStringLiteral("dbDriver"), QStringLiteral("QPSQL") );
+    m_cfg.insert( QStringLiteral("dbPath"), QString( QCoreApplication::applicationDirPath() +
+                            QStringLiteral("/../tests/importers_files/amarok2_mysqle") ) );
 
     AmarokProvider provider( m_cfg, nullptr );
 
@@ -191,7 +191,7 @@ TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
 void
 TestAmarokImporter::providerShouldHandleNonexistentDbDir()
 {
-    m_cfg.insert( "dbPath", "/Im/sure/this/wont/exist" );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("/Im/sure/this/wont/exist") );
 
     AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -200,7 +200,7 @@ TestAmarokImporter::providerShouldHandleNonexistentDbDir()
 void
 TestAmarokImporter::providerShouldHandleInvalidDbDir()
 {
-    m_cfg.insert( "dbPath", QApplication::applicationDirPath() );
+    m_cfg.insert( QStringLiteral("dbPath"), QApplication::applicationDirPath() );
 
     AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -209,7 +209,7 @@ TestAmarokImporter::providerShouldHandleInvalidDbDir()
 void
 TestAmarokImporter::providerShouldHandleExternalConnectionError()
 {
-    m_cfg.insert( "dbHost", "I hope this isn't a valid hostname" );
+    m_cfg.insert( QStringLiteral("dbHost"), QStringLiteral("I hope this isn't a valid hostname") );
 
     AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -218,9 +218,9 @@ TestAmarokImporter::providerShouldHandleExternalConnectionError()
 void
 TestAmarokImporter::providerShouldHandleErroneousConfigValues()
 {
-    m_cfg.insert( "dbDriver", 19 );
-    m_cfg.insert( "dbName", QColor( Qt::red ) );
-    m_cfg.insert( "dbPort", "nonsensePort" );
+    m_cfg.insert( QStringLiteral("dbDriver"), 19 );
+    m_cfg.insert( QStringLiteral("dbName"), QColor( Qt::red ) );
+    m_cfg.insert( QStringLiteral("dbPort"), QStringLiteral("nonsensePort") );
 
     AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );

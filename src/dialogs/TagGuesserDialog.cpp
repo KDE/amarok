@@ -57,7 +57,7 @@ TagGuessOptionWidget::TagGuessOptionWidget( QWidget *parent )
         << rbFirstLetter
         << rbTitleCase;
 
-    int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options", 4 );
+    int caseOptions = Amarok::config( QStringLiteral("TagGuesser") ).readEntry( "Case options", 4 );
     if( !caseOptions )
         cbCase->setChecked( false );
     else
@@ -82,8 +82,8 @@ TagGuessOptionWidget::TagGuessOptionWidget( QWidget *parent )
         }
     }
 
-    cbEliminateSpaces->setChecked(    Amarok::config( "TagGuesser" ).readEntry( "Eliminate trailing spaces", false ) );
-    cbReplaceUnderscores->setChecked( Amarok::config( "TagGuesser" ).readEntry( "Replace underscores", false ) );
+    cbEliminateSpaces->setChecked(    Amarok::config( QStringLiteral("TagGuesser") ).readEntry( "Eliminate trailing spaces", false ) );
+    cbReplaceUnderscores->setChecked( Amarok::config( QStringLiteral("TagGuesser") ).readEntry( "Replace underscores", false ) );
 
     connect( cbCase, &QCheckBox::toggled,
              this, &TagGuessOptionWidget::editStateEnable );
@@ -155,7 +155,7 @@ TagGuessOptionWidget::getUnderscoreOptions()
 TagGuesserWidget::TagGuesserWidget( QWidget *parent )
     : FilenameLayoutWidget( parent )
 {
-    m_configCategory = "FilenameLayoutWidget";
+    m_configCategory = QStringLiteral("FilenameLayoutWidget");
 
     m_tokenPool->addToken( createToken( Title ) );
     m_tokenPool->addToken( createToken( Artist ) );
@@ -266,9 +266,9 @@ TagGuesserDialog::onAccept()    //SLOT
 {
     m_layoutWidget->onAccept();
 
-    Amarok::config( "TagGuesser" ).writeEntry( "Case options", m_optionsWidget->getCaseOptions() );
-    Amarok::config( "TagGuesser" ).writeEntry( "Eliminate trailing spaces", m_optionsWidget->getWhitespaceOptions() );
-    Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", m_optionsWidget->getUnderscoreOptions() );
+    Amarok::config( QStringLiteral("TagGuesser") ).writeEntry( "Case options", m_optionsWidget->getCaseOptions() );
+    Amarok::config( QStringLiteral("TagGuesser") ).writeEntry( "Eliminate trailing spaces", m_optionsWidget->getWhitespaceOptions() );
+    Amarok::config( QStringLiteral("TagGuesser") ).writeEntry( "Replace underscores", m_optionsWidget->getUnderscoreOptions() );
 }
 
 QMap<qint64,QString>
@@ -360,7 +360,7 @@ TagGuesserDialog::parsableFileName( const QFileInfo &fileInfo ) const
     // -- cut paths
     int pos;
     for( pos = 0; pathLevels > schemaLevels && pos < path.length(); pos++ )
-        if( path[pos] == '/' )
+        if( path[pos] == QLatin1Char('/') )
             pathLevels--;
 
     // -- cut extension

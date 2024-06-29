@@ -76,8 +76,8 @@ TestSqlQueryMaker::initTestCase()
     m_collection = new Collections::SqlCollection( m_storage );
 
     QMap<int,QString> mountPoints;
-    mountPoints.insert( 1, "/foo" );
-    mountPoints.insert( 2, "/bar" );
+    mountPoints.insert( 1, QStringLiteral("/foo") );
+    mountPoints.insert( 2, QStringLiteral("/bar") );
 
     m_mpm = new SqlMountPointManagerMock( this, m_storage );
     m_mpm->m_mountPoints = mountPoints;
@@ -85,59 +85,59 @@ TestSqlQueryMaker::initTestCase()
     m_collection->setMountPointManager( m_mpm );
 
     //setup test data
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'artist2');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (1, 'artist1');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (2, 'artist2');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (3, 'artist3');") );
 
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(1,'album1',1);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(2,'album2',1);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(3,'album3',2);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(4,'album4',NULL);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(5,'album4',3);" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(1,'album1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(2,'album2',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(3,'album3',2);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(4,'album4',NULL);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(5,'album4',3);") );
 
-    m_storage->query( "INSERT INTO composers(id, name) VALUES (1, 'composer1');" );
-    m_storage->query( "INSERT INTO composers(id, name) VALUES (2, 'composer2');" );
-    m_storage->query( "INSERT INTO composers(id, name) VALUES (3, 'composer3');" );
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (1, 'composer1');") );
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (2, 'composer2');") );
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (3, 'composer3');") );
 
-    m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
-    m_storage->query( "INSERT INTO genres(id, name) VALUES (2, 'genre2');" );
-    m_storage->query( "INSERT INTO genres(id, name) VALUES (3, 'genre3');" );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (1, 'genre1');") );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (2, 'genre2');") );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (3, 'genre3');") );
 
-    m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
-    m_storage->query( "INSERT INTO years(id, name) VALUES (2, '2');" );
-    m_storage->query( "INSERT INTO years(id, name) VALUES (3, '3');" );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (1, '1');") );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (2, '2');") );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (3, '3');") );
 
-    m_storage->query( "INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');" );
+    m_storage->query( QStringLiteral("INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');") );
 
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, '1');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, '2');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, '3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, 2, './NothingHere.mp3', 1, '4');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (5, 1, './GuessWhat.mp3', 1, '5');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (6, 2, './LookItsA.flac', 1, '6');" );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, '1');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, '2');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, '3');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, 2, './NothingHere.mp3', 1, '4');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (5, 1, './GuessWhat.mp3', 1, '5');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (6, 2, './LookItsA.flac', 1, '6');") );
 
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(1,1,'track1','comment1',1,1,1,1,1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(2,2,'track2','comment2',1,2,1,1,1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(3,3,'track3','comment3',3,4,1,1,1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(4,4,'track4','comment4',2,3,3,3,3);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(5,5,'track5','',3,5,2,2,2);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(6,6,'track6','',1,4,2,2,2);" );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(1,1,'track1','comment1',1,1,1,1,1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(2,2,'track2','comment2',1,2,1,1,1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(3,3,'track3','comment3',3,4,1,1,1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(4,4,'track4','comment4',2,3,3,3,3);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(5,5,'track5','',3,5,2,2,2);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(6,6,'track6','',1,4,2,2,2);") );
 
-    m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
-                      "VALUES(1,1000,10000, 50.0,2,100);" );
-    m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
-                      "VALUES(2,2000,30000, 70.0,9,50);" );
-    m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
-                      "VALUES(3,4000,20000, 60.0,4,10);" );
+    m_storage->query( QStringLiteral("INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
+                      "VALUES(1,1000,10000, 50.0,2,100);") );
+    m_storage->query( QStringLiteral("INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
+                      "VALUES(2,2000,30000, 70.0,9,50);") );
+    m_storage->query( QStringLiteral("INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
+                      "VALUES(3,4000,20000, 60.0,4,10);") );
 
-    m_storage->query( "INSERT INTO labels(id,label) VALUES (1,'labelA'), (2,'labelB'),(3,'test');" );
-    m_storage->query( "INSERT INTO urls_labels(url,label) VALUES (1,1),(1,2),(2,2),(3,3),(4,3),(4,2);" );
+    m_storage->query( QStringLiteral("INSERT INTO labels(id,label) VALUES (1,'labelA'), (2,'labelB'),(3,'test');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls_labels(url,label) VALUES (1,1),(1,2),(2,2),(3,3),(4,3),(4,2);") );
 
 }
 
@@ -346,7 +346,7 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
     qm->setQueryType( Collections::QueryMaker::Album );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newAlbumsReady );
-    qm->addFilter( Meta::valAlbum, "foo" ); //should result in no match
+    qm->addFilter( Meta::valAlbum, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -382,7 +382,7 @@ TestSqlQueryMaker::testAsyncArtistQuery()
     qm->setQueryType( Collections::QueryMaker::Artist );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newArtistsReady );
-    qm->addFilter( Meta::valArtist, "foo" ); //should result in no match
+    qm->addFilter( Meta::valArtist, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -419,7 +419,7 @@ TestSqlQueryMaker::testAsyncComposerQuery()
     qm->setQueryType( Collections::QueryMaker::Composer );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newComposersReady );
-    qm->addFilter( Meta::valComposer, "foo" ); //should result in no match
+    qm->addFilter( Meta::valComposer, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -456,7 +456,7 @@ TestSqlQueryMaker::testAsyncTrackQuery()
     qm->setQueryType( Collections::QueryMaker::Track );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newTracksReady );
-    qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
+    qm->addFilter( Meta::valTitle, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -493,7 +493,7 @@ TestSqlQueryMaker::testAsyncGenreQuery()
     qm->setQueryType( Collections::QueryMaker::Genre );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newGenresReady );
-    qm->addFilter( Meta::valGenre, "foo" ); //should result in no match
+    qm->addFilter( Meta::valGenre, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -530,7 +530,7 @@ TestSqlQueryMaker::testAsyncYearQuery()
     qm->setQueryType( Collections::QueryMaker::Year );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newYearsReady );
-    qm->addFilter( Meta::valYear, "foo" ); //should result in no match
+    qm->addFilter( Meta::valYear, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -560,7 +560,7 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     QList<QVariant> args1 = resultSpy1.takeFirst();
     QVERIFY( args1.value(0).canConvert<QStringList>() );
     QCOMPARE( args1.value(0).value<QStringList>().count(), 1 );
-    QCOMPARE( args1.value(0).value<QStringList>().first(), QString( "6" ) );
+    QCOMPARE( args1.value(0).value<QStringList>().first(), QStringLiteral( "6" ) );
     QCOMPARE( doneSpy1.count(), 1);
 
     delete qm;
@@ -570,7 +570,7 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     qm->addReturnFunction( Collections::QueryMaker::Count, Meta::valTitle );
     QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
     QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
-    qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
+    qm->addFilter( Meta::valTitle, QStringLiteral("foo") ); //should result in no match
 
     qm->run();
 
@@ -580,7 +580,7 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     QList<QVariant> args2 = resultSpy2.takeFirst();
     QVERIFY( args2.value(0).canConvert<QStringList>() );
     QCOMPARE( args2.value(0).value<QStringList>().count(), 1 );
-    QCOMPARE( args2.value(0).value<QStringList>().first(), QString( "0" ) );
+    QCOMPARE( args2.value(0).value<QStringList>().first(), QStringLiteral( "0" ) );
     QCOMPARE( doneSpy2.count(), 1);
 }
 
@@ -681,7 +681,7 @@ TestSqlQueryMaker::testDynamicCollection()
     trackQm.run();
     QCOMPARE( trackQm.tracks().count(), 3 );
 
-    mpm.m_mountPoints.insert( 1, "/foo" );
+    mpm.m_mountPoints.insert( 1, QStringLiteral("/foo") );
 
     Collections::SqlQueryMaker trackQm2( m_collection );
     trackQm2.setQueryType( Collections::QueryMaker::Track );
@@ -755,15 +755,15 @@ TestSqlQueryMaker::testSpecialCharacters()
     QFETCH( QString, filter );
     QFETCH( bool, like );
 
-    QString insertTrack = QString( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+    QString insertTrack = QStringLiteral( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                               "VALUES(999,999,'%1','',1,1,1,1,1);").arg( m_storage->escape( filter ) );
 
     //there is a unique index on TRACKS.URL
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES(999, -1, './foobar.mp3', 1, '999');");
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES(999, -1, './foobar.mp3', 1, '999');") );
     m_storage->query( insertTrack );
 
-    QCOMPARE( m_storage->query( "select count(*) from urls where id = 999" ).first(), QString("1") );
-    QCOMPARE( m_storage->query( "select count(*) from tracks where id = 999" ).first(), QString("1") );
+    QCOMPARE( m_storage->query( QStringLiteral("select count(*) from urls where id = 999") ).first(), QStringLiteral("1") );
+    QCOMPARE( m_storage->query( QStringLiteral("select count(*) from tracks where id = 999") ).first(), QStringLiteral("1") );
 
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
@@ -772,8 +772,8 @@ TestSqlQueryMaker::testSpecialCharacters()
 
     qm.run();
 
-    m_storage->query( "DELETE FROM urls WHERE id = 999;" );
-    m_storage->query( "DELETE FROM tracks WHERE id = 999;" );
+    m_storage->query( QStringLiteral("DELETE FROM urls WHERE id = 999;") );
+    m_storage->query( QStringLiteral("DELETE FROM tracks WHERE id = 999;") );
 
     QCOMPARE( qm.tracks().count(), 1 );
 }
@@ -831,10 +831,10 @@ TestSqlQueryMaker::testReturnFunctions_data()
     QTest::addColumn<qint64>( "value" );
     QTest::addColumn<QString>( "result" );
 
-    QTest::newRow( "count tracks" ) << Collections::QueryMaker::Count << Meta::valTitle << QString( "6" );
-    QTest::newRow( "sum of playcount" ) << Collections::QueryMaker::Sum << Meta::valPlaycount << QString( "160" );
-    QTest::newRow( "min score" ) << Collections::QueryMaker::Min << Meta::valScore << QString( "50" );
-    QTest::newRow( "max rating" ) << Collections::QueryMaker::Max << Meta::valRating << QString( "9" );
+    QTest::newRow( "count tracks" ) << Collections::QueryMaker::Count << Meta::valTitle << QStringLiteral( "6" );
+    QTest::newRow( "sum of playcount" ) << Collections::QueryMaker::Sum << Meta::valPlaycount << QStringLiteral( "160" );
+    QTest::newRow( "min score" ) << Collections::QueryMaker::Min << Meta::valScore << QStringLiteral( "50" );
+    QTest::newRow( "max rating" ) << Collections::QueryMaker::Max << Meta::valRating << QStringLiteral( "9" );
 }
 
 void
@@ -857,7 +857,7 @@ TestSqlQueryMaker::testReturnFunctions()
 void
 TestSqlQueryMaker::testLabelMatch()
 {
-    Meta::LabelPtr label = m_collection->registry()->getLabel( "labelB" );
+    Meta::LabelPtr label = m_collection->registry()->getLabel( QStringLiteral("labelB") );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( QueryMaker::Track );
@@ -870,8 +870,8 @@ TestSqlQueryMaker::testLabelMatch()
 void
 TestSqlQueryMaker::testMultipleLabelMatches()
 {
-    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB" );
-    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA" );
+    Meta::LabelPtr labelB = m_collection->registry()->getLabel( QStringLiteral("labelB") );
+    Meta::LabelPtr labelA = m_collection->registry()->getLabel( QStringLiteral("labelA") );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( QueryMaker::Track );
@@ -904,8 +904,8 @@ TestSqlQueryMaker::testQueryTypesWithLabelMatching()
     QFETCH( Collections::QueryMaker::QueryType, type );
     QFETCH( int, result );
 
-    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB" );
-    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA" );
+    Meta::LabelPtr labelB = m_collection->registry()->getLabel( QStringLiteral("labelB") );
+    Meta::LabelPtr labelA = m_collection->registry()->getLabel( QStringLiteral("labelA") );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( type );
@@ -923,8 +923,8 @@ TestSqlQueryMaker::testFilterOnLabelsAndCombination()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginAnd();
-    qm.addFilter( Meta::valLabel, "labelB", true, true );
-    qm.addFilter( Meta::valLabel, "labelA", false, false );
+    qm.addFilter( Meta::valLabel, QStringLiteral("labelB"), true, true );
+    qm.addFilter( Meta::valLabel, QStringLiteral("labelA"), false, false );
     qm.endAndOr();
     qm.run();
 
@@ -938,8 +938,8 @@ TestSqlQueryMaker::testFilterOnLabelsOrCombination()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginOr();
-    qm.addFilter( Meta::valLabel, "labelB", true, true );
-    qm.addFilter( Meta::valLabel, "labelA", false, false );
+    qm.addFilter( Meta::valLabel, QStringLiteral("labelB"), true, true );
+    qm.addFilter( Meta::valLabel, QStringLiteral("labelA"), false, false );
     qm.endAndOr();
     qm.run();
 
@@ -953,8 +953,8 @@ TestSqlQueryMaker::testFilterOnLabelsNegationAndCombination()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginAnd();
-    qm.excludeFilter( Meta::valLabel, "labelB", true, true );
-    qm.excludeFilter( Meta::valLabel, "labelA", false, false );
+    qm.excludeFilter( Meta::valLabel, QStringLiteral("labelB"), true, true );
+    qm.excludeFilter( Meta::valLabel, QStringLiteral("labelA"), false, false );
     qm.endAndOr();
     qm.run();
 
@@ -968,8 +968,8 @@ TestSqlQueryMaker::testFilterOnLabelsNegationOrCombination()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginOr();
-    qm.excludeFilter( Meta::valLabel, "labelB", true, true );
-    qm.excludeFilter( Meta::valLabel, "labelA", false, false );
+    qm.excludeFilter( Meta::valLabel, QStringLiteral("labelB"), true, true );
+    qm.excludeFilter( Meta::valLabel, QStringLiteral("labelA"), false, false );
     qm.endAndOr();
     qm.run();
 
@@ -983,10 +983,10 @@ TestSqlQueryMaker::testComplexLabelsFilter()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
     qm.beginOr();
-    qm.addFilter( Meta::valLabel, "test", true, true );
+    qm.addFilter( Meta::valLabel, QStringLiteral("test"), true, true );
     qm.beginAnd();
-    qm.addFilter( Meta::valLabel, "labelB", false, false );
-    qm.excludeFilter( Meta::valLabel, "labelA", false, true );
+    qm.addFilter( Meta::valLabel, QStringLiteral("labelB"), false, false );
+    qm.excludeFilter( Meta::valLabel, QStringLiteral("labelA"), false, true );
     qm.endAndOr();
     qm.endAndOr();
     qm.run();

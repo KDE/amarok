@@ -37,16 +37,16 @@ TestMetaAlbumKey::~TestMetaAlbumKey()
 void
 TestMetaAlbumKey::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
     // Artist Name - Amarok    Album Name - Amarok Test Album
-    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
+    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track01.ogg") )) );
 
     // Artist Name - Amarok    Album Name - Amarok Test Album 2
-    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album2/Track01.ogg" )) );
+    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album2/Track01.ogg") )) );
 
     // Artist Name - Amarok 2   Album Name - Amarok Test Album 2
-    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album2/Track02.ogg" )) );
+    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album2/Track02.ogg") )) );
 
     m_album1 = m_track1->album();
     m_album2 = m_track2->album();
@@ -56,7 +56,7 @@ TestMetaAlbumKey::initTestCase()
 QString
 TestMetaAlbumKey::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void
@@ -80,7 +80,7 @@ TestMetaAlbumKey::testOperatorAssignment()
     QCOMPARE( albumKey1, tempAlbumKey );
 
     // For Constructor : AlbumKey( const QString &name, const QString &artistName )
-    Meta::AlbumKey albumKey3( "Artist 1", "Album 1" ), albumKey4( "Artist 2", "Album 2" );
+    Meta::AlbumKey albumKey3( QStringLiteral("Artist 1"), QStringLiteral("Album 1") ), albumKey4( QStringLiteral("Artist 2"), QStringLiteral("Album 2") );
 
     QVERIFY( !( albumKey1 == albumKey2 ) );
 

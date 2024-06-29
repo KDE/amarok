@@ -54,26 +54,26 @@ BansheeTrack::doCommit( const qint64 fields )
     QVariantMap bindValues;
     if( fields & Meta::valLastPlayed )
     {
-        updates << "LastPlayedStamp = :lastplayed";
-        bindValues.insert( ":lastplayed", m_statistics.value( Meta::valLastPlayed ) );
+        updates << QStringLiteral("LastPlayedStamp = :lastplayed");
+        bindValues.insert( QStringLiteral(":lastplayed"), m_statistics.value( Meta::valLastPlayed ) );
     }
     if( fields & Meta::valRating )
     {
-        updates << "Rating = :rating";
-        bindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        updates << QStringLiteral("Rating = :rating");
+        bindValues.insert( QStringLiteral(":rating"), m_statistics.value( Meta::valRating ) );
     }
     if( fields & Meta::valPlaycount )
     {
-        updates << "PlayCount = :playcount";
-        bindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        updates << QStringLiteral("PlayCount = :playcount");
+        bindValues.insert( QStringLiteral(":playcount"), m_statistics.value( Meta::valPlaycount ) );
     }
 
     if( !updates.empty() )
     {
-        const QString query = "UPDATE coretracks SET " + updates.join(", ") +
-                              " WHERE TrackID = :id";
+        const QString query = QStringLiteral("UPDATE coretracks SET ") + updates.join(QStringLiteral(", ")) +
+                              QStringLiteral(" WHERE TrackID = :id");
 
-        bindValues.insert( ":id", m_trackId );
+        bindValues.insert( QStringLiteral(":id"), m_trackId );
         m_connection->query( query, bindValues );
     }
 }

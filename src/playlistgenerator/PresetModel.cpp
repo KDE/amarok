@@ -52,7 +52,7 @@ APG::PresetModel* APG::PresetModel::instance()
 void
 APG::PresetModel::destroy()
 {
-    s_instance->savePresetsToXml( Amarok::saveLocation() + "playlistgenerator.xml", s_instance->m_presetList );
+    s_instance->savePresetsToXml( Amarok::saveLocation() + QStringLiteral("playlistgenerator.xml"), s_instance->m_presetList );
     delete s_instance;
     s_instance = nullptr;
 }
@@ -61,7 +61,7 @@ APG::PresetModel::PresetModel()
         : QAbstractListModel()
         , m_activePresetIndex( nullptr )
 {
-    loadPresetsFromXml( Amarok::saveLocation() + "playlistgenerator.xml", true );
+    loadPresetsFromXml( Amarok::saveLocation() + QStringLiteral("playlistgenerator.xml"), true );
 }
 
 APG::PresetModel::~PresetModel()
@@ -190,7 +190,7 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 void
 APG::PresetModel::savePresetsToXmlDefault() const
 {
-    savePresetsToXml( Amarok::saveLocation() + "playlistgenerator.xml", m_presetList );
+    savePresetsToXml( Amarok::saveLocation() + QStringLiteral("playlistgenerator.xml"), m_presetList );
 }
 
 void
@@ -199,7 +199,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
     QDomDocument xmldoc;
     QDomElement base = xmldoc.createElement( QStringLiteral("playlistgenerator") );
     QList<QDomNode*> nodes;
-    foreach ( APG::PresetPtr ps, pl ) {
+    for( APG::PresetPtr ps : pl ) {
         QDomElement* elemPtr = ps->toXml( xmldoc );
         base.appendChild( (*elemPtr) );
         nodes << elemPtr;
@@ -300,7 +300,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
 {
     m_presetsToExportList.append( ps );
     setFileMode( QFileDialog::AnyFile );
-    selectFile( ps->title() + ".xml" );
+    selectFile( ps->title() + QStringLiteral(".xml") );
     setAcceptMode( QFileDialog::AcceptSave );
     connect( this, &ExportDialog::accepted, this, &ExportDialog::recvAccept );
 }

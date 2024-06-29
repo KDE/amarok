@@ -28,8 +28,8 @@ AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr &album, QWidg
     : BoxWidget( false, parent )
     , m_album( album )
 {
-    const QIcon artistIcon = QIcon::fromTheme( "filename-artist-amarok" );
-    const QIcon albumIcon = QIcon::fromTheme( "filename-album-amarok" );
+    const QIcon artistIcon = QIcon::fromTheme( QStringLiteral("filename-artist-amarok") );
+    const QIcon albumIcon = QIcon::fromTheme( QStringLiteral("filename-album-amarok") );
     new BreadcrumbItemMenuButton( this );
     m_artistButton = new BreadcrumbItemButton( artistIcon, QString(), this );
     new BreadcrumbItemMenuButton( this );

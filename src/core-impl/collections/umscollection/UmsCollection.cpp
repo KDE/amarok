@@ -206,19 +206,19 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
 
 //UmsCollection
 
-QString UmsCollection::s_settingsFileName( ".is_audio_player" );
-QString UmsCollection::s_musicFolderKey( "audio_folder" );
-QString UmsCollection::s_musicFilenameSchemeKey( "music_filenamescheme" );
-QString UmsCollection::s_vfatSafeKey( "vfat_safe" );
-QString UmsCollection::s_asciiOnlyKey( "ascii_only" );
-QString UmsCollection::s_postfixTheKey( "ignore_the" );
-QString UmsCollection::s_replaceSpacesKey( "replace_spaces" );
-QString UmsCollection::s_regexTextKey( "regex_text" );
-QString UmsCollection::s_replaceTextKey( "replace_text" );
-QString UmsCollection::s_podcastFolderKey( "podcast_folder" );
-QString UmsCollection::s_autoConnectKey( "use_automatically" );
-QString UmsCollection::s_collectionName( "collection_name" );
-QString UmsCollection::s_transcodingGroup( "transcoding" );
+QString UmsCollection::s_settingsFileName( QStringLiteral(".is_audio_player") );
+QString UmsCollection::s_musicFolderKey( QStringLiteral("audio_folder") );
+QString UmsCollection::s_musicFilenameSchemeKey( QStringLiteral("music_filenamescheme") );
+QString UmsCollection::s_vfatSafeKey( QStringLiteral("vfat_safe") );
+QString UmsCollection::s_asciiOnlyKey( QStringLiteral("ascii_only") );
+QString UmsCollection::s_postfixTheKey( QStringLiteral("ignore_the") );
+QString UmsCollection::s_replaceSpacesKey( QStringLiteral("replace_spaces") );
+QString UmsCollection::s_regexTextKey( QStringLiteral("regex_text") );
+QString UmsCollection::s_replaceTextKey( QStringLiteral("replace_text") );
+QString UmsCollection::s_podcastFolderKey( QStringLiteral("podcast_folder") );
+QString UmsCollection::s_autoConnectKey( QStringLiteral("use_automatically") );
+QString UmsCollection::s_collectionName( QStringLiteral("collection_name") );
+QString UmsCollection::s_transcodingGroup( QStringLiteral("transcoding") );
 
 UmsCollection::UmsCollection( const Solid::Device &device )
     : Collection()
@@ -226,7 +226,7 @@ UmsCollection::UmsCollection( const Solid::Device &device )
     , m_mc( nullptr )
     , m_tracksParsed( false )
     , m_autoConnect( false )
-    , m_musicFilenameScheme( "%artist%/%album%/%track% %title%" )
+    , m_musicFilenameScheme( QStringLiteral("%artist%/%album%/%track% %title%") )
     , m_vfatSafe( true )
     , m_asciiOnly( false )
     , m_postfixThe( false )
@@ -243,17 +243,17 @@ UmsCollection::UmsCollection( const Solid::Device &device )
     connect( this, &UmsCollection::startUpdateTimer, this, &UmsCollection::slotStartUpdateTimer );
     connect( &m_updateTimer, &QTimer::timeout, this, &UmsCollection::collectionUpdated );
 
-    m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
-    m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
+    m_configureAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ), i18n( "&Configure Device" ), this );
+    m_configureAction->setProperty( "popupdropper_svg_id", QStringLiteral("configure") );
     connect( m_configureAction, &QAction::triggered, this, &UmsCollection::slotConfigure );
 
-    m_parseAction = new QAction( QIcon::fromTheme( "checkbox" ), i18n(  "&Activate This Collection" ), this );
-    m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
+    m_parseAction = new QAction( QIcon::fromTheme( QStringLiteral("checkbox") ), i18n(  "&Activate This Collection" ), this );
+    m_parseAction->setProperty( "popupdropper_svg_id", QStringLiteral("edit") );
     connect( m_parseAction, &QAction::triggered, this, &UmsCollection::slotParseActionTriggered );
 
-    m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ),
+    m_ejectAction = new QAction( QIcon::fromTheme( QStringLiteral("media-eject") ), i18n( "&Eject Device" ),
                                  const_cast<UmsCollection*>( this ) );
-    m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
+    m_ejectAction->setProperty( "popupdropper_svg_id", QStringLiteral("eject") );
     connect( m_ejectAction, &QAction::triggered, this, &UmsCollection::slotEject );
 
     init();
@@ -329,7 +329,7 @@ UmsCollection::possiblyContainsTrack( const QUrl &url ) const
         return false;
 
     QString u = QUrl::fromPercentEncoding( url.url().toUtf8() );
-    return u.startsWith( m_mountPoint ) || u.startsWith( "file://" + m_mountPoint );
+    return u.startsWith( m_mountPoint ) || u.startsWith( QStringLiteral("file://") + m_mountPoint );
 }
 
 Meta::TrackPtr
@@ -340,7 +340,7 @@ UmsCollection::trackForUrl( const QUrl &url )
         return Meta::TrackPtr();
 
     QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
-    if( uid.startsWith("file://") )
+    if( uid.startsWith(QStringLiteral("file://")) )
         uid = uid.remove( 0, 7 );
     return m_mc->trackMap().value( uid, Meta::TrackPtr() );
 }
@@ -375,7 +375,7 @@ UmsCollection::prettyName() const
     {
         actualName = m_device.vendor().simplified();
         if( !actualName.isEmpty() )
-            actualName += ' ';
+            actualName += QLatin1Char(' ');
         actualName += m_device.product().simplified();
     }
 
@@ -391,7 +391,7 @@ QIcon
 UmsCollection::icon() const
 {
     if( m_device.icon().isEmpty() )
-        return QIcon::fromTheme( "drive-removable-media-usb-pendrive" );
+        return QIcon::fromTheme( QStringLiteral("drive-removable-media-usb-pendrive") );
     else
         return QIcon::fromTheme( m_device.icon() );
 }
@@ -481,7 +481,7 @@ UmsCollection::organizedUrl( const Meta::TrackPtr &track, const QString &fileExt
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
     //%folder% prefix required to get absolute url.
-    trackOrganizer.setFormatString( "%collectionroot%/" + m_musicFilenameScheme + ".%filetype%" );
+    trackOrganizer.setFormatString( QStringLiteral("%collectionroot%/") + m_musicFilenameScheme + QStringLiteral(".%filetype%") );
     trackOrganizer.setVfatSafe( m_vfatSafe );
     trackOrganizer.setAsciiOnly( m_asciiOnly );
     trackOrganizer.setFolderPrefix( m_musicUrl.path() );

@@ -444,7 +444,7 @@ TrackSetExporter::init( QJSEngine *engine )
         fromScriptValue( jsValue, trackSet );
         return trackSet;
     } );
-    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newQObject( new TrackSetExporterWrapper( engine ) ).property( "trackSetConstructor" ) );
+    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newQObject( new TrackSetExporterWrapper( engine ) ).property( QStringLiteral("trackSetConstructor") ) );
 }
 
 void

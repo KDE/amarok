@@ -109,46 +109,46 @@ MtpHandler::isWritable() const
 void
 MtpHandler::init()
 {
-    mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
-    mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
-    mtpFileTypes[LIBMTP_FILETYPE_WMA] = "wma";
-    mtpFileTypes[LIBMTP_FILETYPE_OGG] = "ogg";
-    mtpFileTypes[LIBMTP_FILETYPE_AUDIBLE] = "aa";
-    mtpFileTypes[LIBMTP_FILETYPE_MP4] = "mp4";
-    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_AUDIO] = "undef-audio";
-    mtpFileTypes[LIBMTP_FILETYPE_WMV] = "wmv";
-    mtpFileTypes[LIBMTP_FILETYPE_AVI] = "avi";
-    mtpFileTypes[LIBMTP_FILETYPE_MPEG] = "mpg";
-    mtpFileTypes[LIBMTP_FILETYPE_ASF] = "asf";
-    mtpFileTypes[LIBMTP_FILETYPE_QT] = "mov";
-    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_VIDEO] = "undef-video";
-    mtpFileTypes[LIBMTP_FILETYPE_JPEG] = "jpg";
-    mtpFileTypes[LIBMTP_FILETYPE_JFIF] = "jfif";
-    mtpFileTypes[LIBMTP_FILETYPE_TIFF] = "tiff";
-    mtpFileTypes[LIBMTP_FILETYPE_BMP] = "bmp";
-    mtpFileTypes[LIBMTP_FILETYPE_GIF] = "gif";
-    mtpFileTypes[LIBMTP_FILETYPE_PICT] = "pict";
-    mtpFileTypes[LIBMTP_FILETYPE_PNG] = "png";
-    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR1] = "vcs";
-    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR2] = "vcs";
-    mtpFileTypes[LIBMTP_FILETYPE_VCARD2] = "vcf";
-    mtpFileTypes[LIBMTP_FILETYPE_VCARD3] = "vcf";
-    mtpFileTypes[LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT] = "wim";
-    mtpFileTypes[LIBMTP_FILETYPE_WINEXEC] = "exe";
-    mtpFileTypes[LIBMTP_FILETYPE_TEXT] = "txt";
-    mtpFileTypes[LIBMTP_FILETYPE_HTML] = "html";
-    mtpFileTypes[LIBMTP_FILETYPE_AAC] = "aac";
-    mtpFileTypes[LIBMTP_FILETYPE_FLAC] = "flac";
-    mtpFileTypes[LIBMTP_FILETYPE_MP2] = "mp3";
-    mtpFileTypes[LIBMTP_FILETYPE_M4A] = "m4a";
-    mtpFileTypes[LIBMTP_FILETYPE_DOC] = "doc";
-    mtpFileTypes[LIBMTP_FILETYPE_XML] = "xml";
-    mtpFileTypes[LIBMTP_FILETYPE_XLS] = "xls";
-    mtpFileTypes[LIBMTP_FILETYPE_PPT] = "ppt";
-    mtpFileTypes[LIBMTP_FILETYPE_MHT] = "mht";
-    mtpFileTypes[LIBMTP_FILETYPE_JP2] = "jpg";
-    mtpFileTypes[LIBMTP_FILETYPE_JPX] = "jpx";
-    mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = "unknown";
+    mtpFileTypes[LIBMTP_FILETYPE_WAV] = QStringLiteral("wav");
+    mtpFileTypes[LIBMTP_FILETYPE_MP3] = QStringLiteral("mp3");
+    mtpFileTypes[LIBMTP_FILETYPE_WMA] = QStringLiteral("wma");
+    mtpFileTypes[LIBMTP_FILETYPE_OGG] = QStringLiteral("ogg");
+    mtpFileTypes[LIBMTP_FILETYPE_AUDIBLE] = QStringLiteral("aa");
+    mtpFileTypes[LIBMTP_FILETYPE_MP4] = QStringLiteral("mp4");
+    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_AUDIO] = QStringLiteral("undef-audio");
+    mtpFileTypes[LIBMTP_FILETYPE_WMV] = QStringLiteral("wmv");
+    mtpFileTypes[LIBMTP_FILETYPE_AVI] = QStringLiteral("avi");
+    mtpFileTypes[LIBMTP_FILETYPE_MPEG] = QStringLiteral("mpg");
+    mtpFileTypes[LIBMTP_FILETYPE_ASF] = QStringLiteral("asf");
+    mtpFileTypes[LIBMTP_FILETYPE_QT] = QStringLiteral("mov");
+    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_VIDEO] = QStringLiteral("undef-video");
+    mtpFileTypes[LIBMTP_FILETYPE_JPEG] = QStringLiteral("jpg");
+    mtpFileTypes[LIBMTP_FILETYPE_JFIF] = QStringLiteral("jfif");
+    mtpFileTypes[LIBMTP_FILETYPE_TIFF] = QStringLiteral("tiff");
+    mtpFileTypes[LIBMTP_FILETYPE_BMP] = QStringLiteral("bmp");
+    mtpFileTypes[LIBMTP_FILETYPE_GIF] = QStringLiteral("gif");
+    mtpFileTypes[LIBMTP_FILETYPE_PICT] = QStringLiteral("pict");
+    mtpFileTypes[LIBMTP_FILETYPE_PNG] = QStringLiteral("png");
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR1] = QStringLiteral("vcs");
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR2] = QStringLiteral("vcs");
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD2] = QStringLiteral("vcf");
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD3] = QStringLiteral("vcf");
+    mtpFileTypes[LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT] = QStringLiteral("wim");
+    mtpFileTypes[LIBMTP_FILETYPE_WINEXEC] = QStringLiteral("exe");
+    mtpFileTypes[LIBMTP_FILETYPE_TEXT] = QStringLiteral("txt");
+    mtpFileTypes[LIBMTP_FILETYPE_HTML] = QStringLiteral("html");
+    mtpFileTypes[LIBMTP_FILETYPE_AAC] = QStringLiteral("aac");
+    mtpFileTypes[LIBMTP_FILETYPE_FLAC] = QStringLiteral("flac");
+    mtpFileTypes[LIBMTP_FILETYPE_MP2] = QStringLiteral("mp3");
+    mtpFileTypes[LIBMTP_FILETYPE_M4A] = QStringLiteral("m4a");
+    mtpFileTypes[LIBMTP_FILETYPE_DOC] = QStringLiteral("doc");
+    mtpFileTypes[LIBMTP_FILETYPE_XML] = QStringLiteral("xml");
+    mtpFileTypes[LIBMTP_FILETYPE_XLS] = QStringLiteral("xls");
+    mtpFileTypes[LIBMTP_FILETYPE_PPT] = QStringLiteral("ppt");
+    mtpFileTypes[LIBMTP_FILETYPE_MHT] = QStringLiteral("mht");
+    mtpFileTypes[LIBMTP_FILETYPE_JP2] = QStringLiteral("jpg");
+    mtpFileTypes[LIBMTP_FILETYPE_JPX] = QStringLiteral("jpx");
+    mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = QStringLiteral("unknown");
 
     QString genericError = i18n( "Could not connect to MTP Device" );
 
@@ -306,7 +306,7 @@ MtpHandler::getDeviceInfo()
     m_name = modelname;
     if(! ownername.isEmpty() )
         if( modelname != ownername )
-            m_name += " (" + ownername + ')';
+            m_name += " (" + ownername + QLatin1Char(')');
 
     else
         m_name += " (No Owner Name)";
@@ -333,12 +333,12 @@ MtpHandler::getDeviceInfo()
         }
     }
     // find supported image types (for album art).
-    if ( m_supportedFiles.indexOf( "jpg" ) )
-        m_format = "JPEG";
-    else if ( m_supportedFiles.indexOf( "png" ) )
-        m_format = "PNG";
-    else if ( m_supportedFiles.indexOf( "gif" ) )
-        m_format = "GIF";
+    if ( m_supportedFiles.indexOf( QStringLiteral("jpg") ) )
+        m_format = QStringLiteral("JPEG");
+    else if ( m_supportedFiles.indexOf( QStringLiteral("png") ) )
+        m_format = QStringLiteral("PNG");
+    else if ( m_supportedFiles.indexOf( QStringLiteral("gif") ) )
+        m_format = QStringLiteral("GIF");
     free( filetypes );
 }
 
@@ -447,9 +447,9 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
         if (( *it ).isEmpty() )
             continue;
         // substitute %a , %b , %g
-        ( *it ).replace( QRegularExpression( "%a" ), artistName )
-        .replace( QRegularExpression( "%b" ), albumName )
-        .replace( QRegularExpression( "%g" ), genreName );
+        ( *it ).replace( QRegularExpression( QStringLiteral("%a") ), artistName )
+        .replace( QRegularExpression( QStringLiteral("%b") ), albumName )
+        .replace( QRegularExpression( QStringLiteral("%g") ), genreName );
         // check if it exists
         uint32_t check_folder = subfolderNameToID(( *it ).toUtf8(), m_folders, parent_id );
         // create if not exists (if requested)
@@ -468,7 +468,7 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
                 return 0;
             }
         }
-        completePath += ( *it ).toUtf8() + '/';
+        completePath += ( *it ).toUtf8() + QLatin1Char('/');
         // set new parent
         parent_id = check_folder;
     }
@@ -489,7 +489,7 @@ MtpHandler::getDefaultParentId( void )
     // Otherwise look for a folder called "Music"
     else if ( m_folders != nullptr )
     {
-        parent_id = folderNameToID( qstrdup( QString( "Music" ).toUtf8() ), m_folders );
+        parent_id = folderNameToID( qstrdup( QStringLiteral( "Music" ).toUtf8() ), m_folders );
         if ( !parent_id )
         {
             debug() << "Parent folder could not be found. Going to use top level.";
@@ -1227,19 +1227,19 @@ void
 MtpHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
 {
     debug() << "filetype : " << type;
-    if ( type == "mp3" )
+    if ( type == QStringLiteral("mp3") )
     {
         m_mtpTrackHash.value( track )->filetype = LIBMTP_FILETYPE_MP3;
     }
-    else if ( type == "ogg" )
+    else if ( type == QStringLiteral("ogg") )
     {
         m_mtpTrackHash.value( track )->filetype = LIBMTP_FILETYPE_OGG;
     }
-    else if ( type == "wma" )
+    else if ( type == QStringLiteral("wma") )
     {
         m_mtpTrackHash.value( track )->filetype = LIBMTP_FILETYPE_WMA;
     }
-    else if ( type == "mp4" )
+    else if ( type == QStringLiteral("mp4") )
     {
         m_mtpTrackHash.value( track )->filetype = LIBMTP_FILETYPE_MP4;
     }
@@ -1326,7 +1326,7 @@ QString
 MtpHandler::setTempFile( Meta::MediaDeviceTrackPtr &track, const QString &format )
 {
     m_cachedTracks[ track ] = new QTemporaryFile();
-    m_cachedTracks.value( track )->setFileTemplate( QDir::tempPath() +  "/XXXXXX." + format ); // set suffix based on info from libmtp
+    m_cachedTracks.value( track )->setFileTemplate( QDir::tempPath() + QStringLiteral("/XXXXXX.") + format ); // set suffix based on info from libmtp
     if (!m_cachedTracks.value( track )->open())
         return QString();
 

@@ -44,12 +44,14 @@ InfoProxy::InfoProxy()
     QList<QVariant> strings;
     QList<QVariant> weights;
 
-    strings << "This" << "is" << "just" << "a" << "very" << "small" << "and" << "quite" << "silly" << "default" << "text"
-            << "as" << "I" << "currently" << "have" <<  "nothing" << "better" << "to" << "show";
+    strings << QStringLiteral("This") << QStringLiteral("is") << QStringLiteral("just") << QStringLiteral("a") << QStringLiteral("very")
+            << QStringLiteral("small") << QStringLiteral("and") << QStringLiteral("quite") << QStringLiteral("silly") << QStringLiteral("default")
+            << QStringLiteral("text") << QStringLiteral("as") << QStringLiteral("I") << QStringLiteral("currently") << QStringLiteral("have")
+            << QStringLiteral("nothing") << QStringLiteral("better") << QStringLiteral("to") << QStringLiteral("show");
 
     weights << 10 << 4 << 8 << 2 << 6 << 5 << 10 << 9 << 3 << 1 << 3 << 5 << 7 << 9 << 3 << 2 << 10 << 6 << 4;
 
-    m_storedCloud[QStringLiteral("cloud_name")] = QVariant( "test cloud" );
+    m_storedCloud[QStringLiteral("cloud_name")] = QVariant( QStringLiteral("test cloud") );
     m_storedCloud[QStringLiteral("cloud_strings")] = QVariant( strings );
     m_storedCloud[QStringLiteral("cloud_weights")] = QVariant( weights );
 
@@ -140,7 +142,7 @@ InfoProxy::loadHomePage()
 
     //load html
 
-    QString htmlPath = dataPath + "info_frontpage.html";
+    QString htmlPath = dataPath + QStringLiteral("info_frontpage.html");
     QFile file( htmlPath );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) )
     {

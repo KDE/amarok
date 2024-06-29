@@ -333,7 +333,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
             QString dataPath = QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/"), QStandardPaths::LocateDirectory );
 
             //load html
-            QString htmlPath = dataPath + "/hover_info_template.html";
+            QString htmlPath = dataPath + QStringLiteral("/hover_info_template.html");
             QFile file( htmlPath );
             if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) )
             {
@@ -356,7 +356,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 
         currentHtml.replace( QLatin1String("%%NAME%%"), category->prettyName() );
         currentHtml.replace( QLatin1String("%%DESCRIPTION%%"), category->longDescription() );
-        currentHtml.replace( QLatin1String("%%IMAGE_PATH%%"), "file://" + category->imagePath() );
+        currentHtml.replace( QLatin1String("%%IMAGE_PATH%%"), QStringLiteral("file://") + category->imagePath() );
 
         QVariantMap variantMap;
         variantMap[QStringLiteral("main_info")] = QVariant( currentHtml );
@@ -366,7 +366,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 
 QString BrowserCategoryList::css()
 {
-    QString style =
+    QString style = QStringLiteral(
             "<style type='text/css'>"
             "body"
             "{"
@@ -395,7 +395,7 @@ QString BrowserCategoryList::css()
             "        background-color: {content_background_color};"
             "        color: {text_color};"
             "    }"
-            "</style>";
+            "</style>");
 
     return style;
 }

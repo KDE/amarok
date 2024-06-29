@@ -45,22 +45,22 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
 
     // url entries without associated directory just stick around and cannot be processed
     // by SqlScanResultProcessor. Delete them before checking tracks
-    databaseUpdater.deleteOrphanedByDirectory( "urls" );
+    databaseUpdater.deleteOrphanedByDirectory( QStringLiteral("urls") );
 
     // tracks with no associated url entry are useless, just a bunch of medatada with
     // nothing to associate them to; remove those first
-    databaseUpdater.deleteOrphanedByUrl( "tracks" );
+    databaseUpdater.deleteOrphanedByUrl( QStringLiteral("tracks") );
 
-    databaseUpdater.deleteAllRedundant( "album" ); // what about cover images in database and disk cache?
-    databaseUpdater.deleteAllRedundant( "artist" );
-    databaseUpdater.deleteAllRedundant( "genre" );
-    databaseUpdater.deleteAllRedundant( "composer" );
-    databaseUpdater.deleteAllRedundant( "url" );
-    databaseUpdater.deleteAllRedundant( "year" );
+    databaseUpdater.deleteAllRedundant( QStringLiteral("album") ); // what about cover images in database and disk cache?
+    databaseUpdater.deleteAllRedundant( QStringLiteral("artist") );
+    databaseUpdater.deleteAllRedundant( QStringLiteral("genre") );
+    databaseUpdater.deleteAllRedundant( QStringLiteral("composer") );
+    databaseUpdater.deleteAllRedundant( QStringLiteral("url") );
+    databaseUpdater.deleteAllRedundant( QStringLiteral("year") );
 
-    databaseUpdater.deleteOrphanedByUrl( "lyrics" );
-    databaseUpdater.deleteOrphanedByUrl( "statistics" );
-    databaseUpdater.deleteOrphanedByUrl( "urls_labels" );
+    databaseUpdater.deleteOrphanedByUrl( QStringLiteral("lyrics") );
+    databaseUpdater.deleteOrphanedByUrl( QStringLiteral("statistics") );
+    databaseUpdater.deleteOrphanedByUrl( QStringLiteral("urls_labels") );
 
     m_timer = new QTimer( this );
     m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
@@ -85,7 +85,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
     auto storage = m_collection->sqlStorage();
 
     // - find existing entry
-    QString query = QString( "SELECT id, changedate FROM directories "
+    QString query = QStringLiteral( "SELECT id, changedate FROM directories "
                              "WHERE  deviceid = %1 AND dir = '%2';" )
                         .arg( QString::number( deviceId ), storage->escape( rdir ) );
     QStringList res = storage->query( query );
@@ -94,11 +94,11 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
     if( res.isEmpty() )
     {
         debug() << "SqlRegistry::getDirectory(): new directory" << path;
-        QString insert = QString( "INSERT INTO directories(deviceid,changedate,dir) "
+        QString insert = QStringLiteral( "INSERT INTO directories(deviceid,changedate,dir) "
                                   "VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
                                 storage->escape( rdir ) );
-        dirId = storage->insert( insert, "directories" );
+        dirId = storage->insert( insert, QStringLiteral("directories") );
         m_collectionChanged = true;
     }
     else
@@ -108,7 +108,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
         uint oldMtime = res[1].toUInt();
         if( oldMtime != mtime )
         {
-            QString update = QString( "UPDATE directories SET changedate = %1 "
+            QString update = QStringLiteral( "UPDATE directories SET changedate = %1 "
                                       "WHERE id = %2;" )
                 .arg( QString::number( mtime ), res[0] );
             debug() << "SqlRegistry::getDirectory(): update directory" << path << "(id" <<
@@ -124,7 +124,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
 Meta::TrackPtr
 SqlRegistry::getTrack( int urlId )
 {
-    QString query = "SELECT %1 FROM urls %2 WHERE urls.id = %3";
+    QString query = QStringLiteral("SELECT %1 FROM urls %2 WHERE urls.id = %3");
     query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
                        Meta::SqlTrack::getTrackJoinConditions(),
                        QString::number( urlId ) );
@@ -181,8 +181,8 @@ SqlRegistry::getTrack( const QString &path )
         QString query;
         QStringList result;
 
-        query = "SELECT %1 FROM urls %2 "
-            "WHERE urls.deviceid = %3 AND urls.rpath = '%4';";
+        query = QStringLiteral("SELECT %1 FROM urls %2 "
+            "WHERE urls.deviceid = %3 AND urls.rpath = '%4';");
         query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
                            Meta::SqlTrack::getTrackJoinConditions(),
                            QString::number( deviceId ),
@@ -216,8 +216,8 @@ SqlRegistry::getTrack( int deviceId, const QString &rpath, int directoryId, cons
         Meta::SqlTrack *sqlTrack = nullptr;
 
         // -- get it from the database
-        query = "SELECT %1 FROM urls %2 "
-            "WHERE urls.deviceid = %3 AND urls.rpath = '%4';";
+        query = QStringLiteral("SELECT %1 FROM urls %2 "
+            "WHERE urls.deviceid = %3 AND urls.rpath = '%4';");
         query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
                            Meta::SqlTrack::getTrackJoinConditions(),
                            QString::number( deviceId ),
@@ -318,8 +318,8 @@ SqlRegistry::getTrackFromUid( const QString &uid )
         QStringList result;
 
         // -- get all the track info
-        query = "SELECT %1 FROM urls %2 "
-            "WHERE urls.uniqueid = '%3';";
+        query = QStringLiteral("SELECT %1 FROM urls %2 "
+            "WHERE urls.uniqueid = '%3';");
         query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
                            Meta::SqlTrack::getTrackJoinConditions(),
                            m_collection->sqlStorage()->escape( uid ) );
@@ -343,10 +343,10 @@ void
 SqlRegistry::removeTrack( int urlId, const QString &uid )
 {
     // delete all entries linked to the url, including track
-    QStringList tables = QStringList() << "tracks" << "lyrics" << "statistics" << "urls_labels";
+    QStringList tables = QStringList() << QStringLiteral("tracks") << QStringLiteral("lyrics") << QStringLiteral("statistics") << QStringLiteral("urls_labels");
     for( const QString &table : tables )
     {
-        QString query = QString( "DELETE FROM %1 WHERE url=%2" ).arg( table ).arg( urlId );
+        QString query = QStringLiteral( "DELETE FROM %1 WHERE url=%2" ).arg( table ).arg( urlId );
         m_collection->sqlStorage()->query( query );
     }
 
@@ -356,7 +356,7 @@ SqlRegistry::removeTrack( int urlId, const QString &uid )
     // everything. ScanResultProcessor should be witty enough not to delete tracks that
     // have been moved to another directory and/or device, even if it is currently
     // unavailable.
-    QString query = QString( "DELETE FROM urls WHERE id=%1" ).arg( urlId );
+    QString query = QStringLiteral( "DELETE FROM urls WHERE id=%1" ).arg( urlId );
     m_collection->sqlStorage()->query( query );
 
     // --- delete the track from memory
@@ -387,12 +387,12 @@ SqlRegistry::getArtist( const QString &oName )
 
     int id;
 
-    QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
+    QString query = QStringLiteral( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO artists( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
-        id = m_collection->sqlStorage()->insert( insert, "artists" );
+        QString insert = QStringLiteral( "INSERT INTO artists( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
+        id = m_collection->sqlStorage()->insert( insert, QStringLiteral("artists") );
         m_collectionChanged = true;
     }
     else
@@ -417,7 +417,7 @@ SqlRegistry::getArtist( int id )
     if( m_artistIdMap.contains( id ) )
         return m_artistIdMap.value( id );
 
-    QString query = QString( "SELECT name FROM artists WHERE id = %1;" ).arg( id );
+    QString query = QStringLiteral( "SELECT name FROM artists WHERE id = %1;" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return Meta::ArtistPtr();
@@ -457,12 +457,12 @@ SqlRegistry::getGenre( const QString &oName )
 
     int id;
 
-    QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
+    QString query = QStringLiteral( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
-        id = m_collection->sqlStorage()->insert( insert, "genres" );
+        QString insert = QStringLiteral( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
+        id = m_collection->sqlStorage()->insert( insert, QStringLiteral("genres") );
         m_collectionChanged = true;
     }
     else
@@ -483,7 +483,7 @@ SqlRegistry::getGenre( int id )
 {
     QMutexLocker locker( &m_genreMutex );
 
-    QString query = QString( "SELECT name FROM genres WHERE id = '%1';" ).arg( id );
+    QString query = QStringLiteral( "SELECT name FROM genres WHERE id = '%1';" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return Meta::GenrePtr();
@@ -521,12 +521,12 @@ SqlRegistry::getComposer( const QString &oName )
 
     int id;
 
-    QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
+    QString query = QStringLiteral( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( name ) );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
-        id = m_collection->sqlStorage()->insert( insert, "composers" );
+        QString insert = QStringLiteral( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
+        id = m_collection->sqlStorage()->insert( insert, QStringLiteral("composers") );
         m_collectionChanged = true;
     }
     else
@@ -550,7 +550,7 @@ SqlRegistry::getComposer( int id )
 
     QMutexLocker locker( &m_composerMutex );
 
-    QString query = QString( "SELECT name FROM composers WHERE id = '%1';" ).arg( id );
+    QString query = QStringLiteral( "SELECT name FROM composers WHERE id = '%1';" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return Meta::ComposerPtr();
@@ -588,12 +588,12 @@ SqlRegistry::getYear( int year, int yearId )
     // don't know the id yet
     if( yearId <= 0 )
     {
-        QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( QString::number( year ) );
+        QString query = QStringLiteral( "SELECT id FROM years WHERE name = '%1';" ).arg( QString::number( year ) );
         QStringList res = m_collection->sqlStorage()->query( query );
         if( res.isEmpty() )
         {
-            QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( QString::number( year ) );
-            yearId = m_collection->sqlStorage()->insert( insert, "years" );
+            QString insert = QStringLiteral( "INSERT INTO years( name ) VALUES ('%1');" ).arg( QString::number( year ) );
+            yearId = m_collection->sqlStorage()->insert( insert, QStringLiteral("years") );
             m_collectionChanged = true;
         }
         else
@@ -627,11 +627,11 @@ SqlRegistry::getAlbum( const QString &oName, const QString &oArtist )
     int albumId = -1;
     int artistId = -1;
 
-    QString query = QString( "SELECT id FROM albums WHERE name = '%1' AND " ).arg( m_collection->sqlStorage()->escape( name ) );
+    QString query = QStringLiteral( "SELECT id FROM albums WHERE name = '%1' AND " ).arg( m_collection->sqlStorage()->escape( name ) );
 
     if( albumArtist.isEmpty() )
     {
-        query += QString( "artist IS NULL" );
+        query += QStringLiteral( "artist IS NULL" );
     }
     else
     {
@@ -641,17 +641,17 @@ SqlRegistry::getAlbum( const QString &oName, const QString &oArtist )
         Meta::SqlArtist *sqlArtist = static_cast<Meta::SqlArtist*>(artistPtr.data());
         artistId = sqlArtist->id();
 
-        query += QString( "artist=%1" ).arg( artistId );
+        query += QStringLiteral( "artist=%1" ).arg( artistId );
     }
 
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
         // ok. have to create a new album
-        QString insert = QString( "INSERT INTO albums( name, artist ) VALUES ('%1',%2);" ).
+        QString insert = QStringLiteral( "INSERT INTO albums( name, artist ) VALUES ('%1',%2);" ).
             arg( m_collection->sqlStorage()->escape( name ),
-                 artistId > 0 ? QString::number( artistId ) : "NULL" );
-        albumId = m_collection->sqlStorage()->insert( insert, "albums" );
+                 artistId > 0 ? QString::number( artistId ) : QStringLiteral("NULL") );
+        albumId = m_collection->sqlStorage()->insert( insert, QStringLiteral("albums") );
         m_collectionChanged = true; // we just added a new album
     }
     else
@@ -682,7 +682,7 @@ SqlRegistry::getAlbum( int albumId )
             return m_albumIdMap.value( albumId );
     }
 
-    QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( albumId );
+    QString query = QStringLiteral( "SELECT name, artist FROM albums WHERE id = %1" ).arg( albumId );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return Meta::AlbumPtr(); // someone messed up
@@ -725,12 +725,12 @@ SqlRegistry::getLabel( const QString &oLabel )
 
     int id;
 
-    QString query = QString( "SELECT id FROM labels WHERE label = '%1';" ).arg( m_collection->sqlStorage()->escape( label ) );
+    QString query = QStringLiteral( "SELECT id FROM labels WHERE label = '%1';" ).arg( m_collection->sqlStorage()->escape( label ) );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO labels( label ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( label ) );
-        id = m_collection->sqlStorage()->insert( insert, "albums" );
+        QString insert = QStringLiteral( "INSERT INTO labels( label ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( label ) );
+        id = m_collection->sqlStorage()->insert( insert, QStringLiteral("albums") );
     }
     else
     {
@@ -751,7 +751,7 @@ SqlRegistry::getLabel( int id )
     Q_ASSERT( id > 0 ); // must be a valid id
     QMutexLocker locker( &m_labelMutex );
 
-    QString query = QString( "SELECT label FROM labels WHERE id = '%1';" ).arg( id );
+    QString query = QStringLiteral( "SELECT label FROM labels WHERE id = '%1';" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return Meta::LabelPtr();
@@ -896,21 +896,21 @@ SqlRegistry::emptyCache()
 
         QMap<QString, QPair<int, int> > cachedBefore;
 
-        QString query = QString( "SELECT COUNT(*) FROM albums;" );
+        QString query = QStringLiteral( "SELECT COUNT(*) FROM albums;" );
         QStringList res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedBefore, "albums", m_albumMap, res );
+        mapCached( cachedBefore, QStringLiteral("albums"), m_albumMap, res );
 
-        query = QString( "SELECT COUNT(*) FROM tracks;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM tracks;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedBefore, "tracks", m_trackMap, res );
+        mapCached( cachedBefore, QStringLiteral("tracks"), m_trackMap, res );
 
-        query = QString( "SELECT COUNT(*) FROM artists;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM artists;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedBefore, "artists", m_artistMap, res );
+        mapCached( cachedBefore, QStringLiteral("artists"), m_artistMap, res );
 
-        query = QString( "SELECT COUNT(*) FROM genres;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM genres;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedBefore, "genres", m_genreMap, res );
+        mapCached( cachedBefore, QStringLiteral("genres"), m_genreMap, res );
 
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
@@ -954,21 +954,21 @@ SqlRegistry::emptyCache()
 
         QMap<QString, QPair<int, int> > cachedAfter;
 
-        query = QString( "SELECT COUNT(*) FROM albums;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM albums;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedAfter, "albums", m_albumMap, res );
+        mapCached( cachedAfter, QStringLiteral("albums"), m_albumMap, res );
 
-        query = QString( "SELECT COUNT(*) FROM tracks;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM tracks;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedAfter, "tracks", m_trackMap, res );
+        mapCached( cachedAfter, QStringLiteral("tracks"), m_trackMap, res );
 
-        query = QString( "SELECT COUNT(*) FROM artists;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM artists;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedAfter, "artists", m_artistMap, res );
+        mapCached( cachedAfter, QStringLiteral("artists"), m_artistMap, res );
 
-        query = QString( "SELECT COUNT(*) FROM genres;" );
+        query = QStringLiteral( "SELECT COUNT(*) FROM genres;" );
         res = m_collection->sqlStorage()->query( query );
-        mapCached( cachedAfter, "genres", m_genreMap, res );
+        mapCached( cachedAfter, QStringLiteral("genres"), m_genreMap, res );
         #undef mapCached
 
         if( cachedBefore != cachedAfter )
@@ -981,8 +981,8 @@ SqlRegistry::emptyCache()
                 int count = i.value().first;
                 int total = i.value().second;
                 QString diff = QString::number( count - iLast.value().first );
-                QString text = QString( "%1 (%2) of %3 cached" ).arg( count ).arg( diff ).arg( total );
-                debug() << QString( "%1: %2" ).arg( i.key(), 8 ).arg( text ).toLocal8Bit().constData();
+                QString text = QStringLiteral( "%1 (%2) of %3 cached" ).arg( count ).arg( diff ).arg( total );
+                debug() << QStringLiteral( "%1: %2" ).arg( i.key(), 8 ).arg( text ).toLocal8Bit().constData();
             }
         }
     }

@@ -138,7 +138,7 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     QPushButton *back = buttonBox->addButton( i18n( "Back" ), QDialogButtonBox::ActionRole );
 
     QPushButton *synchronize = buttonBox->addButton( i18n( "Synchronize" ), QDialogButtonBox::AcceptRole );
-    synchronize->setIcon( QIcon( "document-save" ) );
+    synchronize->setIcon( QIcon( QStringLiteral("document-save") ) );
 
     connect( back, &QAbstractButton::clicked, this, &MatchedTracksPage::back );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &MatchedTracksPage::accepted );
@@ -308,7 +308,7 @@ MatchedTracksPage::setTracksToScrobble( const TrackList &tracksToScrobble,
     QStringList serviceNames;
     for( const ScrobblingServicePtr &service : services )
     {
-        serviceNames << "<b>" + service->prettyName() + "</b>";
+        serviceNames << QStringLiteral("<b>") + service->prettyName() + QStringLiteral("</b>");
     }
 
     if( plays )

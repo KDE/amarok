@@ -511,7 +511,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
         src.setPath( QDir::cleanPath(src.path()) );
         // KIO::file_copy in KF5 needs scheme
         if (src.isRelative() && src.host().isEmpty()) {
-            src.setScheme("file");
+            src.setScheme(QStringLiteral("file"));
         }
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
@@ -534,7 +534,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
         QDir dir = destInfo.dir();
         if( !dir.exists() )
         {
-            if( !dir.mkpath( "." ) )
+            if( !dir.mkpath( QStringLiteral(".") ) )
             {
                 warning() << "Could not create directory " << dir;
                 source()->transferError(track, i18n( "Could not create directory: %1", dir.path() ) );
@@ -675,7 +675,7 @@ SqlCollectionLocation::moodFile( const QUrl &track ) const
     QUrl moodPath = track;
     QString fileName = moodPath.fileName();
     moodPath = moodPath.adjusted(QUrl::RemoveFilename);
-    moodPath.setPath(moodPath.path() +  '.' + fileName.replace( QRegularExpression( "(\\.\\w{2,5})$" ), ".mood" ) );
+    moodPath.setPath(moodPath.path() + QLatin1Char('.') + fileName.replace( QRegularExpression( QStringLiteral("(\\.\\w{2,5})$" )), QStringLiteral(".mood") ) );
     return moodPath;
 }
 
@@ -718,7 +718,7 @@ void TransferJob::start()
     if( m_location == nullptr )
     {
         setError( 1 );
-        setErrorText( "Location is null!" );
+        setErrorText( QStringLiteral("Location is null!") );
         emitResult();
         return;
     }

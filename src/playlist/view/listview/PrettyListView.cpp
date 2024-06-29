@@ -587,7 +587,7 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         m_mousePressInHeader = false;
     }
 
-    if ( event->button() == Qt::MidButton )
+    if ( event->button() == Qt::MiddleButton )
     {
         QUrl url( QApplication::clipboard()->text() );
         if ( url.isValid() )

@@ -22,7 +22,6 @@
 #include "MagnatuneMeta.h"
 
 #include <kio/job.h>
-#include <kio/jobclasses.h>
 
 
 /**

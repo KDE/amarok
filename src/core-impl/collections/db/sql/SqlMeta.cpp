@@ -1684,7 +1684,7 @@ SqlAlbum::setImage( const QImage &image )
     QString path = largeDiskCachePath();
     // make sure not to overwrite existing images
     while( QFile(path).exists() )
-        path += '_'; // not that nice but it shouldn't happen that often.
+        path += QLatin1Char('_'); // not that nice but it shouldn't happen that often.
 
     image.save( path, "JPG", -1 );
     setImage( path );

@@ -95,7 +95,7 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
     m_nNumberOfAlbums = 0;
     m_nNumberOfArtists = 0;
 
-    QDomDocument doc( "config" );
+    QDomDocument doc( QStringLiteral("config") );
 
     if ( !QFile::exists( filename ) )
     {
@@ -135,7 +135,7 @@ MagnatuneXmlParser::parseElement( const QDomElement &e )
 {
     QString sElementName = e.tagName();
 
-    sElementName == "Album" ?
+    sElementName == QStringLiteral("Album") ?
     parseAlbum( e ) :
     parseChildren( e );
 }
@@ -185,47 +185,47 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
             QString sElementName = childElement.tagName();
 
 
-            if ( sElementName == "albumname" )
+            if ( sElementName == QStringLiteral("albumname") )
                 //printf(("|--+" + childElement.text() + "\n").toLatin1());
                 //m_currentAlbumItem = new MagnatuneListViewAlbumItem( m_currentArtistItem);
                 name = childElement.text();
 
 
-            else if ( sElementName == "albumsku" )
+            else if ( sElementName == QStringLiteral("albumsku") )
                 albumCode = childElement.text();
 
-            else if ( sElementName == "magnatunegenres" )
+            else if ( sElementName == QStringLiteral("magnatunegenres") )
                 magnatuneGenres = childElement.text().split(QLatin1Char(','), Qt::SkipEmptyParts);
 
-            else if ( sElementName == "launchdate" )
+            else if ( sElementName == QStringLiteral("launchdate") )
             {
                 QString dateString = childElement.text();
                 QDate date = QDate::fromString( dateString, Qt::ISODate );
                 launchYear = date.year();
             }
 
-            else if ( sElementName == "cover_small" )
+            else if ( sElementName == QStringLiteral("cover_small") )
                 coverUrl =  childElement.text();
 
-            else if ( sElementName == "artist" )
+            else if ( sElementName == QStringLiteral("artist") )
                 artistName = childElement.text();
 
-            else if ( sElementName == "artistdesc" )
+            else if ( sElementName == QStringLiteral("artistdesc") )
                 artistDescription =  childElement.text();
 
-            else if ( sElementName == "artistphoto" )
+            else if ( sElementName == QStringLiteral("artistphoto") )
                 artistPhotoUrl =  QUrl( childElement.text() );
 
-            else if ( sElementName == "mp3genre" )
+            else if ( sElementName == QStringLiteral("mp3genre") )
                 mp3Genre = childElement.text();
 
-            else if ( sElementName == "home" )
+            else if ( sElementName == QStringLiteral("home") )
                 artistPageUrl = QUrl( childElement.text() );
 
-            else if ( sElementName == "Track" )
+            else if ( sElementName == QStringLiteral("Track") )
                 parseTrack( childElement );
 
-            else if ( sElementName == "album_notes" )
+            else if ( sElementName == QStringLiteral("album_notes") )
                 description = childElement.text();
 
         }
@@ -346,31 +346,31 @@ MagnatuneXmlParser::parseTrack( const QDomElement &e )
             QString sElementName = childElement.tagName();
 
 
-            if ( sElementName == "trackname" )
+            if ( sElementName == QStringLiteral("trackname") )
             {
                 pCurrentTrack->setTitle( childElement.text() );
             }
-            else if ( sElementName == "url" )
+            else if ( sElementName == QStringLiteral("url") )
             {
                 pCurrentTrack->setUidUrl( childElement.text() );
             }
-            else if ( sElementName == "oggurl" )
+            else if ( sElementName == QStringLiteral("oggurl") )
             {
                 pCurrentTrack->setOggUrl( childElement.text() );
             }
-            else if ( sElementName == "mp3lofi" )
+            else if ( sElementName == QStringLiteral("mp3lofi") )
             {
                 pCurrentTrack->setLofiUrl( childElement.text() );
             }
-            else if ( sElementName == "tracknum" )
+            else if ( sElementName == QStringLiteral("tracknum") )
             {
                 pCurrentTrack->setTrackNumber( childElement.text().toInt() );
             }
-            else if ( sElementName == "seconds" )
+            else if ( sElementName == QStringLiteral("seconds") )
             {
                 pCurrentTrack->setLength( childElement.text().toInt() );
             }
-            else if ( sElementName == "moods" )
+            else if ( sElementName == QStringLiteral("moods") )
             {
                 parseMoods( childElement );
             }
@@ -400,7 +400,7 @@ void MagnatuneXmlParser::parseMoods( const QDomElement &e )
 
             QString sElementName = childElement.tagName();
 
-            if ( sElementName == "mood" )
+            if ( sElementName == QStringLiteral("mood") )
             {
                 m_currentTrackMoodList.append( childElement.text() );
             }

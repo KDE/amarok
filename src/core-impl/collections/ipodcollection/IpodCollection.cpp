@@ -50,11 +50,11 @@
 #include <QVBoxLayout>
 
 
-const QString IpodCollection::s_uidUrlProtocol = QString( "amarok-ipodtrackuid" );
-const QStringList IpodCollection::s_audioFileTypes = QStringList() << "mp3" << "aac"
-    << "m4a" /* MPEG-4 AAC and also ALAC */ << "m4b" /* audiobook */ << "aiff" << "wav";
-const QStringList IpodCollection::s_videoFileTypes = QStringList() << "m4v" << "mov";
-const QStringList IpodCollection::s_audioVideoFileTypes = QStringList() << "mp4";
+const QString IpodCollection::s_uidUrlProtocol = QStringLiteral( "amarok-ipodtrackuid" );
+const QStringList IpodCollection::s_audioFileTypes = QStringList() << QStringLiteral("mp3") << QStringLiteral("aac")
+    << QStringLiteral("m4a") /* MPEG-4 AAC and also ALAC */ << QStringLiteral("m4b") /* audiobook */ << QStringLiteral("aiff") << QStringLiteral("wav");
+const QStringList IpodCollection::s_videoFileTypes = QStringList() << QStringLiteral("m4v") << QStringLiteral("mov");
+const QStringList IpodCollection::s_audioVideoFileTypes = QStringList() << QStringLiteral("mp4");
 
 IpodCollection::IpodCollection( const QDir &mountPoint, const QString &uuid )
     : Collections::Collection()
@@ -110,12 +110,12 @@ bool IpodCollection::init()
     connect( this, &IpodCollection::startWriteDatabaseTimer, this, &IpodCollection::slotStartWriteDatabaseTimer );
     connect( &m_writeDatabaseTimer, &QTimer::timeout, this, &IpodCollection::slotInitiateDatabaseWrite );
 
-    m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
-    m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
+    m_configureAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ), i18n( "&Configure Device" ), this );
+    m_configureAction->setProperty( "popupdropper_svg_id", QStringLiteral("configure") );
     connect( m_configureAction, &QAction::triggered, this, &IpodCollection::slotShowConfigureDialog );
 
-    m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ), this );
-    m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
+    m_ejectAction = new QAction( QIcon::fromTheme( QStringLiteral("media-eject") ), i18n( "&Eject Device" ), this );
+    m_ejectAction->setProperty( "popupdropper_svg_id", QStringLiteral("eject") );
     connect( m_ejectAction, &QAction::triggered, this, &IpodCollection::slotEject );
 
     QString parseErrorMessage;
@@ -123,7 +123,7 @@ bool IpodCollection::init()
     m_prettyName = IpodDeviceHelper::collectionName( m_itdb ); // allows null m_itdb
 
     // m_consolidateAction is used by the provider
-    m_consolidateAction = new QAction( QIcon::fromTheme( "dialog-ok-apply" ), i18n( "Re-add orphaned and forget stale tracks" ), this );
+    m_consolidateAction = new QAction( QIcon::fromTheme( QStringLiteral("dialog-ok-apply") ), i18n( "Re-add orphaned and forget stale tracks" ), this );
     // provider needs to be up before IpodParseTracksJob is started
     m_playlistProvider = new IpodPlaylistProvider( this );
     connect( m_playlistProvider, &IpodPlaylistProvider::startWriteDatabaseTimer, this, &IpodCollection::startWriteDatabaseTimer );
@@ -181,7 +181,7 @@ Meta::TrackPtr
 IpodCollection::trackForUrl( const QUrl &url )
 {
     QString relativePath = url.toLocalFile().mid( m_mountPoint.size() + 1 );
-    QString uidUrl = QString( "%1/%2" ).arg( collectionId(), relativePath );
+    QString uidUrl = QStringLiteral( "%1/%2" ).arg( collectionId(), relativePath );
     return trackForUidUrl( uidUrl );
 }
 
@@ -255,7 +255,7 @@ IpodCollection::prettyName() const
 QIcon
 IpodCollection::icon() const
 {
-    return QIcon::fromTheme("multimedia-player-apple-ipod");
+    return QIcon::fromTheme( QStringLiteral("multimedia-player-apple-ipod") );
 }
 
 bool
@@ -537,7 +537,7 @@ IpodCollection::slotStartWriteDatabaseTimer()
     if( !m_preventUnmountTempFile )
     {
         m_preventUnmountTempFile = new QTemporaryFile();
-        QString name( "/.itunes_database_dirty_in_amarok_prevent_unmounting" );
+        QString name( QStringLiteral("/.itunes_database_dirty_in_amarok_prevent_unmounting") );
         m_preventUnmountTempFile->setFileTemplate( m_mountPoint + name );
         m_preventUnmountTempFile->open();
     }
@@ -562,7 +562,7 @@ void IpodCollection::slotPerformTeardownAndRemove()
     /* try to eject the device from system. Following technique potentially catches more
      * cases than simply passing the udi from IpodCollectionFactory, think of fuse-based
      * filesystems for mounting iPhones et cetera.. */
-    Solid::Predicate query( Solid::DeviceInterface::StorageAccess, QString( "filePath" ),
+    Solid::Predicate query( Solid::DeviceInterface::StorageAccess, QStringLiteral( "filePath" ),
                             m_mountPoint );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( query );
     if( devices.count() == 1 )

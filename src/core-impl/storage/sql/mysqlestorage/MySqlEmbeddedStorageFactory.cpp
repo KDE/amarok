@@ -37,7 +37,7 @@ MySqleStorageFactory::init()
 
     m_initialized = true;
 
-    if( ! Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+    if( ! Amarok::config( QStringLiteral("MySQL") ).readEntry( "UseServer", false ) )
     {
         MySqlEmbeddedStorage* storage = new MySqlEmbeddedStorage();
         bool initResult = storage->init();

@@ -103,7 +103,7 @@ MetaTrackPrototype::init( QJSEngine *engine )
 
     QJSValue scriptObj = engine->newQObject( new MetaTrackPrototypeWrapper( engine ) );
 
-    engine->globalObject().setProperty( QStringLiteral("Track"), scriptObj.property("trackCtor"));
+    engine->globalObject().setProperty( QStringLiteral("Track"), scriptObj.property(QStringLiteral("trackCtor")));
 }
 
 MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )
@@ -472,7 +472,7 @@ MetaTrackPrototype::isLoadedAndLocal() const
     }
     if( !m_track->playableUrl().isLocalFile() )
     {
-        debug() << m_track->prettyName() + " is not a local file!";
+        debug() << m_track->prettyName() << " is not a local file!";
         return false;
     }
 

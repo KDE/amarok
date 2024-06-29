@@ -20,10 +20,10 @@
 #include <QIcon>
 
 MagnatuneDownloadAction::MagnatuneDownloadAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( QIcon::fromTheme("download-amarok" ), text, album )
+    : QAction( QIcon::fromTheme(QStringLiteral("download-amarok") ), text, album )
     , m_album( album )
 {
-    setProperty( "popupdropper_svg_id", "append" );
+    setProperty( "popupdropper_svg_id", QStringLiteral("append") );
     connect( this, &QAction::triggered, this, &MagnatuneDownloadAction::slotTriggered );
 }
 
@@ -43,7 +43,7 @@ MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &tex
     : QAction( QIcon::fromTheme(QStringLiteral("favorites") ), text, album )
     , m_album( album )
 {
-    setProperty( "popupdropper_svg_id", "append" );
+    setProperty( "popupdropper_svg_id", QStringLiteral("append") );
     connect( this, &QAction::triggered, this, &MagnatuneAddToFavoritesAction::slotTriggered );
 }
 

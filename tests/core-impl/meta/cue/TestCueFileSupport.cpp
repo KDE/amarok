@@ -36,20 +36,20 @@ TestCueFileSupport::TestCueFileSupport()
 void TestCueFileSupport::testLocateCueFile()
 {
   //Check that we find the right .cue file and that it passes the validator
-  QUrl cueTestUrl = QUrl::fromLocalFile(dataPath( "data/cue/testsheet01-iso8859-1.cue" ));
+  QUrl cueTestUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/cue/testsheet01-iso8859-1.cue") ));
   QUrl cueResultUrl = CueFileSupport::locateCueSheet( cueTestUrl );
 
   QVERIFY( !cueResultUrl.url().isEmpty() );
   QCOMPARE( cueResultUrl.url(), cueTestUrl.url() );
 
   //Check that a nonexisting cue file returns an empty url
-  QUrl testUrl = QUrl::fromLocalFile(dataPath( "data/cue/test_silence.ogg" ));
+  QUrl testUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/cue/test_silence.ogg") ));
   cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
 
   QVERIFY( cueResultUrl.isEmpty() );
 
   //Check that an existing but invalid cue file returns an empty url
-  testUrl = QUrl::fromLocalFile(dataPath( "data/cue/invalid.cue" ));
+  testUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/cue/invalid.cue") ));
   cueResultUrl = CueFileSupport::locateCueSheet( testUrl );
 
   QVERIFY( cueResultUrl.isEmpty() );
@@ -57,27 +57,27 @@ void TestCueFileSupport::testLocateCueFile()
 
 void TestCueFileSupport::testIso88591Cue()
 {
-    QUrl testUrl = QUrl::fromLocalFile(dataPath( "data/cue/testsheet01-iso8859-1.cue" ));
-    QUrl testTrackUrl = QUrl::fromLocalFile((QString( "Die Toten Hosen - In aller Stille (2008).mp3" )));
+    QUrl testUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/cue/testsheet01-iso8859-1.cue") ));
+    QUrl testTrackUrl = QUrl::fromLocalFile((QStringLiteral( "Die Toten Hosen - In aller Stille (2008).mp3" )));
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, testTrackUrl, 48000 );
 
     QCOMPARE( cueItemMap.size(), 14 );
-    QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).title(), QString( "Disco" ) );
-    QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).artist(), QString( "Die Toten Hosen" ) );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).title(), QStringLiteral( "Disco" ) );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).artist(), QStringLiteral( "Die Toten Hosen" ) );
 }
 
 void TestCueFileSupport::testUtf8Cue()
 {
-    QUrl testUrl = QUrl::fromLocalFile(dataPath( "data/cue/testsheet01-utf8.cue" ));
-    QUrl testTrackUrl = QUrl::fromLocalFile(QString( "Die Toten Hosen - In aller Stille (2008).mp3" ));
+    QUrl testUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/cue/testsheet01-utf8.cue") ));
+    QUrl testTrackUrl = QUrl::fromLocalFile(QStringLiteral( "Die Toten Hosen - In aller Stille (2008).mp3" ));
     CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, testTrackUrl, 48000 );
 
     QCOMPARE( cueItemMap.size(), 14 );
-    QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).title(), QString( "Ertrinken" ) );
-    QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).artist(), QString( "Die Toten Hosen" ) );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).title(), QStringLiteral( "Ertrinken" ) );
+    QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).artist(), QStringLiteral( "Die Toten Hosen" ) );
 }
 
 QString TestCueFileSupport::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }

@@ -196,7 +196,7 @@ AnimatedLabelStack::elidedText( const QString& text ) const
 
     // Insert a whitespace between text and "..." (looks nicer)
     if( newText != text )
-        newText.insert( newText.length() -1, ' ' );
+        newText.insert( newText.length() -1, QLatin1Char(' ') );
 
 
     return newText;

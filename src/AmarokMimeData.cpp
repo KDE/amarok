@@ -338,7 +338,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
             for( Meta::TrackPtr track : tracks )
             {
                 if( !result.isEmpty() )
-                    result += '\n';
+                    result += QLatin1Char('\n');
                 result += track->artist()->prettyName();
                 result += QLatin1String(" - ");
                 result += track->prettyName();
@@ -346,7 +346,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
             for( Podcasts::PodcastEpisodePtr episode : episodes )
             {
                 if( !result.isEmpty() )
-                    result += '\n';
+                    result += QLatin1Char('\n');
                 result += episode->prettyName();
                 result += QLatin1String(" - ");
                 result += episode->channel()->prettyName();
@@ -354,13 +354,13 @@ AmarokMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
             for( Playlists::PlaylistPtr playlist : playlists )
             {
                 if( !result.isEmpty() )
-                    result += '\n';
+                    result += QLatin1Char('\n');
                 result += playlist->prettyName();
             }
             for( Podcasts::PodcastChannelPtr channel : channels )
             {
                 if( !result.isEmpty() )
-                    result += '\n';
+                    result += QLatin1Char('\n');
                 result += channel->prettyName();
             }
             return QVariant( result );

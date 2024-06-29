@@ -52,7 +52,7 @@ bool MassStorageDeviceHandler::isAvailable() const
 
 QString MassStorageDeviceHandler::type() const
 {
-    return "uuid";
+    return QStringLiteral("uuid");
 }
 
 int MassStorageDeviceHandler::getDeviceID()
@@ -89,7 +89,7 @@ bool MassStorageDeviceHandler::deviceMatchesUdi( const QString &udi ) const
 
 QString MassStorageDeviceHandlerFactory::type( ) const
 {
-    return "uuid";
+    return QStringLiteral("uuid");
 }
 
 bool MassStorageDeviceHandlerFactory::canCreateFromMedium( ) const
@@ -150,13 +150,13 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
         debug() << "not mounted, can't do anything";
         return nullptr; // It's not mounted, we can't do anything.
     }
-    QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
+    QStringList ids = s->query( QStringLiteral( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'uuid' "
                                          "AND uuid = '%1';" ).arg( volume->uuid() ) );
     if ( ids.size() == 3 )
     {
         debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << volume->uuid();
-        s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+        s->query( QStringLiteral( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                            "id = %1;" )
                            .arg( ids[0],
                                  s->escape( volumeAccess->filePath() ) ) );
@@ -164,11 +164,11 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
     }
     else
     {
-        const int id = s->insert( QString( "INSERT INTO devices( type, uuid, lastmountpoint ) "
+        const int id = s->insert( QStringLiteral( "INSERT INTO devices( type, uuid, lastmountpoint ) "
                                            "VALUES ( 'uuid', '%1', '%2' );" )
                                            .arg( volume->uuid(),
                                                  s->escape( volumeAccess->filePath() ) ),
-                                           "devices" );
+                                           QStringLiteral("devices") );
         if ( id == 0 )
         {
             warning() << "Inserting into devices failed for type=uuid, uuid=" << volume->uuid();
@@ -183,9 +183,9 @@ bool
 MassStorageDeviceHandlerFactory::excludedFilesystem( const QString &fstype ) const
 {
     return fstype.isEmpty() ||
-           fstype.indexOf( "smb" ) != -1 ||
-           fstype.indexOf( "cifs" ) != -1 ||
-           fstype.indexOf( "nfs" ) != -1 ||
-           fstype == "udf"  ||
-           fstype == "iso9660" ;
+           fstype.indexOf( QStringLiteral("smb") ) != -1 ||
+           fstype.indexOf( QStringLiteral("cifs") ) != -1 ||
+           fstype.indexOf( QStringLiteral("nfs") ) != -1 ||
+           fstype == QStringLiteral("udf")  ||
+           fstype == QStringLiteral("iso9660") ;
 }

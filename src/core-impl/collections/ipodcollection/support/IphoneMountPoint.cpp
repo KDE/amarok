@@ -31,14 +31,14 @@ IphoneMountPoint::IphoneMountPoint( const QString &uuid )
 {
     QString mountPointCandidate = constructMountpoint( uuid );
     QStringList checkedDirs;  // see itdb_get_control_dir (const gchar *mountpoint)
-    checkedDirs << "/iTunes_Control";
-    checkedDirs << "/iPod_Control";
-    checkedDirs << "/iTunes/iTunes_Control";
+    checkedDirs << QStringLiteral("/iTunes_Control");
+    checkedDirs << QStringLiteral("/iPod_Control");
+    checkedDirs << QStringLiteral("/iTunes/iTunes_Control");
     for( const QString &dir : checkedDirs )
     {
         if( QFile::exists( mountPointCandidate + dir ) )
         {
-            logMessage( QString( "%1 exists, assuming iPhone is already mounted" ).arg( dir ) );
+            logMessage( QStringLiteral( "%1 exists, assuming iPhone is already mounted" ).arg( dir ) );
             m_mountPoint = mountPointCandidate;
             return;
         }
@@ -48,16 +48,16 @@ IphoneMountPoint::IphoneMountPoint( const QString &uuid )
     if( !uuid.isEmpty() )
         // good change here: --uuid option was renamed to --udid with ifuse-1.1.2, the
         // short option, -u, fortunately remained the same
-        args << "-u" << uuid << QString( "-ofsname=afc://%1" ).arg( uuid );
+        args << QStringLiteral("-u") << uuid << QStringLiteral( "-ofsname=afc://%1" ).arg( uuid );
     args << mountPointCandidate;
-    if( !call( "ifuse", args ) )
+    if( !call( QStringLiteral("ifuse"), args ) )
     {
-        logMessage( QString( "Failed to mount iPhone on %1" ).arg( mountPointCandidate ) );
+        logMessage( QStringLiteral( "Failed to mount iPhone on %1" ).arg( mountPointCandidate ) );
         KMessageBox::detailedError( nullptr, i18n( "Connecting to iPhone, iPad or iPod touch failed."),
             failureDetails() );
         return;
     }
-    logMessage( QString( "Successfully mounted iPhone on %1" ).arg( mountPointCandidate ) );
+    logMessage( QStringLiteral( "Successfully mounted iPhone on %1" ).arg( mountPointCandidate ) );
     m_mountPoint = mountPointCandidate;
 
 }
@@ -67,19 +67,19 @@ IphoneMountPoint::~IphoneMountPoint()
     if( m_mountPoint.isEmpty() )
         return; // easy, nothing to do
 
-    logMessage( "" );  // have a line between constructor and destructor messages
+    logMessage( QStringLiteral("") );  // have a line between constructor and destructor messages
 
-    if( !call( "fusermount", QStringList() << "-u" << "-z" << m_mountPoint ) )
+    if( !call( QStringLiteral("fusermount"), QStringList() << QStringLiteral("-u") << QStringLiteral("-z") << m_mountPoint ) )
     {
-        logMessage( QString( "Failed to unmount iPhone from %1" ).arg( m_mountPoint ) );
+        logMessage( QStringLiteral( "Failed to unmount iPhone from %1" ).arg( m_mountPoint ) );
         return;
     }
-    logMessage( QString( "Successfully unmounted iPhone from %1" ).arg( m_mountPoint ) );
+    logMessage( QStringLiteral( "Successfully unmounted iPhone from %1" ).arg( m_mountPoint ) );
 
-    if( QDir( mountPoint() ).rmpath( "." ) )
-        logMessage( QString( "Deleted %1 directory and empty parent directories" ).arg( m_mountPoint ) );
+    if( QDir( mountPoint() ).rmpath( QStringLiteral(".") ) )
+        logMessage( QStringLiteral( "Deleted %1 directory and empty parent directories" ).arg( m_mountPoint ) );
     else
-        logMessage( QString( "Failed to delete %1 directory" ).arg( m_mountPoint ) );
+        logMessage( QStringLiteral( "Failed to delete %1 directory" ).arg( m_mountPoint ) );
 }
 
 QString
@@ -90,16 +90,16 @@ IphoneMountPoint::mountPoint() const
 
 QString IphoneMountPoint::failureDetails() const
 {
-    return m_messages.join( "<br>\n" );
+    return m_messages.join( QStringLiteral("<br>\n") );
 }
 
 QString
 IphoneMountPoint::constructMountpoint( const QString &uuid )
 {
-    QString mountPointCandidate = QStandardPaths::locate( QStandardPaths::TempLocation, "amarok/" );
-    mountPointCandidate += "imobiledevice";
+    QString mountPointCandidate = QStandardPaths::locate( QStandardPaths::TempLocation, QStringLiteral("amarok/") );
+    mountPointCandidate += QStringLiteral("imobiledevice");
     if( !uuid.isEmpty() )
-        mountPointCandidate += "_uuid_" + uuid;
+        mountPointCandidate += QStringLiteral("_uuid_") + uuid;
     logMessage( QStringLiteral( "determined mount-point path to %1" ).arg( mountPointCandidate ) );
 
     QDir mp( mountPointCandidate );
@@ -115,34 +115,34 @@ bool IphoneMountPoint::call( const QString &command, const QStringList &argument
 {
     QProcess process;
     process.setProcessChannelMode( QProcess::MergedChannels );
-    logMessage( QStringLiteral( "calling `%1 \"%2\"` with timeout of %3s" ).arg( command, arguments.join( "\" \"" ) ).arg( timeout/1000.0 ) );
+    logMessage( QStringLiteral( "calling `%1 \"%2\"` with timeout of %3s" ).arg( command, arguments.join( QStringLiteral("\" \"") ) ).arg( timeout/1000.0 ) );
     process.start( command, arguments );
 
     if( !process.waitForStarted( timeout ) )
     {
-        logMessage( "command failed to start within timeout" );
+        logMessage( QStringLiteral("command failed to start within timeout") );
         return false;
     }
     if( !process.waitForFinished( timeout ) )
     {
-        logMessage( "command failed to finish within timeout" );
+        logMessage( QStringLiteral("command failed to finish within timeout") );
         return false;
     }
 
     QByteArray output( process.readAllStandardOutput() );
-    for( const QString &line : QString::fromLocal8Bit( output ).split( QChar( '\n' ) ) )
+    for( const QString &line : QString::fromLocal8Bit( output ).split( QLatin1Char( '\n' ) ) )
     {
         logMessage( QStringLiteral("%1: %2").arg( command, line ) );
     }
 
     if( process.exitStatus() != QProcess::NormalExit )
     {
-        logMessage( "command crashed" );
+        logMessage( QStringLiteral("command crashed") );
         return false;
     }
     if( process.exitCode() != 0 )
     {
-        logMessage( QString( "command exited with non-zero return code %1" ).arg( process.exitCode() ) );
+        logMessage( QStringLiteral( "command exited with non-zero return code %1" ).arg( process.exitCode() ) );
         return false;
     }
     return true;

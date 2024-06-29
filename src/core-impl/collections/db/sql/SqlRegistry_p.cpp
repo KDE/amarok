@@ -41,7 +41,7 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
     static int maxSize = 0;
     if( maxSize == 0 )
     {
-        QStringList res = m_storage->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
+        QStringList res = m_storage->query( QStringLiteral("SHOW VARIABLES LIKE 'max_allowed_packet';") );
         if( res.size() < 2 || res[1].toInt() == 0 )
         {
             warning() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
@@ -54,9 +54,9 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
 
     QStringList fields = getFields();
 
-    const QString updateQueryStart = "UPDATE LOW_PRIORITY "+tableName()+" SET ";
-    const QString insertQueryStart = "INSERT INTO "+tableName()+
-        " ("+fields.join(",")+") VALUES ";
+    const QString updateQueryStart = QStringLiteral("UPDATE LOW_PRIORITY ")+tableName()+QStringLiteral(" SET ");
+    const QString insertQueryStart = QStringLiteral("INSERT INTO ")+tableName()+
+        QStringLiteral(" (")+fields.join(QStringLiteral(","))+QStringLiteral(") VALUES ");
 
     QList< Meta::SqlTrackPtr > insertedTracks;
     QString insertQuery;
@@ -76,26 +76,26 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
             for( int i = 0; i < fields.count() && i < values.count(); i++ )
             {
                 if( !updateQuery.isEmpty() )
-                    updateQuery += ", ";
+                    updateQuery += QStringLiteral(", ");
                 updateQuery += fields.at( i );
-                updateQuery += '=';
+                updateQuery += QLatin1Char('=');
                 updateQuery += values.at( i );
             }
             updateQuery = updateQueryStart + updateQuery +
-                " WHERE id=" + QString::number( getId( track.data() ) ) + ';';
+                QStringLiteral(" WHERE id=") + QString::number( getId( track.data() ) ) + QLatin1Char(';');
             m_storage->query( updateQuery );
 
         }
         else
         // -- insert
         {
-            QString newValues = '(' + values.join(",") + ')';
+            QString newValues = QLatin1Char('(') + values.join(QStringLiteral(",")) + QLatin1Char(')');
 
             // - if the insertQuery is long enough, commit it.
             if( insertQueryStart.length() + insertQuery.length() + newValues.length() + 1 >= maxSize - 3 ) // ";"
             {
                 // commit
-                insertQuery = insertQueryStart + insertQuery + ';';
+                insertQuery = insertQueryStart + insertQuery + QLatin1Char(';');
                 int firstId = m_storage->insert( insertQuery, tableName() );
 
                 // set the resulting ids
@@ -110,7 +110,7 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
             }
 
             if( !insertQuery.isEmpty() )
-                insertQuery += ',';
+                insertQuery += QLatin1Char(',');
             insertQuery += newValues;
             insertedTracks.append( track );
         }
@@ -120,7 +120,7 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
     if( !insertQuery.isEmpty() )
     {
         // commit
-        insertQuery = insertQueryStart + insertQuery + ';';
+        insertQuery = insertQueryStart + insertQuery + QLatin1Char(';');
         int firstId = m_storage->insert( insertQuery, tableName() );
 
         // set the resulting ids
@@ -141,7 +141,7 @@ QString
 AbstractTrackTableCommitter::nullString( const QString &str ) const
 {
     if( str.isEmpty() )
-        return "NULL";
+        return QStringLiteral("NULL");
     else
         return str;
 }
@@ -150,7 +150,7 @@ QString
 AbstractTrackTableCommitter::nullNumber( const qint64 number ) const
 {
     if( number <= 0 )
-        return "NULL";
+        return QStringLiteral("NULL");
     else
         return QString::number( number );
 }
@@ -159,7 +159,7 @@ QString
 AbstractTrackTableCommitter::nullNumber( const int number ) const
 {
     if( number <= 0 )
-        return "NULL";
+        return QStringLiteral("NULL");
     else
         return QString::number( number );
 }
@@ -168,7 +168,7 @@ QString
 AbstractTrackTableCommitter::nullNumber( const double number ) const
 {
     if( number <= 0 )
-        return "NULL";
+        return QStringLiteral("NULL");
     else
         return QString::number( number );
 }
@@ -179,14 +179,14 @@ AbstractTrackTableCommitter::nullDate( const QDateTime &date ) const
     if( date.isValid() )
         return QString::number( date.toSecsSinceEpoch() );
     else
-        return "NULL";
+        return QStringLiteral("NULL");
 }
 
 
 QString
 AbstractTrackTableCommitter::escape( const QString &str ) const
 {
-    return '\'' + m_storage->escape( str ) + '\'';
+    return QLatin1Char('\'') + m_storage->escape( str ) + QLatin1Char('\'');
 }
 
 
@@ -195,7 +195,7 @@ AbstractTrackTableCommitter::escape( const QString &str ) const
 QString
 TrackUrlsTableCommitter::tableName()
 {
-    return "urls";
+    return QStringLiteral("urls");
 }
 
 int
@@ -214,7 +214,7 @@ QStringList
 TrackUrlsTableCommitter::getFields()
 {
     QStringList result;
-    result << "deviceid" << "rpath" << "directory" << "uniqueid";
+    result << QStringLiteral("deviceid") << QStringLiteral("rpath") << QStringLiteral("directory") << QStringLiteral("uniqueid");
     return result;
 }
 
@@ -237,7 +237,7 @@ TrackUrlsTableCommitter::getValues( Meta::SqlTrack *track )
 QString
 TrackTracksTableCommitter::tableName()
 {
-    return "tracks";
+    return QStringLiteral("tracks");
 }
 
 int
@@ -256,10 +256,10 @@ QStringList
 TrackTracksTableCommitter::getFields()
 {
     QStringList result;
-    result << "url" << "artist" << "album" << "genre" << "composer" << "year" <<
-        "title" << "comment" << "tracknumber" << "discnumber" << "bitrate" <<
-        "length" << "samplerate" << "filesize" << "filetype" << "bpm" << "createdate" <<
-        "modifydate" << "albumgain" << "albumpeakgain" << "trackgain" << "trackpeakgain";
+    result << QStringLiteral("url") << QStringLiteral("artist") << QStringLiteral("album") << QStringLiteral("genre") << QStringLiteral("composer") << QStringLiteral("year") <<
+        QStringLiteral("title") << QStringLiteral("comment") << QStringLiteral("tracknumber") << QStringLiteral("discnumber") << QStringLiteral("bitrate") <<
+        QStringLiteral("length") << QStringLiteral("samplerate") << QStringLiteral("filesize") << QStringLiteral("filetype") << QStringLiteral("bpm") << QStringLiteral("createdate") <<
+        QStringLiteral("modifydate") << QStringLiteral("albumgain") << QStringLiteral("albumpeakgain") << QStringLiteral("trackgain") << QStringLiteral("trackpeakgain");
     return result;
 }
 
@@ -308,7 +308,7 @@ TrackTracksTableCommitter::getValues( Meta::SqlTrack *track )
 QString
 TrackStatisticsTableCommitter::tableName()
 {
-    return "statistics";
+    return QStringLiteral("statistics");
 }
 
 int
@@ -343,6 +343,6 @@ TrackStatisticsTableCommitter::getValues( Meta::SqlTrack *track )
     result << nullNumber( track->m_score );
     result << QString::number( track->m_rating ); // NOT NULL
     result << QString::number( track->m_playCount ); // NOT NULL
-    result << "0"; // not deleted
+    result << QStringLiteral("0"); // not deleted
     return result;
 }

@@ -292,7 +292,7 @@ void
 AbstractScanResultProcessor::cleanupMembers()
 {
     // note: qt had problems with CLEAN_ALL macro
-    QHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
+    QMultiHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
     while (i != m_albumNames.constEnd()) {
         delete i.value();
         ++i;

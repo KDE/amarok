@@ -228,7 +228,7 @@ ConstraintTypes::Checkpoint::satisfaction( const Meta::TrackList& tl ) const
         return 0.0; // none found
     } else {
         qint64 best = boundaries.last(); // the length of the playlist is the upper bound for distances
-        foreach ( int i, locs ) {
+        for ( int i : locs ) {
             qint64 start = ( i>0 )?boundaries.at( i-1 ):0;
             qint64 end = boundaries.at( i );
             if ( (start <= m_position) && ( end >= m_position ) ) {

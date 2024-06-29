@@ -35,12 +35,12 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
 {
     m_renameFolderAction =  new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                          i18n( "&Rename Folder..." ), this );
-    m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
+    m_renameFolderAction->setProperty( "popupdropper_svg_id", QStringLiteral("edit_group") );
     connect( m_renameFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotRenameFolder );
 
     m_deleteFolderAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-remove-amarok") ),
                                         i18n( "&Delete Folder" ), this );
-    m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
+    m_deleteFolderAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete_group") );
     m_deleteFolderAction->setObjectName( QStringLiteral("deleteAction") );
     connect( m_deleteFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotDeleteFolder );
 

@@ -44,7 +44,7 @@ class MyCollectionLocation : public CollectionLocation
 public:
     Collections::CollectionTestImpl *coll;
 
-    QString prettyLocation() const override { return "foo"; }
+    QString prettyLocation() const override { return QStringLiteral("foo"); }
     bool isWritable() const override { return true; }
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, QUrl> &sources, const Transcoding::Configuration& conf) override
     {
@@ -79,8 +79,8 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     ::testing::Mock::AllowLeak( track );
     Meta::TrackPtr trackPtr( track );
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
-    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + QLatin1Char('_') + artistName + QLatin1Char('_') + albumName ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( QLatin1Char('/') + track->uidUrl() ) ) );
     EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
     EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
@@ -161,12 +161,12 @@ TestOneWaySynchronizationJob::init()
 void
 TestOneWaySynchronizationJob::testAddTrackToTarget()
 {
-    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
-    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( QStringLiteral("source") );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( QStringLiteral("target") );
 
-    addMockTrack( source, "track1", "artist1", "album1" );
-    addMockTrack( source, "track2", "artist1", "album1" );
-    addMockTrack( target, "track1", "artist1", "album1" );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( source, QStringLiteral("track2"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( target, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -190,12 +190,12 @@ TestOneWaySynchronizationJob::testAddTrackToTarget()
 void
 TestOneWaySynchronizationJob::testAddAlbumToTarget()
 {
-    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
-    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( QStringLiteral("source") );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( QStringLiteral("target") );
 
-    addMockTrack( source, "track1", "artist1", "album1" );
-    addMockTrack( source, "track1", "artist1", "album2" );
-    addMockTrack( target, "track1", "artist1", "album1" );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album2") );
+    addMockTrack( target, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -219,12 +219,12 @@ TestOneWaySynchronizationJob::testAddAlbumToTarget()
 void
 TestOneWaySynchronizationJob::testAddArtistToTarget()
 {
-    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
-    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( QStringLiteral("source") );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( QStringLiteral("target") );
 
-    addMockTrack( source, "track1", "artist1", "album1" );
-    addMockTrack( source, "track1", "artist2", "album1" );
-    addMockTrack( target, "track1", "artist1", "album1" );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist2"), QStringLiteral("album1") );
+    addMockTrack( target, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -248,11 +248,11 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
 void
 TestOneWaySynchronizationJob::testEmptyTarget()
 {
-    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
-    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( QStringLiteral("source") );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( QStringLiteral("target") );
 
-    addMockTrack( source, "track1", "artist1", "album1" );
-    addMockTrack( source, "track2", "artist1", "album1" );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( source, QStringLiteral("track2"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -276,10 +276,10 @@ TestOneWaySynchronizationJob::testEmptyTarget()
 void
 TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
 {
-    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
-    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( QStringLiteral("source") );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( QStringLiteral("target") );
 
-    addMockTrack( target, "track1", "artist1", "album1" );
+    addMockTrack( target, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 0 );
@@ -303,8 +303,8 @@ TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
 void
 TestOneWaySynchronizationJob::testNoActionNecessary()
 {
-    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
-    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
+    Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( QStringLiteral("source") );
+    Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( QStringLiteral("target") );
 
     addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
     addMockTrack( source, QStringLiteral("track2"), QStringLiteral("artist1"), QStringLiteral("album1") );

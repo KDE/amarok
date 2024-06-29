@@ -34,21 +34,21 @@ TestImporterManager::initShouldLoadSettings()
 {
     KLocalizedString::setApplicationDomain("amarok-test");
     QVariantMap config;
-    config["uid"] = QString( "TestId" );
-    config["custom"] = QString( "custom" );
+    config[QStringLiteral("uid")] = QStringLiteral( "TestId" );
+    config[QStringLiteral("custom")] = QStringLiteral( "custom" );
 
     {
         NiceMock<MockManager> mock;
 
         EXPECT_CALL( mock, newInstance( Eq(config) ) ).WillOnce( Invoke( &mock, &MockManager::concreteNewInstance ) );
-        EXPECT_CALL( mock, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+        EXPECT_CALL( mock, type() ).WillRepeatedly( Return( QStringLiteral( "TestMockManager" ) ) );
 
         mock.init();
         mock.createProvider( config );
     }
 
     EXPECT_CALL( *m_mockManager, newInstance( Eq(config) ) );
-    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QStringLiteral( "TestMockManager" ) ) );
 
     m_mockManager->init();
 }
@@ -57,7 +57,7 @@ void
 TestImporterManager::creatingProviderShouldSetConfigAndParent()
 {
     QVariantMap cfg;
-    cfg["customField"] = QString( "I'm custom" );
+    cfg[QStringLiteral("customField")] = QStringLiteral( "I'm custom" );
 
     m_mockManager->init();
     StatSyncing::ProviderPtr providerPtr = m_mockManager->createProvider( cfg );
@@ -70,24 +70,24 @@ void
 TestImporterManager::creatingProviderShouldSaveSettings()
 {
     QVariantMap cfg;
-    cfg["uid"] = QString( "TestId" );
-    cfg["custom"] = QString( "custom" );
+    cfg[QStringLiteral("uid")] = QStringLiteral( "TestId" );
+    cfg[QStringLiteral("custom")] = QStringLiteral( "custom" );
 
-    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QStringLiteral( "TestMockManager" ) ) );
 
     m_mockManager->init();
     m_mockManager->createProvider( cfg );
 
-    KConfigGroup group = m_mockManager->providerConfig( "TestId" );
+    KConfigGroup group = m_mockManager->providerConfig( QStringLiteral("TestId") );
     QVERIFY( group.exists() );
-    QCOMPARE( group.readEntry( "uid", QString() ), QString( "TestId" ) );
-    QCOMPARE( group.readEntry( "custom", QString() ), QString( "custom" ) );
+    QCOMPARE( group.readEntry( "uid", QString() ), QStringLiteral( "TestId" ) );
+    QCOMPARE( group.readEntry( "custom", QString() ), QStringLiteral( "custom" ) );
 }
 
 void
 TestImporterManager::creatingProviderShouldSaveGeneratedId()
 {
-    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QString( "TestMockManager" ) ) );
+    EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly( Return( QStringLiteral( "TestMockManager" ) ) );
 
     QVERIFY( !m_mockManager->managerConfig().exists() );
 
@@ -162,7 +162,7 @@ void
 TestImporterManager::createProviderShouldRegisterProvider()
 {
     QVariantMap cfg;
-    cfg["uid"] = "uid";
+    cfg[QStringLiteral("uid")] = QStringLiteral("uid");
     StatSyncing::ImporterProviderPtr providerPtr( new NiceMock<MockProvider>( cfg, m_mockManager ) );
 
     m_mockManager->init();
@@ -190,10 +190,10 @@ void
 TestImporterManager::forgetProviderShouldForgetConfig()
 {
     QVariantMap cfg;
-    cfg.insert( "uid", "TestId" );
+    cfg.insert( QStringLiteral("uid"), QStringLiteral("TestId") );
 
     EXPECT_CALL( *m_mockManager, type() ).WillRepeatedly(
-                                                 Return( QString( "TestMockManager" ) ) );
+                                                 Return( QStringLiteral( "TestMockManager" ) ) );
 
     m_mockManager->init();
     StatSyncing::ProviderPtr providerPtr = m_mockManager->createProvider( cfg );

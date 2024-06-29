@@ -27,7 +27,7 @@ QTEST_GUILESS_MAIN( TestTrackSet )
 TestTrackSet::TestTrackSet()
 {
     QStringList testUids;
-    testUids << "uid-1" << "uid-2" << "uid-3" << "uid-4" << "uid-5" << "uid-6";
+    testUids << QStringLiteral("uid-1") << QStringLiteral("uid-2") << QStringLiteral("uid-3") << QStringLiteral("uid-4") << QStringLiteral("uid-5") << QStringLiteral("uid-6");
     m_trackCollection = new Dynamic::TrackCollection( testUids );
 
     QCOMPARE( m_trackCollection->count(), 6 );
@@ -69,13 +69,13 @@ TestTrackSet::testEmptyFull()
     QCOMPARE( set2.isFull(), true );
 
 
-    QCOMPARE( set2.contains("uid-1"), true );
+    QCOMPARE( set2.contains(QStringLiteral("uid-1")), true );
     QStringList testUids;
-    testUids << "uid-1";
+    testUids << QStringLiteral("uid-1");
     set2.subtract( testUids );
     QCOMPARE( set2.isEmpty(), false );
     QCOMPARE( set2.isFull(), false );
-    QCOMPARE( set2.contains("uid-1"), false );
+    QCOMPARE( set2.contains(QStringLiteral("uid-1")), false );
 
     Dynamic::TrackSet set3( m_trackCollection, false );
     QCOMPARE( set3.isEmpty(), true );
@@ -89,32 +89,32 @@ TestTrackSet::testUnite()
 
     // -- use string lists
     QStringList testUids;
-    testUids << "uid-1" << "uid-2";
+    testUids << QStringLiteral("uid-1") << QStringLiteral("uid-2");
     set.unite( testUids );
 
-    QCOMPARE( set.contains("uid-1"), true );
-    QCOMPARE( set.contains("uid-2"), true );
-    QCOMPARE( set.contains("uid-3"), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-1")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), false );
 
     QStringList testUids2;
-    testUids2 << "uid-2" << "uid-3";
+    testUids2 << QStringLiteral("uid-2") << QStringLiteral("uid-3");
     set.unite( testUids2 );
 
-    QCOMPARE( set.contains("uid-1"), true );
-    QCOMPARE( set.contains("uid-2"), true );
-    QCOMPARE( set.contains("uid-3"), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-1")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), true );
 
     // -- use another set
     QStringList testUids3;
-    testUids3 << "uid-3" << "uid-4";
+    testUids3 << QStringLiteral("uid-3") << QStringLiteral("uid-4");
     Dynamic::TrackSet set2( m_trackCollection, false );
     set2.unite( testUids3 );
 
     set.unite( set2 );
-    QCOMPARE( set.contains("uid-2"), true );
-    QCOMPARE( set.contains("uid-3"), true );
-    QCOMPARE( set.contains("uid-4"), true );
-    QCOMPARE( set.contains("uid-5"), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-4")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-5")), false );
 }
 
 void
@@ -124,31 +124,31 @@ TestTrackSet::testIntersect()
 
     // -- use string lists
     QStringList testUids;
-    testUids << "uid-1" << "uid-2";
+    testUids << QStringLiteral("uid-1") << QStringLiteral("uid-2");
     set.intersect( testUids );
 
-    QCOMPARE( set.contains("uid-1"), true );
-    QCOMPARE( set.contains("uid-2"), true );
-    QCOMPARE( set.contains("uid-3"), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-1")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), false );
 
     QStringList testUids2;
-    testUids2 << "uid-2" << "uid-3";
+    testUids2 << QStringLiteral("uid-2") << QStringLiteral("uid-3");
     set.intersect( testUids2 );
 
-    QCOMPARE( set.contains("uid-1"), false );
-    QCOMPARE( set.contains("uid-2"), true );
-    QCOMPARE( set.contains("uid-3"), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-1")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), false );
 
     // -- use another set
     QStringList testUids3;
-    testUids3 << "uid-2" << "uid-3";
+    testUids3 << QStringLiteral("uid-2") << QStringLiteral("uid-3");
     Dynamic::TrackSet set2( m_trackCollection, false );
     set2.unite( testUids3 );
 
     set.intersect( set2 );
-    QCOMPARE( set.contains("uid-2"), true );
-    QCOMPARE( set.contains("uid-3"), false );
-    QCOMPARE( set.contains("uid-4"), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-4")), false );
 }
 
 void
@@ -158,32 +158,32 @@ TestTrackSet::testSubtract()
 
     // -- use string lists
     QStringList testUids;
-    testUids << "uid-1" << "uid-2";
+    testUids << QStringLiteral("uid-1") << QStringLiteral("uid-2");
     set.subtract( testUids );
 
-    QCOMPARE( set.contains("uid-1"), false );
-    QCOMPARE( set.contains("uid-2"), false );
-    QCOMPARE( set.contains("uid-3"), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-1")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), true );
 
     QStringList testUids2;
-    testUids2 << "uid-2" << "uid-3";
+    testUids2 << QStringLiteral("uid-2") << QStringLiteral("uid-3");
     set.subtract( testUids2 );
 
-    QCOMPARE( set.contains("uid-1"), false );
-    QCOMPARE( set.contains("uid-2"), false );
-    QCOMPARE( set.contains("uid-3"), false );
-    QCOMPARE( set.contains("uid-4"), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-1")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-2")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-4")), true );
 
     // -- use another set
     QStringList testUids3;
-    testUids3 << "uid-3" << "uid-4";
+    testUids3 << QStringLiteral("uid-3") << QStringLiteral("uid-4");
     Dynamic::TrackSet set2( m_trackCollection, false );
     set2.unite( testUids3 );
 
     set.subtract( set2 );
-    QCOMPARE( set.contains("uid-3"), false );
-    QCOMPARE( set.contains("uid-4"), false );
-    QCOMPARE( set.contains("uid-5"), true );
+    QCOMPARE( set.contains(QStringLiteral("uid-3")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-4")), false );
+    QCOMPARE( set.contains(QStringLiteral("uid-5")), true );
 
 }
 

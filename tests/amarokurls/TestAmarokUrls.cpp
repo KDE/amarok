@@ -45,20 +45,20 @@ TestAmarokUrls::testConstructUrl()
 
     AmarokUrl url;
 
-    url.setCommand( "navigate" );
-    url.setPath( "collections" );
-    url.setArg( "filter", "artist:\"Code Monkeys\"" );
-    url.setArg( "levels", "artist-album" );
+    url.setCommand( QStringLiteral("navigate") );
+    url.setPath( QStringLiteral("collections") );
+    url.setArg( QStringLiteral("filter"), QStringLiteral("artist:\"Code Monkeys\"") );
+    url.setArg( QStringLiteral("levels"), QStringLiteral("artist-album") );
 
-    QCOMPARE( url.command(), QString( "navigate" ) );
-    QCOMPARE( url.path(), QString( "collections" ) );
+    QCOMPARE( url.command(), QStringLiteral( "navigate" ) );
+    QCOMPARE( url.path(), QStringLiteral( "collections" ) );
     QCOMPARE( url.args().size(), 2 );
-    QVERIFY( url.args().keys().contains( "filter" ) );
-    QVERIFY( url.args().keys().contains( "levels" ) );
-    QCOMPARE( url.args().value( "filter" ), QString( "artist:\"Code Monkeys\"" ) );
-    QCOMPARE( url.args().value( "levels" ), QString( "artist-album") );
+    QVERIFY( url.args().keys().contains( QStringLiteral("filter") ) );
+    QVERIFY( url.args().keys().contains( QStringLiteral("levels") ) );
+    QCOMPARE( url.args().value( QStringLiteral("filter") ), QStringLiteral( "artist:\"Code Monkeys\"" ) );
+    QCOMPARE( url.args().value( QStringLiteral("levels") ), QStringLiteral( "artist-album") );
 
-    QCOMPARE( url.prettyCommand(), The::amarokUrlHandler()->prettyCommand( "navigate" ) );
+    QCOMPARE( url.prettyCommand(), The::amarokUrlHandler()->prettyCommand( QStringLiteral("navigate") ) );
 
 
 }
@@ -68,23 +68,23 @@ void
 TestAmarokUrls::testUrlFromString()
 {
 
-    AmarokUrl url( "amarok://navigate/collections?filter=artist:\"Code Monkeys\"&levels=artist-album" );
+    AmarokUrl url( QStringLiteral("amarok://navigate/collections?filter=artist:\"Code Monkeys\"&levels=artist-album") );
 
-    QCOMPARE( url.command(), QString( "navigate" ) );
-    QCOMPARE( url.path(), QString( "collections" ) );
+    QCOMPARE( url.command(), QStringLiteral( "navigate" ) );
+    QCOMPARE( url.path(), QStringLiteral( "collections" ) );
     QCOMPARE( url.args().size(), 2 );
-    QVERIFY( url.args().keys().contains( "filter" ) );
-    QVERIFY( url.args().keys().contains( "levels" ) );
-    QCOMPARE( url.args().value( "filter" ), QString( "artist:\"Code Monkeys\"" ) );
-    QCOMPARE( url.args().value( "levels" ), QString( "artist-album") );
+    QVERIFY( url.args().keys().contains( QStringLiteral("filter") ) );
+    QVERIFY( url.args().keys().contains( QStringLiteral("levels") ) );
+    QCOMPARE( url.args().value( QStringLiteral("filter") ), QStringLiteral( "artist:\"Code Monkeys\"" ) );
+    QCOMPARE( url.args().value( QStringLiteral("levels") ), QStringLiteral( "artist-album") );
 
-    QCOMPARE( url.prettyCommand(), The::amarokUrlHandler()->prettyCommand( "navigate" ) );
+    QCOMPARE( url.prettyCommand(), The::amarokUrlHandler()->prettyCommand( QStringLiteral("navigate") ) );
 
 }
 
 void TestAmarokUrls::testEncoding()
 {
-    QString urlString( "amarok://navigate/collections?filter=artist:\"Code Monkeys\"&levels=artist-album" );
+    QString urlString( QStringLiteral("amarok://navigate/collections?filter=artist:\"Code Monkeys\"&levels=artist-album") );
     AmarokUrl url( urlString );
 
     QUrl qUrl( urlString );
@@ -93,7 +93,7 @@ void TestAmarokUrls::testEncoding()
 
 
     //check that we do  not "double encode" anything
-    AmarokUrl url2( "amarok://navigate/collections?filter=artist:%22Code%20Monkeys%22&levels=artist-album" );
+    AmarokUrl url2( QStringLiteral("amarok://navigate/collections?filter=artist:%22Code%20Monkeys%22&levels=artist-album") );
     QCOMPARE( url2.url(), QString( qUrl.toEncoded() ) );
 }
 

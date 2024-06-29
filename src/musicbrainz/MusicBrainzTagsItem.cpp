@@ -201,7 +201,7 @@ MusicBrainzTagsItem::data( const int column ) const
                 QString title;
                 int trackNumber = m_track->trackNumber();
                 if( trackNumber > 0 )
-                    title += QString( "%1 - " ).arg( trackNumber );
+                    title += QStringLiteral( "%1 - " ).arg( trackNumber );
                 title += m_track->prettyName();
                 return title;
             }
@@ -214,7 +214,7 @@ MusicBrainzTagsItem::data( const int column ) const
                 QString album = m_track->album()->name();
                 int discNumber = m_track->discNumber();
                 if( discNumber > 0 )
-                    album += QString( " (disc %1)" ).arg( discNumber );
+                    album += QStringLiteral( " (disc %1)" ).arg( discNumber );
                 return album;
             }
         case 3:
@@ -238,8 +238,8 @@ MusicBrainzTagsItem::data( const int column ) const
                 title += trackNumber.toString();
                 int trackCount = dataValue( MusicBrainz::TRACKCOUNT ).toInt();
                 if ( trackCount > 0 )
-                    title += QString( "/%1" ).arg( trackCount );
-                title += " - ";
+                    title += QStringLiteral( "/%1" ).arg( trackCount );
+                title += QStringLiteral(" - ");
             }
             title += dataValue( Meta::Field::TITLE ).toString();
             return title;
@@ -251,7 +251,7 @@ MusicBrainzTagsItem::data( const int column ) const
             QString album = dataValue( Meta::Field::ALBUM ).toString();
             int discNumber = dataValue( Meta::Field::DISCNUMBER ).toInt();
             if( discNumber > 0 )
-                album += QString( " (disc %1)" ).arg( discNumber );
+                album += QStringLiteral( " (disc %1)" ).arg( discNumber );
             return album;
         }
     case 3:

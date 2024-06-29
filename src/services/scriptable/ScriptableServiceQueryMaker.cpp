@@ -272,7 +272,7 @@ void ScriptableServiceQueryMaker::fetchArtists()
         {
             Meta::ArtistList allArtists = m_collection->artistMap().values();
 
-            foreach ( Meta::ArtistPtr artistPtr, allArtists )
+            for( Meta::ArtistPtr artistPtr : allArtists )
             {
                 Meta::ScriptableServiceArtist *scArtist = dynamic_cast<Meta::ScriptableServiceArtist *> ( artistPtr.data() );
                 if ( scArtist && scArtist->genreId() == d->parentId )
@@ -366,7 +366,7 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
             {
                 Meta::ArtistList allArtists = m_collection->artistMap().values();
 
-                foreach ( Meta::ArtistPtr artistPtr, allArtists )
+                for( Meta::ArtistPtr artistPtr : allArtists )
                 {
                     Meta::ScriptableServiceArtist *scArtist = dynamic_cast<Meta::ScriptableServiceArtist *> ( artistPtr.data() );
 

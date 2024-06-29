@@ -135,7 +135,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     int remainingSeconds = qMax(0, int((trackLength - ms) / 1000));
 
     QString sSeconds = Meta::secToPrettyTime( seconds );
-    QString sRemainingSeconds = '-' + Meta::secToPrettyTime( remainingSeconds );
+    QString sRemainingSeconds = QLatin1Char('-') + Meta::secToPrettyTime( remainingSeconds );
 
     if( AmarokConfig::leftTimeDisplayRemaining() )
     {
@@ -201,7 +201,7 @@ ProgressWidget::trackLengthChanged( qint64 milliseconds )
 
     const int timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
     QFontMetrics tFm( m_timeLabelRight->font() );
-    const int labelSize = tFm.horizontalAdvance(QChar('0')) * timeLength;
+    const int labelSize = tFm.horizontalAdvance(QLatin1Char('0')) * timeLength;
 
     //set the sizes of the labels to the max needed by the length of the track
     //this way the progressbar will not change size during playback of a track
@@ -243,12 +243,12 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
             debug() << "found " << list.count() << " timecodes on this track";
             for( AmarokUrlPtr url : list )
             {
-                if ( url->command() == "play" )
+                if ( url->command() == QStringLiteral("play") )
                 {
 
-                    if ( url->args().keys().contains( "pos" ) )
+                    if ( url->args().keys().contains( QStringLiteral("pos") ) )
                     {
-                        int pos = url->args().value( "pos" ).toDouble() * 1000;
+                        int pos = url->args().value( QStringLiteral("pos") ).toDouble() * 1000;
                         debug() << "showing timecode: " << url->name() << " at " << pos ;
                         addBookmark( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ));
                     }

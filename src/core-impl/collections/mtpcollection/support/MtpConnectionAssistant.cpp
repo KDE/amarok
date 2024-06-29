@@ -48,7 +48,7 @@ MtpConnectionAssistant::identify( const QString& udi )
 
     debug() << "Supported Protocols: " << pmp->supportedProtocols();
 
-    return pmp->supportedProtocols().contains( "mtp" );
+    return pmp->supportedProtocols().contains( QStringLiteral("mtp") );
 }
 
 

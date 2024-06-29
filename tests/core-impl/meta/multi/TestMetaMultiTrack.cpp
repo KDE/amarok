@@ -60,7 +60,7 @@ void TestMetaMultiTrack::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QString path = QString( AMAROK_TEST_DIR ) + "/data/playlists/test.pls";
+    const QString path = QStringLiteral( AMAROK_TEST_DIR ) + QStringLiteral("/data/playlists/test.pls");
     const QFileInfo file( QDir::toNativeSeparators( path ) );
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
@@ -72,7 +72,7 @@ void TestMetaMultiTrack::initTestCase()
     if( m_playlist->trackCount() < 0 )
         QVERIFY( spy.wait( 5000 ) );
 
-    QCOMPARE( m_playlist->name(), QString("test.pls") );
+    QCOMPARE( m_playlist->name(), QStringLiteral("test.pls") );
     QCOMPARE( m_playlist->trackCount(), 4 );
 
     // now wait for all MetaProxy::Tracks to actually load their real tracks:
@@ -103,10 +103,10 @@ void TestMetaMultiTrack::testSources()
 {
     QStringList sources = m_testMultiTrack->sources();
     QCOMPARE( sources.size(), 4 );
-    QCOMPARE( sources.at( 0 ), QString( "http://85.214.44.27:8000" ) );
-    QCOMPARE( sources.at( 1 ), QString( "http://217.20.121.40:8000" ) );
-    QCOMPARE( sources.at( 2 ), QString( "http://85.214.44.27:8100" ) );
-    QCOMPARE( sources.at( 3 ), QString( "http://85.214.44.27:8200" ) );
+    QCOMPARE( sources.at( 0 ), QStringLiteral( "http://85.214.44.27:8000" ) );
+    QCOMPARE( sources.at( 1 ), QStringLiteral( "http://217.20.121.40:8000" ) );
+    QCOMPARE( sources.at( 2 ), QStringLiteral( "http://85.214.44.27:8100" ) );
+    QCOMPARE( sources.at( 3 ), QStringLiteral( "http://85.214.44.27:8200" ) );
 }
 
 void TestMetaMultiTrack::testSetSourceCurrentNextUrl()

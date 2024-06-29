@@ -33,24 +33,24 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const QUrl &url)
 
     QString pristineUrl = url.url();
 
-    if ( pristineUrl.startsWith( "http://magnatune.com/playlist_redirect.php?url=" ) ) {
+    if ( pristineUrl.startsWith( QStringLiteral("http://magnatune.com/playlist_redirect.php?url=") ) ) {
 
         //if we are not a member of the right type, we need to preserve this or we will not be able to play the track. Actually... use the original url in any case so plays are attributed to the person whose playlist it is...
         QString orgUrl = pristineUrl;
 
-        int endIndex = pristineUrl.indexOf( "&key=" );
+        int endIndex = pristineUrl.indexOf( QStringLiteral("&key=") );
 
         pristineUrl = pristineUrl.mid( 47, endIndex - 47 );
 
         //debug() << "got redirected url: " << pristineUrl;
 
 
-        pristineUrl.remove( "_nospeech" );
-        pristineUrl.replace( ".ogg", ".mp3" );
-        pristineUrl.replace( "-lofi.mp3", ".mp3" );
+        pristineUrl.remove( QStringLiteral("_nospeech") );
+        pristineUrl.replace( QStringLiteral(".ogg"), QStringLiteral(".mp3") );
+        pristineUrl.replace( QStringLiteral("-lofi.mp3"), QStringLiteral(".mp3") );
 
-        pristineUrl.replace( QRegularExpression( "http://download" ), "http://he3" );
-        pristineUrl.replace( QRegularExpression( "http://stream" ), "http://he3" );
+        pristineUrl.replace( QRegularExpression( QStringLiteral("http://download") ), QStringLiteral("http://he3") );
+        pristineUrl.replace( QRegularExpression( QStringLiteral("http://stream") ), QStringLiteral("http://he3") );
 
         //debug() << "after a quick makeover: " << pristineUrl;
 
@@ -68,12 +68,12 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const QUrl &url)
 
     } else {
 
-        pristineUrl.remove( "_nospeech" );
-        pristineUrl.replace( ".ogg", ".mp3" );
-        pristineUrl.replace( "-lofi.mp3", ".mp3" );
+        pristineUrl.remove( QStringLiteral("_nospeech") );
+        pristineUrl.replace( QStringLiteral(".ogg"), QStringLiteral(".mp3") );
+        pristineUrl.replace( QStringLiteral("-lofi.mp3"), QStringLiteral(".mp3") );
 
-        pristineUrl.replace( QRegularExpression( ".*:.*@download" ), "http://he3" );
-        pristineUrl.replace( QRegularExpression( ".*:.*@stream" ), "http://he3" );
+        pristineUrl.replace( QRegularExpression( QStringLiteral(".*:.*@download") ), QStringLiteral("http://he3") );
+        pristineUrl.replace( QRegularExpression( QStringLiteral(".*:.*@stream") ), QStringLiteral("http://he3") );
 
         return ServiceSqlCollection::trackForUrl( QUrl( pristineUrl ) );
 

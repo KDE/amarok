@@ -282,7 +282,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->withoutDuplicates = true;
             d->linkedTables |= Private::ARTIST_TAB;
             //reading the ids from the database means we don't have to query for them later
-            d->queryReturnValues = "artists.name, artists.id";
+            d->queryReturnValues = QStringLiteral("artists.name, artists.id");
         }
         return this;
 
@@ -293,7 +293,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->withoutDuplicates = true;
             d->linkedTables |= Private::ALBUM_TAB;
             //add whatever is necessary to identify compilations
-            d->queryReturnValues = "albums.name, albums.id, albums.artist";
+            d->queryReturnValues = QStringLiteral("albums.name, albums.id, albums.artist");
         }
         return this;
 
@@ -304,7 +304,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->withoutDuplicates = true;
             d->linkedTables |= Private::ALBUMARTIST_TAB;
             d->linkedTables |= Private::ALBUM_TAB;
-            d->queryReturnValues = "albumartists.name, albumartists.id";
+            d->queryReturnValues = QStringLiteral("albumartists.name, albumartists.id");
         }
         return this;
 
@@ -314,7 +314,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryType = QueryMaker::Composer;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::COMPOSER_TAB;
-            d->queryReturnValues = "composers.name, composers.id";
+            d->queryReturnValues = QStringLiteral("composers.name, composers.id");
         }
         return this;
 
@@ -324,7 +324,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryType = QueryMaker::Genre;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::GENRE_TAB;
-            d->queryReturnValues = "genres.name, genres.id";
+            d->queryReturnValues = QStringLiteral("genres.name, genres.id");
         }
         return this;
 
@@ -334,7 +334,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryType = QueryMaker::Year;
             d->withoutDuplicates = true;
             d->linkedTables |= Private::YEAR_TAB;
-            d->queryReturnValues = "years.name, years.id";
+            d->queryReturnValues = QStringLiteral("years.name, years.id");
         }
         return this;
 
@@ -348,7 +348,7 @@ SqlQueryMaker::setQueryType( QueryType type )
         {
             d->queryType = QueryMaker::Label;
             d->withoutDuplicates = true;
-            d->queryReturnValues = "labels.label,labels.id";
+            d->queryReturnValues = QStringLiteral("labels.label,labels.id");
             d->linkedTables |= Private::LABELS_TAB;
         }
         return this;
@@ -386,7 +386,7 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
         }
         int deviceid = m_collection->mountPointManager()->getIdForUrl( QUrl::fromUserInput(path) );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
-        d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
+        d->queryMatch += QStringLiteral( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
     }
     return this;
@@ -410,20 +410,20 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour beh
     }
     else
     {
-        artistQuery = "( artists.name IS NULL OR artists.name = '')";
-        albumArtistQuery = "( albumartists.name IS NULL OR albumartists.name = '')";
+        artistQuery = QStringLiteral("( artists.name IS NULL OR artists.name = '')");
+        albumArtistQuery = QStringLiteral("( albumartists.name IS NULL OR albumartists.name = '')");
     }
 
     switch( behaviour )
     {
     case TrackArtists:
-        d->queryMatch += " AND " + artistQuery;
+        d->queryMatch += QStringLiteral(" AND ") + artistQuery;
         break;
     case AlbumArtists:
-        d->queryMatch += " AND " + albumArtistQuery;
+        d->queryMatch += QStringLiteral(" AND ") + albumArtistQuery;
         break;
     case AlbumOrTrackArtists:
-        d->queryMatch += " AND ( (" + artistQuery + " ) OR ( " + albumArtistQuery + " ) )";
+        d->queryMatch += QStringLiteral(" AND ( (") + artistQuery + QStringLiteral(" ) OR ( ") + albumArtistQuery + QStringLiteral(" ) )");
         break;
     }
     return this;
@@ -436,9 +436,9 @@ SqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
 
     // handle singles
     if( !album || album->name().isEmpty() )
-        d->queryMatch += QString( " AND ( albums.name IS NULL OR albums.name = '' )" );
+        d->queryMatch += QStringLiteral( " AND ( albums.name IS NULL OR albums.name = '' )" );
     else
-        d->queryMatch += QString( " AND albums.name = '%1'" ).arg( escape( album->name() ) );
+        d->queryMatch += QStringLiteral( " AND albums.name = '%1'" ).arg( escape( album->name() ) );
 
     if( album )
     {
@@ -447,11 +447,11 @@ SqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
         if( albumArtist )
         {
             d->linkedTables |= Private::ALBUMARTIST_TAB;
-            d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( albumArtist->name() ) );
+            d->queryMatch += QStringLiteral( " AND albumartists.name = '%1'" ).arg( escape( albumArtist->name() ) );
         }
         else
         {
-            d->queryMatch += " AND albums.artist IS NULL";
+            d->queryMatch += QStringLiteral(" AND albums.artist IS NULL");
         }
     }
     return this;
@@ -461,7 +461,7 @@ QueryMaker*
 SqlQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     d->linkedTables |= Private::GENRE_TAB;
-    d->queryMatch += QString( " AND genres.name = '%1'" ).arg( escape( genre->name() ) );
+    d->queryMatch += QStringLiteral( " AND genres.name = '%1'" ).arg( escape( genre->name() ) );
     return this;
 }
 
@@ -469,7 +469,7 @@ QueryMaker*
 SqlQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     d->linkedTables |= Private::COMPOSER_TAB;
-    d->queryMatch += QString( " AND composers.name = '%1'" ).arg( escape( composer->name() ) );
+    d->queryMatch += QStringLiteral( " AND composers.name = '%1'" ).arg( escape( composer->name() ) );
     return this;
 }
 
@@ -479,12 +479,12 @@ SqlQueryMaker::addMatch( const Meta::YearPtr &year )
     // handle tracks without a year
     if( !year )
     {
-        d->queryMatch += " AND year IS NULL";
+        d->queryMatch += QStringLiteral(" AND year IS NULL");
     }
     else
     {
         d->linkedTables |= Private::YEAR_TAB;
-        d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
+        d->queryMatch += QStringLiteral( " AND years.name = '%1'" ).arg( escape( year->name() ) );
     }
     return this;
 }
@@ -496,16 +496,16 @@ SqlQueryMaker::addMatch( const Meta::LabelPtr &label )
     QString labelSubQuery;
     if( sqlLabel )
     {
-        labelSubQuery = "SELECT url FROM urls_labels WHERE label = %1";
+        labelSubQuery = QStringLiteral("SELECT url FROM urls_labels WHERE label = %1");
         labelSubQuery = labelSubQuery.arg( sqlLabel->id() );
     }
     else
     {
-        labelSubQuery = "SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label = '%1'";
+        labelSubQuery = QStringLiteral("SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label = '%1'");
         labelSubQuery = labelSubQuery.arg( escape( label->name() ) );
     }
     d->linkedTables |= Private::TAGS_TAB;
-    QString match = " AND tracks.url in (%1)";
+    QString match = QStringLiteral(" AND tracks.url in (%1)");
     d->queryMatch += match.arg( labelSubQuery );
     return this;
 }
@@ -518,19 +518,19 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
         d->linkedTables |= Private::ALBUM_TAB;
-        d->queryFilter += QString( " %1 ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
+        d->queryFilter += QStringLiteral( " %1 ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
     }
     else if( value == Meta::valLabel )
     {
         d->linkedTables |= Private::TAGS_TAB;
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        QString filter = " %1 tracks.url IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
+        QString filter = QStringLiteral(" %1 tracks.url IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ");
         d->queryFilter += filter.arg( andOr(), like );
     }
     else
     {
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+        d->queryFilter += QStringLiteral( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     }
     return this;
 }
@@ -542,19 +542,19 @@ SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBeg
     if( value == Meta::valAlbumArtist && filter.isEmpty() )
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
-        d->queryFilter += QString( " %1 NOT ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
+        d->queryFilter += QStringLiteral( " %1 NOT ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
     }
     else if( value == Meta::valLabel )
     {
         d->linkedTables |= Private::TAGS_TAB;
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        QString filter = " %1 tracks.url NOT IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
+        QString filter = QStringLiteral(" %1 tracks.url NOT IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ");
         d->queryFilter += filter.arg( andOr(), like );
     }
     else
     {
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+        d->queryFilter += QStringLiteral( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     }
     return this;
 }
@@ -566,18 +566,18 @@ SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberC
     switch( compare )
     {
         case QueryMaker::Equals:
-            comparison = '=';
+            comparison = QLatin1Char('=');
             break;
         case QueryMaker::GreaterThan:
-            comparison = '>';
+            comparison = QLatin1Char('>');
             break;
         case QueryMaker::LessThan:
-            comparison = '<';
+            comparison = QLatin1Char('<');
             break;
     }
 
     // note: a NULL value in the database means undefined and not 0!
-    d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    d->queryFilter += QStringLiteral( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
 
     return this;
 }
@@ -589,19 +589,19 @@ SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Num
     switch( compare )
     {
         case QueryMaker::Equals:
-            comparison = "!=";
+            comparison = QStringLiteral("!=");
             break;
         case QueryMaker::GreaterThan:   //negating greater than is less or equal
-            comparison = "<=";
+            comparison = QStringLiteral("<=");
             break;
         case QueryMaker::LessThan:      //negating less than is greater or equal
-            comparison = ">=";
+            comparison = QStringLiteral(">=");
             break;
     }
 
     // note: a NULL value in the database means undefined and not 0!
     // We can't exclude NULL values here because they are not defined!
-    d->queryFilter += QString( " %1 (%2 %3 %4 or %2 is null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    d->queryFilter += QStringLiteral( " %1 (%2 %3 %4 or %2 is null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
 
     return this;
 }
@@ -612,7 +612,7 @@ SqlQueryMaker::addReturnValue( qint64 value )
     if( d->queryType == QueryMaker::Custom )
     {
         if ( !d->queryReturnValues.isEmpty() )
-            d->queryReturnValues += ',';
+            d->queryReturnValues += QLatin1Char(',');
         d->queryReturnValues += nameForValue( value );
         d->returnValueType = value;
     }
@@ -625,26 +625,26 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
     if( d->queryType == QueryMaker::Custom )
     {
         if( !d->queryReturnValues.isEmpty() )
-            d->queryReturnValues += ',';
+            d->queryReturnValues += QLatin1Char(',');
         QString sqlfunction;
         switch( function )
         {
             case QueryMaker::Count:
-                sqlfunction = "COUNT";
+                sqlfunction = QStringLiteral("COUNT");
                 break;
             case QueryMaker::Sum:
-                sqlfunction = "SUM";
+                sqlfunction = QStringLiteral("SUM");
                 break;
             case QueryMaker::Max:
-                sqlfunction = "MAX";
+                sqlfunction = QStringLiteral("MAX");
                 break;
             case QueryMaker::Min:
-                sqlfunction = "MIN";
+                sqlfunction = QStringLiteral("MIN");
                 break;
             default:
-                sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + QString::number( function );
+                sqlfunction = QStringLiteral("Unknown function in SqlQueryMaker::addReturnFunction, function was: ") + QString::number( function );
         }
-        d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
+        d->queryReturnValues += QStringLiteral( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
         d->returnValueType = value;
     }
     return this;
@@ -654,11 +654,11 @@ QueryMaker*
 SqlQueryMaker::orderBy( qint64 value, bool descending )
 {
     if ( d->queryOrderBy.isEmpty() )
-        d->queryOrderBy = " ORDER BY ";
+        d->queryOrderBy = QStringLiteral(" ORDER BY ");
     else
-        d->queryOrderBy += ',';
+        d->queryOrderBy += QLatin1Char(',');
     d->queryOrderBy += nameForValue( value );
-    d->queryOrderBy += QString( " %1 " ).arg( descending ? "DESC" : "ASC" );
+    d->queryOrderBy += QStringLiteral( " %1 " ).arg( descending ? QStringLiteral("DESC") : QStringLiteral("ASC") );
     return this;
 }
 
@@ -691,7 +691,7 @@ QueryMaker*
 SqlQueryMaker::beginAnd()
 {
     d->queryFilter += andOr();
-    d->queryFilter += " ( 1 ";
+    d->queryFilter += QStringLiteral(" ( 1 ");
     d->andStack.push( true );
     return this;
 }
@@ -700,7 +700,7 @@ QueryMaker*
 SqlQueryMaker::beginOr()
 {
     d->queryFilter += andOr();
-    d->queryFilter += " ( 0 ";
+    d->queryFilter += QStringLiteral(" ( 0 ");
     d->andStack.push( false );
     return this;
 }
@@ -708,7 +708,7 @@ SqlQueryMaker::beginOr()
 QueryMaker*
 SqlQueryMaker::endAndOr()
 {
-    d->queryFilter += ')';
+    d->queryFilter += QLatin1Char(')');
     d->andStack.pop();
     return this;
 }
@@ -720,16 +720,16 @@ SqlQueryMaker::linkTables()
     {
         case QueryMaker::Track:
         {
-            d->queryFrom += " tracks";
+            d->queryFrom += QStringLiteral(" tracks");
             if( d->linkedTables & Private::TAGS_TAB )
                 d->linkedTables ^= Private::TAGS_TAB;
             break;
         }
         case QueryMaker::Artist:
         {
-            d->queryFrom += " artists";
+            d->queryFrom += QStringLiteral(" artists");
             if( d->linkedTables != Private::ARTIST_TAB )
-                d->queryFrom += " JOIN tracks ON tracks.artist = artists.id";
+                d->queryFrom += QStringLiteral(" JOIN tracks ON tracks.artist = artists.id");
             if( d->linkedTables & Private::ARTIST_TAB )
                 d->linkedTables ^= Private::ARTIST_TAB;
             break;
@@ -737,46 +737,46 @@ SqlQueryMaker::linkTables()
         case QueryMaker::Album:
         case QueryMaker::AlbumArtist:
         {
-            d->queryFrom += " albums";
+            d->queryFrom += QStringLiteral(" albums");
             if( d->linkedTables != Private::ALBUM_TAB && d->linkedTables != ( Private::ALBUM_TAB | Private::ALBUMARTIST_TAB ) )
-                d->queryFrom += " JOIN tracks ON tracks.album = albums.id";
+                d->queryFrom += QStringLiteral(" JOIN tracks ON tracks.album = albums.id");
             if( d->linkedTables & Private::ALBUM_TAB )
                 d->linkedTables ^= Private::ALBUM_TAB;
             break;
         }
         case QueryMaker::Genre:
         {
-            d->queryFrom += " genres";
+            d->queryFrom += QStringLiteral(" genres");
             if( d->linkedTables != Private::GENRE_TAB )
-                d->queryFrom += " INNER JOIN tracks ON tracks.genre = genres.id";
+                d->queryFrom += QStringLiteral(" INNER JOIN tracks ON tracks.genre = genres.id");
             if( d->linkedTables & Private::GENRE_TAB )
                 d->linkedTables ^= Private::GENRE_TAB;
             break;
         }
         case QueryMaker::Composer:
         {
-            d->queryFrom += " composers";
+            d->queryFrom += QStringLiteral(" composers");
             if( d->linkedTables != Private::COMPOSER_TAB )
-                d->queryFrom += " JOIN tracks ON tracks.composer = composers.id";
+                d->queryFrom += QStringLiteral(" JOIN tracks ON tracks.composer = composers.id");
             if( d->linkedTables & Private::COMPOSER_TAB )
                 d->linkedTables ^= Private::COMPOSER_TAB;
             break;
         }
         case QueryMaker::Year:
         {
-            d->queryFrom += " years";
+            d->queryFrom += QStringLiteral(" years");
             if( d->linkedTables != Private::YEAR_TAB )
-                d->queryFrom += " JOIN tracks on tracks.year = years.id";
+                d->queryFrom += QStringLiteral(" JOIN tracks on tracks.year = years.id");
             if( d->linkedTables & Private::YEAR_TAB )
                 d->linkedTables ^= Private::YEAR_TAB;
             break;
         }
         case QueryMaker::Label:
         {
-            d->queryFrom += " labels";
+            d->queryFrom += QStringLiteral(" labels");
             if( d->linkedTables != Private::LABELS_TAB )
-                d->queryFrom += " INNER JOIN urls_labels ON labels.id = urls_labels.label"
-                                " INNER JOIN tracks ON urls_labels.url = tracks.url";
+                d->queryFrom += QStringLiteral(" INNER JOIN urls_labels ON labels.id = urls_labels.label"
+                                " INNER JOIN tracks ON urls_labels.url = tracks.url");
             if( d->linkedTables & Private::LABELS_TAB )
                 d->linkedTables ^= Private::LABELS_TAB;
             break;
@@ -788,14 +788,14 @@ SqlQueryMaker::linkTables()
                 default:
                 case Meta::valUrl:
                 {
-                    d->queryFrom += " tracks";
+                    d->queryFrom += QStringLiteral(" tracks");
                     if( d->linkedTables & Private::TAGS_TAB )
                         d->linkedTables ^= Private::TAGS_TAB;
                     break;
                 }
                 case Meta::valAlbum:
                 {
-                    d->queryFrom += " albums";
+                    d->queryFrom += QStringLiteral(" albums");
                     if( d->linkedTables & Private::ALBUM_TAB )
                         d->linkedTables ^= Private::ALBUM_TAB;
                     if( d->linkedTables & Private::URLS_TAB )
@@ -804,7 +804,7 @@ SqlQueryMaker::linkTables()
                 }
                 case Meta::valArtist:
                {
-                    d->queryFrom += " artists";
+                    d->queryFrom += QStringLiteral(" artists");
                     if( d->linkedTables & Private::ARTIST_TAB )
                         d->linkedTables ^= Private::ARTIST_TAB;
                     if( d->linkedTables & Private::URLS_TAB )
@@ -813,7 +813,7 @@ SqlQueryMaker::linkTables()
                 }
                 case Meta::valGenre:
                 {
-                    d->queryFrom += " genres";
+                    d->queryFrom += QStringLiteral(" genres");
                     if( d->linkedTables & Private::GENRE_TAB )
                         d->linkedTables ^= Private::GENRE_TAB;
                     if( d->linkedTables & Private::URLS_TAB )
@@ -832,28 +832,28 @@ SqlQueryMaker::linkTables()
         return;
 
     if( d->linkedTables & Private::URLS_TAB )
-        d->queryFrom += " INNER JOIN urls ON tracks.url = urls.id";
+        d->queryFrom += QStringLiteral(" INNER JOIN urls ON tracks.url = urls.id");
     if( d->linkedTables & Private::ARTIST_TAB )
-        d->queryFrom += " LEFT JOIN artists ON tracks.artist = artists.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN artists ON tracks.artist = artists.id");
     if( d->linkedTables & Private::ALBUM_TAB )
-        d->queryFrom += " LEFT JOIN albums ON tracks.album = albums.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN albums ON tracks.album = albums.id");
     if( d->linkedTables & Private::ALBUMARTIST_TAB )
-        d->queryFrom += " LEFT JOIN artists AS albumartists ON albums.artist = albumartists.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN artists AS albumartists ON albums.artist = albumartists.id");
     if( d->linkedTables & Private::GENRE_TAB )
-        d->queryFrom += " LEFT JOIN genres ON tracks.genre = genres.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN genres ON tracks.genre = genres.id");
     if( d->linkedTables & Private::COMPOSER_TAB )
-        d->queryFrom += " LEFT JOIN composers ON tracks.composer = composers.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN composers ON tracks.composer = composers.id");
     if( d->linkedTables & Private::YEAR_TAB )
-        d->queryFrom += " LEFT JOIN years ON tracks.year = years.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN years ON tracks.year = years.id");
     if( d->linkedTables & Private::STATISTICS_TAB )
     {
         if( d->linkedTables & Private::URLS_TAB )
         {
-            d->queryFrom += " LEFT JOIN statistics ON urls.id = statistics.url";
+            d->queryFrom += QStringLiteral(" LEFT JOIN statistics ON urls.id = statistics.url");
         }
         else
         {
-            d->queryFrom += " LEFT JOIN statistics ON tracks.url = statistics.url";
+            d->queryFrom += QStringLiteral(" LEFT JOIN statistics ON tracks.url = statistics.url");
         }
     }
 }
@@ -864,17 +864,17 @@ SqlQueryMaker::buildQuery()
     //URLS is always required for dynamic collection
     d->linkedTables |= Private::URLS_TAB;
     linkTables();
-    QString query = "SELECT ";
+    QString query = QStringLiteral("SELECT ");
     if ( d->withoutDuplicates )
-        query += "DISTINCT ";
+        query += QStringLiteral("DISTINCT ");
     query += d->queryReturnValues;
-    query += " FROM ";
+    query += QStringLiteral(" FROM ");
     query += d->queryFrom;
 
     // dynamic collection (only mounted file systems are considered)
     if( (d->linkedTables & Private::URLS_TAB) && m_collection->mountPointManager() )
     {
-        query += " WHERE 1 ";
+        query += QStringLiteral(" WHERE 1 ");
         IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
         if( !list.isEmpty() )
         {
@@ -882,20 +882,20 @@ SqlQueryMaker::buildQuery()
             for( int id : list )
             {
                 if( !commaSeparatedIds.isEmpty() )
-                    commaSeparatedIds += ',';
+                    commaSeparatedIds += QLatin1Char(',');
                 commaSeparatedIds += QString::number( id );
             }
-            query += QString( " AND urls.deviceid in (%1)" ).arg( commaSeparatedIds );
+            query += QStringLiteral( " AND urls.deviceid in (%1)" ).arg( commaSeparatedIds );
         }
     }
 
     switch( d->albumMode )
     {
         case OnlyNormalAlbums:
-            query += " AND albums.artist IS NOT NULL ";
+            query += QStringLiteral(" AND albums.artist IS NOT NULL ");
             break;
         case OnlyCompilations:
-            query += " AND albums.artist IS NULL ";
+            query += QStringLiteral(" AND albums.artist IS NULL ");
             break;
         case AllAlbums:
             //do nothing
@@ -906,31 +906,31 @@ SqlQueryMaker::buildQuery()
         switch( d->labelMode )
         {
         case QueryMaker::OnlyWithLabels:
-            query += " AND tracks.url IN ";
+            query += QStringLiteral(" AND tracks.url IN ");
             break;
 
         case QueryMaker::OnlyWithoutLabels:
-            query += " AND tracks.url NOT IN ";
+            query += QStringLiteral(" AND tracks.url NOT IN ");
             break;
 
         case QueryMaker::NoConstraint:
             //do nothing, will never be called
             break;
         }
-        query += " (SELECT DISTINCT url FROM urls_labels) ";
+        query += QStringLiteral(" (SELECT DISTINCT url FROM urls_labels) ");
     }
 
     query += d->queryMatch;
     if ( !d->queryFilter.isEmpty() )
     {
-        query += " AND ( 1 ";
+        query += QStringLiteral(" AND ( 1 ");
         query += d->queryFilter;
-        query += " ) ";
+        query += QStringLiteral(" ) ");
     }
     query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
-        query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
-    query += ';';
+        query += QStringLiteral( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
+    query += QLatin1Char(';');
     d->query = query;
 }
 
@@ -1017,91 +1017,91 @@ SqlQueryMaker::nameForValue( qint64 value )
     {
         case Meta::valUrl:
             d->linkedTables |= Private::URLS_TAB;
-            return "urls.rpath";  //TODO figure out how to handle deviceid
+            return QStringLiteral("urls.rpath");  //TODO figure out how to handle deviceid
         case Meta::valTitle:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.title";
+            return QStringLiteral("tracks.title");
         case Meta::valArtist:
             d->linkedTables |= Private::ARTIST_TAB;
-            return "artists.name";
+            return QStringLiteral("artists.name");
         case Meta::valAlbum:
             d->linkedTables |= Private::ALBUM_TAB;
-            return "albums.name";
+            return QStringLiteral("albums.name");
         case Meta::valGenre:
             d->linkedTables |= Private::GENRE_TAB;
-            return "genres.name";
+            return QStringLiteral("genres.name");
         case Meta::valComposer:
             d->linkedTables |= Private::COMPOSER_TAB;
-            return "composers.name";
+            return QStringLiteral("composers.name");
         case Meta::valYear:
             d->linkedTables |= Private::YEAR_TAB;
-            return "years.name";
+            return QStringLiteral("years.name");
         case Meta::valBpm:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.bpm";
+            return QStringLiteral("tracks.bpm");
         case Meta::valComment:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.comment";
+            return QStringLiteral("tracks.comment");
         case Meta::valTrackNr:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.tracknumber";
+            return QStringLiteral("tracks.tracknumber");
         case Meta::valDiscNr:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.discnumber";
+            return QStringLiteral("tracks.discnumber");
         case Meta::valLength:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.length";
+            return QStringLiteral("tracks.length");
         case Meta::valBitrate:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.bitrate";
+            return QStringLiteral("tracks.bitrate");
         case Meta::valSamplerate:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.samplerate";
+            return QStringLiteral("tracks.samplerate");
         case Meta::valFilesize:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.filesize";
+            return QStringLiteral("tracks.filesize");
         case Meta::valFormat:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.filetype";
+            return QStringLiteral("tracks.filetype");
         case Meta::valCreateDate:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.createdate";
+            return QStringLiteral("tracks.createdate");
         case Meta::valScore:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.score";
+            return QStringLiteral("statistics.score");
         case Meta::valRating:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.rating";
+            return QStringLiteral("statistics.rating");
         case Meta::valFirstPlayed:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.createdate";
+            return QStringLiteral("statistics.createdate");
         case Meta::valLastPlayed:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.accessdate";
+            return QStringLiteral("statistics.accessdate");
         case Meta::valPlaycount:
             d->linkedTables |= Private::STATISTICS_TAB;
-            return "statistics.playcount";
+            return QStringLiteral("statistics.playcount");
         case Meta::valUniqueId:
             d->linkedTables |= Private::URLS_TAB;
-            return "urls.uniqueid";
+            return QStringLiteral("urls.uniqueid");
         case Meta::valAlbumArtist:
             d->linkedTables |= Private::ALBUMARTIST_TAB;
             //albumartist_tab means that the artist table is joined to the albums table
             //so add albums as well
             d->linkedTables |= Private::ALBUM_TAB;
-            return "albumartists.name";
+            return QStringLiteral("albumartists.name");
         case Meta::valModified:
             d->linkedTables |= Private::TAGS_TAB;
-            return "tracks.modifydate";
+            return QStringLiteral("tracks.modifydate");
         default:
-            return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + QString::number( value );
+            return QStringLiteral("ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=") + QString::number( value );
     }
 }
 
 QString
 SqlQueryMaker::andOr() const
 {
-    return d->andStack.top() ? " AND " : " OR ";
+    return d->andStack.top() ? QStringLiteral(" AND ") : QStringLiteral(" OR ");
 }
 
 QString
@@ -1119,7 +1119,7 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
         //according to http://dev.mysql.com/doc/refman/5.0/en/string-comparison-functions.html
         //the escape character (\ as we are using the default) is escaped twice when using like.
         //mysql_real_escape will escape it once, so we have to escape it another time here
-        escaped = escaped.replace( '\\', "\\\\" ); // "////" will result in two backslahes
+        escaped = escaped.replace( QLatin1Char('\\'), QStringLiteral("\\\\") ); // "////" will result in two backslahes
         escaped = escape( escaped );
         //as we are in pattern matching mode '_' and '%' have to be escaped
         //mysql_real_excape_string does not do that for us
@@ -1127,9 +1127,9 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
         //and http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html
         //replace those characters after calling escape(), which calls the mysql
         //function in turn, so that mysql does not escape the escape backslashes
-        escaped.replace( QLatin1Char('%'), "\\%" ).replace( QLatin1Char('_'), "\\_" );
+        escaped.replace( QLatin1Char('%'), QStringLiteral("\\%") ).replace( QLatin1Char('_'), QStringLiteral("\\_") );
 
-        QString ret = " LIKE ";
+        QString ret = QStringLiteral(" LIKE ");
 
         ret += QLatin1Char('\'');
         if ( anyBegin )
@@ -1140,7 +1140,7 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
         ret += QLatin1Char('\'');
 
         //Case insensitive collation for queries
-        ret += " COLLATE utf8_unicode_ci ";
+        ret += QStringLiteral(" COLLATE utf8_unicode_ci ");
 
         //Use \ as the escape character
         //ret += " ESCAPE '\\' ";

@@ -43,7 +43,7 @@ TestASXPlaylist::TestASXPlaylist()
 QString
 TestASXPlaylist::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void
@@ -64,11 +64,11 @@ TestASXPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test2.asx" ));
+    const QUrl url = QUrl::fromLocalFile(dataPath( QStringLiteral("data/playlists/test2.asx") ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
-    QString tempPath = m_tempDir->path() + "/test.asx";
+    QString tempPath = m_tempDir->path() + QStringLiteral("/test.asx");
     QFile::remove( tempPath );
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
@@ -98,19 +98,19 @@ TestASXPlaylist::cleanupTestCase()
 void
 TestASXPlaylist::testSetAndGetName()
 {
-    QCOMPARE( m_testPlaylist->prettyName(), QString( "test.asx" ) );
+    QCOMPARE( m_testPlaylist->prettyName(), QStringLiteral( "test.asx" ) );
 
-    QCOMPARE( m_testPlaylist->name(), QString( "test.asx" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.asx" ) );
 
-    m_testPlaylist->setName( "set name test.asx" );
-    QCOMPARE( m_testPlaylist->name(), QString( "set name test.asx" ) );
+    m_testPlaylist->setName( QStringLiteral("set name test.asx") );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "set name test.asx" ) );
 
-    m_testPlaylist->setName( "set name test aäoöuüß.asx" );
-    QCOMPARE( m_testPlaylist->name(), QString( "set name test aäoöuüß.asx" ) );
+    m_testPlaylist->setName( QStringLiteral("set name test aäoöuüß.asx") );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "set name test aäoöuüß.asx" ) );
 
-    m_testPlaylist->setName( "test" );
-    m_testPlaylist->setName( "" );
-    QCOMPARE( m_testPlaylist->name(), QString( "test.asx" ) );
+    m_testPlaylist->setName( QStringLiteral("test") );
+    m_testPlaylist->setName( QStringLiteral("") );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.asx" ) );
 }
 
 void
@@ -119,13 +119,13 @@ TestASXPlaylist::testTracks()
     Meta::TrackList tracklist = m_testPlaylist->tracks();
 
     QCOMPARE( tracklist.size(), 2 );
-    QCOMPARE( tracklist.at( 0 )->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QStringLiteral( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
 }
 
 void
 TestASXPlaylist::testUidUrl()
 {
-    QString tempPath = m_tempDir->path() + "/test.asx";
+    QString tempPath = m_tempDir->path() + QStringLiteral("/test.asx");
     //we have changed the name around so much, better reset it
     m_testPlaylist->setName( "test" );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
@@ -144,7 +144,7 @@ TestASXPlaylist::testSetAndGetGroups()
     m_testPlaylist->setGroups( newGrouplist );
     grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 1 );
-    QCOMPARE( grouplist.at(0), QString( "test" ) );
+    QCOMPARE( grouplist.at(0), QStringLiteral( "test" ) );
 }
 
 void
@@ -183,7 +183,7 @@ TestASXPlaylist::testSaveAndReload()
 
     tracklist = m_testPlaylist->tracks();
     QCOMPARE( tracklist.size(), 2 );
-    QCOMPARE( tracklist.at( 0 )->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QStringLiteral( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
 
     QCOMPARE( tracklist.at( 0 )->uidUrl(), testTrack1Url );
     QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack2Url );

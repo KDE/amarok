@@ -90,7 +90,7 @@ QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 MySqlStorage::MySqlStorage()
     : SqlStorage()
     , m_db( nullptr )
-    , m_debugIdent( "MySQL-none" )
+    , m_debugIdent( QStringLiteral("MySQL-none") )
 {
     //Relevant code must be implemented in subclasses
 }
@@ -209,25 +209,25 @@ MySqlStorage::escape( const QString &text ) const
 QString
 MySqlStorage::randomFunc() const
 {
-    return "RAND()";
+    return QStringLiteral("RAND()");
 }
 
 QString
 MySqlStorage::boolTrue() const
 {
-    return "1";
+    return QStringLiteral("1");
 }
 
 QString
 MySqlStorage::boolFalse() const
 {
-    return "0";
+    return QStringLiteral("0");
 }
 
 QString
 MySqlStorage::idType() const
 {
-    return "INTEGER PRIMARY KEY AUTO_INCREMENT";
+    return QStringLiteral("INTEGER PRIMARY KEY AUTO_INCREMENT");
 }
 
 QString
@@ -251,7 +251,7 @@ MySqlStorage::exactIndexableTextColumnType( int length ) const
 QString
 MySqlStorage::longTextColumnType() const
 {
-    return "TEXT";
+    return QStringLiteral("TEXT");
 }
 
 QStringList
@@ -274,9 +274,9 @@ MySqlStorage::reportError( const QString& message )
     QMutexLocker locker( &m_mutex );
     QString errorMessage;
     if( m_db )
-        errorMessage = m_debugIdent + " query failed! (" + QString::number( mysql_errno( m_db ) ) + ") " + mysql_error( m_db ) + " on " + message;
+        errorMessage = m_debugIdent + QStringLiteral(" query failed! (") + QString::number( mysql_errno( m_db ) ) + QStringLiteral(") ") + QLatin1String(mysql_error( m_db )) + QStringLiteral(" on ") + message;
     else
-        errorMessage = m_debugIdent + " something failed! on " + message;
+        errorMessage = m_debugIdent + QStringLiteral(" something failed! on ") + message;
     error() << errorMessage;
 
     if( m_lastErrors.count() < 20 )
@@ -294,15 +294,15 @@ bool
 MySqlStorage::sharedInit( const QString &databaseName )
 {
     QMutexLocker locker( &m_mutex );
-    if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-        reportError( "SET NAMES 'utf8' died" );
-    if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
-        reportError( QString( "Could not create %1 database" ).arg( databaseName ) );
-    if( mysql_query( m_db, QString( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
-        reportError( "Could not alter database charset/collation" );
-    if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
+    if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8'" ).toUtf8() ) )
+        reportError( QStringLiteral("SET NAMES 'utf8' died") );
+    if( mysql_query( m_db, QStringLiteral( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
+        reportError( QStringLiteral( "Could not create %1 database" ).arg( databaseName ) );
+    if( mysql_query( m_db, QStringLiteral( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
+        reportError( QStringLiteral("Could not alter database charset/collation") );
+    if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( databaseName ).toUtf8() ) )
     {
-        reportError( "Could not select database" );
+        reportError( QStringLiteral("Could not select database") );
         return false; // this error is fatal
     }
 

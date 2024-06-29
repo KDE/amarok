@@ -41,9 +41,9 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
     m_connection->transaction();
     bool ok = true;
 
-    const QString query = "SELECT deviceid, uniqueid FROM uniqueid WHERE url = :url";
+    const QString query = QStringLiteral("SELECT deviceid, uniqueid FROM uniqueid WHERE url = :url");
     QVariantMap bindValues;
-    bindValues.insert( ":url", m_trackUrl );
+    bindValues.insert( QStringLiteral(":url"), m_trackUrl );
 
     const QList<QVariantList> result = m_connection->query( query, bindValues, &ok );
     if( !ok )
@@ -61,29 +61,29 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
     if( fields & Meta::valFirstPlayed )
     {
         updates << QStringLiteral("createdate = :createdate");
-        uBindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
+        uBindValues.insert( QStringLiteral(":createdate"), m_statistics.value( Meta::valFirstPlayed ) );
     }
     if( fields & Meta::valLastPlayed )
     {
         updates << QStringLiteral("accessdate = :accessdate");
-        uBindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
+        uBindValues.insert( QStringLiteral(":accessdate"), m_statistics.value( Meta::valLastPlayed ) );
     }
     if( fields & Meta::valRating )
     {
         updates << QStringLiteral("rating = :rating");
-        uBindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
+        uBindValues.insert( QStringLiteral(":rating"), m_statistics.value( Meta::valRating ) );
     }
     if( fields & Meta::valPlaycount )
     {
         updates << QStringLiteral("playcounter = :playcount");
-        uBindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
+        uBindValues.insert( QStringLiteral(":playcount"), m_statistics.value( Meta::valPlaycount ) );
     }
 
     if( !updates.isEmpty() )
     {
-        const QString query = "SELECT COUNT(*) FROM statistics WHERE url = :url";
+        const QString query = QStringLiteral("SELECT COUNT(*) FROM statistics WHERE url = :url");
         QVariantMap bindValues;
-        bindValues.insert( ":url", m_trackUrl );
+        bindValues.insert( QStringLiteral(":url"), m_trackUrl );
 
         const QList<QVariantList> result = m_connection->query( query, bindValues, &ok );
         if( !ok )
@@ -95,12 +95,12 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
         // Statistic row doesn't exist
         if( !result.front()[0].toInt() )
         {
-            const QString query = "INSERT INTO statistics (url, deviceid, uniqueid) "
-                                  "VALUES ( :url, :devid, :uniqid )";
+            const QString query = QStringLiteral("INSERT INTO statistics (url, deviceid, uniqueid) "
+                                  "VALUES ( :url, :devid, :uniqid )");
             QVariantMap bindValues;
-            bindValues.insert( ":url", m_trackUrl );
-            bindValues.insert( ":devid", deviceId );
-            bindValues.insert( ":url", uniqueId );
+            bindValues.insert( QStringLiteral(":url"), m_trackUrl );
+            bindValues.insert( QStringLiteral(":devid"), deviceId );
+            bindValues.insert( QStringLiteral(":url"), uniqueId );
 
             m_connection->query( query, bindValues, &ok );
             if( !ok )
@@ -111,10 +111,10 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
         }
 
         // Update statistics
-        const QString uQuery = "UPDATE statistics SET " + updates.join(", ") +
-                               " WHERE url = :url";
+        const QString uQuery = QStringLiteral("UPDATE statistics SET ") + updates.join(QStringLiteral(", ")) +
+                               QStringLiteral(" WHERE url = :url");
 
-        uBindValues.insert( ":url", m_trackUrl );
+        uBindValues.insert( QStringLiteral(":url"), m_trackUrl );
         m_connection->query( uQuery, uBindValues, &ok );
         if( !ok )
         {
@@ -126,9 +126,9 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
     if( fields & Meta::valLabel )
     {
         // Drop old label associations
-        const QString query = "DELETE FROM tags_labels WHERE url = :url";
+        const QString query = QStringLiteral("DELETE FROM tags_labels WHERE url = :url");
         QVariantMap bindValues;
-        bindValues.insert( ":url", m_trackUrl );
+        bindValues.insert( QStringLiteral(":url"), m_trackUrl );
         m_connection->query( query, bindValues, &ok );
         if( !ok )
         {
@@ -140,9 +140,9 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
         {
             {
                 // Check if the label exists
-                const QString query = "SELECT COUNT(*) FROM labels WHERE name = :name";
+                const QString query = QStringLiteral("SELECT COUNT(*) FROM labels WHERE name = :name");
                 QVariantMap bindValues;
-                bindValues.insert( ":name", label );
+                bindValues.insert( QStringLiteral(":name"), label );
 
                 const QList<QVariantList> result = m_connection->query( query, bindValues,
                                                                         &ok );
@@ -155,10 +155,10 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
                 // Insert label if it doesn't
                 if( !result.front()[0].toInt() )
                 {
-                    const QString query = "INSERT INTO labels (name, type) "
-                                          "VALUES (:name, 1)";
+                    const QString query = QStringLiteral("INSERT INTO labels (name, type) "
+                                          "VALUES (:name, 1)");
                     QVariantMap bindValues;
-                    bindValues.insert( ":name", label );
+                    bindValues.insert( QStringLiteral(":name"), label );
 
                     m_connection->query( query, bindValues, &ok );
                     if( !ok )
@@ -170,14 +170,14 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
             }
 
             // Insert track <-> label association
-            const QString query = "INSERT INTO tags_labels (deviceid, url, uniqueid, "
+            const QString query = QStringLiteral("INSERT INTO tags_labels (deviceid, url, uniqueid, "
                                   "labelid) VALUES ( :devid, :url, :uniqid, "
-                                  "(SELECT id FROM labels WHERE name = :name) )";
+                                  "(SELECT id FROM labels WHERE name = :name) )");
             QVariantMap bindValues;
-            bindValues.insert( ":devid", deviceId );
-            bindValues.insert( ":url", m_trackUrl );
-            bindValues.insert( ":uniqid", uniqueId );
-            bindValues.insert( ":name", label );
+            bindValues.insert( QStringLiteral(":devid"), deviceId );
+            bindValues.insert( QStringLiteral(":url"), m_trackUrl );
+            bindValues.insert( QStringLiteral(":uniqid"), uniqueId );
+            bindValues.insert( QStringLiteral(":name"), label );
 
             m_connection->query( query, bindValues, &ok );
             if( !ok )

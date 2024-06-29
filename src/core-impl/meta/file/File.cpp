@@ -495,7 +495,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::ReadLabel:
             if( !d->readLabelCapability )
                 d->readLabelCapability = new Capabilities::LastfmReadLabelCapability( this );
-            return 0;
+            return nullptr;
 #endif
 
         default:

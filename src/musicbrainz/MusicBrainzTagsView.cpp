@@ -35,9 +35,9 @@
 MusicBrainzTagsView::MusicBrainzTagsView( QWidget *parent )
     : QTreeView( parent )
 {
-    m_artistIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_aicon.png" ) );
-    m_releaseIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_licon.png" ) );
-    m_trackIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_ticon.png" ) );
+    m_artistIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/mb_aicon.png") ) );
+    m_releaseIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/mb_licon.png") ) );
+    m_trackIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/mb_ticon.png") ) );
 }
 
 MusicBrainzTagsModel *
@@ -76,7 +76,7 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
 
     if( model->rowCount() > 1 && !index.data( MusicBrainzTagsModel::ReleasesRole ).isNull() )
     {
-        QAction *action = new QAction( QIcon::fromTheme( "filename-album-amarok" ),
+        QAction *action = new QAction( QIcon::fromTheme( QStringLiteral("filename-album-amarok") ),
                                        i18n( "Choose Best Matches from This Album" ), menu );
         connect( action, &QAction::triggered, this, &MusicBrainzTagsView::chooseBestMatchesFromRelease );
         menu->addAction( action );

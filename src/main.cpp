@@ -79,7 +79,7 @@ int main( int argc, char *argv[] )
             }
             QStringList fileNames = sourceDir.entryList(
                         QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-            foreach (const QString &fileName, fileNames) {
+            for(const QString &fileName : fileNames) {
                 targetFilePath = targetBasePath + fileName;
                 if (!QFile::exists(targetFilePath)) {
                     QFile::copy(sourceBasePath + fileName, targetFilePath);
@@ -321,7 +321,7 @@ int main( int argc, char *argv[] )
     ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
-    //Last update: 2012/11/07, post Roktober 2012
+    //Last update: 2012/11/07, post Roktober 2012 //TODO possibly remove in Amarok 4
     ocsData.addDonor( "ayleph", KAboutPerson( i18n( "Andrew Browning" ) ) );
     ocsData.addDonor( QString(), KAboutPerson( i18n( "Chris Wales" ) ) );
     ocsData.addDonor( QString(), KAboutPerson( i18n( "ZImin Stanislav" ) ) );

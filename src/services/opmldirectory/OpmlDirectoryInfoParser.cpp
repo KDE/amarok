@@ -24,6 +24,7 @@
 #include <QDomDocument>
 
 #include <KLocalizedString>
+#include <KIO/StoredTransferJob>
 
 using namespace Meta;
 

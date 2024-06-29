@@ -30,7 +30,7 @@ MagnatuneUrlRunner::~MagnatuneUrlRunner()
 
 QString MagnatuneUrlRunner::command() const
 {
-    return "service-magnatune";
+    return QStringLiteral("service-magnatune");
 }
 
 QString MagnatuneUrlRunner::prettyCommand() const
@@ -40,7 +40,7 @@ QString MagnatuneUrlRunner::prettyCommand() const
 
 QIcon MagnatuneUrlRunner::icon() const
 {
-    return QIcon::fromTheme( "view-services-magnatune-amarok" );
+    return QIcon::fromTheme( QStringLiteral("view-services-magnatune-amarok") );
 }
 
 bool MagnatuneUrlRunner::run( const AmarokUrl &url )
@@ -48,38 +48,38 @@ bool MagnatuneUrlRunner::run( const AmarokUrl &url )
     DEBUG_BLOCK
     if ( !url.isNull() )
     {
-        QString command = url.args().value( "command" );
+        QString command = url.args().value( QStringLiteral("command") );
 
-        if( command == "show_favorites" )
+        if( command == QStringLiteral("show_favorites") )
         {
             Q_EMIT( showFavorites() );
         }
-        else if ( command == "show_home" )
+        else if ( command == QStringLiteral("show_home") )
         {
             Q_EMIT( showHome() );
         }
-        else if ( command == "show_recommendations" )
+        else if ( command == QStringLiteral("show_recommendations") )
         {
             Q_EMIT( showRecommendations() );
         }
-        else if ( command == "download" || command == "purchase" || command == "buy" )
+        else if ( command == QStringLiteral("download") || command == QStringLiteral("purchase") || command == QStringLiteral("buy") )
         {
             //allow some aliases for this command as the context might make one of
             //them more appropriate. In any case, non and stream  members will be given the
             //purchase dialog and will have to pay, download members will get the
             //free download
 
-            if ( url.args().keys().contains( "sku" ) )
+            if ( url.args().keys().contains( QStringLiteral("sku") ) )
             {
-                QString sku = url.args().value( "sku" );
+                QString sku = url.args().value( QStringLiteral("sku") );
                 Q_EMIT( buyOrDownload( sku ) );
             }
         }
-        else if ( command == "remove_favorite" )
+        else if ( command == QStringLiteral("remove_favorite") )
         {
-            if ( url.args().keys().contains( "sku" ) )
+            if ( url.args().keys().contains( QStringLiteral("sku") ) )
             {
-                QString sku = url.args().value( "sku" );
+                QString sku = url.args().value( QStringLiteral("sku") );
                 debug() << "remove from favorites sku: " << sku;
                 Q_EMIT( removeFromFavorites( sku ) );
             }

@@ -129,7 +129,7 @@ void AlbumsEngine::updateRecentlyAddedAlbums()
     qm->setQueryType( Collections::QueryMaker::Album );
     qm->excludeFilter( Meta::valAlbum, QString(), true, true );
     qm->orderBy( Meta::valCreateDate, true );
-    qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
+    qm->limitMaxResultSize( Amarok::config(QStringLiteral("Albums Applet")).readEntry("RecentlyAdded", 5) );
 
     connect( qm, &Collections::QueryMaker::newAlbumsReady,
              this, &AlbumsEngine::resultReady, Qt::QueuedConnection );
@@ -282,10 +282,10 @@ void AlbumsEngine::showContextMenu( const QModelIndexList &indexes, const QModel
         return;
 
     QMenu menu;
-    QAction *appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), &menu );
-    QAction *loadAction   = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
-    QAction *queueAction  = new QAction( QIcon::fromTheme( "media-track-queue-amarok" ), i18n( "&Queue" ), &menu );
-    QAction *editAction   = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), &menu );
+    QAction *appendAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-add-amarok") ), i18n( "&Add to Playlist" ), &menu );
+    QAction *loadAction   = new QAction( QIcon::fromTheme( QStringLiteral("folder-open") ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), &menu );
+    QAction *queueAction  = new QAction( QIcon::fromTheme( QStringLiteral("media-track-queue-amarok") ), i18n( "&Queue" ), &menu );
+    QAction *editAction   = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ), i18n( "Edit Track Details" ), &menu );
 
     menu.addAction( appendAction );
     menu.addAction( loadAction );
@@ -316,7 +316,7 @@ void AlbumsEngine::showContextMenu( const QModelIndexList &indexes, const QModel
                 }
 
                 menuCover.addActions( actions );
-                menuCover.setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
+                menuCover.setIcon( QIcon::fromTheme( QStringLiteral("filename-album-amarok") ) );
                 menu.addMenu( &menuCover );
             }
         }
@@ -330,7 +330,7 @@ QString AlbumsEngine::getSelectedUrlList(const QModelIndexList &indexes) const
     QString urlList;
     for(const Meta::TrackPtr &t : list)
     {
-        urlList+=t->playableUrl().toString()+"\n";
+        urlList += t->playableUrl().toString() + QStringLiteral("\n");
     }
     return urlList;
 }

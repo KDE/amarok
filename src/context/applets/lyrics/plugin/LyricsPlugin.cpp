@@ -34,7 +34,7 @@ class LyricsPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char* uri) override
     {
-        Q_ASSERT(uri == QLatin1String("org.kde.amarok.lyrics"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.amarok.lyrics"));
 
         qmlRegisterSingletonType<LyricsEngine>(uri, 1, 0, "LyricsEngine", lyrics_engine_provider);
     }

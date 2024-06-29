@@ -64,11 +64,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( m_rescanDirAction, &QAction::triggered,
              this, &CollectionSetup::slotRescanDirTriggered );
 
-    QPushButton *rescan = new QPushButton( QIcon::fromTheme( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
+    QPushButton *rescan = new QPushButton( QIcon::fromTheme( QStringLiteral("collection-rescan-amarok") ), i18n( "Full rescan" ), m_ui.buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, &QAbstractButton::clicked, CollectionManager::instance(), &CollectionManager::startFullScan );
 
-    QPushButton *import = new QPushButton( QIcon::fromTheme( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
+    QPushButton *import = new QPushButton( QIcon::fromTheme( QStringLiteral("tools-wizard") ), i18n( "Import batch file..." ), m_ui.buttonContainer );
     import->setToolTip( i18n( "Import collection from file produced by amarokcollectionscanner." ) );
     connect( import, &QAbstractButton::clicked, this, &CollectionSetup::importCollection );
 
@@ -361,7 +361,7 @@ namespace CollectionFolder {
     {
         // we need the trailing slash otherwise we could forbid "/dev-music" for example
         QString _path = normalPath( path );
-        return _path.startsWith( "/proc/" ) || _path.startsWith( "/dev/" ) || _path.startsWith( "/sys/" );
+        return _path.startsWith( QStringLiteral("/proc/") ) || _path.startsWith( QStringLiteral("/dev/") ) || _path.startsWith( QStringLiteral("/sys/") );
     }
 
     bool
@@ -423,7 +423,7 @@ namespace CollectionFolder {
         while( it.hasNext() )
         {
             QString nextPath = it.next();
-            if( nextPath.endsWith( "/." ) || nextPath.endsWith( "/.." ) )
+            if( nextPath.endsWith( QStringLiteral("/.") ) || nextPath.endsWith( QStringLiteral("/..") ) )
                 continue;
             if( !_excludePath.startsWith( nextPath ) )
                 m_checked << nextPath;

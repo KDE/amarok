@@ -31,10 +31,10 @@ void
 TestImporterProvider::constructorShouldSetConfigAndManager()
 {
     QVariantMap cfg;
-    cfg["nanananana"] = QString( "Batman" );
+    cfg[QStringLiteral("nanananana")] = QStringLiteral( "Batman" );
     MockProvider provider( cfg, m_mockManager );
 
-    QVERIFY( provider.config().contains( QString( "nanananana" ) ) );
+    QVERIFY( provider.config().contains( QStringLiteral( "nanananana" ) ) );
     QCOMPARE( provider.manager(), m_mockManager );
 }
 
@@ -48,7 +48,7 @@ void
 TestImporterProvider::idShouldReturnConfiguredId()
 {
     QVariantMap cfg;
-    cfg["uid"] = QString( "Joker" );
+    cfg[QStringLiteral("uid")] = QStringLiteral( "Joker" );
 
     QCOMPARE( MockProvider( cfg, nullptr ).config(), cfg );
 }
@@ -56,33 +56,33 @@ TestImporterProvider::idShouldReturnConfiguredId()
 void
 TestImporterProvider::descriptionShouldDelegateToManager()
 {
-    EXPECT_CALL( *m_mockManager, description() ).WillOnce( Return( QString( "Ivy" ) ) );
-    QCOMPARE( m_mockProvider->description(), QString( "Ivy" ) );
+    EXPECT_CALL( *m_mockManager, description() ).WillOnce( Return( QStringLiteral( "Ivy" ) ) );
+    QCOMPARE( m_mockProvider->description(), QStringLiteral( "Ivy" ) );
 }
 
 void
 TestImporterProvider::iconShouldDelegateToManager()
 {
-    EXPECT_CALL( *m_mockManager, icon() ).WillOnce( Return( QIcon::fromTheme( "amarok" ) ) );
-    QCOMPARE( m_mockProvider->icon().name(), QIcon::fromTheme( "amarok" ).name() );
+    EXPECT_CALL( *m_mockManager, icon() ).WillOnce( Return( QIcon::fromTheme( QStringLiteral("amarok") ) ) );
+    QCOMPARE( m_mockProvider->icon().name(), QIcon::fromTheme( QStringLiteral("amarok") ).name() );
 }
 
 void
 TestImporterProvider::nameShouldReturnConfiguredName()
 {
     QVariantMap cfg;
-    cfg["uid"] = QString( "Bane" );
-    cfg["name"] = QString( "Ra's" );
+    cfg[QStringLiteral("uid")] = QStringLiteral( "Bane" );
+    cfg[QStringLiteral("name")] = QStringLiteral( "Ra's" );
     MockProvider provider( cfg, m_mockManager );
 
-    QCOMPARE( provider.prettyName(), QString( "Ra's" ) );
+    QCOMPARE( provider.prettyName(), QStringLiteral( "Ra's" ) );
 }
 
 void
 TestImporterProvider::nameShouldNotCrashIfNameIsNotConfigured()
 {
     QVariantMap cfg;
-    cfg["uid"] = QString( "TwoFace" );
+    cfg[QStringLiteral("uid")] = QStringLiteral( "TwoFace" );
     MockProvider provider( cfg, m_mockManager );
 
     QCOMPARE( provider.prettyName(), QString() );
@@ -107,7 +107,7 @@ void
 TestImporterProvider::reconfigureShouldEmitSignal()
 {
     QVariantMap cfg = m_mockProvider->config();
-    cfg["customField"] = QString( "Selena" );
+    cfg[QStringLiteral("customField")] = QStringLiteral( "Selena" );
 
     QSignalSpy spy( m_mockProvider, &MockProvider::reconfigurationRequested );
     m_mockProvider->reconfigure( cfg );
@@ -120,7 +120,7 @@ void
 TestImporterProvider::reconfigureShouldNotEmitSignalOnDifferentUid()
 {
     QVariantMap cfg;
-    cfg["uid"] = "Different";
+    cfg[QStringLiteral("uid")] = QStringLiteral("Different");
 
     QSignalSpy spy( m_mockProvider, &MockProvider::reconfigurationRequested );
     m_mockProvider->reconfigure( cfg );

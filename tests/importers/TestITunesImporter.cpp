@@ -33,8 +33,8 @@ ProviderPtr
 TestITunesImporter::getProvider()
 {
     QVariantMap cfg = ITunesConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbPath", QApplication::applicationDirPath()
-                          + "/../tests/importers_files/iTunes_Music_Library.xml" );
+    cfg.insert( QStringLiteral("dbPath"), QString( QApplication::applicationDirPath()
+                          + QStringLiteral("/../tests/importers_files/iTunes_Music_Library.xml") ) );
 
     return ProviderPtr( new ITunesProvider( cfg, nullptr ) );
 }
@@ -43,14 +43,14 @@ ProviderPtr
 TestITunesImporter::getWritableProvider()
 {
     QDir base( QCoreApplication::applicationDirPath() );
-    base.mkpath( "importers_tmp" );
+    base.mkpath( QStringLiteral("importers_tmp") );
 
-    const QString dst = base.filePath( "importers_tmp/iTunes_Music_Library.xml" );
+    const QString dst = base.filePath( QStringLiteral("importers_tmp/iTunes_Music_Library.xml") );
     QFile( dst ).remove();
-    QFile( base.filePath( "../tests/importers_files/iTunes_Music_Library.xml" ) ).copy( dst );
+    QFile( base.filePath( QStringLiteral("../tests/importers_files/iTunes_Music_Library.xml") ) ).copy( dst );
 
     QVariantMap cfg = ITunesConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbPath", dst);
+    cfg.insert( QStringLiteral("dbPath"), dst);
 
     return ProviderPtr( new ITunesProvider( cfg, nullptr ) );
 }
@@ -78,7 +78,7 @@ TestITunesImporter::init()
 void
 TestITunesImporter::providerShouldHandleNonexistentDbFile()
 {
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("/wdawd\\wdadwgd/das4hutyf") );
 
     ITunesProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -87,7 +87,7 @@ TestITunesImporter::providerShouldHandleNonexistentDbFile()
 void
 TestITunesImporter::providerShouldHandleInvalidDbFile()
 {
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
+    m_cfg.insert( QStringLiteral("dbPath"), QApplication::applicationFilePath() );
 
     ITunesProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -96,8 +96,8 @@ TestITunesImporter::providerShouldHandleInvalidDbFile()
 void
 TestITunesImporter::providerShouldHandleErroneousConfigValues()
 {
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("\\wd%aw@d/sdsd2'vodk0-=$$") );
+    m_cfg.insert( QStringLiteral("name"), QColor( Qt::white ) );
 
     ITunesProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -106,9 +106,9 @@ TestITunesImporter::providerShouldHandleErroneousConfigValues()
 void
 TestITunesImporter::providerShouldHandleIllFormedDbFile()
 {
-    m_cfg.insert( "dbPath", QApplication::applicationDirPath()
-                  + "/importers_files/illFormedLibrary.xml" );
+    m_cfg.insert( QStringLiteral("dbPath"), QString( QApplication::applicationDirPath()
+                  + QStringLiteral("/importers_files/illFormedLibrary.xml") ) );
 
     ITunesProvider provider( m_cfg, nullptr );
-    QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
+    QVERIFY( provider.artistTracks( QStringLiteral("NonSuch") ).empty() );
 }

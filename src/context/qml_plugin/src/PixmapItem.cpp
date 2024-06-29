@@ -80,12 +80,19 @@ QSGNode* PixmapItem::updatePaintNode( QSGNode *oldNode, UpdatePaintNodeData *upd
     return textureNode;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void PixmapItem::geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry )
+#else
+void PixmapItem::geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry )
+#endif
 {
     if( newGeometry.size() != oldGeometry.size() )
         m_sizeChanged = true;
 
     update();
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QQuickItem::geometryChanged( newGeometry, oldGeometry );
+#else
+    QQuickItem::geometryChange( newGeometry, oldGeometry );
+#endif
 }

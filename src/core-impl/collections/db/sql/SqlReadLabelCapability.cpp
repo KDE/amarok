@@ -45,12 +45,12 @@ SqlReadLabelCapability::fetch( const QString &uniqueURL )
         return;
     }
 
-    QString query = "SELECT a.label FROM labels a";
+    QString query = QStringLiteral("SELECT a.label FROM labels a");
     QStringList result;
 
     if ( !uniqueURL.isEmpty() )
     {
-        query = query + QString( ", urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"" );
+        query = query + QStringLiteral( ", urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"" );
         result = m_storage->query( query.arg( m_storage->escape( uniqueURL ) ) );
     }
     else

@@ -132,7 +132,7 @@ void IpodCollectionLocation::ensureDirectoriesExist()
         return;
 
     QDir musicDir( musicDirPath );
-    if( !musicDir.exists() && !musicDir.mkpath( "." ) /* try to create it */ )
+    if( !musicDir.exists() && !musicDir.mkpath( QStringLiteral(".") ) /* try to create it */ )
     {
         warning() << __PRETTY_FUNCTION__ << "failed to create" << musicDirPath << "directory.";
         return;
@@ -141,10 +141,10 @@ void IpodCollectionLocation::ensureDirectoriesExist()
     QChar fillChar( '0' );
     for( int i = 0; i < 20; i++ )
     {
-        QString name = QString( "F%1" ).arg( i, /* min-width */ 2, /* base */ 10, fillChar );
+        QString name = QStringLiteral( "F%1" ).arg( i, /* min-width */ 2, /* base */ 10, fillChar );
         if( musicDir.exists( name ) )
             continue;
-        QString toCreatePath = QString( "%1/%2" ).arg( musicDirPath, name );
+        QString toCreatePath = QStringLiteral( "%1/%2" ).arg( musicDirPath, name );
         if( musicDir.mkdir( name ) )
             debug() << __PRETTY_FUNCTION__ << "created" << toCreatePath << "directory.";
         else

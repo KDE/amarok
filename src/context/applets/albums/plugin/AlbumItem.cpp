@@ -98,7 +98,7 @@ AlbumItem::update()
     QString albumName = m_album->name();
     albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
     QString name = ( m_showArtist && m_album->hasAlbumArtist() )
-                 ? QString( "%1 - %2" ).arg( m_album->albumArtist()->name(), albumName )
+                 ? QStringLiteral( "%1 - %2" ).arg( m_album->albumArtist()->name(), albumName )
                  : albumName;
     setData( name, NameRole );
 
@@ -107,7 +107,7 @@ AlbumItem::update()
         totalTime += item->length();
 
     QString trackCount = i18np( "%1 track", "%1 tracks", tracks.size() );
-    QString lengthText = QString( "%1, %2" ).arg( trackCount, Meta::msToPrettyTime( totalTime ) );
+    QString lengthText = QStringLiteral( "%1, %2" ).arg( trackCount, Meta::msToPrettyTime( totalTime ) );
     setData( lengthText, AlbumLengthRole );
 
     QPixmap cover = The::svgHandler()->imageWithBorder( m_album, m_iconSize, 3 );

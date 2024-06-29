@@ -56,7 +56,7 @@ void
 LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
 {
     m_currentItems.clear();
-    foreach ( const QModelIndex &i, selectedIndexes() )
+    for( const QModelIndex &i : selectedIndexes() )
     {
         if ( i.isValid() )
             m_currentItems << i;
@@ -70,7 +70,7 @@ LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
 
     actions += &separator;
     QMenu menu;
-    foreach ( QAction * action, actions )
+    for( QAction * action : actions )
         menu.addAction ( action );
 
     menu.exec ( event->globalPos() );
@@ -231,7 +231,7 @@ LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOpt
 {
     debug() << "LASTFM current items : " << items.size();
     Meta::TrackList list;
-    foreach ( const QModelIndex &item, items )
+    for ( const QModelIndex &item : items )
     {
         Meta::TrackPtr track = model()->data(item, LastFm::TrackRole).value< Meta::TrackPtr >();
         if ( track )

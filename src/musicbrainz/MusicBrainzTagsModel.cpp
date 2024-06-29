@@ -32,7 +32,7 @@ MusicBrainzTagsModel::MusicBrainzTagsModel( QObject *parent )
     : QAbstractItemModel( parent )
 {
     QVariantMap headerData;
-    headerData.insert( MusicBrainz::SIMILARITY, "%" );
+    headerData.insert( MusicBrainz::SIMILARITY, QStringLiteral("%") );
     headerData.insert( Meta::Field::TITLE, i18n( "Title" ) );
     headerData.insert( Meta::Field::ARTIST, i18n( "Artist" ) );
     headerData.insert( Meta::Field::ALBUM, i18n( "Album" ) );
@@ -165,7 +165,7 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
                                       100 * item->dataValue( MusicBrainz::MUSICDNS ).toFloat() ) );
         }
 
-        return toolTip.join( "\n" );
+        return toolTip.join( QStringLiteral("\n") );
     }
     else if( role == Qt::FontRole )
     {

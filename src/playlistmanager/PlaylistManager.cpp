@@ -36,7 +36,6 @@
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
 #include <kdirlister.h>
-#include <kio/jobclasses.h>
 #include <kio/job.h>
 #include <QInputDialog>
 #include <KLocalizedString>

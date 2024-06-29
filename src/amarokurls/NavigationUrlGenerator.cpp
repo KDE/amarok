@@ -180,9 +180,9 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                 if ( album->albumArtist() )
                     artistName = album->albumArtist()->prettyName();
 
-                filter = "album:\"" + albumName + "\"";
+                filter = QStringLiteral("album:\"") + albumName + QStringLiteral("\"");
                 if ( !artistName.isEmpty() )
-                    filter += ( " AND artist:\"" + artistName + "\"" );
+                    filter += QStringLiteral(" AND artist:\"") + artistName + QStringLiteral("\"");
             }
 
             url.setArg( QStringLiteral("filter"), filter );
@@ -224,12 +224,12 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             QString filter;
             if ( btc->simpleFiltering() ) {
                 //for services only supporting simple filtering, do not try to set the sorting mode
-                filter = "\"" + artistName + "\"";
+                filter = QStringLiteral("\"") + artistName + QStringLiteral("\"");
             }
             else
             {
                 url.setArg( QStringLiteral("levels"), QStringLiteral("artist-album") );
-                filter = ( "artist:\"" + artistName + "\"" );
+                filter = ( QStringLiteral("artist:\"") + artistName + QStringLiteral("\"") );
             }
 
             url.setArg( QStringLiteral("filter"), filter );

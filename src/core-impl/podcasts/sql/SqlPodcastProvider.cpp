@@ -175,9 +175,9 @@ SqlPodcastProvider::loadPodcasts()
     if( !sqlStorage )
         return;
 
-    QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image"
+    QStringList results = sqlStorage->query( QStringLiteral( "SELECT id, url, title, weblink, image"
         ", description, copyright, directory, labels, subscribedate, autoscan, fetchtype"
-        ", haspurge, purgecount, writetags, filenamelayout FROM podcastchannels;" );
+        ", haspurge, purgecount, writetags, filenamelayout FROM podcastchannels;") );
 
     int rowLength = 16;
     for( int i = 0; i < results.size(); i += rowLength )
@@ -205,10 +205,10 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
     if( !sqlStorage )
         return SqlPodcastEpisodePtr();
 
-    QString command = "SELECT id, url, channel, localurl, guid, "
+    QString command = QStringLiteral("SELECT id, url, channel, localurl, guid, "
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "
             "duration, filesize, isnew, iskeep FROM podcastepisodes "
-            "WHERE guid='%1' OR url='%1' OR localurl='%1' ORDER BY id DESC;";
+            "WHERE guid='%1' OR url='%1' OR localurl='%1' ORDER BY id DESC;");
     command = command.arg( sqlStorage->escape( string ) );
     QStringList dbResult = sqlStorage->query( command );
 
@@ -230,7 +230,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 
     if( !found )
     {
-        error() << QString( "There is a track in the database with url/guid=%1 (%2) "
+        error() << QStringLiteral( "There is a track in the database with url/guid=%1 (%2) "
                             "but there is no channel with dbId=%3 in our list!" )
                 .arg( string ).arg( episodeId ).arg( channelId );
         return SqlPodcastEpisodePtr();
@@ -253,8 +253,8 @@ SqlPodcastProvider::possiblyContainsTrack( const QUrl &url ) const
     if( !sqlStorage )
         return false;
 
-    QString command = "SELECT id FROM podcastepisodes WHERE guid='%1' OR url='%1' "
-                      "OR localurl='%1';";
+    QString command = QStringLiteral("SELECT id FROM podcastepisodes WHERE guid='%1' OR url='%1' "
+                                     "OR localurl='%1';");
     command = command.arg( sqlStorage->escape( url.url() ) );
 
     QStringList dbResult = sqlStorage->query( command );
@@ -292,13 +292,13 @@ SqlPodcastProvider::providerActions()
     {
         QAction *updateAllAction = new QAction( QIcon::fromTheme( QStringLiteral("view-refresh-amarok") ),
                 i18n( "&Update All Channels" ), this );
-        updateAllAction->setProperty( "popupdropper_svg_id", "update" );
+        updateAllAction->setProperty( "popupdropper_svg_id", QStringLiteral("update") );
         connect( updateAllAction, &QAction::triggered, this, &SqlPodcastProvider::updateAll );
         m_providerActions << updateAllAction;
 
         QAction *configureAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ),
                 i18n( "&Configure General Settings" ), this );
-        configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        configureAction->setProperty( "popupdropper_svg_id", QStringLiteral("configure") );
         connect( configureAction, &QAction::triggered, this, &SqlPodcastProvider::slotConfigureProvider );
         m_providerActions << configureAction;
 
@@ -330,7 +330,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     if( m_configureChannelAction == nullptr )
     {
         m_configureChannelAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ), i18n( "&Configure" ), this );
-        m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
+        m_configureChannelAction->setProperty( "popupdropper_svg_id", QStringLiteral("configure") );
         connect( m_configureChannelAction, &QAction::triggered, this, &SqlPodcastProvider::slotConfigureChannel );
     }
     //only one channel can be configured at a time.
@@ -343,7 +343,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     if( m_removeAction == nullptr )
     {
         m_removeAction = new QAction( QIcon::fromTheme( QStringLiteral("news-unsubscribe") ), i18n( "&Remove Subscription" ), this );
-        m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
+        m_removeAction->setProperty( "popupdropper_svg_id", QStringLiteral("remove") );
         connect( m_removeAction, &QAction::triggered, this, &SqlPodcastProvider::slotRemoveChannels );
     }
     m_removeAction->setData( QVariant::fromValue( sqlChannels ) );
@@ -352,7 +352,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     if( m_updateAction == nullptr )
     {
         m_updateAction = new QAction( QIcon::fromTheme( QStringLiteral("view-refresh-amarok") ), i18n( "&Update Channel" ), this );
-        m_updateAction->setProperty( "popupdropper_svg_id", "update" );
+        m_updateAction->setProperty( "popupdropper_svg_id", QStringLiteral("update") );
         connect( m_updateAction, &QAction::triggered, this, &SqlPodcastProvider::slotUpdateChannels );
     }
     m_updateAction->setData( QVariant::fromValue( sqlChannels ) );
@@ -388,7 +388,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
     if( m_downloadAction == nullptr )
     {
         m_downloadAction = new QAction( QIcon::fromTheme( QStringLiteral("go-down") ), i18n( "&Download Episode" ), this );
-        m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
+        m_downloadAction->setProperty( "popupdropper_svg_id", QStringLiteral("download") );
         connect( m_downloadAction, &QAction::triggered, this, &SqlPodcastProvider::slotDownloadEpisodes );
     }
 
@@ -396,7 +396,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
     {
         m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ),
             i18n( "&Delete Downloaded Episode" ), this );
-        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_deleteAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
         m_deleteAction->setObjectName( QStringLiteral("deleteAction") );
         connect( m_deleteAction, &QAction::triggered, this, &SqlPodcastProvider::slotDeleteDownloadedEpisodes );
     }
@@ -405,7 +405,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
     {
         m_writeTagsAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
             i18n( "&Write Feed Information to File" ), this );
-        m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
+        m_writeTagsAction->setProperty( "popupdropper_svg_id", QStringLiteral("edit") );
         connect( m_writeTagsAction, &QAction::triggered, this, &SqlPodcastProvider::slotWriteTagsToFiles );
     }
 
@@ -416,7 +416,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
         m_keepAction->setToolTip( i18n( "Toggle the \"keep\" downloaded file status of "
                 "this podcast episode. Downloaded files with this status wouldn't be "
                 "deleted even if we apply a purge." ) );
-        m_keepAction->setProperty( "popupdropper_svg_id", "keep" );
+        m_keepAction->setProperty( "popupdropper_svg_id", QStringLiteral("keep") );
         m_keepAction->setCheckable( true );
         connect( m_keepAction, &QAction::triggered, this, &SqlPodcastProvider::slotSetKeep );
     }
@@ -502,8 +502,8 @@ SqlPodcastProvider::subscribe( const QUrl &url )
 
     if( m_updatingChannels >= m_maxConcurrentUpdates )
     {
-        debug() << QString( "Maximum concurrent updates (%1) reached. "
-                            "Queueing \"%2\" for subscribing." )
+        debug() << QStringLiteral( "Maximum concurrent updates (%1) reached. "
+                                   "Queueing \"%2\" for subscribing." )
                         .arg( m_maxConcurrentUpdates )
                         .arg( url.url() );
         m_subscribeQueue << url;
@@ -1028,8 +1028,8 @@ SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
         return;
     if( m_updatingChannels >= m_maxConcurrentUpdates )
     {
-        debug() << QString( "Maximum concurrent updates (%1) reached. "
-                            "Queueing \"%2\" for download." )
+        debug() << QStringLiteral( "Maximum concurrent updates (%1) reached. "
+                                   "Queueing \"%2\" for download." )
                 .arg( m_maxConcurrentUpdates )
                 .arg( channel->title() );
         m_updateQueue << channel;
@@ -1125,8 +1125,8 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     if( m_downloadJobMap.size() >= m_maxConcurrentDownloads )
     {
-        debug() << QString( "Maximum concurrent downloads (%1) reached. "
-                            "Queueing \"%2\" for download." )
+        debug() << QStringLiteral( "Maximum concurrent downloads (%1) reached. "
+                                   "Queueing \"%2\" for download." )
                 .arg( m_maxConcurrentDownloads )
                 .arg( sqlEpisode->title() );
         //put into a FIFO which is used in downloadResult() to start a new download
@@ -1490,8 +1490,8 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 
     if( fromVersion == 1 && toVersion == 2 )
     {
-        QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
-                                              " ADD subscribedate " + sqlStorage->textColumnType() + ';' );
+        QString updateChannelQuery = QStringLiteral( "ALTER TABLE podcastchannels"
+                                              " ADD subscribedate ") + sqlStorage->textColumnType() + QLatin1Char(';');
 
         sqlStorage->query( updateChannelQuery );
 

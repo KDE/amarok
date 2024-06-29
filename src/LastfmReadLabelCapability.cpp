@@ -47,10 +47,10 @@ LastfmReadLabelCapability::fetchLabels()
 {
     DEBUG_BLOCK
     QMap<QString,QString> query;
-    query[ "method" ] = "track.getTopTags";
-    query[ "track"  ] = m_track->name();
-    query[ "artist" ] = m_track->artist() ? m_track->artist()->name() : QString();
-    query[ "api_key"] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("method") ] = QStringLiteral("track.getTopTags");
+    query[ QStringLiteral("track")  ] = m_track->name();
+    query[ QStringLiteral("artist") ] = m_track->artist() ? m_track->artist()->name() : QString();
+    query[ QStringLiteral("api_key")] = QLatin1String(Amarok::lastfmApiKey());
     m_job  = lastfm::ws::post( query );
 
     connect( m_job, &QNetworkReply::finished, this, &LastfmReadLabelCapability::onTagsFetched );
@@ -73,10 +73,10 @@ LastfmReadLabelCapability::onTagsFetched()
         {
             lastfm::XmlQuery lfm;
             lfm.parse(m_job->readAll());
-            QList<lastfm::XmlQuery> tags = lfm.children( "tag" );
+            QList<lastfm::XmlQuery> tags = lfm.children( QStringLiteral("tag") );
             QStringList ret;
             for( const lastfm::XmlQuery &child : tags )
-                ret.append( child["name"].text() );
+                ret.append( child[QStringLiteral("name")].text() );
             m_labels = ret;
             Q_EMIT labelsFetched( ret );
             break;

@@ -22,7 +22,6 @@
 #include "amarok_export.h"
 
 #include <KConfigGroup>
-#include <KPluginInfo>
 
 
 namespace StatSyncing

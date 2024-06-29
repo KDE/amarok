@@ -263,7 +263,7 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
 
     QAction *editAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                        i18n( "Edit Track Details" ), parent );
-    editAction->setProperty( "popupdropper_svg_id", "edit" );
+    editAction->setProperty( "popupdropper_svg_id", QStringLiteral("edit") );
 
     if( auto p = static_cast<Playlist::PrettyListView*>(parent) )
         QObject::connect( editAction, &QAction::triggered, p, &Playlist::PrettyListView::editTrackInformation );

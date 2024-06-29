@@ -40,7 +40,7 @@ TestM3UPlaylist::TestM3UPlaylist()
 QString
 TestM3UPlaylist::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestM3UPlaylist::initTestCase()
@@ -55,11 +55,11 @@ void TestM3UPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test2.m3u" ));
+    const QUrl url = QUrl::fromLocalFile(dataPath( QStringLiteral("data/playlists/test2.m3u") ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
-    QString tempPath = m_tempDir->path() + "/test.m3u";
+    QString tempPath = m_tempDir->path() + QStringLiteral("/test.m3u");
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
@@ -85,19 +85,19 @@ void TestM3UPlaylist::cleanupTestCase()
 
 void TestM3UPlaylist::testSetAndGetName()
 {
-    QCOMPARE( m_testPlaylist->prettyName(), QString( "test.m3u" ) );
+    QCOMPARE( m_testPlaylist->prettyName(), QStringLiteral( "test.m3u" ) );
 
-    QCOMPARE( m_testPlaylist->name(), QString( "test.m3u" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.m3u" ) );
 
     m_testPlaylist->setName( "set name test" );
-    QCOMPARE( m_testPlaylist->name(), QString( "set name test.m3u" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "set name test.m3u" ) );
 
     m_testPlaylist->setName( "set name test aäoöuüß.m3u" );
-    QCOMPARE( m_testPlaylist->name(), QString( "set name test aäoöuüß.m3u" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "set name test aäoöuüß.m3u" ) );
 
     m_testPlaylist->setName( "test" );
     m_testPlaylist->setName( "" );
-    QCOMPARE( m_testPlaylist->name(), QString( "test.m3u" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.m3u" ) );
 }
 
 void TestM3UPlaylist::testTracks()
@@ -105,16 +105,16 @@ void TestM3UPlaylist::testTracks()
     Meta::TrackList tracklist = m_testPlaylist->tracks();
 
     QCOMPARE( tracklist.size(), 11 );
-    QCOMPARE( tracklist.at( 0 )->name(), QString( "Platz 01" ) );
-    QCOMPARE( tracklist.at( 1 )->name(), QString( "Platz 02" ) );
-    QCOMPARE( tracklist.at( 2 )->name(), QString( "Platz 03" ) );
-    QCOMPARE( tracklist.at( 9 )->name(), QString( "Platz 10" ) );
-    QCOMPARE( tracklist.at( 10 )->name(), QString( "Plätz 11" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QStringLiteral( "Platz 01" ) );
+    QCOMPARE( tracklist.at( 1 )->name(), QStringLiteral( "Platz 02" ) );
+    QCOMPARE( tracklist.at( 2 )->name(), QStringLiteral( "Platz 03" ) );
+    QCOMPARE( tracklist.at( 9 )->name(), QStringLiteral( "Platz 10" ) );
+    QCOMPARE( tracklist.at( 10 )->name(), QStringLiteral( "Plätz 11" ) );
 }
 
 void TestM3UPlaylist::testUidUrl()
 {
-    QString tempPath = m_tempDir->path() + "/test.m3u";
+    QString tempPath = m_tempDir->path() + QStringLiteral("/test.m3u");
     //we have changed the name around so much, better reset it
     m_testPlaylist->setName( "test" );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
@@ -132,7 +132,7 @@ void TestM3UPlaylist::testSetAndGetGroups()
     m_testPlaylist->setGroups( newGrouplist );
     grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 1 );
-    QCOMPARE( grouplist.at(0), QString( "test" ) );
+    QCOMPARE( grouplist.at(0), QStringLiteral( "test" ) );
 }
 
 void TestM3UPlaylist::testIsWritable()
@@ -169,8 +169,8 @@ void TestM3UPlaylist::testSaveAndReload()
     tracklist = m_testPlaylist->tracks();
 
     QCOMPARE( tracklist.size(), 11 );
-    QCOMPARE( tracklist.at( 9 )->name(), QString( "Platz 10" ) );
-    QCOMPARE( tracklist.at( 10 )->name(), QString( "Plätz 11" ) );
+    QCOMPARE( tracklist.at( 9 )->name(), QStringLiteral( "Platz 10" ) );
+    QCOMPARE( tracklist.at( 10 )->name(), QStringLiteral( "Plätz 11" ) );
     QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack1Url );
     QCOMPARE( tracklist.at( 10 )->uidUrl(), testTrack2Url );
 }

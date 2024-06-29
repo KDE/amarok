@@ -56,7 +56,7 @@ ViewUrlGenerator::createUrl()
     Dock * playlistDock = The::mainWindow()->playlistDock();
 
     QString filterExpr = playlistDock->searchWidget()->currentFilter();
-    QString onlyMatches = playlistDock->searchWidget()->onlyMatches() ? "true" : "false";
+    QString onlyMatches = playlistDock->searchWidget()->onlyMatches() ? QStringLiteral("true") : QStringLiteral("false");
     QString sortPath = playlistDock->sortWidget()->sortPath();
     QString prettySortPath = playlistDock->sortWidget()->prettySortPath();
     QString layout = LayoutManager::instance()->activeLayoutName();
@@ -77,8 +77,8 @@ ViewUrlGenerator::createUrl()
         url.setArg( QStringLiteral("filter"), filterExpr );
         url.setArg( QStringLiteral("matches"), onlyMatches );
         if( !prettyUrlName.isEmpty() )
-            prettyUrlName.append( "  |  " );
-        QString prettyFilterExpr = "\"" + filterExpr + "\"";
+            prettyUrlName.append( QStringLiteral("  |  ") );
+        QString prettyFilterExpr = QStringLiteral("\"") + filterExpr + QStringLiteral("\"");
         prettyUrlName.append( ( onlyMatches == QStringLiteral( "true" ) )
                               ? i18n( "Filter %1", prettyFilterExpr )
                               : i18n( "Search %1", prettyFilterExpr ) );
@@ -87,7 +87,7 @@ ViewUrlGenerator::createUrl()
     {
         url.setArg( QStringLiteral("layout"), layout );
         if( !prettyUrlName.isEmpty() )
-            prettyUrlName.append( "  |  " );
+            prettyUrlName.append( QStringLiteral("  |  ") );
         prettyUrlName.append( i18n( "%1 layout", layout ) );
     }
 
@@ -104,7 +104,7 @@ ViewUrlGenerator::description()
 
 QIcon ViewUrlGenerator::icon()
 {
-    return QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-bookmark-16.png" ) ) );
+    return QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/playlist-bookmark-16.png") ) ) );
 }
 
 } //namespace Playlist

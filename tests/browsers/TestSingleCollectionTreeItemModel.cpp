@@ -54,8 +54,8 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     Meta::TrackPtr trackPtr( track );
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
-    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + QLatin1Char('_') + artistName + QLatin1Char('_') + albumName ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( QLatin1Char('/') + track->uidUrl() ) ) );
     EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
     EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
@@ -130,7 +130,7 @@ TestSingleCollectionTreeItemModel::initTestCase()
     qRegisterMetaType<Meta::YearList>();
     qRegisterMetaType<Meta::LabelList>();
 
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 }
 
 #define loadChildren( itemModel, idx ) \
@@ -145,8 +145,8 @@ TestSingleCollectionTreeItemModel::initTestCase()
 void
 TestSingleCollectionTreeItemModel::testAddNewArtist()
 {
-    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( "test" );
-    addMockTrack( coll, "track1", "artist1", "album1" );
+    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( QStringLiteral("test") );
+    addMockTrack( coll, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QList<CategoryId::CatMenuId> levels;
     levels<< CategoryId::Artist << CategoryId::Album;
@@ -159,10 +159,10 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
 
     {
         QModelIndex artist1Index = model->index( 0, 0, QModelIndex() );
-        QCOMPARE( model->data( artist1Index, Qt::DisplayRole ).toString(), QString( "artist1" ) );
+        QCOMPARE( model->data( artist1Index, Qt::DisplayRole ).toString(), QStringLiteral( "artist1" ) );
     }
 
-    addMockTrack( coll, "track2", "artist2", "album2" );
+    addMockTrack( coll, QStringLiteral("track2"), QStringLiteral("artist2"), QStringLiteral("album2") );
 
     model->slotFilter();
 
@@ -180,7 +180,7 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
 
     {
         QSet<QString> expected;
-        expected << "artist1" << "artist2";
+        expected << QStringLiteral("artist1") << QStringLiteral("artist2");
         QCOMPARE( artists, expected );
     }
 
@@ -191,9 +191,9 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
 void
 TestSingleCollectionTreeItemModel::testRemoveArtist()
 {
-    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( "test" );
-    addMockTrack( coll, "track1", "artist1", "album1" );
-    addMockTrack( coll, "track2", "artist2", "album2" );
+    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( QStringLiteral("test") );
+    addMockTrack( coll, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( coll, QStringLiteral("track2"), QStringLiteral("artist2"), QStringLiteral("album2") );
 
     QList<CategoryId::CatMenuId> levels;
     levels<< CategoryId::Artist << CategoryId::Album;
@@ -214,12 +214,12 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
         artists << model->data( idx2, Qt::DisplayRole ).toString();
 
         QSet<QString> expected;
-        expected << "artist1" << "artist2";
+        expected << QStringLiteral("artist1") << QStringLiteral("artist2");
         QCOMPARE( artists, expected );
     }
 
     ArtistMap map = coll->mc->artistMap();
-    map.remove( "artist2" );  //album and track are still part of the collection
+    map.remove( QStringLiteral("artist2") );  //album and track are still part of the collection
     coll->mc->setArtistMap( map );
 
     model->slotFilter();
@@ -230,7 +230,7 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
 
     {
         QModelIndex artist1Index = model->index( 0, 0, QModelIndex() );
-        QCOMPARE( model->data( artist1Index, Qt::DisplayRole ).toString(), QString( "artist1" ) );
+        QCOMPARE( model->data( artist1Index, Qt::DisplayRole ).toString(), QStringLiteral( "artist1" ) );
     }
 
     delete model;
@@ -240,9 +240,9 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
 void
 TestSingleCollectionTreeItemModel::testAddTrack()
 {
-    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( "test" );
-    addMockTrack( coll, "track1", "artist1", "album1" );
-    addMockTrack( coll, "track2", "artist2", "album2" );
+    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( QStringLiteral("test") );
+    addMockTrack( coll, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( coll, QStringLiteral("track2"), QStringLiteral("artist2"), QStringLiteral("album2") );
 
     QList<CategoryId::CatMenuId> levels;
     levels<< CategoryId::Artist << CategoryId::Album;
@@ -263,7 +263,7 @@ TestSingleCollectionTreeItemModel::testAddTrack()
         artists << model->data( idx2, Qt::DisplayRole ).toString();
 
         QSet<QString> expected;
-        expected << "artist1" << "artist2";
+        expected << QStringLiteral("artist1") << QStringLiteral("artist2");
         QCOMPARE( artists, expected );
     }
 
@@ -278,7 +278,7 @@ TestSingleCollectionTreeItemModel::testAddTrack()
         QCOMPARE( model->rowCount( subParent ), 1 );
     }
 
-    addMockTrack( coll, "track3", "artist1", "album1" );
+    addMockTrack( coll, QStringLiteral("track3"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     model->slotFilter();
 
@@ -295,7 +295,7 @@ TestSingleCollectionTreeItemModel::testAddTrack()
         QCOMPARE( model->rowCount( parent ), 1 );
 
         QString name = model->data( parent, Qt::DisplayRole ).toString();
-        int count = (name == "artist1" ? 2 : 1 );
+        int count = (name == QStringLiteral("artist1") ? 2 : 1 );
 
         QModelIndex subParent = model->index( 0, 0, parent );
         loadChildren( model, subParent );
@@ -315,8 +315,8 @@ TestSingleCollectionTreeItemModel::testRemoveTrack()
 void
 TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
 {
-    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( "test" );
-    addMockTrack( coll, "track1", "artist1", "album1" );
+    Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( QStringLiteral("test") );
+    addMockTrack( coll, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Artist << CategoryId::Album;
@@ -328,11 +328,11 @@ TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
 
     {
         QModelIndex artist1Index = model->index( 0, 0, QModelIndex() );
-        QCOMPARE( model->data( artist1Index, Qt::DisplayRole ).toString(), QString( "artist1" ) );
+        QCOMPARE( model->data( artist1Index, Qt::DisplayRole ).toString(), QStringLiteral( "artist1" ) );
     }
 
-    addMockTrack( coll, "track2", "artist2", "album2" );
-    model->setCurrentFilter( "track2" );
+    addMockTrack( coll, QStringLiteral("track2"), QStringLiteral("artist2"), QStringLiteral("album2") );
+    model->setCurrentFilter( QStringLiteral("track2") );
     model->slotFilter();
     loadChildren( model, QModelIndex() );
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
@@ -343,7 +343,7 @@ TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
     QModelIndex idx1 = model->index( 0, 0, QModelIndex() );
-    QCOMPARE( model->data( idx1, Qt::DisplayRole ).toString(), QString( "artist2" ) );
+    QCOMPARE( model->data( idx1, Qt::DisplayRole ).toString(), QStringLiteral( "artist2" ) );
 
     delete model;
     delete coll;

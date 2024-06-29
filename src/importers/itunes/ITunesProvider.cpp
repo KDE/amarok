@@ -69,16 +69,16 @@ ITunesProvider::artistTracks( const QString &artistName )
 void
 ITunesProvider::readXml( const QString &byArtist )
 {
-    QFile dbFile( m_config.value( "dbPath" ).toString() );
+    QFile dbFile( m_config.value( QStringLiteral("dbPath") ).toString() );
     if( dbFile.open( QIODevice::ReadOnly ) )
     {
         QXmlStreamReader xml( &dbFile );
         if( xml.readNextStartElement() )
         {
-            if( xml.name() == "plist" && xml.attributes().value("version") == "1.0" )
+            if( xml.name() == QStringLiteral("plist") && xml.attributes().value("version") == QStringLiteral("1.0") )
                 readPlist( xml, byArtist );
             else
-                xml.raiseError( "the database is ill-formed or version unsupported" );
+                xml.raiseError( QStringLiteral("the database is ill-formed or version unsupported") );
         }
 
         if( xml.hasError() )
@@ -92,15 +92,15 @@ ITunesProvider::readXml( const QString &byArtist )
 void
 ITunesProvider::readPlist( QXmlStreamReader &xml, const QString &byArtist )
 {
-    Q_ASSERT( xml.isStartElement() && xml.name() == "plist" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("plist") );
     xml.readNextStartElement();
-    Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("dict") );
 
     while( xml.readNextStartElement() )
     {
-        if( xml.name() == "key" )
+        if( xml.name() == QStringLiteral("key") )
         {
-            if( xml.readElementText() == "Tracks" )
+            if( xml.readElementText() == QStringLiteral("Tracks") )
                 readTracks( xml, byArtist );
         }
         else
@@ -111,9 +111,9 @@ ITunesProvider::readPlist( QXmlStreamReader &xml, const QString &byArtist )
 void
 ITunesProvider::readTracks( QXmlStreamReader &xml, const QString &byArtist )
 {
-    Q_ASSERT( xml.isEndElement() && xml.name() == "key" );
+    Q_ASSERT( xml.isEndElement() && xml.name() == QStringLiteral("key") );
     xml.readNextStartElement();
-    Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("dict") );
 
     while( xml.readNextStartElement() )
         readTrack( xml, byArtist );
@@ -122,10 +122,10 @@ ITunesProvider::readTracks( QXmlStreamReader &xml, const QString &byArtist )
 void
 ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
 {
-    Q_ASSERT( xml.isStartElement() && xml.name() == "key" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("key") );
     xml.skipCurrentElement();
     xml.readNextStartElement();
-    Q_ASSERT( xml.isStartElement() && xml.name() == "dict" );
+    Q_ASSERT( xml.isStartElement() && xml.name() == QStringLiteral("dict") );
 
     Meta::FieldHash metadata;
     QString currentArtist;
@@ -135,7 +135,7 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
     {
         // We're only interested in this track if it's by right artist, or if we haven't
         // found the artist yet
-        if( xml.name() == "key"
+        if( xml.name() == QStringLiteral("key")
                  && ( currentArtist.isEmpty() || currentArtist == byArtist ) )
         {
             const QString type = xml.readElementText();
@@ -143,37 +143,37 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
             // If byArtist param is not set, we're only interested in track Artist
             if( byArtist.isEmpty() )
             {
-                if( type == "Artist" )
+                if( type == QStringLiteral("Artist") )
                     currentArtist = readValue( xml );
             }
             else
             {
-                if( type == "Track ID" )
+                if( type == QStringLiteral("Track ID") )
                 {
                     trackId = readValue( xml ).toInt();
                 }
-                else if( type == "Name" )
+                else if( type == QStringLiteral("Name") )
                     metadata.insert( Meta::valTitle, readValue( xml ) );
-                else if( type == "Artist" )
+                else if( type == QStringLiteral("Artist") )
                 {
                     currentArtist = readValue( xml );
                     metadata.insert( Meta::valArtist, currentArtist );
                 }
-                else if( type == "Album" )
+                else if( type == QStringLiteral("Album") )
                     metadata.insert( Meta::valAlbum, readValue( xml ) );
-                else if( type == "Composer" )
+                else if( type == QStringLiteral("Composer") )
                     metadata.insert( Meta::valComposer, readValue( xml ) );
-                else if( type == "Year" )
+                else if( type == QStringLiteral("Year") )
                     metadata.insert( Meta::valYear, readValue( xml ) );
-                else if( type == "Track Number" )
+                else if( type == QStringLiteral("Track Number") )
                     metadata.insert( Meta::valTrackNr, readValue( xml ) );
-                else if( type == "Disc Number" )
+                else if( type == QStringLiteral("Disc Number") )
                     metadata.insert( Meta::valDiscNr, readValue( xml ) );
-                else if( type == "Rating" )
+                else if( type == QStringLiteral("Rating") )
                     metadata.insert( Meta::valRating, readValue( xml ) );
-                else if( type == "Play Date UTC" )
+                else if( type == QStringLiteral("Play Date UTC") )
                     metadata.insert( Meta::valLastPlayed, readValue( xml ) );
-                else if( type == "Play Count" )
+                else if( type == QStringLiteral("Play Count") )
                     metadata.insert( Meta::valPlaycount, readValue( xml ) );
             }
         }
@@ -195,7 +195,7 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
 QString
 ITunesProvider::readValue( QXmlStreamReader &xml )
 {
-    Q_ASSERT( xml.isEndElement() && xml.name() == "key" );
+    Q_ASSERT( xml.isEndElement() && xml.name() == QStringLiteral("key") );
     xml.readNextStartElement();
     Q_ASSERT( xml.isStartElement() );
     return xml.readElementText();
@@ -206,7 +206,7 @@ ITunesProvider::writeTracks( QXmlStreamReader &reader, QXmlStreamWriter &writer,
                              const QMap<int, Meta::FieldHash> &dirtyData )
 {
     int dictDepth = 0;
-    while( !reader.isEndElement() || reader.name() != "dict" || dictDepth != 0 )
+    while( !reader.isEndElement() || reader.name() != QStringLiteral("dict") || dictDepth != 0 )
     {
         reader.readNext();
 
@@ -218,7 +218,7 @@ ITunesProvider::writeTracks( QXmlStreamReader &reader, QXmlStreamWriter &writer,
 
         writer.writeCurrentToken( reader );
 
-        if( reader.isStartElement() && reader.name() == "key" && dictDepth == 1 )
+        if( reader.isStartElement() && reader.name() == QStringLiteral("key") && dictDepth == 1 )
         {
             int trackId = reader.readElementText().toInt();
             writer.writeCharacters( QString::number( trackId ) );
@@ -227,9 +227,9 @@ ITunesProvider::writeTracks( QXmlStreamReader &reader, QXmlStreamWriter &writer,
             if( dirtyData.contains( trackId ) )
                 writeTrack( reader, writer, dirtyData.value( trackId ) );
         }
-        else if( reader.isStartElement() && reader.name() == "dict" )
+        else if( reader.isStartElement() && reader.name() == QStringLiteral("dict") )
             ++dictDepth;
-        else if( reader.isEndElement() && reader.name() == "dict" )
+        else if( reader.isEndElement() && reader.name() == QStringLiteral("dict") )
             --dictDepth;
     }
 }
@@ -241,7 +241,7 @@ ITunesProvider::writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
     QString keyWhitespace;
     QString lastWhitespace;
 
-    while( !reader.isEndElement() || reader.name() != "dict" )
+    while( !reader.isEndElement() || reader.name() != QStringLiteral("dict") )
     {
         reader.readNext();
 
@@ -255,12 +255,12 @@ ITunesProvider::writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
         {
             lastWhitespace = reader.text().toString();
         }
-        else if( reader.isStartElement() && reader.name() == "key" )
+        else if( reader.isStartElement() && reader.name() == QStringLiteral("key") )
         {
             keyWhitespace = lastWhitespace;
             const QString type = reader.readElementText();
 
-            if( type == "Rating" || type == "Play Count" )
+            if( type == QStringLiteral("Rating") || type == QStringLiteral("Play Count") )
             {
                 reader.readNextStartElement(); // <integer>
                 reader.skipCurrentElement();
@@ -273,7 +273,7 @@ ITunesProvider::writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
 
             lastWhitespace.clear();
         }
-        else if( !reader.isEndElement() || reader.name() != "dict" )
+        else if( !reader.isEndElement() || reader.name() != QStringLiteral("dict") )
         {
             writer.writeCharacters( lastWhitespace );
             writer.writeCurrentToken( reader );
@@ -316,7 +316,7 @@ ITunesProvider::commitTracks()
     QMap<int, Meta::FieldHash> dirtyData;
     dirtyData.swap( m_dirtyData );
 
-    QFile dbFile( m_config.value( "dbPath" ).toString() );
+    QFile dbFile( m_config.value( QStringLiteral("dbPath") ).toString() );
     if( !dbFile.open( QIODevice::ReadOnly ) )
     {
         warning() << __PRETTY_FUNCTION__ << dbFile.fileName() << "is not readable";
@@ -348,7 +348,7 @@ ITunesProvider::commitTracks()
             const QString text = reader.readElementText();
             writer.writeTextElement( "key", text );
 
-            if( text == "Tracks" )
+            if( text == QStringLiteral("Tracks") )
                 writeTracks( reader, writer, dirtyData );
         }
         else if( reader.isStartDocument() )
@@ -359,7 +359,7 @@ ITunesProvider::commitTracks()
     }
 
     const QString dbName = dbFile.fileName();
-    QFile::remove( dbName + ".bak" );
-    dbFile.rename( dbName + ".bak" );
+    QFile::remove( dbName + QStringLiteral(".bak") );
+    dbFile.rename( dbName + QStringLiteral(".bak") );
     tmpFile.copy( dbName );
 }

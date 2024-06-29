@@ -136,7 +136,7 @@ double
 ConstraintTypes::PlaylistFileSize::satisfaction( const Meta::TrackList& tl ) const
 {
     quint64 tlSize = 0;
-    foreach ( const Meta::TrackPtr t, tl ) {
+    for ( const Meta::TrackPtr &t : tl ) {
         // Boy it sure would be nice if Qt had a "reduce" function built in
         tlSize += static_cast<quint64>( t->filesize() );
     }

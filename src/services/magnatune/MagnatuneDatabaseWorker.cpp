@@ -121,7 +121,7 @@ void MagnatuneDatabaseWorker::fetchAlbumBySku( const QString & sku, ServiceSqlRe
 void MagnatuneDatabaseWorker::doFetchMoodMap()
 {
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    QString queryString = "select count( mood ), mood from magnatune_moods GROUP BY mood;";
+    QString queryString = QStringLiteral("select count( mood ), mood from magnatune_moods GROUP BY mood;");
     debug() << "Querying for moods: " << queryString;
     QStringList result = sqlDb->query( queryString );
     debug() << "result: " << result;
@@ -142,7 +142,7 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 
     //ok, a huge join turned out to be _really_ slow, so lets chop up the query a bit...
 
-    QString queryString = "SELECT DISTINCT track_id FROM magnatune_moods WHERE mood =\"" + m_mood + "\"  ORDER BY RANDOM() LIMIT " + QString::number( m_noOfTracks, 10 ) + ';';
+    QString queryString = QStringLiteral("SELECT DISTINCT track_id FROM magnatune_moods WHERE mood =\"") + m_mood + QStringLiteral("\"  ORDER BY RANDOM() LIMIT ") + QString::number( m_noOfTracks, 10 ) + QLatin1Char(';');
 
     QStringList result = sqlDb->query( queryString );
 
@@ -153,7 +153,7 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 
     for( const QString &idString : result ) {
 
-        QString queryString = "SELECT DISTINCT ";
+        QString queryString = QStringLiteral("SELECT DISTINCT ");
         
                 
         queryString += m_registry->factory()->getTrackSqlRows() + QLatin1Char(',') +
@@ -161,10 +161,10 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
                     m_registry->factory()->getArtistSqlRows() + QLatin1Char(',') +
                     m_registry->factory()->getGenreSqlRows();
 
-        queryString += " FROM magnatune_tracks LEFT JOIN magnatune_albums ON magnatune_tracks.album_id = magnatune_albums.id LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id LEFT JOIN magnatune_genre ON magnatune_genre.album_id = magnatune_albums.id";
+        queryString += QStringLiteral(" FROM magnatune_tracks LEFT JOIN magnatune_albums ON magnatune_tracks.album_id = magnatune_albums.id LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id LEFT JOIN magnatune_genre ON magnatune_genre.album_id = magnatune_albums.id");
 
-        queryString += " WHERE magnatune_tracks.id = " + idString;
-        queryString += " GROUP BY  magnatune_tracks.id";
+        queryString += QStringLiteral(" WHERE magnatune_tracks.id = ") + idString;
+        queryString += QStringLiteral(" GROUP BY  magnatune_tracks.id");
 
         //debug() << "Querying for moody tracks: " << queryString;
 
@@ -194,11 +194,11 @@ void MagnatuneDatabaseWorker::doFetchAlbumBySku()
     ServiceMetaFactory * metaFactory = m_registry->factory();
 
     QString rows = metaFactory->getAlbumSqlRows()
-                 + ','
+                 + QLatin1Char(',')
                  + metaFactory->getArtistSqlRows();
 
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    QString queryString = "SELECT " + rows + " FROM magnatune_albums LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id WHERE album_code = '" + m_sku + "';";
+    QString queryString = QStringLiteral("SELECT ") + rows + QStringLiteral(" FROM magnatune_albums LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id WHERE album_code = '") + m_sku + QStringLiteral("';");
     debug() << "Querying for album: " << queryString;
     QStringList result = sqlDb->query( queryString );
     debug() << "result: " << result;

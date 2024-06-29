@@ -98,7 +98,7 @@ KNotificationBackend::show( const QString &title, const QString &body, const QPi
     else
         icon = pixmap;
 
-    KNotification *notify = new KNotification( "message" );
+    KNotification *notify = new KNotification( QStringLiteral("message") );
     notify->setTitle( title );
     notify->setText( body );
     notify->setPixmap( icon );
@@ -126,7 +126,7 @@ KNotificationBackend::showCurrentTrack( bool force )
 
     KNotification *notify = m_notify.data();
     if( !notify )
-        notify = new KNotification( "trackChange" );
+        notify = new KNotification( QStringLiteral("trackChange") );
     notify->setTitle( title );
     notify->setText( text );
     notify->setPixmap( pixmap );

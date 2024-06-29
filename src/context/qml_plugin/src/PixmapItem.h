@@ -41,7 +41,12 @@ public:
     bool valid() const { return !m_source.isNull(); }
 
     QSGNode* updatePaintNode( QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData ) override;
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
+#else
+    void geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
+#endif
 
 Q_SIGNALS:
     void sourceChanged();

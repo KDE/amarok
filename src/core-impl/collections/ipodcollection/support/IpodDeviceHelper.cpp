@@ -232,7 +232,7 @@ safeToWriteWithMessage( const QString &mountPoint, const Itdb_iTunesDB *itdb, QS
     }
     if( hashInfoNeeded( info->ipod_generation ) )
     {
-        const QString hashInfo( "HashInfo" );
+        const QString hashInfo( QStringLiteral("HashInfo") );
         bool hashInfoExists = fileFound( mountPoint, hashInfo );
         message += hashInfoExists
                    ? i18n( "%1 family uses %2 file to generate correct database checksum.",
@@ -259,7 +259,7 @@ fillInModelComboBox( QComboBox *comboBox, bool someSysInfoFound )
 {
     if( someSysInfoFound )
     {
-        comboBox->addItem( i18n( "Autodetect (%1 file(s) present)", QString( "SysInfo") ), QString() );
+        comboBox->addItem( i18n( "Autodetect (%1 file(s) present)", QStringLiteral( "SysInfo") ), QString() );
         comboBox->setEnabled( false );
         return;
     }
@@ -312,8 +312,8 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
     QString warningText;
     QString safeToWriteMessage;
     bool isSafeToWrite = safeToWriteWithMessage( mountPoint, itdb, safeToWriteMessage );
-    bool sysInfoExtendedExists = fileFound( mountPoint, "SysInfoExtended" );
-    bool sysInfoExists = fileFound( mountPoint, "SysInfo" );
+    bool sysInfoExtendedExists = fileFound( mountPoint, QStringLiteral("SysInfoExtended") );
+    bool sysInfoExists = fileFound( mountPoint, QStringLiteral("SysInfo") );
 
     if( itdb )
     {
@@ -326,7 +326,7 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
         configureDialogUi->initializeButton->setEnabled( false );
         if( !errorMessage.isEmpty() )
             // to inform user about successful initialization.
-            warningText = QString( "<b>%1</b>" ).arg( errorMessage );
+            warningText = QStringLiteral( "<b>%1</b>" ).arg( errorMessage );
 
         const Itdb_Device *device = itdb->device;
         const Itdb_IpodInfo *info = device ? itdb_device_get_ipod_info( device ) : nullptr;
@@ -345,7 +345,7 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
         else
         {
             Q_ASSERT( !safeToWriteMessage.isEmpty() );
-            const QString link( "http://gtkpod.git.sourceforge.net/git/gitweb.cgi?p=gtkpod/libgpod;a=blob_plain;f=README.overview" );
+            const QString link( QStringLiteral("http://gtkpod.git.sourceforge.net/git/gitweb.cgi?p=gtkpod/libgpod;a=blob_plain;f=README.overview") );
             notes += i18nc( "%1 is informational sentence giving reason",
                 "<b>%1</b><br><br>"
                 "As a safety measure, Amarok will <i>refuse to perform any writes</i> to "
@@ -366,7 +366,7 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
             fillInModelComboBox( configureDialogUi->modelComboBox, sysInfoExists || sysInfoExtendedExists );
         configureDialogUi->initializeLabel->setEnabled( true );
         configureDialogUi->initializeButton->setEnabled( true );
-        configureDialogUi->initializeButton->setIcon( QIcon::fromTheme( "task-attention" ) );
+        configureDialogUi->initializeButton->setIcon( QIcon::fromTheme( QStringLiteral("task-attention") ) );
         if( !errorMessage.isEmpty() )
             warningText = i18n(
                 "<b>%1</b><br><br>"
@@ -376,7 +376,7 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
                 "Initializing iPod <b>destroys iPod track and photo database</b>, however "
                 "it should not delete any tracks. The tracks will become orphaned.",
                 errorMessage,
-                configureDialogUi->initializeButton->text().remove( QChar('&') )
+                configureDialogUi->initializeButton->text().remove( QLatin1Char('&') )
             );
 
         configureDialogUi->infoGroupBox->setEnabled( false );

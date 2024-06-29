@@ -27,20 +27,20 @@ FastForwardProvider::FastForwardProvider( const QVariantMap &config,
                                           ImporterManager *importer )
     : ImporterProvider( config, importer )
 {
-    if( config.value( "dbDriver" ).toString() == "QSQLITE" )
+    if( config.value( QStringLiteral("dbDriver") ).toString() == QStringLiteral("QSQLITE") )
     {
         m_connection = ImporterSqlConnectionPtr(
-                    new ImporterSqlConnection( config.value( "dbPath" ).toString() ) );
+                    new ImporterSqlConnection( config.value( QStringLiteral("dbPath") ).toString() ) );
     }
     else
     {
         m_connection = ImporterSqlConnectionPtr( new ImporterSqlConnection(
-             m_config.value( "dbDriver" ).toString(),
-             m_config.value( "dbHost" ).toString(),
-             m_config.value( "dbPort" ).toUInt(),
-             m_config.value( "dbName" ).toString(),
-             m_config.value( "dbUser" ).toString(),
-             m_config.value( "dbPass" ).toString()
+             m_config.value( QStringLiteral("dbDriver") ).toString(),
+             m_config.value( QStringLiteral("dbHost") ).toString(),
+             m_config.value( QStringLiteral("dbPort") ).toUInt(),
+             m_config.value( QStringLiteral("dbName") ).toString(),
+             m_config.value( QStringLiteral("dbUser") ).toString(),
+             m_config.value( QStringLiteral("dbPass") ).toString()
         ) );
     }
 }
@@ -67,7 +67,7 @@ QSet<QString>
 FastForwardProvider::artists()
 {
     QSet<QString> result;
-    for( const QVariantList &row : m_connection->query( "SELECT name FROM artist" ) )
+    for( const QVariantList &row : m_connection->query( QStringLiteral("SELECT name FROM artist") ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -76,7 +76,7 @@ FastForwardProvider::artists()
 TrackList
 FastForwardProvider::artistTracks( const QString &artistName )
 {
-    const QString query = "SELECT t.url, t.title, al.name, ar.name, c.name, y.name, "
+    const QString query = QStringLiteral("SELECT t.url, t.title, al.name, ar.name, c.name, y.name, "
             "t.track, t.discnumber, s.rating, s.createdate, s.accessdate, s.playcounter "
             "FROM tags t "
             "INNER JOIN artist ar ON ar.id = t.artist "
@@ -84,10 +84,10 @@ FastForwardProvider::artistTracks( const QString &artistName )
             "LEFT JOIN composer c ON c.id = t.composer "
             "LEFT JOIN year y ON y.id = t.year "
             "LEFT JOIN statistics s ON s.url = t.url "
-            "WHERE ar.name = :artist";
+            "WHERE ar.name = :artist");
 
     QVariantMap bindValues;
-    bindValues.insert( ":artist", artistName );
+    bindValues.insert( QStringLiteral(":artist"), artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valAlbum
                 << Meta::valArtist << Meta::valComposer << Meta::valYear
@@ -103,12 +103,12 @@ FastForwardProvider::artistTracks( const QString &artistName )
         for( int i = 0; i < fields.size(); ++i )
             metadata.insert( fields[i], row[i + 1] );
 
-        const QString lblQuery = "SELECT l.name FROM labels l "
+        const QString lblQuery = QStringLiteral("SELECT l.name FROM labels l "
                                  "INNER JOIN tags_labels tl ON tl.labelid = l.id "
-                                 "WHERE tl.url = :url";
+                                 "WHERE tl.url = :url");
 
         QVariantMap lblBindValues;
-        lblBindValues.insert( ":url", trackUrl );
+        lblBindValues.insert( QStringLiteral(":url"), trackUrl );
 
         QSet<QString> labels;
         for( const QVariantList &row : m_connection->query( lblQuery, lblBindValues ) )

@@ -52,7 +52,7 @@ namespace Playlists
             void failed(ThreadWeaver::JobPointer);
 
         private Q_SLOTS:
-            void slotDonwloadFinished( KJob *job );
+            void slotDownloadFinished( KJob *job );
 
             /**
              * Responsible for notification of finished loading

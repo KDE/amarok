@@ -102,8 +102,8 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     else if( i.hasNext() ) // If preamp is present then skip its label as it is hard-coded in UI
         i.next();
     for( QLabel* mLabel : m_bandLabels )
-        if( mLabel->objectName() != "eqPreampLabel" )
-            mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
+        if( mLabel->objectName() != QStringLiteral("eqPreampLabel") )
+            mLabel->setText( i.hasNext() ?  i.next() : QStringLiteral("N/A") );
 
     updatePresets();
     activeCheckBox->setChecked( equalizer->enabled() );

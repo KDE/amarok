@@ -252,7 +252,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
 
             QString from = orphanedTrack->playableUrl().toLocalFile();
             QString to = staleTrack->playableUrl().toLocalFile();
-            if( !QFileInfo( to ).absoluteDir().mkpath( "." ) )
+            if( !QFileInfo( to ).absoluteDir().mkpath( QStringLiteral(".") ) )
             {
                 warning() << __PRETTY_FUNCTION__ << "Failed to create directory path"
                           << QFileInfo( to ).absoluteDir().path();

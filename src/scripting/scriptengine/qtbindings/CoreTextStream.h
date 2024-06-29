@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QTextStream>
 
+class QTextCodec;
+
 namespace QtBindings
 {
     namespace Core

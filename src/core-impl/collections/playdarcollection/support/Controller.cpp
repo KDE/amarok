@@ -57,12 +57,12 @@ namespace Playdar {
         debug() << "Querying playdar for artist name = " << artist
                 << ", album name = " << album << ", and track title = " << title;
         
-        const QString baseUrl( "http://localhost:60210/api/?method=resolve" );
+        const QString baseUrl( QStringLiteral("http://localhost:60210/api/?method=resolve") );
         QUrl resolveUrl( baseUrl );
         QUrlQuery query( resolveUrl );
-        query.addQueryItem( QString( "artist" ), artist );
-        query.addQueryItem( QString( "album" ), album );
-        query.addQueryItem( QString( "track" ), title );
+        query.addQueryItem( QStringLiteral( "artist" ), artist );
+        query.addQueryItem( QStringLiteral( "album" ), album );
+        query.addQueryItem( QStringLiteral( "track" ), title );
         resolveUrl.setQuery( query );
         
         debug() << "Starting storedGetJob for " << resolveUrl.url();
@@ -76,11 +76,11 @@ namespace Playdar {
     {
         DEBUG_BLOCK
         
-        const QString baseUrl( "http://localhost:60210/api/?method=get_results" );
+        const QString baseUrl( QStringLiteral("http://localhost:60210/api/?method=get_results") );
         QUrl getResultsUrl( baseUrl );
         QUrlQuery q( getResultsUrl );
 
-        q.addQueryItem( QString( "qid" ), query->qid() );
+        q.addQueryItem( QStringLiteral( "qid" ), query->qid() );
         getResultsUrl.setQuery( q );
 
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
@@ -92,11 +92,11 @@ namespace Playdar {
     {
         DEBUG_BLOCK
         
-        const QString baseUrl( "http://localhost:60210/api/?method=get_results_long" );
+        const QString baseUrl( QStringLiteral("http://localhost:60210/api/?method=get_results_long") );
         QUrl getResultsUrl( baseUrl );
         QUrlQuery q( getResultsUrl );
 
-        q.addQueryItem( QString( "qid" ), query->qid() );
+        q.addQueryItem( QStringLiteral( "qid" ), query->qid() );
         getResultsUrl.setQuery( q );
 
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
@@ -108,7 +108,7 @@ namespace Playdar {
     {
         DEBUG_BLOCK
         
-        const QString baseUrl( "http://localhost:60210/sid/" );
+        const QString baseUrl( QStringLiteral("http://localhost:60210/sid/") );
         QUrl playableUrl( baseUrl );
         
         playableUrl = playableUrl.adjusted(QUrl::StripTrailingSlash);
@@ -122,7 +122,7 @@ namespace Playdar {
     {
         // DEBUG_BLOCK
         
-        const QString baseUrl( "http://localhost:60210/api/?method=stat" );
+        const QString baseUrl( QStringLiteral("http://localhost:60210/api/?method=stat") );
         QUrl statusUrl( baseUrl );
         
         KJob* statusJob = KIO::storedGet( statusUrl, KIO::Reload, KIO::HideProgressInfo );

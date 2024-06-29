@@ -47,7 +47,7 @@ CollectionDBusHandler::Query( const QString &xmlQuery )
     if( !qm )
     {
         debug() << "Invalid XML query: " << xmlQuery;
-        sendErrorReply( QDBusError::InvalidArgs, "Invalid XML: " + xmlQuery );
+        sendErrorReply( QDBusError::InvalidArgs, QStringLiteral("Invalid XML: ") + xmlQuery );
         return VariantMapList();
     }
 
@@ -70,7 +70,7 @@ CollectionDBusHandler::MprisQuery( const QString &xmlQuery )
     if( !qm )
     {
         debug() << "Invalid XML query: " << xmlQuery;
-        sendErrorReply( QDBusError::InvalidArgs, "Invalid XML: " + xmlQuery );
+        sendErrorReply( QDBusError::InvalidArgs, QStringLiteral("Invalid XML: ") + xmlQuery );
         return VariantMapList();
     }
 

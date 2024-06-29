@@ -59,7 +59,7 @@ TestPlaylistFormat::testGetFormat()
 {
     QFETCH( QString, filename );
     QFETCH( Playlists::PlaylistFormat, playlistFormat );
-    QUrl url( "amarok:///playlists/" );
+    QUrl url( QStringLiteral("amarok:///playlists/") );
 
     url = url.adjusted(QUrl::RemoveFilename);
     url.setPath(url.path() +  filename );
@@ -101,7 +101,7 @@ TestPlaylistFormat::testIsPlaylist()
 {
     QFETCH( QString, filename );
     QFETCH( bool, isPlaylist );
-    QUrl url( "amarok:///playlists/" );
+    QUrl url( QStringLiteral("amarok:///playlists/") );
 
     url = url.adjusted(QUrl::RemoveFilename);
     url.setPath(url.path() +  filename );

@@ -62,7 +62,7 @@ SmbDeviceHandler::isAvailable() const
 QString
 SmbDeviceHandler::type() const
 {
-    return "smb";
+    return QStringLiteral("smb");
 }
 
 int
@@ -100,7 +100,7 @@ bool SmbDeviceHandler::deviceMatchesUdi( const QString &udi ) const
 
 QString SmbDeviceHandlerFactory::type( ) const
 {
-    return "smb";
+    return QStringLiteral("smb");
 }
 
 bool SmbDeviceHandlerFactory::canCreateFromMedium( ) const
@@ -174,7 +174,7 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
     QString server = url.host();
     QString share = url.path().mid( 1 ); // strip leading slash, not usual in smb shares
 
-    QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
+    QStringList ids = s->query( QStringLiteral( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'smb' "
                                          "AND servername = '%1' AND sharename = '%2';" )
                                          .arg( s->escape( server ),
@@ -182,7 +182,7 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
     if ( ids.size() == 3 )
     {
         debug() << "Found existing SMB config for ID " << ids[0] << " , server " << server << " ,share " << share;
-        s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+        s->query( QStringLiteral( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                            "id = %1;" )
                            .arg( ids[0],
                                  s->escape( mountPoint ) ) );
@@ -190,13 +190,13 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
     }
     else
     {
-        int id = s->insert( QString( "INSERT INTO devices"
+        int id = s->insert( QStringLiteral( "INSERT INTO devices"
                                      "( type, servername, sharename, lastmountpoint ) "
                                      "VALUES ( 'smb', '%1', '%2', '%3' );" )
                                      .arg( s->escape( server ),
                                            s->escape( share ),
                                            s->escape( mountPoint ) ),
-                                     "devices" );
+                                     QStringLiteral("devices") );
         if ( id == 0 )
         {
             warning() << "Inserting into devices failed for type=smb, server=" << server << ", share=" << share;

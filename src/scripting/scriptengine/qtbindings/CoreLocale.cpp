@@ -91,12 +91,12 @@ QString Locale::dayName(int day, QLocale::FormatType format) const
     return QLocale::dayName(day, format);
 }
 
-QChar Locale::decimalPoint() const
+QString Locale::decimalPoint() const
 {
     return QLocale::decimalPoint();
 }
 
-QChar Locale::exponential() const
+QString Locale::exponential() const
 {
     return QLocale::exponential();
 }
@@ -106,7 +106,7 @@ Qt::DayOfWeek Locale::firstDayOfWeek() const
     return QLocale::firstDayOfWeek();
 }
 
-QChar Locale::groupSeparator() const
+QString Locale::groupSeparator() const
 {
     return QLocale::groupSeparator();
 }
@@ -141,7 +141,7 @@ QString Locale::nativeLanguageName() const
     return QLocale::nativeLanguageName();
 }
 
-QChar Locale::negativeSign() const
+QString Locale::negativeSign() const
 {
     return QLocale::negativeSign();
 }
@@ -151,7 +151,7 @@ QLocale::NumberOptions Locale::numberOptions() const
     return QLocale::numberOptions();
 }
 
-QChar Locale::percent() const
+QString Locale::percent() const
 {
     return QLocale::percent();
 }
@@ -161,7 +161,7 @@ QString Locale::pmText() const
     return QLocale::pmText();
 }
 
-QChar Locale::positiveSign() const
+QString Locale::positiveSign() const
 {
     return QLocale::positiveSign();
 }
@@ -461,7 +461,7 @@ QList<Qt::DayOfWeek> Locale::weekdays() const
     return QLocale::weekdays();
 }
 
-QChar Locale::zeroDigit() const
+QString Locale::zeroDigit() const
 {
     return QLocale::zeroDigit();
 }

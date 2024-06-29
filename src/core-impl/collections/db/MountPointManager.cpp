@@ -45,7 +45,7 @@ MountPointManager::MountPointManager( QObject *parent, QSharedPointer<SqlStorage
     DEBUG_BLOCK
     setObjectName( "MountPointManager" );
 
-    if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
+    if ( !Amarok::config( QStringLiteral("Collection") ).readEntry( "DynamicCollection", true ) )
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals";
         m_ready = true;
@@ -66,8 +66,8 @@ MountPointManager::handleMusicLocation()
     // to v2.2.2, which did not store the location into config.
     // and also for versions up to 2.7-git that did write the Use MusicLocation entry
 
-    KConfigGroup folders = Amarok::config( "Collection Folders" );
-    const QString entryKey( "Use MusicLocation" );
+    KConfigGroup folders = Amarok::config( QStringLiteral("Collection Folders") );
+    const QString entryKey( QStringLiteral("Use MusicLocation") );
     if( !folders.hasKey( entryKey ) )
         return; // good, already solved, nothing to do
 
@@ -176,7 +176,7 @@ MountPointManager::getMountPointForId( const int id ) const
     }
     else
         //TODO better error handling
-        mountPoint = '/';
+        mountPoint = QLatin1Char('/');
     return mountPoint;
 }
 
@@ -210,7 +210,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
         else
         {
             m_handlerMapMutex.unlock();
-            const QStringList lastMountPoint = m_storage->query( QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
+            const QStringList lastMountPoint = m_storage->query( QStringLiteral( "SELECT lastmountpoint FROM devices WHERE id = %1" )
                                                                  .arg( deviceId ) );
             if ( lastMountPoint.isEmpty() )
             {
@@ -230,7 +230,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
     }
 
     if( QFileInfo( absoluteUrl.toLocalFile() ).isDir() )
-        absoluteUrl.setPath( absoluteUrl.adjusted( QUrl::StripTrailingSlash ).path() + '/' );
+        absoluteUrl.setPath( absoluteUrl.adjusted( QUrl::StripTrailingSlash ).path() + QLatin1Char('/') );
 
     return absoluteUrl.toLocalFile();
 }
@@ -288,7 +288,7 @@ MountPointManager::collectionFolders() const
         const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
         for( const QString &strIt : rpaths )
         {
-            const QUrl url = QUrl::fromLocalFile( ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt ) );
+            const QUrl url = QUrl::fromLocalFile( ( strIt == QStringLiteral("./") ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt ) );
             const QString absPath = url.adjusted(QUrl::StripTrailingSlash).toLocalFile();
             if ( !result.contains( absPath ) )
                 result.append( absPath );
@@ -302,7 +302,7 @@ void
 MountPointManager::setCollectionFolders( const QStringList &folders )
 {
     typedef QMap<int, QStringList> FolderMap;
-    KConfigGroup folderConf = Amarok::config( "Collection Folders" );
+    KConfigGroup folderConf = Amarok::config( QStringLiteral("Collection Folders") );
     FolderMap folderMap;
 
     for( const QString &folder : folders )

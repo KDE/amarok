@@ -33,8 +33,8 @@ ProviderPtr
 TestClementineImporter::getProvider()
 {
     QVariantMap cfg = ClementineConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbPath", QApplication::applicationDirPath()
-                          + "/../tests/importers_files/clementine.db" );
+    cfg.insert( QStringLiteral("dbPath"), QString( QApplication::applicationDirPath()
+                          + QStringLiteral("/../tests/importers_files/clementine.db") ) );
 
     return ProviderPtr( new ClementineProvider( cfg, nullptr ) );
 }
@@ -43,14 +43,14 @@ ProviderPtr
 TestClementineImporter::getWritableProvider()
 {
     QDir base( QCoreApplication::applicationDirPath() );
-    base.mkpath( "importers_tmp" );
+    base.mkpath( QStringLiteral("importers_tmp") );
 
-    const QString dst = base.filePath( "importers_tmp/clementine.db" );
+    const QString dst = base.filePath( QStringLiteral("importers_tmp/clementine.db") );
     QFile( dst ).remove();
-    QFile( base.filePath( "../tests/importers_files/clementine.db" ) ).copy( dst );
+    QFile( base.filePath( QStringLiteral("../tests/importers_files/clementine.db") ) ).copy( dst );
 
     QVariantMap cfg = ClementineConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbPath", dst );
+    cfg.insert( QStringLiteral("dbPath"), dst );
 
     return ProviderPtr( new ClementineProvider( cfg, nullptr ) );
 }
@@ -71,7 +71,7 @@ TestClementineImporter::init()
 void
 TestClementineImporter::providerShouldHandleNonexistentDbFile()
 {
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("/wdawd\\wdadwgd/das4hutyf") );
 
     ClementineProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -80,7 +80,7 @@ TestClementineImporter::providerShouldHandleNonexistentDbFile()
 void
 TestClementineImporter::providerShouldHandleInvalidDbFile()
 {
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
+    m_cfg.insert( QStringLiteral("dbPath"), QApplication::applicationFilePath() );
 
     ClementineProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -89,8 +89,8 @@ TestClementineImporter::providerShouldHandleInvalidDbFile()
 void
 TestClementineImporter::providerShouldHandleErroneousConfigValues()
 {
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("\\wd%aw@d/sdsd2'vodk0-=$$") );
+    m_cfg.insert( QStringLiteral("name"), QColor( Qt::white ) );
 
     ClementineProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );

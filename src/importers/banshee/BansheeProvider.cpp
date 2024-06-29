@@ -23,7 +23,7 @@ using namespace StatSyncing;
 
 BansheeProvider::BansheeProvider( const QVariantMap &config, ImporterManager *importer )
     : ImporterProvider( config, importer )
-    , m_connection( new ImporterSqlConnection( m_config.value( "dbPath" ).toString() ) )
+    , m_connection( new ImporterSqlConnection( m_config.value( QStringLiteral("dbPath") ).toString() ) )
 {
 }
 
@@ -48,7 +48,7 @@ QSet<QString>
 BansheeProvider::artists()
 {
     QSet<QString> result;
-    for( const QVariantList &row : m_connection->query( "SELECT Name FROM coreartists" ) )
+    for( const QVariantList &row : m_connection->query( QStringLiteral("SELECT Name FROM coreartists") ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -59,16 +59,16 @@ BansheeProvider::artistTracks( const QString &artistName )
 {
     // Due to Banshee's peculiar track info storage, to avoid massive amount of confusion
     // we only take tracks from PrimarySource: MusicLibrarySource-Library (always ID 1)
-    const QString query = "SELECT TrackID, TRIM(t.Title), ar.Name, al.Title, "
+    const QString query = QStringLiteral("SELECT TrackID, TRIM(t.Title), ar.Name, al.Title, "
             "TRIM(t.Composer), t.Year, t.TrackNumber, t.Disc, t.Rating, "
             "t.LastPlayedStamp, t.PlayCount "
             "FROM coretracks t "
             "INNER JOIN coreartists ar USING(ArtistID) "
             "LEFT JOIN corealbums al USING(AlbumID) "
-            "WHERE ar.Name = :artist AND t.PrimarySourceID = 1";
+            "WHERE ar.Name = :artist AND t.PrimarySourceID = 1");
 
     QVariantMap bindValues;
-    bindValues.insert( ":artist", artistName );
+    bindValues.insert( QStringLiteral(":artist"), artistName );
 
     const QList<qint64> fields = QList<qint64>() << Meta::valTitle << Meta::valArtist
            << Meta::valAlbum << Meta::valComposer << Meta::valYear << Meta::valTrackNr

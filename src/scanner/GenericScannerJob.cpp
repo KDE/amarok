@@ -194,12 +194,12 @@ GenericScannerJob::scannerPath()
         // TODO: Not sure this is still useful...
         // If the binary is not in $PATH, then search in the application folder too
         if( path.isEmpty() )
-            path = App::applicationDirPath() + "/amarokcollectionscanner";
+            path = App::applicationDirPath() + QStringLiteral("/amarokcollectionscanner");
     }
     else
     {
         // Running a test, use the path
-        path = overridePath + "/amarokcollectionscanner";
+        path = overridePath + QStringLiteral("/amarokcollectionscanner");
     }
 
     if( !QFile::exists( path ) )
@@ -217,7 +217,7 @@ GenericScannerJob::createScannerProcess( bool restart )
     // -- create the shared memory
     if( !m_scannerStateMemory && !restart )
     {
-        QString sharedMemoryKey = "AmarokScannerMemory"+QUuid::createUuid().toString();
+        QString sharedMemoryKey = QStringLiteral("AmarokScannerMemory")+QUuid::createUuid().toString();
         m_scannerStateMemory = new QSharedMemory( sharedMemoryKey );
         if( !m_scannerStateMemory->create( SHARED_MEMORY_SIZE ) )
         {

@@ -32,8 +32,8 @@ ProviderPtr
 TestBansheeImporter::getProvider()
 {
     QVariantMap cfg = BansheeConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbPath", QApplication::applicationDirPath()
-                          + "/../tests/importers_files/banshee.db" );
+    cfg.insert( QStringLiteral("dbPath"), QString( QApplication::applicationDirPath()
+                          + QStringLiteral("/../tests/importers_files/banshee.db") ) );
 
     return ProviderPtr( new BansheeProvider( cfg, nullptr ) );
 }
@@ -42,14 +42,14 @@ ProviderPtr
 TestBansheeImporter::getWritableProvider()
 {
     QDir base( QCoreApplication::applicationDirPath() );
-    base.mkpath( "importers_tmp" );
+    base.mkpath( QStringLiteral("importers_tmp") );
 
-    const QString dst = base.filePath( "importers_tmp/banshee.db" );
+    const QString dst = base.filePath( QStringLiteral("importers_tmp/banshee.db") );
     QFile( dst ).remove();
-    QFile( base.filePath( "../tests/importers_files/banshee.db" ) ).copy( dst );
+    QFile( base.filePath( QStringLiteral("../tests/importers_files/banshee.db") ) ).copy( dst );
 
     QVariantMap cfg = BansheeConfigWidget( QVariantMap() ).config();
-    cfg.insert( "dbPath", dst );
+    cfg.insert( QStringLiteral("dbPath"), dst );
 
     return ProviderPtr( new BansheeProvider( cfg, nullptr ) );
 }
@@ -76,7 +76,7 @@ TestBansheeImporter::init()
 void
 TestBansheeImporter::providerShouldHandleNonexistentDbFile()
 {
-    m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("/wdawd\\wdadwgd/das4hutyf") );
 
     BansheeProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -85,7 +85,7 @@ TestBansheeImporter::providerShouldHandleNonexistentDbFile()
 void
 TestBansheeImporter::providerShouldHandleInvalidDbFile()
 {
-    m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
+    m_cfg.insert( QStringLiteral("dbPath"), QApplication::applicationFilePath() );
 
     BansheeProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -94,8 +94,8 @@ TestBansheeImporter::providerShouldHandleInvalidDbFile()
 void
 TestBansheeImporter::providerShouldHandleErroneousConfigValues()
 {
-    m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
-    m_cfg.insert( "name", QColor( Qt::white ) );
+    m_cfg.insert( QStringLiteral("dbPath"), QStringLiteral("\\wd%aw@d/sdsd2'vodk0-=$$") );
+    m_cfg.insert( QStringLiteral("name"), QColor( Qt::white ) );
 
     BansheeProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
@@ -106,7 +106,7 @@ TestBansheeImporter::artistTracksShouldNotReturnTracksNotFromPrimarySource()
 {
     ProviderPtr provider( getProvider() );
 
-    const QString artist = "wrongSource";
+    const QString artist = QStringLiteral("wrongSource");
     QVERIFY( provider->artists().contains( artist ) );
     QVERIFY( provider->artistTracks( artist ).isEmpty() );
 }

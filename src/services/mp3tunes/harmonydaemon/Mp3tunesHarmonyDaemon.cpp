@@ -101,7 +101,7 @@ Mp3tunesHarmonyDaemon::allAboardTheDBus()
     if (parts.isEmpty())
         reversedDomain = QLatin1String("local.");
     else
-        foreach (const QString& s, parts)
+        for (const QString& s : parts)
         {
             reversedDomain.prepend(QLatin1Char('.'));
             reversedDomain.prepend(s);

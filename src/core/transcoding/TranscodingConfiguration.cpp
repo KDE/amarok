@@ -65,7 +65,7 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
     for( const Property &property : ( format ? format->propertyList() : emptyList ) )
     {
         Configuration invalid( INVALID );
-        QString key = QStringLiteral( "Parameter ").append( property.name() );
+        QString key = QStringLiteral( "Parameter ").append( QLatin1String( property.name() ) );
         QVariant value = serialized.readEntry( key, QString() /* does not work with QVariant() */ );
 
         if( !value.isValid() )
@@ -98,7 +98,7 @@ Configuration::saveToConfigGroup( KConfigGroup &group ) const
     while( it.hasNext() )
     {
         it.next();
-        group.writeEntry( QStringLiteral( "Parameter " ).append( it.key() ), it.value() );
+        group.writeEntry( QStringLiteral( "Parameter " ).append( QLatin1String( it.key() ) ), it.value() );
     }
 }
 

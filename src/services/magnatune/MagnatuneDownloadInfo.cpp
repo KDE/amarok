@@ -42,7 +42,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
 
     // lets make sure that this is actually a valid result
 
-    int testIndex = downloadInfoString.indexOf( "<RESULT>" );
+    int testIndex = downloadInfoString.indexOf( QStringLiteral("<RESULT>") );
     if ( testIndex == -1 )
     {
         return false;
@@ -52,10 +52,10 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
     int endIndex;
 
     if ( membershipDownload == false ) {
-        startIndex = downloadInfoString.indexOf( "<DL_USERNAME>", 0, Qt::CaseInsensitive );
+        startIndex = downloadInfoString.indexOf( QStringLiteral("<DL_USERNAME>"), 0, Qt::CaseInsensitive );
         if ( startIndex != -1 )
         {
-            endIndex = downloadInfoString.indexOf( "</DL_USERNAME>", 0, Qt::CaseInsensitive );
+            endIndex = downloadInfoString.indexOf( QStringLiteral("</DL_USERNAME>"), 0, Qt::CaseInsensitive );
             if ( endIndex != -1 )
             {
                 startIndex += 13;
@@ -74,10 +74,10 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
         }
 
 
-        startIndex = downloadInfoString.indexOf( "<DL_PASSWORD>", 0, Qt::CaseInsensitive );
+        startIndex = downloadInfoString.indexOf( QStringLiteral("<DL_PASSWORD>"), 0, Qt::CaseInsensitive );
         if ( startIndex != -1 )
         {
-            endIndex = downloadInfoString.indexOf( "</DL_PASSWORD>", 0, Qt::CaseInsensitive );
+            endIndex = downloadInfoString.indexOf( QStringLiteral("</DL_PASSWORD>"), 0, Qt::CaseInsensitive );
             if ( endIndex != -1 )
             {
                 startIndex += 13;
@@ -100,80 +100,80 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
     }
 
 
-    startIndex = downloadInfoString.indexOf( "<URL_WAVZIP>", 0, Qt::CaseInsensitive );
+    startIndex = downloadInfoString.indexOf( QStringLiteral("<URL_WAVZIP>"), 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.indexOf( "</URL_WAVZIP>", 0, Qt::CaseInsensitive );
+        endIndex = downloadInfoString.indexOf( QStringLiteral("</URL_WAVZIP>"), 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 12;
             debug() << "found wav";
-            m_downloadFormats[ "Wav" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
+            m_downloadFormats[ "Wav" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
 
-    startIndex = downloadInfoString.indexOf( "<URL_128KMP3ZIP>", 0, Qt::CaseInsensitive );
+    startIndex = downloadInfoString.indexOf( QStringLiteral("<URL_128KMP3ZIP>"), 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.indexOf( "</URL_128KMP3ZIP>", 0, Qt::CaseInsensitive );
+        endIndex = downloadInfoString.indexOf( QStringLiteral("</URL_128KMP3ZIP>"), 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 16;
             debug() << "found 128k mp3";
-            m_downloadFormats[ "128 kbit/s MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
+            m_downloadFormats[ "128 kbit/s MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
 
-    startIndex = downloadInfoString.indexOf( "<URL_OGGZIP>", 0, Qt::CaseInsensitive );
+    startIndex = downloadInfoString.indexOf( QStringLiteral("<URL_OGGZIP>"), 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.indexOf( "</URL_OGGZIP>", 0, Qt::CaseInsensitive );
+        endIndex = downloadInfoString.indexOf( QStringLiteral("</URL_OGGZIP>"), 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 12;
             debug() << "found ogg-vorbis";
-            m_downloadFormats[ "Ogg-Vorbis" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
+            m_downloadFormats[ "Ogg-Vorbis" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
 
-    startIndex = downloadInfoString.indexOf( "<URL_VBRZIP>", 0, Qt::CaseInsensitive );
+    startIndex = downloadInfoString.indexOf( QStringLiteral("<URL_VBRZIP>"), 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.indexOf( "</URL_VBRZIP>", 0, Qt::CaseInsensitive );
+        endIndex = downloadInfoString.indexOf( QStringLiteral("</URL_VBRZIP>"), 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 12;
             debug() << "found vbr mp3";
-            m_downloadFormats[ "VBR MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
+            m_downloadFormats[ "VBR MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
 
-    startIndex = downloadInfoString.indexOf( "<URL_FLACZIP>", 0, Qt::CaseInsensitive );
+    startIndex = downloadInfoString.indexOf( QStringLiteral("<URL_FLACZIP>"), 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.indexOf( "</URL_FLACZIP>", 0, Qt::CaseInsensitive );
+        endIndex = downloadInfoString.indexOf( QStringLiteral("</URL_FLACZIP>"), 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 13;
             debug() << "found flac";
-            m_downloadFormats[ "FLAC" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
+            m_downloadFormats[ "FLAC" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
 
-    startIndex = downloadInfoString.indexOf( "<DL_MSG>", 0, Qt::CaseInsensitive );
+    startIndex = downloadInfoString.indexOf( QStringLiteral("<DL_MSG>"), 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.indexOf( "</DL_MSG>", 0, Qt::CaseInsensitive );
+        endIndex = downloadInfoString.indexOf( QStringLiteral("</DL_MSG>"), 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 9;
             debug() << "found dl-message";
-            m_downloadMessage = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( "&amp;", "&" );
+            m_downloadMessage = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
         }
     }
 
@@ -185,12 +185,12 @@ MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
 {
 
 
-    m_artistName = element.firstChildElement( "artist" ).text();
-    m_albumName = element.firstChildElement( "album" ).text();
-    m_userName = element.firstChildElement( "username" ).text();
-    m_password = element.firstChildElement( "password" ).text();
-    m_albumCode = element.firstChildElement( "sku" ).text();
-    m_coverUrl = element.firstChildElement( "cover" ).text();
+    m_artistName = element.firstChildElement( QStringLiteral("artist") ).text();
+    m_albumName = element.firstChildElement( QStringLiteral("album") ).text();
+    m_userName = element.firstChildElement( QStringLiteral("username") ).text();
+    m_password = element.firstChildElement( QStringLiteral("password") ).text();
+    m_albumCode = element.firstChildElement( QStringLiteral("sku") ).text();
+    m_coverUrl = element.firstChildElement( QStringLiteral("cover") ).text();
 
     //get formats
     QDomNode formats = element.firstChildElement( "formats" );

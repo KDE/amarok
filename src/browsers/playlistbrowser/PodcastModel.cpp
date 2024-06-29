@@ -146,7 +146,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         return pixmap;
     }
     else
-        return ( QIcon(new KIconEngine( "podcast-amarok", KIconLoader::global(), emblems )).pixmap( 32, 32 ) );
+        return ( QIcon(new KIconEngine( QStringLiteral("podcast-amarok"), KIconLoader::global(), emblems )).pixmap( 32, 32 ) );
 }
 
 QVariant

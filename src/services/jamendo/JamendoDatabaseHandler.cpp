@@ -184,7 +184,7 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 
     popularity = QString::number( jAlbum->popularity() );
     if( popularity == "nan" ) // sometimes this seems to happen, I don't know why
-        popularity = '0';
+        popularity = QLatin1Char('0');
 
     queryString = "INSERT INTO jamendo_albums ( id, name, description, "
                   "popularity, cover_url, launch_year, genre, "

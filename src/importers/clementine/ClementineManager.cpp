@@ -23,10 +23,10 @@
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( ClementineImporterFactory,
                                       "amarok_importer-clementine.json",
-                                      "ClementineImporter",
+                                      QStringLiteral("ClementineImporter"),
                                       i18n( "Clementine" ),
                                       i18n( "Clementine Statistics Importer" ),
-                                      QIcon::fromTheme( "view-importers-clementine-amarok" ),
+                                      QIcon::fromTheme( QStringLiteral("view-importers-clementine-amarok") ),
                                       StatSyncing::ClementineConfigWidget,
                                       StatSyncing::ClementineProvider )
 

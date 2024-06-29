@@ -26,16 +26,16 @@ OpmlOutline::OpmlOutline( OpmlOutline *parent )
 OpmlNodeType
 OpmlOutline::opmlNodeType() const
 {
-    if( !attributes().contains( "text" ) )
+    if( !attributes().contains( QStringLiteral("text") ) )
         return InvalidNode;
 
-    if( !attributes().contains( "type") )
+    if( !attributes().contains( QStringLiteral("type") ) )
         return RegularNode;
 
-    if( attributes()["type"] == "rss" )
+    if( attributes()[QStringLiteral("type")] == QStringLiteral("rss") )
         return RssUrlNode;
 
-    if( attributes()["type"] == "include" )
+    if( attributes()[QStringLiteral("type")] == QStringLiteral("include") )
         return IncludeNode;
 
     return UnknownNode;

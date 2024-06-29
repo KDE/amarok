@@ -87,7 +87,7 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
                 transcodingController()->format( configuration.encoder() )->fileExtension() );
         debug() << "destination is " << destination.toLocalFile();
         QDir dir( destination.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );
-        if( !dir.exists() && !dir.mkpath( "." ) )
+        if( !dir.exists() && !dir.mkpath( QStringLiteral(".") ) )
         {
             error() << "could not create directory to copy into.";
             abort();

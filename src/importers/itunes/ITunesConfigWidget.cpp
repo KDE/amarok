@@ -27,7 +27,7 @@ ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *pare
 {
     KUrlRequester *dbField = new KUrlRequester;
     dbField->setFilter( QStringLiteral("iTunes Music Library.xml") );
-    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
+    addField( QStringLiteral("dbPath"), i18n( "Database location" ), dbField, QStringLiteral("text") );
 }
 
 ITunesConfigWidget::~ITunesConfigWidget()

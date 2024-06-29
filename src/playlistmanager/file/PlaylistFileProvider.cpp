@@ -100,7 +100,7 @@ PlaylistFileProvider::prettyName() const
 
 QIcon PlaylistFileProvider::icon() const
 {
-    return QIcon::fromTheme( "folder-documents" );
+    return QIcon::fromTheme( QStringLiteral("folder-documents") );
 }
 
 int

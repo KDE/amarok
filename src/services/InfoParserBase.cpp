@@ -37,7 +37,7 @@ void InfoParserBase::showLoading( const QString &message )
     if( s_loadingBaseHtml.isEmpty() )
     {
         const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/") ) );
-        QString htmlFile = url.path() + "InfoParserLoading.html";
+        QString htmlFile = url.path() + QStringLiteral("InfoParserLoading.html");
 
         if( !QFile::exists( htmlFile ) )
         {

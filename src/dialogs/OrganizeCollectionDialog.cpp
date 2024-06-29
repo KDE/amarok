@@ -57,7 +57,7 @@ OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent 
 OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
     : FilenameLayoutWidget( parent )
 {
-    m_configCategory = "OrganizeCollectionDialog";
+    m_configCategory = QStringLiteral("OrganizeCollectionDialog");
 
     // TODO: also supported by TrackOrganizer:
     // folder theartist thealbumartist rating filesize length
@@ -108,21 +108,21 @@ QString
 OrganizeCollectionWidget::buildFormatTip() const
 {
     QMap<QString, QString> args;
-    args["albumartist"] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
-    args["thealbumartist"] = i18n( "The Album Artist" );
-    args["theartist"] = i18n( "The Artist" );
-    args["artist"] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
-    args["initial"] = i18n( "Artist's Initial" );
-    args["filetype"] = i18n( "File Extension of Source" );
-    args["track"] = i18n( "Track Number" );
+    args[QStringLiteral("albumartist")] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
+    args[QStringLiteral("thealbumartist")] = i18n( "The Album Artist" );
+    args[QStringLiteral("theartist")] = i18n( "The Artist" );
+    args[QStringLiteral("artist")] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
+    args[QStringLiteral("initial")] = i18n( "Artist's Initial" );
+    args[QStringLiteral("filetype")] = i18n( "File Extension of Source" );
+    args[QStringLiteral("track")] = i18n( "Track Number" );
 
     QString tooltip = i18n( "You can use the following tokens:" );
-    tooltip += "<ul>";
+    tooltip += QStringLiteral("<ul>");
 
     for( QMap<QString, QString>::iterator it = args.begin(), total = args.end(); it != total; ++it )
-        tooltip += QString( "<li>%1 - %%2%" ).arg( it.value(), it.key() );
+        tooltip += QStringLiteral( "<li>%1 - %%2%" ).arg( it.value(), it.key() );
 
-    tooltip += "</ul>";
+    tooltip += QStringLiteral("</ul>");
     tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
             "that section will be hidden if the token is empty." );
 
@@ -180,7 +180,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->optionsWidget->setReplaceText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
-    ui->conflictLabel->setText("");
+    ui->conflictLabel->setText(QStringLiteral(""));
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
@@ -205,14 +205,14 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              this, &OrganizeCollectionDialog::slotEnableOk );
 
     slotEnableOk( ui->folderCombo->currentIndex() );
-    KWindowConfig::restoreWindowSize( windowHandle(), Amarok::config( "OrganizeCollectionDialog" ) );
+    KWindowConfig::restoreWindowSize( windowHandle(), Amarok::config( QStringLiteral("OrganizeCollectionDialog") ) );
 
     QTimer::singleShot( 0, this, &OrganizeCollectionDialog::slotUpdatePreview );
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
-    KConfigGroup group = Amarok::config( "OrganizeCollectionDialog" );
+    KConfigGroup group = Amarok::config( QStringLiteral("OrganizeCollectionDialog") );
     group.writeEntry( "geometry", saveGeometry() );
 
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
@@ -236,8 +236,8 @@ QString
 OrganizeCollectionDialog::buildFormatString() const
 {
     if( ui->organizeCollectionWidget->getParsableScheme().simplified().isEmpty() )
-        return "";
-    return "%collectionroot%/" + ui->organizeCollectionWidget->getParsableScheme() + ".%filetype%";
+        return QStringLiteral("");
+    return QStringLiteral("%collectionroot%/") + ui->organizeCollectionWidget->getParsableScheme() + QStringLiteral(".%filetype%");
 }
 
 void
@@ -311,8 +311,8 @@ OrganizeCollectionDialog::processPreviewPaths()
         }
     }
 
-    QString originalPrefix = commonOriginalPrefix.isEmpty() ? QString() : commonOriginalPrefix.join( QLatin1Char('/') ) + '/';
-    m_previewPrefix = commonPreviewPrefix.isEmpty() ? QString() : commonPreviewPrefix.join( QLatin1Char('/') ) + '/';
+    QString originalPrefix = commonOriginalPrefix.isEmpty() ? QString() : commonOriginalPrefix.join( QLatin1Char('/') ) + QLatin1Char('/');
+    m_previewPrefix = commonPreviewPrefix.isEmpty() ? QString() : commonPreviewPrefix.join( QLatin1Char('/') ) + QLatin1Char('/');
     ui->previewTableWidget->horizontalHeaderItem( 1 )->setText( i18n( "Original: %1", originalPrefix ) );
     ui->previewTableWidget->horizontalHeaderItem( 0 )->setText( i18n( "Preview: %1", m_previewPrefix ) );
 
@@ -385,7 +385,7 @@ OrganizeCollectionDialog::slotOverwriteModeChanged()
             ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will not be changed." ) );
     }
     else
-        ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
+        ui->conflictLabel->setText(QStringLiteral("")); // we clear the text instead of hiding it to retain the layout spacing
 }
 
 void

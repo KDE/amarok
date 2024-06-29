@@ -128,9 +128,9 @@ CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr &album,
                                       CoverFetch::Source src )
     : m_src( src )
     , m_album( album )
-    , m_method( ( type == Search ) ? QString( "album.search" )
-                                   : album && album->hasAlbumArtist() ? QString( "album.getinfo" )
-                                                                      : QString( "album.search" ) )
+    , m_method( ( type == Search ) ? QStringLiteral( "album.search" )
+                                   : album && album->hasAlbumArtist() ? QStringLiteral( "album.getinfo" )
+                                                                      : QStringLiteral( "album.search" ) )
     , m_type( type )
 {
 }
@@ -178,16 +178,16 @@ CoverFetchPayload::sourceString() const
     switch( m_src )
     {
     case CoverFetch::LastFm:
-        source = "Last.fm";
+        source = QStringLiteral("Last.fm");
         break;
     case CoverFetch::Google:
-        source = "Google";
+        source = QStringLiteral("Google");
         break;
     case CoverFetch::Discogs:
-        source = "Discogs";
+        source = QStringLiteral("Discogs");
         break;
     default:
-        source = "Unknown";
+        source = QStringLiteral("Unknown");
     }
     return source;
 }
@@ -236,22 +236,22 @@ CoverFetchInfoPayload::prepareUrls()
     {
     default:
     case CoverFetch::LastFm:
-        url.setScheme( "http" );
-        url.setHost( "ws.audioscrobbler.com" );
-        url.setPath( "/2.0/" );
+        url.setScheme( QStringLiteral("https") );
+        url.setHost( QStringLiteral("ws.audioscrobbler.com") );
+        url.setPath( QStringLiteral("/2.0/") );
         QUrlQuery query;
-        query.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-        query.addQueryItem( "album", sanitizeQuery( album()->name() ) );
+        query.addQueryItem( QStringLiteral("api_key"), QLatin1String(Amarok::lastfmApiKey()) );
+        query.addQueryItem( QStringLiteral("album"), sanitizeQuery( album()->name() ) );
 
         if( album()->hasAlbumArtist() )
         {
-            query.addQueryItem( "artist", sanitizeQuery( album()->albumArtist()->name() ) );
+            query.addQueryItem( QStringLiteral("artist"), sanitizeQuery( album()->albumArtist()->name() ) );
         }
-        query.addQueryItem( "method", method() );
+        query.addQueryItem( QStringLiteral("method"), method() );
         url.setQuery( query );
 
-        metadata[ "source" ] = "Last.fm";
-        metadata[ "method" ] = method();
+        metadata[ QStringLiteral("source") ] = QStringLiteral("Last.fm");
+        metadata[ QStringLiteral("method") ] = method();
         break;
     }
 
@@ -285,23 +285,23 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
                             break;
                         if( !xml.isStartElement() )
                             continue;
-                        if( xml.name() == "uri" )
+                        if( xml.name() == QStringLiteral("uri") )
                         {
                             QUrl releaseUrl( xml.readElementText() );
                             QString releaseStr = releaseUrl.adjusted(QUrl::StripTrailingSlash).toString();
                             QString releaseId = releaseStr.split( QLatin1Char('/') ).last();
 
                             QUrl url;
-                            url.setScheme( "http" );
-                            url.setHost( "www.discogs.com" );
-                            url.setPath( "/release/" + releaseId );
+                            url.setScheme( QStringLiteral("https") );
+                            url.setHost( QStringLiteral("www.discogs.com") );
+                            url.setPath( QStringLiteral("/release/") + releaseId );
                             QUrlQuery query;
-                            query.addQueryItem( "api_key", Amarok::discogsApiKey() );
-                            query.addQueryItem( "f", "xml" );
+                            query.addQueryItem( QStringLiteral("api_key"), QLatin1String(Amarok::discogsApiKey()) );
+                            query.addQueryItem( QStringLiteral("f"), QStringLiteral("xml") );
                             url.setQuery( query );
 
                             CoverFetch::Metadata metadata;
-                            metadata[ "source" ] = "Discogs";
+                            metadata[ QStringLiteral("source") ] = QStringLiteral("Discogs");
 
                             if( url.isValid() )
                                 m_urls.insert( url, metadata );
@@ -347,45 +347,45 @@ CoverFetchSearchPayload::prepareUrls()
 {
     QUrl url;
     QUrlQuery query;
-    url.setScheme( "http" );
+    url.setScheme( QStringLiteral("https") );
     CoverFetch::Metadata metadata;
 
     switch( m_src )
     {
     default:
     case CoverFetch::LastFm:
-        url.setHost( "ws.audioscrobbler.com" );
-        url.setPath( "/2.0/" );
-        query.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-        query.addQueryItem( "limit", QString::number( 20 ) );
-        query.addQueryItem( "page", QString::number( m_page ) );
-        query.addQueryItem( "album", sanitizeQuery( m_query ) );
-        query.addQueryItem( "method", method() );
-        metadata[ "source" ] = "Last.fm";
-        metadata[ "method" ] = method();
+        url.setHost( QStringLiteral("ws.audioscrobbler.com") );
+        url.setPath( QStringLiteral("/2.0/") );
+        query.addQueryItem( QStringLiteral("api_key"), Amarok::lastfmApiKey() );
+        query.addQueryItem( QStringLiteral("limit"), QString::number( 20 ) );
+        query.addQueryItem( QStringLiteral("page"), QString::number( m_page ) );
+        query.addQueryItem( QStringLiteral("album"), sanitizeQuery( m_query ) );
+        query.addQueryItem( QStringLiteral("method"), method() );
+        metadata[ QStringLiteral("source") ] = QStringLiteral("Last.fm");
+        metadata[ QStringLiteral("method") ] = method();
         break;
 
     case CoverFetch::Discogs:
         debug() << "Setting up a Discogs fetch";
-        url.setHost( "www.discogs.com" );
-        url.setPath( "/search" );
-        query.addQueryItem( "api_key", Amarok::discogsApiKey() );
-        query.addQueryItem( "page", QString::number( m_page + 1 ) );
-        query.addQueryItem( "type", "all" );
-        query.addQueryItem( "q", sanitizeQuery( m_query ) );
-        query.addQueryItem( "f", "xml" );
+        url.setHost( QStringLiteral("www.discogs.com") );
+        url.setPath( QStringLiteral("/search") );
+        query.addQueryItem( QStringLiteral("api_key"), Amarok::discogsApiKey() );
+        query.addQueryItem( QStringLiteral("page"), QString::number( m_page + 1 ) );
+        query.addQueryItem( QStringLiteral("type"), QStringLiteral("all") );
+        query.addQueryItem( QStringLiteral("q"), sanitizeQuery( m_query ) );
+        query.addQueryItem( QStringLiteral("f"), QStringLiteral("xml") );
         debug() << "Discogs Url: " << url;
-        metadata[ "source" ] = "Discogs";
+        metadata[ QStringLiteral("source") ] = QStringLiteral("Discogs");
         break;
 
     case CoverFetch::Google:
-        url.setHost( "images.google.com" );
-        url.setPath( "/images" );
-        query.addQueryItem( "q", sanitizeQuery( m_query ) );
-        query.addQueryItem( "gbv", QChar( '1' ) );
-        query.addQueryItem( "filter", QChar( '1' ) );
-        query.addQueryItem( "start", QString::number( 20 * m_page ) );
-        metadata[ "source" ] = "Google";
+        url.setHost( QStringLiteral("images.google.com") );
+        url.setPath( QStringLiteral("/images") );
+        query.addQueryItem( QStringLiteral("q"), sanitizeQuery( m_query ) );
+        query.addQueryItem( QStringLiteral("gbv"), QStringLiteral( "1" ) );
+        query.addQueryItem( QStringLiteral("filter"), QStringLiteral( "1" ) );
+        query.addQueryItem( QStringLiteral("start"), QString::number( 20 * m_page ) );
+        metadata[ QStringLiteral("source") ] = QStringLiteral("Google");
         break;
     }
     url.setQuery( query );
@@ -477,7 +477,7 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
     while( !xml.atEnd() && !xml.hasError() )
     {
         xml.readNext();
-        if( !xml.isStartElement() || xml.name() != "release" )
+        if( !xml.isStartElement() || xml.name() != QStringLiteral("release") )
             continue;
 
         const QString releaseId = xml.attributes().value( "id" ).toString();
@@ -491,25 +491,25 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
                 continue;
 
             CoverFetch::Metadata metadata;
-            metadata[ "source" ] = "Discogs";
+            metadata[ QStringLiteral("source") ] = "Discogs";
             if( n == QStringLiteral("title") )
-                metadata[ "title" ] = xml.readElementText();
+                metadata[ QStringLiteral("title") ] = xml.readElementText();
             else if( n == QStringLiteral("country") )
-                metadata[ "country" ] = xml.readElementText();
+                metadata[ QStringLiteral("country") ] = xml.readElementText();
             else if( n == QStringLiteral("released") )
-                metadata[ "released" ] = xml.readElementText();
+                metadata[ QStringLiteral("released") ] = xml.readElementText();
             else if( n == QStringLiteral("notes") )
-                metadata[ "notes" ] = xml.readElementText();
+                metadata[ QStringLiteral("notes") ] = xml.readElementText();
             else if( n == QStringLiteral("images") )
             {
                 while( !xml.atEnd() && !xml.hasError() )
                 {
                     xml.readNext();
-                    if( xml.isEndElement() && xml.name() == "images" )
+                    if( xml.isEndElement() && xml.name() == QStringLiteral("images") )
                         break;
                     if( !xml.isStartElement() )
                         continue;
-                    if( xml.name() == "image" )
+                    if( xml.name() == QStringLiteral("image") )
                     {
                         const QXmlStreamAttributes &attr = xml.attributes();
                         const QUrl thburl( attr.value( "uri150" ).toString() );
@@ -518,13 +518,13 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
                         if( !url.isValid() )
                             continue;
 
-                        metadata[ "releaseid"    ] = releaseId;
-                        metadata[ "releaseurl"   ] = "http://discogs.com/release/" + releaseId;
-                        metadata[ "normalarturl" ] = uri.url();
-                        metadata[ "thumbarturl"  ] = thburl.url();
-                        metadata[ "width"        ] = attr.value( "width"  ).toString();
-                        metadata[ "height"       ] = attr.value( "height" ).toString();
-                        metadata[ "type"         ] = attr.value( "type"   ).toString();
+                        metadata[ QStringLiteral("releaseid")    ] = releaseId;
+                        metadata[ QStringLiteral("releaseurl")   ] = QStringLiteral("http://discogs.com/release/") + releaseId;
+                        metadata[ QStringLiteral("normalarturl") ] = uri.url();
+                        metadata[ QStringLiteral("thumbarturl")  ] = thburl.url();
+                        metadata[ QStringLiteral("width")        ] = attr.value( "width"  ).toString();
+                        metadata[ QStringLiteral("height")       ] = attr.value( "height" ).toString();
+                        metadata[ QStringLiteral("type")         ] = attr.value( "type"   ).toString();
                         m_urls.insert( url, metadata );
                     }
                     else
@@ -589,18 +589,18 @@ void
 CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
 {
     QSet<QString> artistSet;
-    if( method() == "album.getinfo" )
+    if( method() == QStringLiteral("album.getinfo") )
     {
         artistSet << normalize( ( album() && album()->albumArtist() )
                                 ? album()->albumArtist()->name()
                                 : i18n( "Unknown Artist" ) );
     }
-    else if( method() == "album.search" )
+    else if( method() == QStringLiteral("album.search") )
     {
         if( !m_wild && album() )
         {
             const Meta::TrackList tracks = album()->tracks();
-            QStringList artistNames( "Various Artists" );
+            QStringList artistNames( QStringLiteral("Various Artists") );
             for( const Meta::TrackPtr &track : tracks )
                 artistNames << ( track->artist() ? track->artist()->name()
                                                  : i18n( "Unknown Artist" ) );
@@ -619,7 +619,7 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
 
         QHash<QString, QString> coverUrlHash;
         CoverFetch::Metadata metadata;
-        metadata[ "source" ] = "Last.fm";
+        metadata[ QStringLiteral("source") ] = QStringLiteral("Last.fm");
         while( !xml.atEnd() && !xml.hasError() )
         {
             xml.readNext();
@@ -631,18 +631,18 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
 
             if( n == QStringLiteral("name") )
             {
-                metadata[ "name" ] = xml.readElementText();
+                metadata[ QStringLiteral("name") ] = xml.readElementText();
             }
             else if( n == QStringLiteral("artist") )
             {
                 const QString &artist = xml.readElementText();
                 if( !artistSet.contains( artist ) )
                     continue;
-                metadata[ "artist" ] = artist;
+                metadata[ QStringLiteral("artist") ] = artist;
             }
             else if( n == QStringLiteral("url") )
             {
-                metadata[ "releaseurl" ] = xml.readElementText();
+                metadata[ QStringLiteral("releaseurl") ] = xml.readElementText();
             }
             else if( n == QStringLiteral("image") )
             {
@@ -652,14 +652,14 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
         }
 
         QStringList acceptableSizes;
-        acceptableSizes << "large" << "medium" << "small";
-        metadata[ "thumbarturl" ] = firstAvailableValue( acceptableSizes, coverUrlHash );
+        acceptableSizes << QStringLiteral("large") << QStringLiteral("medium") << QStringLiteral("small");
+        metadata[ QStringLiteral("thumbarturl") ] = firstAvailableValue( acceptableSizes, coverUrlHash );
 
         acceptableSizes.clear();
-        acceptableSizes << "extralarge" << "large";
-        metadata[ "normalarturl" ] = firstAvailableValue( acceptableSizes, coverUrlHash );
+        acceptableSizes << QStringLiteral("extralarge") << QStringLiteral("large");
+        metadata[ QStringLiteral("normalarturl") ] = firstAvailableValue( acceptableSizes, coverUrlHash );
 
-        QUrl url( m_size == CoverFetch::ThumbSize ? metadata["thumbarturl"] : metadata["normalarturl"] );
+        QUrl url( m_size == CoverFetch::ThumbSize ? metadata[QStringLiteral("thumbarturl")] : metadata[QStringLiteral("normalarturl")] );
         if( url.isValid() )
             m_urls.insert( url , metadata );
     }
@@ -680,7 +680,7 @@ CoverFetchArtPayload::firstAvailableValue( const QStringList &keys, const QHash<
 QString
 CoverFetchArtPayload::normalize( const QString &raw )
 {
-    const QRegularExpression spaceRegExp  = QRegularExpression( "\\s" );
+    const QRegularExpression spaceRegExp  = QRegularExpression( QStringLiteral("\\s") );
     return raw.toLower().remove( spaceRegExp ).normalized( QString::NormalizationForm_KC );
 }
 

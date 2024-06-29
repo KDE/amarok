@@ -38,13 +38,13 @@ TestTrackForUrlWorker::initTestCase()
     // To make queued signals/slots work with custom payload
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
     qRegisterMetaType<ThreadWeaver::Job*>( "ThreadWeaver::Job*" );
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 }
 
 QString
 TestTrackForUrlWorker::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void
@@ -85,9 +85,9 @@ TestTrackForUrlWorker::testCompleteJobInternal_data()
 {
     QTest::addColumn<Meta::TrackPtr>( "track" );
 
-    QTest::newRow( "track 1" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
-    QTest::newRow( "track 2" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track02.ogg" )) );
-    QTest::newRow( "track 3" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
+    QTest::newRow( "track 1" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track01.ogg") )) );
+    QTest::newRow( "track 2" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track02.ogg") )) );
+    QTest::newRow( "track 3" ) << CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track03.ogg") )) );
 }
 
 void

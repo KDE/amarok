@@ -42,7 +42,7 @@ TestPlaylistObserver::TestPlaylistObserver()
 QString
 TestPlaylistObserver::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists/" + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QStringLiteral("/data/playlists/") + relPath );
 }
 
 void
@@ -67,13 +67,13 @@ TestPlaylistObserver::cleanupTestCase()
 void
 TestPlaylistObserver::init()
 {
-    const QString testXspf = "test.xspf";
+    const QString testXspf = QStringLiteral("test.xspf");
     const QUrl url = QUrl::fromLocalFile(dataPath( testXspf ));
 
     m_testPlaylist = new Playlists::XSPFPlaylist( url );
 
     // test that behaviour before loading is correct
-    QCOMPARE( m_testPlaylist->name(), QString( "test.xspf" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.xspf" ) );
     QCOMPARE( m_testPlaylist->trackCount(), -1 );
 
     m_observer = new Observer();
@@ -99,7 +99,7 @@ TestPlaylistObserver::testMetadataChanged( )
 
     QVERIFY( spy.count() > 0 );
     // changed methadata means that we should get new name
-    QCOMPARE( m_testPlaylist->name(), QString( "my playlist" ) );
+    QCOMPARE( m_testPlaylist->name(), QStringLiteral( "my playlist" ) );
 }
 
 void
@@ -129,7 +129,7 @@ TestPlaylistObserver::testTrackRemoved()
     QSignalSpy spyTracksLoaded( m_observer, &Observer::tracksLoadedSignal );
     QVERIFY( spyTracksLoaded.wait( 10000 ) );
 
-    QString newName = "test playlist written to.xspf";
+    QString newName = QStringLiteral("test playlist written to.xspf");
     m_testPlaylist->setName( newName ); // don't overwrite original playlist
     QSignalSpy spyTrackRemoved( m_observer, &Observer::trackRemovedSignal );
     QCOMPARE( m_testPlaylist->trackCount(), 23 );

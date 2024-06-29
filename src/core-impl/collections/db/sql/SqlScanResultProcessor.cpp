@@ -81,7 +81,7 @@ SqlScanResultProcessor::scanSucceeded()
 void
 SqlScanResultProcessor::displayMessages()
 {
-    QString errorList = m_messages.join( "</li><li>" ).replace( '\n', "<br>" );
+    QString errorList = m_messages.join( QStringLiteral("</li><li>") ).replace( QLatin1Char('\n'), QStringLiteral("<br>") );
     QString text = i18n( "<ul><li>%1</li></ul>"
                          "In most cases this means that not all of your tracks were imported.<br>"
                          "See <a href='http://userbase.kde.org/Amarok/Manual/Various/TroubleshootingAndCommonProblems#Duplicate_Tracks'>"
@@ -259,7 +259,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
     if( !metaTrack )
     {
-        QString text = QString( "Something went wrong when importing track %1, metaTrack "
+        QString text = QStringLiteral( "Something went wrong when importing track %1, metaTrack "
                 "is null while it shouldn't be." ).arg( track->path() );
         warning() << "commitTrack():" << text.toLocal8Bit().data();
         m_messages.append( text );
@@ -415,7 +415,7 @@ SqlScanResultProcessor::deleteDeletedDirectories()
         if( deleteThisDir )
         {
             deleteDeletedTracks( e.dirId );
-            QString query = QString( "DELETE FROM directories WHERE id = %1;" ).arg( e.dirId );
+            QString query = QStringLiteral( "DELETE FROM directories WHERE id = %1;" ).arg( e.dirId );
             storage->query( query );
         }
     }
@@ -488,7 +488,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
 
     // sanity checking, not strictly needed, but imagine new device appearing in the
     // middle of the scan, so rather prevent db corruption:
-    QStringList res = storage->query( QString( "SELECT deviceid FROM directories "
+    QStringList res = storage->query( QStringLiteral( "SELECT deviceid FROM directories "
                                                "WHERE id = %1" ).arg( newDirId ) );
     if( res.count() != 1 )
     {
@@ -549,12 +549,12 @@ SqlScanResultProcessor::mountedDirectories() const
     for( int id : idList )
     {
         if ( !deviceIds.isEmpty() )
-            deviceIds += ',';
+            deviceIds += QLatin1Char(',');
         deviceIds += QString::number( id );
     }
 
     // -- get all (mounted) directories
-    QString query = QString( "SELECT id, deviceid, dir FROM directories "
+    QString query = QStringLiteral( "SELECT id, deviceid, dir FROM directories "
                              "WHERE deviceid IN (%1)" ).arg( deviceIds );
     QStringList res = storage->query( query );
 
@@ -579,7 +579,7 @@ SqlScanResultProcessor::deletedDirectories() const
     QHash<int, DirectoryEntry> idToDirEntryMap; // for faster processing during filtering
     for( int directoryId : m_scannedDirectoryIds )
     {
-        QString query = QString( "SELECT deviceid, dir FROM directories WHERE id = %1" )
+        QString query = QStringLiteral( "SELECT deviceid, dir FROM directories WHERE id = %1" )
                 .arg( directoryId );
         QStringList res = storage->query( query );
         if( res.count() != 2 )
@@ -591,7 +591,7 @@ SqlScanResultProcessor::deletedDirectories() const
         int deviceId = res.at( 0 ).toInt();
         QString dir = res.at( 1 );
         // select all child directories
-        query = QString( "SELECT id, deviceid, dir FROM directories WHERE deviceid = %1 "
+        query = QStringLiteral( "SELECT id, deviceid, dir FROM directories WHERE deviceid = %1 "
                 "AND dir LIKE '%2/%'" ).arg( deviceId ).arg( storage->escape( dir ) );
         res = storage->query( query );
         for( int i = 0; i < res.count(); )

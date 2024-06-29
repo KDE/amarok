@@ -146,7 +146,7 @@ Analyzer::Base::refreshSampleRate()
 KConfigGroup
 Analyzer::Base::config() const
 {
-    return Amarok::config( QStringLiteral( "Context" ) ).group( "Analyzer" );
+    return Amarok::config( QStringLiteral( "Context" ) ).group( QStringLiteral("Analyzer") );
 }
 
 void

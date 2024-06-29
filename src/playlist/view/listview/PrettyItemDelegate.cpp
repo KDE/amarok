@@ -844,7 +844,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
                     //we need to parse out the track number and the track name (and check
                     //if the string is even valid...)
                     //QRegularExpression rx("(\\d+)\\s-\\s(.*))");
-                    QRegularExpression rx("(\\d+)(\\s-\\s)(.*)");
+                    QRegularExpression rx(QStringLiteral("(\\d+)(\\s-\\s)(.*)"));
                     QRegularExpressionMatch rmatch = rx.match( value );
                     if ( rmatch.hasMatch() ) {
                         int trackNumber = rmatch.captured( 1 ).toInt();
@@ -930,8 +930,8 @@ Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr &track ) c
     args[QStringLiteral("initial")] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
     args[QStringLiteral("filetype")] = track->type();
 
-    args[QStringLiteral("rating")] = track->statistics()->rating();
-    args[QStringLiteral("filesize")] = track->filesize();
+    args[QStringLiteral("rating")] = QString::number( track->statistics()->rating() );
+    args[QStringLiteral("filesize")] = QString::number( track->filesize() );
     args[QStringLiteral("length")] = QString::number( track->length() / 1000 );
 
     if ( track->trackNumber() )

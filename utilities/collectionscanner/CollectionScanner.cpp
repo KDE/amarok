@@ -263,7 +263,7 @@ CollectionScanner::Scanner::addDir( const QString& dir, QSet<QString>* entries )
 
         if( f.isDir() )
         {
-            addDir( QString( f.absoluteFilePath() + QLatin1Char( '/' ) ), entries );
+            addDir( QString( f.absoluteFilePath() + QLatin1Char( QLatin1Char('/') ) ), entries );
         }
     }
 }

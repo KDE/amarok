@@ -55,7 +55,7 @@ MagnatuneRedownloadHandler::GetPurchaseList( )
     debug() << "MagnatuneRedownloadHandler::GetPurchaseList( )";
     
     QStringList returnList;
-    QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
+    QDir purchaseInfoDir( Amarok::saveLocation( QStringLiteral("magnatune.com/purchases/") ) );
 
     if ( !purchaseInfoDir.exists () ) {
       return returnList;
@@ -143,7 +143,7 @@ MagnatuneRedownloadHandler::fetchServerSideRedownloadList()
         return;
     }
 
-    QUrl redownloadApiUrl = QUrl::fromUserInput( "http://magnatune.com/buy/redownload_xml?email=" + email );
+    QUrl redownloadApiUrl = QUrl::fromUserInput( QStringLiteral("http://magnatune.com/buy/redownload_xml?email=") + email );
 
     m_redownloadApiJob = KIO::storedGet( redownloadApiUrl, KIO::NoReload, KIO::HideProgressInfo );
     Amarok::Logger::newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
@@ -178,7 +178,7 @@ void MagnatuneRedownloadHandler::redownloadApiResult( KJob* job )
     QDomDocument doc;
     doc.setContent( resultXml );
 
-    QDomNodeList downloads = doc.elementsByTagName( "download" );
+    QDomNodeList downloads = doc.elementsByTagName( QStringLiteral("download") );
     for( int i = 0; i < downloads.size(); i++ )
     {
         QDomElement downloadElement = downloads.item( i ).toElement();

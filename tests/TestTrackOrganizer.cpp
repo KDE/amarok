@@ -59,7 +59,7 @@ TestTrackOrganizer::TestTrackOrganizer()
 
 void TestTrackOrganizer::init()
 {
-  mColl = new Collections::MyCollectionTestImpl("A");
+  mColl = new Collections::MyCollectionTestImpl(QStringLiteral("A"));
 }
 
 void TestTrackOrganizer::cleanup()
@@ -73,8 +73,8 @@ void TestTrackOrganizer::testBasic()
 
   mTracks = makeTracks( 10 );
   mTrackOrganizer = new TrackOrganizer( mTracks, this );
-  QString folder = "/home/user/Music" ;
-  mTrackOrganizer->setFormatString( "%collectionroot%/%artist%/%album%/%track%-%title%.%filetype%" );
+  QString folder = QStringLiteral("/home/user/Music");
+  mTrackOrganizer->setFormatString( QStringLiteral("%collectionroot%/%artist%/%album%/%track%-%title%.%filetype%") );
   mTrackOrganizer->setFolderPrefix( folder );
   QMap <Meta::TrackPtr, QString > dests = mTrackOrganizer->getDestinations();
   QVERIFY( dests.size() == 10 );
@@ -82,9 +82,9 @@ void TestTrackOrganizer::testBasic()
   for( auto const &track : mTracks )
   {
     QVERIFY( dests.contains( track ) );
-    QString format = "%1/%2/%3/%4-%5.%6";
-    QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
-    QString result = format.arg( folder, track->artist()->prettyName(), track->album()->prettyName(), trackNum, track->prettyName(), "mp3");
+    QString format = QStringLiteral("%1/%2/%3/%4-%5.%6");
+    QString trackNum = QStringLiteral("%1").arg( track->trackNumber(), 2, 10, QLatin1Char('0') );
+    QString result = format.arg( folder, track->artist()->prettyName(), track->album()->prettyName(), trackNum, track->prettyName(), QStringLiteral("mp3"));
     QCOMPARE( dests.value( track ), result );
   }
 }
@@ -96,10 +96,10 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
     Meta::TrackPtr trackPtr( track );
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
-    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + QLatin1Char('_') + artistName + QLatin1Char('_') + albumName ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( QLatin1Char('/') + track->uidUrl() ) ) );
     EXPECT_CALL( *track, trackNumber() ).Times( AnyNumber() ).WillRepeatedly( Return( trackNumber ) );
-    EXPECT_CALL( *track, type() ).Times( AnyNumber() ).WillRepeatedly( Return( "mp3" ) );
+    EXPECT_CALL( *track, type() ).Times( AnyNumber() ).WillRepeatedly( Return( QStringLiteral("mp3") ) );
     EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
     EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
@@ -107,7 +107,7 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
     EXPECT_CALL( *track, rating() ).Times( AnyNumber() ).WillRepeatedly( Return( 0 ) );
     EXPECT_CALL( *track, filesize() ).Times( AnyNumber() ).WillRepeatedly( Return( 0 ) );
     EXPECT_CALL( *track, length() ).Times( AnyNumber() ).WillRepeatedly( Return( 0 ) );
-    EXPECT_CALL( *track, comment() ).Times( AnyNumber() ).WillRepeatedly( Return( "" ) );
+    EXPECT_CALL( *track, comment() ).Times( AnyNumber() ).WillRepeatedly( Return( QStringLiteral("") ) );
 
     mColl->mc->addTrack( trackPtr );
 
@@ -176,8 +176,8 @@ Meta::TrackList TestTrackOrganizer::makeTracks( int numTracks )
   Meta::TrackList tracks;
   for( int i = 1; i <= numTracks; ++i )
   {
-    QString title = "Title" + QString::number(i);
-    Meta::TrackPtr t = makeMockTrack( title, "Artist1", "Album1", i );
+    QString title = QStringLiteral("Title") + QString::number(i);
+    Meta::TrackPtr t = makeMockTrack( title, QStringLiteral("Artist1"), QStringLiteral("Album1"), i );
     if( t )
       tracks << t;
   }

@@ -37,14 +37,14 @@ MySqlServerStorageFactory::init()
 
     m_initialized = true;
 
-    if( Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+    if( Amarok::config( QStringLiteral("MySQL") ).readEntry( "UseServer", false ) )
     {
         auto storage = QSharedPointer<MySqlServerStorage>::create();
-        bool initResult = storage->init( Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ),
-                                         Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ),
-                                         Amarok::config( "MySQL" ).readEntry( "Password", "password" ),
-                                         Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
-                                         Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" ) );
+        bool initResult = storage->init( Amarok::config( QStringLiteral("MySQL") ).readEntry( "Host", "localhost" ),
+                                         Amarok::config( QStringLiteral("MySQL") ).readEntry( "User", "amarokuser" ),
+                                         Amarok::config( QStringLiteral("MySQL") ).readEntry( "Password", "password" ),
+                                         Amarok::config( QStringLiteral("MySQL") ).readEntry( "Port", "3306" ).toInt(),
+                                         Amarok::config( QStringLiteral("MySQL") ).readEntry( "Database", "amarokdb" ) );
 
         // handle errors during creation
         if( !storage->getLastErrors().isEmpty() )

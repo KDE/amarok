@@ -24,9 +24,9 @@
 #include <QXmlStreamReader>
 
 #include <KLocalizedString>
-#include <kio/job.h>
+#include <KIO/TransferJob>
 
-const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
+const QString OpmlParser::OPML_MIME = QStringLiteral("text/x-opml+xml");
 
 const OpmlParser::StaticData OpmlParser::sd;
 
@@ -193,25 +193,25 @@ OpmlParser::StaticData::StaticData()
             &OpmlParser::endOutline )
 {
     // known elements:
-    knownElements[ "opml" ] = Opml;
-    knownElements[ "html" ] = Html;
-    knownElements[ "HTML" ] = Html;
-    knownElements[ "head" ] = Head;
-    knownElements[ "title" ] = Title;
-    knownElements[ "dateCreated" ] = DateCreated;
-    knownElements[ "dateModified" ] = DateModified;
-    knownElements[ "ownerName" ] = OwnerName;
-    knownElements[ "ownerEmail" ] = OwnerEmail;
-    knownElements[ "ownerId" ] = OwnerId;
-    knownElements[ "docs" ] = Docs;
-    knownElements[ "expansionState" ] = ExpansionState;
-    knownElements[ "vertScrollState" ] = VertScrollState;
-    knownElements[ "windowTop" ] = WindowTop;
-    knownElements[ "windowLeft" ] = WindowLeft;
-    knownElements[ "windowBottom" ] = WindowBottom;
-    knownElements[ "windowRight" ] = WindowRight;
-    knownElements[ "body" ] = Body;
-    knownElements[ "outline" ] = Outline;
+    knownElements[ QStringLiteral("opml") ] = Opml;
+    knownElements[ QStringLiteral("html") ] = Html;
+    knownElements[ QStringLiteral("HTML") ] = Html;
+    knownElements[ QStringLiteral("head") ] = Head;
+    knownElements[ QStringLiteral("title") ] = Title;
+    knownElements[ QStringLiteral("dateCreated") ] = DateCreated;
+    knownElements[ QStringLiteral("dateModified") ] = DateModified;
+    knownElements[ QStringLiteral("ownerName") ] = OwnerName;
+    knownElements[ QStringLiteral("ownerEmail") ] = OwnerEmail;
+    knownElements[ QStringLiteral("ownerId") ] = OwnerId;
+    knownElements[ QStringLiteral("docs") ] = Docs;
+    knownElements[ QStringLiteral("expansionState") ] = ExpansionState;
+    knownElements[ QStringLiteral("vertScrollState") ] = VertScrollState;
+    knownElements[ QStringLiteral("windowTop") ] = WindowTop;
+    knownElements[ QStringLiteral("windowLeft") ] = WindowLeft;
+    knownElements[ QStringLiteral("windowBottom") ] = WindowBottom;
+    knownElements[ QStringLiteral("windowRight") ] = WindowRight;
+    knownElements[ QStringLiteral("body") ] = Body;
+    knownElements[ QStringLiteral("outline") ] = Outline;
 
     // before start document/after end document
     rootMap.insert( Document, &docAction );
@@ -425,7 +425,7 @@ OpmlParser::endHead()
 void
 OpmlParser::endTitle()
 {
-    m_headerData.insert( "title", m_buffer.trimmed() );
+    m_headerData.insert( QStringLiteral("title"), m_buffer.trimmed() );
 }
 
 void

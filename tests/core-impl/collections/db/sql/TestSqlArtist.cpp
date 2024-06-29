@@ -56,33 +56,33 @@ void
 TestSqlArtist::init()
 {
     //setup base data
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'The Foo');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'No The Foo');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (4, 'DJ Bar');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (5, 'Bar Like No DJ');" );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (1, 'The Foo');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (2, 'No The Foo');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (3, 'artist3');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (4, 'DJ Bar');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (5, 'Bar Like No DJ');") );
+    
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (1, 'composer1');") );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (1, 'genre1');") );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (1, '1');") );
 
-    m_storage->query( "INSERT INTO composers(id, name) VALUES (1, 'composer1');" );
-    m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
-    m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
-
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');" );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');") );
 }
 
 void
 TestSqlArtist::cleanup()
 {
-    m_storage->query( "TRUNCATE TABLE years;" );
-    m_storage->query( "TRUNCATE TABLE genres;" );
-    m_storage->query( "TRUNCATE TABLE composers;" );
-    m_storage->query( "TRUNCATE TABLE albums;" );
-    m_storage->query( "TRUNCATE TABLE artists;" );
-    m_storage->query( "TRUNCATE TABLE tracks;" );
-    m_storage->query( "TRUNCATE TABLE urls;" );
-    m_storage->query( "TRUNCATE TABLE labels;" );
-    m_storage->query( "TRUNCATE TABLE urls_labels;" );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE years;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE genres;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE composers;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE albums;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE artists;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE tracks;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE urls;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE labels;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE urls_labels;") );
 }
 
 void

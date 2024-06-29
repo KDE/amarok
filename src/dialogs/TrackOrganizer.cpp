@@ -57,8 +57,8 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     QString strAlbumArtist = isCompilation ? i18n( "Various Artists" ) :
         ( albumArtist ? albumArtist->name() : strArtist );
 
-    args["theartist"] = strArtist;
-    args["thealbumartist"] = strAlbumArtist;
+    args[QStringLiteral("theartist")] = strArtist;
+    args[QStringLiteral("thealbumartist")] = strAlbumArtist;
 
     if( m_postfixThe )
     {
@@ -68,52 +68,52 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
 
     if ( track->trackNumber() )
     {
-        QString trackNum = QStringLiteral("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
-        args["track"] = trackNum;
+        QString trackNum = QStringLiteral("%1").arg( track->trackNumber(), 2, 10, QLatin1Char('0') );
+        args[QStringLiteral("track")] = trackNum;
     }
-    args["title"] = track->name();
-    args["artist"] = strArtist;
-    args["composer"] = composer ? composer->name() : QString();
+    args[QStringLiteral("title")] = track->name();
+    args[QStringLiteral("artist")] = strArtist;
+    args[QStringLiteral("composer")] = composer ? composer->name() : QString();
     // if year == 0 then we don't want include it
     QString strYear = year ? year->name() : QString();
-    args["year"] = strYear.localeAwareCompare( "0" ) == 0 ? QString() : strYear;
-    args["album"] = track->album() ? track->album()->name() : QString();
-    args["albumartist"] = strAlbumArtist;
-    args["comment"] = track->comment();
-    args["genre"] = genre ? genre->name() : QString();
+    args[QStringLiteral("year")] = strYear.localeAwareCompare( QStringLiteral("0") ) == 0 ? QString() : strYear;
+    args[QStringLiteral("album")] = track->album() ? track->album()->name() : QString();
+    args[QStringLiteral("albumartist")] = strAlbumArtist;
+    args[QStringLiteral("comment")] = track->comment();
+    args[QStringLiteral("genre")] = genre ? genre->name() : QString();
     if( m_targetFileExtension.isEmpty() )
-        args["filetype"] = track->type();
+        args[QStringLiteral("filetype")] = track->type();
     else
-        args["filetype"] = m_targetFileExtension;
+        args[QStringLiteral("filetype")] = m_targetFileExtension;
     QString strFolder = QFileInfo( track->playableUrl().toLocalFile() ).path();
     strFolder = strFolder.mid( commonPrefixLength( m_folderPrefix, strFolder ) );
-    args["folder"] = strFolder;
-    args["initial"] = strAlbumArtist.mid( 0, 1 ).toUpper(); //artists starting with The are already handled above
+    args[QStringLiteral("folder")] = strFolder;
+    args[QStringLiteral("initial")] = strAlbumArtist.mid( 0, 1 ).toUpper(); //artists starting with The are already handled above
     if( track->discNumber() )
-        args["discnumber"] = QString::number( track->discNumber() );
-    args["collectionroot"] = m_folderPrefix;
+        args[QStringLiteral("discnumber")] = QString::number( track->discNumber() );
+    args[QStringLiteral("collectionroot")] = m_folderPrefix;
 
     // some additional properties not supported by organize dialog.
-    args["rating"] = track->statistics()->rating();
-    args["filesize"] = track->filesize();
-    args["length"] = track->length() / 1000;
+    args[QStringLiteral("rating")] = QString::number( track->statistics()->rating() );
+    args[QStringLiteral("filesize")] = QString::number( track->filesize() );
+    args[QStringLiteral("length")] = QString::number( track->length() / 1000 );
 
     // Fill up default empty values for StringX formatter
     // TODO make this values changeable by user
-    args["default_album"]           = i18n( "Unknown album" );
-    args["default_albumartist"]     = i18n( "Unknown artist" );
-    args["default_artist"]          = args["albumartist"];
-    args["default_thealbumartist"]  = args["albumartist"];
-    args["default_theartist"]       = args["albumartist"];
-    args["default_comment"]         = i18n( "No comments" );
-    args["default_composer"]        = i18n( "Unknown composer" );
-    args["default_discnumber"]      = i18n( "Unknown disc number" );
-    args["default_genre"]           = i18n( "Unknown genre" );
-    args["default_title"]           = i18n( "Unknown title" );
-    args["default_year"]            = i18n( "Unknown year" );
+    args[QStringLiteral("default_album")]           = i18n( "Unknown album" );
+    args[QStringLiteral("default_albumartist")]     = i18n( "Unknown artist" );
+    args[QStringLiteral("default_artist")]          = args[QStringLiteral("albumartist")];
+    args[QStringLiteral("default_thealbumartist")]  = args[QStringLiteral("albumartist")];
+    args[QStringLiteral("default_theartist")]       = args[QStringLiteral("albumartist")];
+    args[QStringLiteral("default_comment")]         = i18n( "No comments" );
+    args[QStringLiteral("default_composer")]        = i18n( "Unknown composer" );
+    args[QStringLiteral("default_discnumber")]      = i18n( "Unknown disc number" );
+    args[QStringLiteral("default_genre")]           = i18n( "Unknown genre" );
+    args[QStringLiteral("default_title")]           = i18n( "Unknown title" );
+    args[QStringLiteral("default_year")]            = i18n( "Unknown year" );
 
     for( const QString &key : args.keys() )
-        if( key != "collectionroot" && key != "folder" )
+        if( key != QStringLiteral("collectionroot") && key != QStringLiteral("folder") )
             args[key] = args[key].replace( QLatin1Char('/'), QLatin1Char('-') );
 
     Amarok::QStringx formatx( format );

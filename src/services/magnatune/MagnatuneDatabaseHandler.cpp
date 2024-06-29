@@ -35,77 +35,77 @@ MagnatuneDatabaseHandler::createDatabase( )
     //Get database instance
     auto sqlDb = StorageManager::instance()->sqlStorage();
 
-    QString autoIncrement = "AUTO_INCREMENT";
+    QString autoIncrement = QStringLiteral("AUTO_INCREMENT");
 
     // create table containing tracks
-    QString queryString = "CREATE TABLE magnatune_tracks ("
-                          "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
-                          "name " + sqlDb->textColumnType() + QLatin1Char(',') +
-                          "track_number INTEGER,"
+    QString queryString = QStringLiteral("CREATE TABLE magnatune_tracks ("
+                          "id INTEGER PRIMARY KEY ") + autoIncrement + QLatin1Char(',') +
+                          QStringLiteral("name ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                          QStringLiteral("track_number INTEGER,"
                           "length INTEGER,"
                           "album_id INTEGER,"
                           "artist_id INTEGER,"
-                          "preview_lofi " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
-                          "preview_ogg " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
-                          "preview_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
+                          "preview_lofi ") + sqlDb->exactTextColumnType() + QLatin1Char(',') +
+                          QStringLiteral("preview_ogg ") + sqlDb->exactTextColumnType() + QLatin1Char(',') +
+                          QStringLiteral("preview_url ") + sqlDb->exactTextColumnType() + QStringLiteral(") ENGINE = MyISAM;");
 
     debug() << "Creating magnatune_tracks: " << queryString;
 
 
     QStringList result = sqlDb->query( queryString );
 
-    sqlDb->query( "CREATE INDEX magnatune_tracks_album_id ON magnatune_tracks(album_id);" );
-    sqlDb->query( "CREATE INDEX magnatune_tracks_artist_id ON magnatune_tracks(artist_id);" );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_tracks_album_id ON magnatune_tracks(album_id);") );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_tracks_artist_id ON magnatune_tracks(artist_id);") );
 
     //Create album table
-    queryString = "CREATE TABLE magnatune_albums ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
-                  "name " + sqlDb->textColumnType() + QLatin1Char(',') +
-                  "year INTEGER,"
+    queryString = QStringLiteral("CREATE TABLE magnatune_albums ("
+                  "id INTEGER PRIMARY KEY ") + autoIncrement + QLatin1Char(',') +
+                  QStringLiteral("name ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                  QStringLiteral("year INTEGER,"
                   "artist_id INTEGER,"
-                  "album_code " + sqlDb->textColumnType() + QLatin1Char(',') +
-                  "cover_url " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
-                  "description " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
+                  "album_code ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                  QStringLiteral("cover_url ") + sqlDb->exactTextColumnType() + QLatin1Char(',') +
+                  QStringLiteral("description ") + sqlDb->exactTextColumnType() + QStringLiteral(") ENGINE = MyISAM;");
 
     debug() << "Creating Magnatune_albums: " << queryString;
 
     result = sqlDb->query( queryString );
 
-    sqlDb->query( "CREATE INDEX magnatune_albums_name ON magnatune_albums(name);" );
-    sqlDb->query( "CREATE INDEX magnatune_albums_artist_id ON magnatune_albums(artist_id);" );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_albums_name ON magnatune_albums(name);") );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_albums_artist_id ON magnatune_albums(artist_id);") );
 
 
     //Create artist table
-    queryString = "CREATE TABLE magnatune_artists ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
-                  "name " + sqlDb->textColumnType() + QLatin1Char(',') +
-                  "artist_page " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
-                  "description " + sqlDb->textColumnType() + QLatin1Char(',') +
-                  "photo_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
+    queryString = QStringLiteral("CREATE TABLE magnatune_artists ("
+                  "id INTEGER PRIMARY KEY ") + autoIncrement + QLatin1Char(',') +
+                  QStringLiteral("name ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                  QStringLiteral("artist_page ") + sqlDb->exactTextColumnType() + QLatin1Char(',') +
+                  QStringLiteral("description ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                  QStringLiteral("photo_url ") + sqlDb->exactTextColumnType() + QStringLiteral(") ENGINE = MyISAM;");
 
     debug() << "Creating magnatune_artist: " << queryString;
 
     result = sqlDb->query( queryString );
 
-    sqlDb->query( "CREATE INDEX magnatune_artists_name ON magnatune_artists(name);" );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_artists_name ON magnatune_artists(name);") );
 
     //create genre table
-    queryString = "CREATE TABLE magnatune_genre ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
-                  "name " + sqlDb->textColumnType() + QLatin1Char(',') +
-                  "album_id INTEGER" + ") ENGINE = MyISAM;";
+    queryString = QStringLiteral("CREATE TABLE magnatune_genre ("
+                  "id INTEGER PRIMARY KEY ") + autoIncrement + QLatin1Char(',') +
+                  QStringLiteral("name ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                  QStringLiteral("album_id INTEGER") + QStringLiteral(") ENGINE = MyISAM;");
 
     result = sqlDb->query( queryString );
 
-    sqlDb->query( "CREATE INDEX magnatune_genre_name ON magnatune_genre(name);" );
-    sqlDb->query( "CREATE INDEX magnatune_genre_album_id ON magnatune_genre(album_id);" );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_genre_name ON magnatune_genre(name);") );
+    sqlDb->query( QStringLiteral("CREATE INDEX magnatune_genre_album_id ON magnatune_genre(album_id);") );
 
 
     //create moods table
-     queryString = "CREATE TABLE magnatune_moods ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
-                  "track_id INTEGER," +
-                  "mood " + sqlDb->textColumnType() + ") ENGINE = MyISAM;";
+     queryString = QStringLiteral("CREATE TABLE magnatune_moods ("
+                  "id INTEGER PRIMARY KEY ") + autoIncrement + QLatin1Char(',') +
+                  QStringLiteral("track_id INTEGER,") +
+                  QStringLiteral("mood ") + sqlDb->textColumnType() + QStringLiteral(") ENGINE = MyISAM;");
 
     debug() << "Creating magnatune_moods: " << queryString;
 
@@ -119,11 +119,11 @@ void
 MagnatuneDatabaseHandler::destroyDatabase( )
 {
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    QStringList result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_tracks;" );
-    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_albums;" );
-    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_artists;" );
-    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_genre;" );
-    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_moods;" );
+    QStringList result = sqlDb->query( QStringLiteral("DROP TABLE IF EXISTS magnatune_tracks;") );
+    result = sqlDb->query( QStringLiteral("DROP TABLE IF EXISTS magnatune_albums;") );
+    result = sqlDb->query( QStringLiteral("DROP TABLE IF EXISTS magnatune_artists;") );
+    result = sqlDb->query( QStringLiteral("DROP TABLE IF EXISTS magnatune_genre;") );
+    result = sqlDb->query( QStringLiteral("DROP TABLE IF EXISTS magnatune_moods;") );
 
 
     /* that would only work for db2/oracle. Other databases connect the index to the table (which we just dropped)
@@ -151,16 +151,16 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
     MagnatuneTrack * mTrack = static_cast<MagnatuneTrack *> ( track );
 
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    QString queryString = "INSERT INTO magnatune_tracks ( name, track_number, length, "
-            "album_id, artist_id, preview_lofi, preview_ogg, preview_url ) VALUES ( '"
-                          + sqlDb->escape( mTrack->name()) + "', "
-                          + QString::number( mTrack->trackNumber() ) + ", "
-                          + QString::number( mTrack->length() * 1000 ) + ", "
-                          + QString::number( mTrack->albumId() ) + ", "
-                          + QString::number( mTrack->artistId() ) + ", '"
-                          + sqlDb->escape( mTrack->lofiUrl() ) + "', '"
-                          + sqlDb->escape( mTrack->oggUrl() ) + "', '"
-                          + sqlDb->escape( mTrack->uidUrl() ) + "' );";
+    QString queryString = QStringLiteral("INSERT INTO magnatune_tracks ( name, track_number, length, "
+            "album_id, artist_id, preview_lofi, preview_ogg, preview_url ) VALUES ( '")
+                          + sqlDb->escape( mTrack->name()) + QStringLiteral("', ")
+                          + QString::number( mTrack->trackNumber() ) + QStringLiteral(", ")
+                          + QString::number( mTrack->length() * 1000 ) + QStringLiteral(", ")
+                          + QString::number( mTrack->albumId() ) + QStringLiteral(", ")
+                          + QString::number( mTrack->artistId() ) + QStringLiteral(", '")
+                          + sqlDb->escape( mTrack->lofiUrl() ) + QStringLiteral("', '")
+                          + sqlDb->escape( mTrack->oggUrl() ) + QStringLiteral("', '")
+                          + sqlDb->escape( mTrack->uidUrl() ) + QStringLiteral("' );");
 
 
     // debug() << "Adding Magnatune track " << queryString;
@@ -179,14 +179,14 @@ MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 
     QString queryString;
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    queryString = "INSERT INTO magnatune_albums ( name, year, artist_id, "
-                  "album_code, cover_url, description ) VALUES ( '"
-                  + sqlDb->escape( sqlDb->escape( mAlbum->name() ) ) + "', "
-                  + QString::number( mAlbum->launchYear() ) + ", "
-                  + QString::number( mAlbum->artistId() ) + ", '"
-                  + sqlDb->escape( mAlbum->albumCode() ) + "', '"
-                  + sqlDb->escape( mAlbum->coverUrl() ) + "', '"
-                  + sqlDb->escape( mAlbum->description() )+ "' );";
+    queryString = QStringLiteral("INSERT INTO magnatune_albums ( name, year, artist_id, "
+                  "album_code, cover_url, description ) VALUES ( '")
+                  + sqlDb->escape( sqlDb->escape( mAlbum->name() ) ) + QStringLiteral("', ")
+                  + QString::number( mAlbum->launchYear() ) + QStringLiteral(", ")
+                  + QString::number( mAlbum->artistId() ) + QStringLiteral(", '")
+                  + sqlDb->escape( mAlbum->albumCode() ) + QStringLiteral("', '")
+                  + sqlDb->escape( mAlbum->coverUrl() ) + QStringLiteral("', '")
+                  + sqlDb->escape( mAlbum->description() )+ QStringLiteral("' );");
 
     //debug() << "Adding Magnatune album " << queryString;
 
@@ -202,12 +202,12 @@ MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
 
     QString queryString;
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    queryString = "INSERT INTO magnatune_artists ( name, artist_page, description, "
-                  "photo_url ) VALUES ( '"
-                  + sqlDb->escape( mArtist->name() ) + "', '"
-                  + sqlDb->escape( mArtist->magnatuneUrl().url() ) + "', '"
-                  + sqlDb->escape( mArtist->description() ) + "', '"
-                  + sqlDb->escape( mArtist->photoUrl().url() ) + "' );";
+    queryString = QStringLiteral("INSERT INTO magnatune_artists ( name, artist_page, description, "
+                  "photo_url ) VALUES ( '")
+                  + sqlDb->escape( mArtist->name() ) + QStringLiteral("', '")
+                  + sqlDb->escape( mArtist->magnatuneUrl().url() ) + QStringLiteral("', '")
+                  + sqlDb->escape( mArtist->description() ) + QStringLiteral("', '")
+                  + sqlDb->escape( mArtist->photoUrl().url() ) + QStringLiteral("' );");
 
     //debug() << "Adding Magnatune artist " << queryString;
 
@@ -221,7 +221,7 @@ MagnatuneDatabaseHandler::begin( )
 
     auto sqlDb = StorageManager::instance()->sqlStorage();
 
-    QString queryString = "BEGIN;";
+    QString queryString = QStringLiteral("BEGIN;");
 
     sqlDb->query( queryString );
 }
@@ -230,10 +230,10 @@ void
 MagnatuneDatabaseHandler::commit( )
 {
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    QString queryString = "COMMIT;";
+    QString queryString = QStringLiteral("COMMIT;");
 
     sqlDb->query( queryString );
-    sqlDb->query( "FLUSH TABLES;" );
+    sqlDb->query( QStringLiteral("FLUSH TABLES;") );
 }
 
 void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods)
@@ -243,9 +243,9 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods
     auto sqlDb = StorageManager::instance()->sqlStorage();
 
     for( const QString &mood : moods ) {
-        queryString = "INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( "
-                      + QString::number( trackId ) + ", '"
-                      + sqlDb->escape( mood ) +  "' );";
+        queryString = QStringLiteral("INSERT INTO magnatune_moods ( track_id, mood ) VALUES ( ")
+                      + QString::number( trackId ) + QStringLiteral(", '")
+                      + sqlDb->escape( mood ) +  QStringLiteral("' );");
 
 
         //debug() << "Adding Magnatune mood: " << queryString;
@@ -258,7 +258,7 @@ int MagnatuneDatabaseHandler::getArtistIdByExactName(const QString & name)
 
     auto sqlDb = StorageManager::instance()->sqlStorage();
 
-    QString queryString = "SELECT id from magnatune_artists WHERE name='" + sqlDb->escape( name ) + "';";
+    QString queryString = QStringLiteral("SELECT id from magnatune_artists WHERE name='") + sqlDb->escape( name ) + QStringLiteral("';");
     QStringList result = sqlDb->query( queryString );
 
     //debug() << "Looking for id of artist " << name << ":";
@@ -276,7 +276,7 @@ int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode(const QString & albumcode)
 {
     auto sqlDb = StorageManager::instance()->sqlStorage();
 
-    QString queryString = "SELECT id from magnatune_albums WHERE album_code='" + sqlDb->escape( albumcode ) + "';";
+    QString queryString = QStringLiteral("SELECT id from magnatune_albums WHERE album_code='") + sqlDb->escape( albumcode ) + QStringLiteral("';");
     QStringList result = sqlDb->query( queryString );
 
     //debug() << "Looking for id of album " << albumcode << ":";
@@ -293,10 +293,10 @@ int MagnatuneDatabaseHandler::insertGenre(ServiceGenre * genre)
 {
     QString queryString;
     auto sqlDb = StorageManager::instance()->sqlStorage();
-    queryString = "INSERT INTO magnatune_genre ( album_id, name "
-                  ") VALUES ( "
-                  + QString::number ( genre->albumId() ) + ", '"
-                  + sqlDb->escape( genre->name() ) + "' );";
+    queryString = QStringLiteral("INSERT INTO magnatune_genre ( album_id, name "
+                  ") VALUES ( ")
+                  + QString::number ( genre->albumId() ) + QStringLiteral(", '")
+                  + sqlDb->escape( genre->name() ) + QStringLiteral("' );");
 
     //debug() << "Adding Jamendo genre " << queryString;
 

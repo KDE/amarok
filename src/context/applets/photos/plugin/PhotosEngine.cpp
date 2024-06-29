@@ -212,7 +212,6 @@ PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
         {
             const QXmlStreamAttributes &attr = xml.attributes();
             QStringView id     = attr.value( QLatin1String("id") );
-            QStringView farm   = attr.value( QLatin1String("farm") );
             QStringView owner  = attr.value( QLatin1String("owner") );
             QStringView secret = attr.value( QLatin1String("secret") );
             QStringView server = attr.value( QLatin1String("server") );

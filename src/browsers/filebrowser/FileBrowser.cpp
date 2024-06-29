@@ -47,7 +47,7 @@
 #include <KStandardAction>
 #include <KToolBar>
 
-static const QString placesString( "places://" );
+static const QString placesString( QStringLiteral("places://") );
 static const QUrl placesUrl( placesString );
 
 FileBrowser::Private::Private( FileBrowser *parent )
@@ -91,7 +91,7 @@ void
 FileBrowser::Private::readConfig()
 {
     const QUrl homeUrl = QUrl::fromLocalFile( QDir::homePath() );
-    const QUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
+    const QUrl savedUrl = Amarok::config( QStringLiteral("File Browser") ).readEntry( "Current Directory", homeUrl );
     bool useHome( true );
     // fall back to $HOME if the saved dir has since disappeared or is a remote one
     if( savedUrl.isLocalFile() )
@@ -115,14 +115,14 @@ FileBrowser::Private::readConfig()
 void
 FileBrowser::Private::writeConfig()
 {
-    Amarok::config( "File Browser" ).writeEntry( "Current Directory", kdirModel->dirLister()->url() );
+    Amarok::config( QStringLiteral("File Browser") ).writeEntry( "Current Directory", kdirModel->dirLister()->url() );
 }
 
 BreadcrumbSiblingList
 FileBrowser::Private::siblingsForDir( const QUrl &path )
 {
     BreadcrumbSiblingList siblings;
-    if( path.scheme() == "places" )
+    if( path.scheme() == QStringLiteral("places") )
     {
         for( int i = 0; i < placesModel->rowCount(); i++ )
         {
@@ -143,7 +143,7 @@ FileBrowser::Private::siblingsForDir( const QUrl &path )
         dir.cdUp();
         for( const QString &item : dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
         {
-            siblings << BreadcrumbSibling( QIcon::fromTheme( "folder-amarok" ), item,
+            siblings << BreadcrumbSibling( QIcon::fromTheme( QStringLiteral("folder-amarok") ), item,
                                            dir.absoluteFilePath( item ) );
         }
     }
@@ -172,7 +172,7 @@ FileBrowser::Private::restoreDefaultHeaderState()
 void
 FileBrowser::Private::restoreHeaderState()
 {
-    QFile file( Amarok::saveLocation() + "file_browser_layout" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("file_browser_layout") );
     if( !file.open( QIODevice::ReadOnly ) )
     {
         restoreDefaultHeaderState();
@@ -190,7 +190,7 @@ void
 FileBrowser::Private::saveHeaderState()
 {
     //save the state of the header (column size and order). Yay, another QByteArray thingie...
-    QFile file( Amarok::saveLocation() + "file_browser_layout" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("file_browser_layout") );
     if( !file.open( QIODevice::WriteOnly ) )
     {
         warning() << "unable to save header state";
@@ -222,7 +222,7 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
                         "file operations." )
                        );
 
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_files.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_files.png") ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -243,8 +243,8 @@ FileBrowser::initView()
     d->placesModel->setDynamicSortFilter( true );
     d->placesModel->setFilterRole( KFilePlacesModel::HiddenRole );
     // HiddenRole is bool, but QVariant( false ).toString() gives "false"
-    d->placesModel->setFilterFixedString( "false" );
-    d->placesModel->setObjectName( "PLACESMODEL");
+    d->placesModel->setFilterFixedString( QStringLiteral("false") );
+    d->placesModel->setObjectName( QStringLiteral("PLACESMODEL") );
 
     d->kdirModel = new DirBrowserModel( this );
     d->mimeFilterProxyModel = new DirPlaylistTrackFilterProxyModel( this );
@@ -443,12 +443,12 @@ FileBrowser::setupAddItems()
         callback = placesIndex.data( KFilePlacesModel::UrlRole ).toString();
 
         QUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
-        currPlaceUrl.setPath( QDir::toNativeSeparators(currPlaceUrl.path() + '/') );
+        currPlaceUrl.setPath( QDir::toNativeSeparators(currPlaceUrl.path() + QLatin1Char('/')) );
         currentPosition = currPlaceUrl.toString().length();
     }
     else
     {
-        QRegularExpression threeSlashes( "^[^/]*/[^/]*/[^/]*/" );
+        QRegularExpression threeSlashes( QStringLiteral("^[^/]*/[^/]*/[^/]*/") );
         if( workingUrl.indexOf( threeSlashes ) == 0 )
             currentPosition = threeSlashes.match( workingUrl ).capturedLength();
         else
@@ -456,10 +456,10 @@ FileBrowser::setupAddItems()
 
         callback = workingUrl.left( currentPosition );
         name = callback;
-        if( name == "file:///" )
-            name = '/'; // just niceness
+        if( name ==  QStringLiteral("file:///") )
+            name = QLatin1Char('/'); // just niceness
         else
-            name.remove( QRegularExpression( "/$" ) );
+            name.remove( QRegularExpression( QStringLiteral("/$") ) );
     }
     /* always provide siblings for places, regardless of what first item is; this also
      * work-arounds bug 312639, where creating QUrl with accented chars crashes */
@@ -474,7 +474,7 @@ FileBrowser::setupAddItems()
             nextPosition = workingUrl.length();
 
         name = workingUrl.mid( currentPosition, nextPosition - currentPosition );
-        name.remove( QRegularExpression( "/$" ) );
+        name.remove( QRegularExpression( QStringLiteral("/$") ) );
         callback = workingUrl.left( nextPosition );
 
         siblings = d->siblingsForDir( QUrl::fromLocalFile( callback ) );

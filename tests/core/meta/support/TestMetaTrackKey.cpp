@@ -33,16 +33,16 @@ TestMetaTrackKey::TestMetaTrackKey()
 QString
 TestMetaTrackKey::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void
 TestMetaTrackKey::testTrackKey()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
     Meta::TrackPtr track;
-    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
+    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track01.ogg") )) );
 
     Meta::TrackKey trackKey1( track );
 
@@ -56,10 +56,10 @@ TestMetaTrackKey::testTrackKey()
 void
 TestMetaTrackKey::testOperatorAssignment()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
     Meta::TrackPtr track;
-    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
+    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/Track01.ogg") )) );
 
     Meta::TrackKey trackKey1( track ), trackKey2;
 

@@ -89,7 +89,7 @@ PrettyTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option
     if( height > 0 )
     {
         QPixmap background = The::svgHandler()->renderSvgWithDividers(
-                "service_list_item", width, height, "service_list_item" );
+                QStringLiteral("service_list_item"), width, height, QStringLiteral("service_list_item") );
 
         painter->save();
         painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );

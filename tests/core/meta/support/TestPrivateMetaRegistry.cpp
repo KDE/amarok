@@ -40,19 +40,19 @@ TestPrivateMetaRegistry::~TestPrivateMetaRegistry()
 void
 TestPrivateMetaRegistry::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
-    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/album/Track01.ogg" )) );
-    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/album/Track02.ogg" )) );
-    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 01.mp3" )) );
-    m_track4 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 02.mp3" )) );
-    m_track5 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 03.mp3" )) );
+    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( QStringLiteral("data/audio/album/Track01.ogg") )) );
+    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( QStringLiteral("data/audio/album/Track02.ogg") )) );
+    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( QStringLiteral("data/audio/Platz 01.mp3") )) );
+    m_track4 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( QStringLiteral("data/audio/Platz 02.mp3") )) );
+    m_track5 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( QStringLiteral("data/audio/Platz 03.mp3") )) );
 }
 
 QString
 TestPrivateMetaRegistry::datapath( const QString& relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void

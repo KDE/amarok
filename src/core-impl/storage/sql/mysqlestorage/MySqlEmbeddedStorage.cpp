@@ -37,7 +37,7 @@ static QAtomicInt libraryInitRef;
 MySqlEmbeddedStorage::MySqlEmbeddedStorage()
     : MySqlStorage()
 {
-    m_debugIdent = "MySQLe";
+    m_debugIdent = QStringLiteral("MySQLe");
 }
 
 bool
@@ -51,13 +51,13 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
     if( storagePath.isEmpty() )
     {
         storagePath = Amarok::saveLocation();
-        databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", QString(storagePath + "mysqle") );
+        databaseDir = Amarok::config( QStringLiteral("MySQLe") ).readEntry( "data", QString(storagePath + QStringLiteral("mysqle")) );
     }
     else
     {
         QDir dir( storagePath );
-        dir.mkpath( "." );  //ensure directory exists
-        databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
+        dir.mkpath( QStringLiteral(".") );  //ensure directory exists
+        databaseDir = dir.absolutePath() + QDir::separator() + QStringLiteral("mysqle");
     }
 
     QVector<const char*> mysql_args;
@@ -82,7 +82,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
     if( !QFile::exists( databaseDir ) )
     {
         QDir dir( databaseDir );
-        dir.mkpath( "." );
+        dir.mkpath( QStringLiteral(".") );
     }
 
     // -- initializing the library
@@ -94,8 +94,8 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
         {
             // mysql sources show that there is only 0 and 1 as return code
             // and it can only fail because of memory or thread issues.
-            reportError( "library initialization "
-                         "failed, return code " + QString::number( ret ) );
+            reportError( QStringLiteral("library initialization "
+                         "failed, return code ") + QString::number( ret ) );
             libraryInitRef.deref();
             return false;
         }
@@ -104,19 +104,19 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
     m_db = mysql_init( nullptr );
     if( !m_db )
     {
-        reportError( "call to mysql_init" );
+        reportError( QStringLiteral("call to mysql_init") );
         return false;
     }
 
     if( mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" ) )
-        reportError( "Error setting options for READ_DEFAULT_GROUP" );
+        reportError( QStringLiteral("Error setting options for READ_DEFAULT_GROUP") );
     if( mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, nullptr ) )
-        reportError( "Error setting option to use embedded connection" );
+        reportError( QStringLiteral("Error setting option to use embedded connection") );
 
     if( !mysql_real_connect( m_db, nullptr,nullptr,nullptr, nullptr, 0,nullptr, 0 ) )
     {
         error() << "Could not connect to mysql embedded!";
-        reportError( "call to mysql_real_connect" );
+        reportError( QStringLiteral("call to mysql_real_connect") );
         mysql_close( m_db );
         m_db = nullptr;
         return false;

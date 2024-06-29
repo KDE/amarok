@@ -34,7 +34,7 @@ class CurrentPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char* uri) override
     {
-        Q_ASSERT(uri == QLatin1String("org.kde.amarok.currenttrack"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.amarok.currenttrack"));
 
         qmlRegisterSingletonType<CurrentEngine>(uri, 1, 0, "CurrentTrackEngine", current_engine_provider);
     }

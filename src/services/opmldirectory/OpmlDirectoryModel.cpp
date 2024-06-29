@@ -36,10 +36,10 @@ OpmlDirectoryModel::OpmlDirectoryModel( QUrl outlineUrl, QObject *parent )
     , m_rootOpmlUrl( outlineUrl )
 {
     //fetchMore will be called by the view
-    m_addOpmlAction = new QAction( QIcon::fromTheme( "list-add" ), i18n( "Add OPML" ), this );
+    m_addOpmlAction = new QAction( QIcon::fromTheme( QStringLiteral("list-add") ), i18n( "Add OPML" ), this );
     connect( m_addOpmlAction, &QAction::triggered, this, &OpmlDirectoryModel::slotAddOpmlAction );
 
-    m_addFolderAction = new QAction( QIcon::fromTheme( "folder-add" ), i18n( "Add Folder"), this );
+    m_addFolderAction = new QAction( QIcon::fromTheme( QStringLiteral("folder-add") ), i18n( "Add Folder"), this );
     connect( m_addFolderAction, &QAction::triggered, this, &OpmlDirectoryModel::slotAddFolderAction );
 }
 
@@ -75,7 +75,7 @@ OpmlDirectoryModel::flags( const QModelIndex &idx ) const
         return Qt::ItemIsDropEnabled;
 
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
-    if( outline && !outline->attributes().contains( "type" ) ) //probably a folder
+    if( outline && !outline->attributes().contains( QStringLiteral("type") ) ) //probably a folder
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled
                 | Qt::ItemIsDropEnabled;
 
@@ -130,7 +130,7 @@ OpmlDirectoryModel::hasChildren( const QModelIndex &parent ) const
     if( outline->hasChildren() )
         return true;
 
-    return outline->attributes().value( "type" ) == "include";
+    return outline->attributes().value( QStringLiteral("type") ) == QStringLiteral("include");
 }
 
 int
@@ -161,7 +161,7 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
     switch( role )
     {
         case Qt::DisplayRole:
-            return outline->attributes().value("text");
+            return outline->attributes().value(QStringLiteral("text"));
         case Qt::DecorationRole:
             return m_imageMap.contains( outline ) ? m_imageMap.value( outline ) : QVariant();
         case ActionRole:
@@ -308,21 +308,21 @@ OpmlDirectoryModel::slotAddOpmlAction()
 
     QString url = widget.urlEdit->url().url();
     QString title = widget.titleEdit->text();
-    debug() << QString( "creating a new OPML outline with url = %1 and title \"%2\"." ).arg( url, title );
+    debug() << QStringLiteral( "creating a new OPML outline with url = %1 and title \"%2\"." ).arg( url, title );
     OpmlOutline *outline = new OpmlOutline();
-    outline->addAttribute( "type", "include" );
-    outline->addAttribute( "url", url );
+    outline->addAttribute( QStringLiteral("type"), QStringLiteral("include") );
+    outline->addAttribute( QStringLiteral("url"), url );
     if( !title.isEmpty() )
-        outline->addAttribute( "text", title );
+        outline->addAttribute( QStringLiteral("text"), title );
 
     //Folder icon with down-arrow emblem
-    m_imageMap.insert( outline, QIcon::fromTheme( "folder-download", QIcon::fromTheme( "go-down" ) ).pixmap( 24, 24 ) );
+    m_imageMap.insert( outline, QIcon::fromTheme( QStringLiteral("folder-download"), QIcon::fromTheme( QStringLiteral("go-down") ) ).pixmap( 24, 24 ) );
 
     QModelIndex newIdx = addOutlineToModel( parentIdx, outline );
     //TODO: force the view to expand the folder (parentIdx) so the new node is shown
 
     //if the title is missing, start parsing the OPML so we can get it from the feed
-    if( outline->attributes().contains( "text" ) )
+    if( outline->attributes().contains( QStringLiteral("text") ) )
         saveOpml( m_rootOpmlUrl );
     else
         fetchMore( newIdx ); //saves OPML after receiving the title.
@@ -341,8 +341,8 @@ OpmlDirectoryModel::slotAddFolderAction()
     }
 
     OpmlOutline *outline = new OpmlOutline();
-    outline->addAttribute( "text", i18n( "New Folder" ) );
-    m_imageMap.insert( outline, QIcon::fromTheme( "folder" ).pixmap( 24, 24 ) );
+    outline->addAttribute( QStringLiteral("text"), i18n( "New Folder" ) );
+    m_imageMap.insert( outline, QIcon::fromTheme( QStringLiteral("folder") ).pixmap( 24, 24 ) );
 
     addOutlineToModel( parentIdx, outline );
     //TODO: trigger edit of the new folder
@@ -362,7 +362,7 @@ OpmlDirectoryModel::canFetchMore( const QModelIndex &parent ) const
 
     OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
 
-    return outline && ( outline->attributes().value( "type" ) == "include" );
+    return outline && ( outline->attributes().value( QStringLiteral("type") ) == QStringLiteral("include") );
 }
 
 void
@@ -384,9 +384,9 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
         OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
         if( !outline )
             return;
-        if( outline->attributes().value( "type" ) != "include" )
+        if( outline->attributes().value( QStringLiteral("type") ) != QStringLiteral("include") )
             return;
-        urlToFetch = QUrl( outline->attributes().value("url") );
+        urlToFetch = QUrl( outline->attributes().value(QStringLiteral("url")) );
     }
 
     if( !urlToFetch.isValid() )
@@ -414,12 +414,12 @@ OpmlDirectoryModel::slotOpmlHeaderDone()
 
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
 
-    if( !outline->attributes().contains("text") )
+    if( !outline->attributes().contains(QStringLiteral("text")) )
     {
-        if( parser->headerData().contains( "title" ) )
-            outline->addAttribute( "text", parser->headerData().value("title") );
+        if( parser->headerData().contains( QStringLiteral("title") ) )
+            outline->addAttribute( QStringLiteral("text"), parser->headerData().value(QStringLiteral("title")) );
         else
-            outline->addAttribute( "text", parser->url().fileName() );
+            outline->addAttribute( QStringLiteral("text"), parser->url().fileName() );
 
         //force a view update
         Q_EMIT dataChanged( idx, idx );
@@ -441,11 +441,11 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     switch( outline->opmlNodeType() )
     {
         case RegularNode:
-            m_imageMap.insert( outline, QIcon::fromTheme( "folder" ).pixmap( 24, 24 ) ); break;
+            m_imageMap.insert( outline, QIcon::fromTheme( QStringLiteral("folder") ).pixmap( 24, 24 ) ); break;
         case IncludeNode:
         {
             m_imageMap.insert( outline,
-                               QIcon::fromTheme( "folder-download", QIcon::fromTheme( "go-down" ) ).pixmap( 24, 24 )
+                               QIcon::fromTheme( QStringLiteral("folder-download"), QIcon::fromTheme( QStringLiteral("go-down") ) ).pixmap( 24, 24 )
                              );
             break;
         }
@@ -476,10 +476,10 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
             continue;
 
         QUrl url;
-        if( outline->attributes().contains( "xmlUrl" ) )
-            url = QUrl( outline->attributes().value("xmlUrl") );
-        else if( outline->attributes().contains( "url" ) )
-            url = QUrl( outline->attributes().value("url") );
+        if( outline->attributes().contains( QStringLiteral("xmlUrl") ) )
+            url = QUrl( outline->attributes().value(QStringLiteral("xmlUrl")) );
+        else if( outline->attributes().contains( QStringLiteral("url") ) )
+            url = QUrl( outline->attributes().value(QStringLiteral("url")) );
 
         if( url.isEmpty() )
             continue;

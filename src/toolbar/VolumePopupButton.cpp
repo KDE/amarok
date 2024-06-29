@@ -62,7 +62,7 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     QToolBar *muteBar = new QToolBar( QString(), mainBox );
     muteBar->setContentsMargins( 0, 0, 0, 0 );
     muteBar->setIconSize( QSize( 16, 16 ) );
-    m_muteAction = new QAction( QIcon::fromTheme( "audio-volume-muted" ), QString(), muteBar );
+    m_muteAction = new QAction( QIcon::fromTheme( QStringLiteral("audio-volume-muted") ), QString(), muteBar );
     m_muteAction->setCheckable ( true );
     m_muteAction->setChecked( ec->isMuted() );
 
@@ -92,7 +92,7 @@ VolumePopupButton::volumeChanged( int newVolume )
     else
         setIcon( QIcon::fromTheme( QStringLiteral("audio-volume-high") ) );
 
-    m_volumeLabel->setText( QString::number( newVolume ) + '%' );
+    m_volumeLabel->setText( QString::number( newVolume ) + QLatin1Char('%') );
 
     if( newVolume != m_volumeSlider->value() )
         m_volumeSlider->setValue( newVolume );
@@ -135,7 +135,7 @@ VolumePopupButton::mouseReleaseEvent( QMouseEvent * event )
             m_volumeMenu->exec( mapToGlobal( pos ) );
         }
     }
-    else if( event->button() == Qt::MidButton )
+    else if( event->button() == Qt::MiddleButton )
     {
         The::engineController()->toggleMute();
     }

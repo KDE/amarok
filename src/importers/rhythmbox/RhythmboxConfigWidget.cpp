@@ -25,14 +25,14 @@ using namespace StatSyncing;
 
 RhythmboxConfigWidget::RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent,
                                               Qt::WindowFlags f )
-    : SimpleImporterConfigWidget( "Rhythmbox", config, parent, f )
+    : SimpleImporterConfigWidget( QStringLiteral("Rhythmbox"), config, parent, f )
 {
     const QString defaultPath = QDir::toNativeSeparators(
-                QDir::homePath() + "/.local/share/rhythmbox/rhythmdb.xml" );
+                QDir::homePath() + QStringLiteral("/.local/share/rhythmbox/rhythmdb.xml") );
 
     KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
     dbField->setFilter( "rhythmdb.xml" );
-    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
+    addField( QStringLiteral("dbPath"), i18n( "Database location" ), dbField, QStringLiteral("text") );
 }
 
 RhythmboxConfigWidget::~RhythmboxConfigWidget()

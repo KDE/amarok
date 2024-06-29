@@ -256,15 +256,15 @@ EngineController::slotFillInSupportedMimeTypes()
     // Add whitelist hacks
     // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
     if( !m_supportedMimeTypes.contains( QStringLiteral("audio/x-m4b") ) )
-        m_supportedMimeTypes << "audio/x-m4b";
+        m_supportedMimeTypes << QStringLiteral("audio/x-m4b");
 
     // technically, "audio/flac" is not a valid mimetype (not on IANA list), but some things expect it
     if( m_supportedMimeTypes.contains( QStringLiteral("audio/x-flac") ) && !m_supportedMimeTypes.contains( QStringLiteral("audio/flac") ) )
-        m_supportedMimeTypes << "audio/flac";
+        m_supportedMimeTypes << QStringLiteral("audio/flac");
 
     // technically, "audio/mp4" is the official mime type, but sometimes Phonon returns audio/x-m4a
     if( m_supportedMimeTypes.contains( QStringLiteral("audio/x-m4a") ) && !m_supportedMimeTypes.contains( QStringLiteral("audio/mp4") ) )
-        m_supportedMimeTypes << "audio/mp4";
+        m_supportedMimeTypes << QStringLiteral("audio/mp4");
 
     // unblock waiting for the semaphore in supportedMimeTypes(). We can over-shoot
     // resource number so that next call to supportedMimeTypes won't have to
@@ -329,7 +329,7 @@ EngineController::play() //SLOT
 
     if( isPaused() )
     {
-        if( m_currentTrack && m_currentTrack->type() == "stream" )
+        if( m_currentTrack && m_currentTrack->type() == QStringLiteral("stream") )
         {
             debug() << "This is a stream that cannot be resumed after pausing. Restarting instead.";
             play( m_currentTrack );
@@ -407,7 +407,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
     debug() << "Offset: " << offset;
 
     m_currentAudioCdTrack = 0;
-    if( url.scheme() == "audiocd" )
+    if( url.scheme() == QStringLiteral("audiocd") )
     {
         QStringList pathItems = url.path().split( QLatin1Char('/'), Qt::KeepEmptyParts );
         if( pathItems.count() != 3 )
@@ -422,7 +422,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
             error() << __PRETTY_FUNCTION__ << "failed to get positive track number from" << url.url();
             return;
         }
-        QString device = QUrlQuery(url).queryItemValue( "device" );
+        QString device = QUrlQuery(url).queryItemValue( QStringLiteral("device") );
 
         m_media->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
         m_currentAudioCdTrack = trackNumber;
@@ -764,7 +764,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     {
         m_media->clearQueue();
         // keep in sync with playUrl(), slotPlayableUrlFetched()
-        if( url.scheme() != "audiocd" ) // we don't support gapless for CD, bug 305708
+        if( url.scheme() != QStringLiteral("audiocd") ) // we don't support gapless for CD, bug 305708
             m_media->enqueue( url );
         m_nextTrack = track;
         m_nextUrl = url;
@@ -1313,7 +1313,7 @@ QString EngineController::prettyNowPlaying( bool progress ) const
             // we try for pretty title as it may come out better
             title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
         else
-            title = "<b>" + prettyTitle + "</b>";
+            title = QStringLiteral("<b>") + prettyTitle + QStringLiteral("</b>");
 
         if( title.isEmpty() )
             title = i18n( "Unknown track" );

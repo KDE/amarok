@@ -50,9 +50,9 @@ OcsPersonItem::init()
     m_initialSpacer->changeSize( 0, 40, QSizePolicy::Fixed, QSizePolicy::Fixed );
     layout()->invalidate();
 
-    m_aboutText.append( "<b>" + m_person->name() + "</b>" );
+    m_aboutText.append( QStringLiteral("<b>") + m_person->name() + QStringLiteral("</b>") );
     if( !m_person->task().isEmpty() )
-        m_aboutText.append( "<br/>" + m_person->task() );
+        m_aboutText.append( QStringLiteral("<br/>") + m_person->task() );
 
     m_iconsBar = new KToolBar( this, false, false );
     m_snBar = new KToolBar( this, false, false );
@@ -85,7 +85,7 @@ OcsPersonItem::init()
     {
         QAction *email = new QAction( QIcon::fromTheme( QStringLiteral("mail-send") ), i18n("Email contributor"), this );
         email->setToolTip( m_person->emailAddress() );
-        email->setData( QString( "mailto:" + m_person->emailAddress() ) );
+        email->setData( QString( QStringLiteral( "mailto:") + m_person->emailAddress() ) );
         m_iconsBar->addAction( email );
     }
 

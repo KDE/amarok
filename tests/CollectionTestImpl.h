@@ -103,7 +103,7 @@ private:
 
         QString prettyLocation() const override
         {
-            return "/" + collection()->prettyName();
+            return QStringLiteral("/") + collection()->prettyName();
         }
 
         bool isWritable() const override

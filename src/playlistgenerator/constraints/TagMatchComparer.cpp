@@ -111,7 +111,7 @@ ConstraintTypes::TagMatch::Comparer::compareLabels( const Meta::TrackPtr t,
     Meta::LabelList labelList = t->labels();
 
     double v = 0.0;
-    foreach ( Meta::LabelPtr label, labelList ) {
+    for( Meta::LabelPtr label : labelList ) {
         // this is technically more correct ...
         // v = qMax( compare( label->prettyName(), comparison, target ), v );
 

@@ -125,7 +125,7 @@ EqualizerController::eqBandsFreq() const
     QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
     if( equalizerParameters.isEmpty() )
         return bandFrequencies;
-    QRegularExpression rx( "\\d+(?=Hz)" );
+    QRegularExpression rx( QStringLiteral("\\d+(?=Hz)") );
     for( const Phonon::EffectParameter &mParam : equalizerParameters )
     {
         if( mParam.name().contains( rx ) )

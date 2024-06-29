@@ -125,16 +125,16 @@ TestSqlCollectionLocation::initTestCase()
     m_collection->setMountPointManager( mock );
 
     // I just need the table and not the whole playlist manager
-    m_storage->query( QString( "CREATE TABLE playlist_tracks ("
-            " id " + m_storage->idType() +
-            ", playlist_id INTEGER "
+    m_storage->query( QStringLiteral( "CREATE TABLE playlist_tracks ("
+            " id ") + m_storage->idType() +
+            QStringLiteral(", playlist_id INTEGER "
             ", track_num INTEGER "
-            ", url " + m_storage->exactTextColumnType() +
-            ", title " + m_storage->textColumnType() +
-            ", album " + m_storage->textColumnType() +
-            ", artist " + m_storage->textColumnType() +
-            ", length INTEGER "
-            ", uniqueid " + m_storage->textColumnType(128) + ") ENGINE = MyISAM;" ) );
+            ", url ") + m_storage->exactTextColumnType() +
+            QStringLiteral(", title ") + m_storage->textColumnType() +
+            QStringLiteral(", album ") + m_storage->textColumnType() +
+            QStringLiteral(", artist ") + m_storage->textColumnType() +
+            QStringLiteral(", length INTEGER "
+            ", uniqueid ") + m_storage->textColumnType(128) + QStringLiteral(") ENGINE = MyISAM;" ) );
 }
 
 void
@@ -148,32 +148,32 @@ void
 TestSqlCollectionLocation::init()
 {
     //setup base data
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'artist2');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (1, 'artist1');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (2, 'artist2');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (3, 'artist3');") );
 
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(1,'album1',1);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(2,'album2',1);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES(3,'album3',2);" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(1,'album1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(2,'album2',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES(3,'album3',2);") );
 
-    m_storage->query( "INSERT INTO composers(id, name) VALUES (1, 'composer1');" );
-    m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
-    m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (1, 'composer1');") );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (1, 'genre1');") );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (1, '1');") );
 
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (1, -1, '." + s_tmpDir->path() + "/ab/')");
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (2, -1, '." + s_tmpDir->path() + "/b/')");
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (3, -1, '." + s_tmpDir->path() + "/c/')");
+    m_storage->query( QStringLiteral("INSERT INTO directories(id,deviceid,dir) VALUES (1, -1, '.") + s_tmpDir->path() + QStringLiteral("/ab/')"));
+    m_storage->query( QStringLiteral("INSERT INTO directories(id,deviceid,dir) VALUES (2, -1, '.") + s_tmpDir->path() + QStringLiteral("/b/')"));
+    m_storage->query( QStringLiteral("INSERT INTO directories(id,deviceid,dir) VALUES (3, -1, '.") + s_tmpDir->path() + QStringLiteral("/c/')"));
 
-    m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (1, -1, '%1', 'uid://1', 1);" ).arg( setupFileInTempDir( "ab/IDoNotExist.mp3" ) ) );
-    m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (2, -1, '%1', 'uid://2', 2);" ).arg( setupFileInTempDir( "b/IDoNotExistAsWell.mp3") ) );
-    m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (3, -1, '%1', 'uid:/3', 3);" ).arg( setupFileInTempDir( "c/MeNeither.mp3" ) ) );
+    m_storage->query( QStringLiteral( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (1, -1, '%1', 'uid://1', 1);" ).arg( setupFileInTempDir( QStringLiteral("ab/IDoNotExist.mp3") ) ) );
+    m_storage->query( QStringLiteral( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (2, -1, '%1', 'uid://2', 2);" ).arg( setupFileInTempDir( QStringLiteral("b/IDoNotExistAsWell.mp3")) ) );
+    m_storage->query( QStringLiteral( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (3, -1, '%1', 'uid:/3', 3);" ).arg( setupFileInTempDir( QStringLiteral("c/MeNeither.mp3") ) ) );
 
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(1,1,'track1','comment1',1,1,1,1,1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(2,2,'track2','comment2',1,2,1,1,1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
-                      "VALUES(3,3,'track3','comment3',2,3,1,1,1);" );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(1,1,'track1','comment1',1,1,1,1,1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(2,2,'track2','comment2',1,2,1,1,1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(3,3,'track3','comment3',2,3,1,1,1);") );
 
     m_collection->registry()->emptyCache();
 }
@@ -182,16 +182,16 @@ void
 TestSqlCollectionLocation::cleanup()
 {
     delete Amarok::Components::setCollectionLocationDelegate( nullptr );
-    m_storage->query( "TRUNCATE TABLE years;" );
-    m_storage->query( "TRUNCATE TABLE genres;" );
-    m_storage->query( "TRUNCATE TABLE composers;" );
-    m_storage->query( "TRUNCATE TABLE albums;" );
-    m_storage->query( "TRUNCATE TABLE artists;" );
-    m_storage->query( "TRUNCATE TABLE tracks;" );
-    m_storage->query( "TRUNCATE TABLE urls;" );
-    m_storage->query( "TRUNCATE TABLE labels;" );
-    m_storage->query( "TRUNCATE TABLE urls_labels;" );
-    m_storage->query( "TRUNCATE TABLE directories;" );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE years;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE genres;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE composers;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE albums;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE artists;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE tracks;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE urls;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE labels;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE urls_labels;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE directories;") );
 }
 
 void
@@ -206,11 +206,11 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
     }
 
     {
-        Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( "uid://1" );
+        Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( QStringLiteral("uid://1") );
         QVERIFY( track );
-        QVERIFY( track->playableUrl().path().endsWith( "ab/IDoNotExist.mp3" ) );
+        QVERIFY( track->playableUrl().path().endsWith( QStringLiteral("ab/IDoNotExist.mp3") ) );
 
-        track->addLabel( "test" );
+        track->addLabel( QStringLiteral("test") );
 
         QCOMPARE( track->labels().count(), 1 );
 
@@ -222,7 +222,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
             MyOrganizeCollectionDelegate *delegate = new MyOrganizeCollectionDelegate();
             delegate->overwrite = true;
             delegate->migrate = true;
-            delegate->dests.insert( track, s_tmpDir->path() + "b/IDoNotExist.mp3" );
+            delegate->dests.insert( track, s_tmpDir->path() + QStringLiteral("b/IDoNotExist.mp3") );
             dest->setOrganizeCollectionDelegateFactory( new MyOrganizeCollectionDelegateFactory( delegate ) );
         }
 
@@ -231,7 +231,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
         spy.wait( 1000 );
 
         QCOMPARE( track->labels().count(), 1 );
-        QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
+        QVERIFY( track->playableUrl().path().endsWith( QStringLiteral("b/IDoNotExist.mp3") ) );
     }
 
     //force a reload from the database
@@ -241,7 +241,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
         // Meta::TrackPtr track = m_collection->registry()->getTrack( m_tmpDir->path() + "/b/IDoNotExist.mp3" );
         Meta::TrackPtr track = m_collection->registry()->getTrack(1);
         QVERIFY( track );
-        QVERIFY( track->playableUrl().path().endsWith( "b/IDoNotExist.mp3" ) );
+        QVERIFY( track->playableUrl().path().endsWith( QStringLiteral("b/IDoNotExist.mp3") ) );
         // TODO: check that the db urls entry really specifies the exiting directories entry
         QCOMPARE( track->labels().count(), 1 );
     }
@@ -262,21 +262,21 @@ TestSqlCollectionLocation::testCopyTrackToDirectoryWithExistingTracks()
 QString
 TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
 {
-    QString absoluteName = s_tmpDir->path() + '/' + relativeName;
+    QString absoluteName = s_tmpDir->path() + QLatin1Char('/') + relativeName;
 
     //TODO: unix specific
     //create directory where necessary
-    int index = absoluteName.lastIndexOf( '/' );
+    int index = absoluteName.lastIndexOf( QLatin1Char('/') );
     if(index > 0 )
     {
         QString dir = absoluteName.left( index );
-        QProcess::execute( "mkdir", QStringList() << "-p" << dir );
+        QProcess::execute( QStringLiteral("mkdir"), QStringList() << QStringLiteral("-p") << dir );
     }
     else
     {
         qDebug() << "huh? index was " << index << " relative name was " << relativeName << " tmpDir " << s_tmpDir->path();
     }
 
-    QProcess::execute( "touch", QStringList() << absoluteName );
-    return '.' + absoluteName;
+    QProcess::execute( QStringLiteral("touch"), QStringList() << absoluteName );
+    return QLatin1Char('.') + absoluteName;
 }

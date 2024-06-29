@@ -173,7 +173,7 @@ namespace Collections
     QIcon
     PlaydarCollection::icon() const
     {
-        return QIcon::fromTheme( "network-server" );
+        return QIcon::fromTheme( QStringLiteral("network-server") );
     }
 
     bool
@@ -199,9 +199,9 @@ namespace Collections
 
         QUrlQuery query( url );
         if( url.scheme() == uidUrlProtocol() &&
-            query.hasQueryItem( QString( "artist" ) ) &&
-            query.hasQueryItem( QString( "album" ) ) &&
-            query.hasQueryItem( QString( "title" ) ) )
+            query.hasQueryItem( QStringLiteral( "artist" ) ) &&
+            query.hasQueryItem( QStringLiteral( "album" ) ) &&
+            query.hasQueryItem( QStringLiteral( "title" ) ) )
             return true;
         else
             return false;
@@ -224,9 +224,9 @@ namespace Collections
         {
             m_memoryCollection->releaseLock();
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
-            proxyTrack->setArtist( QUrlQuery(url).queryItemValue( "artist" ) );
-            proxyTrack->setAlbum( QUrlQuery(url).queryItemValue( "album" ) );
-            proxyTrack->setTitle( QUrlQuery(url).queryItemValue( "title" ) );
+            proxyTrack->setArtist( QUrlQuery(url).queryItemValue( QStringLiteral("artist") ) );
+            proxyTrack->setAlbum( QUrlQuery(url).queryItemValue( QStringLiteral("album") ) );
+            proxyTrack->setTitle( QUrlQuery(url).queryItemValue( QStringLiteral("title") ) );
             Playdar::ProxyResolver *proxyResolver = new Playdar::ProxyResolver( this, url, proxyTrack );
 
             connect( proxyResolver, &Playdar::ProxyResolver::playdarError,

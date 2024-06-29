@@ -123,9 +123,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
     m_search->completionObject()->setItems( completionNames );
     m_search->insertItem( 0, KStandardGuiItem::find().icon(), QString() );
     m_search->insertSeparator( 1 );
-    m_search->insertItem( 2, QIcon::fromTheme("filename-album-amarok"), m_album->name() );
+    m_search->insertItem( 2, QIcon::fromTheme(QStringLiteral("filename-album-amarok")), m_album->name() );
     if( m_album->hasAlbumArtist() )
-        m_search->insertItem( 3, QIcon::fromTheme("filename-artist-amarok"), m_album->albumArtist()->name() );
+        m_search->insertItem( 3, QIcon::fromTheme(QStringLiteral("filename-artist-amarok")), m_album->albumArtist()->name() );
 
     auto findItem = KStandardGuiItem::find();
     m_searchButton = new QPushButton( findItem.icon(), findItem.text(), searchBox );
@@ -215,9 +215,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
     m_isSorted = m_sortEnabled;
     KWindowConfig::restoreWindowSize( windowHandle(), config ); // call this after setMainWidget()
 
-    if( source == "LastFm" )
+    if( source == QStringLiteral("LastFm") )
         lastFmAct->setChecked( true );
-    else if( source == "Discogs" )
+    else if( source == QStringLiteral("Discogs") )
         discogsAct->setChecked( true );
     else
         googleAct->setChecked( true );
@@ -248,7 +248,7 @@ CoverFoundDialog::~CoverFoundDialog()
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
 {
-    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     config.writeEntry( "geometry", saveGeometry() );
     event->accept();
 }
@@ -409,12 +409,12 @@ void CoverFoundDialog::saveAs()
     dlg.setAcceptMode( QFileDialog::AcceptSave );
 
     QUrl selectedUrl;
-    selectedUrl.setPath( "cover.jpg" );
+    selectedUrl.setPath( QStringLiteral("cover.jpg") );
     dlg.selectUrl( selectedUrl );
 
     QStringList supportedMimeTypes;
-    supportedMimeTypes << "image/jpeg";
-    supportedMimeTypes << "image/png";
+    supportedMimeTypes << QStringLiteral("image/jpeg");
+    supportedMimeTypes << QStringLiteral("image/png");
     dlg.setMimeTypeFilters( supportedMimeTypes );
 
     QUrl saveUrl;
@@ -441,9 +441,9 @@ void CoverFoundDialog::saveAs()
     QMimeDatabase db;
     const QString &ext = db.suffixForFileName( saveUrl.path() ).toLower();
     bool ok;
-    if( ext == "jpg" || ext == "jpeg" )
+    if( ext == QStringLiteral("jpg") || ext == QStringLiteral("jpeg") )
         ok = image.save( &saveFile, "JPG" );
-    else if( ext == "png" )
+    else if( ext == QStringLiteral("png") )
         ok = image.save( &saveFile, "PNG" );
     else
         ok = image.save( &saveFile );
@@ -614,7 +614,7 @@ void CoverFoundDialog::processQuery( const QString &input )
 
 void CoverFoundDialog::selectDiscogs()
 {
-    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     config.writeEntry( "Interactive Image Source", "Discogs" );
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
@@ -624,7 +624,7 @@ void CoverFoundDialog::selectDiscogs()
 
 void CoverFoundDialog::selectLastFm()
 {
-    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     config.writeEntry( "Interactive Image Source", "LastFm" );
     m_sortAction->setEnabled( false );
     m_queryPage = 0;
@@ -634,7 +634,7 @@ void CoverFoundDialog::selectLastFm()
 
 void CoverFoundDialog::selectGoogle()
 {
-    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     config.writeEntry( "Interactive Image Source", "Google" );
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
@@ -649,7 +649,7 @@ void CoverFoundDialog::setQueryPage( int page )
 
 void CoverFoundDialog::sortingTriggered( bool checked )
 {
-    KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     config.writeEntry( "Sort by Size", checked );
     m_sortEnabled = checked;
     m_isSorted = false;
@@ -841,11 +841,11 @@ void CoverFoundSideBar::updateMetaTable()
     QString refUrl;
 
     const QString source = m_metadata.value( "source" );
-    if( source == "Last.fm" || source == "Discogs" )
+    if( source == QStringLiteral("Last.fm") || source == QStringLiteral("Discogs") )
     {
         refUrl = m_metadata.value( "releaseurl" );
     }
-    else if( source == "Google" )
+    else if( source == QStringLiteral("Google") )
     {
         refUrl = m_metadata.value( "imgrefurl" );
     }
@@ -857,7 +857,7 @@ void CoverFoundSideBar::updateMetaTable()
         const QString &toolUrl = refUrl;
         const QString &tooltip = qfm.elidedText( toolUrl, Qt::ElideMiddle, 350 );
         const QString &decoded = QUrl::fromPercentEncoding( refUrl.toLocal8Bit() );
-        const QString &url     = QString( "<a href=\"%1\">%2</a>" )
+        const QString &url     = QStringLiteral( "<a href=\"%1\">%2</a>" )
                                     .arg( decoded,
                                           i18nc("@item::intable URL", "link") );
 
@@ -865,7 +865,7 @@ void CoverFoundSideBar::updateMetaTable()
         label->setOpenExternalLinks( true );
         label->setTextInteractionFlags( Qt::TextBrowserInteraction );
         label->setToolTip( tooltip );
-        layout->addRow( QString( "<b>%1:</b>" ).arg( i18nc("@item::intable", "URL") ), label );
+        layout->addRow( QStringLiteral( "<b>%1:</b>" ).arg( i18nc("@item::intable", "URL") ), label );
     }
 }
 
@@ -929,7 +929,7 @@ void CoverFoundItem::setCaption()
     const QString &width = m_metadata.value( QLatin1String("width") );
     const QString &height = m_metadata.value( QLatin1String("height") );
     if( !width.isEmpty() && !height.isEmpty() )
-        captions << QString( "%1 x %2" ).arg( width, height );
+        captions << QStringLiteral( "%1 x %2" ).arg( width, height );
 
     int size = m_metadata.value( QLatin1String("size") ).toInt();
     if( size )

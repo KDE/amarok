@@ -99,10 +99,10 @@ CoverCache::getCover( const Meta::AlbumPtr &album, int size ) const
     // might be no cover, since there doesn't seem to be hasCover for album any more
     if( image.isNull() )
     {
-        const QDir &cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+        const QDir &cacheCoverDir = QDir( Amarok::saveLocation( QStringLiteral("albumcovers/cache/") ) );
         if( size <= 1 )
             size = 500;
-        const QString &noCoverKey = QString::number( size ) + "@nocover.png";
+        const QString &noCoverKey = QString::number( size ) + QStringLiteral("@nocover.png");
 
         QPixmap pixmap;
         // look in the memory pixmap cache
@@ -115,7 +115,7 @@ CoverCache::getCover( const Meta::AlbumPtr &album, int size ) const
         }
         else
         {
-            const QPixmap orgPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/nocover.png" ) );
+            const QPixmap orgPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/nocover.png") ) );
             pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
             std::thread thread( QOverload<const QString&, const char*, int>::of( &QPixmap::save ), pixmap, cacheCoverDir.filePath( noCoverKey ), "PNG", -1 );
             thread.detach();

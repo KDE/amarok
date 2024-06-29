@@ -36,8 +36,8 @@ void HorizontalDivider::paintEvent( QPaintEvent * event )
 
     QPainter p( this );
     
-    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "divider_bottom", rect().width(),  1, "divider_bottom" ) );
-    p.drawPixmap( 0, 1, The::svgHandler()->renderSvg( "divider_top", rect().width(), 1, "divider_top" ) );
+    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( QStringLiteral("divider_bottom"), rect().width(), 1, QStringLiteral("divider_bottom") ) );
+    p.drawPixmap( 0, 1, The::svgHandler()->renderSvg( QStringLiteral("divider_top"), rect().width(), 1, QStringLiteral("divider_top") ) );
 }
 
 

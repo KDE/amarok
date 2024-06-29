@@ -33,33 +33,33 @@ TestPlaylistFileSupport::TestPlaylistFileSupport()
 
 void TestPlaylistFileSupport::initTestCase()
 {
-    const QDir dir( QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists" ) );
+    const QDir dir( QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QStringLiteral("/data/playlists") ) );
     QVERIFY( dir.exists() );
     m_testPlaylistPath = dir.absolutePath();
 }
 
 void TestPlaylistFileSupport::testGetFormat()
 {
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "test.asx") ), Playlists::ASX );
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "test.m3u") ), Playlists::M3U );
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "test.pls") ), Playlists::PLS );
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "test.ram") ), Playlists::RAM );
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "test.smil") ), Playlists::SMIL );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.asx")) ), Playlists::ASX );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.m3u")) ), Playlists::M3U );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.pls")) ), Playlists::PLS );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.ram")) ), Playlists::RAM );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.smil")) ), Playlists::SMIL );
     // TODO: Playlists::XML <- what kind of playlist format is that? example?
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "test.xspf") ), Playlists::XSPF );
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "no-playlist.png") ), Playlists::Unknown );
-    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + "no-playlist.png") ), Playlists::NotPlaylist );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.xspf")) ), Playlists::XSPF );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("no-playlist.png")) ), Playlists::Unknown );
+    QCOMPARE( Playlists::getFormat( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("no-playlist.png")) ), Playlists::NotPlaylist );
 }
 
 void TestPlaylistFileSupport::testIsPlaylist()
 {
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "test.asx") ), true );
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "test.m3u") ), true );
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "test.pls") ), true );
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "test.ram") ), true );
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "test.smil") ), true );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.asx")) ), true );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.m3u")) ), true );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.pls")) ), true );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.ram")) ), true );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.smil")) ), true );
     // TODO: Playlists::XML <- what kind of playlist format is that? example?
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "test.xspf") ), true );
-    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + "no-playlist.png") ), false );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("test.xspf")) ), true );
+    QCOMPARE( Playlists::isPlaylist( QUrl::fromLocalFile(m_testPlaylistPath + QStringLiteral("no-playlist.png")) ), false );
 }
 

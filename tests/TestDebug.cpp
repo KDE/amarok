@@ -47,6 +47,8 @@ private:
     void expectMessage( const QString &message, bool debugEnabled );
     void expectBeginEnd( BeginOrEnd type, const QString &message, bool debugEnabled,
                          bool colorEnabled );
+    void expectBeginEnd( BeginOrEnd type, const char *message, bool debugEnabled,
+                         bool colorEnabled );
     QString colorize( const QString &string, int colorIndex, bool colorEnabled );
 
     static QString m_indent;
@@ -119,6 +121,13 @@ TestDebug::expectMessage( const QString &message, bool debugEnabled )
         return;
     QString exp = QString( QStringLiteral("%1:%2 [%3] %4 ") ).arg( QStringLiteral("amarok"), m_indent, QStringLiteral(DEBUG_PREFIX), message );
     QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit().data() );
+}
+
+void
+TestDebug::expectBeginEnd( TestDebug::BeginOrEnd type, const char *message,
+                           bool debugEnabled, bool colorEnabled )
+{
+    expectBeginEnd(type, QLatin1String(message), debugEnabled, colorEnabled);
 }
 
 void

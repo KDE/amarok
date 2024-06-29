@@ -54,7 +54,7 @@ void
 TestDynamicModel::init()
 {
     KLocalizedString::setApplicationDomain("amarok-test");
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
     s_tmpDir = new QTemporaryDir();
     QVERIFY( s_tmpDir->isValid() );
@@ -75,8 +75,8 @@ TestDynamicModel::testData()
 
     // now we should have the four default playlists
     QModelIndex playlistIndex = model->index( 0, 0 );
-    QCOMPARE( model->data( playlistIndex ).toString(), QString("Random") );
-    QCOMPARE( model->data( playlistIndex, Qt::EditRole ).toString(), QString("Random") );
+    QCOMPARE( model->data( playlistIndex ).toString(), QStringLiteral("Random") );
+    QCOMPARE( model->data( playlistIndex, Qt::EditRole ).toString(), QStringLiteral("Random") );
     QVERIFY(  model->data( playlistIndex, Dynamic::DynamicModel::PlaylistRole ).isValid() );
     QVERIFY( !model->data( playlistIndex, Dynamic::DynamicModel::BiasRole ).isValid() );
 

@@ -170,7 +170,7 @@ using Debug::fatal;
 #define AMAROK_DEPRECATED warning() << "DEPRECATED:" << __PRETTY_FUNCTION__ << Qt::endl;
 
 /// Performance logging
-#define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
+#define PERF_LOG( msg ) { Debug::perfLog( QStringLiteral(msg), QLatin1String(__PRETTY_FUNCTION__) ); }
 
 class BlockPrivate;
 

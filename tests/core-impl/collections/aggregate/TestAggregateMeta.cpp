@@ -73,7 +73,7 @@ public:
 class MyAlbumMock : public MockAlbum
 {
 public:
-    MyAlbumMock() : MockAlbum( "testAlbum" ) {}
+    MyAlbumMock() : MockAlbum( QStringLiteral("testAlbum") ) {}
 
     bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
@@ -97,7 +97,7 @@ public:
 class MyArtistMock : public MockArtist
 {
 public:
-    MyArtistMock() : MockArtist( "testArtist" ) {}
+    MyArtistMock() : MockArtist( QStringLiteral("testArtist") ) {}
 
     bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
@@ -121,7 +121,7 @@ public:
 class MyGenreMock : public MockGenre
 {
 public:
-    MyGenreMock() : MockGenre( "testGenre" ) {}
+    MyGenreMock() : MockGenre( QStringLiteral("testGenre") ) {}
 
     bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
@@ -145,7 +145,7 @@ public:
 class MyComposerMock : public MockComposer
 {
 public:
-    MyComposerMock() : MockComposer( "testComposer" ) {}
+    MyComposerMock() : MockComposer( QStringLiteral("testComposer") ) {}
 
     bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
@@ -169,7 +169,7 @@ public:
 class MyYearMock : public MockYear
 {
 public:
-    MyYearMock() : MockYear( "testYear" ) {}
+    MyYearMock() : MockYear( QStringLiteral("testYear") ) {}
 
     bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
@@ -503,11 +503,11 @@ void
 TestAggregateMeta::testPrettyUrl()
 {
     Meta::MockTrack *mock = new ::testing::NiceMock<Meta::MockTrack>();
-    EXPECT_CALL( *mock, prettyUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "foo" ) );
+    EXPECT_CALL( *mock, prettyUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QStringLiteral("foo") ) );
 
     Meta::TrackPtr trackPtr( mock );
 
     Meta::AggregateTrack track( nullptr, trackPtr );
 
-    QCOMPARE( track.prettyUrl(), QString( "foo" ) );
+    QCOMPARE( track.prettyUrl(), QStringLiteral( "foo" ) );
 }

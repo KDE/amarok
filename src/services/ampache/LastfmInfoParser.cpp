@@ -35,7 +35,7 @@ void LastfmInfoParser::getInfo(const Meta::TrackPtr &track)
     query[ QStringLiteral("track")  ] = track->name();
     query[ QStringLiteral("album")  ] = track->album() ? track->album()->name() : QString();
     query[ QStringLiteral("artist") ] = track->artist() ? track->artist()->name() : QString();
-    query[ QStringLiteral("apikey") ] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("apikey") ] = QLatin1String( Amarok::lastfmApiKey() );
 
     m_jobs[ QStringLiteral("getTrackInfo") ] = lastfm::ws::post( query );
 
@@ -57,9 +57,9 @@ void LastfmInfoParser::onGetTrackInfo()
         {
             lastfm::XmlQuery lfm;
             lfm.parse( m_jobs[ QStringLiteral("getTrackInfo") ]->readAll() );
-            lastfm::XmlQuery wiki = lfm["track"]["wiki"];
-            const QString contentText = wiki["content"].text();
-            const QString publishedDate = wiki["published"].text();
+            lastfm::XmlQuery wiki = lfm[QStringLiteral("track")][QStringLiteral("wiki")];
+            const QString contentText = wiki[QStringLiteral("content")].text();
+            const QString publishedDate = wiki[QStringLiteral("published")].text();
 
             QString html;
             if( !contentText.isEmpty() )
@@ -72,8 +72,8 @@ void LastfmInfoParser::onGetTrackInfo()
         default:
             break;
     }
-    m_jobs["getTrackInfo"]->deleteLater();
-    m_jobs["getTrackInfo"] = nullptr;
+    m_jobs[QStringLiteral("getTrackInfo")]->deleteLater();
+    m_jobs[QStringLiteral("getTrackInfo")] = nullptr;
 }
 
 void LastfmInfoParser::getInfo(const Meta::AlbumPtr &album)
@@ -83,7 +83,7 @@ void LastfmInfoParser::getInfo(const Meta::AlbumPtr &album)
     query[ QStringLiteral("method") ] = QStringLiteral("album.getInfo");
     query[ QStringLiteral("album")  ] = album->name();
     query[ QStringLiteral("artist") ] = album->albumArtist() ? album->albumArtist()->name() : QString();
-    query[ QStringLiteral("apikey") ] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("apikey") ] = QLatin1String( Amarok::lastfmApiKey() );
 
     m_jobs[ QStringLiteral("getAlbumInfo") ] = lastfm::ws::post( query );
 
@@ -124,8 +124,8 @@ void LastfmInfoParser::onGetAlbumInfo()
         default:
             break;
     }
-    m_jobs["getAlbumInfo"]->deleteLater();
-    m_jobs["getAlbumInfo"] = nullptr;
+    m_jobs[QStringLiteral("getAlbumInfo")]->deleteLater();
+    m_jobs[QStringLiteral("getAlbumInfo")] = nullptr;
 }
 
 
@@ -135,7 +135,7 @@ void LastfmInfoParser::getInfo(const Meta::ArtistPtr &artist)
     query[ QStringLiteral("method") ] = QStringLiteral("artist.getInfo");
     query[ QStringLiteral("artist") ] = artist->name();
     debug() << "api key is: " << Amarok::lastfmApiKey();
-    query[ QStringLiteral("apikey") ] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("apikey") ] = QLatin1String( Amarok::lastfmApiKey() );
 
     m_jobs[ QStringLiteral("getArtistInfo") ] = lastfm::ws::post( query );
 

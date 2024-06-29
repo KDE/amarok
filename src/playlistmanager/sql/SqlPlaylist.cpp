@@ -252,8 +252,8 @@ SqlPlaylist::removeTrack( int position )
 void
 SqlPlaylist::loadTracks()
 {
-    QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM "
-                    "playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
+    QString query = QStringLiteral("SELECT playlist_id, track_num, url, title, album, artist, length FROM "
+                                   "playlist_tracks WHERE playlist_id=%1 ORDER BY track_num");
     query = query.arg( QString::number( m_dbId ) );
 
     QStringList result = StorageManager::instance()->sqlStorage()->query( query );

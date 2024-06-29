@@ -43,10 +43,10 @@ SlimToolbar::SlimToolbar( QWidget * parent )
     layout()->setSpacing( 0 );
     setContentsMargins( 0, 0, 0, 0 );
 
-    addAction( Amarok::actionCollection()->action( "prev" ) );
-    addAction( Amarok::actionCollection()->action( "play_pause" ) );
-    addAction( Amarok::actionCollection()->action( "stop" ) );
-    addAction( Amarok::actionCollection()->action( "next" ) );
+    addAction( Amarok::actionCollection()->action( QStringLiteral("prev") ) );
+    addAction( Amarok::actionCollection()->action( QStringLiteral("play_pause") ) );
+    addAction( Amarok::actionCollection()->action( QStringLiteral("stop") ) );
+    addAction( Amarok::actionCollection()->action( QStringLiteral("next") ) );
 
     m_currentTrackToolbar = new CurrentTrackToolbar( nullptr );
 

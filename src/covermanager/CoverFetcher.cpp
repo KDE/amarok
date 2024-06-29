@@ -426,7 +426,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr &unit,
             Amarok::Logger::shortMessage( text );
             QString debugMessage;
             if( !message.isEmpty() )
-                debugMessage = '[' + message + ']';
+                debugMessage = QLatin1Char('[') + message + QLatin1Char(']');
             debug() << "Finished with errors for album" << albumName << debugMessage;
         }
         m_errors += message;

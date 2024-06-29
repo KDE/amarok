@@ -57,8 +57,8 @@ namespace The {
 
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
-    , m_cache( new KImageCache( "Amarok-pixmaps", 20 * 1024 ) )
-    , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
+    , m_cache( new KImageCache( QStringLiteral("Amarok-pixmaps"), 20 * 1024 ) )
+    , m_themeFile( QStringLiteral("amarok/images/default-theme-clean.svg") )  // //use default theme
     , m_customTheme( false )
 {
     DEBUG_BLOCK
@@ -183,7 +183,7 @@ QPixmap SvgHandler::renderSvg( const QUrl& url, const QString& keyname, int widt
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
 
-        QString name = url.isLocalFile() ? url.toLocalFile() : ":" + url.path();
+        QString name = url.isLocalFile() ? url.toLocalFile() : QStringLiteral(":") + url.path();
         QReadLocker readLocker( &m_lock );
         if( ! m_renderers[name] )
         {
@@ -252,8 +252,8 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
         //add dividers. 5% spacing on each side
         int margin = width / 20;
 
-        m_renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
-        m_renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
+        m_renderers[name]->render( &pt, QStringLiteral("divider_top"), QRectF( margin, 0 , width - 1 * margin, 1 ) );
+        m_renderers[name]->render( &pt, QStringLiteral("divider_bottom"), QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
     
         m_cache->insertPixmap( key, pixmap );
     }
@@ -342,14 +342,14 @@ QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidt
 
         pt.drawPixmap( borderWidth, borderWidth, orgPixmap.width(), orgPixmap.height(), orgPixmap );
 
-        m_renderers[m_themeFile]->render( &pt, "cover_border_topleft", QRectF( 0, 0, borderWidth, borderWidth ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_top", QRectF( borderWidth, 0, orgPixmap.width(), borderWidth ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_topright", QRectF( newWidth - borderWidth , 0, borderWidth, borderWidth ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_right", QRectF( newWidth - borderWidth, borderWidth, borderWidth, orgPixmap.height() ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_bottomright", QRectF( newWidth - borderWidth, newHeight - borderWidth, borderWidth, borderWidth ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_bottom", QRectF( borderWidth, newHeight - borderWidth, orgPixmap.width(), borderWidth ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_bottomleft", QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
-        m_renderers[m_themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_topleft"), QRectF( 0, 0, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_top"), QRectF( borderWidth, 0, orgPixmap.width(), borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_topright"), QRectF( newWidth - borderWidth , 0, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_right"), QRectF( newWidth - borderWidth, borderWidth, borderWidth, orgPixmap.height() ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_bottomright"), QRectF( newWidth - borderWidth, newHeight - borderWidth, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_bottom"), QRectF( borderWidth, newHeight - borderWidth, orgPixmap.width(), borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_bottomleft"), QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, QStringLiteral("cover_border_left"), QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
     
         if( !skipCache )
             m_cache->insertPixmap( key, pixmap );
@@ -391,13 +391,13 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
             if( The::moodbarManager()->hasMoodbar( currentTrack ) )
             {
                 QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, slider->rect.width() - sliderHeight, sliderHeight, inverse );
-                p->drawPixmap( pt, renderSvg( "moodbar_end_left", sliderHeight / 2, sliderHeight, "moodbar_end_left" ) );
+                p->drawPixmap( pt, renderSvg( QStringLiteral("moodbar_end_left"), sliderHeight / 2, sliderHeight, QStringLiteral("moodbar_end_left") ) );
 
                 pt.rx() += sliderHeight / 2;
                 p->drawPixmap( pt, moodbar );
 
                 pt.rx() += slider->rect.width() - sliderHeight;
-                p->drawPixmap( pt, renderSvg( "moodbar_end_right", sliderHeight / 2, sliderHeight, "moodbar_end_right" ) );
+                p->drawPixmap( pt, renderSvg( QStringLiteral("moodbar_end_right"), sliderHeight / 2, sliderHeight, QStringLiteral("moodbar_end_right") ) );
 
                 moodbarPainted = true;
             }
@@ -408,14 +408,14 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
     {
         // Draw the slider background in 3 parts
 
-        p->drawPixmap( pt, renderSvg( "progress_slider_left", sliderHeight, sliderHeight, "progress_slider_left" ) );
+        p->drawPixmap( pt, renderSvg( QStringLiteral("progress_slider_left"), sliderHeight, sliderHeight, QStringLiteral("progress_slider_left") ) );
 
         pt.rx() += sliderHeight;
         QRect midRect(pt, QSize(slider->rect.width() - sliderHeight * 2, sliderHeight) );
-        p->drawTiledPixmap( midRect, renderSvg( "progress_slider_mid", 32, sliderHeight, "progress_slider_mid" ) );
+        p->drawTiledPixmap( midRect, renderSvg( QStringLiteral("progress_slider_mid"), 32, sliderHeight, QStringLiteral("progress_slider_mid") ) );
 
         pt = midRect.topRight() + QPoint( 1, 0 );
-        p->drawPixmap( pt, renderSvg( "progress_slider_right", sliderHeight, sliderHeight, "progress_slider_right" ) );
+        p->drawPixmap( pt, renderSvg( QStringLiteral("progress_slider_right"), sliderHeight, sliderHeight, QStringLiteral("progress_slider_right") ) );
 
         //draw the played background.
 
@@ -431,7 +431,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
             {
                 tl = knob.topRight() + QPoint( -5, 5 ); // 5px x padding to avoid a "gap" between it and the top and bottom of the round knob.
                 br = slider->rect.topRight() + QPoint( -3, 5 + playedBarHeight - 1 );
-                QPixmap rightEnd = renderSvg( "progress_slider_played_right", playedBarHeight, playedBarHeight, "progress_slider_played_right" );
+                QPixmap rightEnd = renderSvg( QStringLiteral("progress_slider_played_right"), playedBarHeight, playedBarHeight, QStringLiteral("progress_slider_played_right") );
                 p->drawPixmap( br.x() - rightEnd.width() + 1, tl.y(), rightEnd, qMax(0, rightEnd.width() - (sizeOfLeftPlayed + 3)), 0, sizeOfLeftPlayed + 3, playedBarHeight );
                 br.rx() -= playedBarHeight;
             }
@@ -439,20 +439,20 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
             {
                 tl = slider->rect.topLeft() + QPoint( 3, 5 );
                 br = QPoint( knob.x() + 5, tl.y() + playedBarHeight - 1 );
-                QPixmap leftEnd = renderSvg( "progress_slider_played_left", playedBarHeight, playedBarHeight, "progress_slider_played_left" );
+                QPixmap leftEnd = renderSvg( QStringLiteral("progress_slider_played_left"), playedBarHeight, playedBarHeight, QStringLiteral("progress_slider_played_left") );
                 p->drawPixmap( tl.x(), tl.y(), leftEnd, 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
                 tl.rx() += playedBarHeight;
             }
             if ( sizeOfLeftPlayed == playedBarHeight )
-                p->drawTiledPixmap( QRect(tl, br), renderSvg( "progress_slider_played_mid", 32, playedBarHeight, "progress_slider_played_mid" ) );
+                p->drawTiledPixmap( QRect(tl, br), renderSvg( QStringLiteral("progress_slider_played_mid"), 32, playedBarHeight, QStringLiteral("progress_slider_played_mid") ) );
 
         }
     }
 
     if ( slider->state & QStyle::State_Enabled )
     {   // Draw the knob (handle)
-        const char *string = ( slider->activeSubControls & QStyle::SC_SliderHandle ) ?
-                             "slider_knob_200911_active" : "slider_knob_200911";
+        QString string = ( slider->activeSubControls & QStyle::SC_SliderHandle ) ?
+                             QStringLiteral("slider_knob_200911_active") : QStringLiteral("slider_knob_200911");
         p->drawPixmap( knob.topLeft(), renderSvg( string, knob.width(), knob.height(), string ) );
     }
 }

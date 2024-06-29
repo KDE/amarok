@@ -47,7 +47,7 @@ QueryMakerPrototype::addFilter( const QString &filter )
     if( !m_querymaker )
         return;
     Collections::addTextualFilter( m_querymaker.data(), filter );
-    m_filter += filter + ' ';
+    m_filter += filter + QLatin1Char(' ');
 }
 
 void

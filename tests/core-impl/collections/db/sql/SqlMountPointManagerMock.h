@@ -74,14 +74,14 @@ public:
             //replicate MountPointManager behaviour, which uses QDir::relativeFilePath, which strips trailing separator
             if (absolutePath.length() > 1 && absolutePath.endsWith(QLatin1Char('/')))
                 return absolutePath.chopped( 1 );
-            return '.' + absolutePath;
+            return QLatin1Char('.') + absolutePath;
         }
         else
         {
             QString mp = m_mountPoints.value( deviceId );
             if (absolutePath.length() > 1 && absolutePath.endsWith(QLatin1Char('/')))
-                return '.' + absolutePath.right( mp.length() ).chopped( 1 );
-            return '.' + absolutePath.right( mp.length() );
+                return QLatin1Char('.') + absolutePath.right( mp.length() ).chopped( 1 );
+            return QLatin1Char('.') + absolutePath.right( mp.length() );
         }
     }
 

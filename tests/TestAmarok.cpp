@@ -38,63 +38,63 @@ TestAmarok::TestAmarok()
 QString
 TestAmarok::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestAmarok::testAsciiPath()
 {
-    QCOMPARE( Amarok::asciiPath( "" ), QString( "" ) );
-    QCOMPARE( Amarok::asciiPath( "/home/sven" ), QString( "/home/sven" ) );
+    QCOMPARE( Amarok::asciiPath( QStringLiteral("") ), QStringLiteral( "" ) );
+    QCOMPARE( Amarok::asciiPath( QStringLiteral("/home/sven") ), QStringLiteral( "/home/sven" ) );
 
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöü" ) ), QString( "/___" ) );
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöütest" ) ), QString( "/___test" ) );
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöü/test" ) ), QString( "/___/test" ) );
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/123/" ) ), QString( "/123/" ) );
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/.hidden" ) ), QString( "/.hidden" ) );
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/here be dragons" ) ), QString( "/here be dragons" ) );
-    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/!important/some%20stuff/what's this?" ) ), QString( "/!important/some%20stuff/what's this?" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöü" ) ), QStringLiteral( "/___" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöütest" ) ), QStringLiteral( "/___test" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöü/test" ) ), QStringLiteral( "/___/test" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/123/" ) ), QStringLiteral( "/123/" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/.hidden" ) ), QStringLiteral( "/.hidden" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/here be dragons" ) ), QStringLiteral( "/here be dragons" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/!important/some%20stuff/what's this?" ) ), QStringLiteral( "/!important/some%20stuff/what's this?" ) );
 
     /* 0x7F = 127 = DEL control character, explicitly ok on *nix file systems */
-    QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x7F ) + ".1" ), QString( QString( "/abc" ) + QChar( 0x7F ) + ".1" ) );
+    QCOMPARE( Amarok::asciiPath( QStringLiteral( "/abc" ) + QChar( 0x7F ) + QStringLiteral(".1") ), QString( QStringLiteral( "/abc" ) + QChar( 0x7F ) + QStringLiteral(".1") ) );
 
     /* random control character: ok */
-    QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x07 ) + ".1" ), QString( QString( "/abc" ) + QChar( 0x07 ) + ".1" ) );
+    QCOMPARE( Amarok::asciiPath( QStringLiteral( "/abc" ) + QChar( 0x07 ) + QStringLiteral(".1") ), QString( QStringLiteral( "/abc" ) + QChar( 0x07 ) + QStringLiteral(".1") ) );
 
     /* null byte is not ok */
-    QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x00 ) + ".1" ), QString( "/abc_.1" ) );
+    QCOMPARE( Amarok::asciiPath( QStringLiteral( "/abc" ) + QChar( 0x00 ) + QStringLiteral(".1") ), QStringLiteral( "/abc_.1" ) );
 }
 
 void TestAmarok::testCleanPath()
 {
     /* no changes expected here */
-    QCOMPARE( Amarok::cleanPath( QString( "" ) ), QString( "" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "abcdefghijklmnopqrstuvwxyz" ) ), QString( "abcdefghijklmnopqrstuvwxyz" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) ), QString( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "/\\.,-+" ) ), QString( "/\\.,-+" ) );
+    QCOMPARE( Amarok::cleanPath( QStringLiteral( "" ) ), QStringLiteral( "" ) );
+    QCOMPARE( Amarok::cleanPath( QStringLiteral( "abcdefghijklmnopqrstuvwxyz" ) ), QStringLiteral( "abcdefghijklmnopqrstuvwxyz" ) );
+    QCOMPARE( Amarok::cleanPath( QStringLiteral( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) ), QStringLiteral( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QStringLiteral( "/\\.,-+" ) ), QStringLiteral( "/\\.,-+" ) );
 
     /* German */
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "äöüß" ) ), QString( "aeoeuess" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÄÖÜß" ) ), QString( "AeOeUess" ) ); // capital ß only exists in theory in the German language, but had been defined some time ago, iirc
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "äöüß" ) ), QStringLiteral( "aeoeuess" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÄÖÜß" ) ), QStringLiteral( "AeOeUess" ) ); // capital ß only exists in theory in the German language, but had been defined some time ago, iirc
 
     /* French */
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "áàéèêô" ) ), QString( "aaeeeo" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÁÀÉÈÊÔ" ) ), QString( "AAEEEO" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "æ" ) ), QString( "ae" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "Æ" ) ), QString( "AE" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "áàéèêô" ) ), QStringLiteral( "aaeeeo" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÁÀÉÈÊÔ" ) ), QStringLiteral( "AAEEEO" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "æ" ) ), QStringLiteral( "ae" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "Æ" ) ), QStringLiteral( "AE" ) );
 
     /* Czech and other east European languages */
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "çńǹýỳź" ) ), QString( "cnnyyz" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÇŃǸÝỲŹ" ) ), QString( "CNNYYZ" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ěĺľôŕřůž" ) ), QString( "ellorruz" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ" ) ), QString( "ACDEEINORSTUUYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "çńǹýỳź" ) ), QStringLiteral( "cnnyyz" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÇŃǸÝỲŹ" ) ), QStringLiteral( "CNNYYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ěĺľôŕřůž" ) ), QStringLiteral( "ellorruz" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ" ) ), QStringLiteral( "ACDEEINORSTUUYZ" ) );
 
     /* Skandinavian languages */
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "åø" ) ), QString( "aoe" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÅØ" ) ), QString( "AOE" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "åø" ) ), QStringLiteral( "aoe" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÅØ" ) ), QStringLiteral( "AOE" ) );
 
     /* Spanish */
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ñóÿ" ) ), QString( "noy" ) );
-    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÑÓŸ" ) ), QString( "NOY" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ñóÿ" ) ), QStringLiteral( "noy" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÑÓŸ" ) ), QStringLiteral( "NOY" ) );
 
     /* add missing ones here */
 }
@@ -120,62 +120,62 @@ void TestAmarok::testConciseTimeSince()
 
 void TestAmarok::testExtension()
 {
-    QCOMPARE( Amarok::extension( "" ), QString( "" ) );
-    QCOMPARE( Amarok::extension( "..." ), QString( "" ) );
-    QCOMPARE( Amarok::extension( "test" ), QString( "" ) );
-    QCOMPARE( Amarok::extension( "test." ), QString( "" ) );
-    QCOMPARE( Amarok::extension( "test.mp3" ), QString( "mp3" ) );
-    QCOMPARE( Amarok::extension( "test.mP3" ), QString( "mp3" ) );
-    QCOMPARE( Amarok::extension( "test.MP3" ), QString( "mp3" ) );
-    QCOMPARE( Amarok::extension( "test.longextension" ), QString( "longextension" ) );
-    QCOMPARE( Amarok::extension( "test.long.extension" ), QString( "extension" ) );
-    QCOMPARE( Amarok::extension( "test.m" ), QString( "m" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("") ), QStringLiteral( "" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("...") ), QStringLiteral( "" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test") ), QStringLiteral( "" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.") ), QStringLiteral( "" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.mp3") ), QStringLiteral( "mp3" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.mP3") ), QStringLiteral( "mp3" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.MP3") ), QStringLiteral( "mp3" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.longextension") ), QStringLiteral( "longextension" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.long.extension") ), QStringLiteral( "extension" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("test.m") ), QStringLiteral( "m" ) );
     QCOMPARE( Amarok::extension( QString::fromUtf8( "test.äöü" ) ), QString::fromUtf8( "äöü" ) );
     QCOMPARE( Amarok::extension( QString::fromUtf8( "test.ÄÖÜ" ) ), QString::fromUtf8( "äöü" ) );
-    QCOMPARE( Amarok::extension( "..test.mp3" ), QString( "mp3" ) );
-    QCOMPARE( Amarok::extension( "..te st.mp3" ), QString( "mp3" ) );
-    QCOMPARE( Amarok::extension( "..te st.m p3" ), QString( "m p3" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("..test.mp3") ), QStringLiteral( "mp3" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("..te st.mp3") ), QStringLiteral( "mp3" ) );
+    QCOMPARE( Amarok::extension( QStringLiteral("..te st.m p3") ), QStringLiteral( "m p3" ) );
 }
 
 void TestAmarok::testManipulateThe()
 {
     QString teststring;
 
-    Amarok::manipulateThe( teststring = "", true );
-    QCOMPARE( teststring, QString( "" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral(""), true );
+    QCOMPARE( teststring, QStringLiteral( "" ) );
 
-    Amarok::manipulateThe( teststring = "", false );
-    QCOMPARE( teststring, QString( "" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral(""), false );
+    QCOMPARE( teststring, QStringLiteral( "" ) );
 
-    Amarok::manipulateThe( teststring = 'A', true );
-    QCOMPARE( teststring, QString( "A" ) );
+    Amarok::manipulateThe( teststring = QLatin1Char('A'), true );
+    QCOMPARE( teststring, QStringLiteral( "A" ) );
 
-    Amarok::manipulateThe( teststring = 'A', false );
-    QCOMPARE( teststring, QString( "A" ) );
+    Amarok::manipulateThe( teststring = QLatin1Char('A'), false );
+    QCOMPARE( teststring, QStringLiteral( "A" ) );
 
-    Amarok::manipulateThe( teststring = "ABC", true );
-    QCOMPARE( teststring, QString( "ABC" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("ABC"), true );
+    QCOMPARE( teststring, QStringLiteral( "ABC" ) );
 
-    Amarok::manipulateThe( teststring = "ABC", false );
-    QCOMPARE( teststring, QString( "ABC" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("ABC"), false );
+    QCOMPARE( teststring, QStringLiteral( "ABC" ) );
 
-    Amarok::manipulateThe( teststring = "The Eagles", true );
-    QCOMPARE( teststring, QString( "Eagles, The" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("The Eagles"), true );
+    QCOMPARE( teststring, QStringLiteral( "Eagles, The" ) );
 
-    Amarok::manipulateThe( teststring = "Eagles, The", false );
-    QCOMPARE( teststring, QString( "The Eagles" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("Eagles, The"), false );
+    QCOMPARE( teststring, QStringLiteral( "The Eagles" ) );
 
-    Amarok::manipulateThe( teststring = "The The", true );
-    QCOMPARE( teststring, QString( "The, The" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("The The"), true );
+    QCOMPARE( teststring, QStringLiteral( "The, The" ) );
 
-    Amarok::manipulateThe( teststring = "The, The", false );
-    QCOMPARE( teststring, QString( "The The" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("The, The"), false );
+    QCOMPARE( teststring, QStringLiteral( "The The" ) );
 
-    Amarok::manipulateThe( teststring = "Something else", true );
-    QCOMPARE( teststring, QString( "Something else" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("Something else"), true );
+    QCOMPARE( teststring, QStringLiteral( "Something else" ) );
 
-    Amarok::manipulateThe( teststring = "The Äöü", true );
-    QCOMPARE( teststring, QString( "Äöü, The" ) );
+    Amarok::manipulateThe( teststring = QStringLiteral("The Äöü"), true );
+    QCOMPARE( teststring, QStringLiteral( "Äöü, The" ) );
 
     Amarok::manipulateThe( teststring = QString::fromUtf8( "Äöü, The" ), false );
     QCOMPARE( teststring, QString::fromUtf8( "The Äöü" ) );
@@ -211,165 +211,165 @@ void TestAmarok::testVerboseTimeSince()
 
 void TestAmarok::testVfatPath()
 {
-    QCOMPARE( Amarok::vfatPath( "" ), QString( "" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("") ), QStringLiteral( "" ) );
 
     /* allowed characters */
-    QCOMPARE( Amarok::vfatPath( "abcdefghijklmnopqrstuvwxyz" ), QString( "abcdefghijklmnopqrstuvwxyz" ) );
-    QCOMPARE( Amarok::vfatPath( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ), QString( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
-    QCOMPARE( Amarok::vfatPath( "0123456789" ), QString( "0123456789" ) );
-    QCOMPARE( Amarok::vfatPath( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ), QString( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("abcdefghijklmnopqrstuvwxyz") ), QStringLiteral( "abcdefghijklmnopqrstuvwxyz" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("ABCDEFGHIJKLMNOPQRSTUVWXYZ") ), QStringLiteral( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("0123456789") ), QStringLiteral( "0123456789" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("! # $ % & ' ( ) - @ ^ _ ` { } ~") ), QStringLiteral( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ) );
 
     /* only allowed in long file names */
-    QCOMPARE( Amarok::vfatPath( "+,.;=[]" ), QString( "+,.;=()" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("+,.;=[]") ), QStringLiteral( "+,.;=()" ) );
 
     /* illegal characters, without / and \ (see later tests) */
-    QCOMPARE( Amarok::vfatPath( "\"_*_:_<_>_?_|" ), QString( "_____________" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\"_*_:_<_>_?_|") ), QStringLiteral( "_____________" ) );
 
     /* illegal control characters: 0-31, 127 */
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x00 ) + QChar( 0x01 ) + QChar( 0x02 ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x03 ) + QChar( 0x04 ) + QChar( 0x05 ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x06 ) + QChar( 0x07 ) + QChar( 0x08 ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x09 ) + QChar( 0x0A ) + QChar( 0x0B ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x0C ) + QChar( 0x0D ) + QChar( 0x0E ) + ".1" ), QString( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x00 ) + QChar( 0x01 ) + QChar( 0x02 ) + QStringLiteral(".1")), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x03 ) + QChar( 0x04 ) + QChar( 0x05 ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x06 ) + QChar( 0x07 ) + QChar( 0x08 ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x09 ) + QChar( 0x0A ) + QChar( 0x0B ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x0C ) + QChar( 0x0D ) + QChar( 0x0E ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
 
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x0F ) + QChar( 0x10 ) + QChar( 0x11 ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x12 ) + QChar( 0x13 ) + QChar( 0x14 ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x15 ) + QChar( 0x16 ) + QChar( 0x17 ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x18 ) + QChar( 0x19 ) + QChar( 0x1A ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1B ) + QChar( 0x1C ) + QChar( 0x1D ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1E ) + QChar( 0x7F ) + ".1" ), QString( "abc__.1" ) ); // 0x7F = 127 = DEL control character
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x0F ) + QChar( 0x10 ) + QChar( 0x11 ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x12 ) + QChar( 0x13 ) + QChar( 0x14 ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x15 ) + QChar( 0x16 ) + QChar( 0x17 ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x18 ) + QChar( 0x19 ) + QChar( 0x1A ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x1B ) + QChar( 0x1C ) + QChar( 0x1D ) + QStringLiteral(".1") ), QStringLiteral( "abc___.1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral( "abc" ) + QChar( 0x1E ) + QChar( 0x7F ) + QStringLiteral(".1") ), QStringLiteral( "abc__.1" ) ); // 0x7F = 127 = DEL control character
 
     /* trailing spaces in extension, directory and file names are being ignored (!) */
-    QCOMPARE( Amarok::vfatPath( "test   " ), QString( "test  _" ) );
-    QCOMPARE( Amarok::vfatPath( "   test   " ), QString( "   test  _" ) );
-    QCOMPARE( Amarok::vfatPath( "test.ext   " ), QString( "test.ext  _" ) );
-    QCOMPARE( Amarok::vfatPath( "test   .ext   " ), QString( "test  _.ext  _" ) );
-    QCOMPARE( Amarok::vfatPath( "   test   .ext   " ), QString( "   test  _.ext  _" ) ); // yes, really!
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("test   ") ), QStringLiteral( "test  _" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("   test   ") ), QStringLiteral( "   test  _" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("test.ext   ") ), QStringLiteral( "test.ext  _" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("test   .ext   ") ), QStringLiteral( "test  _.ext  _" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("   test   .ext   ") ), QStringLiteral( "   test  _.ext  _" ) ); // yes, really!
 
     /* trailing dot in directory and file names are unsupported are being ignored (!) */
-    QCOMPARE( Amarok::vfatPath( "test..." ), QString( "test.._" ) );
-    QCOMPARE( Amarok::vfatPath( "...test..." ), QString( "...test.._" ) );
-    QCOMPARE( Amarok::vfatPath( "test.ext..." ), QString( "test.ext.._" ) );
-    QCOMPARE( Amarok::vfatPath( "test....ext..." ), QString( "test....ext.._" ) );
-    QCOMPARE( Amarok::vfatPath( "...test....ext..." ), QString( "...test....ext.._" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("test...") ), QStringLiteral( "test.._" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("...test...") ), QStringLiteral( "...test.._" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("test.ext...") ), QStringLiteral( "test.ext.._" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("test....ext...") ), QStringLiteral( "test....ext.._" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("...test....ext...") ), QStringLiteral( "...test....ext.._" ) );
 
     /* more tests of trailing spaces and dot in directory names for Windows */
-    QCOMPARE( Amarok::vfatPath( "\\some\\folder   \\", Amarok::WindowsBehaviour ), QString( "\\some\\folder  _\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\some   \\folder   \\", Amarok::WindowsBehaviour ), QString( "\\some  _\\folder  _\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\...some   \\ev  il   \\folders...\\", Amarok::WindowsBehaviour ), QString( "\\...some  _\\ev  il  _\\folders.._\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\some\\fol/der   \\", Amarok::WindowsBehaviour ), QString( "\\some\\fol_der  _\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\some...\\folder...\\", Amarok::WindowsBehaviour ), QString( "\\some.._\\folder.._\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\some\\fol/der...\\", Amarok::WindowsBehaviour ), QString( "\\some\\fol_der.._\\" ) );
-    QCOMPARE( Amarok::vfatPath( "\\so..me.\\folder  .\\", Amarok::WindowsBehaviour ), QString( "\\so..me_\\folder  _\\" ) );
-    QCOMPARE( Amarok::vfatPath( ".\\any", Amarok::WindowsBehaviour ), QString( ".\\any" ) );
-    QCOMPARE( Amarok::vfatPath( "..\\any", Amarok::WindowsBehaviour ), QString( "..\\any" ) );
-    QCOMPARE( Amarok::vfatPath( "...\\any", Amarok::WindowsBehaviour ), QString( ".._\\any" ) );
-    QCOMPARE( Amarok::vfatPath( "a..\\any", Amarok::WindowsBehaviour ), QString( "a._\\any" ) );
-    QCOMPARE( Amarok::vfatPath( "any\\.\\any.", Amarok::WindowsBehaviour ), QString( "any\\.\\any_" ) );
-    QCOMPARE( Amarok::vfatPath( "any\\..\\any ", Amarok::WindowsBehaviour ), QString( "any\\..\\any_" ) );
-    QCOMPARE( Amarok::vfatPath( "any.\\...\\any", Amarok::WindowsBehaviour ), QString( "any_\\.._\\any" ) );
-    QCOMPARE( Amarok::vfatPath( "any \\a..\\any", Amarok::WindowsBehaviour ), QString( "any_\\a._\\any" ) );
-    QCOMPARE( Amarok::vfatPath( "Music\\R.E.M.\\Automatic for the people", Amarok::WindowsBehaviour ), QString( "Music\\R.E.M_\\Automatic for the people" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\some\\folder   \\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\some\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\some   \\folder   \\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\some  _\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\...some   \\ev  il   \\folders...\\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\...some  _\\ev  il  _\\folders.._\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\some\\fol/der   \\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\some\\fol_der  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\some...\\folder...\\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\some.._\\folder.._\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\some\\fol/der...\\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\some\\fol_der.._\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("\\so..me.\\folder  .\\"), Amarok::WindowsBehaviour ), QStringLiteral( "\\so..me_\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral(".\\any"), Amarok::WindowsBehaviour ), QStringLiteral( ".\\any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("..\\any"), Amarok::WindowsBehaviour ), QStringLiteral( "..\\any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("...\\any"), Amarok::WindowsBehaviour ), QStringLiteral( ".._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("a..\\any"), Amarok::WindowsBehaviour ), QStringLiteral( "a._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any\\.\\any."), Amarok::WindowsBehaviour ), QStringLiteral( "any\\.\\any_" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any\\..\\any "), Amarok::WindowsBehaviour ), QStringLiteral( "any\\..\\any_" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any.\\...\\any"), Amarok::WindowsBehaviour ), QStringLiteral( "any_\\.._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any \\a..\\any"), Amarok::WindowsBehaviour ), QStringLiteral( "any_\\a._\\any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("Music\\R.E.M.\\Automatic for the people"), Amarok::WindowsBehaviour ), QStringLiteral( "Music\\R.E.M_\\Automatic for the people" ) );
 
     /* more tests of trailing spaces and dot in directory names for Unix */
-    QCOMPARE( Amarok::vfatPath( "/some/folder   /", Amarok::UnixBehaviour ), QString( "/some/folder  _/" ) );
-    QCOMPARE( Amarok::vfatPath( "/some   /folder   /", Amarok::UnixBehaviour ), QString( "/some  _/folder  _/" ) );
-    QCOMPARE( Amarok::vfatPath( "/...some   /ev  il   /folders.../", Amarok::UnixBehaviour ), QString( "/...some  _/ev  il  _/folders.._/" ) );
-    QCOMPARE( Amarok::vfatPath( "/some/fol\\der   /", Amarok::UnixBehaviour ), QString( "/some/fol_der  _/" ) );
-    QCOMPARE( Amarok::vfatPath( "/some.../folder.../", Amarok::UnixBehaviour ), QString( "/some.._/folder.._/" ) );
-    QCOMPARE( Amarok::vfatPath( "/some/fol\\der.../", Amarok::UnixBehaviour ), QString( "/some/fol_der.._/" ) );
-    QCOMPARE( Amarok::vfatPath( "/so..me./folder  ./", Amarok::UnixBehaviour ), QString( "/so..me_/folder  _/" ) );
-    QCOMPARE( Amarok::vfatPath( "./any", Amarok::UnixBehaviour ), QString( "./any" ) );
-    QCOMPARE( Amarok::vfatPath( "../any", Amarok::UnixBehaviour ), QString( "../any" ) );
-    QCOMPARE( Amarok::vfatPath( ".../any", Amarok::UnixBehaviour ), QString( ".._/any" ) );
-    QCOMPARE( Amarok::vfatPath( "a../any", Amarok::UnixBehaviour ), QString( "a._/any" ) );
-    QCOMPARE( Amarok::vfatPath( "any/./any.", Amarok::UnixBehaviour ), QString( "any/./any_" ) );
-    QCOMPARE( Amarok::vfatPath( "any/../any ", Amarok::UnixBehaviour ), QString( "any/../any_" ) );
-    QCOMPARE( Amarok::vfatPath( "any./.../any", Amarok::UnixBehaviour ), QString( "any_/.._/any" ) );
-    QCOMPARE( Amarok::vfatPath( "any /a../any", Amarok::UnixBehaviour ), QString( "any_/a._/any" ) );
-    QCOMPARE( Amarok::vfatPath( "Music/R.E.M./Automatic for the people", Amarok::UnixBehaviour ), QString( "Music/R.E.M_/Automatic for the people" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/some/folder   /"), Amarok::UnixBehaviour ), QStringLiteral( "/some/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/some   /folder   /"), Amarok::UnixBehaviour ), QStringLiteral( "/some  _/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/...some   /ev  il   /folders.../"), Amarok::UnixBehaviour ), QStringLiteral( "/...some  _/ev  il  _/folders.._/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/some/fol\\der   /"), Amarok::UnixBehaviour ), QStringLiteral( "/some/fol_der  _/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/some.../folder.../"), Amarok::UnixBehaviour ), QStringLiteral( "/some.._/folder.._/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/some/fol\\der.../"), Amarok::UnixBehaviour ), QStringLiteral( "/some/fol_der.._/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("/so..me./folder  ./"), Amarok::UnixBehaviour ), QStringLiteral( "/so..me_/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("./any"), Amarok::UnixBehaviour ), QStringLiteral( "./any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("../any"), Amarok::UnixBehaviour ), QStringLiteral( "../any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral(".../any"), Amarok::UnixBehaviour ), QStringLiteral( ".._/any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("a../any"), Amarok::UnixBehaviour ), QStringLiteral( "a._/any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any/./any."), Amarok::UnixBehaviour ), QStringLiteral( "any/./any_" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any/../any "), Amarok::UnixBehaviour ), QStringLiteral( "any/../any_" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any./.../any"), Amarok::UnixBehaviour ), QStringLiteral( "any_/.._/any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("any /a../any"), Amarok::UnixBehaviour ), QStringLiteral( "any_/a._/any" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("Music/R.E.M./Automatic for the people"), Amarok::UnixBehaviour ), QStringLiteral( "Music/R.E.M_/Automatic for the people" ) );
 
     /* Stepping deeper into M$ hell: reserved device names
      * See http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx */
-    QCOMPARE( Amarok::vfatPath( "CLOCK$" ), QString( "_CLOCK$" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("CLOCK$") ), QStringLiteral( "_CLOCK$" ) );
     /* this one IS allowed according to
      * http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations */
-    QCOMPARE( Amarok::vfatPath( "CLOCK$.ext" ), QString( "CLOCK$.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("CLOCK$.ext") ), QStringLiteral( "CLOCK$.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "CON" ), QString( "_CON" ) );
-    QCOMPARE( Amarok::vfatPath( "CON.ext" ), QString( "_CON.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("CON") ), QStringLiteral( "_CON" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("CON.ext") ), QStringLiteral( "_CON.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "PRN" ), QString( "_PRN" ) );
-    QCOMPARE( Amarok::vfatPath( "PRN.ext" ), QString( "_PRN.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("PRN") ), QStringLiteral( "_PRN" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("PRN.ext") ), QStringLiteral( "_PRN.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "AUX" ), QString( "_AUX" ) );
-    QCOMPARE( Amarok::vfatPath( "AUX.ext" ), QString( "_AUX.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("AUX") ), QStringLiteral( "_AUX" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("AUX.ext") ), QStringLiteral( "_AUX.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "NUL" ), QString( "_NUL" ) );
-    QCOMPARE( Amarok::vfatPath( "NUL.ext" ), QString( "_NUL.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("NUL") ), QStringLiteral( "_NUL" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("NUL.ext") ), QStringLiteral( "_NUL.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM1" ), QString( "_COM1" ) );
-    QCOMPARE( Amarok::vfatPath( "COM1.ext" ), QString( "_COM1.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM1") ), QStringLiteral( "_COM1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM1.ext") ), QStringLiteral( "_COM1.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM2" ), QString( "_COM2" ) );
-    QCOMPARE( Amarok::vfatPath( "COM2.ext" ), QString( "_COM2.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM2") ), QStringLiteral( "_COM2" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM2.ext") ), QStringLiteral( "_COM2.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM3" ), QString( "_COM3" ) );
-    QCOMPARE( Amarok::vfatPath( "COM3.ext" ), QString( "_COM3.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM3") ), QStringLiteral( "_COM3" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM3.ext") ), QStringLiteral( "_COM3.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM4" ), QString( "_COM4" ) );
-    QCOMPARE( Amarok::vfatPath( "COM4.ext" ), QString( "_COM4.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM4") ), QStringLiteral( "_COM4" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM4.ext") ), QStringLiteral( "_COM4.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM5" ), QString( "_COM5" ) );
-    QCOMPARE( Amarok::vfatPath( "COM5.ext" ), QString( "_COM5.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM5") ), QStringLiteral( "_COM5" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM5.ext") ), QStringLiteral( "_COM5.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM6" ), QString( "_COM6" ) );
-    QCOMPARE( Amarok::vfatPath( "COM6.ext" ), QString( "_COM6.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM6") ), QStringLiteral( "_COM6" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM6.ext") ), QStringLiteral( "_COM6.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM7" ), QString( "_COM7" ) );
-    QCOMPARE( Amarok::vfatPath( "COM7.ext" ), QString( "_COM7.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM7") ), QStringLiteral( "_COM7" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM7.ext") ), QStringLiteral( "_COM7.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM8" ), QString( "_COM8" ) );
-    QCOMPARE( Amarok::vfatPath( "COM8.ext" ), QString( "_COM8.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM8") ), QStringLiteral( "_COM8" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM8.ext") ), QStringLiteral( "_COM8.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "COM9" ), QString( "_COM9" ) );
-    QCOMPARE( Amarok::vfatPath( "COM9.ext" ), QString( "_COM9.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM9") ), QStringLiteral( "_COM9" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("COM9.ext") ), QStringLiteral( "_COM9.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT1" ), QString( "_LPT1" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT1.ext" ), QString( "_LPT1.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT1") ), QStringLiteral( "_LPT1" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT1.ext") ), QStringLiteral( "_LPT1.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT2" ), QString( "_LPT2" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT2.ext" ), QString( "_LPT2.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT2") ), QStringLiteral( "_LPT2" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT2.ext") ), QStringLiteral( "_LPT2.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT3" ), QString( "_LPT3" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT3.ext" ), QString( "_LPT3.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT3") ), QStringLiteral( "_LPT3" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT3.ext") ), QStringLiteral( "_LPT3.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT4" ), QString( "_LPT4" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT4.ext" ), QString( "_LPT4.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT4") ), QStringLiteral( "_LPT4" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT4.ext") ), QStringLiteral( "_LPT4.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT5" ), QString( "_LPT5" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT5.ext" ), QString( "_LPT5.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT5") ), QStringLiteral( "_LPT5" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT5.ext") ), QStringLiteral( "_LPT5.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT6" ), QString( "_LPT6" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT6.ext" ), QString( "_LPT6.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT6") ), QStringLiteral( "_LPT6" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT6.ext") ), QStringLiteral( "_LPT6.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT7" ), QString( "_LPT7" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT7.ext" ), QString( "_LPT7.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT7") ), QStringLiteral( "_LPT7" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT7.ext") ), QStringLiteral( "_LPT7.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT8" ), QString( "_LPT8" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT8.ext" ), QString( "_LPT8.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT8") ), QStringLiteral( "_LPT8" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT8.ext") ), QStringLiteral( "_LPT8.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "LPT9" ), QString( "_LPT9" ) );
-    QCOMPARE( Amarok::vfatPath( "LPT9.ext" ), QString( "_LPT9.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT9") ), QStringLiteral( "_LPT9" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("LPT9.ext") ), QStringLiteral( "_LPT9.ext" ) );
 
     /* Device names in different cases: */
-    QCOMPARE( Amarok::vfatPath( "con" ), QString( "_con" ) );
-    QCOMPARE( Amarok::vfatPath( "con.ext" ), QString( "_con.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("con") ), QStringLiteral( "_con" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("con.ext") ), QStringLiteral( "_con.ext" ) );
 
-    QCOMPARE( Amarok::vfatPath( "cON" ), QString( "_cON" ) );
-    QCOMPARE( Amarok::vfatPath( "cON.ext" ), QString( "_cON.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("cON") ), QStringLiteral( "_cON" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("cON.ext") ), QStringLiteral( "_cON.ext" ) );
 
     /* This one is ok :) */
-    QCOMPARE( Amarok::vfatPath( "CONCERT" ), QString( "CONCERT" ) );
-    QCOMPARE( Amarok::vfatPath( "CONCERT.ext" ), QString( "CONCERT.ext" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("CONCERT") ), QStringLiteral( "CONCERT" ) );
+    QCOMPARE( Amarok::vfatPath( QStringLiteral("CONCERT.ext") ), QStringLiteral( "CONCERT.ext" ) );
 }

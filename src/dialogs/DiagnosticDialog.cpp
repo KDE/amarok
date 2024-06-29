@@ -184,7 +184,7 @@ DiagnosticDialog::getPreferredBackend() const
 
     QList<struct BackendDescriptor> backendList;
 
-    foreach (const QString &path, paths) {
+    for(const QString &path : paths) {
         const QString libPath = path + suffix;
         const QDir dir(libPath);
         if (!dir.exists()) {

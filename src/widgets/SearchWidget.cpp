@@ -70,7 +70,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
 
     if( advanced )
     {
-        m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
+        m_filterAction = new QAction( QIcon::fromTheme( QStringLiteral("document-properties") ), i18n( "Edit filter" ), this );
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
@@ -164,7 +164,7 @@ SearchWidget::showAdvancedButton( bool show )
     {
         if( m_filterAction != nullptr )
         {
-            m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
+            m_filterAction = new QAction( QIcon::fromTheme( QStringLiteral("document-properties") ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
             m_toolBar->addAction( m_filterAction );
             connect( m_filterAction, &QAction::triggered, this, &SearchWidget::slotShowFilterEditor );
@@ -209,7 +209,7 @@ SearchWidget::searchStarted()
     // start the animation
     if( !m_animationTimer.isActive() )
     {
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading1.png") ) ) );
         m_currentFrame = 0;
         m_animationTimer.start();
     }
@@ -252,9 +252,9 @@ SearchWidget::nextAnimationTick()
 
     // switch frames
     if( m_currentFrame == 0 )
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading2.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading2.png") ) ) );
     else
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading1.png") ) ) );
 
     restoreLineEditStatus();
     m_currentFrame = !m_currentFrame;

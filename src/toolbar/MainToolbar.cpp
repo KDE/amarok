@@ -108,8 +108,8 @@ MainToolbar::MainToolbar( QWidget *parent )
         fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
     const int fntH = QFontMetrics( QApplication::font() ).height()*2; //double size svg render for scaled high dpi
 
-    m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 80*fntH/128, fntH, "tiny_skip_left" );
-    m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 80*fntH/128, fntH, "tiny_skip_right" );
+    m_skip_left = The::svgHandler()->renderSvg( QStringLiteral("tiny_skip_left"), 80*fntH/128, fntH, QStringLiteral("tiny_skip_left") );
+    m_skip_right = The::svgHandler()->renderSvg( QStringLiteral("tiny_skip_right"), 80*fntH/128, fntH, QStringLiteral("tiny_skip_right") );
 
     m_prev.key = nullptr;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
@@ -419,7 +419,7 @@ static QStringList metadata( Meta::TrackPtr track )
         if(( noTags = title.isEmpty() )) // should never happen
             title = track->playableUrl().url();
         if(( noTags = title.isEmpty() )) // sth's MEGA wrong ;-)
-            title = "???";
+            title = QStringLiteral("???");
 
         // no tags -> probably filename. try to strip the suffix
         if( noTags || track->name().isEmpty() )
@@ -438,7 +438,7 @@ static QStringList metadata( Meta::TrackPtr track )
              (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
         {
             // this will split "all-in-one" filename tags
-            QRegularExpression rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
+            QRegularExpression rx(QStringLiteral("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)"));
             list << title.split( rx, Qt::SkipEmptyParts );
             QList<QString>::iterator i = list.begin();
             bool ok;
@@ -561,9 +561,9 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
             // debug() << "found " << list.count() << " timecodes on this track";
             for( AmarokUrlPtr url : list )
             {
-                if( url->command() == "play" && url->args().keys().contains( "pos" ) )
+                if( url->command() == QStringLiteral("play") && url->args().keys().contains( QStringLiteral("pos") ) )
                 {
-                    int pos = url->args().value( "pos" ).toDouble() * 1000;
+                    int pos = url->args().value( QStringLiteral("pos") ).toDouble() * 1000;
                     debug() << "showing timecode: " << url->name() << " at " << pos ;
                     m_slider->drawTriangle( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ) );
                 }
@@ -874,7 +874,7 @@ MainToolbar::setLabelTime( int ms )
         int tf = timeFrame( secs );
         if( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
         {
-            const int w = QFontMetrics( m_timeLabel->font() ).horizontalAdvance( timeString[tf] );
+            const int w = QFontMetrics( m_timeLabel->font() ).horizontalAdvance( QLatin1String(timeString[tf]) );
             m_timeLabel->setFixedWidth( w );
             relayout = true;
         }
@@ -886,7 +886,7 @@ MainToolbar::setLabelTime( int ms )
             tf = timeFrame( remainingSecs );
             if( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
             {
-                const int w = QFontMetrics( m_remainingTimeLabel->font() ).horizontalAdvance( QStringLiteral("-") + timeString[tf] );
+                const int w = QFontMetrics( m_remainingTimeLabel->font() ).horizontalAdvance( QStringLiteral("-") + QLatin1String(timeString[tf]) );
                 m_remainingTimeLabel->setFixedWidth( w );
                 relayout = true;
             }

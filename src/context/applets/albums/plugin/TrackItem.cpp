@@ -78,7 +78,7 @@ TrackItem::metadataChanged(const Meta::TrackPtr &track )
         }
         setData( num, AlbumMaxTrackNumberRole );
     }
-    setToolTip( QString( "%1 (%2)" ).arg( track->name(), Meta::msToPrettyTime(track->length()) ) );
+    setToolTip( QStringLiteral( "%1 (%2)" ).arg( track->name(), Meta::msToPrettyTime(track->length()) ) );
 }
 
 void

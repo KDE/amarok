@@ -369,11 +369,11 @@ ServiceSqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
         d->linkedTables |= Private::GENRE_TABLE;
     if( serviceAlbum )
     {
-        d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
+        d->queryMatch += QStringLiteral(" AND ") + prefix + QStringLiteral("_albums.id = '%1'" ).arg( serviceAlbum->id() );
     }
     else
     {
-        d->queryMatch += QString( " AND " + prefix + "_albums.name='%1'" ).arg( escape( album->name() ) );
+        d->queryMatch += QStringLiteral(" AND ") + prefix + QStringLiteral("_albums.name='%1'" ).arg( escape( album->name() ) );
     }
     return this;
 }
@@ -488,7 +488,7 @@ ServiceSqlQueryMaker::addReturnValue( qint64 value )
     /*if( d->queryType == Private::CUSTOM )
     {
         if ( !d->queryReturnValues.isEmpty() )
-            d->queryReturnValues += ',';
+            d->queryReturnValues += QLatin1Char(',');
         d->queryReturnValues += nameForValue( value );
     }*/
     return this;
@@ -508,7 +508,7 @@ ServiceSqlQueryMaker::orderBy( qint64 value, bool descending )
     Q_UNUSED( value );
     if ( d->queryOrderBy.isEmpty() )
     d->queryOrderBy = QStringLiteral(" ORDER BY name "); //TODO FIX!!
-    d->queryOrderBy += QStringLiteral( " %1 " ).arg( descending ? "DESC" : "ASC" );
+    d->queryOrderBy += QStringLiteral( " %1 " ).arg( descending ? QStringLiteral("DESC") : QStringLiteral("ASC") );
     return this;
 }
 
@@ -690,7 +690,7 @@ ServiceSqlQueryMaker::nameForValue( qint64 value )
             d->linkedTables |= Private::GENRE_TABLE;
             return prefix + QStringLiteral("_genre.name");
         default:
-            debug() << "ERROR: unknown value in ServiceSqlQueryMaker::nameForValue( qint64 ): value=" + QString::number( value );
+            debug() << "ERROR: unknown value in ServiceSqlQueryMaker::nameForValue( qint64 ): value=" << QString::number( value );
             return QString();
     }
 }

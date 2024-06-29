@@ -30,7 +30,7 @@
 MusicBrainzXmlParser::MusicBrainzXmlParser( const QString &doc )
     : QObject()
     , ThreadWeaver::Job()
-    , m_doc( "musicbrainz" )
+    , m_doc( QStringLiteral("musicbrainz") )
     , m_type( 0 )
 {
     m_doc.setContent( doc );
@@ -74,12 +74,12 @@ void
 MusicBrainzXmlParser::parseElement( const QDomElement &e )
 {
     QString elementName = e.tagName();
-    if( elementName == "recording-list" )
+    if( elementName == QStringLiteral("recording-list") )
     {
         m_type = TrackList;
         parseRecordingList( e );
     }
-    else if( elementName == "release-group" )
+    else if( elementName == QStringLiteral("release-group") )
     {
         m_type = ReleaseGroup;
         parseReleaseGroup( e );
@@ -113,7 +113,7 @@ MusicBrainzXmlParser::parseRecordingList( const QDomElement &e )
         {
             dElement = dNode.toElement();
 
-            if( dElement.tagName() == "recording" )
+            if( dElement.tagName() == QStringLiteral("recording") )
                 list << parseRecording( dElement );
         }
         dNode = dNode.nextSibling();
@@ -127,8 +127,8 @@ MusicBrainzXmlParser::parseRecording( const QDomElement &e )
     QString id;
     QVariantMap track;
 
-    if( e.hasAttribute( "id" ) )
-        id = e.attribute( "id" );
+    if( e.hasAttribute( QStringLiteral("id") ) )
+        id = e.attribute( QStringLiteral("id") );
     if( id.isEmpty() )
         return id;
 
@@ -139,8 +139,8 @@ MusicBrainzXmlParser::parseRecording( const QDomElement &e )
     if( track.isEmpty() )
         return id;
 
-    if( e.hasAttribute( "ext:score" ) )
-        track.insert( Meta::Field::SCORE, e.attribute( "ext:score" ).toInt() );
+    if( e.hasAttribute( QStringLiteral("ext:score") ) )
+        track.insert( Meta::Field::SCORE, e.attribute( QStringLiteral("ext:score") ).toInt() );
 
     QDomNode dNode = e.firstChild();
     QDomElement dElement;
@@ -153,15 +153,15 @@ MusicBrainzXmlParser::parseRecording( const QDomElement &e )
             dElement = dNode.toElement();
             elementName = dElement.tagName();
 
-            if( elementName == "title" )
+            if( elementName == QStringLiteral("title") )
                 track.insert( Meta::Field::TITLE, dElement.text() );
-            else if( elementName == "length" )
+            else if( elementName == QStringLiteral("length") )
             {
                 int length = dElement.text().toInt();
                 if( length > 0 )
                     track.insert( Meta::Field::LENGTH, length );
             }
-            else if( elementName == "artist-credit" )
+            else if( elementName == QStringLiteral("artist-credit") )
             {
                 QStringList idList = parseArtist( dElement );
                 if( !idList.isEmpty() )
@@ -186,7 +186,7 @@ MusicBrainzXmlParser::parseRecording( const QDomElement &e )
                     }
                 }
             }
-            else if( elementName == "release-list" )
+            else if( elementName == QStringLiteral("release-list") )
             {
                 m_currentTrackInfo.clear();
                 track.insert( MusicBrainz::RELEASELIST, parseReleaseList( dElement ) );
@@ -213,7 +213,7 @@ MusicBrainzXmlParser::parseReleaseList( const QDomElement &e )
         {
             dElement = dNode.toElement();
 
-            if( dElement.tagName() == "release" )
+            if( dElement.tagName() == QStringLiteral("release") )
                 list << parseRelease( dElement );
         }
         dNode = dNode.nextSibling();
@@ -228,8 +228,8 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
     QString id;
     QVariantMap release;
 
-    if( e.hasAttribute( "id" ) )
-        id = e.attribute( "id" );
+    if( e.hasAttribute( QStringLiteral("id") ) )
+        id = e.attribute( QStringLiteral("id") );
     if( id.isEmpty() )
         return id;
 
@@ -251,13 +251,13 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
             dElement = dNode.toElement();
             elementName = dElement.tagName();
 
-            if( elementName == "title" )
+            if( elementName == QStringLiteral("title") )
                 /*
                  * Avoid checking for "(disc N)" string as it's not a safe way to detect
                  * disc number.
                  */
                 release.insert( Meta::Field::TITLE, dElement.text() );
-            else if( elementName == "medium-list" )
+            else if( elementName == QStringLiteral("medium-list") )
             {
                 QMultiMap<QString, QVariant> info = parseMediumList( dElement );
                 QVariantList trackCountList = info.values( MusicBrainz::TRACKCOUNT );
@@ -279,7 +279,7 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
                 trackInfoList.append( info );
                 m_currentTrackInfo.insert( id, trackInfoList );
             }
-            else if( elementName == "release-group" )
+            else if( elementName == QStringLiteral("release-group") )
                 release.insert( MusicBrainz::RELEASEGROUPID, parseReleaseGroup( dElement ) );
         }
         dNode = dNode.nextSibling();
@@ -304,9 +304,9 @@ MusicBrainzXmlParser::parseMediumList( const QDomElement &e )
             dElement = dNode.toElement();
             elementName = dElement.tagName();
 
-            if( elementName == "track-count" )
+            if( elementName == QStringLiteral("track-count") )
                 info.insert( MusicBrainz::TRACKCOUNT, dElement.text().toInt() );
-            else if( elementName == "medium" )
+            else if( elementName == QStringLiteral("medium") )
                 info.unite( parseMedium( dElement ) );
         }
         dNode = dNode.nextSibling();
@@ -329,17 +329,17 @@ MusicBrainzXmlParser::parseMedium( const QDomElement &e )
             dElement = dNode.toElement();
             elementName = dElement.tagName();
 
-            if( elementName == "position" )
+            if( elementName == QStringLiteral("position") )
             {
                 int discNumber = dElement.text().toInt();
                 if( discNumber > 0 )
                     info.insert( Meta::Field::DISCNUMBER, discNumber );
             }
-            else if( elementName == "track-list" )
+            else if( elementName == QStringLiteral("track-list") )
             {
-                if( dElement.hasAttribute( "count" ) )
+                if( dElement.hasAttribute( QStringLiteral("count") ) )
                     info.insert( MusicBrainz::TRACKCOUNT,
-                                 -1 * dElement.attribute( "count" ).toInt() );
+                                 -1 * dElement.attribute( QStringLiteral("count") ).toInt() );
                 info.unite( parseTrackList( dElement ) );
             }
         }
@@ -361,7 +361,7 @@ MusicBrainzXmlParser::parseTrackList( const QDomElement &e )
         {
             dElement = dNode.toElement();
 
-            if( dElement.tagName() == "track" )
+            if( dElement.tagName() == QStringLiteral("track") )
                 info = parseTrack( dElement );
         }
         dNode = dNode.nextSibling();
@@ -391,15 +391,15 @@ MusicBrainzXmlParser::parseTrack( const QDomElement &e )
              * one only by language, "joinphrase" attribute, etc., we better use the main
              * one (as confirmed by MusicBrainz developers).
              */
-            if( elementName == "title" )
+            if( elementName == QStringLiteral("title") )
                 info.insert( Meta::Field::TITLE, dElement.text() );
-            else if( elementName == "length" )
+            else if( elementName == QStringLiteral("length") )
             {
                 int length = dElement.text().toInt();
                 if( length > 0 )
                     info.insert( Meta::Field::LENGTH, length );
             }
-            else if( elementName == "number" )
+            else if( elementName == QStringLiteral("number") )
             {
                 int number = dElement.text().toInt();
                 if( number > 0 )
@@ -417,8 +417,8 @@ MusicBrainzXmlParser::parseReleaseGroup( const QDomElement &e )
     QString id;
     QVariantMap releaseGroup;
 
-    if( e.hasAttribute( "id" ) )
-        id = e.attribute( "id" );
+    if( e.hasAttribute( QStringLiteral("id") ) )
+        id = e.attribute( QStringLiteral("id") );
     if( id.isEmpty() )
         return id;
 
@@ -443,7 +443,7 @@ MusicBrainzXmlParser::parseReleaseGroup( const QDomElement &e )
             dElement = dNode.toElement();
             elementName = dElement.tagName();
 
-            if( elementName == "artist-credit" )
+            if( elementName == QStringLiteral("artist-credit") )
             {
                 QStringList idList = parseArtist( dElement );
                 if( !idList.isEmpty() )
@@ -468,10 +468,10 @@ MusicBrainzXmlParser::parseReleaseGroup( const QDomElement &e )
                     }
                 }
             }
-            else if( elementName == "first-release-date" )
+            else if( elementName == QStringLiteral("first-release-date") )
             {
                 int year = 0;
-                QRegularExpression yearMatcher( QRegularExpression::anchoredPattern( "^(\\d{4}).*$" ) );
+                QRegularExpression yearMatcher( QRegularExpression::anchoredPattern( QStringLiteral("^(\\d{4}).*$") ) );
                 QRegularExpressionMatch rmatch = yearMatcher.match( dElement.text() );
                 if( rmatch.hasMatch() )
                     year = rmatch.captured( 1 ).toInt();
@@ -500,7 +500,7 @@ MusicBrainzXmlParser::parseArtist( const QDomElement &e )
         {
             dElement = dNode.toElement();
 
-            if( dElement.tagName() == "name-credit" )
+            if( dElement.tagName() == QStringLiteral("name-credit") )
             {
                 /*
                  * <name-credit /> can have a <name /> tag which overwrites the
@@ -516,7 +516,7 @@ MusicBrainzXmlParser::parseArtist( const QDomElement &e )
                     {
                         dElement2 = dNode2.toElement();
 
-                        if( dElement2.tagName() == "artist" )
+                        if( dElement2.tagName() == QStringLiteral("artist") )
                         {
                             dNode3 = dNode2.firstChild();
                             while( !dNode3.isNull() )
@@ -525,16 +525,16 @@ MusicBrainzXmlParser::parseArtist( const QDomElement &e )
                                 {
                                     dElement3 = dNode3.toElement();
 
-                                    if( dElement3.tagName() == "name" )
+                                    if( dElement3.tagName() == QStringLiteral("name") )
                                     {
-                                        if( dElement2.hasAttribute( "id" ) )
-                                            id = dElement2.attribute( "id" );
+                                        if( dElement2.hasAttribute( QStringLiteral("id") ) )
+                                            id = dElement2.attribute( QStringLiteral("id") );
                                         if( id.isEmpty() )
                                             return QStringList();
                                         artists.insert( id, dElement3.text() );
                                         idList.append( id );
-                                        if( dElement.hasAttribute( "joinphrase" ) )
-                                            idList.append( dElement.attribute( "joinphrase" ) );
+                                        if( dElement.hasAttribute( QStringLiteral("joinphrase") ) )
+                                            idList.append( dElement.attribute( QStringLiteral("joinphrase") ) );
                                     }
                                 }
                                 dNode3 = dNode3.nextSibling();

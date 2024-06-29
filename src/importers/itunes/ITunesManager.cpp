@@ -23,10 +23,10 @@
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( ITunesImporterFactory,
                                       "amarok_importer-itunes.json",
-                                      "ITunesImporter",
+                                      QStringLiteral("ITunesImporter"),
                                       i18n( "Apple iTunes" ),
                                       i18n( "iTunes Statistics Importer" ),
-                                      QIcon::fromTheme( "media-album-track" ),
+                                      QIcon::fromTheme( QStringLiteral("media-album-track") ),
                                       StatSyncing::ITunesConfigWidget,
                                       StatSyncing::ITunesProvider )
 

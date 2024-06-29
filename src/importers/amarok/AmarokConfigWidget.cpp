@@ -47,15 +47,15 @@ QVariantMap
 AmarokConfigWidget::config() const
 {
     QVariantMap cfg( m_config );
-    cfg.insert( "name", m_targetName->text() );
-    cfg.insert( "embedded", m_connectionType->currentIndex() == Embedded );
-    cfg.insert( "mysqlBinary", m_mysqlBinary->text() );
-    cfg.insert( "dbPath", m_databaseLocation->text() );
-    cfg.insert( "dbName", m_databaseName->text() );
-    cfg.insert( "dbHost", m_hostname->text() );
-    cfg.insert( "dbUser", m_username->text() );
-    cfg.insert( "dbPass", m_password->text() );
-    cfg.insert( "dbPort", m_port->value() );
+    cfg.insert( QStringLiteral("name"), m_targetName->text() );
+    cfg.insert( QStringLiteral("embedded"), m_connectionType->currentIndex() == Embedded );
+    cfg.insert( QStringLiteral("mysqlBinary"), m_mysqlBinary->text() );
+    cfg.insert( QStringLiteral("dbPath"), m_databaseLocation->text() );
+    cfg.insert( QStringLiteral("dbName"), m_databaseName->text() );
+    cfg.insert( QStringLiteral("dbHost"), m_hostname->text() );
+    cfg.insert( QStringLiteral("dbUser"), m_username->text() );
+    cfg.insert( QStringLiteral("dbPass"), m_password->text() );
+    cfg.insert( QStringLiteral("dbPort"), m_port->value() );
 
     return cfg;
 }
@@ -76,21 +76,21 @@ AmarokConfigWidget::connectionTypeChanged( const int index )
 void
 AmarokConfigWidget::populateFields()
 {
-    m_targetName->setText( m_config.value( "name", "Amarok" ).toString() );
+    m_targetName->setText( m_config.value( QStringLiteral("name"), QStringLiteral("Amarok") ).toString() );
 
     m_connectionType->insertItem( Embedded, i18nc( "Database type", "embedded" ) );
     m_connectionType->insertItem( External, i18nc( "Database type", "external" ) );
 
     m_connectionType->setCurrentIndex(
-                m_config.value( "embedded" ).toBool()
+                m_config.value( QStringLiteral("embedded") ).toBool()
                 ? Embedded : External );
 
     const QString defaultPath( QStringLiteral("/usr/sbin/mysqld") );
-    m_mysqlBinary->setText( m_config.value( "mysqlBinary", defaultPath ).toString() );
-    m_databaseLocation->setText( m_config.value( "dbPath", "" ).toString() );
-    m_databaseName->setText( m_config.value( "dbName", "amarokdb" ).toString() );
-    m_hostname->setText( m_config.value( "dbHost", "localhost" ).toString() );
-    m_username->setText( m_config.value( "dbUser", "amarokuser" ).toString() );
-    m_password->setText( m_config.value( "dbPass", "" ).toString() );
-    m_port->setValue( m_config.value( "dbPort", 3306 ).toInt() );
+    m_mysqlBinary->setText( m_config.value( QStringLiteral("mysqlBinary"), defaultPath ).toString() );
+    m_databaseLocation->setText( m_config.value( QStringLiteral("dbPath"), QStringLiteral("") ).toString() );
+    m_databaseName->setText( m_config.value( QStringLiteral("dbName"), QStringLiteral("amarokdb") ).toString() );
+    m_hostname->setText( m_config.value( QStringLiteral("dbHost"), QStringLiteral("localhost") ).toString() );
+    m_username->setText( m_config.value( QStringLiteral("dbUser"), QStringLiteral("amarokuser") ).toString() );
+    m_password->setText( m_config.value( QStringLiteral("dbPass"), QStringLiteral("") ).toString() );
+    m_port->setValue( m_config.value( QStringLiteral("dbPort"), 3306 ).toInt() );
 }

@@ -58,10 +58,10 @@ void PlayPauseButton::reloadContent( const QSize &sz )
     const int height = sz.height()*2;
     //NOTICE this is a bit cumbersome, as Qt renders faster to images than to pixmaps
     // However we need the Image and generate the pixmap ourself - maybe extend the SvgHandler API
-    m_icon.play[0] = The::svgHandler()->renderSvg( "PLAYpause", width, height, "PLAYpause", true ).toImage();
-    m_icon.play[1] = The::svgHandler()->renderSvg( "PLAYpause_active", width, height, "PLAYpause_active", true ).toImage();
-    m_icon.pause[0] = The::svgHandler()->renderSvg( "playPAUSE", width, height, "playPAUSE", true ).toImage();
-    m_icon.pause[1] = The::svgHandler()->renderSvg( "playPAUSE_active", width, height, "playPAUSE_active", true ).toImage();
+    m_icon.play[0] = The::svgHandler()->renderSvg( QStringLiteral("PLAYpause"), width, height, QStringLiteral("PLAYpause"), true ).toImage();
+    m_icon.play[1] = The::svgHandler()->renderSvg( QStringLiteral("PLAYpause_active"), width, height, QStringLiteral("PLAYpause_active"), true ).toImage();
+    m_icon.pause[0] = The::svgHandler()->renderSvg( QStringLiteral("playPAUSE"), width, height, QStringLiteral("playPAUSE"), true ).toImage();
+    m_icon.pause[1] = The::svgHandler()->renderSvg( QStringLiteral("playPAUSE_active"), width, height, QStringLiteral("playPAUSE_active"), true ).toImage();
     if( layoutDirection() == Qt::RightToLeft )
     {
         for ( int i = 0; i < 2; ++i )

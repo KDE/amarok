@@ -410,9 +410,9 @@ TestMetaConstants::testValueForField()
 
     // Set up mock track details and create mock track
     QVariantMap trackData;
-    trackData[ Meta::Field::URL ] = QUrl("file:///test/url");
-    trackData[ Meta::Field::TITLE ] = "test track";
-    trackData[ Meta::Field::COMMENT ] = "test comment" ;
+    trackData[ Meta::Field::URL ] = QUrl(QStringLiteral("file:///test/url"));
+    trackData[ Meta::Field::TITLE ] = QStringLiteral("test track");
+    trackData[ Meta::Field::COMMENT ] = QStringLiteral("test comment");
     trackData[ Meta::Field::TRACKNUMBER ] = 1;
     trackData[ Meta::Field::DISCNUMBER ] = 1;
     trackData[ Meta::Field::BPM ] = qreal( 1 );
@@ -425,19 +425,19 @@ TestMetaConstants::testValueForField()
     trackData[ Meta::Field::FIRST_PLAYED ] = QDate( 2012, 1, 1).startOfDay();
     trackData[ Meta::Field::LAST_PLAYED ] = QDate( 2012, 1, 1).startOfDay();
     trackData[ Meta::Field::PLAYCOUNT ] = 1;
-    trackData[ Meta::Field::UNIQUEID ] = "test uid";
+    trackData[ Meta::Field::UNIQUEID ] = QStringLiteral("test uid");
 
     MetaMock *testTrack = new MetaMock( trackData );
 
     // Associate track with album, artist, etc.
-    MockAlbum *testAlbum = new MockAlbum( "test album" );
-    MockArtist *testArtist = new MockArtist( "test artist" );
-    MockComposer *testComposer = new MockComposer( "test composer" );
-    MockGenre *testGenre = new MockGenre( "test genre" );
-    MockYear *testYear = new MockYear( "2012" );
-    MockLabel *testLabel1 = new MockLabel( "test label 1");
-    MockLabel *testLabel2 = new MockLabel( "test label 2" );
-    MockLabel *testLabel3 = new MockLabel( "test label 3" );
+    MockAlbum *testAlbum = new MockAlbum( QStringLiteral("test album") );
+    MockArtist *testArtist = new MockArtist( QStringLiteral("test artist") );
+    MockComposer *testComposer = new MockComposer( QStringLiteral("test composer") );
+    MockGenre *testGenre = new MockGenre( QStringLiteral("test genre") );
+    MockYear *testYear = new MockYear( QStringLiteral("2012") );
+    MockLabel *testLabel1 = new MockLabel( QStringLiteral("test label 1") );
+    MockLabel *testLabel2 = new MockLabel( QStringLiteral("test label 2") );
+    MockLabel *testLabel3 = new MockLabel( QStringLiteral("test label 3") );
 
     // For valAlbumArtist
     testAlbum->m_albumArtist = testArtist;
@@ -557,19 +557,19 @@ TestMetaConstants::testValueForField()
 
     // Case Meta::valTrackGain
     trackValue = valueForField( Meta::valTrackGain, trackPtr );
-    QVERIFY( trackValue.toString() == "track gain" );
+    QVERIFY( trackValue.toString() == QStringLiteral("track gain") );
 
     // Case Meta::valTrackGainPeak
     trackValue = valueForField( Meta::valTrackGainPeak, trackPtr );
-    QVERIFY( trackValue.toString() == "track gain peak" );
+    QVERIFY( trackValue.toString() == QStringLiteral("track gain peak") );
 
     // Case Meta::valAlbumGainGain
     trackValue = valueForField( Meta::valAlbumGain, trackPtr );
-    QVERIFY( trackValue.toString() == "album gain" );
+    QVERIFY( trackValue.toString() == QStringLiteral("album gain") );
 
     // Case Meta::valAlbumGain
     trackValue = valueForField( Meta::valAlbumGainPeak, trackPtr );
-    QVERIFY( trackValue.toString() == "album gain peak" );
+    QVERIFY( trackValue.toString() ==QStringLiteral( "album gain peak") );
 
     // Case Meta::valAlbumArtist
     trackValue = valueForField( Meta::valAlbumArtist, trackPtr );

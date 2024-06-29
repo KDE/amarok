@@ -23,10 +23,10 @@
 
 AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( RhythmboxImporterFactory,
                                       "amarok_importer-rhythmbox.json",
-                                      "RhythmboxImporter",
+                                      QStringLiteral("RhythmboxImporter"),
                                       i18n( "Rhythmbox" ),
                                       i18n( "Rhythmbox Statistics Importer" ),
-                                      QIcon::fromTheme( "view-importers-rhythmbox-amarok" ),
+                                      QIcon::fromTheme( QStringLiteral("view-importers-rhythmbox-amarok") ),
                                       StatSyncing::RhythmboxConfigWidget,
                                       StatSyncing::RhythmboxProvider )
 

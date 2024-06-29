@@ -151,22 +151,22 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
 
 
     //Set up the first page...
-    QString aboutPageText = aboutData->shortDescription() + '\n';
+    QString aboutPageText = aboutData->shortDescription() + QLatin1Char('\n');
 
     if (!aboutData->otherText().isEmpty())
-        aboutPageText += QLatin1Char('\n') + aboutData->otherText() + '\n';
+        aboutPageText += QLatin1Char('\n') + aboutData->otherText() + QLatin1Char('\n');
 
     if (!aboutData->copyrightStatement().isEmpty())
-        aboutPageText += QLatin1Char('\n') + aboutData->copyrightStatement() + '\n';
+        aboutPageText += QLatin1Char('\n') + aboutData->copyrightStatement() + QLatin1Char('\n');
 
     if (!aboutData->homepage().isEmpty())
-        aboutPageText += QLatin1Char('\n') + QStringLiteral("<a href=\"%1\">%1</a>").arg(aboutData->homepage()) + '\n';
+        aboutPageText += QLatin1Char('\n') + QStringLiteral("<a href=\"%1\">%1</a>").arg(aboutData->homepage()) + QLatin1Char('\n');
     aboutPageText = aboutPageText.trimmed();
 
     QLabel *aboutLabel = new QLabel;
     aboutLabel->setWordWrap(true);
     aboutLabel->setOpenExternalLinks(true);
-    aboutLabel->setText(aboutPageText.replace('\n', "<br />"));
+    aboutLabel->setText(aboutPageText.replace(QLatin1Char('\n'), QStringLiteral("<br />")));
     aboutLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     QVBoxLayout *aboutLayout = new QVBoxLayout;
@@ -199,7 +199,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
 
 
     //Stuff needed by both Authors and Credits pages:
-    QPixmap openDesktopPixmap = QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/opendesktop-22.png" ) );
+    QPixmap openDesktopPixmap = QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/opendesktop-22.png") ) );
     QIcon openDesktopIcon = QIcon( openDesktopPixmap );
 
 
@@ -217,7 +217,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
             bugsLabel->setContentsMargins( 4, 2, 0, 4 );
             if (!aboutData->customAuthorTextEnabled())
             {
-                if (aboutData->bugAddress().isEmpty() || aboutData->bugAddress() == "submit@bugs.kde.org")
+                if (aboutData->bugAddress().isEmpty() || aboutData->bugAddress() == QStringLiteral("submit@bugs.kde.org"))
                     bugsLabel->setText( i18n("Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to report bugs.\n") );
                 else
                 {

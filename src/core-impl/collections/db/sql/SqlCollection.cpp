@@ -93,10 +93,10 @@ protected:
         for( int id : idList )
         {
             if( !deviceIds.isEmpty() )
-                deviceIds += ',';
+                deviceIds += QLatin1Char(',');
             deviceIds += QString::number( id );
         }
-        QString query = QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
+        QString query = QStringLiteral( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" );
 
         QStringList values = m_collection->sqlStorage()->query( query.arg( deviceIds ) );
         for( QListIterator<QString> iter( values ); iter.hasNext(); )
@@ -120,9 +120,9 @@ protected:
         QList<QPair<QString, uint> > knownDirs = getKnownDirs();
         if( !knownDirs.isEmpty() )
         {
-            QString path = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + "/amarok/amarokcollectionscanner_batchscan.xml";
+            QString path = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QStringLiteral("/amarok/amarokcollectionscanner_batchscan.xml");
             while( QFile::exists( path ) )
-                path += '_';
+                path += QLatin1Char('_');
 
             CollectionScanner::BatchFile batchfile;
             batchfile.setTimeDefinitions( knownDirs );
@@ -295,13 +295,13 @@ SqlCollection::~SqlCollection()
 QString
 SqlCollection::uidUrlProtocol() const
 {
-    return "amarok-sqltrackuid";
+    return QStringLiteral("amarok-sqltrackuid");
 }
 
 QString
 SqlCollection::generateUidUrl( const QString &hash )
 {
-    return uidUrlProtocol() + "://" + hash;
+    return uidUrlProtocol() + QStringLiteral("://") + hash;
 }
 
 QueryMaker*
@@ -347,7 +347,7 @@ SqlCollection::trackForUrl( const QUrl &url )
 {
     if( url.scheme() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.url() );
-    else if( url.scheme() == "file" )
+    else if( url.scheme() == QStringLiteral("file") )
         return m_registry->getTrack( url.path() );
     else
         return Meta::TrackPtr();
@@ -449,7 +449,7 @@ SqlCollection::dumpDatabaseContent()
     for( const QString &table : tables )
     {
         QString filePath =
-            QDir::home().absoluteFilePath( table + '-' + QDateTime::currentDateTime().toString( Qt::ISODate ) + ".csv" );
+            QDir::home().absoluteFilePath( table + QLatin1Char('-') + QDateTime::currentDateTime().toString( Qt::ISODate ) + QStringLiteral(".csv") );
         updater.writeCSVFile( table, filePath, true );
     }
 }

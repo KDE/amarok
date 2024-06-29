@@ -386,7 +386,7 @@ IpodCopyTracksJob::slotDisplayErrorDialog()
                           exceededingSafeCapacityCount );
 
         QString reservedSpace = m_coll ? QLocale().toString(
-            m_coll->capacityMargin(), 1 ) : QString( "???" ); // improbable, don't bother translators
+            m_coll->capacityMargin(), 1 ) : QStringLiteral( "???" ); // improbable, don't bother translators
 
         details += i18nc( "Example of %1 would be: 20.0 MiB",
                           "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>",
@@ -395,7 +395,7 @@ IpodCopyTracksJob::slotDisplayErrorDialog()
     int notPlayableCount = m_sourceTrackStatus.count( NotPlayable );
     if( notPlayableCount )
     {
-        QString formats = QStringList( m_notPlayableFormats.values() ).join( ", " );
+        QString formats = QStringList( m_notPlayableFormats.values() ).join( QStringLiteral(", ") );
         details += i18np( "One track was not copied because it wouldn't be playable - its "
                           " %2 format is unsupported.<br>",
                           "%1 tracks were not copied because they wouldn't be playable - "
@@ -424,7 +424,7 @@ IpodCopyTracksJob::slotDisplayErrorDialog()
     if( !m_copyErrors.isEmpty() )
     {
         details += i18nc( "%1 is a list of errors that occurred during copying of tracks",
-                          "Error causes: %1<br>", QStringList( m_copyErrors.values() ).join( "<br>" ) );
+                          "Error causes: %1<br>", QStringList( m_copyErrors.values() ).join( QStringLiteral("<br>") ) );
     }
     KMessageBox::detailedError( nullptr, text, details, caption );
 }

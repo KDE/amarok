@@ -254,7 +254,7 @@ public:
 
             if ( size <= 1 )
                 size = 100;
-            QString sizeKey = QString::number( size ) + '@';
+            QString sizeKey = QString::number( size ) + QLatin1Char('@');
 
             QImage image;
             QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );

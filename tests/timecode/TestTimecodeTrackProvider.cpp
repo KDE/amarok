@@ -43,28 +43,28 @@ void TestTimecodeTrackProvider::cleanupTestCase()
 QString
 TestTimecodeTrackProvider::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 {
-    QVERIFY( !m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3") ) );
-    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:0-23") ) );
-    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:23-42") ) );
-    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:42-23") ) );
-    QVERIFY( !m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:-12-42") ) );
+    QVERIFY( !m_testProvider->possiblyContainsTrack( QUrl(QStringLiteral("file:///home/test/test.mp3")) ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl(QStringLiteral("file:///home/test/test.mp3:0-23")) ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl(QStringLiteral("file:///home/test/test.mp3:23-42")) ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl(QStringLiteral("file:///home/test/test.mp3:42-23")) ) );
+    QVERIFY( !m_testProvider->possiblyContainsTrack( QUrl(QStringLiteral("file:///home/test/test.mp3:-12-42")) ) );
 }
 
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
     QUrl testUrl;
-    testUrl = QUrl::fromLocalFile(dataPath( "data/audio/album/" ));
+    testUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/album/") ));
     testUrl = testUrl.adjusted(QUrl::StripTrailingSlash);
-    testUrl.setPath(testUrl.path() + '/' + ( "Track01.ogg:23-42" ));
+    testUrl.setPath(testUrl.path() + QLatin1Char('/') + QStringLiteral( "Track01.ogg:23-42" ));
 
     Meta::TrackPtr resultTrack = m_testProvider->trackForUrl( testUrl );
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().path(), dataPath( "data/audio/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().path(), dataPath( QStringLiteral("data/audio/album/Track01.ogg") ) );
 }

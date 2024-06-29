@@ -435,7 +435,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
             QAction *trashAction = new QAction( QIcon::fromTheme( QStringLiteral("user-trash") ),
                                                 i18n( "Move Tracks to Trash" ),
                                                 &menu );
-            trashAction->setProperty( "popupdropper_svg_id", "delete" );
+            trashAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
             trashAction->setShortcut( Qt::Key_Delete );
@@ -446,7 +446,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
             QAction *deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("remove-amarok") ),
                                                  i18n( "Delete Tracks" ),
                                                  &menu );
-            deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+            deleteAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
             deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
@@ -469,7 +469,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 void
 CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    if( event->button() == Qt::MidButton )
+    if( event->button() == Qt::MiddleButton )
     {
         event->accept();
         return;
@@ -517,7 +517,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    if( event->button() == Qt::MidButton )
+    if( event->button() == Qt::MiddleButton )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::OnMiddleClickOnSelectedItems );
@@ -1087,7 +1087,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
         {
             m_appendAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-add-amarok") ),
                                           i18n( "&Add to Playlist" ), this );
-            m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+            m_appendAction->setProperty( "popupdropper_svg_id", QStringLiteral("append") );
             connect( m_appendAction, &QAction::triggered, this, &CollectionTreeView::slotAppendChildTracks );
         }
 
@@ -1098,7 +1098,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
             m_loadAction = new QAction(
                         i18nc( "Replace the currently loaded tracks with these",
                                "&Replace Playlist" ), this );
-            m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+            m_loadAction->setProperty( "popupdropper_svg_id", QStringLiteral("load") );
             connect( m_loadAction, &QAction::triggered,
                      this, &CollectionTreeView::slotReplacePlaylistWithChildTracks );
         }
@@ -1147,7 +1147,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
                     {
                         m_organizeAction = new QAction( QIcon::fromTheme(QStringLiteral("folder-open") ),
                                     i18nc( "Organize Files", "Organize Files" ), this );
-                        m_organizeAction->setProperty( "popupdropper_svg_id", "organize" );
+                        m_organizeAction->setProperty( "popupdropper_svg_id", QStringLiteral("organize") );
                         connect( m_organizeAction, &QAction::triggered,
                                  this, &CollectionTreeView::slotOrganize );
                     }
@@ -1180,7 +1180,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
         {
             m_editAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                         i18n( "&Edit Track Details" ), this );
-            setProperty( "popupdropper_svg_id", "edit" );
+            setProperty( "popupdropper_svg_id", QStringLiteral("edit") );
             connect( m_editAction, &QAction::triggered, this, &CollectionTreeView::slotEditTracks );
         }
         actions.append( m_editAction );
@@ -1280,7 +1280,7 @@ CollectionTreeView::getCopyActions( const QModelIndexList &indices )
             for( Collection *coll : writableCollections )
             {
                 QAction *action = new QAction( coll->icon(), coll->prettyName(), nullptr );
-                action->setProperty( "popupdropper_svg_id", "collection" );
+                action->setProperty( "popupdropper_svg_id", QStringLiteral("collection") );
                 connect( action, &QAction::triggered, this, &CollectionTreeView::slotCopyTracks );
 
                 currentCopyDestination.insert( action, coll );
@@ -1317,7 +1317,7 @@ CollectionTreeView::getMoveActions( const QModelIndexList &indices )
                 for( Collection *coll : writableCollections )
                 {
                     QAction *action = new QAction( coll->icon(), coll->prettyName(), nullptr );
-                    action->setProperty( "popupdropper_svg_id", "collection" );
+                    action->setProperty( "popupdropper_svg_id", QStringLiteral("collection") );
                     connect( action, &QAction::triggered, this, &CollectionTreeView::slotMoveTracks );
                     currentMoveDestination.insert( action, coll );
                 }

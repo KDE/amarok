@@ -28,7 +28,6 @@
 #include <QStringList>
 
 #include <kio/job.h>
-#include <kio/jobclasses.h>
 
 
 using namespace MetaProxy;

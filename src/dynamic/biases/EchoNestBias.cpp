@@ -383,7 +383,7 @@ QUrl Dynamic::EchoNestBias::createUrl( const QString &method, QMultiMap< QString
     QUrlQuery query;
     url.setScheme( QStringLiteral("http") );
     url.setHost( QStringLiteral("developer.echonest.com") );
-    url.setPath( "/api/v4/" + method );
+    url.setPath( QStringLiteral("/api/v4/") + method );
 
     // take care of the ID possibility  manually
     // Qt setQueryItems doesn't encode a bunch of stuff, so we do it manually

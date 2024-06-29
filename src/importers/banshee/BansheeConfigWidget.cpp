@@ -28,11 +28,11 @@ BansheeConfigWidget::BansheeConfigWidget( const QVariantMap &config, QWidget *pa
     : SimpleImporterConfigWidget( QStringLiteral("Banshee"), config, parent, f )
 {
     const QString defaultPath = QDir::toNativeSeparators(
-                QDir::homePath() + "/.config/banshee-1/banshee.db" );
+                QDir::homePath() + QStringLiteral("/.config/banshee-1/banshee.db") );
 
     KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
     dbField->setFilter( QStringLiteral("banshee.db") );
-    addField( "dbPath", i18n( "Database location" ), dbField, "text" );
+    addField( QStringLiteral("dbPath"), i18n( "Database location" ), dbField, QStringLiteral("text") );
 }
 
 BansheeConfigWidget::~BansheeConfigWidget()

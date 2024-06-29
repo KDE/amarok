@@ -34,7 +34,7 @@ static QAtomicInt libraryInitRef;
 MySqlServerStorage::MySqlServerStorage()
     : MySqlStorage()
 {
-    m_debugIdent = "MySQL-server";
+    m_debugIdent = QStringLiteral("MySQL-server");
 }
 
 bool
@@ -51,8 +51,8 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
         {
             // mysql sources show that there is only 0 and 1 as return code
             // and it can only fail because of memory or thread issues.
-            reportError( "library initialization "
-                         "failed, return code " + QString::number( ret ) );
+            reportError( QStringLiteral("library initialization "
+                         "failed, return code ") + QString::number( ret ) );
             libraryInitRef.deref();
             return false;
         }
@@ -61,14 +61,14 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
     m_db = mysql_init( nullptr );
     if( !m_db )
     {
-        reportError( "call to mysql_init" );
+        reportError( QStringLiteral("call to mysql_init") );
         return false;
     }
 
     //first here, the right way for >= 5.1.6
     my_bool reconnect = true;
     if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
-        reportError( "Asking for automatic reconnect did not succeed!" );
+        reportError( QStringLiteral("Asking for automatic reconnect did not succeed!") );
     else
         debug() << "Automatic reconnect successfully activated";
 
@@ -83,7 +83,7 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
                 CLIENT_COMPRESS )
         )
     {
-        reportError( "call to mysql_real_connect" );
+        reportError( QStringLiteral("call to mysql_real_connect") );
         mysql_close( m_db );
         m_db = nullptr;
         return false;
@@ -92,7 +92,7 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
     //but in versions prior to 5.1.6, have to call it after every real_connect
     reconnect = true;
     if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
-        reportError( "Asking for automatic reconnect did not succeed!" );
+        reportError( QStringLiteral("Asking for automatic reconnect did not succeed!") );
     else
         debug() << "Automatic reconnect successfully activated";
 
@@ -137,17 +137,17 @@ MySqlServerStorage::query( const QString &query )
     int res = mysql_ping( m_db );
     if( res )
     {
-        reportError( "mysql_ping failed!" );
+        reportError( QStringLiteral("mysql_ping failed!") );
         return QStringList();
     }
 
     if( tid != mysql_thread_id( m_db ) )
     {
         debug() << "NOTE: MySQL server had gone away, ping reconnected it";
-        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-            reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "USE %1" ).arg( m_databaseName ).toUtf8() ) )
-            reportError( "Could not select database" );
+        if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8'" ).toUtf8() ) )
+            reportError( QStringLiteral("SET NAMES 'utf8' died") );
+        if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( m_databaseName ).toUtf8() ) )
+            reportError( QStringLiteral("Could not select database") );
     }
 
 

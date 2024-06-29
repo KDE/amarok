@@ -22,18 +22,18 @@
 
 namespace MusicBrainz
 {
-    static const QString ARTISTID       = "mb:ArtistID";
-    static const QString RELEASEGROUPID = "mb:ReleaseGroupID";
-    static const QString RELEASEID      = "mb:ReleaseID";
-    static const QString RELEASELIST    = "mb:ReleaseList";
-    static const QString TRACKCOUNT     = "mb:TrackCount";
-    static const QString TRACKID        = "mb:TrackID";
-    static const QString TRACKINFO      = "mb:TrackInfo";
+    static const QString ARTISTID       = QStringLiteral("mb:ArtistID");
+    static const QString RELEASEGROUPID = QStringLiteral("mb:ReleaseGroupID");
+    static const QString RELEASEID      = QStringLiteral("mb:ReleaseID");
+    static const QString RELEASELIST    = QStringLiteral("mb:ReleaseList");
+    static const QString TRACKCOUNT     = QStringLiteral("mb:TrackCount");
+    static const QString TRACKID        = QStringLiteral("mb:TrackID");
+    static const QString TRACKINFO      = QStringLiteral("mb:TrackInfo");
 
-    static const QString MUSICBRAINZ    = "mb:musicbrainz";
-    static const QString MUSICDNS       = "mb:musicdns";
+    static const QString MUSICBRAINZ    = QStringLiteral("mb:musicbrainz");
+    static const QString MUSICDNS       = QStringLiteral("mb:musicdns");
 
-    static const QString SIMILARITY     = "mb:similarity";
+    static const QString SIMILARITY     = QStringLiteral("mb:similarity");
     static const qreal   MINSIMILARITY  = 0.6;
 }
 

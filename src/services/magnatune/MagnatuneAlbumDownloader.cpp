@@ -122,11 +122,11 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     QString coverUrlString = m_currentAlbumInfo.coverUrl();
 
-    QUrl downloadUrl( coverUrlString.replace( "_200.jpg", ".jpg") );
+    QUrl downloadUrl( coverUrlString.replace( QStringLiteral("_200.jpg"), QStringLiteral(".jpg")) );
 
     debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
 
-    m_coverDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_coverDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( finalAlbumPath + QStringLiteral("/cover.jpg") ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
     connect( m_coverDownloadJob, &KJob::result, this, &MagnatuneAlbumDownloader::coverDownloadComplete );
 

@@ -43,7 +43,7 @@ InfoScript::InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine )
 QString
 InfoScript::version() const
 {
-    return AMAROK_VERSION;
+    return QStringLiteral(AMAROK_VERSION);
 }
 
 QString
@@ -62,5 +62,5 @@ InfoScript::iconPath( const QString& name, int size ) const
 QString
 InfoScript::scriptConfigPath( const QString& name ) const
 {
-    return Amarok::saveLocation( "scripts/" + name );
+    return Amarok::saveLocation( QStringLiteral("scripts/") + name );
 }

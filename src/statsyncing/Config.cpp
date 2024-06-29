@@ -81,7 +81,7 @@ Config::data( const QModelIndex &index, int role ) const
         {
             if( !provider.icon.isNull() )
                 return provider.icon;
-            return QIcon::fromTheme( provider.online ? "image-missing" : "network-disconnect" );
+            return QIcon::fromTheme( provider.online ? QStringLiteral("image-missing") : QStringLiteral("network-disconnect") );
         }
         case Qt::CheckStateRole:
             return provider.enabled ? Qt::Checked : Qt::Unchecked;

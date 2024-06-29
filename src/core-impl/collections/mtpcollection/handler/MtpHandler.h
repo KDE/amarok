@@ -43,10 +43,6 @@
 #include <QTemporaryFile>
 
 
-class QString;
-class QMutex;
-class QStringList;
-
 namespace Collections {
     class MtpCollection;
 }

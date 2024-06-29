@@ -27,10 +27,10 @@ AmpacheConfig::AmpacheConfig()
 void
 AmpacheConfig::load()
 {
-    KConfigGroup config = Amarok::config( "Service_Ampache" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Service_Ampache") );
 
     int serverIndex = 0;
-    QString serverEntry = "server" + QString::number( serverIndex );
+    QString serverEntry = QStringLiteral("server") + QString::number( serverIndex );
 
     while ( config.hasKey( serverEntry ) )
     {
@@ -48,7 +48,7 @@ AmpacheConfig::load()
         m_servers.append( entry );
 
         serverIndex++;
-        serverEntry = "server" + QString::number( serverIndex );
+        serverEntry = QStringLiteral("server") + QString::number( serverIndex );
     }
 }
 
@@ -56,17 +56,17 @@ void
 AmpacheConfig::save()
 {
     //delete all entries to make sure the indexes are correct
-    KConfigGroup config = Amarok::config( "Service_Ampache" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Service_Ampache") );
 
     int serverIndex = 0;
-    QString serverEntry = "server" + QString::number( serverIndex );
+    QString serverEntry = QStringLiteral("server") + QString::number( serverIndex );
 
     while ( config.hasKey ( serverEntry ) )
     {
 //         kDebug( 14310 ) << "deleting " << serverEntry;
         config.deleteEntry( serverEntry );
         serverIndex++;
-        serverEntry = "server" + QString::number( serverIndex );
+        serverEntry = QStringLiteral("server") + QString::number( serverIndex );
     }
 
     for( int i = 0; i < m_servers.size(); i++ )
@@ -79,7 +79,7 @@ AmpacheConfig::save()
         list << entry.username;
         list << entry.password;
 
-        serverEntry = "server" + QString::number( i );
+        serverEntry = QStringLiteral("server") + QString::number( i );
 //         kDebug( 14310 ) << "adding " << serverEntry;
         config.writeEntry( serverEntry, list );
     }

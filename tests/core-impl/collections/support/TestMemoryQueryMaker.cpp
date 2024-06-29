@@ -53,35 +53,35 @@ TestMemoryQueryMaker::initTestCase()
     MetaMock *track;
 
     QVariantMap map;
-    map.insert( Meta::Field::UNIQUEID,  "1" );
-    map.insert( Meta::Field::TITLE,  "Skater Boy" );
+    map.insert( Meta::Field::UNIQUEID, QStringLiteral("1") );
+    map.insert( Meta::Field::TITLE, QStringLiteral("Skater Boy") );
     map.insert( Meta::Field::RATING, 3 );
 //    map.insert( Meta::Field::TYPE, int(Amarok::Mp3) );
     map.insert( Meta::Field::TRACKNUMBER, 3 );
     track = new MetaMock( map );
-    track->m_artist = new MockArtist("Avril Lavigne");
-    track->m_album = new MockAlbum("Let Go");
+    track->m_artist = new MockArtist(QStringLiteral("Avril Lavigne"));
+    track->m_album = new MockAlbum(QStringLiteral("Let Go"));
     m_mc->addTrack( Meta::TrackPtr( track ) );
 
-    map.insert( Meta::Field::UNIQUEID,  "2" );
-    map.insert( Meta::Field::TITLE,  "Substitute" );
+    map.insert( Meta::Field::UNIQUEID, QStringLiteral("2") );
+    map.insert( Meta::Field::TITLE, QStringLiteral("Substitute") );
     map.insert( Meta::Field::RATING, 4 );
  //   map.insert( Meta::Field::TYPE, int(Amarok::Ogg) );
     map.insert( Meta::Field::TRACKNUMBER, 1 );
     track = new MetaMock( map );
-    track->m_artist = new MockArtist("Clout" );
-    track->m_album = new MockAlbum("Substitute" );
+    track->m_artist = new MockArtist(QStringLiteral("Clout") );
+    track->m_album = new MockAlbum(QStringLiteral("Substitute") );
     m_mc->addTrack( Meta::TrackPtr( track ) );
 
-    map.insert( Meta::Field::UNIQUEID,  "3" );
-    map.insert( Meta::Field::TITLE,  "I Say A Little Prayer" );
+    map.insert( Meta::Field::UNIQUEID, QStringLiteral("3") );
+    map.insert( Meta::Field::TITLE, QStringLiteral("I Say A Little Prayer") );
     map.insert( Meta::Field::RATING, 2 );
   //  map.insert( Meta::Field::TYPE, int(Amarok::Wma) );
     map.insert( Meta::Field::TRACKNUMBER, 1 );
     map.insert( Meta::Field::DISCNUMBER, 2 );
     track = new MetaMock( map );
-    track->m_artist = new MockArtist("The Bosshoss" );
-    track->m_album = new MockAlbum("Rodeo Radio" );
+    track->m_artist = new MockArtist(QStringLiteral("The Bosshoss") );
+    track->m_album = new MockAlbum(QStringLiteral("Rodeo Radio") );
     m_mc->addTrack( Meta::TrackPtr( track ) );
 }
 
@@ -96,11 +96,11 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     Meta::MockTrack *mock = new Meta::MockTrack();
-    EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
+    EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QStringLiteral("track3") ) );
     Meta::TrackPtr trackPtr( mock );
     mc->addTrack( trackPtr );
 
-    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc.toWeakRef(), "test" );
+    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc.toWeakRef(), QStringLiteral("test") );
     qm->setQueryType( Collections::QueryMaker::Track );
 
     qm->run();
@@ -116,7 +116,7 @@ TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
 
-    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc, "test" );
+    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( mc, QStringLiteral("test") );
     qm->setQueryType( Collections::QueryMaker::Track );
 
     QSignalSpy spy( qm, &Collections::QueryMaker::queryDone);
@@ -135,7 +135,7 @@ public:
     TestStringMemoryFilter() : StringMemoryFilter() {}
 
 protected:
-    QString value( const Meta::TrackPtr &track ) const override { Q_UNUSED(track); return "abcdef"; }
+    QString value( const Meta::TrackPtr &track ) const override { Q_UNUSED(track); return QStringLiteral("abcdef"); }
 
 };
 
@@ -144,7 +144,7 @@ TestMemoryQueryMaker::testStringMemoryFilterSpeedFullMatch()
 {
     //Test 1: match complete string
     TestStringMemoryFilter filter1;
-    filter1.setFilter( QString( "abcdef" ), true, true );
+    filter1.setFilter( QStringLiteral( "abcdef" ), true, true );
 
     QBENCHMARK {
         filter1.filterMatches( Meta::TrackPtr() );
@@ -156,7 +156,7 @@ TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchBegin()
 {
     //Test 2: match beginning of string
     TestStringMemoryFilter filter2;
-    filter2.setFilter( QString( "abcd" ), true, false );
+    filter2.setFilter( QStringLiteral( "abcd" ), true, false );
 
     QBENCHMARK {
         filter2.filterMatches( Meta::TrackPtr() );
@@ -168,7 +168,7 @@ TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchEnd()
 {
     //Test 3: match end of string
     TestStringMemoryFilter filter3;
-    filter3.setFilter( QString( "cdef" ), false, true );
+    filter3.setFilter( QStringLiteral( "cdef" ), false, true );
 
     QBENCHMARK {
         filter3.filterMatches( Meta::TrackPtr() );
@@ -180,7 +180,7 @@ TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchAnywhere()
 {
     //Test 4: match anywhere in string
     TestStringMemoryFilter filter4;
-    filter4.setFilter( QString( "bcde" ), false, false );
+    filter4.setFilter( QStringLiteral( "bcde" ), false, false );
 
     QBENCHMARK {
         filter4.filterMatches( Meta::TrackPtr() );
@@ -216,30 +216,30 @@ TestMemoryQueryMaker::testFilterTitle()
     Meta::TrackList tracks;
 
     // -- just get all the tracks
-    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 3 );
 
     // -- filter for title
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->addFilter( Meta::valTitle, "Skater", true, false );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
-    QCOMPARE( tracks.first()->name(), QString("Skater Boy" ) );
+    QCOMPARE( tracks.first()->name(), QStringLiteral("Skater Boy" ) );
 
     // -- filter for album
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->addFilter( Meta::valAlbum, "S", false, false );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
-    QCOMPARE( tracks.first()->name(), QString("Substitute" ) );
+    QCOMPARE( tracks.first()->name(), QStringLiteral("Substitute" ) );
 
     // -- filter for artist
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->addFilter( Meta::valArtist, "Lavigne", false, true );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
-    QCOMPARE( tracks.first()->name(), QString("Skater Boy" ) );
+    QCOMPARE( tracks.first()->name(), QStringLiteral("Skater Boy" ) );
 }
 
 void
@@ -249,14 +249,14 @@ TestMemoryQueryMaker::testFilterRating()
     Collections::MemoryQueryMaker *qm = nullptr;
 
     // -- filter for Rating
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->addNumberFilter( Meta::valRating, 3, Collections::QueryMaker::Equals );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
-    QCOMPARE( tracks.first()->name(), QString("Skater Boy" ) );
+    QCOMPARE( tracks.first()->name(), QStringLiteral("Skater Boy" ) );
 
     // -- filter for Rating
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->addNumberFilter( Meta::valRating, 4, Collections::QueryMaker::LessThan );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 2 );
@@ -268,14 +268,14 @@ TestMemoryQueryMaker::testFilterAnd()
     Meta::TrackList tracks;
     Collections::MemoryQueryMaker *qm = nullptr;
 
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->beginAnd();
     qm->addNumberFilter( Meta::valTrackNr, 1, Collections::QueryMaker::Equals );
     qm->addFilter( Meta::valAlbum, "o", false, false );
     qm->endAndOr();
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
-    QCOMPARE( tracks.first()->album()->name(), QString("Rodeo Radio" ) );
+    QCOMPARE( tracks.first()->album()->name(), QStringLiteral("Rodeo Radio" ) );
 }
 
 void
@@ -285,7 +285,7 @@ TestMemoryQueryMaker::testFilterFormat()
     Collections::MemoryQueryMaker *qm = nullptr;
 
     // -- filter for title
-    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->addNumberFilter( Meta::valFormat,
                          int(Amarok::Mp3),
                          Collections::QueryMaker::Equals );

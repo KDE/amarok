@@ -236,7 +236,7 @@ BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 
 
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
-    : BreadcrumbItemButton( QIcon::fromTheme( "bookmark-new-list" ), QString(), parent )
+    : BreadcrumbItemButton( QIcon::fromTheme( QStringLiteral("bookmark-new-list") ), QString(), parent )
     , m_urlsCommand( urlsCommand )
     , m_copyToClipboardAction( nullptr )
 {
@@ -260,16 +260,16 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
     QMenu * menu = new QMenu();
     menu->setTitle( i18n("Amarok Bookmarks" ) );
 
-    if( m_urlsCommand == "navigate" )
-        menu->addAction( Amarok::actionCollection()->action( "bookmark_browser" ) );
-    else if( m_urlsCommand == "playlist" )
+    if( m_urlsCommand == QStringLiteral("navigate") )
+        menu->addAction( Amarok::actionCollection()->action( QStringLiteral("bookmark_browser") ) );
+    else if( m_urlsCommand == QStringLiteral("playlist") )
     {
-        menu->addAction( Amarok::actionCollection()->action( "bookmark_playlistview" ) );
+        menu->addAction( Amarok::actionCollection()->action( QStringLiteral("bookmark_playlistview") ) );
         debug()<<"Adding bookmark playlist action";
     }
-    else if( m_urlsCommand == "context" )
+    else if( m_urlsCommand == QStringLiteral("context") )
     {
-        menu->addAction( Amarok::actionCollection()->action( "bookmark_contextview" ) );
+        menu->addAction( Amarok::actionCollection()->action( QStringLiteral("bookmark_contextview") ) );
         debug()<<"Adding bookmark context view action";
     }
     else
@@ -277,13 +277,13 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 
     if( !m_copyToClipboardAction )
     {
-        m_copyToClipboardAction = new QAction( QIcon::fromTheme( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
+        m_copyToClipboardAction = new QAction( QIcon::fromTheme( QStringLiteral("klipper") ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
         connect( m_copyToClipboardAction, &QAction::triggered, this, &BreadcrumbUrlMenuButton::copyCurrentToClipboard );
     }
 
     menu->addAction( m_copyToClipboardAction );
 
-    menu->addAction( Amarok::actionCollection()->action( "bookmark_manager" ) );
+    menu->addAction( Amarok::actionCollection()->action( QStringLiteral("bookmark_manager") ) );
 
     menu->addSeparator();
 
@@ -311,17 +311,17 @@ BreadcrumbUrlMenuButton::copyCurrentToClipboard()
 
     QString urlString;
 
-    if( m_urlsCommand == "navigate" )
+    if( m_urlsCommand == QStringLiteral("navigate") )
     {
         AmarokUrl url = The::amarokUrlHandler()->createBrowserViewBookmark();
         urlString = url.url();
     }
-    else if( m_urlsCommand == "playlist" )
+    else if( m_urlsCommand == QStringLiteral("playlist") )
     {
         AmarokUrl url = The::amarokUrlHandler()->createPlaylistViewBookmark();
         urlString = url.url();
     }
-    else if( m_urlsCommand == "context" )
+    else if( m_urlsCommand == QStringLiteral("context") )
     {
         AmarokUrl url = The::amarokUrlHandler()->createContextViewBookmark();
         urlString = url.url();

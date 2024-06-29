@@ -61,8 +61,8 @@ AmarokEmbeddedSqlConnection::connection()
         return QSqlDatabase::database( m_connectionName );
     }
 
-    QTemporaryFile pidFile( QDir::temp().filePath( "amarok_importer-XXXXXX.pid" ) );
-    QTemporaryFile socket( QDir::temp().filePath( "amarok_importer-XXXXXX.socket" ) );
+    QTemporaryFile pidFile( QDir::temp().filePath( QStringLiteral("amarok_importer-XXXXXX.pid") ) );
+    QTemporaryFile socket( QDir::temp().filePath( QStringLiteral("amarok_importer-XXXXXX.socket") ) );
     pidFile.open();
     socket.open();
 
@@ -70,13 +70,13 @@ AmarokEmbeddedSqlConnection::connection()
     const int port = ( QRandomGenerator::global()->generate() % ( 65536 - 3307 ) ) + 3307;
 
     QSqlDatabase::removeDatabase( m_connectionName );
-    QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", m_connectionName );
-    db.setDatabaseName  ( "amarok"    );
-    db.setHostName      ( "localhost" );
-    db.setUserName      ( "root"      );
-    db.setPassword      ( ""          );
+    QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral("QMYSQL"), m_connectionName );
+    db.setDatabaseName  ( QStringLiteral("amarok")    );
+    db.setHostName      ( QStringLiteral("localhost") );
+    db.setUserName      ( QStringLiteral("root")      );
+    db.setPassword      ( QStringLiteral("")          );
     db.setPort          ( port        );
-    db.setConnectOptions( "UNIX_SOCKET=" + QFileInfo( socket ).absoluteFilePath() );
+    db.setConnectOptions( QStringLiteral("UNIX_SOCKET=") + QFileInfo( socket ).absoluteFilePath() );
 
     if( startServer( port, QFileInfo( socket ).absoluteFilePath(),
                      QFileInfo( pidFile ).absoluteFilePath() ) )
@@ -145,7 +145,7 @@ AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketP
          << QStringLiteral("--pid-file=") + pidPath;
 
     m_srv.start( m_mysqld.absoluteFilePath(), args );
-    debug() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath() + ' ' + args.join(QLatin1Char(' '));
+    debug() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath() + QLatin1Char(' ') + args.join(QLatin1Char(' '));
 
     // Wait for any of the startup conditions to be true
     loop.exec();

@@ -44,7 +44,7 @@ class MyCollectionLocation : public CollectionLocation
 public:
     Collections::CollectionTestImpl *coll;
 
-    QString prettyLocation() const override { return "foo"; }
+    QString prettyLocation() const override { return QStringLiteral("foo"); }
     bool isWritable() const override { return true; }
     bool remove( const Meta::TrackPtr &track )
     {
@@ -88,8 +88,8 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     ::testing::Mock::AllowLeak( track );
     Meta::TrackPtr trackPtr( track );
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
-    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + QLatin1Char('_') + artistName + QLatin1Char('_') + albumName ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( QLatin1Char('/') + track->uidUrl() ) ) );
     coll->mc->addTrack( trackPtr );
 
     Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName, QString() /* no album artist */ );
@@ -166,10 +166,10 @@ TestUnionJob::init()
 void
 TestUnionJob::testEmptyA()
 {
-    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
-    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl(QStringLiteral("A"));
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl(QStringLiteral("B"));
 
-    addMockTrack( collB, "track1", "artist1", "album1" );
+    addMockTrack( collB, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
     QCOMPARE( collA->mc->trackMap().count(), 0 );
     QCOMPARE( collB->mc->trackMap().count(), 1 );
     QVERIFY( trackCopyCount.isEmpty() );
@@ -191,10 +191,10 @@ TestUnionJob::testEmptyA()
 void
 TestUnionJob::testEmptyB()
 {
-    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
-    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl(QStringLiteral("A"));
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl(QStringLiteral("B"));
 
-    addMockTrack( collA, "track1", "artist1", "album1" );
+    addMockTrack( collA, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
     QCOMPARE( collA->mc->trackMap().count(), 1 );
     QCOMPARE( collB->mc->trackMap().count(), 0 );
     QVERIFY( trackCopyCount.isEmpty() );
@@ -216,11 +216,11 @@ TestUnionJob::testEmptyB()
 void
 TestUnionJob::testAddTrackToBoth()
 {
-    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
-    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl(QStringLiteral("A"));
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl(QStringLiteral("B"));
 
-    addMockTrack( collA, "track1", "artist1", "album1" );
-    addMockTrack( collB, "track2", "artist2", "album2" );
+    addMockTrack( collA, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( collB, QStringLiteral("track2"), QStringLiteral("artist2"), QStringLiteral("album2") );
     QCOMPARE( collA->mc->trackMap().count(), 1 );
     QCOMPARE( collB->mc->trackMap().count(), 1 );
     QVERIFY( trackCopyCount.isEmpty() );
@@ -243,12 +243,12 @@ TestUnionJob::testAddTrackToBoth()
 void
 TestUnionJob::testTrackAlreadyInBoth()
 {
-    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
-    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl(QStringLiteral("A"));
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl(QStringLiteral("B"));
 
-    addMockTrack( collA, "track1", "artist1", "album1" );
-    addMockTrack( collB, "track1", "artist1", "album1" );
-    addMockTrack( collB, "track2", "artist2", "album2" );
+    addMockTrack( collA, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( collB, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( collB, QStringLiteral("track2"), QStringLiteral("artist2"), QStringLiteral("album2") );
     QCOMPARE( collA->mc->trackMap().count(), 1 );
     QCOMPARE( collB->mc->trackMap().count(), 2 );
     QVERIFY( trackCopyCount.isEmpty() );

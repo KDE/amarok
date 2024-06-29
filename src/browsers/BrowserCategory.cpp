@@ -105,7 +105,7 @@ BrowserCategory::setBackgroundImage(const QString& path)
     // Hack alert: Use the class name of the most derived object (using polymorphism) for CSS
     // This is required to limit the style to this specific class only (avoiding cascading)
     // \sa http://doc.qt.nokia.com/latest/stylesheet-syntax.html#widgets-inside-c-namespaces
-    const QString escapedClassName = QString( metaObject()->className() ).replace( QLatin1String("::"), QLatin1String("--") );
+    const QString escapedClassName = QString( QLatin1String( metaObject()->className() ) ).replace( QLatin1String("::"), QLatin1String("--") );
     setStyleSheet( QStringLiteral("%1 { background-image: url(\"%2\"); \
             background-repeat: no-repeat; \
             background-attachment: fixed; \

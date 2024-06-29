@@ -195,16 +195,16 @@ FilenameLayoutWidget::createToken(qint64 value) const
         { i18nForField( valGenre ),       iconForField( valGenre ),       Genre },
         { i18nForField( valFormat ),      iconForField( valFormat ),      FileType },
 
-        { i18n( "Ignore" ), "filename-ignore-amarok", Ignore },
-        { i18n( "Folder" ), "filename-folder-amarok", Folder },
-        { i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial },
+        { i18n( "Ignore" ), QStringLiteral("filename-ignore-amarok"), Ignore },
+        { i18n( "Folder" ), QStringLiteral("filename-folder-amarok"), Folder },
+        { i18nc( "Artist's Initial", "Initial" ), QStringLiteral("filename-initial-amarok"), Initial },
 
-        { "/", "filename-slash-amarok", Slash },
-        { "_", "filename-underscore-amarok", Underscore },
-        { "-", "filename-dash-amarok", Dash },
-        { ".", "filename-dot-amarok", Dot },
-        { " ", "filename-space-amarok", Space },
-        { i18n( "Collection root" ), "drive-harddisk", CollectionRoot },
+        { QStringLiteral("/"), QStringLiteral("filename-slash-amarok"), Slash },
+        { QStringLiteral("_"), QStringLiteral("filename-underscore-amarok"), Underscore },
+        { QStringLiteral("-"), QStringLiteral("filename-dash-amarok"), Dash },
+        { QStringLiteral("."), QStringLiteral("filename-dot-amarok"), Dot },
+        { QStringLiteral(" "), QStringLiteral("filename-space-amarok"), Space },
+        { i18n( "Collection root" ), QStringLiteral("drive-harddisk"), CollectionRoot },
         { QString(), nullptr, Space }
     };
 
@@ -283,7 +283,7 @@ FilenameLayoutWidget::setAdvancedMode( bool isAdvanced )
         m_schemeStack->setCurrentIndex( 0 );
     }
 
-    QString entryValue  = m_advancedMode ? "Advanced" : "Basic";
+    QString entryValue  = m_advancedMode ? QStringLiteral("Advanced") : QStringLiteral("Basic");
 
     Amarok::config( m_configCategory ).writeEntry( "Mode", entryValue );
 }
@@ -291,7 +291,7 @@ FilenameLayoutWidget::setAdvancedMode( bool isAdvanced )
 QString
 FilenameLayoutWidget::dropTargetScheme() const
 {
-    QString parsableScheme = "";
+    QString parsableScheme = QStringLiteral("");
 
     QList< Token *> list = m_dropTarget->tokensAtRow();
 
@@ -374,7 +374,7 @@ FilenameLayoutWidget::populateFormatList( const QString& custom )
     for( const QString &str : presets_raw )
     {
         QStringList items;
-        items = str.split( "#DELIM#", Qt::SkipEmptyParts );
+        items = str.split( QStringLiteral("#DELIM#"), Qt::SkipEmptyParts );
         if( items.size() < 2 )
             continue;
         m_presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
@@ -401,7 +401,7 @@ FilenameLayoutWidget::saveFormatList() const
 
     for( int i = 0; i < n; ++i )
     {
-        QString item = "%1#DELIM#%2";
+        QString item = QStringLiteral("%1#DELIM#%2");
         QString scheme = m_presetCombo->itemData( i ).toString();
         QString label = m_presetCombo->itemText( i );
         item = item.arg( label, scheme );

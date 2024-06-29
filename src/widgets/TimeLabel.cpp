@@ -30,7 +30,7 @@
 #include <QMouseEvent>
 
 TimeLabel::TimeLabel(QWidget* parent)
-    : QLabel( " 0:00:00 ", parent )
+    : QLabel( QStringLiteral(" 0:00:00 "), parent )
 {
     setFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
     setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
@@ -47,7 +47,7 @@ TimeLabel::setShowTime(bool showTime) {
     m_showTime = showTime;
     if( !showTime )
     {
-        QLabel::setText( "" );
+        QLabel::setText( QStringLiteral("") );
     }
 }
 

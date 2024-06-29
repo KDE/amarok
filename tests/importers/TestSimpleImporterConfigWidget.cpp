@@ -39,7 +39,7 @@ TestSimpleImporterConfigWidget::TestSimpleImporterConfigWidget()
 void
 TestSimpleImporterConfigWidget::constructorShouldCreateTargetNameRow()
 {
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
 
     const QLabel *label = nullptr;
     const QLineEdit *field = nullptr;
@@ -62,7 +62,7 @@ TestSimpleImporterConfigWidget::constructorShouldCreateTargetNameRow()
 void
 TestSimpleImporterConfigWidget::targetNameShouldBeSetToDefaultValue()
 {
-    const QString targetName = "testTargetName";
+    const QString targetName = QStringLiteral("testTargetName");
     SimpleImporterConfigWidget widget( targetName, QVariantMap() );
 
     const QLineEdit *field = nullptr;
@@ -77,12 +77,12 @@ TestSimpleImporterConfigWidget::targetNameShouldBeSetToDefaultValue()
 void
 TestSimpleImporterConfigWidget::targetNameShouldBeSetToConfigValueIfExists()
 {
-    const QString targetName = "nameOverride";
+    const QString targetName = QStringLiteral("nameOverride");
 
     QVariantMap cfg;
     cfg.insert( "name", targetName );
 
-    SimpleImporterConfigWidget widget( "testTargetName", cfg );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), cfg );
 
     const QLineEdit *field = nullptr;
     for( auto const &obj : widget.children() )
@@ -99,8 +99,8 @@ TestSimpleImporterConfigWidget::addFieldShouldTakeFieldOwnership()
     QPointer<QWidget> lineEdit( new QLineEdit() );
 
     {
-        SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
-        widget.addField( "configVal", "label", lineEdit.data(), "text" );
+        SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
+        widget.addField( QStringLiteral("configVal"), QStringLiteral("label"), lineEdit.data(), QStringLiteral("text") );
 
         QVERIFY( !lineEdit.isNull() );
     }
@@ -111,10 +111,10 @@ TestSimpleImporterConfigWidget::addFieldShouldTakeFieldOwnership()
 void
 TestSimpleImporterConfigWidget::addFieldShouldAddNewRow()
 {
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
 
     QWidget *field = new QLineEdit;
-    widget.addField( "configVal", "testLabel", field, "text" );
+    widget.addField( QStringLiteral("configVal"), QStringLiteral("testLabel"), field, QStringLiteral("text") );
 
     bool foundField = false;
     bool foundLabel = false;
@@ -124,7 +124,7 @@ TestSimpleImporterConfigWidget::addFieldShouldAddNewRow()
         if( obj == field )
             foundField = true;
         else if( const QLabel *candidate = qobject_cast<const QLabel*>( obj ) )
-            if( candidate->text() == "testLabel" )
+            if( candidate->text() == QStringLiteral("testLabel") )
                  foundLabel = true;
     }
 
@@ -135,15 +135,15 @@ TestSimpleImporterConfigWidget::addFieldShouldAddNewRow()
 void
 TestSimpleImporterConfigWidget::addFieldShouldAssociateLabelWithField()
 {
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
 
     QWidget *field = new QLineEdit;
-    widget.addField( "configVal", "testLabel", field, "text" );
+    widget.addField( QStringLiteral("configVal"), QStringLiteral("testLabel"), field, QStringLiteral("text") );
 
     const QLabel *label = nullptr;
     for( auto const &obj : widget.children() )
         if( const QLabel *candidate = qobject_cast<const QLabel*>( obj ) )
-            if( candidate->text() == "testLabel" )
+            if( candidate->text() == QStringLiteral("testLabel") )
                  label = candidate;
 
     QVERIFY( label );
@@ -153,18 +153,18 @@ TestSimpleImporterConfigWidget::addFieldShouldAssociateLabelWithField()
 void
 TestSimpleImporterConfigWidget::addFieldShouldNotBreakOnNullField()
 {
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
-    widget.addField( "configVal", "testLabel", nullptr, "text" );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
+    widget.addField( QStringLiteral("configVal"), QStringLiteral("testLabel"), nullptr, QStringLiteral("text") );
 }
 
 void
 TestSimpleImporterConfigWidget::addedFieldShouldNotModifyFieldValueIfConfigDoesNotExist()
 {
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
 
-    const QString value = "myValue";
+    const QString value = QStringLiteral("myValue");
     QLineEdit *field = new QLineEdit( value );
-    widget.addField( "configVal", "testLabel", field, "text" );
+    widget.addField( QStringLiteral("configVal"), QStringLiteral("testLabel"), field, QStringLiteral("text") );
 
     QCOMPARE( field->text(), value );
 }
@@ -172,15 +172,15 @@ TestSimpleImporterConfigWidget::addedFieldShouldNotModifyFieldValueIfConfigDoesN
 void
 TestSimpleImporterConfigWidget::addedFieldShouldBeSetToConfigValueIfExists()
 {
-    const QString configName = "configVal";
-    const QString value = "myValue";
+    const QString configName = QStringLiteral("configVal");
+    const QString value = QStringLiteral("myValue");
 
     QVariantMap cfg;
     cfg.insert( configName, value );
-    SimpleImporterConfigWidget widget( "testTargetName", cfg );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), cfg );
 
-    QLineEdit *field = new QLineEdit( "overrideMe" );
-    widget.addField( configName, "testLabel", field, "text" );
+    QLineEdit *field = new QLineEdit( QStringLiteral("overrideMe") );
+    widget.addField( configName, QStringLiteral("testLabel"), field, QStringLiteral("text") );
 
     QCOMPARE( field->text(), value );
 }
@@ -188,31 +188,31 @@ TestSimpleImporterConfigWidget::addedFieldShouldBeSetToConfigValueIfExists()
 void
 TestSimpleImporterConfigWidget::addedFieldShouldNotBreakOnValueSetIfPropertyDoesNotExist()
 {
-    const QString configName = "configVal";
+    const QString configName = QStringLiteral("configVal");
 
     QVariantMap cfg;
-    cfg.insert( configName, "value" );
-    SimpleImporterConfigWidget widget( "testTargetName", cfg );
+    cfg.insert( configName, QStringLiteral("value") );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), cfg );
 
-    widget.addField( configName, "testLabel", new QLineEdit, "There's No Such Property" );
+    widget.addField( configName, QStringLiteral("testLabel"), new QLineEdit, QStringLiteral("There's No Such Property") );
 }
 
 void
 TestSimpleImporterConfigWidget::configShouldContainName()
 {
-    const QString name = "testTargetName";
+    const QString name = QStringLiteral("testTargetName");
     SimpleImporterConfigWidget widget( name, QVariantMap() );
 
-    QCOMPARE( widget.config().value( "name" ).toString(), name );
+    QCOMPARE( widget.config().value( QStringLiteral("name") ).toString(), name );
 }
 
 void
 TestSimpleImporterConfigWidget::configShouldNotBreakOnNullField()
 {
-    const QString configName = "configVal";
+    const QString configName = QStringLiteral("configVal");
 
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
-    widget.addField( configName, "testLabel", nullptr, "text" );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
+    widget.addField( configName, QStringLiteral("testLabel"), nullptr, QStringLiteral("text") );
 
     QVERIFY( widget.config().value( configName ).toString().isEmpty() );
 }
@@ -220,37 +220,37 @@ TestSimpleImporterConfigWidget::configShouldNotBreakOnNullField()
 void
 TestSimpleImporterConfigWidget::configShouldContainAddedFieldsValues()
 {
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
 
     QLineEdit *lineEdit = new QLineEdit;
-    lineEdit->setText( "textValue" );
+    lineEdit->setText( QStringLiteral("textValue") );
 
     QSpinBox *spinBox = new QSpinBox;
     spinBox->setValue( 57 );
 
     QComboBox *comboBox = new QComboBox;
-    comboBox->insertItem( 0, "item1" );
-    comboBox->insertItem( 1, "item2" );
-    comboBox->insertItem( 2, "item3" );
+    comboBox->insertItem( 0, QStringLiteral("item1") );
+    comboBox->insertItem( 1, QStringLiteral("item2") );
+    comboBox->insertItem( 2, QStringLiteral("item3") );
     comboBox->setCurrentIndex( 1 );
 
-    widget.addField( "text", "text", lineEdit, "text" );
-    widget.addField( "int", "int", spinBox, "value" );
-    widget.addField( "combo", "combo", comboBox, "currentText" );
+    widget.addField( QStringLiteral("text"), QStringLiteral("text"), lineEdit, QStringLiteral("text") );
+    widget.addField( QStringLiteral("int"), QStringLiteral("int"), spinBox, QStringLiteral("value") );
+    widget.addField( QStringLiteral("combo"), QStringLiteral("combo"), comboBox, QStringLiteral("currentText") );
 
     const QVariantMap cfg = widget.config();
-    QCOMPARE( cfg.value( "text" ).toString(), QString( "textValue" ) );
-    QCOMPARE( cfg.value( "int" ).toInt(), 57 );
-    QCOMPARE( cfg.value( "combo" ).toString(), QString( "item2" ) );
+    QCOMPARE( cfg.value( QStringLiteral("text") ).toString(), QStringLiteral( "textValue" ) );
+    QCOMPARE( cfg.value( QStringLiteral("int") ).toInt(), 57 );
+    QCOMPARE( cfg.value( QStringLiteral("combo") ).toString(), QStringLiteral( "item2" ) );
 }
 
 void
 TestSimpleImporterConfigWidget::configShouldNotBreakOnNonexistentProperty()
 {
-    const QString configName = "configName";
+    const QString configName = QStringLiteral("configName");
 
-    SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
-    widget.addField( configName, "label", new QLineEdit, "No property" );
+    SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), QVariantMap() );
+    widget.addField( configName, QStringLiteral("label"), new QLineEdit, QStringLiteral("No property") );
 
     QVERIFY( widget.config().value( configName ).toString().isEmpty() );
 }

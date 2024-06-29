@@ -41,7 +41,7 @@ TestPLSPlaylist::TestPLSPlaylist()
 QString
 TestPLSPlaylist::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestPLSPlaylist::initTestCase()
@@ -61,7 +61,7 @@ void TestPLSPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QString testPls = "data/playlists/test2.pls";
+    const QString testPls = QStringLiteral("data/playlists/test2.pls");
     const QUrl url = QUrl::fromLocalFile( dataPath(testPls) );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
@@ -93,22 +93,22 @@ void TestPLSPlaylist::cleanupTestCase()
 
 void TestPLSPlaylist::testSetAndGetName()
 {
-    QCOMPARE( m_testPlaylist1->name(), QString( "test.pls" ) );
+    QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "test.pls" ) );
 
     m_testPlaylist1->setName( "set name test" );
-    QCOMPARE( m_testPlaylist1->name(), QString( "set name test.pls" ) );
+    QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "set name test.pls" ) );
 
     m_testPlaylist1->setName( "set name test aäoöuüß" );
-    QCOMPARE( m_testPlaylist1->name(), QString( "set name test aäoöuüß.pls" ) );
+    QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "set name test aäoöuüß.pls" ) );
 
     m_testPlaylist1->setName( "test" );
     m_testPlaylist1->setName( "" );
-    QCOMPARE( m_testPlaylist1->name(), QString( "test.pls" ) );
+    QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "test.pls" ) );
 }
 
 void TestPLSPlaylist::testPrettyName()
 {
-    QCOMPARE( m_testPlaylist1->prettyName(), QString( "test.pls" ) );
+    QCOMPARE( m_testPlaylist1->prettyName(), QStringLiteral( "test.pls" ) );
 }
 
 void TestPLSPlaylist::testTracks()
@@ -116,10 +116,10 @@ void TestPLSPlaylist::testTracks()
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
     QCOMPARE( tracklist.size(), 5 );
-    QCOMPARE( tracklist.at( 0 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
-    QCOMPARE( tracklist.at( 1 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
-    QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
-    QCOMPARE( tracklist.at( 3 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QStringLiteral( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 1 )->name(), QStringLiteral( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 2 )->name(), QStringLiteral( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 3 )->name(), QStringLiteral( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
 }
 
 void TestPLSPlaylist::testUidUrl()
@@ -163,7 +163,7 @@ void TestPLSPlaylist::testSaveAndReload()
     tracklist = m_testPlaylist1->tracks();
 
     QCOMPARE( tracklist.size(), 5 );
-    QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 2 )->name(), QStringLiteral( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
     QCOMPARE( tracklist.at( 0 )->uidUrl(), testTrack1Url );
     QCOMPARE( tracklist.at( 4 )->uidUrl(), testTrack2Url );
 }

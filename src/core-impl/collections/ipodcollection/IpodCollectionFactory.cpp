@@ -46,7 +46,7 @@ IpodCollectionFactory::init()
              this, &IpodCollectionFactory::slotRemoveSolidDevice );
 
     // detect iPods that were already connected on startup
-    QString query( "[IS StorageAccess OR IS PortableMediaPlayer]" );
+    QString query( QStringLiteral("[IS StorageAccess OR IS PortableMediaPlayer]") );
     QList<Solid::Device> ipodDevices = Solid::Device::listFromQuery( query );
     for( const Solid::Device &device : ipodDevices )
     {
@@ -105,11 +105,11 @@ IpodCollectionFactory::slotCollectionDestroyed( QObject *collection )
 static bool
 deviceIsRootIpodDevice( const Solid::Device &device )
 {
-    if( !device.vendor().contains( "Apple", Qt::CaseInsensitive ) )
+    if( !device.vendor().contains( QStringLiteral("Apple"), Qt::CaseInsensitive ) )
         return false;
-    return device.product().startsWith( "iPod" )
-        || device.product().startsWith( "iPhone" )
-        || device.product().startsWith( "iPad" );
+    return device.product().startsWith( QStringLiteral("iPod") )
+        || device.product().startsWith( QStringLiteral("iPhone") )
+        || device.product().startsWith( QStringLiteral("iPad") );
 }
 
 /**
@@ -134,7 +134,7 @@ deviceIsPMPIpodDevice( const Solid::Device &device )
         return false;
 
     debug() << "Device supported PMP protocols:" << pmp->supportedProtocols();
-    return pmp->supportedProtocols().contains( "ipod", Qt::CaseInsensitive );
+    return pmp->supportedProtocols().contains( QStringLiteral("ipod"), Qt::CaseInsensitive );
 }
 
 bool
@@ -225,10 +225,10 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
                 return;
             }
 
-            if( pmp->supportedProtocols().contains( "ipod" ) &&
-                pmp->supportedDrivers().contains( "usbmux" ) )
+            if( pmp->supportedProtocols().contains( QStringLiteral("ipod") ) &&
+                pmp->supportedDrivers().contains( QStringLiteral("usbmux") ) )
             {
-                uuid = pmp->driverHandle( "usbmux" ).toString();
+                uuid = pmp->driverHandle( QStringLiteral("usbmux") ).toString();
                 debug() << "Above device supports ipod/usbmux protocol/driver combo, good";
                 break;
             }

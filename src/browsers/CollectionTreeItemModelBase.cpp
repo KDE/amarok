@@ -1056,7 +1056,7 @@ CollectionTreeItemModelBase::updateHeaderText()
 {
     m_headerText.clear();
     for( int i=0; i< m_levelType.count(); ++i )
-        m_headerText += nameForLevel( i ) + " / ";
+        m_headerText += nameForLevel( i ) + QStringLiteral(" / ");
 
     m_headerText.chop( 3 );
 }

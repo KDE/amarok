@@ -163,7 +163,7 @@ TabsView::showTab( TabsItem *tab )
             QString htmlData = "<html>";
                     htmlData += "<body style=\"font-family:'" + tabFont.family() + "';";
                     htmlData += "font-size:" + QString::number( tabFont.pointSize() ) + "pt;";
-                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ';';
+                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + QLatin1Char(';');
                     htmlData += "color:" + textColor + ";\">";
 
                     // tab heading + tab source

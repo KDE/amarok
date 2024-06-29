@@ -171,15 +171,15 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QComboBox *combo = d->searchWidget->comboBox();
     const QIcon icon = KStandardGuiItem::find().icon();
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Hour"),
-                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1h") );
+                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + QStringLiteral(":<1h")) );
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added Today"),
-                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1d") );
+                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + QStringLiteral(":<1d")) );
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Week"),
-                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1w") );
+                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + QStringLiteral(":<1w")) );
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Month"),
-                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1m") );
+                    QString(Meta::shortI18nForField( Meta::valCreateDate ) + QStringLiteral(":<1m")) );
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Never Played"),
-                    QString(Meta::shortI18nForField( Meta::valPlaycount ) + ":0") );
+                    QString(Meta::shortI18nForField( Meta::valPlaycount ) + QStringLiteral(":0")) );
     combo->insertSeparator( combo->count() );
 
     QMenu *filterMenu = new QMenu( nullptr );

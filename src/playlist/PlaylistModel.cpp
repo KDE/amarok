@@ -110,10 +110,10 @@ breakLongLinesHTML( const QString &origText )
                     QString wordPart = word;
                     wordPart.resize(lnSize);
                     word.remove(0,lnSize);
-                    textInLines += wordPart + "<br/>";
+                    textInLines += wordPart + QStringLiteral("<br/>");
                 }
             }
-            textInLines += word + ' ';
+            textInLines += word + QLatin1Char(' ');
             lineLength += word.size() + 1;
             words.removeFirst();
         }
@@ -571,7 +571,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 if( track->trackNumber() > 0 )
                 {
                     QString trackNumber = QString::number( track->trackNumber() );
-                    trackString =  QString( trackNumber + " - " + trackName );
+                    trackString =  QString( trackNumber + QStringLiteral(" - ") + trackName );
                 } else
                     trackString = trackName;
 

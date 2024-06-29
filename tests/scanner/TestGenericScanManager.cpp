@@ -40,14 +40,14 @@ TestGenericScanManager::TestGenericScanManager()
 void
 TestGenericScanManager::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
 
     // setenv( "LC_ALL", "", 1 ); // this breaks the test
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.
 
     // that is the original mp3 file that we use to generate the "real" tracks
-    m_sourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3" );
+    m_sourcePath = QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QStringLiteral("/data/audio/Platz 01.mp3") );
     QVERIFY( QFile::exists( m_sourcePath ) );
 
     m_scanManager = new GenericScanManager( this );
@@ -128,8 +128,8 @@ TestGenericScanManager::testRestartScanner()
     // the scanner crashes at a special file:
     Meta::FieldHash values;
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96b") );
-    values.insert( Meta::valUrl, QVariant("Thriller/crash_amarok_here.ogg") );
+    values.insert( Meta::valUniqueId, QStringLiteral("c6c29f50279ab9523a0f44928bc1e96b") );
+    values.insert( Meta::valUrl, QStringLiteral("Thriller/crash_amarok_here.ogg") );
     createTrack( values );
 
     // Tends to fail often (always?) on FreeBSD, at least on freebsd14_qt515 pipeline on invent.kde.org,
@@ -154,14 +154,14 @@ TestGenericScanManager::testAlbumImage()
     createAlbum();
 
     // put an image into the album directory
-    QString imageSourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists/no-playlist.png" );
+    QString imageSourcePath = QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QStringLiteral("/data/playlists/no-playlist.png") );
     QVERIFY( QFile::exists( imageSourcePath ) );
     QString targetPath;
-    targetPath = m_tmpCollectionDir->path() + '/' + "Pop/Thriller/cover.png";
+    targetPath = m_tmpCollectionDir->path() + QLatin1Char('/') + QStringLiteral("Pop/Thriller/cover.png");
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // set an embedded image
-    targetPath = m_tmpCollectionDir->path() + '/' + "Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3";
+    targetPath = m_tmpCollectionDir->path() + QLatin1Char('/') + QStringLiteral("Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3");
     Meta::Tag::setEmbeddedCover( targetPath, QImage( 200, 200, QImage::Format_RGB32 ) );
 
     fullScanAndWait();
@@ -257,7 +257,7 @@ TestGenericScanManager::createTrack( const Meta::FieldHash &values )
 {
     // -- copy the file from our original
     QVERIFY( values.contains( Meta::valUrl ) );
-    const QString targetPath = m_tmpCollectionDir->path() + '/' + values.value( Meta::valUrl ).toString();
+    const QString targetPath = m_tmpCollectionDir->path() + QLatin1Char('/') + values.value( Meta::valUrl ).toString();
     QVERIFY( QDir( m_tmpCollectionDir->path() ).mkpath( QFileInfo( values.value( Meta::valUrl ).toString() ).path() ) );
 
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
@@ -271,16 +271,16 @@ TestGenericScanManager::createSingleTrack()
 {
     Meta::FieldHash values;
 
-    values.insert( Meta::valUniqueId, QVariant("794b1bd040d5dd9b5b45c1494d84cc82") );
-    values.insert( Meta::valUrl, QVariant("Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3") );
-    values.insert( Meta::valFormat, QVariant("1") );
-    values.insert( Meta::valTitle, QVariant("Theme From Armageddon") );
-    values.insert( Meta::valArtist, QVariant("Soundtrack & Theme Orchestra") );
-    values.insert( Meta::valAlbumArtist, QVariant("Theme Orchestra") );
-    values.insert( Meta::valAlbum, QVariant("Big Screen Adventures") );
-    values.insert( Meta::valComposer, QVariant("Unknown Composer") );
-    values.insert( Meta::valComment, QVariant("Amazon.com Song ID: 210541237") );
-    values.insert( Meta::valGenre, QVariant("Broadway & Vocalists") );
+    values.insert( Meta::valUniqueId, QStringLiteral("794b1bd040d5dd9b5b45c1494d84cc82") );
+    values.insert( Meta::valUrl, QStringLiteral("Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3") );
+    values.insert( Meta::valFormat, QStringLiteral("1") );
+    values.insert( Meta::valTitle, QStringLiteral("Theme From Armageddon") );
+    values.insert( Meta::valArtist, QStringLiteral("Soundtrack & Theme Orchestra") );
+    values.insert( Meta::valAlbumArtist, QStringLiteral("Theme Orchestra") );
+    values.insert( Meta::valAlbum, QStringLiteral("Big Screen Adventures") );
+    values.insert( Meta::valComposer, QStringLiteral("Unknown Composer") );
+    values.insert( Meta::valComment, QStringLiteral("Amazon.com Song ID: 210541237") );
+    values.insert( Meta::valGenre, QStringLiteral("Broadway & Vocalists") );
     values.insert( Meta::valYear, QVariant(2009) );
     values.insert( Meta::valTrackNr, QVariant(28) );
     // values.insert( Meta::valBitrate, QVariant(216) ); // the bitrate can not be set. it's computed
@@ -299,91 +299,91 @@ TestGenericScanManager::createAlbum()
 {
     Meta::FieldHash values;
 
-    values.insert( Meta::valUniqueId, QVariant("1dc7022c52a3e4c51b46577da9b3c8ff") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
-    values.insert( Meta::valTitle, QVariant("Wanna Be Startin' Somethin'") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("1dc7022c52a3e4c51b46577da9b3c8ff") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("Wanna Be Startin' Somethin'") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(1) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("1dc708934a3e4c51b46577da9b3ab11") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 02 - Michael Jackson - Track02.mp3") );
-    values.insert( Meta::valTitle, QVariant("Baby Be Mine") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("1dc708934a3e4c51b46577da9b3ab11") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 02 - Michael Jackson - Track02.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("Baby Be Mine") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(2) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("15a6b1bf79747fdc8e9c6b6f06203017") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 03 - Michael Jackson - Track03.mp3") );
-    values.insert( Meta::valTitle, QVariant("The Girl Is Mine") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("15a6b1bf79747fdc8e9c6b6f06203017") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 03 - Michael Jackson - Track03.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("The Girl Is Mine") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(3) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("4aba4c8b1d1893c03c112cc3c01221e9") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 04 - Michael Jackson - Track04.mp3") );
-    values.insert( Meta::valTitle, QVariant("Thriller") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("4aba4c8b1d1893c03c112cc3c01221e9") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 04 - Michael Jackson - Track04.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("Thriller") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(4) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("cb44d2a3d8053829b04672723bf0bd6e") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 05 - Michael Jackson - Track05.mp3") );
-    values.insert( Meta::valTitle, QVariant("Beat It") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("cb44d2a3d8053829b04672723bf0bd6e") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 05 - Michael Jackson - Track05.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("Beat It") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(5) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("eba1858eeeb3c6d97fe3385200114d86") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 06 - Michael Jackson - Track06.mp3") );
-    values.insert( Meta::valTitle, QVariant("Billy Jean") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("eba1858eeeb3c6d97fe3385200114d86") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 06 - Michael Jackson - Track06.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("Billy Jean") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(6) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("4623850290998486b0f7b39a2719904e") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 07 - Michael Jackson - Track07.mp3") );
-    values.insert( Meta::valTitle, QVariant("Human Nature") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("4623850290998486b0f7b39a2719904e") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 07 - Michael Jackson - Track07.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("Human Nature") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(7) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("6d9a7de13af1e16bb13a6208e44b046d") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 08 - Michael Jackson - Track08.mp3") );
-    values.insert( Meta::valTitle, QVariant("P.Y.T. (Pretty Young Thing)") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("6d9a7de13af1e16bb13a6208e44b046d") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 08 - Michael Jackson - Track08.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("P.Y.T. (Pretty Young Thing)") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(8) );
     createTrack( values );
 
     values.clear();
-    values.insert( Meta::valUniqueId, QVariant("91cf9a7c0d255399f9f6babfacae432b") );
-    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 09 - Michael Jackson - Track09.mp3") );
-    values.insert( Meta::valTitle, QVariant("The Lady In My Life") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valUniqueId, QStringLiteral("91cf9a7c0d255399f9f6babfacae432b") );
+    values.insert( Meta::valUrl, QStringLiteral("Pop/Thriller/Thriller - 09 - Michael Jackson - Track09.mp3") );
+    values.insert( Meta::valTitle, QStringLiteral("The Lady In My Life") );
+    values.insert( Meta::valArtist, QStringLiteral("Michael Jackson") );
+    values.insert( Meta::valAlbum, QStringLiteral("Thriller") );
     values.insert( Meta::valYear, QVariant(1982) );
     values.insert( Meta::valTrackNr, QVariant(9) );
     createTrack( values );

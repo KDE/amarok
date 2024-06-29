@@ -36,9 +36,9 @@ Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collectio
              this, &Playdar::ProxyResolver::slotPlaydarError );
     connect( m_controller, &Playdar::Controller::queryReady,
              this, &Playdar::ProxyResolver::collectQuery );
-    m_controller->resolve( QUrlQuery(url).queryItemValue( "artist" ),
-                           QUrlQuery(url).queryItemValue( "album" ),
-                           QUrlQuery(url).queryItemValue( "title" ) );
+    m_controller->resolve( QUrlQuery(url).queryItemValue( QStringLiteral("artist") ),
+                           QUrlQuery(url).queryItemValue( QStringLiteral("album") ),
+                           QUrlQuery(url).queryItemValue( QStringLiteral("title") ) );
 }
 
 Playdar::ProxyResolver::~ProxyResolver()

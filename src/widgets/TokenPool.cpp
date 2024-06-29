@@ -45,7 +45,7 @@ TokenPool::addToken( Token * token )
     if( token->hasCustomColor() ) // don't override the default tooltip color if possible. This very easily produces black test on black tooltip background
     {
         item->setData( Qt::ForegroundRole, token->textColor() );
-        item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
+        item->setToolTip( QStringLiteral("<font color=\"") + token->textColor().name() + QStringLiteral("\">") + token->name() + QStringLiteral("</font>") );
     }
     else
     {

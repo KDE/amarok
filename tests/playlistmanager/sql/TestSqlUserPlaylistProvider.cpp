@@ -43,12 +43,12 @@ TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider()
 QString
 TestSqlUserPlaylistProvider::dataPath( const QString &relPath )
 {
-    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
+    return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );
 }
 
 void TestSqlUserPlaylistProvider::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
     m_testSqlUserPlaylistProvider = new Playlists::SqlUserPlaylistProvider( true );
     m_testSqlUserPlaylistProvider->deletePlaylists( m_testSqlUserPlaylistProvider->playlists() );
 }
@@ -68,13 +68,13 @@ void TestSqlUserPlaylistProvider::testSave()
 {
     Meta::TrackList tempTrackList;
     QUrl trackUrl;
-    trackUrl = QUrl::fromLocalFile(dataPath( "data/audio/Platz 01.mp3" ));
+    trackUrl = QUrl::fromLocalFile(dataPath( QStringLiteral("data/audio/Platz 01.mp3") ));
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
     Playlists::PlaylistPtr testPlaylist =
             m_testSqlUserPlaylistProvider->save( tempTrackList, "Amarok Test Playlist" );
 
-    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist" ) );
+    QCOMPARE( testPlaylist->name(), QStringLiteral( "Amarok Test Playlist" ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
 
     Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
@@ -85,7 +85,7 @@ void TestSqlUserPlaylistProvider::testRename()
 {
     Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
     m_testSqlUserPlaylistProvider->renamePlaylist( tempList.at( 0 ), "New Test Name" );
-    QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name" ) );
+    QCOMPARE( tempList.at( 0 )->name(), QStringLiteral( "New Test Name" ) );
 }
 
 void TestSqlUserPlaylistProvider::testDelete()
