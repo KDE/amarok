@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
-"PO-Revision-Date: 2024-06-16 07:39+0200\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"PO-Revision-Date: 2024-06-28 21:02+0200\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -4622,20 +4622,16 @@ msgid "No information found..."
 msgstr "Neniu informo trovita..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artisto|grupo).*\\))"
+msgstr ".*\\(.*(artisto|grupo).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(komponisto|muzikisto).*\\))"
+msgstr ".*\\(.*(komponisto|muzikisto).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -4707,109 +4703,6 @@ msgstr "enturnea"
 #, kde-format
 msgid "dates"
 msgstr "datoj"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Amarok Applet Manager"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Origina aŭtoro"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Kreinto"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Por instali aŭ forigi, funkcias per apletoj instalitaj por ĉiuj uzantoj."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Instali la apleton ĉe <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Ĝisdatigi la apleton ĉe <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Plej instalitaj apletoj"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Forigi la apleton nomitan <nomo>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Plena vojo al pakaĵradiko. Se ne donita, la standardaj datumdosierujoj por "
-"tiu ĉi KDE-seanco estos serĉata anstataŭe."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Sukcese forigis pakaĵon %1"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Forigo de %1 malsukcesis."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Kromprogramo %1 ne estas instalita."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "Sukcese instalis pakaĵon %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Instalado de %1 malsukcesis."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Bezonas unu el: instali, forigi aŭ listi"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10412,6 +10305,11 @@ msgstr "Programisto (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Programisto (lfranchi)"
 
@@ -10779,6 +10677,13 @@ msgstr "Ellaboranto, Aŭtomatigita Ludlist-Generilo"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Kreinto"
 
 #: main.cpp:252
 #, kde-format
@@ -16675,169 +16580,61 @@ msgstr "Artisto: %1"
 msgid "empty"
 msgstr "malplena"
 
-#~ msgid "Upcoming Events"
-#~ msgstr "Venontaj Eventoj"
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Amarok Applet Manager"
 
-#~ msgid "View Events Calendar"
-#~ msgstr "Rigardi Kalendaron de Eventoj"
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
-#~ msgctxt "@title:group"
-#~ msgid "No track is currently playing"
-#~ msgstr "Neniu trako aktuale ludanta"
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
 
-#~ msgid "Favorite Venues"
-#~ msgstr "Ŝatataj Lokoj"
+#~ msgid "Original author"
+#~ msgstr "Origina aŭtoro"
 
-#~ msgid "No upcoming events"
-#~ msgstr "Neniuj venontaj eventoj"
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Por instali aŭ forigi, funkcias per apletoj instalitaj por ĉiuj uzantoj."
 
-#~ msgid "%1: No upcoming events"
-#~ msgstr "%1: Neniuj venontaj eventoj"
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Instali la apleton ĉe <path>"
 
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "1 event"
-#~ msgid_plural "%1 events"
-#~ msgstr[0] "1 evento"
-#~ msgstr[1] "%1 eventoj"
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Ĝisdatigi la apleton ĉe <path>"
 
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "%1: 1 event"
-#~ msgid_plural "%1: %2 events"
-#~ msgstr[0] "%1: 1 evento"
-#~ msgstr[1] "%1: %2 eventoj"
+#~ msgid "Most installed applets"
+#~ msgstr "Plej instalitaj apletoj"
 
-#~ msgid "Upcoming Events Settings"
-#~ msgstr "Agordoj de Venontaj Eventoj"
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Forigi la apleton nomitan <nomo>"
 
-#~ msgctxt "@label:textbox Url label"
-#~ msgid "link"
-#~ msgstr "ligilo"
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Plena vojo al pakaĵradiko. Se ne donita, la standardaj datumdosierujoj "
+#~ "por tiu ĉi KDE-seanco estos serĉata anstataŭe."
 
-#~ msgid "Map View"
-#~ msgstr "Mapo Vido"
+#~ msgid "Successfully removed %1"
+#~ msgstr "Sukcese forigis pakaĵon %1"
 
-#~ msgid "Events Calendar"
-#~ msgstr "Eventa Kalendaro"
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Forigo de %1 malsukcesis."
 
-#~ msgid "This week"
-#~ msgstr "Ĉi semajnon"
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Kromprogramo %1 ne estas instalita."
 
-#~ msgid "This month"
-#~ msgstr "Ĉi monaton"
+#~ msgid "Successfully installed %1"
+#~ msgstr "Sukcese instalis pakaĵon %1"
 
-#~ msgid "This year"
-#~ msgstr "Ĉi jaron"
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Instalado de %1 malsukcesis."
 
-#~ msgctxt "@title:group"
-#~ msgid "Favorite Venues"
-#~ msgstr "Ŝatataj Lokoj"
-
-#~ msgctxt "@info:tooltip Calendar action"
-#~ msgid "Jump to Today"
-#~ msgstr "Salti al Hodiaŭ"
-
-#~ msgid "Filter events by date:"
-#~ msgstr "Filtri eventojn laŭ dato:"
-
-#~ msgid "All events"
-#~ msgstr "Ĉiuj eventoj"
-
-#~ msgid "&Group venue events"
-#~ msgstr "&Grupaj eventoj"
-
-#~ msgctxt "@label:textbox Title for a canceled upcoming event"
-#~ msgid "<s>%1</s> (Canceled)"
-#~ msgstr "<s>%1</s> (Nuligita)"
-
-#~ msgid "Show places as links"
-#~ msgstr "Montri lokojn kiel ligilojn"
-
-#~ msgid "Maximize"
-#~ msgstr "Maksimumigi"
-
-#~ msgid "Expand this widget"
-#~ msgstr "Pligrandigi ĉi tiun fenestraĵon"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "Malvastigi ĉi tiun fenestraĵon"
-
-#~ msgid "Search Venue"
-#~ msgstr "Serĉi Ejon"
-
-#~ msgid "Restrict venues to a specific country"
-#~ msgstr "Limigi ejojn al specifa lando"
-
-#~ msgid "Any Country"
-#~ msgstr "Ajna Lando"
-
-#~ msgid "Search Results:"
-#~ msgstr "Serĉrezultoj:"
-
-#~ msgid "Selected Venues:"
-#~ msgstr "Elektitaj Lokoj:"
-
-#~ msgid "Photo"
-#~ msgstr "Foto"
-
-#~ msgid "City:"
-#~ msgstr "Urbo:"
-
-#~ msgid "Website:"
-#~ msgstr "Retejo:"
-
-#~ msgid "Country:"
-#~ msgstr "Lando:"
-
-#~ msgid "Street:"
-#~ msgstr "Strato:"
-
-#~ msgid "Loading picture..."
-#~ msgstr "Ŝargante bildon..."
-
-#~ msgid "View map"
-#~ msgstr "Vidi mapon"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Malfermi Last.fm-retpaĝon por ĉi tiu evento"
-
-#~ msgctxt "@label:textbox Supporting acts for an event"
-#~ msgid "Supporting:"
-#~ msgstr "Subtenado:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Venue:"
-#~ msgstr "Loko:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Location:"
-#~ msgstr "Loko:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Date:"
-#~ msgstr "Dato:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Attending:"
-#~ msgstr "Ĉeestanta:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags:"
-#~ msgstr "Etikedoj:"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Tags:</strong><nl/>%1"
-#~ msgstr "<strong>Etikedoj:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Supporting artists for an event"
-#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
-#~ msgstr "<strong>Subtenantaj artistoj:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Number of days till an event"
-#~ msgid "Tomorrow"
-#~ msgid_plural "In <strong>%1</strong> days"
-#~ msgstr[0] "Morgaŭ"
-#~ msgstr[1] "Post <strong>%1</strong> tagoj"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Location:</strong><nl/>%1"
-#~ msgstr "<strong>Loko:</strong><nl/>%1"
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Bezonas unu el: instali, forigi aŭ listi"

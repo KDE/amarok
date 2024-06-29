@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -4817,110 +4817,6 @@ msgstr "sa turneje"
 #, kde-format
 msgid "dates"
 msgstr "datumi"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Menadžer apleta za Amarok"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "© 2008, Aron Dž. Sajgo, © 2009, Lio Franki"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aron Dž. Sajgo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Prvobitni autor"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Lio Franki"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Programer"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Za instaliranje ili uklanjanje, radi sa apletima dostupnim svim korisnicima."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Instaliraj aplet iz putanje"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Ažuriraj aplet iz putanje"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applets"
-msgid "Most installed applets"
-msgstr "Nabroji instalirane aplete"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Ukloni aplet po imenu"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Apsolutna putanja do korijena paketâ. Ako se ne navede, biće pretražene "
-"podrazumijevani direktoriji za ovu KDE sesiju."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Uklanjanje %1 uspješno"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Uklanjanje %1 nije uspjelo."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Priključak %1 nije instaliran."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "Uspješno instaliranje %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Instaliranje %1 nije uspjelo."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Zahtijeva se install, remove, upgrade ili list."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10610,6 +10506,11 @@ msgstr "Programer (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Lio Franki"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Programer (lfranchi)"
 
@@ -10978,6 +10879,13 @@ msgstr "Programer, autogenerator listi numera"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Tomas Libking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Programer"
 
 #: main.cpp:252
 #, kde-format
@@ -16956,6 +16864,68 @@ msgstr "Izvođač: %1"
 #, kde-format
 msgid "empty"
 msgstr "prazno"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Menadžer apleta za Amarok"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "© 2008, Aron Dž. Sajgo, © 2009, Lio Franki"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aron Dž. Sajgo"
+
+#~ msgid "Original author"
+#~ msgstr "Prvobitni autor"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Za instaliranje ili uklanjanje, radi sa apletima dostupnim svim "
+#~ "korisnicima."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Instaliraj aplet iz putanje"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Ažuriraj aplet iz putanje"
+
+#, fuzzy
+#~| msgid "List installed applets"
+#~ msgid "Most installed applets"
+#~ msgstr "Nabroji instalirane aplete"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Ukloni aplet po imenu"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Apsolutna putanja do korijena paketâ. Ako se ne navede, biće pretražene "
+#~ "podrazumijevani direktoriji za ovu KDE sesiju."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "Uklanjanje %1 uspješno"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Uklanjanje %1 nije uspjelo."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Priključak %1 nije instaliran."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "Uspješno instaliranje %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Instaliranje %1 nije uspjelo."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Zahtijeva se install, remove, upgrade ili list."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Nastupajući događaji"

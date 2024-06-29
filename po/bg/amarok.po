@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2024-06-27 19:16+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
@@ -4768,109 +4768,6 @@ msgstr "на турне"
 #, kde-format
 msgid "dates"
 msgstr "дати"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Мениджър на аплети (Amarok)"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Първоначален автор"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Разработка"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"За инсталиране или премахване. Отнася се за аплетите на всички потребители."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Инсталиране на аплета в <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Обновяване на аплета в <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Най-инсталирани аплети"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Премахване на аплет <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Абсолютен път до коренната директория на пакета. Ако не е указан, ще бъде "
-"изпозлвана стандартната директория за тази сесия на KDE."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Успешно изтриване на %1"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Премахването на %1 беше неуспешно."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Приставката %1 не е инсталирана."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "Успешно инсталиране на %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Неуспешна инсталация на %1."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Трябва да имате едно от тези: install, remove, upgrade, list."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10514,6 +10411,11 @@ msgstr "Разработка (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Разработка (lfranchi)"
 
@@ -10881,6 +10783,13 @@ msgstr "Разработчик, автоматичен генератор на �
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Разработка"
 
 #: main.cpp:252
 #, kde-format
@@ -16829,6 +16738,66 @@ msgstr "Изпълнител: %1"
 #, kde-format
 msgid "empty"
 msgstr "празно"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Мениджър на аплети (Amarok)"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Първоначален автор"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "За инсталиране или премахване. Отнася се за аплетите на всички "
+#~ "потребители."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Инсталиране на аплета в <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Обновяване на аплета в <path>"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Най-инсталирани аплети"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Премахване на аплет <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Абсолютен път до коренната директория на пакета. Ако не е указан, ще бъде "
+#~ "изпозлвана стандартната директория за тази сесия на KDE."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "Успешно изтриване на %1"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Премахването на %1 беше неуспешно."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Приставката %1 не е инсталирана."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "Успешно инсталиране на %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Неуспешна инсталация на %1."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Трябва да имате едно от тези: install, remove, upgrade, list."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Предстоящи събития"

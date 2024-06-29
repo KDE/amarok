@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2009-12-21 00:36+0100\n"
 "Last-Translator: Mark Kwidzińśczi <mark@linuxcsb.org>\n"
 "Language-Team: Kaszëbsczi <i18n-csb@linuxcsb.org>\n"
@@ -4863,114 +4863,6 @@ msgstr ""
 #, kde-format
 msgid "dates"
 msgstr "datumë"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Menadżer apletów Amaroka"
-
-#: context/tools/amarokpkg.cpp:89
-#, fuzzy, kde-format
-#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Òridżinalny aùtor"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Programista"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Abë winstalowac abò rëmnąc dzejôj na apletach winstalowónëch dlô wszëtczich "
-"brëkòwników."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Jinstalëjë apletë w <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Aktualizëjë apletë w <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applet"
-msgid "Most installed applets"
-msgstr "Lësta zajinstalowónëch apletów"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Rëmô aplet zwóny <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Bezwzglądnô stegna do spòdla paczétu. Jeżlë nie mdze wpisónô, standardowé "
-"katalodżi dlô ti KDE sesëji bãdą przeszëkóne."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Ùdało rëmniato %1"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Rëmniãcé %1 nie darzëło sã."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Wtëkôcz %1 nie je zajinstalowóny."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "Zajinstalowóno %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Jinstalacëjô %1 nie darzëła sã."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
-"Jednô òptacëjô z instalacëji, jakno rëmniãcé, zaktualnienié abò "
-"wëskrzënienié je żądóné."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10812,6 +10704,11 @@ msgid "Developer (jefferai)"
 msgstr "Programista"
 
 #: main.cpp:166
+#, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
 #, fuzzy, kde-format
 #| msgid "Developer"
 msgid "Developer (lfranchi)"
@@ -11197,6 +11094,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Programista"
 
 #: main.cpp:252
 #, kde-format
@@ -17332,6 +17236,72 @@ msgstr "Artista \"%1\""
 #, kde-format
 msgid "empty"
 msgstr ""
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Menadżer apletów Amaroka"
+
+#, fuzzy
+#~| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Òridżinalny aùtor"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Abë winstalowac abò rëmnąc dzejôj na apletach winstalowónëch dlô "
+#~ "wszëtczich brëkòwników."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Jinstalëjë apletë w <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Aktualizëjë apletë w <path>"
+
+#, fuzzy
+#~| msgid "List installed applet"
+#~ msgid "Most installed applets"
+#~ msgstr "Lësta zajinstalowónëch apletów"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Rëmô aplet zwóny <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Bezwzglądnô stegna do spòdla paczétu. Jeżlë nie mdze wpisónô, standardowé "
+#~ "katalodżi dlô ti KDE sesëji bãdą przeszëkóne."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "Ùdało rëmniato %1"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Rëmniãcé %1 nie darzëło sã."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Wtëkôcz %1 nie je zajinstalowóny."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "Zajinstalowóno %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Jinstalacëjô %1 nie darzëła sã."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr ""
+#~ "Jednô òptacëjô z instalacëji, jakno rëmniãcé, zaktualnienié abò "
+#~ "wëskrzënienié je żądóné."
 
 #, fuzzy
 #~| msgid "No track playing"

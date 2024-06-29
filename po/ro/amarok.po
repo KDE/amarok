@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2023-04-10 19:07+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
@@ -4754,110 +4754,6 @@ msgstr "Du-te"
 #, kde-format
 msgid "dates"
 msgstr "date"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Gestionar de miniaplicații Amarok"
-
-#: context/tools/amarokpkg.cpp:89
-#, fuzzy, kde-format
-#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Autor original"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Dezvoltator"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Instalează miniaplicația la <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Actualizează miniaplicația la <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applet"
-msgid "Most installed applets"
-msgstr "Enumeră miniaplicațiile instalate"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Elimină miniaplicația numită <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Calea absolută pentru rădăcina pachetului. Dacă nu este furnizată, vor fi "
-"căutate dosarele KDE standard de date pentru această sesiune."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 a fost eliminat cu succes"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Eliminarea %1 a eșuat."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Modulul %1 nu este instalat."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1 a fost instalat cu succces"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Instalarea %1 a eșuat."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Una dintre instalează, elimină, actualizează este necesară."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10408,6 +10304,11 @@ msgstr "Dezvoltator (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Dezvoltator (lfranchi)"
 
@@ -10776,6 +10677,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Dezvoltator"
 
 #: main.cpp:252
 #, kde-format
@@ -16718,6 +16626,65 @@ msgstr "Interpret: %1"
 #, kde-format
 msgid "empty"
 msgstr "gol"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Gestionar de miniaplicații Amarok"
+
+#, fuzzy
+#~| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Autor original"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Instalează miniaplicația la <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Actualizează miniaplicația la <path>"
+
+#, fuzzy
+#~| msgid "List installed applet"
+#~ msgid "Most installed applets"
+#~ msgstr "Enumeră miniaplicațiile instalate"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Elimină miniaplicația numită <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Calea absolută pentru rădăcina pachetului. Dacă nu este furnizată, vor fi "
+#~ "căutate dosarele KDE standard de date pentru această sesiune."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 a fost eliminat cu succes"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Eliminarea %1 a eșuat."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Modulul %1 nu este instalat."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1 a fost instalat cu succces"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Instalarea %1 a eșuat."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Una dintre instalează, elimină, actualizează este necesară."
 
 #, fuzzy
 #~| msgid "Upcoming:"

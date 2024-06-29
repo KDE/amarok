@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -4676,108 +4676,6 @@ msgstr "순회 공연 중"
 #, kde-format
 msgid "dates"
 msgstr "날짜"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Amarok 애플릿 관리자"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "원본 작성자"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "개발자"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr "모든 사용자의 애플릿을 설치, 삭제합니다."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "애플릿을 <path>에 설치하기"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "<path>의 애플릿 업그레이드"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "가장 많이 설치된 애플릿"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "이름이 <name>인 애플릿을 삭제"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"패키지 루트로부터의 절대 경로입니다. 지정되지 않으면 이 KDE 세션의 표준 데이"
-"터 디렉터리를 찾습니다."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 삭제 성공"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "%1 삭제에 실패했습니다."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "%1 플러그인이 설치되지 않았습니다."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1을(를) 성공적으로 설치함"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "%1을(를) 설치하지 못했습니다."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "install, remove, upgrade, list 중 하나가 필요합니다."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10261,6 +10159,11 @@ msgstr "개발자(jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "개발자(lfranchi)"
 
@@ -10628,6 +10531,13 @@ msgstr "개발자, 자동 목록 생성기"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "개발자"
 
 #: main.cpp:252
 #, kde-format
@@ -16433,6 +16343,64 @@ msgstr "아티스트: %1"
 #, kde-format
 msgid "empty"
 msgstr "비어 있음"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Amarok 애플릿 관리자"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "원본 작성자"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr "모든 사용자의 애플릿을 설치, 삭제합니다."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "애플릿을 <path>에 설치하기"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "<path>의 애플릿 업그레이드"
+
+#~ msgid "Most installed applets"
+#~ msgstr "가장 많이 설치된 애플릿"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "이름이 <name>인 애플릿을 삭제"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "패키지 루트로부터의 절대 경로입니다. 지정되지 않으면 이 KDE 세션의 표준 데"
+#~ "이터 디렉터리를 찾습니다."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 삭제 성공"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "%1 삭제에 실패했습니다."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "%1 플러그인이 설치되지 않았습니다."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1을(를) 성공적으로 설치함"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "%1을(를) 설치하지 못했습니다."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "install, remove, upgrade, list 중 하나가 필요합니다."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "예정된 이벤트"

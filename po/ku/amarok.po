@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -4879,114 +4879,6 @@ msgstr "Biçe"
 #| msgid "Update"
 msgid "dates"
 msgstr "Rojane Bike"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, fuzzy, kde-format
-#| msgid "Amarok AFT Tagger"
-msgid "Amarok Applet Manager"
-msgstr "Etîketvanê Amarok AFT"
-
-#: context/tools/amarokpkg.cpp:89
-#, fuzzy, kde-format
-#| msgid "(C) 2008, Aaron Seigo"
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
-msgid "Developer"
-msgstr "Pêşdebir (jefferai)"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:112
-#, fuzzy, kde-format
-#| msgid "Install Applets"
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Sepanokan &Saz Bike"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "Install Applets"
-msgid "Most installed applets"
-msgstr "Sepanokan &Saz Bike"
-
-#: context/tools/amarokpkg.cpp:118
-#, fuzzy, kde-format
-#| msgid "Remove last appended filter"
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Parzûna lê dawiyê hatiye zêdekirin rake"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:188
-#, fuzzy, kde-format
-#| msgid "Script successfully installed."
-msgid "Successfully installed %1"
-msgstr "Skrîpt bi serkeftin hate sazkirin."
-
-#: context/tools/amarokpkg.cpp:191
-#, fuzzy, kde-format
-#| msgid "Installation of <b>%1</b> failed!"
-msgid "Installation of %1 failed."
-msgstr "Saz kirina <b>%1</b> têk çû!"
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10723,6 +10615,11 @@ msgid "Developer (jefferai)"
 msgstr "Pêşdebir (jefferai)"
 
 #: main.cpp:166
+#, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
 #, fuzzy, kde-format
 #| msgid "Developer (jefferai)"
 msgid "Developer (lfranchi)"
@@ -11107,6 +11004,14 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, fuzzy, kde-format
+#| msgid "Developer (jefferai)"
+msgid "Developer"
+msgstr "Pêşdebir (jefferai)"
 
 #: main.cpp:252
 #, kde-format
@@ -17247,6 +17152,46 @@ msgstr "Hunermend \"%1\""
 #, kde-format
 msgid "empty"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Amarok AFT Tagger"
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Etîketvanê Amarok AFT"
+
+#, fuzzy
+#~| msgid "(C) 2008, Aaron Seigo"
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#, fuzzy
+#~| msgid "Install Applets"
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Sepanokan &Saz Bike"
+
+#, fuzzy
+#~| msgid "Install Applets"
+#~ msgid "Most installed applets"
+#~ msgstr "Sepanokan &Saz Bike"
+
+#, fuzzy
+#~| msgid "Remove last appended filter"
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Parzûna lê dawiyê hatiye zêdekirin rake"
+
+#, fuzzy
+#~| msgid "Script successfully installed."
+#~ msgid "Successfully installed %1"
+#~ msgstr "Skrîpt bi serkeftin hate sazkirin."
+
+#, fuzzy
+#~| msgid "Installation of <b>%1</b> failed!"
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Saz kirina <b>%1</b> têk çû!"
 
 #, fuzzy
 #~| msgid "No track playing"

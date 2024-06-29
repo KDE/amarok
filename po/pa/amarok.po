@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -4690,109 +4690,6 @@ msgstr "ਆਨਟੂਰ"
 #, kde-format
 msgid "dates"
 msgstr "ਮਿਤੀਆਂ"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "ਅਮਰੋਕ ਐਪਲਿਟ ਮੈਨੇਜਰ"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "ਅਸਲੀ ਲੇਖਕ"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "ਡਿਵੈਲਪਰ"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr "ਸਭ ਯੂਜ਼ਰਾਂ ਲਈ ਐਪਲਿਟ ਉੱਤੇ ਇੰਸਟਾਲ, ਹਟਾਉਣ, ਕਾਰਵਾਈਆਂ"
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "<path> ਉੱਤੇ ਐਪਲਿਟ ਇੰਸਟਾਲ"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "<path> ਉੱਤੇ ਐਪਲਿਟ ਅੱਪਗਰੇਡ"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applets"
-msgid "Most installed applets"
-msgstr "ਇੰਸਟਾਲ ਹੋਏ ਐਪਲਿਟ ਵੇਖੋ"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "<name> ਐਪਲਿਟ ਹਟਾਓ"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"ਪੈਕੇਜ ਰੂਟ ਲਈ ਅਸਲੀ ਪਾਥ ਹੈ। ਜੇ ਇਹ ਨਾ ਦਿੱਤਾ ਤਾਂ ਇਸ KDE ਸ਼ੈਸ਼ਨ ਲਈ ਸਟੈਂਡਰਡ ਡਾਟਾ ਡਾਇਰੈਕਟਰੀਆਂ ਦੀ "
-"ਖੋਜ ਕੀਤੀ ਜਾਵੇਗੀ।"
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 ਠੀਕ ਤਰ੍ਹਾਂ ਹਟਾਇਆ"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "%1 ਹਟਾਉਣ ਲਈ ਫੇਲ੍ਹ।"
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "ਪਲੱਗਇਨ %1 ਇੰਸਟਾਲ ਨਹੀਂ ਹੈ।"
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1 ਠੀਕ ਤਰ੍ਹਾਂ ਇੰਸਟਾਲ ਹੈ"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "%1 ਇੰਸਟਾਲ ਕਰਨ ਲਈ ਫੇਲ੍ਹ।"
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "ਇੰਸਟਾਲ ਕਰਨ, ਹਟਾਉਣ, ਅੱਪਡੇਟ ਜਾਂ ਲਿਸਟ ਵੇਖਣ ਵਿੱਚੋਂ ਇੱਕ ਚਾਹੀਦਾ ਹੈ।"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10257,6 +10154,11 @@ msgstr "ਡਿਵੈਲਪਰ (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "ਡਿਵੈਲਪਰ(lfranchi)"
 
@@ -10627,6 +10529,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "ਡਿਵੈਲਪਰ"
 
 #: main.cpp:252
 #, kde-format
@@ -16422,6 +16331,66 @@ msgstr "ਕਲਾਕਾਰ: %1"
 #, kde-format
 msgid "empty"
 msgstr "ਖਾਲੀ"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "ਅਮਰੋਕ ਐਪਲਿਟ ਮੈਨੇਜਰ"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "ਅਸਲੀ ਲੇਖਕ"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr "ਸਭ ਯੂਜ਼ਰਾਂ ਲਈ ਐਪਲਿਟ ਉੱਤੇ ਇੰਸਟਾਲ, ਹਟਾਉਣ, ਕਾਰਵਾਈਆਂ"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "<path> ਉੱਤੇ ਐਪਲਿਟ ਇੰਸਟਾਲ"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "<path> ਉੱਤੇ ਐਪਲਿਟ ਅੱਪਗਰੇਡ"
+
+#, fuzzy
+#~| msgid "List installed applets"
+#~ msgid "Most installed applets"
+#~ msgstr "ਇੰਸਟਾਲ ਹੋਏ ਐਪਲਿਟ ਵੇਖੋ"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "<name> ਐਪਲਿਟ ਹਟਾਓ"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "ਪੈਕੇਜ ਰੂਟ ਲਈ ਅਸਲੀ ਪਾਥ ਹੈ। ਜੇ ਇਹ ਨਾ ਦਿੱਤਾ ਤਾਂ ਇਸ KDE ਸ਼ੈਸ਼ਨ ਲਈ ਸਟੈਂਡਰਡ ਡਾਟਾ ਡਾਇਰੈਕਟਰੀਆਂ "
+#~ "ਦੀ ਖੋਜ ਕੀਤੀ ਜਾਵੇਗੀ।"
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 ਠੀਕ ਤਰ੍ਹਾਂ ਹਟਾਇਆ"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "%1 ਹਟਾਉਣ ਲਈ ਫੇਲ੍ਹ।"
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "ਪਲੱਗਇਨ %1 ਇੰਸਟਾਲ ਨਹੀਂ ਹੈ।"
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1 ਠੀਕ ਤਰ੍ਹਾਂ ਇੰਸਟਾਲ ਹੈ"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "%1 ਇੰਸਟਾਲ ਕਰਨ ਲਈ ਫੇਲ੍ਹ।"
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "ਇੰਸਟਾਲ ਕਰਨ, ਹਟਾਉਣ, ਅੱਪਡੇਟ ਜਾਂ ਲਿਸਟ ਵੇਖਣ ਵਿੱਚੋਂ ਇੱਕ ਚਾਹੀਦਾ ਹੈ।"
 
 #~ msgid "Upcoming Events"
 #~ msgstr "ਆ ਰਹੇ ਸਮਾਗਮ"

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -4827,110 +4827,6 @@ msgstr "περιοδεία"
 #, kde-format
 msgid "dates"
 msgstr "ημερομηνίες"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Διαχειριστής μικροεφαρμογών Amarok"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Αρχικός συγγραφέας"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Προγραμματιστής"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Για εγκατάσταση ή αφαίρεση, λειτουργεί στις εφαρμογές που έχουν εγκατασταθεί "
-"για όλους τους χρήστες."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Εγκατάσταση μικροεφαρμογής στο <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Ενημέρωση της μικροεφαρμογής στο <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Οι συχνότερα εγκατεστημένες μικροεφαρμογές"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Αφαίρεση της μικροεφαρμογής με το όνομα <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Πλήρης διαδρομή στο ριζικό κατάλογο του πακέτου. Αν δεν δοθεί, θα γίνει "
-"αναζήτηση στους τυπικούς καταλόγους δεδομένων της συνεδρίας του KDE."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Το %1 αφαιρέθηκε με επιτυχία"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Η αφαίρεση του %1 απέτυχε."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Το πρόσθετο %1 δεν είναι εγκατεστημένο."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "Επιτυχής εγκατάσταση του %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Η εγκατάσταση του %1 απέτυχε."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Απαιτείται ένα από τα εγκατάσταση, αφαίρεση, ενημέρωση ή εμφάνιση."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10619,6 +10515,11 @@ msgstr "Προγραμματιστής (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Προγραμματιστής (lfranchi)"
 
@@ -10986,6 +10887,13 @@ msgstr "Προγραμματιστής, αυτόματη δημιουργία λ
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Προγραμματιστής"
 
 #: main.cpp:252
 #, kde-format
@@ -16966,6 +16874,66 @@ msgstr "Καλλιτέχνης: %1"
 #, kde-format
 msgid "empty"
 msgstr "κενό"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Διαχειριστής μικροεφαρμογών Amarok"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Αρχικός συγγραφέας"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Για εγκατάσταση ή αφαίρεση, λειτουργεί στις εφαρμογές που έχουν "
+#~ "εγκατασταθεί για όλους τους χρήστες."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Εγκατάσταση μικροεφαρμογής στο <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Ενημέρωση της μικροεφαρμογής στο <path>"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Οι συχνότερα εγκατεστημένες μικροεφαρμογές"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Αφαίρεση της μικροεφαρμογής με το όνομα <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Πλήρης διαδρομή στο ριζικό κατάλογο του πακέτου. Αν δεν δοθεί, θα γίνει "
+#~ "αναζήτηση στους τυπικούς καταλόγους δεδομένων της συνεδρίας του KDE."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "Το %1 αφαιρέθηκε με επιτυχία"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Η αφαίρεση του %1 απέτυχε."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Το πρόσθετο %1 δεν είναι εγκατεστημένο."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "Επιτυχής εγκατάσταση του %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Η εγκατάσταση του %1 απέτυχε."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Απαιτείται ένα από τα εγκατάσταση, αφαίρεση, ενημέρωση ή εμφάνιση."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Προσεχείς εκδηλώσεις"

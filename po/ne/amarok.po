@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -4980,115 +4980,6 @@ msgstr "राम्रो"
 #| msgid "Update"
 msgid "dates"
 msgstr "अद्यावधिक गर्नुहोस्"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, fuzzy, kde-format
-#| msgid "Amarok is paused"
-msgid "Amarok Applet Manager"
-msgstr "अमारोक पज गरिएको छ"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:90
-#, fuzzy, kde-format
-#| msgid "Amarok Version"
-msgid "Aaron Seigo"
-msgstr "अमारोक संस्करण"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "लिओ फ्रेन्चि"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer"
-msgstr "यन्त्र प्रकार"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:112
-#, fuzzy, kde-format
-#| msgid "&Install Script"
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "स्क्रिप्ट स्थापना गर्नुहोस्"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "&Install Script"
-msgid "Most installed applets"
-msgstr "स्क्रिप्ट स्थापना गर्नुहोस्"
-
-#: context/tools/amarokpkg.cpp:118
-#, fuzzy, kde-format
-#| msgid "Remove last appended filter"
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "अन्तिममा थपिएको फिल्टर हटाउनुहोस्"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:183
-#, fuzzy, kde-format
-#| msgid "The file %1 is not writable."
-msgid "Plugin %1 is not installed."
-msgstr "फाइल %1 लेखनयोग्य छैन ।"
-
-#: context/tools/amarokpkg.cpp:188
-#, fuzzy, kde-format
-#| msgid "Script successfully installed."
-msgid "Successfully installed %1"
-msgstr "स्क्रिप्ट सफलतापूर्वक स्थापित भयो ।"
-
-#: context/tools/amarokpkg.cpp:191
-#, fuzzy, kde-format
-#| msgid "Authentication Failure"
-msgid "Installation of %1 failed."
-msgstr "प्रमाणीकरण असफलता"
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, fuzzy, kde-format
@@ -10781,6 +10672,11 @@ msgid "Developer (jefferai)"
 msgstr "यन्त्र प्रकार"
 
 #: main.cpp:166
+#, kde-format
+msgid "Leo Franchi"
+msgstr "लिओ फ्रेन्चि"
+
+#: main.cpp:166
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (lfranchi)"
@@ -11172,6 +11068,14 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer"
+msgstr "यन्त्र प्रकार"
 
 #: main.cpp:252
 #, kde-format
@@ -17297,6 +17201,48 @@ msgstr "कलाकार"
 #| msgid "Retry"
 msgid "empty"
 msgstr "पुन: प्रयास गर्नुहोस्"
+
+#, fuzzy
+#~| msgid "Amarok is paused"
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "अमारोक पज गरिएको छ"
+
+#, fuzzy
+#~| msgid "Amarok Version"
+#~ msgid "Aaron Seigo"
+#~ msgstr "अमारोक संस्करण"
+
+#, fuzzy
+#~| msgid "&Install Script"
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "स्क्रिप्ट स्थापना गर्नुहोस्"
+
+#, fuzzy
+#~| msgid "&Install Script"
+#~ msgid "Most installed applets"
+#~ msgstr "स्क्रिप्ट स्थापना गर्नुहोस्"
+
+#, fuzzy
+#~| msgid "Remove last appended filter"
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "अन्तिममा थपिएको फिल्टर हटाउनुहोस्"
+
+#, fuzzy
+#~| msgid "The file %1 is not writable."
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "फाइल %1 लेखनयोग्य छैन ।"
+
+#, fuzzy
+#~| msgid "Script successfully installed."
+#~ msgid "Successfully installed %1"
+#~ msgstr "स्क्रिप्ट सफलतापूर्वक स्थापित भयो ।"
+
+#, fuzzy
+#~| msgid "Authentication Failure"
+#~ msgid "Installation of %1 failed."
+#~ msgstr "प्रमाणीकरण असफलता"
 
 #, fuzzy
 #~| msgid "Fetching Friend Events"

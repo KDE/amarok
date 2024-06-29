@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2023-02-13 17:55+0100\n"
 "Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
 "Language-Team: Slovak <opensuse-translation@opensuse.org>\n"
@@ -4764,110 +4764,6 @@ msgstr "na turné"
 #, kde-format
 msgid "dates"
 msgstr "dátumy"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Správca Amarok Appletov"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Pôvodný autor"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Vývojár"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Pre inštaláciu, alebo odstránenie, pracuje s appletmi inštalovanými pre "
-"všetkých užívateľov."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Inštalovať applet z <cesta>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Inovovať aplet v <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Najčastejšie inštalované aplety"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Odstrániť applet pomenovaný <meno>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Absolútna cesta ku koreňu balíčka. Ak nie je zadaná, potom sa budú namiesto "
-"toho prehľadávať štandardné dátové adresáre pre toto sedenie KDE."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Úspešne odstránené %1"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Odstránenie %1 zlyhalo."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Zásuvný modul %1 nie je nainštalovaný."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "Úspešne nainštalované %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Inštalácia %1 zlyhala."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Musíte zadať buď inštaláciu, odstránenie, inováciu alebo vypísanie."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10571,6 +10467,11 @@ msgstr "Vývojár (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Vývojár (lfranchi)"
 
@@ -10938,6 +10839,13 @@ msgstr "Vývojár, Automatický generátor zoznamu skladieb"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Vývojár"
 
 #: main.cpp:252
 #, kde-format
@@ -16913,6 +16821,66 @@ msgstr "Umelec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdne"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Správca Amarok Appletov"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Pôvodný autor"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Pre inštaláciu, alebo odstránenie, pracuje s appletmi inštalovanými pre "
+#~ "všetkých užívateľov."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Inštalovať applet z <cesta>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Inovovať aplet v <path>"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Najčastejšie inštalované aplety"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Odstrániť applet pomenovaný <meno>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Absolútna cesta ku koreňu balíčka. Ak nie je zadaná, potom sa budú "
+#~ "namiesto toho prehľadávať štandardné dátové adresáre pre toto sedenie KDE."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "Úspešne odstránené %1"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Odstránenie %1 zlyhalo."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Zásuvný modul %1 nie je nainštalovaný."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "Úspešne nainštalované %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Inštalácia %1 zlyhala."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Musíte zadať buď inštaláciu, odstránenie, inováciu alebo vypísanie."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Pripravované udalosti"

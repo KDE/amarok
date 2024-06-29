@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -4602,106 +4602,6 @@ msgstr ""
 #| msgid "Update"
 msgid "dates"
 msgstr "Kemaskini"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, fuzzy, kde-format
-msgid "Developer"
-msgstr "Program Bantuan Pembangun"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-msgid "Most installed applets"
-msgstr "Pasang plugin baru"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:183
-#, fuzzy, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Fail %s adalah jenis tidak disokong pada masa ini"
-
-#: context/tools/amarokpkg.cpp:188
-#, fuzzy, kde-format
-msgid "Successfully installed %1"
-msgstr "Ralat melaksanakan skrip %s"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10057,6 +9957,11 @@ msgid "Developer (jefferai)"
 msgstr "Program Bantuan Pembangun"
 
 #: main.cpp:166
+#, kde-format
+msgid "Leo Franchi"
+msgstr ""
+
+#: main.cpp:166
 #, fuzzy, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Program Bantuan Pembangun"
@@ -10425,6 +10330,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, fuzzy, kde-format
+msgid "Developer"
+msgstr "Program Bantuan Pembangun"
 
 #: main.cpp:252
 #, kde-format
@@ -16066,6 +15978,18 @@ msgstr "Artis"
 #| msgid "Retry"
 msgid "empty"
 msgstr "Ulang"
+
+#, fuzzy
+#~ msgid "Most installed applets"
+#~ msgstr "Pasang plugin baru"
+
+#, fuzzy
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Fail %s adalah jenis tidak disokong pada masa ini"
+
+#, fuzzy
+#~ msgid "Successfully installed %1"
+#~ msgstr "Ralat melaksanakan skrip %s"
 
 #, fuzzy
 #~ msgid "Upcoming Events"

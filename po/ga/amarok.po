@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -4833,114 +4833,6 @@ msgstr "ar chamchuairt"
 #, kde-format
 msgid "dates"
 msgstr "dátaí"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Bainisteoir Feidhmchláiríní Amarok"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "An chéad údar"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Forbróir"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Le linn suiteála nó bainte, oibríonn sé ar fheidhmchláiríní atá suiteáilte "
-"ar son gach úsáideoir."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Suiteáil an feidhmchláirín ag <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Nuashonraigh an feidhmchláirín ag <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applets"
-msgid "Most installed applets"
-msgstr "Taispeáin na feidhmchláiríní suiteáilte"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Bain an feidhmchláirín darb ainm <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Dearbhchonair go fréamh an phacáiste. Mura soláthraítear é seo, déanfar "
-"cuardach sna comhadlanna caighdeánacha sonraí le haghaidh an tseisiúin KDE "
-"seo."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "D'éirigh le baint %1"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Theip ar %1 a bhaint."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Níl breiseán %1 suiteáilte."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "D'éirigh le suiteáil %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Theip ar shuiteáil %1."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
-"Ní mór duit ceann de na gníomhartha seo a roghnú: suiteáil, baint, "
-"uasghrádú, nó taispeáint."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10810,6 +10702,11 @@ msgstr "Forbróir (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Forbróir (lfranchi)"
 
@@ -11178,6 +11075,13 @@ msgstr "Forbróir, Gineadóir Uathoibríoch Seinmliostaí"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Forbróir"
 
 #: main.cpp:252
 #, kde-format
@@ -17187,6 +17091,71 @@ msgstr "Ealaíontóir: %1"
 #, kde-format
 msgid "empty"
 msgstr "folamh"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Bainisteoir Feidhmchláiríní Amarok"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "An chéad údar"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Le linn suiteála nó bainte, oibríonn sé ar fheidhmchláiríní atá "
+#~ "suiteáilte ar son gach úsáideoir."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Suiteáil an feidhmchláirín ag <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Nuashonraigh an feidhmchláirín ag <path>"
+
+#, fuzzy
+#~| msgid "List installed applets"
+#~ msgid "Most installed applets"
+#~ msgstr "Taispeáin na feidhmchláiríní suiteáilte"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Bain an feidhmchláirín darb ainm <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Dearbhchonair go fréamh an phacáiste. Mura soláthraítear é seo, déanfar "
+#~ "cuardach sna comhadlanna caighdeánacha sonraí le haghaidh an tseisiúin "
+#~ "KDE seo."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "D'éirigh le baint %1"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Theip ar %1 a bhaint."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Níl breiseán %1 suiteáilte."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "D'éirigh le suiteáil %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Theip ar shuiteáil %1."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr ""
+#~ "Ní mór duit ceann de na gníomhartha seo a roghnú: suiteáil, baint, "
+#~ "uasghrádú, nó taispeáint."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Imeachtaí atá ag teacht"

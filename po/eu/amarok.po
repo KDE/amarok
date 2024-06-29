@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -4774,110 +4774,6 @@ msgstr "biran"
 #, kde-format
 msgid "dates"
 msgstr "datak"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Amarok-eko miniaplikazioen kudeatzailea"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Jatorrizko egilea"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Garatzailea"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Instalatzeak edo kentzeak erabiltzaile guztientzako instalatutako "
-"miniaplikazioen gainean eragiten dira."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Instalatu miniaplikazioa: <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Eguneratu miniaplikazioa: <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Aplikaziotxo instalatuenak"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Kendu <name> izeneko miniaplikazioa"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"root paketearen bide-izen absolutua. Ez bada ematen, KDEko saio honetako "
-"datuen direktorio estandarra erabiliko da bilaketa lantzeko."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 ongi kendu da"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Huts egin du %1 kentzean."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "%1 plugina ez dago instalatuta."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1 ongi instalatu da"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Huts egin du %1 instalatzean."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Hauetariko bat behar da: instalatu, kendu, eguneratu."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10586,6 +10482,11 @@ msgstr "Garatzailea (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Garatzailea (lfranchi)"
 
@@ -10953,6 +10854,13 @@ msgstr "Garatzailea, zerrenden sortzaile automatikoa"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Garatzailea"
 
 #: main.cpp:252
 #, kde-format
@@ -16924,6 +16832,66 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "hutsik"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Amarok-eko miniaplikazioen kudeatzailea"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Jatorrizko egilea"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Instalatzeak edo kentzeak erabiltzaile guztientzako instalatutako "
+#~ "miniaplikazioen gainean eragiten dira."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Instalatu miniaplikazioa: <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Eguneratu miniaplikazioa: <path>"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Aplikaziotxo instalatuenak"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Kendu <name> izeneko miniaplikazioa"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "root paketearen bide-izen absolutua. Ez bada ematen, KDEko saio honetako "
+#~ "datuen direktorio estandarra erabiliko da bilaketa lantzeko."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 ongi kendu da"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Huts egin du %1 kentzean."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "%1 plugina ez dago instalatuta."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1 ongi instalatu da"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Huts egin du %1 instalatzean."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Hauetariko bat behar da: instalatu, kendu, eguneratu."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Hurrengo gertaerak"

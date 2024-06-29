@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2014-03-28 22:28+0100\n"
 "Last-Translator: Jean Cayron <jean.cayron@gmail.com>\n"
 "Language-Team: Walloon <linux-wa@walon.org>\n"
@@ -4819,110 +4819,6 @@ msgstr "e tournêye"
 #, kde-format
 msgid "dates"
 msgstr "dates"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Manaedjeu d' aplikete d' Amarok"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr " 2008, Aaron Seigo,  2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Prumî oteur"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Programeu"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr "Pos astaler eyet oister, overe so les apliketes astalêyes påzès uzeus."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Astaler l' aplikete dins <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Mete a djoû l' aplikete dins <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applets"
-msgid "Most installed applets"
-msgstr "Djivêye des apliketes astalêyes"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Oister l' aplikete lomêye <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Tchimin absoulou viè l' raecene do pacaedje. Si rén n' est dné, dji cwirrè "
-"al plaece ezès ridants standårds des dnêyes po cisse session di KDE."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "Dj' a oisté %1 comifåt"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Li oistaedje di %1 a fwait berwete."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Li tchôke-divins %1 n' est nén astalé."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1 a stî astalé comifåt"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "L' astalaedje di %1 a fwait berwete."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
-"I fåt pol moens onk di zels: astaler, oister, mete a djoû ou fé l' djivêye."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10671,6 +10567,11 @@ msgstr "Diswalpeu (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Diswalpeu (lfranchi)"
 
@@ -11038,6 +10939,13 @@ msgstr "Diswalpeu, djenerateu d' djivêyes a djouwer otomatijhî"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Programeu"
 
 #: main.cpp:252
 #, kde-format
@@ -16985,6 +16893,70 @@ msgstr "Årtisse : %1"
 #, kde-format
 msgid "empty"
 msgstr "vude"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Manaedjeu d' aplikete d' Amarok"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr " 2008, Aaron Seigo,  2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Prumî oteur"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Pos astaler eyet oister, overe so les apliketes astalêyes påzès uzeus."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Astaler l' aplikete dins <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Mete a djoû l' aplikete dins <path>"
+
+#, fuzzy
+#~| msgid "List installed applets"
+#~ msgid "Most installed applets"
+#~ msgstr "Djivêye des apliketes astalêyes"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Oister l' aplikete lomêye <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Tchimin absoulou viè l' raecene do pacaedje. Si rén n' est dné, dji "
+#~ "cwirrè al plaece ezès ridants standårds des dnêyes po cisse session di "
+#~ "KDE."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "Dj' a oisté %1 comifåt"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Li oistaedje di %1 a fwait berwete."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Li tchôke-divins %1 n' est nén astalé."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1 a stî astalé comifåt"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "L' astalaedje di %1 a fwait berwete."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr ""
+#~ "I fåt pol moens onk di zels: astaler, oister, mete a djoû ou fé l' "
+#~ "djivêye."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Evenmints a vni"

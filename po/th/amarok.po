@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -4874,109 +4874,6 @@ msgstr "ทัวร์คอนเสิร์ต"
 #, kde-format
 msgid "dates"
 msgstr "วันที่"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "ตัวจัดการแอพเพล็ตของแอมอะร็อก"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "สงวนลิขสิทธิ์ (C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "ผู้เขียนเดิม"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "ผู้พัฒนา"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr "สำหรับการติดตั้งและการถอดแอปเพล็ตที่ติดตั้งอยู่สำหรับผู้ใช้ทั้งหมด"
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "ติดตั้งแอพเพล็ตที่ <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "ทำการปรับรุ่นแอปเพล็ตที่ <พาธ>"
-
-#: context/tools/amarokpkg.cpp:116
-#, fuzzy, kde-format
-#| msgid "List installed applets"
-msgid "Most installed applets"
-msgstr "เรียกรายการแอพเพล็ตที่ได้ติดตั้งไว้แล้ว"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "ลบแอพเพล็ตที่มีชื่อว่า <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"พาธแบบเต็มไปยังที่อยู่รากของแพ็คเกจ ถ้าไม่ได้เติมไว้ "
-"จะใช้การค้นหาจากไดเร็คทอรีมาตรฐานสำหรับวาระ KDE นี้แทน"
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "ทำการเอา %1 ออกสำเร็จ"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "การเอา %1 ออก ล้มเหลว"
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "ยังไม่ได้ติดตั้งส่วนเสริม %1"
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "ทำการติดตั้ง %1 เรียบร้อยแล้ว"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "การติดตั้งของ %1 ล้มเหลว"
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "ต้องการคำสั่งหนึ่งจาก ติดตั้ง, ถอนออก, ปรับรุ่น หรือแสดงรายการ"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10622,6 +10519,11 @@ msgstr "ผู้พัฒนา (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "ผู้พัฒนา (lfranchi)"
 
@@ -10997,6 +10899,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "ผู้พัฒนา"
 
 #: main.cpp:252
 #, kde-format
@@ -16948,6 +16857,66 @@ msgstr "ศิลปิน \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "ตัวจัดการแอพเพล็ตของแอมอะร็อก"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "สงวนลิขสิทธิ์ (C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "ผู้เขียนเดิม"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr "สำหรับการติดตั้งและการถอดแอปเพล็ตที่ติดตั้งอยู่สำหรับผู้ใช้ทั้งหมด"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "ติดตั้งแอพเพล็ตที่ <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "ทำการปรับรุ่นแอปเพล็ตที่ <พาธ>"
+
+#, fuzzy
+#~| msgid "List installed applets"
+#~ msgid "Most installed applets"
+#~ msgstr "เรียกรายการแอพเพล็ตที่ได้ติดตั้งไว้แล้ว"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "ลบแอพเพล็ตที่มีชื่อว่า <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "พาธแบบเต็มไปยังที่อยู่รากของแพ็คเกจ ถ้าไม่ได้เติมไว้ "
+#~ "จะใช้การค้นหาจากไดเร็คทอรีมาตรฐานสำหรับวาระ KDE นี้แทน"
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "ทำการเอา %1 ออกสำเร็จ"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "การเอา %1 ออก ล้มเหลว"
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "ยังไม่ได้ติดตั้งส่วนเสริม %1"
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "ทำการติดตั้ง %1 เรียบร้อยแล้ว"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "การติดตั้งของ %1 ล้มเหลว"
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "ต้องการคำสั่งหนึ่งจาก ติดตั้ง, ถอนออก, ปรับรุ่น หรือแสดงรายการ"
 
 #~ msgid "Upcoming Events"
 #~ msgstr "เหตุการณ์ที่ใกล้จะมาถึง"

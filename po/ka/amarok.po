@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2023-02-08 07:05+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -4543,111 +4543,6 @@ msgstr ""
 #, kde-format
 msgid "dates"
 msgstr "თარიღები"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Amarok-ის აპლეტის მმართველი"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "აარონ სეიგო"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "საწყისი ავტორი"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "ლეო ფრანჩი"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "პროგრამისტი"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"დასაყენებლად ან საწაშლელად ყველა მომხმარებლის ნაცვლად აპლეტებზე ოპერირებს."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "აპლეტის <path>-ზე დაყენება"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "<path>-ზე აპლეტის განახლება"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "ყველაზე ხშირად დაყენებული აპლეტები"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "აპლეტის (<name>) წაშლა"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"აბსოლუტური ბილიკი პაკეტის ძირითად საქაღალდემდე. თუ მითითებული არაა, "
-"მოსაძებნად KDE-ის სესიის მონაცემების საქაღალდე იქნება გამოყენებული."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 წარმატებით წაიშალა"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "%1-is წაშლის შეცდომა."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "დამატება დაყენებული არაა: %1."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "დაყენება წარმატებულია: %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "დაყენების შეცდომა: %1."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
-"საჭიროა ერთერთი \"install\"(დაყენება), \"upgrade\"(განახლება), \"remove"
-"\"(წაშლა) ან \"list\"(ჩამონათვალი)."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -9867,6 +9762,11 @@ msgstr ""
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "ლეო ფრანჩი"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr ""
 
@@ -10234,6 +10134,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "პროგრამისტი"
 
 #: main.cpp:252
 #, kde-format
@@ -15788,6 +15695,67 @@ msgstr "შემსრულებელი: %1"
 #, kde-format
 msgid "empty"
 msgstr "ცარიელია"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Amarok-ის აპლეტის მმართველი"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "აარონ სეიგო"
+
+#~ msgid "Original author"
+#~ msgstr "საწყისი ავტორი"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "დასაყენებლად ან საწაშლელად ყველა მომხმარებლის ნაცვლად აპლეტებზე ოპერირებს."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "აპლეტის <path>-ზე დაყენება"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "<path>-ზე აპლეტის განახლება"
+
+#~ msgid "Most installed applets"
+#~ msgstr "ყველაზე ხშირად დაყენებული აპლეტები"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "აპლეტის (<name>) წაშლა"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "აბსოლუტური ბილიკი პაკეტის ძირითად საქაღალდემდე. თუ მითითებული არაა, "
+#~ "მოსაძებნად KDE-ის სესიის მონაცემების საქაღალდე იქნება გამოყენებული."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 წარმატებით წაიშალა"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "%1-is წაშლის შეცდომა."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "დამატება დაყენებული არაა: %1."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "დაყენება წარმატებულია: %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "დაყენების შეცდომა: %1."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr ""
+#~ "საჭიროა ერთერთი \"install\"(დაყენება), \"upgrade\"(განახლება), \"remove"
+#~ "\"(წაშლა) ან \"list\"(ჩამონათვალი)."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "მომავალი ღონისძიებები"

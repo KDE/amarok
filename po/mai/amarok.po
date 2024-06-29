@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2010-09-24 12:22+0530\n"
 "Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Maithili <bhashaghar@googlegroups.com>\n"
@@ -4686,108 +4686,6 @@ msgstr ""
 #, kde-format
 msgid "dates"
 msgstr ""
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "एरान सीगो"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "मूल लेखक"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "डेवलपर"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"संकुल रूट क' निरपेक्ष पथ. जँ नहि देल जाएत अछि, तब मानक आँकडा निर्देशिका एहि KDE सत्र क' "
-"लेल बदलामे खोजल जएताह."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "सफलतापूर्वक हटओलक %1"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "%1 क' हटाएल जएनाइ विफल."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "प्लगिन %1 सँस्थापित नहि अछि."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "सफलतापूर्वक सँस्थापित %1"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "%1 क' सँस्थापन विफल."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "सँस्थापन, हटओनाइ, उन्नयन अथवा सूचीमे सँ एकटा जरूरी."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10224,6 +10122,11 @@ msgstr ""
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr ""
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr ""
 
@@ -10592,6 +10495,13 @@ msgstr ""
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "डेवलपर"
 
 #: main.cpp:252
 #, kde-format
@@ -16286,6 +16196,40 @@ msgstr "कलाकार: %1"
 #, kde-format
 msgid "empty"
 msgstr "खाली"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "एरान सीगो"
+
+#~ msgid "Original author"
+#~ msgstr "मूल लेखक"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "संकुल रूट क' निरपेक्ष पथ. जँ नहि देल जाएत अछि, तब मानक आँकडा निर्देशिका एहि KDE सत्र "
+#~ "क' लेल बदलामे खोजल जएताह."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "सफलतापूर्वक हटओलक %1"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "%1 क' हटाएल जएनाइ विफल."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "प्लगिन %1 सँस्थापित नहि अछि."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "सफलतापूर्वक सँस्थापित %1"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "%1 क' सँस्थापन विफल."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "सँस्थापन, हटओनाइ, उन्नयन अथवा सूचीमे सँ एकटा जरूरी."
 
 #, fuzzy
 #~| msgctxt "The quality of music"

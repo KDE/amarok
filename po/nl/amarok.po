@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2024-06-19 11:21+0200\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
@@ -4771,110 +4771,6 @@ msgstr "ontour"
 #, kde-format
 msgid "dates"
 msgstr "dates"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Amarok appletbeheerder"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Oorspronkelijke auteur"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Ontwikkelaar"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Voor installeren of verwijderen, van toepassing op applets die beschikbaar "
-"gemaakt zijn voor alle gebruikers."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Het applet op <path> installeren"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Het applet op <path> bijwerken"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Meest geïnstalleerde applets"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Het applet genaamd <name> verwijderenjderen"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Absoluut pad naar de hoofdmap van het pakket. Indien niet opgegeven zullen "
-"de standaard gegevensmappen voor deze KDE-sessie worden doorzocht."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 is met succes verwijderd"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Verwijdering van %1 is mislukt."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Plugin %1 is niet geïnstalleerd."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1 met succes geïnstalleerd"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Installatie van %1 is mislukt."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Eén van installeren, verwijderen, opwaarderen of weergeven is vereist."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10532,6 +10428,11 @@ msgstr "Ontwikkelaar (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Ontwikkelaar (lfranchi)"
 
@@ -10899,6 +10800,13 @@ msgstr "Ontwikkelaar, geautomatiseerde afspeellijstgenerator"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Ontwikkelaar"
 
 #: main.cpp:252
 #, kde-format
@@ -16840,6 +16748,67 @@ msgstr "Artiest: %1"
 #, kde-format
 msgid "empty"
 msgstr "leeg"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Amarok appletbeheerder"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Oorspronkelijke auteur"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Voor installeren of verwijderen, van toepassing op applets die "
+#~ "beschikbaar gemaakt zijn voor alle gebruikers."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Het applet op <path> installeren"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Het applet op <path> bijwerken"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Meest geïnstalleerde applets"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Het applet genaamd <name> verwijderenjderen"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Absoluut pad naar de hoofdmap van het pakket. Indien niet opgegeven "
+#~ "zullen de standaard gegevensmappen voor deze KDE-sessie worden doorzocht."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 is met succes verwijderd"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Verwijdering van %1 is mislukt."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Plugin %1 is niet geïnstalleerd."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1 met succes geïnstalleerd"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Installatie van %1 is mislukt."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr ""
+#~ "Eén van installeren, verwijderen, opwaarderen of weergeven is vereist."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Komende afspraken"

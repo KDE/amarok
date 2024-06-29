@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2024-05-07 17:44+0300\n"
 "Last-Translator: Tuomas Nurmi <tuomas@tuomasn.fi>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -4753,109 +4753,6 @@ msgstr "kiertueella"
 #, kde-format
 msgid "dates"
 msgstr "päivät"
-
-# accelerator olis kiva mut sotkee dialogin titlen :<
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Amarokin sovelmanhallinta"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Alkuperäinen tekijä"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Kehittäjä"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr "Kaikkien käyttäjien sovelmien asennus ja poisto."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "Asenna sovelma sijaintiin <path>"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "Päivitä sovelma sijainnissa <path>"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Asennetuimmat sovelmat"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "Poista sovelma <name>"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Paketin juuren absoluuttinen polku. Ellei tätä anneta, etsitään tämän KDE-"
-"istunnon oletusdatakansioista."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "%1 onnistuneesti poistettu"
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "Sovelman %1 poisto epäonnistui"
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "Liitännäistä %1 ei ole asennettu."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "%1 onnistuneesti asennettu"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "Sovelman %1 asennus epäonnistui."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr "Toiminnon on oltava joko asennus, poisto, päivitys tai luettelu."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10473,6 +10370,11 @@ msgstr "Kehittäjä (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Kehittäjä (lfranchi)"
 
@@ -10841,6 +10743,13 @@ msgstr "Kehittäjä, automaattinen soittolistan luoja"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Kehittäjä"
 
 #: main.cpp:252
 #, kde-format
@@ -16777,6 +16686,65 @@ msgstr "Artisti: %1"
 #, kde-format
 msgid "empty"
 msgstr "tyhjä"
+
+# accelerator olis kiva mut sotkee dialogin titlen :<
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Amarokin sovelmanhallinta"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Alkuperäinen tekijä"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr "Kaikkien käyttäjien sovelmien asennus ja poisto."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "Asenna sovelma sijaintiin <path>"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "Päivitä sovelma sijainnissa <path>"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Asennetuimmat sovelmat"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "Poista sovelma <name>"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Paketin juuren absoluuttinen polku. Ellei tätä anneta, etsitään tämän KDE-"
+#~ "istunnon oletusdatakansioista."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "%1 onnistuneesti poistettu"
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "Sovelman %1 poisto epäonnistui"
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "Liitännäistä %1 ei ole asennettu."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "%1 onnistuneesti asennettu"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "Sovelman %1 asennus epäonnistui."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr "Toiminnon on oltava joko asennus, poisto, päivitys tai luettelu."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Tulevat tapahtumat"

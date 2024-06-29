@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-27 01:48+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2021-11-08 08:52+0100\n"
 "Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -4790,111 +4790,6 @@ msgstr "turnén"
 #, kde-format
 msgid "dates"
 msgstr "dátumok"
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr "Kisalkalmazás-kezelő az Amarokhoz"
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "© Aaron Seigo, 2008. © Leo Franchi, 2009."
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Eredeti szerző"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr "Fejlesztő"
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-"Telepítéshez és törléshez az összes felhasználó számára telepített "
-"kisalkalmazásokat kezeli."
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr "A „<path>” helyen levő kisalkalmazás telepítése"
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr "A „<path>” helyen levő kisalkalmazás frissítése"
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr "Leggyakrabban telepített kisalkalmazások"
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr "A „<name>” nevű kisalkalmazás eltávolítása"
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-"Abszolút útvonal a csomaggyökérhez. Ha nincs megadva, akkor az aktuális KDE-"
-"munkamenet szabványos adatkönyvtáraiban lesz végezve a keresés."
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr "A(z) „%1” sikeresen eltávolítva."
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr "A(z) „%1” törlése nem sikerült."
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr "A(z) „%1” modul nincs telepítve."
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr "A(z) „%1” sikeresen telepítve"
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr "%1 telepítése nem sikerült."
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
-msgstr ""
-"A telepítés, törlés, frissítés és listázás műveletek egyikét meg kell adni."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
@@ -10534,6 +10429,11 @@ msgstr "Fejlesztő (jefferai)"
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Fejlesztő (lfranchi)"
 
@@ -10901,6 +10801,13 @@ msgstr "Fejlesztő, automatikus lejátszólista-készítő"
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
+msgstr "Fejlesztő"
 
 #: main.cpp:252
 #, kde-format
@@ -16850,6 +16757,68 @@ msgstr "Előadó: %1"
 #, kde-format
 msgid "empty"
 msgstr "üres"
+
+#~ msgid "Amarok Applet Manager"
+#~ msgstr "Kisalkalmazás-kezelő az Amarokhoz"
+
+#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+#~ msgstr "© Aaron Seigo, 2008. © Leo Franchi, 2009."
+
+#~ msgid "Aaron Seigo"
+#~ msgstr "Aaron Seigo"
+
+#~ msgid "Original author"
+#~ msgstr "Eredeti szerző"
+
+#~ msgid "For install or remove, operates on applets installed for all users."
+#~ msgstr ""
+#~ "Telepítéshez és törléshez az összes felhasználó számára telepített "
+#~ "kisalkalmazásokat kezeli."
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Install the applet at <path>"
+#~ msgstr "A „<path>” helyen levő kisalkalmazás telepítése"
+
+#~ msgctxt "Do not translate <path>"
+#~ msgid "Upgrade the applet at <path>"
+#~ msgstr "A „<path>” helyen levő kisalkalmazás frissítése"
+
+#~ msgid "Most installed applets"
+#~ msgstr "Leggyakrabban telepített kisalkalmazások"
+
+#~ msgctxt "Do not translate <name>"
+#~ msgid "Remove the applet named <name>"
+#~ msgstr "A „<name>” nevű kisalkalmazás eltávolítása"
+
+#~ msgid ""
+#~ "Absolute path to the package root. If not supplied, then the standard "
+#~ "data directories for this KDE session will be searched instead."
+#~ msgstr ""
+#~ "Abszolút útvonal a csomaggyökérhez. Ha nincs megadva, akkor az aktuális "
+#~ "KDE-munkamenet szabványos adatkönyvtáraiban lesz végezve a keresés."
+
+#~ msgid "Successfully removed %1"
+#~ msgstr "A(z) „%1” sikeresen eltávolítva."
+
+#~ msgid "Removal of %1 failed."
+#~ msgstr "A(z) „%1” törlése nem sikerült."
+
+#~ msgid "Plugin %1 is not installed."
+#~ msgstr "A(z) „%1” modul nincs telepítve."
+
+#~ msgid "Successfully installed %1"
+#~ msgstr "A(z) „%1” sikeresen telepítve"
+
+#~ msgid "Installation of %1 failed."
+#~ msgstr "%1 telepítése nem sikerült."
+
+#~ msgctxt ""
+#~ "No option was given, this is the error message telling the user he needs "
+#~ "at least one, do not translate install, remove, upgrade nor list"
+#~ msgid "One of install, remove, upgrade or list is required."
+#~ msgstr ""
+#~ "A telepítés, törlés, frissítés és listázás műveletek egyikét meg kell "
+#~ "adni."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "Közelgő események"
