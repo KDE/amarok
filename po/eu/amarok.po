@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -59,12 +59,12 @@ msgstr "Taldekatzerik gabe (lerro bakarra)"
 msgid "Verbose"
 msgstr "Berritsua"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "Lizentzia hitzarmena"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
@@ -73,7 +73,7 @@ msgstr ""
 "<qt>Ez dago informazio erabilgarririk.<br />Emandako KAboutData objektua ez "
 "da existitzen.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
@@ -82,12 +82,12 @@ msgstr ""
 "<qt>Ez dago informazio erabilgarririk.<br />Emandako OcsData objektua ez da "
 "existitzen.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "%1(r)i buruz"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -96,22 +96,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>%2 bertsioa</b><br />KDE Frameworks "
 "%3 erabiliz</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "Lizentzia: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "&Honi buruz"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "Lortu datuak «openDesktop.org»etik taldeari buruz gehiago jakiteko"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
@@ -120,170 +115,46 @@ msgstr ""
 "Mesedez, erabili <a href=\"http://bugs.kde.org\">https://bugs.kde.org</a> "
 "akatsen berri emateko.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Mesedez, akatsak hemen jakinarazi: <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "&Egilea"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "&Egileak"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Eskuratu «openDesktop.org»eko datuak laguntzaileei buruz gehiago jakiteko"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, kde-format
 msgid "&Contributors"
 msgstr "&Laguntzaileak"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Eskuratu «openDesktop.org»eko datuak emaile eskuzabalei buruz gehiago "
-"jakiteko"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "E&maileak"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "&Itzulpena"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "Interneteko konexioa ez dago erabilgarri"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "Sareko errorea"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "Bidali e-posta laguntzaileari"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Bisitatu laguntzailearen orri nagusia"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "IRC kanalak: "
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "Gogoko musika: "
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Bisitatu %1(e)n «openDesktop.org»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Bisitatu %1(e)n «openDesktop.org»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "Bisitatu laguntzailearen bloga"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Bisitatu laguntzailearen «del.icio.us»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "Bisitatu laguntzailearen «Digg»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "Bisitatu laguntzailearen «Facebook»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "Bisitatu laguntzailearen «Last.fm»ko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Bisitatu laguntzailearen «LinkedIn»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "Bisitatu laguntzailearen «MySpace»eko orri nagusia"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "Bisitatu laguntzailearen «Reddit»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "Bisitatu laguntzailearen «YouTube»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "Bisitatu laguntzailearen «Twitter»reko jarioa"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Bisitatu laguntzailearen «Wikipedia»ko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "Bisitatu laguntzailearen «Xing»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "Bisitatu laguntzailearen «identi.ca»ko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "Bisitatu laguntzailearen «libre.fm»eko profila"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Bisitatu laguntzailearen «StackOverflow»eko profila"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2221,7 +2092,7 @@ msgid "Label"
 msgstr "Etiketa"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "Bat ere ez"
@@ -5040,7 +4911,7 @@ msgstr "Bilduma ezezaguna"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5578,13 +5449,13 @@ msgid "Could not copy track from device."
 msgstr "Ezin izan da pista multimedia gailutik kopiatu"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "Album ezezaguna"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Genero ezezaguna"
@@ -6146,57 +6017,57 @@ msgstr[1] " elementu"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Eguneratu kanal guztiak"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Konfiguratu ezarpen orokorrak"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Esportatu harpidetzak OPML fitxategira"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "&Konfiguratu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Kendu harpidetza"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Eguneratu kanala"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Deskargatu pasartea"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Ezabatu deskargatutako pasartea"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Idatzi jarioaren informazioa fitxategian"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "&Mantendu zama-jaitsitako fitxategia"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6204,78 +6075,78 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Jadanik %1(e)ra harpidetuta."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "maiztasuna: "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " minutu"
 msgstr[1] " minutu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfiguratu lokaleko Podcast-ak"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Aldatu Podcast-ak lekuz"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Deskargatutako pasarte guztiak kokaleku berrira eramatea nahi duzu?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Hautatu fitxategia OPML esportatzeko"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Ziur zaude '%1'(e)tik harpidetza kentzea nahi duzula?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Ezabatu deskargatutako pasarteak"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "Oraindik podcast bat deskargatzen ari da"
 msgstr[1] "Oraindik %1 podcast deskargatzen ari dira"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Utzi deskarga eta irten"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Ezin da podcast-aren pasartea %1(e)n gorde"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Podcast-aren multimedia deskargatzen"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "'%1' podcast-a deskargatzen"
@@ -6443,27 +6314,27 @@ msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "Pistak transkodetzen"
 msgstr[1] "Pistak transkodetzen"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, kde-format
 msgid "No network connection"
 msgstr "Sareko konexiorik ez"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, kde-format
 msgid "File does not exist"
 msgstr "Fitxategia ez da existitzen"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr "Ez da fitxategia"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr "Irakurtzeko baimenik gabe"
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Konpositore ezezaguna"
@@ -11479,7 +11350,7 @@ msgstr "&Musika"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11646,12 +11517,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Zerrendaren diseinuak"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Konfiguratu zerrendaren diseinuak..."
@@ -11948,62 +11819,62 @@ msgstr "Erakutsi argibideak"
 msgid "Preview"
 msgstr "Aurrebista"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "Pistaren aurrerapena"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "Arrunta"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
 msgstr "Ilara soilik"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "Errepikatu pista"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "Errepikatu albuma"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "Errepikatu zerrenda"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "Ausazko pistak"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "Ausazko albumak"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "Gogokoa"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "Puntuazio gorenak"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "Balorazio gorenak"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "Aspaldian erreproduzitu gabekoak"
@@ -12134,14 +12005,14 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Titulua (pista-zenbakiarekin)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Gorde uneko zerrenda"
@@ -16458,17 +16329,17 @@ msgstr "&Bisualizazioak"
 msgid "Bookmark"
 msgstr "Laster-marka"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Zerrendatu eta exekutatu laster-markak, edo sortu berriak"
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Amarok-eko laster-markak"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "Kopiatu uneko ikuspegiaren laster-marka arbelera"
@@ -16798,12 +16669,12 @@ msgstr "Jauzi hona: %1"
 msgid "Drag in and out items from above."
 msgstr "Arrastatu barrura eta kanpora gaineko elementuak."
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr "[aurrizkia]"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr "[atzizkia]"
@@ -16832,6 +16703,86 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "hutsik"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr "Lortu datuak «openDesktop.org»etik taldeari buruz gehiago jakiteko"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr ""
+#~ "Eskuratu «openDesktop.org»eko datuak laguntzaileei buruz gehiago jakiteko"
+
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr ""
+#~ "Eskuratu «openDesktop.org»eko datuak emaile eskuzabalei buruz gehiago "
+#~ "jakiteko"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "Interneteko konexioa ez dago erabilgarri"
+
+#~ msgid "Network error"
+#~ msgstr "Sareko errorea"
+
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "IRC kanalak: "
+
+#~ msgid "Favorite music: "
+#~ msgstr "Gogoko musika: "
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "Bisitatu %1(e)n «openDesktop.org»eko profila"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "Bisitatu %1(e)n «openDesktop.org»eko profila"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "Bisitatu laguntzailearen bloga"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "Bisitatu laguntzailearen «del.icio.us»eko profila"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "Bisitatu laguntzailearen «Digg»eko profila"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "Bisitatu laguntzailearen «Facebook»eko profila"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "Bisitatu laguntzailearen «Last.fm»ko profila"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "Bisitatu laguntzailearen «LinkedIn»eko profila"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "Bisitatu laguntzailearen «MySpace»eko orri nagusia"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "Bisitatu laguntzailearen «Reddit»eko profila"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "Bisitatu laguntzailearen «YouTube»eko profila"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "Bisitatu laguntzailearen «Twitter»reko jarioa"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "Bisitatu laguntzailearen «Wikipedia»ko profila"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "Bisitatu laguntzailearen «Xing»eko profila"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "Bisitatu laguntzailearen «identi.ca»ko profila"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "Bisitatu laguntzailearen «libre.fm»eko profila"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "Bisitatu laguntzailearen «StackOverflow»eko profila"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "Amarok-eko miniaplikazioen kudeatzailea"

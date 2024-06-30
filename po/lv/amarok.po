@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -64,12 +64,12 @@ msgstr "Nav grupēšanas (viena rinda)"
 msgid "Verbose"
 msgstr "Detalizēti"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "Licences vienošanās"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
@@ -77,7 +77,7 @@ msgid ""
 msgstr ""
 "<qt>Informācija nav pieejama.<br />Dotais KAboutData objekts nepastāv.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
@@ -85,12 +85,12 @@ msgid ""
 msgstr ""
 "<qt>Informācija nav pieejama.<br />Dotais OcsData objekts nepastāv.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "Par %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, fuzzy, kde-format
 #| msgid ""
 #| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -102,23 +102,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Versija %2</b><br />Izmanto KDE %3</"
 "html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "Licence: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "&Par"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
-"Ielādēt datus no openDesktop.org, lai uzzinātu vairāk par izstrādātājiem"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -130,170 +124,46 @@ msgstr ""
 "Par kļūdām, lūdzu, ziņojiet <a href=\"http://bugs.kde.org\">http://bugs.kde."
 "org</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Lūdzu ziņojiet par kļūdām uz e-pastu <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "A&utors"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "A&utori"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Ielādēt datus no openDesktop.org, lai uzzinātu vairāk par izstrādātājiem"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, kde-format
 msgid "&Contributors"
 msgstr "At&balstītāji"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Ielādēt datus no openDesktop.org, lai uzzinātu vairāk par mūsu devīgajiem "
-"donoriem"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "&Donori"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "T&ulkojums"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "Interneta pieslēgums nav pieejams"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "Tīkla kļūda"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "Sūtīt e-pastu izstrādātājam"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Aplūkot izstrādātāja mājaslapu"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "IRC kanāli: "
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "Iecienītā mūzika: "
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Aplūkot %1 openDesktop.org profīlu"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Aplūkot %1 openDesktop.org profīlu"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "Apmeklēt izstrādātāja blogu"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Apmeklēt izstrādātāja del.icio.us profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "Apmeklēt izstrādātāja Digg profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "Apmeklēt izstrādātāja Facebook profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "Apmeklēt izstrādātāja Last.fm profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Apmeklēt izstrādātāja LinkedIn profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "Apmeklēt izstrādātāja MySpace profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "Apmeklēt izstrādātāja Reddit profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "Apmeklēt izstrādātāja YouTube profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "Apmeklēt izstrādātāja Twitter profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Apmeklēt izstrādātāja Wikipedia profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "Apmeklēt izstrādātāja Xing profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "Apmeklēt izstrādātāja identi.ca barotni"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "Apmeklēt izstrādātāja libre.fm profilu"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Apmeklēt izstrādātāja StackOverflow profilu"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2202,7 +2072,7 @@ msgid "Label"
 msgstr "Ierakstu studija"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "Nav"
@@ -5091,7 +4961,7 @@ msgstr "Nezināma kolekcija"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5653,13 +5523,13 @@ msgid "Could not copy track from device."
 msgstr "Neizdevās nokopēt celiņu no ierīces."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "Nezināms albums"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Nezināms žanrs"
@@ -6218,57 +6088,57 @@ msgstr[2] " %1 vienību"
 msgid "Podcast"
 msgstr "Podraide"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "Atja&unināt visus kanālus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Konfigurēt vispārīgos iestatījumus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Eksportēt visus pierakstījumus uz OPML failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "&Konfigurēt"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Izmest pierakstu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Atjaunināt kanālu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Lejupielādēt sēriju"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Dzēst lejupielādēto epizodi"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Rakstīt barotnes informāciju failā"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "&Paturēt lejupielādēto failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6278,18 +6148,18 @@ msgstr ""
 "Pārslēgt \"paturēt\" statusu lejupielādētajam šīs podraides failam. "
 "Lejupielādētie faili ar šo statusu netiks dzēsti pat tīrīšanas gadījumā."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Jau pierakstījies uz %1."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "ik pēc "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6297,37 +6167,37 @@ msgstr[0] " minūtes"
 msgstr[1] " minūtēm"
 msgstr[2] " minūtēm"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfigurēt lokālās podraides"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Pārvietot podraides"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Vai vēlaties pārvietot visas lejupielādētās epizodes uz jaunu vietu?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Izvēlieties failu OPML eksportēšanai"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Vai tiešām vēlaties atrakstīties no \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Dzēst lejupielādēto sēriju"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6335,23 +6205,23 @@ msgstr[0] "Vēl notiek %1 podraides lejupielāde"
 msgstr[1] "Vēl notiek %1 podraižu lejupielādes"
 msgstr[2] "Vēl notiek %1 podraižu lejupielādes"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Atcelt lejupielādi un iziet."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Neizdevās saglabāt podraides epizodi failā %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Lejupielādē podraides failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Ielādē podraidi \"%1\""
@@ -6520,27 +6390,27 @@ msgstr[0] "Pārkodē un kopē %1 celiņu uz %2"
 msgstr[1] "Pārkodē un kopē %1 celiņus uz %2"
 msgstr[2] "Pārkodē un kopē %1 celiņu uz %2"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, kde-format
 msgid "No network connection"
 msgstr "Nav tīkla savienojuma"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, kde-format
 msgid "File does not exist"
 msgstr "Fails neeksistē"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr "Nav fails"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr "Nav lasīšanas atļauju"
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Nezināms komponists"
@@ -11578,7 +11448,7 @@ msgstr "&Mūzika"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11741,12 +11611,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Repertuāra izkārtojumi"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Konfigurēt repertuāra izkārtojumus..."
@@ -12040,62 +11910,62 @@ msgstr "Rādīt paskaidres"
 msgid "Preview"
 msgstr "Priekšskatīt"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "Sekot progresijai"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "Standarta"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
 msgstr "Tikai rinda"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "Atkārtot celiņu"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "Atkārtot albumu"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "Atkārtot repertuāru"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "Nejauši celiņi"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "Nejauši albumi"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "Dot priekšroku"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "Augstākiem punktiem"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "Augstākam vērtējumam"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "Kādu laiku nav atskaņots"
@@ -12222,7 +12092,7 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Nosaukums (ar celiņa numuru)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
@@ -12231,7 +12101,7 @@ msgstr ""
 "<a href='%1'>Dinamiskais režīms</a> ieslēgts. <a href='%2'>Aizpildīt no "
 "jauna</a>|<a href='%3'>Izslēgt</a>"
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Saglabāt aktīvo repertuāru"
@@ -16572,17 +16442,17 @@ msgstr "&Vizualizācijas"
 msgid "Bookmark"
 msgstr "Grāmatzīme"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Parādīt un atvērt grāmatzīmes, kā arī izveidot jaunas"
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Amarok grāmatzīmes"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "Kopēt šo skata grāmatzīmi uz starpliktuvi"
@@ -16925,12 +16795,12 @@ msgstr "Pāriet uz: %1"
 msgid "Drag in and out items from above."
 msgstr "Velciet iekšā vai ārā no augšējā saraksta."
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr "[priedēklis]"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr "[piedēklis]"
@@ -16959,6 +16829,87 @@ msgstr "Izpildītājs: %1"
 #, kde-format
 msgid "empty"
 msgstr "tukšs"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr ""
+#~ "Ielādēt datus no openDesktop.org, lai uzzinātu vairāk par izstrādātājiem"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr ""
+#~ "Ielādēt datus no openDesktop.org, lai uzzinātu vairāk par izstrādātājiem"
+
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr ""
+#~ "Ielādēt datus no openDesktop.org, lai uzzinātu vairāk par mūsu devīgajiem "
+#~ "donoriem"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "Interneta pieslēgums nav pieejams"
+
+#~ msgid "Network error"
+#~ msgstr "Tīkla kļūda"
+
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "IRC kanāli: "
+
+#~ msgid "Favorite music: "
+#~ msgstr "Iecienītā mūzika: "
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "Aplūkot %1 openDesktop.org profīlu"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "Aplūkot %1 openDesktop.org profīlu"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "Apmeklēt izstrādātāja blogu"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "Apmeklēt izstrādātāja del.icio.us profilu"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "Apmeklēt izstrādātāja Digg profilu"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "Apmeklēt izstrādātāja Facebook profilu"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "Apmeklēt izstrādātāja Last.fm profilu"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "Apmeklēt izstrādātāja LinkedIn profilu"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "Apmeklēt izstrādātāja MySpace profilu"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "Apmeklēt izstrādātāja Reddit profilu"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "Apmeklēt izstrādātāja YouTube profilu"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "Apmeklēt izstrādātāja Twitter profilu"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "Apmeklēt izstrādātāja Wikipedia profilu"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "Apmeklēt izstrādātāja Xing profilu"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "Apmeklēt izstrādātāja identi.ca barotni"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "Apmeklēt izstrādātāja libre.fm profilu"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "Apmeklēt izstrādātāja StackOverflow profilu"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "Amarok sīkrīku pārvaldnieks"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2024-06-19 08:16+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
@@ -56,12 +56,12 @@ msgstr "Без групування (одним рядком)"
 msgid "Verbose"
 msgstr "Докладне"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "Ліцензійна угода"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
@@ -69,7 +69,7 @@ msgid ""
 msgstr ""
 "<qt>Інформація відсутня.<br />Наданого об’єкта KAboutData не існує.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
@@ -77,12 +77,12 @@ msgid ""
 msgstr ""
 "<qt>Не вдалося отримати дані.<br />Наданого об’єкта OcsData не існує.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "Про %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -91,22 +91,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Версія %2</b><br />Використано KDE "
 "Frameworks %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "Ліцензія: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "Пр&о програму"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "Отримати дані з openDesktop.org, щоб дізнатися більше про команду"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
@@ -115,172 +110,48 @@ msgstr ""
 "Будь ласка, користуйтесь <a href=\"https://bugs.kde.org\">http://bugs.kde."
 "org</a> для повідомлень про помилки.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr ""
 "Будь ласка, надсилайте повідомлення про помилки на адресу <a href=\"mailto:"
 "%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "А&втор"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "А&втори"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Отримати дані з openDesktop.org, щоб дізнатися більше про учасників розробки"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, kde-format
 msgid "&Contributors"
 msgstr "&Учасники розробки"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Отримати дані з openDesktop.org, щоб дізнатися більше про наших щедрих "
-"спонсорів"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "С&понсори"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "Пе&реклад"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "З’єднання з інтернетом недоступне"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "Помилка мережі"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "Написати учаснику розробки"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Відвідати домашню сторінку учасника розробки"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "Канали IRC: "
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "Улюблена музика:"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Відвідати профіль %1 на openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Відвідати профіль %1 на openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "Відвідати блог учасника розробки"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Відвідати профіль учасника розробки на del.icio.us"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "Відвідати профіль учасника розробки на Digg"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "Відвідати профіль учасника розробки на Facebook"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "Відвідати профіль учасника розробки на Last.fm"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Відвідати профіль учасника розробки на LinkedIn"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "Відвідати домашню сторінку учасника розробки на MySpace"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "Відвідати профіль учасника розробки на Reddit"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "Відвідати профіль учасника розробки на YouTube"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "Відвідати сторінку подачі учасника розробки на Twitter"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Відвідати профіль учасника розробки у Вікіпедії"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "Відвідати профіль учасника розробки на Xing"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "Відвідати сторінку подачі учасника розробки на identi.ca"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "Відвідати профіль учасника розробки на libre.fm"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Відвідати профіль учасника розробки на StackOverflow"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2216,7 +2087,7 @@ msgid "Label"
 msgstr "Надпис"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "Нема"
@@ -5067,7 +4938,7 @@ msgstr "Невідома збірка"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5662,13 +5533,13 @@ msgid "Could not copy track from device."
 msgstr "Не вдалося скопіювати композицію з пристрою."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "Невідомий альбом"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Невідомий жанр"
@@ -6245,57 +6116,57 @@ msgstr[3] " елемент"
 msgid "Podcast"
 msgstr "Трансляція"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Оновити всі канали"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Налаштувати загальні параметри"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Експортувати дані підписок до файла OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "&Налаштувати"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Вилучити підписку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Оновити канал"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Отримати фрагмент"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Вилучити отриманий фрагмент"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Записувати дані подачі до файла"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "З&берегти отриманий файл"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6306,18 +6177,18 @@ msgstr ""
 "Отримані файли з цим станом не буде вилучено навіть після застосування дії з "
 "витирання даних."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Ви вже підписалися на %1."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "кожні "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6326,37 +6197,37 @@ msgstr[1] " хвилини"
 msgstr[2] " хвилин"
 msgstr[3] " хвилина"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Налаштувати локальні радіотрансляції"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Пересування трансляцій"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Бажаєте пересунути всі отримані серії до нового місця?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Виберіть файл OPML для експортування"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Ви дійсно хочете скасувати підписку на «%1»?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Вилучити отримані фрагменти"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6365,23 +6236,23 @@ msgstr[1] "Отримання %1 трансляцій ще не завершен
 msgstr[2] "Отримання %1 трансляцій ще не завершено"
 msgstr[3] "Отримання %1 трансляції ще не завершено"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Скасувати отримання і вийти."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Неможливо зберегти файл частини радіотрансляції у %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Отримання носія радіотрансляції…"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Отримання радіотрансляції «%1»"
@@ -6555,27 +6426,27 @@ msgstr[1] "Перекодування і копіювання %1 компози�
 msgstr[2] "Перекодування і копіювання %1 композицій до %2"
 msgstr[3] "Перекодування і копіювання композиції до %2"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, kde-format
 msgid "No network connection"
 msgstr "Немає з’єднання з мережею"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, kde-format
 msgid "File does not exist"
 msgstr "Файла не існує"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr "Не є файлом"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr "Немає прав доступу до читання"
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Невідомий композитор"
@@ -11617,7 +11488,7 @@ msgstr "&Музика"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11782,12 +11653,12 @@ msgstr ""
 "%0\n"
 "кГц"
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Компонування списків композицій"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Компонування списку композицій…"
@@ -12087,62 +11958,62 @@ msgstr "Показувати підказки"
 msgid "Preview"
 msgstr "Перегляд"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "Поступ композиціями"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "Стандартний"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
 msgstr "Лише з черги"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "Повторювати композицію"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "Повторювати альбом"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "Повторювати список композицій"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "Випадкові композиції"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "Випадкові альбоми"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "Улюблені"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "Вищі рахунки"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "Вищі оцінки"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "Недавно не відтворювалися"
@@ -12269,7 +12140,7 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Назва (з номером композиції)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
@@ -12278,7 +12149,7 @@ msgstr ""
 "Увімкнено <a href='%1'>динамічний режим</a>. <a href='%2'>Повторно створити</"
 "a> | <a href='%3'>Вимкнути</a>"
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "З&берегти поточний список композицій"
@@ -16670,17 +16541,17 @@ msgstr "&Візуалізації"
 msgid "Bookmark"
 msgstr "Додати до закладок"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Показати список, перейти за закладками або створити закладки"
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Закладки Amarok"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "Копіювати закладку на поточний перегляд до буфера обміну даними"
@@ -17024,12 +16895,12 @@ msgstr "Перейти до %1"
 msgid "Drag in and out items from above."
 msgstr "Перетягніть сюди або звідси елементи списку, розташованого згори."
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr "[префікс]"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr "[суфікс]"
@@ -17058,6 +16929,87 @@ msgstr "Виконавець: %1"
 #, kde-format
 msgid "empty"
 msgstr "порожньо"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr "Отримати дані з openDesktop.org, щоб дізнатися більше про команду"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr ""
+#~ "Отримати дані з openDesktop.org, щоб дізнатися більше про учасників "
+#~ "розробки"
+
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr ""
+#~ "Отримати дані з openDesktop.org, щоб дізнатися більше про наших щедрих "
+#~ "спонсорів"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "З’єднання з інтернетом недоступне"
+
+#~ msgid "Network error"
+#~ msgstr "Помилка мережі"
+
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "Канали IRC: "
+
+#~ msgid "Favorite music: "
+#~ msgstr "Улюблена музика:"
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "Відвідати профіль %1 на openDesktop.org"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "Відвідати профіль %1 на openDesktop.org"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "Відвідати блог учасника розробки"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "Відвідати профіль учасника розробки на del.icio.us"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "Відвідати профіль учасника розробки на Digg"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "Відвідати профіль учасника розробки на Facebook"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "Відвідати профіль учасника розробки на Last.fm"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "Відвідати профіль учасника розробки на LinkedIn"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "Відвідати домашню сторінку учасника розробки на MySpace"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "Відвідати профіль учасника розробки на Reddit"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "Відвідати профіль учасника розробки на YouTube"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "Відвідати сторінку подачі учасника розробки на Twitter"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "Відвідати профіль учасника розробки у Вікіпедії"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "Відвідати профіль учасника розробки на Xing"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "Відвідати сторінку подачі учасника розробки на identi.ca"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "Відвідати профіль учасника розробки на libre.fm"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "Відвідати профіль учасника розробки на StackOverflow"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "Керування аплетами Amarok"

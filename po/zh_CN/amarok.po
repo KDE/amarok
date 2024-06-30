@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -52,31 +52,31 @@ msgstr "不分组 (单行显示)"
 msgid "Verbose"
 msgstr "详细"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "许可协议"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr "<qt>无详细信息。<br />提供的 KAboutData 对象不存在。</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
 msgstr "<qt>无详细信息。<br />提供的 OcsData 对象不存在。</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "关于 %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -85,22 +85,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>版本 %2</b><br />使用 KDE "
 "Frameworks %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "许可协议：%1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "关于(&A)"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "从 openDesktop.org 了解关于本团队的更多信息"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
@@ -109,167 +104,46 @@ msgstr ""
 "请访问 <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> 网站报告程序"
 "错误。\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "请将错误报告至 <a href=\"mailto:%1\">%2</a>。\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "作者(&U)"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "作者(&U)"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "在 openDesktop.org 上了解关于贡献者们的更多信息"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, kde-format
 msgid "&Contributors"
 msgstr "贡献者(&C)"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr "在 openDesktop.org 上了解关于捐赠者们的更多信息"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "捐赠者(&D)"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "翻译(&R)"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "无互联网连接"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "网络错误"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "发送邮件给贡献者"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "查看此贡献者的个人主页"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%2，%1"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "IRC 频道："
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "最喜欢的音乐："
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "访问 %1 在 openDesktop.org 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "访问 openDesktop.org 并查看 %1 的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "查看此贡献者的博客"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "查看此贡献者在 del.icio.us 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "查看此贡献者在 Digg 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "查看此贡献者在 Facebook 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "查看此贡献者在 Last.fm 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "查看此贡献者在 LinkedIn 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "查看此贡献者的 MySpace 主页"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "查看此贡献者在 Reddit 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "查看此贡献者在 YouTube 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "查看此贡献者的 Twitter 时间线"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "查看此贡献者在维基百科上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "查看此贡献者在 Xing 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "查看此贡献者的 identi.ca 时间线"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "查看此贡献者在 libre.fm 上的个人资料"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "查看此贡献者在 StackOverflow 上的个人资料"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2087,7 +1961,7 @@ msgid "Label"
 msgstr "标记"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "无"
@@ -4836,7 +4710,7 @@ msgstr "未知收藏集"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5330,13 +5204,13 @@ msgid "Could not copy track from device."
 msgstr "无法从此设备中复制歌曲。"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "未知专辑"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "未知流派"
@@ -5851,57 +5725,57 @@ msgstr[0] " 个项目"
 msgid "Podcast"
 msgstr "播客"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "更新所有频道(&U)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "配置常规设置(&C)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "将播客订阅列表导出至 OPML 文件(&E)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "配置(&C)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "退订(&R)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "更新频道(&U)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "下载单集(&D)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "删除已下载的单集(&D)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "将 RSS 订阅内的信息写入文件中"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "保留已下载的文件(&K)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -5911,76 +5785,76 @@ msgstr ""
 "是否保留此播客单集的下载文件，选中此项的单集的下载文件即使在执行清理后也不会"
 "被删除。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "已经订阅过 %1 了。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "每 "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " 分钟"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "配置本地播客"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "移动播客"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "您要将全部已下载的单集移动至新位置吗？"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "选择用于导出 OPML 的文件"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "您确定要取消订阅“%1”吗？"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "删除已下载的单集"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "仍有 %1 个播客正在下载"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "取消下载并退出。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "无法将播客单集文件保存至 %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "正在下载播客"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "正在下载播客“%1”"
@@ -6134,27 +6008,27 @@ msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "正在转码并复制 %1 首歌曲至 %2"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, kde-format
 msgid "No network connection"
 msgstr "无网络连接"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, kde-format
 msgid "File does not exist"
 msgstr "文件不存在"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr "此项不属于文件"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr "没有读取权限"
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "未知作曲家"
@@ -10980,7 +10854,7 @@ msgstr "音乐(&M)"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11142,12 +11016,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "播放列表布局"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "配置播放列表布局..."
@@ -11433,62 +11307,62 @@ msgstr "显示工具提示"
 msgid "Preview"
 msgstr "预览"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "歌曲播放进度"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "标准"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
 msgstr "仅播放排序队列中的歌曲"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "单曲循环"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "专辑循环"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "播放列表循环"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "随机歌曲"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "随机专辑"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "偏好"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "分数较高"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "评分较高"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "最近未播放过"
@@ -11615,7 +11489,7 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "歌名 (带音轨编号)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
@@ -11624,7 +11498,7 @@ msgstr ""
 "<a href='%1'>动态模式</a>已启用。<a href='%2'>重新生成</a> | <a href='%3'>关"
 "闭</a>"
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "保存当前播放列表(&S)"
@@ -15713,17 +15587,17 @@ msgstr "视觉效果(&V)"
 msgid "Bookmark"
 msgstr "书签"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "列出并运行书签，或创建新书签"
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Amarok 书签"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "将当前视图的书签复制到剪贴板"
@@ -16046,12 +15920,12 @@ msgstr "跳转到：%1"
 msgid "Drag in and out items from above."
 msgstr "从上方拖出或拖入项目。"
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr "【前缀】"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr "【后缀】"
@@ -16081,62 +15955,79 @@ msgstr "艺人：%1"
 msgid "empty"
 msgstr "空"
 
-#~ msgid "Amarok Applet Manager"
-#~ msgstr "Amarok 小程序管理器"
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr "从 openDesktop.org 了解关于本团队的更多信息"
 
-#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#~ msgid "Aaron Seigo"
-#~ msgstr "Aaron Seigo"
-
-#~ msgid "Original author"
-#~ msgstr "原作者"
-
-#~ msgid "For install or remove, operates on applets installed for all users."
-#~ msgstr "为所有用户安装部件、删除部件或修改已安装的小程序。"
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Install the applet at <path>"
-#~ msgstr "安装位于 <path> 的小程序"
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Upgrade the applet at <path>"
-#~ msgstr "更新位于 <path> 的小程序"
-
-#~ msgid "Most installed applets"
-#~ msgstr "安装量最多的小程序"
-
-#~ msgctxt "Do not translate <name>"
-#~ msgid "Remove the applet named <name>"
-#~ msgstr "移除名为 <name> 的小程序"
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr "在 openDesktop.org 上了解关于贡献者们的更多信息"
 
 #~ msgid ""
-#~ "Absolute path to the package root. If not supplied, then the standard "
-#~ "data directories for this KDE session will be searched instead."
-#~ msgstr ""
-#~ "软件包根目录的绝对路径。如果没有提供，则会搜索并使用本次 KDE 会话的标准数"
-#~ "据目录。"
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr "在 openDesktop.org 上了解关于捐赠者们的更多信息"
 
-#~ msgid "Successfully removed %1"
-#~ msgstr "已成功删除 %1"
+#~ msgid "Internet connection not available"
+#~ msgstr "无互联网连接"
 
-#~ msgid "Removal of %1 failed."
-#~ msgstr "删除 %1 时失败。"
+#~ msgid "Network error"
+#~ msgstr "网络错误"
 
-#~ msgid "Plugin %1 is not installed."
-#~ msgstr "插件 %1 尚未安装。"
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%2，%1"
 
-#~ msgid "Successfully installed %1"
-#~ msgstr "已成功安装 %1"
+#~ msgid "IRC channels: "
+#~ msgstr "IRC 频道："
 
-#~ msgid "Installation of %1 failed."
-#~ msgstr "%1 安装失败。"
+#~ msgid "Favorite music: "
+#~ msgstr "最喜欢的音乐："
 
-#~ msgctxt ""
-#~ "No option was given, this is the error message telling the user he needs "
-#~ "at least one, do not translate install, remove, upgrade nor list"
-#~ msgid "One of install, remove, upgrade or list is required."
-#~ msgstr ""
-#~ "必须使用安装 (install)、删除 (remove)、升级 (upgrade) 或查看列表 (list) 这"
-#~ "四个选项之一。"
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "访问 %1 在 openDesktop.org 上的个人资料"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "访问 openDesktop.org 并查看 %1 的个人资料"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "查看此贡献者的博客"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "查看此贡献者在 del.icio.us 上的个人资料"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "查看此贡献者在 Digg 上的个人资料"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "查看此贡献者在 Facebook 上的个人资料"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "查看此贡献者在 Last.fm 上的个人资料"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "查看此贡献者在 LinkedIn 上的个人资料"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "查看此贡献者的 MySpace 主页"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "查看此贡献者在 Reddit 上的个人资料"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "查看此贡献者在 YouTube 上的个人资料"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "查看此贡献者的 Twitter 时间线"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "查看此贡献者在维基百科上的个人资料"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "查看此贡献者在 Xing 上的个人资料"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "查看此贡献者的 identi.ca 时间线"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "查看此贡献者在 libre.fm 上的个人资料"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "查看此贡献者在 StackOverflow 上的个人资料"

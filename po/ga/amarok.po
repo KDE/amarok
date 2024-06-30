@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -52,12 +52,12 @@ msgstr "Gan Grúpáil (Líne Amháin)"
 msgid "Verbose"
 msgstr "Foclach"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "Comhaontú um Cheadúnas"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
@@ -65,7 +65,7 @@ msgid ""
 msgstr ""
 "<qt>Níl aon eolas ar fáil.<br />Níl an réad sonraithe KAboutData ann.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
@@ -73,12 +73,12 @@ msgid ""
 msgstr ""
 "<qt>Níl aon eolas ar fáil.<br />Níl an réad sonraithe OcsData ann.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "Maidir le %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, fuzzy, kde-format
 #| msgid ""
 #| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -90,23 +90,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Leagan %2</b><br />Cuid de KDE %3</"
 "html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "Ceadúnas: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "&Maidir Leis"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
-"Faigh sonraí ó openDesktop.org chun tuilleadh eolais faoin fhoireann a fháil"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -118,173 +112,48 @@ msgstr ""
 "Úsáid <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> chun tuairiscí "
 "fabhtanna a sheoladh le do thoil.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr ""
 "Úsáid <a href=\"mailto:%1\">%2</a> chun tuairiscí fabhtanna a sheoladh le do "
 "thoil.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "Ú&dar"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "Ú&dair"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Faigh sonraí ó openDesktop.org chun tuilleadh eolais faoi na rannpháirtithe "
-"a fháil"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, kde-format
 msgid "&Contributors"
 msgstr "&Rannpháirtithe"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Faigh sonraí ó openDesktop.org chun tuilleadh eolais faoinár ndeontóirí "
-"fláithiúla"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "&Deontóirí"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "Aist&riúchán"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "Níl ceangal Idirlín ar fáil"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "Earráid líonra"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "Rannpháirtí ríomhphoist"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Déan cuairt ar leathanach baile an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "Cainéil IRC: "
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "Ceol is ansa léi/leis: "
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Déan cuairt ar phróifíl openDesktop.org %1"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Déan cuairt ar phróifíl %1 ar openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "Déan cuairt ar bhlag an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Déan cuairt ar phróifíl del.icio.us an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "Déan cuairt ar phróifíl Digg an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "Déan cuairt ar phróifíl Facebook an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "Déan cuairt ar phróifíl Last.fm an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Déan cuairt ar phróifíl LinkedIn an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "Déan cuairt ar leathanach baile rannpháirtí ar MySpace"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "Déan cuairt ar phróifíl Reddit an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "Déan cuairt ar phróifíl YouTube an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "Déan cuairt ar phróifíl Twitter an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Déan cuairt ar phróifíl Vicipéide an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "Déan cuairt ar phróifíl Xing an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "Déan cuairt ar phróifíl identi.ca an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "Déan cuairt ar phróifíl libre.fm an rannpháirtí"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Déan cuairt ar phróifíl StackOverflow an rannpháirtí"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2209,7 +2078,7 @@ msgid "Label"
 msgstr "Lipéad"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "Neamhní"
@@ -5108,7 +4977,7 @@ msgstr "Bailiúchán Anaithnid"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5689,13 +5558,13 @@ msgid "Could not copy track from device."
 msgstr "Níorbh fhéidir amhrán a chóipeáil ón ghléas."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "Albam Anaithnid"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Seánra Anaithnid"
@@ -6282,52 +6151,52 @@ msgstr[4] " Mír"
 msgid "Podcast"
 msgstr "Podchraoladh"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Nuashonraigh Gach Cainéal"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Cumraigh Socruithe Ginearálta"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Easpórtáil liostálacha go comhad OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "&Cumraigh"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Bain Síntiús"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Nuashonraigh Cainéal"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "Í&osluchtaigh Eipeasóid"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "Scrios Podchrao&ladh Íosluchtaithe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Scríobh Faisnéis an Fhotha i gComhad"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6337,7 +6206,7 @@ msgstr "&Scríobh Faisnéis an Fhotha i gComhad"
 msgid "&Keep downloaded file"
 msgstr "&Coinnigh an comhad íosluchtaithe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6345,18 +6214,18 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Liostáilte le %1 cheana."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "gach "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6366,39 +6235,39 @@ msgstr[2] " nóiméad"
 msgstr[3] " nóiméad"
 msgstr[4] " nóiméad"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Cumraigh Podchraoltaí Logánta"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Bog Podchraoltaí"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 "An bhfuil fonn ort gach eipeasóid íosluchtaithe a bhogadh go dtí an suíomh "
 "nua?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Roghnaigh comhad le haghaidh easpórtála OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "An bhfuil tú cinnte gur mian leat díliostáil ó \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Scrios eipeasóidí íosluchtaithe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6408,23 +6277,23 @@ msgstr[2] "%1 phodchraoladh á n-íosluchtú fós"
 msgstr[3] "%1 bpodchraoladh á n-íosluchtú fós"
 msgstr[4] "%1 podchraoladh á n-íosluchtú fós"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Cealaigh an tÍosluchtú agus Scoir."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Ní féidir an comhad eipeasóide a shábháil mar %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Meáin Phodchraolta á nÍosluchtú"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Podchraoladh \"%1\" á Íosluchtú"
@@ -6615,32 +6484,32 @@ msgstr[2] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
 msgstr[3] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
 msgstr[4] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, fuzzy, kde-format
 #| msgid "Check Connection"
 msgid "No network connection"
 msgstr "Deimhnigh an Ceangal"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, fuzzy, kde-format
 #| msgid "Local file does not exist."
 msgid "File does not exist"
 msgstr "Níl an comhad logánta ann."
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, fuzzy, kde-format
 #| msgctxt "The quality of music"
 #| msgid "Not rated"
 msgid "Not a file"
 msgstr "Gan rátáil"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, fuzzy, kde-format
 #| msgid "Bad session"
 msgid "No read permissions"
 msgstr "Drochsheisiún"
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Cumadóir Anaithnid"
@@ -11705,7 +11574,7 @@ msgstr "&Ceol"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11869,12 +11738,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Leaganacha amach seinmliostaí"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Cumraigh Leaganacha Amach Seinmliostaí..."
@@ -12173,62 +12042,62 @@ msgstr "Taispeáin leideanna uirlisí"
 msgid "Preview"
 msgstr "Réamhamharc"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "Dul Chun Cinn an Amhráin"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "Caighdeánach"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
 msgstr "Ciú Amháin"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "Seinn an tAmhrán Arís"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "An tAlbam Seo Arís"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "Seinn an Seinmliosta Arís"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "Amhráin Randamacha"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "Albaim Randamacha"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "Fabhraigh"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "Scóir Níos Airde"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "Rátálacha Níos Airde"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "Gan Seinm Le Déanaí"
@@ -12359,14 +12228,14 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Teideal (le huimhir an amhráin)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Sábháil an Seinmliosta Reatha"
@@ -16685,17 +16554,17 @@ msgstr "&Amharcléirithe"
 msgid "Bookmark"
 msgstr "Leabharmharc"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Taispeáin agus rith leabharmharcanna, nó cruthaigh cinn nua"
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Leabharmharcanna Amarok"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr ""
@@ -17057,12 +16926,12 @@ msgstr "Léim go: %1"
 msgid "Drag in and out items from above."
 msgstr "Tarraing míreanna anuas, isteach agus amach."
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr "[réimír]"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr "[iarmhír]"
@@ -17091,6 +16960,89 @@ msgstr "Ealaíontóir: %1"
 #, kde-format
 msgid "empty"
 msgstr "folamh"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr ""
+#~ "Faigh sonraí ó openDesktop.org chun tuilleadh eolais faoin fhoireann a "
+#~ "fháil"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr ""
+#~ "Faigh sonraí ó openDesktop.org chun tuilleadh eolais faoi na "
+#~ "rannpháirtithe a fháil"
+
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr ""
+#~ "Faigh sonraí ó openDesktop.org chun tuilleadh eolais faoinár ndeontóirí "
+#~ "fláithiúla"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "Níl ceangal Idirlín ar fáil"
+
+#~ msgid "Network error"
+#~ msgstr "Earráid líonra"
+
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "Cainéil IRC: "
+
+#~ msgid "Favorite music: "
+#~ msgstr "Ceol is ansa léi/leis: "
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "Déan cuairt ar phróifíl openDesktop.org %1"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "Déan cuairt ar phróifíl %1 ar openDesktop.org"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "Déan cuairt ar bhlag an rannpháirtí"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "Déan cuairt ar phróifíl del.icio.us an rannpháirtí"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "Déan cuairt ar phróifíl Digg an rannpháirtí"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "Déan cuairt ar phróifíl Facebook an rannpháirtí"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "Déan cuairt ar phróifíl Last.fm an rannpháirtí"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "Déan cuairt ar phróifíl LinkedIn an rannpháirtí"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "Déan cuairt ar leathanach baile rannpháirtí ar MySpace"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "Déan cuairt ar phróifíl Reddit an rannpháirtí"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "Déan cuairt ar phróifíl YouTube an rannpháirtí"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "Déan cuairt ar phróifíl Twitter an rannpháirtí"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "Déan cuairt ar phróifíl Vicipéide an rannpháirtí"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "Déan cuairt ar phróifíl Xing an rannpháirtí"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "Déan cuairt ar phróifíl identi.ca an rannpháirtí"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "Déan cuairt ar phróifíl libre.fm an rannpháirtí"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "Déan cuairt ar phróifíl StackOverflow an rannpháirtí"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "Bainisteoir Feidhmchláiríní Amarok"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -52,31 +52,31 @@ msgstr "ไม่มีการจัดกลุ่ม (บรรทัดเ�
 msgid "Verbose"
 msgstr "ทุกส่วน"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "ข้อตกลงในสัญญาอนุญาต"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr "<qt>ไม่มีข้อมูลรายละเอียดใด ๆ<br />ออบเจ็กต์ของ KAboutData ที่จัดให้ยังไม่มีอยู่</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
 msgstr "<qt>ไม่มีข้อมูลรายละเอียดใด ๆ<br />ออบเจ็กต์ของ OcsData ที่จัดให้ยังไม่มีอยู่</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "เกี่ยวกับ %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, fuzzy, kde-format
 #| msgid ""
 #| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -87,22 +87,17 @@ msgid ""
 msgstr ""
 "<html><font size=\"5\">%1</font><br/><b>รุ่น %2</b><br/>โดยใช้ KDE %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "สัญญาอนุญาต: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "เกี่ยวกับ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "หาข้อมูลเพิ่มเติมเกี่ยวกับทีมพัฒนาได้ที่ openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -114,172 +109,48 @@ msgstr ""
 "โปรดไปที่ <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> "
 "เพื่อรายงานข้อผิดพลาด\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "โปรดรายงานข้อผิดพลาดไปยัง <a href=\"mailto:%1\">%2</a>\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "&ผู้เขียน"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "ผู้เ&ขียน"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "หาข้อมูลเพิ่มเติมเกี่ยวกับผู้มีส่วนร่วมต่าง ๆ ได้ที่ openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, fuzzy, kde-format
 #| msgid "Former contributors"
 msgid "&Contributors"
 msgstr "ผู้มีส่วนร่วมก่อนหน้านี้"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, fuzzy, kde-format
-#| msgid "Get data from openDesktop.org to learn more about contributors"
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr "หาข้อมูลเพิ่มเติมเกี่ยวกับผู้มีส่วนร่วมต่าง ๆ ได้ที่ openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "&Donors"
 msgstr "&ดาวน์โหลด"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "การแปล&ภาษา"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "ยังไม่มีการเชื่อมต่ออินเทอร์เน็ตให้ใช้งาน"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "เกิดข้อผิดพลาดของเครือข่าย"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "อีเมลของผู้มีส่วนร่วม"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "แวะเยี่ยมหน้าเว็บของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, fuzzy, kde-format
-#| msgctxt "monthname year"
-#| msgid "%1 %2"
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1 %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "ติดต่อผ่านอทาง IRC: "
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "ดนตรีสุดโปรด: "
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ openDesktop.org ของ %1"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "แวะเยี่ยมชมโพรไฟล์ของ %1 บน openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "แวะเยี่ยมชมเว็บล็อก (บล็อก) ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ del.icio.us ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ Digg ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ Facebook ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ Last.fm ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ LinkedIn ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "แวะเยี่ยมชมโพรไฟล์ MySpace ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ Reddit ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ YouTube ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "แวะเยี่ยมชมแหล่งป้อน Twitter ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ Wikipedia ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ Xing ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "แวะเยี่ยมชมแหล่งป้อน identi.ca ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ libre.fm ของผู้มีส่วนร่วม"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "แวะเยี่ยมชมโพรไฟล์ StackOverflow ของผู้มีส่วนร่วม"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2208,7 +2079,7 @@ msgid "Label"
 msgstr "ป้าย"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "ไม่มี"
@@ -5159,7 +5030,7 @@ msgstr "คลังสื่อ"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5675,13 +5546,13 @@ msgid "Could not copy track from device."
 msgstr "ไม่สามารถคัดลอกแทร็กเสียงจากอุปกรณ์ได้"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "อัลบั้มที่ไม่รู้จัก"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "ประเภทที่ไม่รู้จัก"
@@ -6249,61 +6120,61 @@ msgstr[0] " รายการ"
 msgid "Podcast"
 msgstr "พ็อดแคสท์"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgid "&Update All Channels"
 msgstr "&ปรับปรุงทั้งหมด"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, fuzzy, kde-format
 #| msgid "Configure General Options"
 msgid "&Configure General Settings"
 msgstr "ปรับแต่งตัวเลือกทั่วไป"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "ปรับแ&ต่ง"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&ลบการบอกรับเป็นสมาชิก"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgid "&Update Channel"
 msgstr "&ปรับปรุงทั้งหมด"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "ดาวน์โหลดตอน"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "ล&บตอน ที่ได้ดาวน์โหลดมาแล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "&Keep downloaded file"
 msgstr "ล&บตอน ที่ได้ดาวน์โหลดมาแล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6311,12 +6182,12 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "แจ้งบอกรับกับ %1 อยู่แล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, fuzzy, kde-format
 #| msgctxt "prefix to update interval in minutes"
 #| msgid "every "
@@ -6324,69 +6195,69 @@ msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "ทุก ๆ "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " นาที"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "ปรับแต่งพ็อดแคสท์ภายในระบบ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "พ็อดแคสท์"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, fuzzy, kde-format
 #| msgid "Select OPML file to import"
 msgid "Select file for OPML export"
 msgstr "เลือกแฟ้ม OPML ที่จะนำเข้า"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, fuzzy, kde-format
 #| msgid "Do you really want to remove this %1?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "คุณแน่ใจหรือว่าต้องการลบ %1 นี้ออกไป ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
 msgstr "ล&บตอน ที่ได้ดาวน์โหลดมาแล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "ไม่สามารถบันทึกแฟ้มตอนของพ็อดแคสท์ไปยัง %1 ได้"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "กำลังดาวน์โหลดสื่อของพ็อดแคสท์"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "กำลังดาวน์โหลดพ็อดแคสท์ \"%1\""
@@ -6533,29 +6404,29 @@ msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "ทำการแปลงรหัส"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, fuzzy, kde-format
 #| msgid "Connection"
 msgid "No network connection"
 msgstr "การเชื่อมต่อ"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, fuzzy, kde-format
 #| msgid "does not end with"
 msgid "File does not exist"
 msgstr "ไม่ได้ลงท้ายด้วย"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr ""
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "Unknown Composer"
@@ -11543,7 +11414,7 @@ msgstr "&ดนตรี"
 msgid "&Amarok"
 msgstr "แ&อมอะร็อก"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11714,12 +11585,12 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "การแสดงรายการเล่น"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, fuzzy, kde-format
 #| msgid "Configure playlist layouts..."
 msgid "Configure Playlist Layouts..."
@@ -12045,63 +11916,63 @@ msgstr "แสดงทูลทิป"
 msgid "Preview"
 msgstr "ฟังตัวอย่างแทร็ก"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "ความคืบหน้าของแทร็ก"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "มาตรฐาน"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, fuzzy, kde-format
 #| msgid "&Clear Queue"
 msgid "Only Queue"
 msgstr "ล้างคิว"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "เล่นแทร็กซ้ำ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "เล่นอัลบั้มซ้ำ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "เล่นรายการเล่นซ้ำ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "สุ่มเล่นแทร็ก"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "สุ่มเล่นอัลบั้ม"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "ชื่นชอบ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "มีคะแนนสูงกว่า"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "มีการจัดอันดับสูงกว่า"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "ที่ไม่ได้เล่นเมื่อเร็ว ๆ นี้"
@@ -12234,14 +12105,14 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "ชื่อแทร็ก (พร้อมหมายเลขแทร็ก)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&บันทึกรายการเล่นปัจจุบัน"
@@ -16452,17 +16323,17 @@ msgstr "แ&สงสี"
 msgid "Bookmark"
 msgstr "ที่คั่นหน้า"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr ""
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "ที่คั่นหน้าของแอมอะร็อก"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr ""
@@ -16817,12 +16688,12 @@ msgstr "กระโดดไปยัง: %1"
 msgid "Drag in and out items from above."
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr ""
@@ -16857,6 +16728,88 @@ msgstr "ศิลปิน \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr "หาข้อมูลเพิ่มเติมเกี่ยวกับทีมพัฒนาได้ที่ openDesktop.org"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr "หาข้อมูลเพิ่มเติมเกี่ยวกับผู้มีส่วนร่วมต่าง ๆ ได้ที่ openDesktop.org"
+
+#, fuzzy
+#~| msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr "หาข้อมูลเพิ่มเติมเกี่ยวกับผู้มีส่วนร่วมต่าง ๆ ได้ที่ openDesktop.org"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "ยังไม่มีการเชื่อมต่ออินเทอร์เน็ตให้ใช้งาน"
+
+#~ msgid "Network error"
+#~ msgstr "เกิดข้อผิดพลาดของเครือข่าย"
+
+#, fuzzy
+#~| msgctxt "monthname year"
+#~| msgid "%1 %2"
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1 %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "ติดต่อผ่านอทาง IRC: "
+
+#~ msgid "Favorite music: "
+#~ msgstr "ดนตรีสุดโปรด: "
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ openDesktop.org ของ %1"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ของ %1 บน openDesktop.org"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "แวะเยี่ยมชมเว็บล็อก (บล็อก) ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ del.icio.us ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ Digg ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ Facebook ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ Last.fm ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ LinkedIn ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ MySpace ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ Reddit ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ YouTube ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "แวะเยี่ยมชมแหล่งป้อน Twitter ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ Wikipedia ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ Xing ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "แวะเยี่ยมชมแหล่งป้อน identi.ca ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ libre.fm ของผู้มีส่วนร่วม"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "แวะเยี่ยมชมโพรไฟล์ StackOverflow ของผู้มีส่วนร่วม"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "ตัวจัดการแอพเพล็ตของแอมอะร็อก"

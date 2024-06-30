@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -59,31 +59,31 @@ msgstr "ដាក់​ជា​ក្រុម (Single Line)"
 msgid "Verbose"
 msgstr "បរិយាយ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "កិច្ច​​​​​ព្រមព្រៀង​អាជ្ញាប័ណ្ណ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr "<qt>មិន​មាន​ព័ត៌មាន ។<br />គ្មាន​វត្ថុ​ KAboutData ​ដែល​បាន​ផ្ដល់​ឲ្យ​ទេ ។</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
 msgstr "<qt>មិន​មាន​ព័ត៌មាន ។<br />គ្មាន​​​វត្ថុ​ OcsData ដែល​បាន​ផ្ដល់​ឲ្យ​ទេ ។</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "អំពី %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, fuzzy, kde-format
 #| msgid ""
 #| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -94,22 +94,17 @@ msgid ""
 msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>កំណែ​ %2</b><br />ដោយ​ប្រើ​ KDE %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "អាជ្ញាប័ណ្ណ​ ​៖ %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "អំពី"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​ស្វែង​យល់​បន្ថែម​អំពី​ក្រុម​នេះ​"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -121,168 +116,47 @@ msgstr ""
 "សូម​ប្រើ​ <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> ដើម្បី​រាយ​ការណ៍​កំហុស​ "
 "។\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "សូម​​រាយ​ការណ៍​កំហុស​ទៅ​កាន់​ <a href=\"mailto:%1\">%2</a> ។\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "អ្នក​និពន្ធ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "អ្នក​និពន្ធ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​ស្វែង​យល់​បន្ថែម​អំពី​អ្នក​ចូល​រួម"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, fuzzy, kde-format
 #| msgid "Former contributors"
 msgid "&Contributors"
 msgstr "អ្នក​ចែកចាយ​ពីមុន"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​ស្វែង​យល់​បន្ថែម​អំពី​ម្ចាស់​ជំនួយ​របស់​យើង"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "ម្ចាស់​ជំនួយ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "ការ​បកប្រែ"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "មិន​អាច​​​តភ្ជាប់​អ៊ីនធឺណិត​បាន​​​​​ទេ"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "កំហុស​បណ្តាញ"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "អ៊ីមែល​អ្នក​ចូល​​រួម"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "ទស្សនា​គេហទំព័រ​​របស់​អ្នក​ចូល​រួម​"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "ឆានែល IRC៖ "
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "តន្ត្រី​សំណព្វ ៖"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "ទស្សនា​ទម្រង់​របស់ %1 openDesktop.org "
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "ទស្សនា​​ទម្រង់​របស់ %1 នៅ​លើ openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "ទស្សនា​កំណត់​ហេតុ​បណ្ដាញ​របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "ទស្សនា​ទម្រង់​ del.icio.us របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "ទស្សនា​ទម្រង់​ Digg របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "ទស្សនា​ទម្រង់​ Facebook របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "ទស្សនា​ទម្រង់​ Last.fm របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "ទស្សនា​ទម្រង់​ LinkedIn របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "ទស្សនា​គេហទំព័រ​ MySpace របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "ទស្សនា​ទម្រង់​ Reddit របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "ទស្សនា​ទម្រង់​​ YouTube របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "ទស្សនា​មតិ​ព័ត៌មាន Twitter របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "ទស្សនា​ទម្រង់​ Wikipedia របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "ទស្សនា​ទម្រង់​ Xing របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "ទស្សនា​មតិ​ព័ត៌មាន​ identi.ca របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "ទស្សនា​ទម្រង់​ libre.fm របស់​អ្នក​ចូល​រួម"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "ទស្សនា​ទម្រង់​ StackOverflow របស់​អ្នក​ចូល​រួម"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2158,7 +2032,7 @@ msgid "Label"
 msgstr "ស្លាក"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "គ្មាន"
@@ -4995,7 +4869,7 @@ msgstr "មិន​ស្គាល់​សម្រាំង"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5513,13 +5387,13 @@ msgid "Could not copy track from device."
 msgstr "មិន​អាច​ចម្លង​បទ​ពី​ឧបករណ៍​បានទេ ។"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "មិន​ស្គាល់​អាល់ប៊ុម"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "មិន​ស្គាល់​ចង្វាក់"
@@ -6040,57 +5914,57 @@ msgstr[0] " ធាតុ"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "ធ្វើ​បច្ចុប្បន្នភាព​ឆានែល​ទាំងអស់"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "កំណត់​រចនាសម្ព័ន្ធ​ការ​កំណត់​ទូទៅ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "នាំចេញ​ការ​ជាវ​ប្រចាំ​ទៅកាន់​ឯកសារ OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "កំណត់​រចនាសម្ព័ន្ធ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "យក​ការ​ជាវ​ចេញ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "ធ្វើ​ឲ្យ​ឆានែលទាន់សម័យ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "ទាញយក Episode"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "លុប Episode ដែល​បាន​ទាញ​យក"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "សរសេរ​ព័ត៌មាន​​មតិ​ព័ត៌មាន​ទៅកាន់​ឯកសារ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, fuzzy, kde-format
 msgid "&Keep downloaded file"
 msgstr "លុប Episode ដែល​បាន​ទាញ​យក"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6098,76 +5972,76 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "បាន​ជាវ​ទៅ %1 រួច​ហើយ ។"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "រៀងរាល់"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] "នាទី"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ Podcasts មូលដ្ឋាន"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "ផ្លាស់ទី Podcasts"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "តើ​អ្នក​ចង់​ផ្លាស់ទី​ឧបកថា​ដែល​បាន​ទាញ​យក​ទាំងអស់​ទៅកាន់​ទីតាំង​ថ្មី​ដែរ​ឬទេ ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "ជ្រើស​ឯកសារ​សម្រាប់​ការ​នាំចេញ OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "តើ​អ្នក​ពិតជា​ចង់​ឈប់​ជាវ​ប្រចាំ​ពី \"%1\" មែន​ឬ ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "លុប​ឧបកថា​ដែល​បាន​ទាញ​យក"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "នៅ​មាន​ការ​ទាញ​យក podcast ចំនួន %1 ដែល​កពុង​ដំណើរការ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "បោះបង់​ការ​ទាញ​យក រួច​បិទ ។"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "មិន​អាច​រក្សាទុក​ឯកសារ podcast episode ទៅ​កាន់ %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "ទាញយក​យក​មេឌៀ​ផតខាស់"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "ទាញយក​ផតខាស់ \"%1\""
@@ -6318,29 +6192,29 @@ msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "កំពុង​បម្លែង​ត្រឡប់ និង​ចម្លង %1 បទ​ទៅកាន់ %2"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, fuzzy, kde-format
 #| msgid "Connection"
 msgid "No network connection"
 msgstr "ការ​តភ្ជាប់"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, fuzzy, kde-format
 #| msgid "does not end with"
 msgid "File does not exist"
 msgstr "មិនបញ្ចប់​ដោយ"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr ""
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "មិន​ស្គាល់​កម្មវិធី​តែង"
@@ -11321,7 +11195,7 @@ msgstr "តន្ត្រី"
 msgid "&Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11485,12 +11359,12 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, fuzzy, kde-format
 msgid "Playlist Layouts"
 msgstr "ប្លង់​បញ្ជី​ចាក់"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, fuzzy, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "កំណត់​រចនាសម្ព័ន្ធ​ប្លង់​បញ្ជី​ចាក់..."
@@ -11782,63 +11656,63 @@ msgstr "បង្ហាញ​ព័ត៌មាន​ជំនួយ"
 msgid "Preview"
 msgstr "មើល​​ជា​មុន"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, fuzzy, kde-format
 msgid "Track Progression"
 msgstr "វឌ្ឍនភាព​បទ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "ស្តង់​ដារ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, fuzzy, kde-format
 #| msgid "&Clear"
 msgid "Only Queue"
 msgstr "ជម្រះ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "ចាក់​បទ​ឡើង​វិញ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "ចាក់​អាល់ប៊ុម​ឡើង​វិញ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "ចាក់​បញ្ជីចាក់​ឡើង​វិញ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, fuzzy, kde-format
 msgid "Random Tracks"
 msgstr "បទ​ដែល​បាន​ជ្រើស"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, fuzzy, kde-format
 msgid "Random Albums"
 msgstr "ចាក់​អាល់ប៊ុម​ឡើង​វិញ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, fuzzy, kde-format
 msgid "Favor"
 msgstr "លំអៀង​ទៅ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, fuzzy, kde-format
 msgid "Higher Scores"
 msgstr "ពិន្ទុ​ខ្ពស់"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, fuzzy, kde-format
 msgid "Higher Ratings"
 msgstr "អត្រា​ខ្ពស់"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, fuzzy, kde-format
 msgid "Not Recently Played"
 msgstr "មិនបាន​ចាក់​ថ្មីៗ​នេះ"
@@ -11969,14 +11843,14 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "ចំណង​ (ដែល​មាន​លេខ​បទ)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, fuzzy, kde-format
 msgid "&Save Current Playlist"
 msgstr "បញ្ជី​ចាក់​បច្ចុប្បន្ន"
@@ -16210,17 +16084,17 @@ msgstr "រូបភាព​មើល​ឃើញ"
 msgid "Bookmark"
 msgstr "ចំណាំ"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, fuzzy, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "រាយ​ហើយ​ចំណាំ​រត់​ ឬបង្កើត​ថ្មី​មួយ "
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, fuzzy, kde-format
 msgid "Amarok Bookmarks"
 msgstr "កន្លែង​ចំណាំ"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr ""
@@ -16559,12 +16433,12 @@ msgstr "លោត​ទៅ"
 msgid "Drag in and out items from above."
 msgstr "អូស​​ក្នុង​និង​ក្រៅ​ធាតុ​ពី​ខាង​លើ ។"
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, fuzzy, kde-format
 msgid "[prefix]"
 msgstr "[បុព្វ​បទ]"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, fuzzy, kde-format
 msgid "[suffix]"
 msgstr "[បច្ច័យ]"
@@ -16596,6 +16470,83 @@ msgstr "សិល្បករ \"%1\""
 #, kde-format
 msgid "empty"
 msgstr "សម្អាត"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​ស្វែង​យល់​បន្ថែម​អំពី​ក្រុម​នេះ​"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​ស្វែង​យល់​បន្ថែម​អំពី​អ្នក​ចូល​រួម"
+
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​ស្វែង​យល់​បន្ថែម​អំពី​ម្ចាស់​ជំនួយ​របស់​យើង"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "មិន​អាច​​​តភ្ជាប់​អ៊ីនធឺណិត​បាន​​​​​ទេ"
+
+#~ msgid "Network error"
+#~ msgstr "កំហុស​បណ្តាញ"
+
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "ឆានែល IRC៖ "
+
+#~ msgid "Favorite music: "
+#~ msgstr "តន្ត្រី​សំណព្វ ៖"
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "ទស្សនា​ទម្រង់​របស់ %1 openDesktop.org "
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "ទស្សនា​​ទម្រង់​របស់ %1 នៅ​លើ openDesktop.org"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "ទស្សនា​កំណត់​ហេតុ​បណ្ដាញ​របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ del.icio.us របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ Digg របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ Facebook របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ Last.fm របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ LinkedIn របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "ទស្សនា​គេហទំព័រ​ MySpace របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ Reddit របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "ទស្សនា​ទម្រង់​​ YouTube របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "ទស្សនា​មតិ​ព័ត៌មាន Twitter របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ Wikipedia របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ Xing របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "ទស្សនា​មតិ​ព័ត៌មាន​ identi.ca របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ libre.fm របស់​អ្នក​ចូល​រួម"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "ទស្សនា​ទម្រង់​ StackOverflow របស់​អ្នក​ចូល​រួម"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "កម្មវិធី​គ្រប់គ្រង​អាភ្លេត​របស់ Amarok"

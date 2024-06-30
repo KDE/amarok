@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-29 01:43+0000\n"
+"POT-Creation-Date: 2024-06-30 01:45+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -62,12 +62,12 @@ msgstr "Χωρίς ομαδοποίηση (μια μόνο γραμμή)"
 msgid "Verbose"
 msgstr "Αναλυτικό"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:54
+#: aboutdialog/ExtendedAboutDialog.cpp:52
 #, kde-format
 msgid "License Agreement"
 msgstr "Άδεια χρήσης"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:99
+#: aboutdialog/ExtendedAboutDialog.cpp:97
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
@@ -76,7 +76,7 @@ msgstr ""
 "<qt>Δεν υπάρχουν διαθέσιμες πληροφορίες.<br />Το παρεχόμενο αντικείμενο "
 "KAboutData δεν υπάρχει.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:110
+#: aboutdialog/ExtendedAboutDialog.cpp:108
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
@@ -85,12 +85,12 @@ msgstr ""
 "<qt>Καμία διαθέσιμη πληροφορία.<br />Το ζητούμενο αντικείμενο OcsData δεν "
 "υπάρχει.</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:121
+#: aboutdialog/ExtendedAboutDialog.cpp:119
 #, kde-format
 msgid "About %1"
 msgstr "Σχετικά με το %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:147
+#: aboutdialog/ExtendedAboutDialog.cpp:145
 #, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -99,23 +99,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Έκδοση %2</b><br />Χρησιμοποιούμε "
 "το KDE Frameworks %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:186
+#: aboutdialog/ExtendedAboutDialog.cpp:184
 #, kde-format
 msgid "License: %1"
 msgstr "Άδεια χρήσης: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:198
 #, kde-format
 msgid "&About"
 msgstr "&Σχετικά"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
-"Αποκτήστε περισσότερες πληροφορίες για την ομάδα από το openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:229
+#: aboutdialog/ExtendedAboutDialog.cpp:221
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
@@ -124,171 +118,46 @@ msgstr ""
 "Χρησιμοποιήστε το <a href=\"https//bugs.kde.org\">https://bugs.kde.org</a> "
 "για να αναφέρετε σφάλματα.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:234
-#: aboutdialog/ExtendedAboutDialog.cpp:240
+#: aboutdialog/ExtendedAboutDialog.cpp:226
+#: aboutdialog/ExtendedAboutDialog.cpp:232
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Παρακαλώ αναφέρετε σφάλματα στο <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthor"
 msgstr "Συγγραφέας"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:261
+#: aboutdialog/ExtendedAboutDialog.cpp:249
 #, kde-format
 msgid "A&uthors"
 msgstr "Συγγραφείς"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:274
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Αποκτήστε περισσότερες πληροφορίες σχετικά με τους συντελεστές από το "
-"openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:290
+#: aboutdialog/ExtendedAboutDialog.cpp:268
 #, kde-format
 msgid "&Contributors"
 msgstr "&Συντελεστές"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:302
-#, kde-format
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Αποκτήστε περισσότερες πληροφορίες σχετικά με τους γενναιόδωρους δωρητές "
-"μας  από το openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:322
+#: aboutdialog/ExtendedAboutDialog.cpp:292
 #, kde-format
 msgid "&Donors"
 msgstr "&Δωρητές"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:351
+#: aboutdialog/ExtendedAboutDialog.cpp:321
 #, kde-format
 msgid "T&ranslation"
 msgstr "Μετάφ&ραση"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Internet connection not available"
-msgstr "Η σύνδεση στο διαδίκτυο δεν είναι διαθέσιμη"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:376
-#, kde-format
-msgid "Network error"
-msgstr "Σφάλμα δικτύου"
-
-#: aboutdialog/OcsPersonItem.cpp:96
+#: aboutdialog/OcsPersonItem.cpp:86
 #, kde-format
 msgid "Email contributor"
 msgstr "Αποστολή αλληλογραφίας στον συντελεστή"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
+#: aboutdialog/OcsPersonItem.cpp:94
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Επισκεφθείτε την ιστοσελίδα του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:182
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:201
-#, kde-format
-msgid "IRC channels: "
-msgstr "Κανάλια IRC:"
-
-#: aboutdialog/OcsPersonItem.cpp:214
-#, kde-format
-msgid "Favorite music: "
-msgstr "Αγαπημένη μουσική:"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Επισκεφθείτε το προφίλ openDesktop.org του %1"
-
-#: aboutdialog/OcsPersonItem.cpp:221
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Επισκεφθείτε το προφίλ του %1 στο openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:255
-#, kde-format
-msgid "Visit contributor's blog"
-msgstr "Επισκεφθείτε το blog του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:260
-#, kde-format
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Επισκεφθείτε το προφίλ del.icio.us του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:265
-#, kde-format
-msgid "Visit contributor's Digg profile"
-msgstr "Επισκεφθείτε το προφίλ Digg του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:270
-#, kde-format
-msgid "Visit contributor's Facebook profile"
-msgstr "Επισκεφθείτε το προφίλ Facebook του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:286
-#, kde-format
-msgid "Visit contributor's Last.fm profile"
-msgstr "Επισκεφθείτε το προφίλ Last.fm του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:294
-#, kde-format
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Επισκεφθείτε το προφίλ Linkedln του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:299
-#, kde-format
-msgid "Visit contributor's MySpace homepage"
-msgstr "Επισκεφθείτε την ιστοσελίδα στο MySpace του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:304
-#, kde-format
-msgid "Visit contributor's Reddit profile"
-msgstr "Επισκεφθείτε το προφίλ Reddit του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:309
-#, kde-format
-msgid "Visit contributor's YouTube profile"
-msgstr "Επισκεφθείτε το προφίλ YouTube του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:314
-#, kde-format
-msgid "Visit contributor's Twitter feed"
-msgstr "Επισκεφθείτε την ροή Twitter του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:319
-#, kde-format
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Επισκεφθείτε το προφίλ Wikipedia του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:324
-#, kde-format
-msgid "Visit contributor's Xing profile"
-msgstr "Επισκεφθείτε το προφίλ Xing του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:329
-#, kde-format
-msgid "Visit contributor's identi.ca feed"
-msgstr "Επισκεφθείτε την ροή identi.ca του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:334
-#, kde-format
-msgid "Visit contributor's libre.fm profile"
-msgstr "Επισκεφθείτε το προφίλ libre.fm του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:339
-#, kde-format
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Επισκεφθείτε το προφίλ StackOverflow του συντελεστή"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2246,7 +2115,7 @@ msgid "Label"
 msgstr "Ετικέτα"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
-#: playlist/navigators/NavigatorConfigAction.cpp:80
+#: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
 msgstr "Τίποτα"
@@ -5095,7 +4964,7 @@ msgstr "Άγνωστη συλλογή"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5646,13 +5515,13 @@ msgid "Could not copy track from device."
 msgstr "Αδυναμία αντιγραφής κομματιού από τη συσκευή."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:300
+#: core/meta/Meta.cpp:304
 #, kde-format
 msgid "Unknown Album"
 msgstr "Άγνωστο άλμπουμ"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:333
+#: core/meta/Meta.cpp:337
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Άγνωστο είδος"
@@ -6199,57 +6068,57 @@ msgstr[1] " αντικείμενα"
 msgid "Podcast"
 msgstr "Εκπομπή Pod"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Ενημέρωση όλων των καναλιών"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Διαμόρφωση γενικών ρυθμίσεων"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Εξαγωγή εγγραφών σε OPML αρχείο"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
 #, kde-format
 msgid "&Configure"
 msgstr "&Διαμόρφωση"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Αφαίρεση εγγραφής"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
 #, kde-format
 msgid "&Update Channel"
 msgstr "Ενημέρωση Καναλιού"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Λήψη επεισοδίου"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Διαγραφή ληφθέντος επεισοδίου"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "Εγγραφή των πληροφοριών της ροής σε αρχείο"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "&Διατήρηση του ληφθέντος αρχείου"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6260,78 +6129,78 @@ msgstr ""
 "συγκεκριμένο επεισόδιο podcast. Τα ληφθέντα αρχεία που έχουν αυτή την "
 "κατάσταση δε θα διαγραφούν ακόμα κι αν εφαρμοστεί η εκκαθάριση."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Ήδη εγγεγραμμένοι στο %1."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "κάθε "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " λεπτό"
 msgstr[1] "λεπτά"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Διαμόρφωση τοπικών εκπομπών Pod"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Μετακίνηση Podcasts"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Θέλετε να μετακινήσετε όλα τα ληφθέντα επεισόδια στη νέα θέση;"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Επιλέξτε αρχείο OPML για εξαγωγή"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Θέλετε πραγματικά να διαγραφείτε από to \"%1\";"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Διαγραφή ληφθέντος επεισοδίου"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:976
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "Υπάρχει ακόμα μια λήψη podcast σε εξέλιξη"
 msgstr[1] "Υπάρχουν ακόμα %1 λήψεις podcast σε εξέλιξη"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Ακύρωση λήψης και τερματισμός."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Αδυναμία αποθήκευσης επεισοδίου εκπομπής pod στο %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Λήψη πολυμέσων εκπομπής Pod..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Λήψη εκπομπής Pod \"%1\""
@@ -6493,27 +6362,27 @@ msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "Γίνεται αλλαγή συμπίεσης και αντιγραφή ενός κομματιού στο %2"
 msgstr[1] "Γίνεται αλλαγή συμπίεσης και αντιγραφή %1 κομματιών στο %2"
 
-#: core/meta/Meta.cpp:207
+#: core/meta/Meta.cpp:210
 #, kde-format
 msgid "No network connection"
 msgstr "Χωρίς σύνδεση δικτύου"
 
-#: core/meta/Meta.cpp:217
+#: core/meta/Meta.cpp:221
 #, kde-format
 msgid "File does not exist"
 msgstr "Το αρχείο δεν υπάρχει"
 
-#: core/meta/Meta.cpp:219
+#: core/meta/Meta.cpp:223
 #, kde-format
 msgid "Not a file"
 msgstr "Δεν είναι αρχείο"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "No read permissions"
 msgstr "Χωρίς δικαιώματα ανάγνωσης"
 
-#: core/meta/Meta.cpp:355
+#: core/meta/Meta.cpp:359
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Άγνωστος συνθέτης"
@@ -11513,7 +11382,7 @@ msgstr "&Μουσική"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -11676,12 +11545,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:44
+#: playlist/layouts/LayoutConfigAction.cpp:45
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Διατάξεις της λίστας αναπαραγωγής"
 
-#: playlist/layouts/LayoutConfigAction.cpp:70
+#: playlist/layouts/LayoutConfigAction.cpp:71
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Διαμόρφωση διατάξεων της λίστας αναπαραγωγής..."
@@ -11979,62 +11848,62 @@ msgstr "Εμφάνιση συμβουλών"
 msgid "Preview"
 msgstr "Προεπισκόπηση"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:33
+#: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
 msgstr "Πρόοδος κομματιού"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:38
+#: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
 msgstr "Τυπικό"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:43
+#: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
 msgstr "Αναμονή μόνο"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:51
+#: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
 msgstr "Επανάληψη κομματιού"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:55
+#: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
 msgstr "Επανάληψη άλμπουμ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:59
+#: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
 msgstr "Επανάληψη λίστας"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:67
+#: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
 msgid "Random Tracks"
 msgstr "Τυχαία κομμάτια"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:71
+#: playlist/navigators/NavigatorConfigAction.cpp:72
 #, kde-format
 msgid "Random Albums"
 msgstr "Τυχαία άλμπουμ"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:77
+#: playlist/navigators/NavigatorConfigAction.cpp:78
 #, kde-format
 msgid "Favor"
 msgstr "Εύνοια"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:83
+#: playlist/navigators/NavigatorConfigAction.cpp:84
 #, kde-format
 msgid "Higher Scores"
 msgstr "Υψηλότερες βαθμολογίες"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:86
+#: playlist/navigators/NavigatorConfigAction.cpp:87
 #, kde-format
 msgid "Higher Ratings"
 msgstr "Υψηλότερες αξιολογήσεις"
 
-#: playlist/navigators/NavigatorConfigAction.cpp:89
+#: playlist/navigators/NavigatorConfigAction.cpp:90
 #, kde-format
 msgid "Not Recently Played"
 msgstr "Δεν έχουν εκτελεστεί πρόσφατα"
@@ -12161,7 +12030,7 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Τίτλος (με αριθμό κομματιού)"
 
-#: playlist/PlaylistDock.cpp:106
+#: playlist/PlaylistDock.cpp:107
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
@@ -12170,7 +12039,7 @@ msgstr ""
 "<a href='%1'>Δυναμική λειτουργία</a> ενεργοποιημένη. <a "
 "href='%2'>Αναπλήρωση</a> | <a href='%3'>Κλείσιμο</a>"
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "Αποθήκευση τρέχουσας λίστας αναπαραγωγής"
@@ -16500,17 +16369,17 @@ msgstr "&Οπτικά εφέ"
 msgid "Bookmark"
 msgstr "Σελιδοδείκτης"
 
-#: widgets/BreadcrumbItemButton.cpp:239
+#: widgets/BreadcrumbItemButton.cpp:243
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Εμφάνιση και εκτέλεση σελιδοδεικτών, ή δημιουργία νέων"
 
-#: widgets/BreadcrumbItemButton.cpp:257
+#: widgets/BreadcrumbItemButton.cpp:261
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Σελιδοδείκτες του Amarok"
 
-#: widgets/BreadcrumbItemButton.cpp:276
+#: widgets/BreadcrumbItemButton.cpp:280
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "Αντιγραφή σελιδοδείκτη τρέχουσας προβολής στο πρόχειρο"
@@ -16840,12 +16709,12 @@ msgstr "Μεταπήδηση στο: %1"
 msgid "Drag in and out items from above."
 msgstr "Προσθήκη και αφαίρεση στοιχείων που υπάρχουν παραπάνω"
 
-#: widgets/TokenWithLayout.cpp:223
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[prefix]"
 msgstr "[πρόθεμα]"
 
-#: widgets/TokenWithLayout.cpp:234
+#: widgets/TokenWithLayout.cpp:243
 #, kde-format
 msgid "[suffix]"
 msgstr "[κατάληξη]"
@@ -16874,6 +16743,88 @@ msgstr "Καλλιτέχνης: %1"
 #, kde-format
 msgid "empty"
 msgstr "κενό"
+
+#~ msgid "Get data from openDesktop.org to learn more about the team"
+#~ msgstr ""
+#~ "Αποκτήστε περισσότερες πληροφορίες για την ομάδα από το openDesktop.org"
+
+#~ msgid "Get data from openDesktop.org to learn more about contributors"
+#~ msgstr ""
+#~ "Αποκτήστε περισσότερες πληροφορίες σχετικά με τους συντελεστές από το "
+#~ "openDesktop.org"
+
+#~ msgid ""
+#~ "Get data from openDesktop.org to learn more about our generous donors"
+#~ msgstr ""
+#~ "Αποκτήστε περισσότερες πληροφορίες σχετικά με τους γενναιόδωρους δωρητές "
+#~ "μας  από το openDesktop.org"
+
+#~ msgid "Internet connection not available"
+#~ msgstr "Η σύνδεση στο διαδίκτυο δεν είναι διαθέσιμη"
+
+#~ msgid "Network error"
+#~ msgstr "Σφάλμα δικτύου"
+
+#~ msgctxt "A person's location: City, Country"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgid "IRC channels: "
+#~ msgstr "Κανάλια IRC:"
+
+#~ msgid "Favorite music: "
+#~ msgstr "Αγαπημένη μουσική:"
+
+#~ msgid "Visit %1's openDesktop.org profile"
+#~ msgstr "Επισκεφθείτε το προφίλ openDesktop.org του %1"
+
+#~ msgid "Visit %1's profile on openDesktop.org"
+#~ msgstr "Επισκεφθείτε το προφίλ του %1 στο openDesktop.org"
+
+#~ msgid "Visit contributor's blog"
+#~ msgstr "Επισκεφθείτε το blog του συντελεστή"
+
+#~ msgid "Visit contributor's del.icio.us profile"
+#~ msgstr "Επισκεφθείτε το προφίλ del.icio.us του συντελεστή"
+
+#~ msgid "Visit contributor's Digg profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Digg του συντελεστή"
+
+#~ msgid "Visit contributor's Facebook profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Facebook του συντελεστή"
+
+#~ msgid "Visit contributor's Last.fm profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Last.fm του συντελεστή"
+
+#~ msgid "Visit contributor's LinkedIn profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Linkedln του συντελεστή"
+
+#~ msgid "Visit contributor's MySpace homepage"
+#~ msgstr "Επισκεφθείτε την ιστοσελίδα στο MySpace του συντελεστή"
+
+#~ msgid "Visit contributor's Reddit profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Reddit του συντελεστή"
+
+#~ msgid "Visit contributor's YouTube profile"
+#~ msgstr "Επισκεφθείτε το προφίλ YouTube του συντελεστή"
+
+#~ msgid "Visit contributor's Twitter feed"
+#~ msgstr "Επισκεφθείτε την ροή Twitter του συντελεστή"
+
+#~ msgid "Visit contributor's Wikipedia profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Wikipedia του συντελεστή"
+
+#~ msgid "Visit contributor's Xing profile"
+#~ msgstr "Επισκεφθείτε το προφίλ Xing του συντελεστή"
+
+#~ msgid "Visit contributor's identi.ca feed"
+#~ msgstr "Επισκεφθείτε την ροή identi.ca του συντελεστή"
+
+#~ msgid "Visit contributor's libre.fm profile"
+#~ msgstr "Επισκεφθείτε το προφίλ libre.fm του συντελεστή"
+
+#~ msgid "Visit contributor's StackOverflow profile"
+#~ msgstr "Επισκεφθείτε το προφίλ StackOverflow του συντελεστή"
 
 #~ msgid "Amarok Applet Manager"
 #~ msgstr "Διαχειριστής μικροεφαρμογών Amarok"

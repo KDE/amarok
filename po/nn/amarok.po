@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-25 01:42+0000\n"
+"POT-Creation-Date: 2024-06-29 01:43+0000\n"
 "PO-Revision-Date: 2020-12-13 13:52+0100\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -4540,12 +4540,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:758
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:757
 #, kde-format
 msgid "Choose Language"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:890
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4591,106 +4591,6 @@ msgstr ""
 #: context/engines/songkick/SongkickEngine.cpp:48
 #, kde-format
 msgid "dates"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
-#, kde-format
-msgid "Amarok Applet Manager"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:89
-#, kde-format
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:90
-#, kde-format
-msgid "Aaron Seigo"
-msgstr "Aaron Seigo"
-
-#: context/tools/amarokpkg.cpp:91
-#, kde-format
-msgid "Original author"
-msgstr "Opphavsperson"
-
-#: context/tools/amarokpkg.cpp:93 main.cpp:166
-#, kde-format
-msgid "Leo Franchi"
-msgstr "Leo Franchi"
-
-#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
-#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
-#: main.cpp:304 main.cpp:308 main.cpp:316
-#, kde-format
-msgid "Developer"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:110
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:112
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:114
-#, kde-format
-msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:116
-#, kde-format
-msgid "Most installed applets"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:118
-#, kde-format
-msgctxt "Do not translate <name>"
-msgid "Remove the applet named <name>"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:120
-#, kde-format
-msgid ""
-"Absolute path to the package root. If not supplied, then the standard data "
-"directories for this KDE session will be searched instead."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:176
-#, kde-format
-msgid "Successfully removed %1"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:178
-#, kde-format
-msgid "Removal of %1 failed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:183
-#, kde-format
-msgid "Plugin %1 is not installed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:188
-#, kde-format
-msgid "Successfully installed %1"
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:191
-#, kde-format
-msgid "Installation of %1 failed."
-msgstr ""
-
-#: context/tools/amarokpkg.cpp:199
-#, kde-format
-msgctxt ""
-"No option was given, this is the error message telling the user he needs at "
-"least one, do not translate install, remove, upgrade nor list"
-msgid "One of install, remove, upgrade or list is required."
 msgstr ""
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
@@ -4922,13 +4822,13 @@ msgid "Disconnected iPod/iPad/iPhone"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #, kde-format
 msgid "Unknown Collection"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
@@ -4937,7 +4837,7 @@ msgid "Unknown Artist"
 msgstr "Ukjend artist"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:94
 #: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
@@ -9936,6 +9836,11 @@ msgstr ""
 
 #: main.cpp:166
 #, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: main.cpp:166
+#, kde-format
 msgid "Developer (lfranchi)"
 msgstr ""
 
@@ -10303,6 +10208,13 @@ msgstr ""
 #: main.cpp:250
 #, kde-format
 msgid "Thomas Lübking"
+msgstr ""
+
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
+#, kde-format
+msgid "Developer"
 msgstr ""
 
 #: main.cpp:252
@@ -11055,7 +10967,7 @@ msgstr ""
 msgid "Value"
 msgstr "Verdi"
 
-#: OpmlParser.cpp:127
+#: OpmlParser.cpp:128
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr ""
@@ -11150,7 +11062,7 @@ msgstr ""
 msgid "Font: "
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:239
+#: playlist/layouts/LayoutEditDialog.cpp:242
 #, kde-format
 msgid "Configuration for '%1'"
 msgstr ""
@@ -13926,67 +13838,67 @@ msgstr "Ctrl+H"
 msgid "Skip this track"
 msgstr "Hopp over dette sporet"
 
-#: services/lastfm/meta/LastFmMeta.cpp:268
+#: services/lastfm/meta/LastFmMeta.cpp:267
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
 msgstr "Global merkelapp-radio: «%1»"
 
-#: services/lastfm/meta/LastFmMeta.cpp:274
+#: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
 msgstr "Brukarmerkelapp-radio: «%1»"
 
-#: services/lastfm/meta/LastFmMeta.cpp:282
+#: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
 msgstr "Artistar som liknar på %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:286
+#: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
 msgstr "Fanradio til artisten %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:295
+#: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
 msgid "%1's Neighbor Radio"
 msgstr "Naboradio til %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:299
+#: services/lastfm/meta/LastFmMeta.cpp:297
 #, kde-format
 msgid "%1's Personal Radio"
 msgstr "Personleg radio til %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:303
+#: services/lastfm/meta/LastFmMeta.cpp:301
 #, kde-format
 msgid "%1's Mix Radio"
 msgstr ""
 
-#: services/lastfm/meta/LastFmMeta.cpp:307
+#: services/lastfm/meta/LastFmMeta.cpp:305
 #, kde-format
 msgid "%1's Recommended Radio"
 msgstr "Anbefalingsradio til %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:311
+#: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
 msgstr "Anbefalingsradio til %1 (popularitet %2)"
 
-#: services/lastfm/meta/LastFmMeta.cpp:318
+#: services/lastfm/meta/LastFmMeta.cpp:315
 #, kde-format
 msgid "Group Radio: %1"
 msgstr "Grupperadio til %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:326
+#: services/lastfm/meta/LastFmMeta.cpp:323
 #, kde-format
 msgid "Track Radio"
 msgstr "Sporradio"
 
-#: services/lastfm/meta/LastFmMeta.cpp:330
+#: services/lastfm/meta/LastFmMeta.cpp:327
 #, kde-format
 msgid "Artist Radio"
 msgstr "Artistradio"
 
-#: services/lastfm/meta/LastFmMeta.cpp:430
+#: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
 msgstr "Last.fm er kul …"
