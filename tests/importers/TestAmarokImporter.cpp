@@ -175,12 +175,12 @@ TestAmarokImporter::configWidgetShouldReadSavedConfig()
 void
 TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
 {
-    if( !QFileInfo( "/usr/bin/mysqld" ).isExecutable() )
-        QSKIP( "/usr/bin/mysqld is not executable", SkipAll );
+    if( !QFileInfo( "/usr/sbin/mysqld" ).isExecutable() )
+        QSKIP( "/usr/sbin/mysqld is not executable", SkipAll );
 
     m_cfg.insert( "dbDriver", "QPSQL" );
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                            "/importers_files/amarok2_mysqle" );
+                            "/../tests/importers_files/amarok2_mysqle" );
 
     AmarokProvider provider( m_cfg, nullptr );
 

@@ -85,7 +85,7 @@ AmarokConfigWidget::populateFields()
                 m_config.value( "embedded" ).toBool()
                 ? Embedded : External );
 
-    const QString defaultPath( "/usr/bin/mysqld" );
+    const QString defaultPath( QStringLiteral("/usr/sbin/mysqld") );
     m_mysqlBinary->setText( m_config.value( "mysqlBinary", defaultPath ).toString() );
     m_databaseLocation->setText( m_config.value( "dbPath", "" ).toString() );
     m_databaseName->setText( m_config.value( "dbName", "amarokdb" ).toString() );

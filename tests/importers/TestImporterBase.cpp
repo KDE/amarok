@@ -54,8 +54,8 @@ TestImporterBase::hasOddRatings() const
 
 #define amarokProviderSkipIfNoMysqld( provider ) \
     if( QString( provider->prettyName() ) == "Amarok2Test" ) \
-        if( !QFileInfo( "/usr/bin/mysqld" ).isExecutable() ) \
-            QSKIP( "/usr/bin/mysqld not executable, skipping Amarok provider tests", \
+        if( !QFileInfo( QStringLiteral("/usr/sbin/mysqld") ).isExecutable() ) \
+            QSKIP( "/usr/sbin/mysqld not executable, skipping Amarok provider tests", \
                    SkipAll )
 
 void
