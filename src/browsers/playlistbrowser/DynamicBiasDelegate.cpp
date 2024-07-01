@@ -32,13 +32,11 @@ PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
 {
     m_smallFont.setPointSize( m_smallFont.pointSize() - 1 );
 
-    m_normalFm = new QFontMetrics( m_normalFont );
     m_smallFm = new QFontMetrics( m_smallFont );
 }
 
 PlaylistBrowserNS::DynamicBiasDelegate::~DynamicBiasDelegate()
 {
-    delete m_normalFm;
     delete m_smallFm;
 }
 

@@ -43,7 +43,6 @@ class DynamicBiasDelegate : public QStyledItemDelegate
       QFont m_normalFont;
       QFont m_smallFont;
 
-      QFontMetrics *m_normalFm;
       QFontMetrics *m_smallFm;
 
 };

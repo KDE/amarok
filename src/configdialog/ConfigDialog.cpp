@@ -83,7 +83,7 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
     {
         if( m_pageMap[configPage] == pageItem )
         {
-            s_currentPage = configPage->metaObject()->className();
+            s_currentPage = QLatin1String(configPage->metaObject()->className());
             break;
         }
     }
@@ -120,7 +120,7 @@ void Amarok2ConfigDialog::show( QString page )
 
     for( ConfigDialogBase *configPage : m_pageList )
     {
-        if( configPage->metaObject()->className() == page )
+        if( QLatin1String(configPage->metaObject()->className()) == page )
         {
             KPageWidgetItem *pageItem = m_pageMap[configPage];
             KConfigDialog::setCurrentPage( pageItem );
