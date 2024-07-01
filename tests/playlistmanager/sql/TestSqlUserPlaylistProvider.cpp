@@ -72,7 +72,7 @@ void TestSqlUserPlaylistProvider::testSave()
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
     Playlists::PlaylistPtr testPlaylist =
-            m_testSqlUserPlaylistProvider->save( tempTrackList, "Amarok Test Playlist" );
+            m_testSqlUserPlaylistProvider->save( tempTrackList, QStringLiteral("Amarok Test Playlist") );
 
     QCOMPARE( testPlaylist->name(), QStringLiteral( "Amarok Test Playlist" ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
@@ -84,7 +84,7 @@ void TestSqlUserPlaylistProvider::testSave()
 void TestSqlUserPlaylistProvider::testRename()
 {
     Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
-    m_testSqlUserPlaylistProvider->renamePlaylist( tempList.at( 0 ), "New Test Name" );
+    m_testSqlUserPlaylistProvider->renamePlaylist( tempList.at( 0 ), QStringLiteral("New Test Name") );
     QCOMPARE( tempList.at( 0 )->name(), QStringLiteral( "New Test Name" ) );
 }
 

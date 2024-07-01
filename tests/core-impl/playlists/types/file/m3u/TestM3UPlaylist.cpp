@@ -89,14 +89,14 @@ void TestM3UPlaylist::testSetAndGetName()
 
     QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.m3u" ) );
 
-    m_testPlaylist->setName( "set name test" );
+    m_testPlaylist->setName( QStringLiteral("set name test") );
     QCOMPARE( m_testPlaylist->name(), QStringLiteral( "set name test.m3u" ) );
 
-    m_testPlaylist->setName( "set name test aäoöuüß.m3u" );
+    m_testPlaylist->setName( QStringLiteral("set name test aäoöuüß.m3u") );
     QCOMPARE( m_testPlaylist->name(), QStringLiteral( "set name test aäoöuüß.m3u" ) );
 
-    m_testPlaylist->setName( "test" );
-    m_testPlaylist->setName( "" );
+    m_testPlaylist->setName( QStringLiteral("test") );
+    m_testPlaylist->setName( QStringLiteral("") );
     QCOMPARE( m_testPlaylist->name(), QStringLiteral( "test.m3u" ) );
 }
 
@@ -116,7 +116,7 @@ void TestM3UPlaylist::testUidUrl()
 {
     QString tempPath = m_tempDir->path() + QStringLiteral("/test.m3u");
     //we have changed the name around so much, better reset it
-    m_testPlaylist->setName( "test" );
+    m_testPlaylist->setName( QStringLiteral("test") );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }
 
@@ -128,7 +128,7 @@ void TestM3UPlaylist::testSetAndGetGroups()
     grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 0 );
 
-    newGrouplist.append( "test" );
+    newGrouplist.append( QStringLiteral("test") );
     m_testPlaylist->setGroups( newGrouplist );
     grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 1 );

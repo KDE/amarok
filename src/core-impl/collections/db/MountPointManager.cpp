@@ -280,7 +280,7 @@ MountPointManager::collectionFolders() const
 
     //TODO max: cache data
     QStringList result;
-    KConfigGroup folders = Amarok::config( "Collection Folders" );
+    KConfigGroup folders = Amarok::config( QStringLiteral("Collection Folders") );
     const IdList ids = getMountedDeviceIds();
 
     for( int id : ids )

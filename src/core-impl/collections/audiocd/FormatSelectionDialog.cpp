@@ -35,7 +35,7 @@ FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
 
 
     //restore format from last time, if any.
-    KConfigGroup config = Amarok::config("Audio CD Collection");
+    KConfigGroup config = Amarok::config(QStringLiteral("Audio CD Collection"));
     QString format = config.readEntry( "Import Format", "ogg" );
 
     if ( format.compare( QStringLiteral("ogg"), Qt::CaseInsensitive ) == 0 )
@@ -101,7 +101,7 @@ void FormatSelectionDialog::accept()
     else if( m_selectedFormat == Collections::AudioCdCollection::MP3 )
         format = QStringLiteral("mp3");
 
-    KConfigGroup config = Amarok::config("Audio CD Collection");
+    KConfigGroup config = Amarok::config(QStringLiteral("Audio CD Collection"));
     config.writeEntry( "Import Format", format );
     
     Q_EMIT formatSelected( m_selectedFormat );

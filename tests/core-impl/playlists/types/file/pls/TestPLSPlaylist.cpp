@@ -66,7 +66,7 @@ void TestPLSPlaylist::initTestCase()
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
-    QString tempPath = m_tempDir->path() + "/test.pls";
+    QString tempPath = m_tempDir->path() + QStringLiteral("/test.pls");
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
 
@@ -95,14 +95,14 @@ void TestPLSPlaylist::testSetAndGetName()
 {
     QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "test.pls" ) );
 
-    m_testPlaylist1->setName( "set name test" );
+    m_testPlaylist1->setName( QStringLiteral("set name test") );
     QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "set name test.pls" ) );
 
-    m_testPlaylist1->setName( "set name test aäoöuüß" );
+    m_testPlaylist1->setName( QStringLiteral("set name test aäoöuüß") );
     QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "set name test aäoöuüß.pls" ) );
 
-    m_testPlaylist1->setName( "test" );
-    m_testPlaylist1->setName( "" );
+    m_testPlaylist1->setName( QStringLiteral("test") );
+    m_testPlaylist1->setName( QStringLiteral("") );
     QCOMPARE( m_testPlaylist1->name(), QStringLiteral( "test.pls" ) );
 }
 
@@ -124,8 +124,8 @@ void TestPLSPlaylist::testTracks()
 
 void TestPLSPlaylist::testUidUrl()
 {
-    QString tempPath = m_tempDir->path() + "/test.pls";
-    m_testPlaylist1->setName( "test" );
+    QString tempPath = m_tempDir->path() + QStringLiteral("/test.pls");
+    m_testPlaylist1->setName( QStringLiteral("test") );
     QCOMPARE( m_testPlaylist1->uidUrl().toLocalFile(), tempPath );
 }
 void TestPLSPlaylist::testIsWritable()

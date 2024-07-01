@@ -222,21 +222,21 @@ TestMemoryQueryMaker::testFilterTitle()
 
     // -- filter for title
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
-    qm->addFilter( Meta::valTitle, "Skater", true, false );
+    qm->addFilter( Meta::valTitle, QStringLiteral("Skater"), true, false );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
     QCOMPARE( tracks.first()->name(), QStringLiteral("Skater Boy" ) );
 
     // -- filter for album
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
-    qm->addFilter( Meta::valAlbum, "S", false, false );
+    qm->addFilter( Meta::valAlbum, QStringLiteral("S"), false, false );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
     QCOMPARE( tracks.first()->name(), QStringLiteral("Substitute" ) );
 
     // -- filter for artist
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
-    qm->addFilter( Meta::valArtist, "Lavigne", false, true );
+    qm->addFilter( Meta::valArtist, QStringLiteral("Lavigne"), false, true );
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );
     QCOMPARE( tracks.first()->name(), QStringLiteral("Skater Boy" ) );
@@ -271,7 +271,7 @@ TestMemoryQueryMaker::testFilterAnd()
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), QStringLiteral("test") );
     qm->beginAnd();
     qm->addNumberFilter( Meta::valTrackNr, 1, Collections::QueryMaker::Equals );
-    qm->addFilter( Meta::valAlbum, "o", false, false );
+    qm->addFilter( Meta::valAlbum, QStringLiteral("o"), false, false );
     qm->endAndOr();
     tracks = executeQueryMaker( qm );
     QCOMPARE( tracks.count(), 1 );

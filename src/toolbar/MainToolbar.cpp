@@ -132,7 +132,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
     connect( m_current.label, &AnimatedLabelStack::clicked,
-             Amarok::actionCollection()->action("show_active_track"), &QAction::trigger );
+             Amarok::actionCollection()->action(QStringLiteral("show_active_track")), &QAction::trigger );
 
     m_next.key = nullptr;
     m_next.label = new AnimatedLabelStack(QStringList(), info);

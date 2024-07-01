@@ -135,17 +135,17 @@ TestSqlTrack::cleanup()
 void
 TestSqlTrack::setAllValues( Meta::SqlTrack *track )
 {
-    track->setTitle( "New Title" );
-    track->setAlbum( "New Album" );
-    track->setArtist( "New Artist" );
-    track->setComposer( "New Composer" );
+    track->setTitle( QStringLiteral("New Title") );
+    track->setAlbum( QStringLiteral("New Album") );
+    track->setArtist( QStringLiteral("New Artist") );
+    track->setComposer( QStringLiteral("New Composer") );
     track->setYear( 1999 );
-    track->setGenre( "New Genre" );
+    track->setGenre( QStringLiteral("New Genre") );
 
-    track->setUrl( -1, "./new_url", 2 );
+    track->setUrl( -1, QStringLiteral("./new_url"), 2 );
 
     track->setBpm( 32.0 );
-    track->setComment( "New Comment" );
+    track->setComment( QStringLiteral("New Comment") );
 
     track->setScore( 64.0 );
     track->setRating( 5 );
@@ -169,7 +169,7 @@ TestSqlTrack::setAllValues( Meta::SqlTrack *track )
     for( int i=0; i<4; i++ )
         track->setReplayGain( modes[i], qreal(i) );
 
-    track->addLabel( "New Label" );
+    track->addLabel( QStringLiteral("New Label") );
 }
 
 void
@@ -209,7 +209,7 @@ TestSqlTrack::getAllValues( Meta::SqlTrack *track )
             QCOMPARE( track->replayGain( modes[i] ), qreal(i) );
 
     QVERIFY( track->labels().count() > 0 );
-    QVERIFY( track->labels().contains( m_collection->registry()->getLabel("New Label") ) );
+    QVERIFY( track->labels().contains( m_collection->registry()->getLabel(QStringLiteral("New Label")) ) );
 }
 
 /** Check that the registry always returns the same track pointer */
@@ -218,8 +218,8 @@ TestSqlTrack::testGetTrack()
 {
     {
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( 1 );
-        Meta::TrackPtr track2 = m_collection->registry()->getTrack( "/IDoNotExist.mp3" );
-        Meta::TrackPtr track3 = m_collection->registry()->getTrackFromUid( "1" );
+        Meta::TrackPtr track2 = m_collection->registry()->getTrack( QStringLiteral("/IDoNotExist.mp3") );
+        Meta::TrackPtr track3 = m_collection->registry()->getTrackFromUid( QStringLiteral("1") );
 
         QVERIFY( track1 );
         QVERIFY( track1 == track2 );
@@ -231,8 +231,8 @@ TestSqlTrack::testGetTrack()
 
     // changed order...
     {
-        Meta::TrackPtr track2 = m_collection->registry()->getTrack( "/IDoNotExist.mp3" );
-        Meta::TrackPtr track3 = m_collection->registry()->getTrackFromUid( "1" );
+        Meta::TrackPtr track2 = m_collection->registry()->getTrack( QStringLiteral("/IDoNotExist.mp3") );
+        Meta::TrackPtr track3 = m_collection->registry()->getTrackFromUid( QStringLiteral("1") );
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( 1 );
 
         QVERIFY( track1 );
@@ -246,7 +246,7 @@ TestSqlTrack::testGetTrack()
 
     // changed order...
     {
-        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./newTrack.mp3", 2, "amarok-sqltrackuid://newuid" );
+        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, QStringLiteral("./newTrack.mp3"), 2, QStringLiteral("amarok-sqltrackuid://newuid") );
         Meta::SqlTrack *sqlTrack1 = static_cast<Meta::SqlTrack*>( track1.data() );
         sqlTrack1->setBpm( 100 ); // have to commit the new track
 
@@ -259,7 +259,7 @@ TestSqlTrack::testGetTrack()
 
     // changed order...
     {
-        Meta::TrackPtr track1 = m_collection->registry()->getTrackFromUid("amarok-sqltrackuid://newuid");
+        Meta::TrackPtr track1 = m_collection->registry()->getTrackFromUid(QStringLiteral("amarok-sqltrackuid://newuid"));
 
         QVERIFY( track1 );
         QCOMPARE( track1->playableUrl().path(), QStringLiteral("/newTrack.mp3" ));
@@ -273,7 +273,7 @@ TestSqlTrack::testSetAllValuesSingleNotExisting()
 {
     {
         // get a new track
-        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, QStringLiteral("./IamANewTrack.mp3"), 1, "1e34fb213489" );
+        Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, QStringLiteral("./IamANewTrack.mp3"), 1, QStringLiteral("1e34fb213489") );
 
         QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
         MetaNotificationSpy metaSpy;
@@ -305,11 +305,11 @@ void
 TestSqlTrack::testSetAllValuesSingleExisting()
 {
     {
-        Meta::GenrePtr    genre    = m_collection->registry()->getGenre( "New Genre" );
-        Meta::ComposerPtr composer = m_collection->registry()->getComposer( "New Composer" );
+        Meta::GenrePtr    genre    = m_collection->registry()->getGenre( QStringLiteral("New Genre") );
+        Meta::ComposerPtr composer = m_collection->registry()->getComposer( QStringLiteral("New Composer") );
         Meta::YearPtr     year     = m_collection->registry()->getYear( 1999 );
-        Meta::AlbumPtr    album    = m_collection->registry()->getAlbum( "New Album", "New Artist" );
-        m_collection->registry()->getLabel( "New Label" );
+        Meta::AlbumPtr    album    = m_collection->registry()->getAlbum( QStringLiteral("New Album"), QStringLiteral("New Artist") );
+        m_collection->registry()->getLabel( QStringLiteral("New Label") );
 
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( QStringLiteral("/IDoNotExist.mp3") );
 
@@ -344,10 +344,10 @@ TestSqlTrack::testSetAllValuesSingleExisting()
         QVERIFY( track1 );
         getAllValues( sqlTrack1 );
 
-        Meta::GenrePtr    genre    = m_collection->registry()->getGenre( "New Genre" );
-        Meta::ComposerPtr composer = m_collection->registry()->getComposer( "New Composer" );
+        Meta::GenrePtr    genre    = m_collection->registry()->getGenre( QStringLiteral("New Genre") );
+        Meta::ComposerPtr composer = m_collection->registry()->getComposer( QStringLiteral("New Composer") );
         Meta::YearPtr     year     = m_collection->registry()->getYear( 1999 );
-        Meta::AlbumPtr    album    = m_collection->registry()->getAlbum( "New Album", "New Artist" );
+        Meta::AlbumPtr    album    = m_collection->registry()->getAlbum( QStringLiteral("New Album"), QStringLiteral("New Artist") );
 
         // check that the existing object are really updated with the new tracklist
         QCOMPARE( genre->tracks().count(), 1 );
@@ -411,11 +411,11 @@ TestSqlTrack::testUnsetValues()
         setAllValues( sqlTrack1 );
 
         // now unset the values again
-        sqlTrack1->setAlbum( "" );
-        sqlTrack1->setArtist( "" );
-        sqlTrack1->setComposer( "" );
+        sqlTrack1->setAlbum( QStringLiteral("") );
+        sqlTrack1->setArtist( QStringLiteral("") );
+        sqlTrack1->setComposer( QStringLiteral("") );
         sqlTrack1->setYear( 0 ); // it is not clear what an empty year exactly is
-        sqlTrack1->setGenre( "" );
+        sqlTrack1->setGenre( QStringLiteral("") );
 
         // note: Amarok is still not clear if an empty artist means track->artist() == 0
         QVERIFY( !track1->album() || track1->album()->name().isEmpty() );

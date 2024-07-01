@@ -204,9 +204,9 @@ void MagnatuneInfoParser::getRecommendationsPage()
 
     QString type;
     if( config.membershipType() == MagnatuneConfig::STREAM )
-        type = "stream";
+        type = QStringLiteral("stream");
     else
-         type = "download";
+         type = QStringLiteral("download");
 
     QString user = config.username();
     QString password = config.password();

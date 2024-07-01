@@ -70,11 +70,11 @@ void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QSt
 {
     QString type;
     if( membershipType == MagnatuneConfig::STREAM )
-        type = "stream";
+        type = QStringLiteral("stream");
     else
-         type = "download";
+         type = QStringLiteral("download");
     
-    QUrl purchaseURL = QUrl::fromUserInput( "http://" + username + ":" + password + "@" + type + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok" );
+    QUrl purchaseURL = QUrl::fromUserInput( QStringLiteral("http://") + username + QStringLiteral(":") + password + QStringLiteral("@") + type + QStringLiteral(".magnatune.com/buy/membership_free_dl_xml?sku=") + m_currentAlbum->albumCode() + QStringLiteral("&id=amarok") );
 
     m_membershipDownload = true;
 
@@ -161,17 +161,17 @@ void MagnatuneDownloadHandler::saveDownloadInfo( const QString &infoXml )
 
     MagnatuneDatabaseHandler dbHandler;
 
-    QDir purchaseDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
+    QDir purchaseDir( Amarok::saveLocation( QStringLiteral("magnatune.com/purchases/") ) );
 
     debug() << "magnatune save location" << purchaseDir.absolutePath();
 
     //if directory does not exist, create it
     if ( ! purchaseDir.exists () )
     {
-        purchaseDir.mkdir( "." );
+        purchaseDir.mkdir( QStringLiteral(".") );
     }
 
-    QString fileName = m_currentAlbum->albumArtist()->name() + " - " + m_currentAlbum->name();
+    QString fileName = m_currentAlbum->albumArtist()->name() + QStringLiteral(" - ") + m_currentAlbum->name();
 
     QFile file( purchaseDir.absolutePath() + QLatin1Char('/') + fileName );
 

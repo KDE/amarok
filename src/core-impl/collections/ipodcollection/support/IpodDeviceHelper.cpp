@@ -220,7 +220,7 @@ safeToWriteWithMessage( const QString &mountPoint, const Itdb_iTunesDB *itdb, QS
     {
         // okay FireWireGUID may be in plain SysInfo, too, but it's hard to check and
         // error-prone so we just require SysInfoExtended which is machine-generated
-        const QString sysInfoExtended( "SysInfoExtended" );
+        const QString sysInfoExtended( QStringLiteral("SysInfoExtended") );
         bool sysInfoExtendedExists = fileFound( mountPoint, sysInfoExtended );
         message += ( sysInfoExtendedExists )
                    ? i18n( "%1 family uses %2 file to generate correct database checksum.",

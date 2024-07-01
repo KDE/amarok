@@ -84,7 +84,7 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
 
     debug() << "rss: " << rssString;
 
-    QDomDocument doc( "reply" );
+    QDomDocument doc( QStringLiteral("reply") );
     if ( !doc.setContent( rssString ) )
     {
         debug() << "could not set reply document to given RSS string";
@@ -93,34 +93,34 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
 
     //there might be an rss node, there might not...
 
-    QDomElement element = doc.firstChildElement( "rss" );
+    QDomElement element = doc.firstChildElement( QStringLiteral("rss") );
     if ( !element.isNull() ) {
-        element = element.firstChildElement( "channel" );
+        element = element.firstChildElement( QStringLiteral("channel") );
     } else {
-        element = doc.firstChildElement( "channel" );
+        element = doc.firstChildElement( QStringLiteral("channel") );
     }
 
-    QString description = element.firstChildElement( "description" ).text();
-    QString title = element.firstChildElement( "title" ).text();
+    QString description = element.firstChildElement( QStringLiteral("description") ).text();
+    QString title = element.firstChildElement( QStringLiteral("title") ).text();
     
     QString imageUrl;
-    QDomElement image = element.firstChildElement( "image" );
+    QDomElement image = element.firstChildElement( QStringLiteral("image") );
     
     if ( !image.isNull() )
-        imageUrl = image.firstChildElement( "url" ).text();
+        imageUrl = image.firstChildElement( QStringLiteral("url") ).text();
 
-    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-            "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+    QString infoHtml = QStringLiteral("<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
+            "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>");
 
-    infoHtml += "<div align=\"center\"><strong>";
+    infoHtml += QStringLiteral("<div align=\"center\"><strong>");
     infoHtml += title;
-    infoHtml += "</strong><br><br>";
+    infoHtml += QStringLiteral("</strong><br><br>");
 
     if ( !imageUrl.isEmpty() ) 
-        infoHtml += "<img src=\"" + imageUrl + "\" align=\"middle\" border=\"1\">";
+        infoHtml += QStringLiteral("<img src=\"") + imageUrl + QStringLiteral("\" align=\"middle\" border=\"1\">");
     
-    infoHtml += "<br><p align=\"left\" >" + description;
-    infoHtml += "</BODY></HTML>";
+    infoHtml += QStringLiteral("<br><p align=\"left\" >") + description;
+    infoHtml += QStringLiteral("</BODY></HTML>");
 
     Q_EMIT ( info( infoHtml ) );
 

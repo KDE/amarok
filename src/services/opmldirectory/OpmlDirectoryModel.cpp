@@ -193,7 +193,7 @@ OpmlDirectoryModel::setData( const QModelIndex &idx, const QVariant &value, int 
     if( !outline )
         return false;
 
-    outline->mutableAttributes()["text"] = value.toString();
+    outline->mutableAttributes()[QStringLiteral("text")] = value.toString();
 
     saveOpml( m_rootOpmlUrl );
 

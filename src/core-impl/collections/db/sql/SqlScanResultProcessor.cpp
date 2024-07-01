@@ -197,7 +197,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     {
         warning() << "commitTrack(): got track with empty unique id from the scanner,"
                   << "not adding it";
-        m_messages.append( QString( "Not adding track %1 because it has no unique id." ).
+        m_messages.append( QStringLiteral( "Not adding track %1 because it has no unique id." ).
                              arg(track->path()) );
         return;
     }
@@ -212,7 +212,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         const char *pattern = I18N_NOOP( "Duplicates found, the second file will be ignored:\n%1\n%2" );
 
         // we want translated version for GUI and non-translated for debug log
-        warning() << "commitTrack():" << QString( pattern ).arg( old.path, track->path() );
+        warning() << "commitTrack():" << QLatin1String( pattern ).arg( old.path, track->path() );
         m_messages.append( i18n( pattern, old.path, track->path() ) );
         return;
     }

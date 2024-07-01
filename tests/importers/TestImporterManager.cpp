@@ -80,8 +80,8 @@ TestImporterManager::creatingProviderShouldSaveSettings()
 
     KConfigGroup group = m_mockManager->providerConfig( QStringLiteral("TestId") );
     QVERIFY( group.exists() );
-    QCOMPARE( group.readEntry( "uid", QString() ), QStringLiteral( "TestId" ) );
-    QCOMPARE( group.readEntry( "custom", QString() ), QStringLiteral( "custom" ) );
+    QCOMPARE( group.readEntry( QStringLiteral("uid"), QString() ), QStringLiteral( "TestId" ) );
+    QCOMPARE( group.readEntry( QStringLiteral("custom"), QString() ), QStringLiteral( "custom" ) );
 }
 
 void
@@ -152,7 +152,7 @@ TestImporterManager::createProviderShouldReplaceProviderIfExists()
     EXPECT_CALL( *m_mockController, unregisterProvider( provider ) );
 
     QVariantMap cfg;
-    cfg.insert( "uid", provider->id() );
+    cfg.insert( QStringLiteral("uid"), provider->id() );
     StatSyncing::ProviderPtr replaceProvider = m_mockManager->createProvider( cfg );
 
     QCOMPARE( m_mockManager->providers()[provider->id()], replaceProvider );

@@ -493,8 +493,8 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
     {
         Meta::FieldHash uidChange;
         QString uid = track->uidUrl().remove( QStringLiteral("amarok-sqltrackuid://") );
-        QStringView left = uid.leftRef( 10 );
-        QStringView right = uid.rightRef( uid.size() - left.size() );
+        QStringView left = uid.left( 10 );
+        QStringView right = uid.right( uid.size() - left.size() );
         QString newUid = QStringLiteral("%1%2").arg( right.toString(), left.toString() );
         uidChange.insert( Meta::valUniqueId, newUid );
         uidChanges.insert( track->trackNumber(), newUid );
@@ -506,8 +506,8 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
     // move album directory
     const QUrl oldUrl = tracks.first()->playableUrl();
-    const QString base = m_tmpCollectionDir->path() + "/Pop";
-    QVERIFY( QFile::rename( base, base + "Albums" ) );
+    const QString base = m_tmpCollectionDir->path() + QStringLiteral("/Pop");
+    QVERIFY( QFile::rename( base, base + QStringLiteral("Albums") ) );
 
     // do an incremental scan
     incrementalScanAndWait();
@@ -573,7 +573,7 @@ TestSqlScanManager::testMove()
         QSKIP( "takes too long to be run by default;\nDefine AMAROK_RUN_LONG_TESTS "
         "environment variable to run all tests.", SkipAll );
     // -- check the commit
-    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    album = m_collection->registry()->getAlbum( QStringLiteral("Thriller"), QStringLiteral("Michael Jackson") );
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
@@ -799,18 +799,18 @@ TestSqlScanManager::testLargeInsert()
     {
         writer.writeStartElement( "directory" );
         writer.writeTextElement( "path", QString::number(dirId) );
-        writer.writeTextElement( "rpath", '/' + QString::number(dirId) );
+        writer.writeTextElement( "rpath", QLatin1Char('/') + QString::number(dirId) );
         writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
 
         for( int trackId = 0; trackId < 20; trackId++ )
         {
             writer.writeStartElement( "track" );
-            writer.writeTextElement( "uniqueid", "uid" + QString::number(trackCount) );
-            writer.writeTextElement( "path", "/path" + QString::number(trackCount) );
-            writer.writeTextElement( "rpath", "path" + QString::number(trackCount) );
+            writer.writeTextElement( "uniqueid", QStringLiteral("uid") + QString::number(trackCount) );
+            writer.writeTextElement( "path", QStringLiteral("/path") + QString::number(trackCount) );
+            writer.writeTextElement( "rpath", QStringLiteral("path") + QString::number(trackCount) );
             trackCount++;
-            writer.writeTextElement( "title", "track" + QString::number(trackCount) );
-            writer.writeTextElement( "artist", "artist" + QString::number(dirId) );
+            writer.writeTextElement( "title", QStringLiteral("track") + QString::number(trackCount) );
+            writer.writeTextElement( "artist", QStringLiteral("artist") + QString::number(dirId) );
             writer.writeTextElement( "album", QString::number(dirId) );
             writer.writeEndElement();
         }
@@ -822,24 +822,24 @@ TestSqlScanManager::testLargeInsert()
     for( int dirId = 0; dirId < 7; dirId++ )
     {
         writer.writeStartElement( "directory" );
-        writer.writeTextElement( "path", "genre" + QString::number(dirId) );
-        writer.writeTextElement( "rpath", "/genre" + QString::number(dirId) );
+        writer.writeTextElement( "path", QStringLiteral("genre") + QString::number(dirId) );
+        writer.writeTextElement( "rpath", QStringLiteral("/genre") + QString::number(dirId) );
         writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
 
         for( int albumId = 0; albumId < 1000; albumId++ )
         {
             writer.writeStartElement( "track" );
-            writer.writeTextElement( "uniqueid", "uid" + QString::number(trackCount) );
-            writer.writeTextElement( "path", "/path" + QString::number(trackCount) );
-            writer.writeTextElement( "rpath", "path" + QString::number(trackCount) );
+            writer.writeTextElement( "uniqueid", QStringLiteral("uid") + QString::number(trackCount) );
+            writer.writeTextElement( "path", QStringLiteral("/path") + QString::number(trackCount) );
+            writer.writeTextElement( "rpath", QStringLiteral("path") + QString::number(trackCount) );
             trackCount++;
-            writer.writeTextElement( "title", "track" + QString::number(trackCount) );
+            writer.writeTextElement( "title", QStringLiteral("track") + QString::number(trackCount) );
             writer.writeTextElement( "artist",
-                                      "artist" + QString::number(dirId) +
-                                      "xx" + QString::number(albumId) );
+                                      QStringLiteral("artist") + QString::number(dirId) +
+                                      QStringLiteral("xx") + QString::number(albumId) );
             writer.writeTextElement( "album",
-                                      "genre album" + QString::number(dirId) +
-                                      "xx" + QString::number(albumId) );
+                                      QStringLiteral("genre album") + QString::number(dirId) +
+                                      QStringLiteral("xx") + QString::number(albumId) );
             writer.writeEndElement();
         }
 
@@ -888,7 +888,7 @@ TestSqlScanManager::testLargeInsert()
 
     for( int i = 0; i < trackCount; i++ )
     {
-        Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( m_collection->uidUrlProtocol() + "://uid" + QString::number(i) );
+        Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( m_collection->uidUrlProtocol() + QStringLiteral("://uid") + QString::number(i) );
         QVERIFY( track );
     }
 
@@ -957,7 +957,7 @@ TestSqlScanManager::testIdentifyCompilationInMultipleDirectories()
     fullScanAndWait();
 
     // -- check the commit
-    Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    Meta::AlbumPtr album = m_collection->registry()->getAlbum( QStringLiteral("Top Gun"), QString() );
     QVERIFY( album );
     QCOMPARE( album->name(), QStringLiteral("Top Gun") );
     QCOMPARE( album->tracks().count(), 4 );
@@ -1003,19 +1003,19 @@ TestSqlScanManager::testAlbumArtistMerges()
     // -- check the commit
     Meta::AlbumPtr album;
 
-    album = m_collection->registry()->getAlbum( "test1", QString() );
+    album = m_collection->registry()->getAlbum( QStringLiteral("test1"), QString() );
     QVERIFY( album );
     QCOMPARE( album->name(), QStringLiteral("test1") );
     QCOMPARE( album->tracks().count(), 1 );
     QVERIFY( album->isCompilation() );
 
-    album = m_collection->registry()->getAlbum( "test1", QStringLiteral("albumArtist1") );
+    album = m_collection->registry()->getAlbum( QStringLiteral("test1"), QStringLiteral("albumArtist1") );
     QVERIFY( album );
     QCOMPARE( album->name(), QStringLiteral("test1") );
     QCOMPARE( album->tracks().count(), 1 );
     QVERIFY( !album->isCompilation() );
 
-    album = m_collection->registry()->getAlbum( "test1", QStringLiteral("albumArtist2") );
+    album = m_collection->registry()->getAlbum( QStringLiteral("test1"), QStringLiteral("albumArtist2") );
     QVERIFY( album );
     QCOMPARE( album->name(), QStringLiteral("test1") );
     QCOMPARE( album->tracks().count(), 1 );
@@ -1050,7 +1050,7 @@ TestSqlScanManager::testCrossRenaming()
     static_cast<Meta::SqlTrack*>(track.data())->setRating( 2 );
     QString path2 = track->playableUrl().path();
 
-    QString targetPath = m_tmpCollectionDir->path() + "moved.mp3";
+    QString targetPath = m_tmpCollectionDir->path() + QStringLiteral("moved.mp3");
     QVERIFY( QFile::rename( path2, targetPath ) );
     QVERIFY( QFile::rename( path1, path2 ) );
     QVERIFY( QFile::rename( targetPath, path1 ) );
@@ -1216,7 +1216,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
 {
     // -- copy the file from our original
     QVERIFY( values.contains( Meta::valUrl ) );
-    const QString targetPath = m_tmpCollectionDir->path() + '/' + values.value( Meta::valUrl ).toString();
+    const QString targetPath = m_tmpCollectionDir->path() + QLatin1Char('/') + values.value( Meta::valUrl ).toString();
     QVERIFY( QDir( m_tmpCollectionDir->path() ).mkpath( QFileInfo( values.value( Meta::valUrl ).toString() ).path() ) );
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 

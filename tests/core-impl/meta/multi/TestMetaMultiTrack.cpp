@@ -112,22 +112,22 @@ void TestMetaMultiTrack::testSources()
 void TestMetaMultiTrack::testSetSourceCurrentNextUrl()
 {
     QCOMPARE( m_testMultiTrack->current(), 0 );
-    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl("http://85.214.44.27:8000") );
-    QCOMPARE( m_testMultiTrack->nextUrl(), QUrl("http://217.20.121.40:8000") );
+    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl(QStringLiteral("http://85.214.44.27:8000")) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), QUrl(QStringLiteral("http://217.20.121.40:8000")) );
 
     m_testMultiTrack->setSource( 1 );
     QCOMPARE( m_testMultiTrack->current(), 1 );
-    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl("http://217.20.121.40:8000") );
-    QCOMPARE( m_testMultiTrack->nextUrl(), QUrl("http://85.214.44.27:8100") );
+    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl(QStringLiteral("http://217.20.121.40:8000")) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), QUrl(QStringLiteral("http://85.214.44.27:8100")) );
 
     m_testMultiTrack->setSource( 2 );
     QCOMPARE( m_testMultiTrack->current(), 2 );
-    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl("http://85.214.44.27:8100") );
-    QCOMPARE( m_testMultiTrack->nextUrl(), QUrl("http://85.214.44.27:8200") );
+    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl(QStringLiteral("http://85.214.44.27:8100")) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), QUrl(QStringLiteral("http://85.214.44.27:8200")) );
 
     m_testMultiTrack->setSource( 3 );
     QCOMPARE( m_testMultiTrack->current(), 3 );
-    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl("http://85.214.44.27:8200") );
+    QCOMPARE( m_testMultiTrack->playableUrl(), QUrl(QStringLiteral("http://85.214.44.27:8200")) );
     QCOMPARE( m_testMultiTrack->nextUrl(), QUrl() );
 
     m_testMultiTrack->setSource( 4 );

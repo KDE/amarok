@@ -69,7 +69,7 @@ UmsCollectionFactory::init()
              this, &UmsCollectionFactory::slotRemoveSolidDevice );
 
     // detect UMS devices that were already connected on startup
-    QString query( "IS StorageAccess" );
+    QString query(QStringLiteral( "IS StorageAccess") );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( query );
     for( const Solid::Device &device : devices )
     {
@@ -134,7 +134,7 @@ UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
     if( !device.is<Solid::StorageAccess>() )
         return false;
     // HACK to exclude iPods until UMS and iPod have common collection factory
-    if( device.vendor().contains( "Apple", Qt::CaseInsensitive ) )
+    if( device.vendor().contains( QStringLiteral("Apple"), Qt::CaseInsensitive ) )
         return false;
 
     // everything okay, check whether the device is a data CD

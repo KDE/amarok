@@ -105,7 +105,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
 
     // xgettext: no-c-format
     setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project receives a 10% commission. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_magnatune.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_magnatune.png") ) );
 
 
     //initBottomPanel();
@@ -117,7 +117,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
 
     //do this stuff now to make us function properly as a track provider on startup. The expensive stuff will
     //not happen until the model is added to the view anyway.
-    MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune", this );
+    MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( QStringLiteral("magnatune"), this );
     
     MagnatuneConfig config;
     if ( config.isMember() ) {
@@ -129,7 +129,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
 
     metaFactory->setStreamType( m_streamType );
     m_registry = new ServiceSqlRegistry( metaFactory );
-    m_collection = new Collections::MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
+    m_collection = new Collections::MagnatuneSqlCollection( QStringLiteral("magnatune"), QStringLiteral("Magnatune.com"), metaFactory, m_registry );
     CollectionManager::instance()->addTrackProvider( m_collection );
     setServiceReady( true );
 }
@@ -226,7 +226,7 @@ void MagnatuneStore::initTopPanel( )
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, &QAction::triggered, this, &MagnatuneStore::sortByGenreArtistAlbum );
 
-    QAction *filterMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
+    QAction *filterMenuAction = new QAction( QIcon::fromTheme( QStringLiteral("preferences-other") ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
 
     m_searchWidget->toolBar()->addSeparator();
@@ -244,7 +244,7 @@ void MagnatuneStore::initTopPanel( )
     m_updateAction = actionsMenu->addAction( i18n( "Update Database" ) );
     connect( m_updateAction, &QAction::triggered, this, &MagnatuneStore::updateButtonClicked );
 
-    QAction *actionsMenuAction = new QAction( QIcon::fromTheme( "list-add" ), i18n( "Tools" ), this );
+    QAction *actionsMenuAction = new QAction( QIcon::fromTheme( QStringLiteral("list-add") ), i18n( "Tools" ), this );
     actionsMenuAction->setMenu( actionsMenu );
 
     m_searchWidget->toolBar()->addAction( actionsMenuAction );
@@ -322,7 +322,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     m_tempFileName = tempFile.fileName();
 
-    m_listDownloadJob = KIO::file_copy( QUrl("http://magnatune.com/info/album_info_xml.bz2"),  QUrl::fromLocalFile( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy( QUrl(QStringLiteral("http://magnatune.com/info/album_info_xml.bz2")),  QUrl::fromLocalFile( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
     Amarok::Logger::newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, &MagnatuneStore::listDownloadCancelled );
 
     connect( m_listDownloadJob, &KJob::result,
@@ -545,19 +545,19 @@ void MagnatuneStore::moodMapReady(const QMap< QString, int > &map)
         QString escapedKey = key;
         escapedKey.replace( QLatin1Char(' '), QStringLiteral("%20") );
         QVariantMap action;
-        action["component"]  = "/ServicePluginManager";
-        action["function"] = "sendMessage";
-        action["arg1"] = QStringLiteral( "Magnatune.com");
-        action["arg2"] = QStringLiteral( "addMoodyTracks %1 10").arg( escapedKey );
+        action[QStringLiteral("component")]  = QStringLiteral("/ServicePluginManager");
+        action[QStringLiteral("function")] = QStringLiteral("sendMessage");
+        action[QStringLiteral("arg1")] = QStringLiteral( "Magnatune.com");
+        action[QStringLiteral("arg2")] = QStringLiteral( "addMoodyTracks %1 10").arg( escapedKey );
 
         dbusActions[key] = action;
 
     }
 
-    variantMap["cloud_name"] = QVariant( "Magnatune Moods" );
-    variantMap["cloud_strings"] = QVariant( strings );
-    variantMap["cloud_weights"] = QVariant( weights );
-    variantMap["cloud_actions"] = QVariant( dbusActions );
+    variantMap[QStringLiteral("cloud_name")] = QVariant( QStringLiteral("Magnatune Moods") );
+    variantMap[QStringLiteral("cloud_strings")] = QVariant( strings );
+    variantMap[QStringLiteral("cloud_weights")] = QVariant( weights );
+    variantMap[QStringLiteral("cloud_actions")] = QVariant( dbusActions );
 
     The::infoProxy()->setCloud( variantMap );
 }
@@ -570,7 +570,7 @@ void MagnatuneStore::setStreamType( int type )
 
 void MagnatuneStore::checkForUpdates()
 {
-    m_updateTimestampDownloadJob = KIO::storedGet( QUrl("http://magnatune.com/info/last_update_timestamp"), KIO::Reload, KIO::HideProgressInfo );
+    m_updateTimestampDownloadJob = KIO::storedGet( QUrl(QStringLiteral("http://magnatune.com/info/last_update_timestamp")), KIO::Reload, KIO::HideProgressInfo );
     connect( m_updateTimestampDownloadJob, &KJob::result, this, &MagnatuneStore::timestampDownloadComplete );
 }
 
@@ -629,13 +629,13 @@ QString MagnatuneStore::sendMessage( const QString & message )
         return i18n( "ERROR: No arguments supplied" );
     }
 
-    if ( args[0] == "addMoodyTracks" ) {
+    if ( args[0] == QStringLiteral("addMoodyTracks") ) {
         if ( args.size() != 3 ) {
             return i18n( "ERROR: Wrong number of arguments for addMoodyTracks" );
         }
 
         QString mood = args[1];
-        mood = mood.replace( "%20", " " );
+        mood = mood.replace( QStringLiteral("%20"), QStringLiteral(" ") );
 
         bool ok;
         int count = args[2].toInt( &ok );
@@ -688,7 +688,7 @@ void MagnatuneStore::addToFavorites( const QString &sku )
     if( !config.isMember() )
         return;
 
-    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_api&sku=%4";
+    QString url = QStringLiteral("http://%1:%2@%3.magnatune.com/member/favorites?action=add_api&sku=%4");
     url = url.arg( config.username(), config.password(), config.membershipPrefix(), sku );
 
     debug() << "favorites url: " << url;

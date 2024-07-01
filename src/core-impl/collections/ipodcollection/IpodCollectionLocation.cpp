@@ -138,7 +138,7 @@ void IpodCollectionLocation::ensureDirectoriesExist()
         return;
     }
 
-    QChar fillChar( '0' );
+    QChar fillChar( QLatin1Char('0') );
     for( int i = 0; i < 20; i++ )
     {
         QString name = QStringLiteral( "F%1" ).arg( i, /* min-width */ 2, /* base */ 10, fillChar );

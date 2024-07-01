@@ -402,7 +402,7 @@ QUrl Dynamic::EchoNestBias::createUrl( const QString &method, QMultiMap< QString
 void
 Dynamic::EchoNestBias::saveDataToFile() const
 {
-    QFile file( Amarok::saveLocation() + "dynamic_echonest_similar.xml" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_echonest_similar.xml") );
     if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
         return;
 

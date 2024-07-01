@@ -356,7 +356,7 @@ CoverFetchSearchPayload::prepareUrls()
     case CoverFetch::LastFm:
         url.setHost( QStringLiteral("ws.audioscrobbler.com") );
         url.setPath( QStringLiteral("/2.0/") );
-        query.addQueryItem( QStringLiteral("api_key"), Amarok::lastfmApiKey() );
+        query.addQueryItem( QStringLiteral("api_key"), QLatin1String(Amarok::lastfmApiKey()) );
         query.addQueryItem( QStringLiteral("limit"), QString::number( 20 ) );
         query.addQueryItem( QStringLiteral("page"), QString::number( m_page ) );
         query.addQueryItem( QStringLiteral("album"), sanitizeQuery( m_query ) );
@@ -369,7 +369,7 @@ CoverFetchSearchPayload::prepareUrls()
         debug() << "Setting up a Discogs fetch";
         url.setHost( QStringLiteral("www.discogs.com") );
         url.setPath( QStringLiteral("/search") );
-        query.addQueryItem( QStringLiteral("api_key"), Amarok::discogsApiKey() );
+        query.addQueryItem( QStringLiteral("api_key"), QLatin1String(Amarok::discogsApiKey()) );
         query.addQueryItem( QStringLiteral("page"), QString::number( m_page + 1 ) );
         query.addQueryItem( QStringLiteral("type"), QStringLiteral("all") );
         query.addQueryItem( QStringLiteral("q"), sanitizeQuery( m_query ) );

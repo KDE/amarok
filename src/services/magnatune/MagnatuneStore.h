@@ -51,7 +51,7 @@ class MagnatuneServiceFactory : public ServiceFactory
         QString name() override;
         KConfigGroup config() override;
 
-        bool possiblyContainsTrack( const QUrl &url ) const override { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
+        bool possiblyContainsTrack( const QUrl &url ) const override { return url.url().contains( QStringLiteral("magnatune.com"), Qt::CaseInsensitive ); }
 };
 
 

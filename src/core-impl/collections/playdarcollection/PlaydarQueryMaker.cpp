@@ -97,9 +97,9 @@ namespace Collections
             connect( m_controller, &Playdar::Controller::queryReady,
                      this, &PlaydarQueryMaker::collectQuery );
 
-            QString artist( "" );
-            QString album( "" );
-            QString title( "" );
+            QString artist( QStringLiteral("") );
+            QString album( QStringLiteral("") );
+            QString title( QStringLiteral("") );
 
             if( m_filterMap.contains( Meta::valArtist ) )
                 artist.append( m_filterMap.value( Meta::valArtist ) );

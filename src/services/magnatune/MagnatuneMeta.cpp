@@ -62,9 +62,9 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
 {
     QString sqlRows = ServiceMetaFactory::getTrackSqlRows();
 
-    sqlRows += ", ";
-    sqlRows += tablePrefix() + "_tracks.preview_lofi, ";
-    sqlRows += tablePrefix() + "_tracks.preview_ogg ";
+    sqlRows += QStringLiteral(", ");
+    sqlRows += tablePrefix() + QStringLiteral("_tracks.preview_lofi, ");
+    sqlRows += tablePrefix() + QStringLiteral("_tracks.preview_ogg ");
 
     return sqlRows;
 }
@@ -83,17 +83,17 @@ MagnatuneMetaFactory::createTrack(const QStringList & rows)
 
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->uidUrl();
-        url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
+        url.replace( QStringLiteral("http://he3."), QStringLiteral("http://") + m_userName + QStringLiteral(":") + m_password + QStringLiteral("@") + m_membershipPrefix + QStringLiteral(".") );
 
         if ( m_streamType == MP3 ) {
-            url.replace( ".mp3", "_nospeech.mp3" );
+            url.replace( QStringLiteral(".mp3"), QStringLiteral("_nospeech.mp3") );
         }  else if ( m_streamType == OGG ) {
-            url.replace( ".ogg", "_nospeech.ogg" );
+            url.replace( QStringLiteral(".ogg"), QStringLiteral("_nospeech.ogg") );
         }
 
         track->setUidUrl( url );
 
-        if ( m_membershipPrefix == "download" )
+        if ( m_membershipPrefix == QStringLiteral("download") )
             track->setDownloadMembership();
     }
 
@@ -109,10 +109,10 @@ QString MagnatuneMetaFactory::getAlbumSqlRows()
 {
     QString sqlRows = ServiceMetaFactory::getAlbumSqlRows();
 
-    sqlRows += ", ";
-    sqlRows += tablePrefix() + "_albums.cover_url, ";
-    sqlRows += tablePrefix() + "_albums.year, ";
-    sqlRows += tablePrefix() + "_albums.album_code ";
+    sqlRows += QStringLiteral(", ");
+    sqlRows += tablePrefix() + QStringLiteral("_albums.cover_url, ");
+    sqlRows += tablePrefix() + QStringLiteral("_albums.year, ");
+    sqlRows += tablePrefix() + QStringLiteral("_albums.album_code ");
 
 
     return sqlRows;
@@ -123,10 +123,10 @@ AlbumPtr MagnatuneMetaFactory::createAlbum(const QStringList & rows)
     MagnatuneAlbum * album = new MagnatuneAlbum( rows );
     album->setStore( m_store );
 
-    if ( m_membershipPrefix == "download" )
+    if ( m_membershipPrefix == QStringLiteral("download") )
         album->setDownloadMembership();
 
-    album->setSourceName( "Magnatune.com" );
+    album->setSourceName( QStringLiteral("Magnatune.com") );
     return AlbumPtr( album );
 }
 
@@ -139,9 +139,9 @@ QString MagnatuneMetaFactory::getArtistSqlRows()
 {
     QString sqlRows = ServiceMetaFactory::getArtistSqlRows();
 
-    sqlRows += ", ";
-    sqlRows += tablePrefix() + "_artists.photo_url, ";
-    sqlRows += tablePrefix() + "_artists.artist_page ";
+    sqlRows += QStringLiteral(", ");
+    sqlRows += tablePrefix() + QStringLiteral("_artists.photo_url, ");
+    sqlRows += tablePrefix() + QStringLiteral("_artists.artist_page ");
 
     return sqlRows;
 }
@@ -149,7 +149,7 @@ QString MagnatuneMetaFactory::getArtistSqlRows()
 ArtistPtr MagnatuneMetaFactory::createArtist(const QStringList & rows)
 {
     MagnatuneArtist * artist = new MagnatuneArtist( rows );
-    artist->setSourceName( "Magnatune.com" );
+    artist->setSourceName( QStringLiteral("Magnatune.com") );
     return ArtistPtr( artist );
 
     
@@ -158,7 +158,7 @@ ArtistPtr MagnatuneMetaFactory::createArtist(const QStringList & rows)
 GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 {
     MagnatuneGenre * genre = new MagnatuneGenre( rows );
-    genre->setSourceName( "Magnatune.com" );
+    genre->setSourceName( QStringLiteral("Magnatune.com") );
     return GenrePtr( genre );
 }
 
@@ -207,7 +207,7 @@ void Meta::MagnatuneTrack::setDownloadMembership()
 
 QString Meta::MagnatuneTrack::sourceName()
 {
-    return "Magnatune.com";
+    return QStringLiteral("Magnatune.com");
 }
 
 QString Meta::MagnatuneTrack::sourceDescription()

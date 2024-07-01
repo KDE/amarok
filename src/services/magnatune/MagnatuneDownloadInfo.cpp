@@ -108,7 +108,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
         {
             startIndex += 12;
             debug() << "found wav";
-            m_downloadFormats[ "Wav" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
+            m_downloadFormats[ QStringLiteral("Wav") ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
@@ -121,7 +121,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
         {
             startIndex += 16;
             debug() << "found 128k mp3";
-            m_downloadFormats[ "128 kbit/s MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
+            m_downloadFormats[ QStringLiteral("128 kbit/s MP3") ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
@@ -134,7 +134,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
         {
             startIndex += 12;
             debug() << "found ogg-vorbis";
-            m_downloadFormats[ "Ogg-Vorbis" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
+            m_downloadFormats[ QStringLiteral("Ogg-Vorbis") ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
@@ -147,7 +147,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
         {
             startIndex += 12;
             debug() << "found vbr mp3";
-            m_downloadFormats[ "VBR MP3" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
+            m_downloadFormats[ QStringLiteral("VBR MP3") ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
@@ -160,7 +160,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
         {
             startIndex += 13;
             debug() << "found flac";
-            m_downloadFormats[ "FLAC" ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
+            m_downloadFormats[ QStringLiteral("FLAC") ] = downloadInfoString.mid( startIndex, endIndex - startIndex ).replace( QStringLiteral("&amp;"), QStringLiteral("&") );
 
         }
     }
@@ -193,18 +193,18 @@ MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
     m_coverUrl = element.firstChildElement( QStringLiteral("cover") ).text();
 
     //get formats
-    QDomNode formats = element.firstChildElement( "formats" );
+    QDomNode formats = element.firstChildElement( QStringLiteral("formats") );
 
-    QString wav_url = formats.firstChildElement( "wav_zip" ).text();
-    m_downloadFormats[ "Wav" ] = wav_url;
-    QString mp3_url = formats.firstChildElement( "mp3_zip" ).text();
-    m_downloadFormats[ "128 kbit/s MP3" ] = mp3_url;
-    QString vbr_url = formats.firstChildElement( "vbr_zip" ).text();
-    m_downloadFormats[ "VBR MP3" ] = vbr_url;
-    QString ogg_url = formats.firstChildElement( "ogg_zip" ).text();
-    m_downloadFormats[ "Ogg-Vorbis" ] = ogg_url;
-    QString flac_url = formats.firstChildElement( "flac_zip" ).text();
-    m_downloadFormats[ "FLAC" ] = flac_url;
+    QString wav_url = formats.firstChildElement( QStringLiteral("wav_zip") ).text();
+    m_downloadFormats[ QStringLiteral("Wav") ] = wav_url;
+    QString mp3_url = formats.firstChildElement( QStringLiteral("mp3_zip") ).text();
+    m_downloadFormats[ QStringLiteral("128 kbit/s MP3") ] = mp3_url;
+    QString vbr_url = formats.firstChildElement( QStringLiteral("vbr_zip") ).text();
+    m_downloadFormats[ QStringLiteral("VBR MP3") ] = vbr_url;
+    QString ogg_url = formats.firstChildElement( QStringLiteral("ogg_zip") ).text();
+    m_downloadFormats[ QStringLiteral("Ogg-Vorbis") ] = ogg_url;
+    QString flac_url = formats.firstChildElement( QStringLiteral("flac_zip") ).text();
+    m_downloadFormats[ QStringLiteral("FLAC") ] = flac_url;
     
 
     m_downloadMessage = i18n( "Redownload of a previously purchased album \"%1\" by \"%2\" from Magnatune.com.\n\nUsername: %3\nPassword: %4\n", m_albumName, m_artistName, m_userName, m_password );

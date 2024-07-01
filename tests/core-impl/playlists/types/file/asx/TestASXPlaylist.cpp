@@ -127,7 +127,7 @@ TestASXPlaylist::testUidUrl()
 {
     QString tempPath = m_tempDir->path() + QStringLiteral("/test.asx");
     //we have changed the name around so much, better reset it
-    m_testPlaylist->setName( "test" );
+    m_testPlaylist->setName( QStringLiteral("test") );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }
 
@@ -140,7 +140,7 @@ TestASXPlaylist::testSetAndGetGroups()
     grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 0 );
 
-    newGrouplist.append( "test" );
+    newGrouplist.append( QStringLiteral("test") );
     m_testPlaylist->setGroups( newGrouplist );
     grouplist = m_testPlaylist->groups();
     QCOMPARE( grouplist.size(), 1 );

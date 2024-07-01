@@ -80,7 +80,7 @@ TestSimpleImporterConfigWidget::targetNameShouldBeSetToConfigValueIfExists()
     const QString targetName = QStringLiteral("nameOverride");
 
     QVariantMap cfg;
-    cfg.insert( "name", targetName );
+    cfg.insert( QStringLiteral("name"), targetName );
 
     SimpleImporterConfigWidget widget( QStringLiteral("testTargetName"), cfg );
 

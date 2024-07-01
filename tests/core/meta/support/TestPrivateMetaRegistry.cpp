@@ -176,9 +176,9 @@ TestPrivateMetaRegistry::testInsertYear()
 void
 TestPrivateMetaRegistry::testNull()
 {
-    QVERIFY( !PrivateMetaRegistry::instance()->album( "invalid", "invalid" ) );
-    QVERIFY( !PrivateMetaRegistry::instance()->artist( "invalid", "invalid" ) );
-    QVERIFY( !PrivateMetaRegistry::instance()->composer( "invalid", "invalid" ) );
-    QVERIFY( !PrivateMetaRegistry::instance()->genre( "invalid", "invalid" ) );
-    QVERIFY( !PrivateMetaRegistry::instance()->year( "invalid", "invalid" ) );
+    QVERIFY( !PrivateMetaRegistry::instance()->album( QStringLiteral("invalid"), QStringLiteral("invalid") ) );
+    QVERIFY( !PrivateMetaRegistry::instance()->artist( QStringLiteral("invalid"), QStringLiteral("invalid") ) );
+    QVERIFY( !PrivateMetaRegistry::instance()->composer( QStringLiteral("invalid"), QStringLiteral("invalid") ) );
+    QVERIFY( !PrivateMetaRegistry::instance()->genre( QStringLiteral("invalid"), QStringLiteral("invalid") ) );
+    QVERIFY( !PrivateMetaRegistry::instance()->year( QStringLiteral("invalid"), QStringLiteral("invalid") ) );
 }

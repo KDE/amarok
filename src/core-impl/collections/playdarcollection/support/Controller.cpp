@@ -32,7 +32,7 @@
 #include <QVariantMap>
 
 #include <KIO/Job>
-
+#include <KIO/StoredTransferJob>
 
 namespace Playdar {
     

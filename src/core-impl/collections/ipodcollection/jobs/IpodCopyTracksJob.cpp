@@ -321,7 +321,7 @@ IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrlOrig, const
     QUrl sourceUrl( sourceUrlOrig );
     // KIO::file_copy in KF5 needs scheme
     if (sourceUrl.isRelative() && sourceUrl.host().isEmpty()) {
-        sourceUrl.setScheme("file");
+        sourceUrl.setScheme(QStringLiteral("file"));
     }
 
     KJob *job = nullptr;

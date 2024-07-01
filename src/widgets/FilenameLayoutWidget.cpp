@@ -320,7 +320,7 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
         {
             int typeNameLength = typeElements[j].length();
             Type type = static_cast<Type>(j);
-            if( s.midRef( i, typeNameLength ) == typeElements[j] )
+            if( s.mid( i, typeNameLength ) == typeElements[j] )
             {
                 m_dropTarget->appendToken( createToken( type ) );
                 i += typeNameLength;

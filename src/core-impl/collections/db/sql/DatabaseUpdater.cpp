@@ -350,7 +350,7 @@ DatabaseUpdater::upgradeVersion5to6()
     dropTables << QStringLiteral("opmldirectory_albums") << QStringLiteral("opmldirectory_artists") << QStringLiteral("opmldirectory_genre") << QStringLiteral("opmldirectory_tracks");
 
     for( const QString &table : dropTables )
-        storage->query( "DROP TABLE " + table );
+        storage->query( QStringLiteral("DROP TABLE ") + table );
 
     //now, the rest of them
     QStringList tables;
@@ -470,7 +470,7 @@ DatabaseUpdater::upgradeVersion9to10()
     dropTables << QStringLiteral("opmldirectory_albums") << QStringLiteral("opmldirectory_artists") << QStringLiteral("opmldirectory_genre") << QStringLiteral("opmldirectory_tracks");
 
     for( const QString &table : dropTables )
-        storage->query( "DROP TABLE " + table );
+        storage->query( QStringLiteral("DROP TABLE ") + table );
 
     //now, the rest of them
     QStringList tables;
