@@ -21,7 +21,7 @@
 #include "PopupDropperItem_p.h"
 #include "PopupDropper.h"
 
-#include <QtDebug>
+#include <QFontMetrics>
 #include <QSvgRenderer>
 #include <QAction>
 #include <QFont>

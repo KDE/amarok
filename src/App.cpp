@@ -64,8 +64,6 @@
 
 #include <iostream>
 
-#include <KDirLister>
-#include <KEditToolBar>                  //slotConfigToolbars()
 #include <KIO/CopyJob>
 #include <KJobUiDelegate>
 #include <KLocalizedString>
@@ -76,7 +74,7 @@
 #include <QAction>
 #include <QByteArray>
 #include <QCommandLineParser>
-#include <QDesktopServices>
+#include <QDBusConnection>
 #include <QFile>
 #include <QFileOpenEvent>
 #include <QStringList>

@@ -30,9 +30,6 @@
 #include <KLocalizedString>
 #include <KSqueezedTextLabel>
 
-#include <QLabel>
-#include <QVBoxLayout>
-
 TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     : BoxWidget( true, parent )
 {

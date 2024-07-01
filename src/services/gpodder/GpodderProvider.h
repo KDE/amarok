@@ -28,10 +28,8 @@
 #include "playlistmanager/file/KConfigSyncRelStore.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <QDialog>
 #include <KIO/Job>
 
-#include <QCheckBox>
 #include <QPair>
 #include <QQueue>
 

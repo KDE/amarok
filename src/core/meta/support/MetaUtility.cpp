@@ -23,7 +23,6 @@
 #include "core/support/Debug.h"
 
 #include <QTime>
-#include <QChar>
 #include <QFile>
 
 #include <KIO/Global>

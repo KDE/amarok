@@ -26,12 +26,10 @@
 #include "widgets/PrettyTreeDelegate.h"
 #include "widgets/SearchWidget.h"
 
-#include <Qt>
 #include <QComboBox>
 #include <QFile>
 #include <QStackedWidget>
 #include <QStandardPaths>
-#include <QTreeView>
 #include <QVBoxLayout>
 
 #include <KLocalizedString>

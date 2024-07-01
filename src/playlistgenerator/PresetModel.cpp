@@ -28,14 +28,11 @@
 #include "playlistgenerator/Preset.h"
 #include "playlistgenerator/PresetEditDialog.h"
 
-#include <QAbstractItemModel>
-#include <QDesktopServices>
 #include <QDialog>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
 #include <QList>
-#include <QUrl>
 #include <QVariant>
 
 APG::PresetModel* APG::PresetModel::s_instance = nullptr;

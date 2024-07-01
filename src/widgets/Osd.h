@@ -20,7 +20,6 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <QImage>
 #include <QPixmap>
 #include <QString>
 #include <QWidget> //baseclass

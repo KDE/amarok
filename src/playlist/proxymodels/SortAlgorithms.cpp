@@ -24,7 +24,6 @@
 #include "playlist/proxymodels/AbstractModel.h"
 
 #include <QDateTime>
-#include <QRandomGenerator>
 
 namespace Playlist
 {

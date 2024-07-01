@@ -17,28 +17,16 @@
 
 #include "SqlUserPlaylistProvider.h"
 
-#include "SvgHandler.h"
-#include "browsers/playlistbrowser/UserPlaylistModel.h"
 #include <core/storage/SqlStorage.h>
-#include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/storage/StorageManager.h"
-#include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
-#include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
-#include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <QAction>
-#include <QIcon>
-#include <QInputDialog>
-#include <QLabel>
 #include <QMap>
-#include <QUrl>
 
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KConfigGroup>
 
 static const int USERPLAYLIST_DB_VERSION = 3;
 // a database updater has been added in checkTables(). Use that when updating db version

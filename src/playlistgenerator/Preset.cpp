@@ -27,7 +27,6 @@
 #include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
 #include <KLocalizedString>

@@ -28,8 +28,6 @@
 
 #include <cmath>
 
-#include <KWindowSystem>
-
 #include <QQuickWindow>
 #include <QTimer>
 

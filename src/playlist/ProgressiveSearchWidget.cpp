@@ -25,8 +25,6 @@
 #include <KStatefulBrush>
 
 #include <QAction>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>

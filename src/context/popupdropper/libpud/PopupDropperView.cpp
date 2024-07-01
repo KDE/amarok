@@ -27,8 +27,6 @@
 #include <QDragLeaveEvent>
 #include <QDropEvent>
 
-#include <QtDebug>
-
 class PopupDropperViewPrivate
 {
 public:

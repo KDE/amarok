@@ -27,11 +27,9 @@
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "dynamic/TrackSet.h"
 
-#include <QLineEdit>
-
 #include <QLabel>
 #include <QCheckBox>
-#include <QHBoxLayout>
+#include <QLineEdit>
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>

@@ -29,8 +29,6 @@
 #include "widgets/SearchWidget.h"
 
 #include <QAction>
-#include <QDesktopServices>
-#include <QHBoxLayout>
 #include <QMenuBar>
 #include <QStandardPaths>
 #include <QTemporaryFile>

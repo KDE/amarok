@@ -22,8 +22,6 @@
 #include <phonon/Global>
 
 #include <QHash>
-#include <QPainter>
-#include <QPolygon>
 #include <QWidget>
 
 class TimeLabel;

@@ -18,15 +18,11 @@
 
 #include "BrowserBreadcrumbWidget.h"
 
-#include "amarokurls/AmarokUrl.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
-#include "browsers/filebrowser/FileBrowser.h"
-#include "MainWindow.h"
 #include "widgets/BreadcrumbItemButton.h"
 
 #include <QBoxLayout>
-#include <QDir>
 #include <QMenu>
 #include <QResizeEvent>
 #include <QTimer>

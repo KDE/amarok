@@ -21,7 +21,6 @@
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
-#include <QDateTime>
 #include <QList>
 #include <QString>
 #include <QStringList>

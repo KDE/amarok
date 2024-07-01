@@ -20,11 +20,9 @@
 
 #include "AnalyzerBase.h"
 
-#include <QImage>
 #include <QPixmap>
 #include <QQuickWindow>
 #include <QSharedPointer>
-#include <QSize>
 
 class QPalette;
 

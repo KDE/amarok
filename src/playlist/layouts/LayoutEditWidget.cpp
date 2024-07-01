@@ -25,7 +25,6 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QLayout>
 
 using namespace Playlist;
 

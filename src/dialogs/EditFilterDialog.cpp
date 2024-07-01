@@ -29,7 +29,6 @@
 #include <QDialogButtonBox>
 
 #include <KLocalizedString>
-#include <KMessageBox>
 
 #define OR_TOKEN Meta::valCustom  + 1
 #define AND_TOKEN Meta::valCustom + 2

@@ -22,7 +22,6 @@
 #include "QtBinding.h"
 #include <QFile>
 #include <QUiLoader>
-#include <QDialogButtonBox>
 
 namespace QtBindings
 {

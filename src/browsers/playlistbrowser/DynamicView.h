@@ -21,8 +21,6 @@
 
 #include "widgets/PrettyTreeView.h"
 
-#include <QMutex>
-
 class QKeyEvent;
 class QMouseEvent;
 class QContextMenuEvent;

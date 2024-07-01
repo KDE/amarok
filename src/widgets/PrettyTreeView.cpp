@@ -22,10 +22,10 @@
 #include "widgets/PrettyTreeDelegate.h"
 
 #include <QAction>
+#include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolTip>
-#include <QApplication>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )

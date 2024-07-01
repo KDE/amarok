@@ -30,12 +30,7 @@
 #include "covermanager/CoverCache.h"
 #include "moodbar/MoodbarManager.h"
 
-#include <KColorScheme>
-#include <KColorUtils>
-
-#include <QHash>
 #include <QPainter>
-#include <QPalette>
 #include <QReadLocker>
 #include <QStandardPaths>
 #include <QStyleOptionSlider>

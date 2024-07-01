@@ -21,7 +21,6 @@
 
 #include "PlaylistItem.h"
 
-#include "core/capabilities/SourceInfoCapability.h"
 #include "core/meta/Meta.h"
 
 #include <QRandomGenerator>

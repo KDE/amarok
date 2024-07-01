@@ -20,13 +20,10 @@
 
 #include <KLocalizedString>
 
-#include <QComboBox>
 #include <QCompleter>
-#include <QDirModel>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QVBoxLayout>
 #include <QFileSystemModel>
 
 SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )

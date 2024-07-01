@@ -22,12 +22,9 @@
 #include "PlaylistLayoutEditDialog.h"
 #include "MainWindow.h"
 
-#include <QStandardPaths>
-
 #include <QActionGroup>
-#include <QLabel>
-#include <QComboBox>
 #include <QPixmap>
+#include <QStandardPaths>
 
 namespace Playlist
 {

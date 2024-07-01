@@ -19,7 +19,7 @@
 
 #include "browsers/BrowserCategory.h"
 
-#include <QModelIndex>
+class QModelIndex;
 
 namespace PlaylistBrowserNS {
 

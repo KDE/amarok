@@ -30,17 +30,16 @@
 #include <KNS3/QtQuickDialogWrapper>
 #include <KPluginInfo>
 #include <KPluginSelector>
-#include <QStandardPaths>
 #include <KTar>
 #include <KZip>
 
 #include <QFileDialog>
+#include <QMimeDatabase>
+#include <QMimeType>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QVBoxLayout>
-#include <QScrollBar>
-#include <QMimeDatabase>
-#include <QMimeType>
 
 ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )

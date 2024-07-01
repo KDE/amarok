@@ -19,7 +19,6 @@
 #define LAYOUTCONFIGACTION_H
 
 #include <QAction>
-#include <QPushButton>
 #include <QMenu>
 
 

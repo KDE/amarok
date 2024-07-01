@@ -20,9 +20,6 @@
 #include "PixmapViewer.h"
 
 #include <QApplication>
-
-#include <QMouseEvent>
-#include <QLabel>
 #include <QPixmap>
 #include <QPainter>
 #include <QScreen>

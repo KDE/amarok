@@ -20,12 +20,11 @@
 #include "core/transcoding/TranscodingProperty.h"
 #include "core/transcoding/TranscodingController.h"
 
-#include <QIcon>
 #include <KLocalizedString>
 
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
-#include <QSpinBox>
 
 namespace Transcoding
 {

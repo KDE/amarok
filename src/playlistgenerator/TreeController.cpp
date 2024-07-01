@@ -22,9 +22,6 @@
 
 #include "core/support/Debug.h"
 
-#include <QComboBox>
-#include <QLabel>
-#include <QLayout>
 #include <QObject>
 #include <QTreeView>
 

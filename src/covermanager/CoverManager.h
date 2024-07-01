@@ -21,13 +21,11 @@
 #include "core/meta/Observer.h"
 #include "covermanager/CoverFetcher.h"
 
+#include <QAction>
 #include <QDialog>
-
-#include <QDropEvent>
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QAction>
 
 namespace Amarok { class LineEdit; }
 

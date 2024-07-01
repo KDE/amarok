@@ -34,20 +34,20 @@
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <KConfigGroup>
 #include <solid/device.h>
 #include <solid/predicate.h>
 #include <solid/storageaccess.h>
 #include <ThreadWeaver/Queue>
 
-#include <QTemporaryFile>
-#include <QWeakPointer>
-
-#include <gpod/itdb.h>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QStorageInfo>
+#include <QTemporaryFile>
+#include <QWeakPointer>
 #include <QVBoxLayout>
+
+#include <gpod/itdb.h>
 
 
 const QString IpodCollection::s_uidUrlProtocol = QStringLiteral( "amarok-ipodtrackuid" );

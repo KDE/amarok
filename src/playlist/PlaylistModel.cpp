@@ -29,12 +29,10 @@
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
-#include "core/capabilities/ReadLabelCapability.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
-#include "core/collections/Collection.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistDefines.h"
@@ -48,9 +46,7 @@
 #include <KLocalizedString>
 #include <KIconLoader>
 
-#include <QAction>
 #include <QTimer>
-#include <QDate>
 #include <QStringList>
 #include <QUrl>
 

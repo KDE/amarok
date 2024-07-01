@@ -32,13 +32,13 @@
 #include <KIO/DeleteJob>
 #include "kjob.h"
 #include <ThreadWeaver/ThreadWeaver>
-#include <QUrl>
 
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QUrl>
 
 using namespace Meta;
 

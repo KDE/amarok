@@ -18,7 +18,6 @@
 
 #include "BookmarkModel.h"
 #include "dialogs/TagDialog.h"
-#include "PaletteHandler.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
 #include "BookmarkGroup.h"
@@ -26,13 +25,13 @@
 #include "SvgHandler.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
-#include <QAction>
-#include <QMenu>
 #include <KLocalizedString>
 
+#include <QAction>
 #include <QHeaderView>
 #include <QHelpEvent>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QModelIndex>
 #include <QPoint>

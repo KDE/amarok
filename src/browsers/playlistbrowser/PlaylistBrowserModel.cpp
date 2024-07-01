@@ -20,14 +20,12 @@
 
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <QIcon>
-
 #include <QAction>
+#include <QIcon>
 
 #include <algorithm>
 

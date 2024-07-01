@@ -21,14 +21,11 @@
 #include "TokenDropTarget.h"
 #include "playlist/layouts/LayoutEditDialog.h"
 
-#include <KColorScheme>
-#include <QIcon>
 #include <KLocalizedString>
 
-#include <QContextMenuEvent>
+#include <QIcon>
 #include <QLayout>
 #include <QPainter>
-#include <QPushButton>
 #include <QTimerEvent>
 
 Wrench::Wrench( QWidget *parent ) : QLabel( parent )

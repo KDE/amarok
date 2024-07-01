@@ -19,12 +19,6 @@
 
 #include "PlaylistBrowserCategory.h"
 
-#include <QDialog>
-
-#include <QModelIndex>
-#include <QPoint>
-#include <QSortFilterProxyModel>
-
 namespace PlaylistBrowserNS {
 
 /**

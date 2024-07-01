@@ -20,8 +20,6 @@
 #include "widgets/BoxWidget.h"
 
 #include <QList>
-#include <QPushButton>
-#include <QStackedWidget>
 #include <QStringList>
 
 class BreadcrumbItemMenuButton;

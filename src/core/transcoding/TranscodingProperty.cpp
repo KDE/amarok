@@ -17,12 +17,6 @@
 #include "TranscodingProperty.h"
 #include "core/support/Debug.h"
 
-#include <QComboBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QSpinBox>
-
 namespace Transcoding
 {
 

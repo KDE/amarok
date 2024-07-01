@@ -16,9 +16,9 @@
  
 #include "SourceSelectionPopup.h"
 
-#include <QIcon>
 #include <KLocalizedString>
 
+#include <QIcon>
 #include <QPushButton>
 #include <QLabel>
 #include <QListWidget>

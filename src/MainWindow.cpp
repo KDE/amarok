@@ -75,7 +75,6 @@
 #include <QCheckBox>
 #include <QClipboard>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QDockWidget>
 #include <QFileDialog>      //openPlaylist()
 #include <QInputDialog>     //slotAddStream()
@@ -88,7 +87,6 @@
 
 #include <KActionCollection>
 #include <KBugReport>
-#include <KFileWidget>
 #include <KFormat>
 #include <KGlobalAccel>
 #include <KLocalizedString>

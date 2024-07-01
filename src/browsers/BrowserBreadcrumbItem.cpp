@@ -21,8 +21,6 @@
 #include "core/support/Debug.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <QDir>
-#include <QHBoxLayout>
 #include <QIcon>
 #include <QMenu>
 

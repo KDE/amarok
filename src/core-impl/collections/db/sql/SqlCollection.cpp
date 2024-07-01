@@ -34,12 +34,10 @@
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqlScanResultProcessor.h"
-#include "SvgHandler.h"
 #include "MainWindow.h"
 
 #include "collectionscanner/BatchFile.h"
 
-#include <QApplication>
 #include <QDir>
 #include <QMessageBox>
 #include <QStandardPaths>

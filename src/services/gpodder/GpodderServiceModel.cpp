@@ -24,7 +24,6 @@
 #include "GpodderServiceSettings.h"
 #include "GpodderTagTreeItem.h"
 
-#include <QEventLoop>
 #include <QList>
 #include <QNetworkConfigurationManager>
 #include <QTimer>

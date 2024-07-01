@@ -26,8 +26,6 @@
 
 #include <QSharedPointer>
 
-#include <KSortableList>
-
 namespace Collections {
 
 MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCollection> &collection )

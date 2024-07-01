@@ -24,11 +24,8 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QDomElement>
-#include <QHash>
-#include <QList>
 #include <QObject>
 #include <QString>
-#include <QtGlobal>
 #include <cmath>
 
 namespace Collections {

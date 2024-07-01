@@ -19,7 +19,6 @@
 
 #include "PlaylistBreadcrumbItem.h"
 
-#include <QAction>
 #include <QHBoxLayout>
 
 namespace Playlist

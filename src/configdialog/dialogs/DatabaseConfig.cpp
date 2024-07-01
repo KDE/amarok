@@ -23,7 +23,6 @@
 
 #include <KConfigDialogManager>
 #include <KMessageBox>
-#include <KCMultiDialog>
 
 
 DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton *config )

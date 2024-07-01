@@ -29,7 +29,6 @@
 #include <KWallet>
 
 #include <QMessageBox>
-#include <QLabel>
 #include <QThread>
 
 QWeakPointer<LastFmServiceConfig> LastFmServiceConfig::s_instance;

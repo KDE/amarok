@@ -27,7 +27,6 @@
 
 #include <QDateTime>
 #include <QList>
-#include <QPixmap>
 #include <QString>
 #include <QUrl>
 #include <QUrlQuery>

@@ -25,7 +25,6 @@
 
 #include "DBusAbstractAdaptor.h"
 
-#include <QDebug>
 #include <QMetaClassInfo>
 #include <QDBusMessage>
 

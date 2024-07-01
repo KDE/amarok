@@ -25,11 +25,9 @@
 #include <KLocalizedString>
 
 #include <QBoxLayout>
-#include <QButtonGroup>
 #include <QDialog>
 #include <QLabel>
 #include <QPlainTextEdit>
-#include <QRadioButton>
 #include <QStyle>
 
 DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )

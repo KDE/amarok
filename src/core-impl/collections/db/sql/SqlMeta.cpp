@@ -48,7 +48,6 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
-#include <QMultiHash>
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>

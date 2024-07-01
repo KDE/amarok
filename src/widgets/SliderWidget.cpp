@@ -31,17 +31,15 @@
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 
-#include <QIcon>
 #include <KLocalizedString>
-#include <QStandardPaths>
 
 #include <QAction>
 #include <QContextMenuEvent>
 #include <QFontMetrics>
 #include <QMenu>
+#include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
-#include <QPainter>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     : QSlider( orientation, parent )

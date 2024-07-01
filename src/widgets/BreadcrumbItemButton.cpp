@@ -22,13 +22,12 @@
 #include "amarokurls/AmarokUrlHandler.h"
 #include "core/support/Amarok.h"
 
-#include <KColorScheme>
-#include <QIcon>
 #include <KLocalizedString>
-#include <QMenu>
 
 #include <QApplication>
 #include <QClipboard>
+#include <QIcon>
+#include <QMenu>
 #include <QMimeData>
 #include <QMargins>
 #include <QPainter>

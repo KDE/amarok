@@ -25,7 +25,6 @@
 #include "core/collections/Collection.h"
 
 #include <QMap>
-#include <QPair>
 
 class CollectionTreeItem;
 

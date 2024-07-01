@@ -60,7 +60,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QJSValue>
-#include <QStandardPaths>
 #include <QToolTip>
 
 #include <KStandardGuiItem>

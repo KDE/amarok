@@ -30,7 +30,6 @@
 #include "EngineController.h"
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
-#include "SvgHandler.h"
 #include "handler/AudioCdHandler.h"
 #include "support/AudioCdConnectionAssistant.h"
 #include "support/AudioCdDeviceInfo.h"

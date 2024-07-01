@@ -26,12 +26,11 @@
 #include "amarok_export.h"
 #include "collectionscanner/Directory.h"
 
-#include <QUrl>
-
 #include <QObject>
+#include <QMutex>
 #include <QSharedPointer>
 #include <QString>
-#include <QMutex>
+#include <QUrl>
 
 class GenericScannerJob;
 

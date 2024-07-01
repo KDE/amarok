@@ -29,7 +29,6 @@
 
 #include <KLocalizedString>
 
-#include <QMenu>
 #include <QPainter>
 #include <QSize>
 #include <QSizePolicy>

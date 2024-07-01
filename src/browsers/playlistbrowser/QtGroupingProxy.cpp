@@ -16,10 +16,6 @@
 
 #include "QtGroupingProxy.h"
 
-#include <QIcon>
-#include <QInputDialog>
-#include <QTimer>
-
 /*!
     \class QtGroupingProxy
     \brief The QtGroupingProxy class will group source model rows by adding a new top tree-level.

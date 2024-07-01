@@ -25,13 +25,12 @@
 #include "network/NetworkAccessManagerProxy.h"
 #include "widgets/BoxWidget.h"
 
-#include <QProgressDialog>
-
 #include <QLabel>
 #include <QList>
 #include <QListWidgetItem>
 #include <QObject>
 #include <QPointer>
+#include <QProgressDialog>
 
 class CoverFoundItem;
 class CoverFoundSideBar;

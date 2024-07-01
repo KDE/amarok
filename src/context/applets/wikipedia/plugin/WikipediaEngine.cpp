@@ -27,7 +27,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <QHashIterator>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QUrlQuery>

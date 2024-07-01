@@ -23,7 +23,6 @@
 #include <QAction>
 #include <QIcon>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QStandardPaths>
 #include <QToolBar>
 #include <QVBoxLayout>

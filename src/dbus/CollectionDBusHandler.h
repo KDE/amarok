@@ -17,11 +17,9 @@
 #ifndef COLLECTIONDBUSHANDLER_H
 #define COLLECTIONDBUSHANDLER_H
 
-#include <QDBusArgument>
 #include <QDBusContext>
 #include <QList>
 #include <QMap>
-#include <QMetaType>
 #include <QObject>
 #include <QString>
 #include <QVariant>

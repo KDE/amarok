@@ -29,7 +29,6 @@
 #include <QDialogButtonBox>
 #include <QFontDatabase>
 #include <QLabel>
-#include <QLayout>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QStandardPaths>
@@ -38,10 +37,7 @@
 #include <QTextBrowser>
 #include <QVBoxLayout>
 
-#include <KConfigGroup>
 #include <KCoreAddons>
-#include <KIconLoader>
-#include <KMessageBox>
 #include <KTitleWidget>
 
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )

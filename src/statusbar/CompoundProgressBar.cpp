@@ -18,7 +18,6 @@
 
 #include "core/support/Debug.h"
 
-#include <QIcon>
 #include <QMutexLocker>
 
 #include <KLocalizedString>

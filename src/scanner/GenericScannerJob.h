@@ -27,14 +27,12 @@
 #include "collectionscanner/Directory.h"
 
 #include <ThreadWeaver/Job>
-#include <QUrl>
 
 #include <QObject>
-#include <QString>
 #include <QMutex>
-#include <QWaitCondition>
+#include <QString>
+#include <QUrl>
 #include <QXmlStreamReader>
-#include <KLocalizedString>
 namespace CollectionScanner {
     class Directory;
 }

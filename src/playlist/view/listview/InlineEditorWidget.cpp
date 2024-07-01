@@ -28,14 +28,12 @@
 
 #include <KRatingWidget>
 
+#include <QBoxLayout>
 #include <QEvent>
-#include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
-#include <QPaintEvent>
-#include <QVBoxLayout>
 
 using namespace Playlist;
 

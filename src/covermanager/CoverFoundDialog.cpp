@@ -35,8 +35,6 @@
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QFormLayout>
-#include <QGridLayout>
-#include <QHeaderView>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QMenu>

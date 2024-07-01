@@ -48,7 +48,6 @@
 #include <QStatusBar>
 #include <QStringList>
 #include <QTimer>    //search filter timer
-#include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>

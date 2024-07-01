@@ -28,9 +28,7 @@
 #include "dynamic/DynamicModel.h"
 #include "dynamic/BiasedPlaylist.h"
 
-#include <QCheckBox>
 #include <QIcon>
-#include <QInputDialog>
 #include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>

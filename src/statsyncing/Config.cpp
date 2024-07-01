@@ -21,10 +21,10 @@
 #include "core/support/Amarok.h"
 
 #include <KConfigGroup>
-#include <QIcon>
 #include <KLocalizedString>
 
 #include <QBrush>
+#include <QIcon>
 #include <QPalette>
 
 namespace StatSyncing

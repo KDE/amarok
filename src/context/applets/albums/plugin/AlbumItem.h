@@ -19,7 +19,6 @@
 
 #include "core/meta/Observer.h"
 
-#include <QSize>
 #include <QObject>
 #include <QStandardItem>
 

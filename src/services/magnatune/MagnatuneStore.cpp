@@ -48,7 +48,6 @@
 #include <QToolButton>
 #include <QUrl>
 
-#include <KSharedConfig>
 #include <ThreadWeaver/ThreadWeaver>
 #include <ThreadWeaver/Queue>
 

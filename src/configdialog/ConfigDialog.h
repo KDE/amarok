@@ -25,8 +25,6 @@
 class ConfigDialogBase;
 
 
-class ConfigDialogBase;
-
 class Amarok2ConfigDialog : public KConfigDialog
 {
     Q_OBJECT

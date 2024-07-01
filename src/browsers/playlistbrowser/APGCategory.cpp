@@ -21,12 +21,11 @@
 #include "playlistgenerator/PresetModel.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <QIcon>
 #include <KLocalizedString>
-#include <QStandardPaths>
 
 #include <QAction>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QModelIndex>
 #include <QToolBar>

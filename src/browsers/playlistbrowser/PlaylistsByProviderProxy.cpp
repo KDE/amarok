@@ -26,8 +26,6 @@
 
 #include <QIcon>
 
-#include <QStack>
-
 PlaylistsByProviderProxy::PlaylistsByProviderProxy( int playlistCategory, QObject *parent )
     : QtGroupingProxy( parent )
     , m_playlistCategory( playlistCategory )

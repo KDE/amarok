@@ -17,12 +17,11 @@
 #ifndef BOOKMARKPOPUP_H
 #define BOOKMARKPOPUP_H
 
+#include <QIcon>
 #include <QLineEdit>
 #include <QPaintEvent>
 #include <QTimer>
 #include <QWidget>
-
-#include <QIcon>
 
 class BookmarkTriangle;
 

@@ -21,7 +21,6 @@
 
 #include "PlaylistDock.h"
 
-#include "ActionClasses.h"
 #include "App.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
@@ -45,8 +44,6 @@
 
 #include <QActionGroup>
 #include <QLabel>
-#include <QSharedPointer>
-#include <QStandardPaths>
 #include <QToolBar>
 
 #include <KActionMenu>

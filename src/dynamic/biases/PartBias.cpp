@@ -25,12 +25,12 @@
 #include "widgets/SliderWidget.h"
 
 #include <KLocalizedString>
-#include <QRandomGenerator>
 
 #include <QtGlobal> // for qRound
 #include <QApplication>
 #include <QGridLayout>
 #include <QLabel>
+#include <QRandomGenerator>
 #include <QSlider>
 #include <QStyle>
 #include <QStyleOption>

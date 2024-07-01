@@ -40,7 +40,6 @@
 #include <KIconLoader>
 #include <KRatingPainter>
 
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>

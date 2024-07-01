@@ -23,8 +23,6 @@
 #include "EngineController.h"
 #include "core/support/Debug.h"
 
-#include <KCMultiDialog>
-
 
 PlaybackConfig::PlaybackConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent )

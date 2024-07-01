@@ -25,11 +25,9 @@
 
 #include <QSortFilterProxyModel>
 
+class QAction;
 class QMenu;
- 
-class QAction;
 
-class QAction;
 
 class AMAROK_EXPORT BookmarkTreeView : public QTreeView
 {

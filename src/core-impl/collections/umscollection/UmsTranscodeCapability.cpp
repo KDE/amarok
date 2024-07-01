@@ -17,7 +17,7 @@
 #include "UmsTranscodeCapability.h"
 
 #include <KConfig>
-
+#include <KConfigGroup>
 
 UmsTranscodeCapability::UmsTranscodeCapability( const QString &configFilePath, const QString &groupName )
     : TranscodeCapability()

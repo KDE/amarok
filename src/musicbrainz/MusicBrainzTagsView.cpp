@@ -24,12 +24,12 @@
 
 #include <KActionMenu>
 #include <KLocalizedString>
-#include <QStandardPaths>
 
 #include <QContextMenuEvent>
 #include <QDesktopServices>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QStandardPaths>
 #include <QUrl>
 
 MusicBrainzTagsView::MusicBrainzTagsView( QWidget *parent )

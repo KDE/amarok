@@ -26,10 +26,7 @@
 
 #include <KLocalizedString>
 
-#include <QActionGroup>
-#include <QList>
 #include <QStandardPaths>
-#include <QStringList>
 
 namespace Playlist
 {

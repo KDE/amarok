@@ -22,7 +22,6 @@
 #include <QList>
 #include <QPixmap>
 #include <QSlider>
-#include <QVector>
 
 class BookmarkTriangle;
 

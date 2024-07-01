@@ -22,7 +22,6 @@
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QApplication>
 #include <QCoreApplication>
 #include <QJSEngine>
 #include <QQmlEngine>

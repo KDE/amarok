@@ -26,7 +26,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <QLabel>
 #include <QMessageBox>
 
 #include <KConfigGroup>

@@ -19,8 +19,6 @@
 #include "core/playlists/Playlist.h"
 #include "core/support/Debug.h"
 
-#include <KLocalizedString>
-
 using namespace Meta;
 
 SyncedPodcast::SyncedPodcast( Podcasts::PodcastChannelPtr podcast )

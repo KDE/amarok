@@ -19,7 +19,6 @@
 
 #include "widgets/BoxWidget.h"
 
-#include <QFrame>
 #include <QString>
 
 class QLineEdit;

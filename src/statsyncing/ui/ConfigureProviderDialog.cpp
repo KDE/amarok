@@ -20,10 +20,6 @@
 
 #include <KLocalizedString>
 
-#include <QVBoxLayout>
-#include <QRadioButton>
-#include <QDebug>
-#include <KConfigGroup>
 #include <QPushButton>
 
 namespace StatSyncing

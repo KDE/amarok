@@ -20,8 +20,8 @@
 #ifndef POPUPDROPPER_H
 #define POPUPDROPPER_H
 
+#include <QAction>
 #include <QGraphicsScene>
-#include <QGraphicsView>
 #include <QStack>
 #include <QSvgRenderer>
 #include <QTimeLine>

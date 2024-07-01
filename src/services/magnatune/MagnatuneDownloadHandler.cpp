@@ -28,7 +28,6 @@
 
 #include <QDir>
 #include <QFile>
-#include <QTemporaryDir>
 #include <QTextStream>
 
 using namespace Meta;

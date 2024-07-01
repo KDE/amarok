@@ -28,7 +28,6 @@
 #include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/MountPointManager.h"
-#include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <KMessageBox>

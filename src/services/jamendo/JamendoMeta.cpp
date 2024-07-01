@@ -17,7 +17,6 @@
 #include "JamendoMeta.h"
 
 #include "JamendoService.h"
-#include "SvgHandler.h"
 
 #include "core/support/Debug.h"
 #include <QStandardPaths>

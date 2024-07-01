@@ -23,16 +23,10 @@
 
 #define DEBUG_PREFIX "Playlist::Controller"
 
-// WORKAROUND for QTBUG-25960. Required for Qt versions < 4.8.5 in combination with libc++.
-#define QT_NO_STL 1
-    #include <qiterator.h>
-#undef QT_NO_STL
-
 #include "PlaylistController.h"
 
 #include "EngineController.h"
 #include "amarokconfig.h"
-#include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 #include "core-impl/meta/cue/CueFileSupport.h"
 #include "core-impl/meta/file/File.h"
@@ -42,8 +36,6 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
-
-#include <QAction>
 
 #include <algorithm>
 #include <typeinfo>

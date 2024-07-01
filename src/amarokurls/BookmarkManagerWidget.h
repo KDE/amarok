@@ -22,8 +22,6 @@
 #include "widgets/BoxWidget.h"
 #include "widgets/LineEdit.h"
 
-#include <QLineEdit>
-#include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 

@@ -25,7 +25,6 @@
 #include "NetworkAccessManagerProxy.h"
 
 #include <QAbstractItemModel>
-#include <QStringList>
 
 class GpodderTreeItem;
 

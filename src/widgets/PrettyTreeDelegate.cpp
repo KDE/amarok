@@ -32,8 +32,6 @@
 #include <QFontMetrics>
 #include <QIcon>
 #include <QPainter>
-#include <QTreeView>
-#include <QHeaderView>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )

@@ -21,11 +21,6 @@
 
 #define DEBUG_PREFIX "Playlist::RandomAlbumNavigator"
 
-// WORKAROUND for QTBUG-25960. Required for Qt versions < 4.8.5 in combination with libc++.
-#define QT_NO_STL 1
-    #include <qiterator.h>
-#undef QT_NO_STL
-
 #include "RandomAlbumNavigator.h"
 
 #include "core/support/Debug.h"

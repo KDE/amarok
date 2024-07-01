@@ -25,7 +25,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/SyncedPodcast.h"
 #include "PodcastCategory.h"
-#include "SvgHandler.h"
 #include "widgets/PrettyTreeRoles.h"
 
 #include <QAction>

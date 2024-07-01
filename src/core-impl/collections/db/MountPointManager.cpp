@@ -30,7 +30,6 @@
 #include <Solid/Predicate>
 #include <Solid/Device>
 
-#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QList>

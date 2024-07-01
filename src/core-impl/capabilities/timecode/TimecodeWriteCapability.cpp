@@ -25,7 +25,6 @@
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
-#include "widgets/ProgressWidget.h"
 
 #include <KLocalizedString>
 

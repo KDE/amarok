@@ -28,8 +28,6 @@
 #include "dialogs/DatabaseImporterDialog.h"
 
 #include <KLocalizedString>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 #include <QAction>
 #include <QApplication>
@@ -38,6 +36,8 @@
 #include <QFile>
 #include <QLabel>
 #include <QMenu>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include <algorithm>
 

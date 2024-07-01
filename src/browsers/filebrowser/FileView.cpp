@@ -22,7 +22,6 @@
 #include "EngineController.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
-#include "SvgHandler.h"
 #include "context/ContextView.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
@@ -35,14 +34,10 @@
 
 #include <QAction>
 #include <QContextMenuEvent>
-#include <QFileSystemModel>
 #include <QIcon>
-#include <QItemDelegate>
 #include <QMenu>
-#include <QPainter>
 #include <QUrl>
 
-#include <KConfigGroup>
 #include <KDirModel>
 #include <KFileItem>
 #include <KIO/CopyJob>

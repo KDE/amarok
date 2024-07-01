@@ -19,7 +19,6 @@
 
 #include "playlist/PlaylistDefines.h"
 
-#include <QSortFilterProxyModel>
 #include <QStack>
 
 namespace Playlist

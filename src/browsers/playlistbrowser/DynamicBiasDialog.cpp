@@ -24,11 +24,10 @@
 #include "dynamic/Bias.h"
 #include "dynamic/BiasFactory.h"
 
-#include <QComboBox>
 #include <KLocalizedString>
 
+#include <QComboBox>
 #include <QDialogButtonBox>
-#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 

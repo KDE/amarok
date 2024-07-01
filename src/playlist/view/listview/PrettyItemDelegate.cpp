@@ -44,7 +44,6 @@
 
 #include <KColorScheme>
 #include <KRatingPainter>  // #include <KratingPainter> does not work on some distros
-#include <KWindowSystem>
 
 #include <QAction>
 #include <QFontMetricsF>

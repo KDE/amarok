@@ -22,7 +22,6 @@
 #include "App.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFile.h"
-#include "playlist/PlaylistModelStack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/podcasts/PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
@@ -33,15 +32,12 @@
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
 #include "core/logger/Logger.h"
-#include "browsers/playlistbrowser/UserPlaylistModel.h"
 
-#include <kdirlister.h>
-#include <kio/job.h>
-#include <QInputDialog>
 #include <KLocalizedString>
-#include <QUrl>
 
 #include <QFileInfo>
+#include <QUrl>
+#include <QTimer>
 
 #include <typeinfo>
 

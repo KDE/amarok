@@ -25,7 +25,6 @@
 #include "widgets/PrettyTreeRoles.h"
 
 #include <QCollator>
-#include <QVariant>
 #include <QString>
 
 CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * parent )

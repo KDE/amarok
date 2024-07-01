@@ -24,7 +24,6 @@
 #include <KIconLoader>
 
 #include <QMetaEnum>
-#include <QJSEngine>
 
 using namespace AmarokScript;
 

@@ -30,7 +30,6 @@
 #include <QPersistentModelIndex>
 #include <QRect>
 
-#include <QAction>
 #include <QDateTime>
 #include <QTimer>
 

@@ -40,7 +40,6 @@
 #include <QHBoxLayout>
 #include <QStandardPaths>
 
-#include <KConfigGroup>
 #include <KDirLister>
 #include <KLocalizedString>
 #include <KIO/StatJob>

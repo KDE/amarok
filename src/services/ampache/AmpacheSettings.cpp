@@ -20,8 +20,6 @@
 #include "ui_AmpacheConfigWidget.h"
 
 #include <QTableWidget>
-#include <QHeaderView>
-#include <QDebug>
 
 #include <KPluginFactory>
 

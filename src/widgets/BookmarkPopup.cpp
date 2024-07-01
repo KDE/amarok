@@ -25,7 +25,7 @@
 #include <KLocalizedString>
 
 #include <QPainter>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 BookmarkPopup::BookmarkPopup (QWidget* parent, const QString &label, BookmarkTriangle* triangle )
         : QWidget ( parent )

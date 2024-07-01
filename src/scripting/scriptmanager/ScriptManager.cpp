@@ -34,13 +34,11 @@
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "ScriptItem.h"
 
-#include <KMessageBox>
 #include <KPluginInfo>
 #include <KPluginMetaData>
 
 #include <QFileInfo>
 #include <QJSEngine>
-#include <QJsonDocument>
 #include <QStandardPaths>
 #include <QTimer>
 #include <QDir>

@@ -25,21 +25,15 @@
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
-#include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <QAction>
 #include <QDir>
-#include <QInputDialog>
-#include <QLabel>
 #include <QString>
 #include <QTimer>
 #include <QUrl>
 
 #include <KIO/Global>
 #include <KLocalizedString>
-
-using Playlist::ModelStack;
 
 namespace Playlists {
 

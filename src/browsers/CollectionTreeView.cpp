@@ -24,7 +24,6 @@
 #include "AmarokMimeData.h"
 #include "GlobalCollectionActions.h"
 #include "PopupDropperFactory.h"
-#include "SvgHandler.h"
 #include "browsers/CollectionSortFilterProxyModel.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
@@ -44,12 +43,11 @@
 #include "scripting/scriptengine/AmarokCollectionViewScript.h"
 
 #include <QAction>
-#include <QIcon>
-#include <QComboBox>
-#include <QMenu>
-
+#include <QApplication>
 #include <QContextMenuEvent>
 #include <QHash>
+#include <QIcon>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QQueue>
 #include <QSortFilterProxyModel>

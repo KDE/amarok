@@ -27,18 +27,16 @@
 
 #include <typeinfo>
 
-#include <QWidget>
-#include <QLineEdit>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QListView>
-#include <QTimeEdit>
-
-#include <QIcon>
 #include <KLocalizedString>
 #include <KRatingWidget>
+
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QLabel>
+#include <QTimeEdit>
+#include <QVBoxLayout>
+#include <QWidget>
+
 
 using namespace Amarok;
 

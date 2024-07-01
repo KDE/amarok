@@ -27,7 +27,6 @@
 #include <KLocalizedString>
 
 #include <QComboBox>
-#include <QFormLayout>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 

@@ -22,7 +22,6 @@
 #include "core/support/Debug.h"
 #include "ScriptEditorDocument.h"
 
-#include <KMessageBox>
 #include <KTextEditor/View>
 
 #include <QFile>
@@ -31,8 +30,6 @@
 #include <QTextStream>
 #include <QDir>
 #include <QPlainTextEdit>
-#include <QMessageLogContext>
-#include <QStringBuilder>
 
 
 using namespace ScriptConsoleNS;

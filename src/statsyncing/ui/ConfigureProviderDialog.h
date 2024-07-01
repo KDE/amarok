@@ -19,12 +19,9 @@
 
 #include <KPageDialog>
 
-#include <QButtonGroup>
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
-
-#include <QIcon>
 
 namespace StatSyncing
 {

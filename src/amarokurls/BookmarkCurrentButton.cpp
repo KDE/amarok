@@ -19,9 +19,9 @@
 #include "AmarokUrlHandler.h"
 #include "BookmarkModel.h"
 
-#include <QIcon>
 #include <KLocalizedString>
 
+#include <QIcon>
 #include <QMenu>
 #include <QString>
 

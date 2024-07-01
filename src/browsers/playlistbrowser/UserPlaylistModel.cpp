@@ -22,11 +22,6 @@
 #include "AmarokMimeData.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "SvgHandler.h"
-
-#include <QIcon>
-
-#include <QAbstractListModel>
 
 #include <typeinfo>
 

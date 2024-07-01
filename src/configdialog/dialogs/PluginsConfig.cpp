@@ -23,7 +23,6 @@
 #include "services/ServiceBase.h"
 #include "PluginManager.h"
 
-#include <KPluginInfo>
 #include <KPluginSelector>
 
 #include <QVBoxLayout>

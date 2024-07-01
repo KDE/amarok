@@ -24,15 +24,12 @@
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
 
-#include <QApplication>
-#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QIcon>
 #include <QImageReader>
 #include <QTemporaryDir>
 
 #include <KConfigGroup>
-#include <KDirOperator>
 #include <KFile>
 #include <KIO/CopyJob>
 #include <KLocalizedString>

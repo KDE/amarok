@@ -31,7 +31,6 @@
 #include <QUrlQuery>
 
 #include <KLocalizedString>
-#include <KPasswordDialog>
 #include <KMessageBox>
 
 

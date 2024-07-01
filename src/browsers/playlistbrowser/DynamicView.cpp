@@ -33,15 +33,11 @@
 // #include "context/popupdropper/libpud/PopupDropperItem.h"
 // #include "context/popupdropper/libpud/PopupDropper.h"
 
-#include "PaletteHandler.h"
-
 #include <QAction>
-#include <QMenu>
-
 #include <QKeyEvent>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QModelIndex>
-#include <QToolTip>
 
 PlaylistBrowserNS::DynamicView::DynamicView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )

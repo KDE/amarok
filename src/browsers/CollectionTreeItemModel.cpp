@@ -27,7 +27,6 @@
 #include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
-#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"

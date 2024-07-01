@@ -30,8 +30,6 @@
 #include <KMessageBox>
 #include <KPluginFactory>
 
-#include <QCryptographicHash>
-
 #include <XmlQuery.h>
 
 K_PLUGIN_FACTORY_WITH_JSON( LastFmServiceSettingsFactory, "amarok_service_lastfm_config.json", registerPlugin<LastFmServiceSettings>(); )

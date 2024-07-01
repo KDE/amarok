@@ -21,8 +21,6 @@
 #include "amarok_export.h"
 #include "ServiceCollection.h"
 
-#include <QSet>
-#include <QMap>
 #include <QString>
 
 namespace Collections {

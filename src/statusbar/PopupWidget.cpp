@@ -20,8 +20,6 @@
 
 #include "core/support/Debug.h"
 
-#include <QVBoxLayout>
-
 
 PopupWidget::PopupWidget( const QString &name )
     : BoxWidget( true )

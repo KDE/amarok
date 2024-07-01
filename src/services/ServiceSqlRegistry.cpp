@@ -21,7 +21,6 @@
 #include "core/support/Debug.h"
 
 
-#include <QMutableHashIterator>
 #include <QMutexLocker>
 
 using namespace Meta;

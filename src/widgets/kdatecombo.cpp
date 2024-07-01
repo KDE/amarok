@@ -16,19 +16,12 @@
 
 #include "kdatecombo.h"
 
-
-#include <QTimer>
-//Added by qt3to4:
-#include <QKeyEvent>
-#include <QEvent>
-#include <QVBoxLayout>
-
-
-#include <KLocalizedString>
 #include <KDatePicker>
 #include <KPopupFrame>
-#include <QDebug>
-#include <KConfigGroup>
+
+#include <QEvent>
+#include <QKeyEvent>
+#include <QTimer>
 
 KDateCombo::KDateCombo(QWidget *parent) : QComboBox(parent)
 {

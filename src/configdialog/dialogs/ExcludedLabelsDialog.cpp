@@ -21,16 +21,13 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "statsyncing/Config.h"
 
-#include <KConfigGroup>
 #include <KLocalizedString>
 
 #include <QDialogButtonBox>
-#include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QPushButton>
-#include <QToolButton>
 #include <QVBoxLayout>
 
 ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent,

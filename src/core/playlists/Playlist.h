@@ -21,18 +21,13 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QList>
-#include <QMetaType>
 #include <QRecursiveMutex>
-#include <QPixmap>
 #include <QSet>
 #include <QSharedData>
 #include <QString>
-#include <QTextStream>
 
 #include "AmarokSharedPointer.h"
 #include <QUrl>
-
-class QTextStream;
 
 class QAction;
 typedef QList<QAction *> QActionList;

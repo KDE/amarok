@@ -18,13 +18,12 @@
 
 #include "core/support/Debug.h"
 
-#include <QLineEdit>
 #include <KLocalizedString>
 
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
-#include <QSpacerItem>
+#include <QLineEdit>
 
 using namespace StatSyncing;
 

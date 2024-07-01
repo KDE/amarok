@@ -28,8 +28,9 @@
 #include "MetaValues.h"
 #include "TagsFromFileNameGuesser.h"
 
-#include <QBoxLayout>
 #include <KConfigGroup>
+
+#include <QBoxLayout>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>

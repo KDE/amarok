@@ -22,11 +22,6 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <QMutex>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
-#include <QPushButton>
-
 class PopupDropper;
 class QKeyEvent;
 class QMouseEvent;

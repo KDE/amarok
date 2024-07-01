@@ -22,8 +22,6 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <QMetaType>
-
 namespace Playlist
 {
     /** Playlist::Item is used in the playlist model to reference an entry in the playlist.

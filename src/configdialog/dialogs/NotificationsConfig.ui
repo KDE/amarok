@@ -310,7 +310,6 @@
  </customwidgets>
  <includes>
   <include location="local">widgets/Osd.h</include>
-  <include location="local">ktextedit.h</include>
   <include location="local">qspinbox.h</include>
  </includes>
  <resources/>

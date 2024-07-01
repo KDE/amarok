@@ -26,9 +26,9 @@
 #include "PaletteHandler.h"
 #include "ScriptingDefines.h"
 
-#include <QAction>
 #include <KActionCollection>
 
+#include <QAction>
 #include <QClipboard>
 #include <QToolTip>
 

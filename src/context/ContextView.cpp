@@ -31,15 +31,12 @@
 
 #include <QDesktopServices>
 #include <QFile>
-#include <QGuiApplication>
 #include <QQmlContext>
 #include <QQmlError>
-#include <QQmlPropertyMap>
+#include <QQmlEngine>
 #include <QQuickWindow>
 
-#include <KDeclarative/KDeclarative>
-#include <KI18n/KLocalizedContext>
-#include <KIconThemes/KIconLoader>
+#include <KLocalizedContext>
 #include <KPackage/PackageLoader>
 
 

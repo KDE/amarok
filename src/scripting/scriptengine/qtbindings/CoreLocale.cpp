@@ -20,9 +20,7 @@
 
 #include <QDate>
 #include <QDateTime>
-#include <QJSEngine>
 #include <QTime>
-#include <QMetaMethod>
 
 using namespace QtBindings::Core;
 

@@ -25,8 +25,6 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 
 namespace CollectionScanner
 {

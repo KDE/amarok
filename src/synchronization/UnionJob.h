@@ -21,10 +21,6 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <QMap>
-#include <QPair>
-#include <QSet>
-
 namespace Amarok
 {
     class Collection;

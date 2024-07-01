@@ -20,9 +20,6 @@
 
 #include "PixmapItem.h"
 
-#include <QPaintEngine>
-#include <QPainter>
-#include <QSGSimpleTextureNode>
 #include <QQuickWindow>
 
 #include <KDeclarative/KQuickAddons/ManagedTextureNode>

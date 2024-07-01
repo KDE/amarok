@@ -25,9 +25,8 @@
 #include <core-impl/storage/StorageManager.h>
 #include <core/storage/SqlStorage.h>
 
-#include <QIcon>
-
 #include <QAbstractListModel>
+#include <QIcon>
 #include <QListIterator>
 
 #include <typeinfo>

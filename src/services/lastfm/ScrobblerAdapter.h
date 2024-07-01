@@ -23,8 +23,6 @@
 #include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/ScrobblingService.h"
 
-#include <QTimer>
-
 #include <Audioscrobbler.h>
 #include <Track.h>
 

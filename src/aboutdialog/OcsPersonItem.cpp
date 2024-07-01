@@ -19,13 +19,9 @@
 #include "core/support/Debug.h"
 
 #include <QAction>
-#include <QStandardPaths>
 #include <KIO/OpenUrlJob>
 
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPainter>
-#include <QStyleOption>
 
 OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const QString &ocsUsername, PersonStatus status, QWidget *parent )
     : QWidget( parent )

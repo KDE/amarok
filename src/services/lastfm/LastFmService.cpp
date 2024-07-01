@@ -40,13 +40,11 @@
 #include "statsyncing/Controller.h"
 #include "widgets/SearchWidget.h"
 
-#include <QLineEdit>
-#include <KPluginFactory>
-
 #include <QCryptographicHash>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPixmap>
 #include <QStandardPaths>
 #include <QTimer>

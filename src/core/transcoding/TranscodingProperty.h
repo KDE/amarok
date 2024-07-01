@@ -19,10 +19,8 @@
 
 #include "core/amarokcore_export.h"
 
-#include <QPointer>
 #include <QStringList>
 #include <QVariant>
-#include <QWidget>
 
 namespace Transcoding
 {

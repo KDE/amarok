@@ -25,8 +25,8 @@
 #include <QDateTime>
 #include <QXmlStreamReader>
 #include <QObject>
-#include <QStack>
 #include <QRegularExpression>
+#include <QStack>
 
 #include <KIO/TransferJob>
 

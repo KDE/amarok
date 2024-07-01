@@ -22,7 +22,6 @@
 #include <QUrl>
 
 #include <QFile>
-#include <QPalette>
 
 QString InfoParserBase::s_loadingBaseHtml;
 

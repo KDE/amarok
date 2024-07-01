@@ -28,7 +28,6 @@
 #include <QPainter>
 #include <QQuickWindow>
 #include <QScreen>
-#include <QSGTexture>
 
 
 BlockAnalyzer::BlockAnalyzer( QQuickItem *parent )

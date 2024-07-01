@@ -21,6 +21,11 @@
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
+#include <KAboutData>
+#include <KCoreAddons>
+#include <KLocalizedString>
+#include <KPluginInfo>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QDialogButtonBox>
@@ -29,11 +34,6 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QVBoxLayout>
-
-#include <KAboutData>
-#include <KCoreAddons>
-#include <KLocalizedString>
-#include <KPluginInfo>
 
 #include <algorithm>
 #include <phonon/pulsesupport.h>

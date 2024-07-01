@@ -26,7 +26,6 @@
 #include "widgets/SearchWidget.h"
 #include "widgets/BoxWidget.h"
 
-#include <QLabel>
 #include <QLayout>
 #include <QMenuBar>
 

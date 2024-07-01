@@ -22,9 +22,9 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include "QEvent"
-#include "QHelpEvent"
-#include "QToolTip"
+#include <QEvent>
+#include <QHelpEvent>
+#include <QToolTip>
 
 PlaylistInfoWidget::PlaylistInfoWidget( QWidget *parent )
     : QLabel( parent )

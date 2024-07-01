@@ -19,14 +19,13 @@
 #include "widgets/TokenWithLayout.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <QIcon>
 #include <KLocalizedString>
 
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QDialogButtonBox>
-#include <QGroupBox>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>

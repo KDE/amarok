@@ -20,8 +20,9 @@
 
 #include <KCategorizedView>
 #include <KLocalizedString>
-#include <QLineEdit>
 #include <KPluginInfo>
+
+#include <QLineEdit>
 #include <QScrollBar>
 
 #include <algorithm>

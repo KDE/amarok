@@ -20,13 +20,12 @@
 #include "core/meta/Meta.h"
 #include "widgets/PixmapViewer.h"
 
+#include <KConfigGroup>
+#include <KLocalizedString>
+
 #include <QApplication>
 #include <QDialog>
-#include <KLocalizedString>
-#include <KWindowSystem>
-
 #include <QHBoxLayout>
-#include <KConfigGroup>
 
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent )

@@ -19,7 +19,6 @@
 
 #include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
-#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "widgets/BoxWidget.h"

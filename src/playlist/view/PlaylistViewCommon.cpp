@@ -32,8 +32,9 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/view/listview/PrettyListView.h"
 
-#include <QMenu>
+#include <KLocalizedString>
 
+#include <QMenu>
 #include <QObject>
 #include <QModelIndex>
 

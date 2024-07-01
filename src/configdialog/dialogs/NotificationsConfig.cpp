@@ -24,8 +24,6 @@
 
 #include <KWindowSystem>
 
-#include <QDesktopWidget>
-
 NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent ) 
     , m_oldAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) )

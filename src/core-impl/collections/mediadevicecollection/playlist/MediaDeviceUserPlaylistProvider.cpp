@@ -17,7 +17,6 @@
 
 #include "MediaDeviceUserPlaylistProvider.h"
 
-#include "SvgHandler.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -30,10 +29,8 @@
 #include "playlistmanager/PlaylistManager.h"
 
 #include <QIcon>
-#include <QInputDialog>
-#include <QUrl>
-
 #include <QMap>
+#include <QUrl>
 
 // static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key(QStringLiteral("AMAROK_USERPLAYLIST"));

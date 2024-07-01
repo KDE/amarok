@@ -26,7 +26,6 @@
 #include "amarok_sqlcollection_export.h"
 #include "FileType.h"
 
-#include <QAtomicInt>
 #include <QByteArray>
 #include <QRecursiveMutex>
 #include <QReadWriteLock>

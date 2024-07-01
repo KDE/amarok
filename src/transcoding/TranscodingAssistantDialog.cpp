@@ -20,11 +20,8 @@
 #include "core/transcoding/TranscodingController.h"
 
 #include <QIcon>
-#include <QPushButton>
-
-#include <KConfigGroup>
 #include <QDialogButtonBox>
-#include <QVBoxLayout>
+#include <QPushButton>
 
 using namespace Transcoding;
 

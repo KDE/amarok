@@ -38,14 +38,11 @@
 #include <KLocalizedString>
 #include <KStandardGuiItem>
 
-#include <QAction>
 #include <QActionGroup>
-#include <QBoxLayout>
 #include <QIcon>
 #include <QMenu>
 #include <QMetaEnum>
 #include <QMetaObject>
-#include <QRect>
 #include <QSortFilterProxyModel>
 #include <QStackedWidget>
 #include <QStandardPaths>

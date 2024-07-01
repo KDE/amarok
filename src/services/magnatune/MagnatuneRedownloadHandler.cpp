@@ -23,9 +23,8 @@
 #include "core/logger/Logger.h"
 
 #include <KLocalizedString>
-#include <KMessageBox>
 
-#include "QDir"
+#include <QDir>
 
 
 MagnatuneRedownloadHandler::MagnatuneRedownloadHandler(QWidget * parent)

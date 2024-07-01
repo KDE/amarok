@@ -24,8 +24,6 @@
 #include "core/support/Debug.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <QLayout>
-#include <QList>
 #include <QStandardPaths>
 #include <QString>
 

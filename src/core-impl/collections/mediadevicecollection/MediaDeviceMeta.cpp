@@ -16,7 +16,6 @@
 
 #include "MediaDeviceMeta.h"
 
-#include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
@@ -26,10 +25,9 @@
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
 
+#include <QAction>
 #include <QIcon>
 #include <QUrl>
-
-#include <QAction>
 
 using namespace Meta;
 

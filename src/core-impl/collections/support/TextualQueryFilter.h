@@ -26,7 +26,6 @@
 #include "core/meta/forward_declarations.h"
 #include "core/collections/QueryMaker.h"
 
-#include <QAbstractItemModel>
 #include <QDateTime>
 
 namespace Collections

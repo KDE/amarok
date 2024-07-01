@@ -34,12 +34,9 @@
 #include <KIO/Global>
 
 #include <QFile>
+#include <QRegularExpression>
 #include <QSet>
 #include <QUrl>
-#include <QTextStream>
-#include <QCheckBox>
-#include <QLabel>
-#include <QRegularExpression>
 
 
 

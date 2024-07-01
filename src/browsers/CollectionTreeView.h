@@ -25,9 +25,7 @@
 #include "playlist/PlaylistController.h"
 
 #include <QModelIndex>
-#include <QMutex>
 #include <QSet>
-#include <QApplication>
 
 class AmarokMimeData;
 class CollectionSortFilterProxyModel;

@@ -19,12 +19,12 @@
 
 #include "core/support/Debug.h"
 
-#include <QStandardPaths>
 #include <KLocalizedString>
 #include <KMessageBox>
 
 #include <QProcess>
 #include <QDir>
+#include <QStandardPaths>
 
 
 IphoneMountPoint::IphoneMountPoint( const QString &uuid )

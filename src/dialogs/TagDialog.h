@@ -30,11 +30,9 @@
 #include "core/meta/Observer.h"
 #include "core/collections/MetaQueryMaker.h"
 
-#include <QDialog>
-
 #include <QDateTime>
+#include <QDialog>
 #include <QLabel>
-#include <QListIterator>
 #include <QMap>
 #include <QSet>
 #include <QVariant>

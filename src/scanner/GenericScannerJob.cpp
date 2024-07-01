@@ -29,6 +29,7 @@
 #include "core/support/Debug.h"
 #include "collectionscanner/ScanningState.h"
 
+#include <KLocalizedString>
 #include <KProcess>
 
 #include <QFile>

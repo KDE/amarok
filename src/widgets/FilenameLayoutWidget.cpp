@@ -28,13 +28,13 @@
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <QInputDialog>
-#include <QLineEdit>
 #include <KLocalizedString>
 
 #include <QComboBox>
 #include <QGroupBox>
+#include <QInputDialog>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QStackedWidget>

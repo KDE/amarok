@@ -31,7 +31,6 @@
 #include "dynamic/Bias.h"
 #include "scripting/scriptengine/exporters/ScriptableBiasExporter.h"
 
-#include <QFormLayout>
 #include <QLabel>
 #include <QList>
 #include <QXmlStreamReader>

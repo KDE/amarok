@@ -19,8 +19,6 @@
 
 #include "widgets/AmarokDockWidget.h"
 
-#include <QPointer>
-
 
 class ContextDock : public AmarokDockWidget
 {

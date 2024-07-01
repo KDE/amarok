@@ -36,7 +36,6 @@
 #include "playlist/PlaylistActions.h"
 
 #include <QIcon>
-
 #include <QFile>
 #include <QBuffer>
 #include <QByteArray>

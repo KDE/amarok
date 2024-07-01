@@ -29,11 +29,8 @@
 #include <QListWidget>
 #include <QKeyEvent>
 #include <QMenuBar>
-#include <QJSEngine>
 #include <QRandomGenerator>
 #include <QSettings>
-#include <QStandardPaths>
-#include <QTemporaryFile>
 #include <QToolBar>
 
 #include <KMessageBox>

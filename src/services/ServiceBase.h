@@ -33,7 +33,6 @@
 #include <QPushButton>
 #include <QQueue>
 #include <QSortFilterProxyModel>
-#include <QSplitter>
 
 class BoxWidget;
 class ServiceBase;

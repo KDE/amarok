@@ -28,7 +28,6 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 
-#include <QApplication>
 #include <QWidget>
 
 #include <KAboutData>

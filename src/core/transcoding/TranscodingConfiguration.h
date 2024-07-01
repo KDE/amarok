@@ -22,10 +22,10 @@
 #include "core/transcoding/TranscodingDefines.h"
 #include "core/transcoding/TranscodingProperty.h"
 
-#include <KConfigGroup>
-
 #include <QMap>
 #include <QVariant>
+
+class KConfigGroup;
 
 namespace Transcoding
 {

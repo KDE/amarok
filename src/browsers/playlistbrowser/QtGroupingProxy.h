@@ -19,9 +19,6 @@
 
 #include <QAbstractProxyModel>
 #include <QModelIndex>
-#include <QMultiHash>
-#include <QStringList>
-#include <QIcon>
 
 typedef QMap<int, QVariant> ItemData;
 typedef QMap<int, ItemData> RowData;

@@ -22,8 +22,6 @@
 #include "core/meta/forward_declarations.h"
 #include "core/playlists/Playlist.h"
 
-#include <QAction>
-#include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
 

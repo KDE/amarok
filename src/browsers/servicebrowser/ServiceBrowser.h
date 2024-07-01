@@ -17,17 +17,12 @@
 #ifndef AMAROKSERVICEBROWSER_H
 #define AMAROKSERVICEBROWSER_H
 
-
-
 #include "browsers/BrowserCategoryList.h"
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "services/ServiceBase.h"
 
-#include <QVBoxLayout>
-
 #include <QTimer>
-#include <QTreeView>
-#include <QMap>
+#include <QVBoxLayout>
 
 
 /**

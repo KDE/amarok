@@ -17,6 +17,7 @@
 #include "IpodTranscodeCapability.h"
 
 #include <KConfig>
+#include <KConfigGroup>
 
 using namespace Capabilities;
 

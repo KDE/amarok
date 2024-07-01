@@ -26,7 +26,6 @@
 #include "CollectionTreeItem.h"
 
 #include <QAbstractItemModel>
-#include <QDateTime>
 #include <QHash>
 #include <QPair>
 #include <QPixmap>

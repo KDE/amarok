@@ -63,7 +63,6 @@
 #include <QPalette>
 #include <QPersistentModelIndex>
 #include <QScrollBar>
-#include <QSvgRenderer>
 #include <QTimer>
 #include <QUrl>
 

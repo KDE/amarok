@@ -20,7 +20,6 @@
 #include "MainWindow.h"
 #include "core/support/Debug.h"
 #include "core/playlists/Playlist.h"
-#include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeRoles.h"

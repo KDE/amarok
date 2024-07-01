@@ -22,7 +22,6 @@
 #include <QVBoxLayout>
 
 #include <KLocalizedString>
-#include <KConfigGroup>
 
 using namespace Collections;
 

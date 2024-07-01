@@ -17,7 +17,6 @@
 #include "BookmarkMetaActions.h"
 
 #include "EngineController.h"
-#include "SvgHandler.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkModel.h"
 #include "core/meta/Meta.h"

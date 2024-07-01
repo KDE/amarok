@@ -25,8 +25,6 @@
 #include <QJSEngine>
 #include <QTextCodec>
 
-#include <KLocalizedString>
-
 using namespace AmarokScript;
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = nullptr;

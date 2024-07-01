@@ -29,8 +29,6 @@
 
 #include <KJob>
 
-#include <QCheckBox>
-#include <QComboBox>
 #include <QPushButton>
 
 

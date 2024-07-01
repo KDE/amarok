@@ -19,10 +19,8 @@
 #ifndef PIXMAPVIEWER_H
 #define PIXMAPVIEWER_H
 
-#include <QScrollArea>
-#include <QWidget>
-#include <QString>
 #include <QPixmap>
+#include <QWidget>
 
 class QPixmap;
 

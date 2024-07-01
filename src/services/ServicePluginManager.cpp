@@ -23,8 +23,6 @@
 #include "core/support/Debug.h"
 #include "services/ServiceBase.h"
 
-#include <KService>
-
 #include <QSet>
 #include <QCoreApplication>
 

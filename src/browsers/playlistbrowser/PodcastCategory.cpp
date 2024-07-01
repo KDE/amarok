@@ -31,13 +31,9 @@
 #include "PlaylistBrowserView.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <QModelIndexList>
-#include <QTextBrowser>
-
 #include <QAction>
 #include <QIcon>
 #include <QStandardPaths>
-#include <KUrlRequesterDialog>
 
 #include <KLocalizedString>
 #include <KToolBar>

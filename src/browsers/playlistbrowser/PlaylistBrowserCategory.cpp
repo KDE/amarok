@@ -27,19 +27,16 @@
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistBrowserFilterProxy.h"
-#include "SvgHandler.h"
 #include "PlaylistBrowserView.h"
 #include "widgets/PrettyTreeDelegate.h"
 
 #include <KActionMenu>
-#include <KConfigGroup>
-#include <QIcon>
-#include <QRegularExpression>
-#include <QStandardPaths>
 #include <KToolBar>
 
 #include <QHeaderView>
-#include <QToolBar>
+#include <QIcon>
+#include <QRegularExpression>
+#include <QStandardPaths>
 
 #include <typeinfo>
 

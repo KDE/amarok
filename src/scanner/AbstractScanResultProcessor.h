@@ -27,9 +27,7 @@
 #include <QHash>
 #include <QMultiHash>
 #include <QPair>
-#include <QSet>
 #include <QString>
-#include <QStringList>
 
 namespace CollectionScanner
 {

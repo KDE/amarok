@@ -20,9 +20,7 @@
 #include "PlaylistBrowserView.h"
 
 #include "MainWindow.h"
-#include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
-#include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "browsers/playlistbrowser/PlaylistBrowserModel.h"
 #include "browsers/playlistbrowser/PlaylistsByProviderProxy.h"
@@ -41,8 +39,6 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
-
-#include <KConfigGroup>
 
 #include <algorithm>
 

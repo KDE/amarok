@@ -20,10 +20,10 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 
+#include <KLocalizedString>
+
 #include <QActionGroup>
 #include <QMenu>
-#include <KLocalizedString>
-#include <QStandardPaths>
 
 NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     : QAction( parent )

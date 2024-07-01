@@ -22,7 +22,6 @@
 #include "core-impl/support/UrlStatisticsStore.h"
 #include "MagnatuneActions.h"
 #include "MagnatuneConfig.h"
-#include "SvgHandler.h"
 
 #include <QObject>
 #include <QStandardPaths>

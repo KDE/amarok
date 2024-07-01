@@ -21,6 +21,7 @@
 #include "TranscodingController.h"
 #include "core/support/Components.h"
 
+#include <KConfigGroup>
 #include <KLocalizedString>
 
 using namespace Transcoding;
