@@ -24,6 +24,8 @@
 class TestAmarokImporter : public TestImporterBase
 {
     Q_OBJECT
+public:
+    ~TestAmarokImporter() override;
 
 private:
     QVariantMap m_cfg;

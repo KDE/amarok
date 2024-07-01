@@ -32,21 +32,34 @@ QTEST_MAIN( TestAmarokImporter )
 
 using namespace StatSyncing;
 
+ProviderPtr dbProvider = nullptr;
+ProviderPtr writableDbProvider = nullptr;
+
+TestAmarokImporter::~TestAmarokImporter()
+{
+    dbProvider = nullptr;
+    writableDbProvider = nullptr;
+}
+
 ProviderPtr
 TestAmarokImporter::getProvider()
 {
+    if(dbProvider)
+        return dbProvider;
     QVariantMap cfg = AmarokConfigWidget( QVariantMap() ).config();
     cfg.insert( QStringLiteral("name"), QStringLiteral("Amarok2Test") );
     cfg.insert( QStringLiteral("embedded"), true );
     cfg.insert( QStringLiteral("dbPath"), QString( QCoreApplication::applicationDirPath() +
                           QStringLiteral("/../tests/importers_files/amarok2_mysqle") ) );
 
-    return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
+    return dbProvider = ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
 
 ProviderPtr
 TestAmarokImporter::getWritableProvider()
 {
+    if(writableDbProvider)
+        return writableDbProvider;
     QDir base( QCoreApplication::applicationDirPath() );
     QDir files( base.filePath( QStringLiteral("../tests/importers_files") ) );
     QDir tmp( base.filePath( QStringLiteral("importers_tmp") ) );
@@ -71,7 +84,7 @@ TestAmarokImporter::getWritableProvider()
     cfg.insert( QStringLiteral("embedded"), true );
     cfg.insert( QStringLiteral("dbPath"), tmp.filePath( QStringLiteral("amarok2_mysqle") ) );
 
-    return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
+    return writableDbProvider = ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
 
 qint64
@@ -182,6 +195,7 @@ TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
     m_cfg.insert( QStringLiteral("dbPath"), QString( QCoreApplication::applicationDirPath() +
                             QStringLiteral("/../tests/importers_files/amarok2_mysqle") ) );
 
+    dbProvider = nullptr; // free so we're not stuck waiting for the db file to get freed
     AmarokProvider provider( m_cfg, nullptr );
 
     // The database isn't accessible by QPSQL driver, but it still should work
