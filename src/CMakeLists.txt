@@ -716,11 +716,8 @@ set(amaroklib_LIB_SRCS
     widgets/BreadcrumbItemButton.cpp
     widgets/ClearSpinBox.cpp
     widgets/CoverLabel.cpp
-    widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
     widgets/TokenDropTarget.cpp
-    widgets/EditDeleteComboBoxView.cpp
-    widgets/EditDeleteDelegate.cpp
     widgets/ElidingButton.cpp
     widgets/FilenameLayoutWidget.cpp
     widgets/HorizontalDivider.cpp

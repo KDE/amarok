@@ -20,8 +20,6 @@
 #include "core/support/Debug.h"
 #include "LayoutManager.h"
 #include "PlaylistLayoutEditDialog.h"
-#include "widgets/EditDeleteDelegate.h"
-#include "widgets/EditDeleteComboBoxView.h"
 #include "MainWindow.h"
 
 #include <QStandardPaths>
