@@ -127,8 +127,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         QModelIndex m_rootIndex;
         int m_groupedColumn;
 
-        /* debug function */
-        void dumpGroups() const;
 };
 
 #endif //GROUPINGPROXY_H
