@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -5472,13 +5472,13 @@ msgid "Could not copy track from device."
 msgstr "デバイスからトラックをコピーできませんでした。"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "不明なアルバム"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "不明なジャンル"
@@ -6326,7 +6326,7 @@ msgstr "入力ファイル"
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, kde-format
 msgid "Unknown Composer"
 msgstr "不明な作者"

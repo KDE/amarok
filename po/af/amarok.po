@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2010-01-30 14:30+0000\n"
 "Last-Translator: Emile Joubert <emile.joubert@gmail.com>\n"
 "Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
@@ -5628,13 +5628,13 @@ msgid "Could not copy track from device."
 msgstr "Kon nie die snit vanaf die toestel kopieer nie"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Onbekende Album"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Onbekende Genre"
@@ -6565,7 +6565,7 @@ msgstr ""
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "Unknown Composer"

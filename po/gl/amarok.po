@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2024-06-20 08:24+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Proxecto Trasno (proxecto@trasno.gal)\n"
@@ -5478,13 +5478,13 @@ msgid "Could not copy track from device."
 msgstr "Non foi posíbel copiar a pista desde o dispositivo."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Álbum descoñecido"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Xénero descoñecido"
@@ -6341,7 +6341,7 @@ msgstr "Non é un ficheiro"
 msgid "No read permissions"
 msgstr "Sen permisos de lectura"
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Compositor descoñecido"

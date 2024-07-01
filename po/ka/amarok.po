@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2023-02-08 07:05+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -5151,13 +5151,13 @@ msgid "Could not copy track from device."
 msgstr "მოწყობილობიდან ტრეკის კოპირების შეცდომა."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "უცნობი ალბომი"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "უცნობი ჟანრი"
@@ -5961,7 +5961,7 @@ msgstr "ფაილი არაა"
 msgid "No read permissions"
 msgstr "წაკითხვის წვდომის გარეშე"
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, kde-format
 msgid "Unknown Composer"
 msgstr "უცნობი კომპოზიტორი"

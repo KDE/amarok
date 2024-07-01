@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -5540,13 +5540,13 @@ msgid "Could not copy track from device."
 msgstr "Nepavyko nukopijuoti dainos iš įrenginio."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Nežinomas albumas"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Nežinomas žanras"
@@ -6485,7 +6485,7 @@ msgstr "Ne failas"
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Nežinomas kompozitorius"

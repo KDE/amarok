@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2024-05-07 17:44+0300\n"
 "Last-Translator: Tuomas Nurmi <tuomas@tuomasn.fi>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -5420,13 +5420,13 @@ msgid "Could not copy track from device."
 msgstr "Kappaleen kopioiminen laitteelta ei onnistunut."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Tuntematon albumi"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Tuntematon tyylilaji"
@@ -6286,7 +6286,7 @@ msgstr "Ei ole tiedosto"
 msgid "No read permissions"
 msgstr "Ei lukuoikeuksia"
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Tuntematon säveltäjä"

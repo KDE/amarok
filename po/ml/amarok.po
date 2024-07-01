@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-30 01:45+0000\n"
+"POT-Creation-Date: 2024-07-01 01:44+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -5444,13 +5444,13 @@ msgstr ""
 "´¿ à´àµà´¯àµà´¯àµà´µà´¾à´¨àµâ à´¸à´¾à´§à´¿à´àµà´à´¿à´²àµà´²"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
-#: core/meta/Meta.cpp:304
+#: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "à´à´ªà´°à´¿à´à´¿à´¤ à´à´²àµâà´¬à´"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
-#: core/meta/Meta.cpp:337
+#: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "à´à´ªà´°à´¿à´à´¿à´¤ à´à´£à´"
@@ -6326,7 +6326,7 @@ msgstr ""
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:359
+#: core/meta/Meta.cpp:357
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "Unknown Composer"
