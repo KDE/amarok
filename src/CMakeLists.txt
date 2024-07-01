@@ -636,8 +636,6 @@ set(amaroklib_LIB_SRCS
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
     ${importers_SRCS}
-    aboutdialog/AnimatedBarWidget.cpp
-    aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
     aboutdialog/FramedLabel.cpp
     aboutdialog/OcsData.cpp

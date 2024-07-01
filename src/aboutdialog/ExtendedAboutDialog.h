@@ -26,7 +26,6 @@
 #include "amarok_export.h"
 #include "App.h"
 #include "OcsPersonListWidget.h"
-#include "AnimatedBarWidget.h"
 
 #include <QDialog>
 #include <QPointer>
