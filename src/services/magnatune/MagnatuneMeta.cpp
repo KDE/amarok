@@ -217,7 +217,7 @@ QString Meta::MagnatuneTrack::sourceDescription()
 
 QPixmap Meta::MagnatuneTrack::emblem()
 {
-    return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-magnatune.png" ) );
+    return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-magnatune.png") ) );
 }
 
 

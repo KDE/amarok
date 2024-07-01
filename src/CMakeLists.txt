@@ -825,6 +825,7 @@ if(BUILD_WITH_QT6)
         Phonon::phonon4qt${QT_MAJOR_VERSION}
         KF${KF_MAJOR_VERSION}::Archive
         KF${KF_MAJOR_VERSION}::CoreAddons
+        KF${KF_MAJOR_VERSION}::ColorScheme
         KF${KF_MAJOR_VERSION}::GlobalAccel
         KF${KF_MAJOR_VERSION}::GuiAddons
         KF${KF_MAJOR_VERSION}::I18n
@@ -836,6 +837,7 @@ if(BUILD_WITH_QT6)
         KF${KF_MAJOR_VERSION}::NewStuffCore
         KF${KF_MAJOR_VERSION}::Notifications
         KF${KF_MAJOR_VERSION}::Package
+        KF${KF_MAJOR_VERSION}::StatusNotifierItem
         KF${KF_MAJOR_VERSION}::TextEditor
         KF${KF_MAJOR_VERSION}::ThreadWeaver
         KF${KF_MAJOR_VERSION}::WidgetsAddons

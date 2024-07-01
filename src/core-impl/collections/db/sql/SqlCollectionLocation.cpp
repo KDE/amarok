@@ -44,6 +44,7 @@
 #include <KFileItem>
 #include <KJob>
 #include <KIO/DeleteJob>
+#include <KIO/FileCopyJob>
 #include <KIO/Job>
 #include <KConfigGroup>
 #include <KLocalizedString>

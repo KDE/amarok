@@ -32,7 +32,7 @@
 
 #include <QStandardPaths>
 
-#include <KIconThemes/KIconLoader>
+#include <KIconLoader>
 
 
 using namespace Meta;
@@ -47,7 +47,7 @@ OpmlDirectoryServiceFactory::~OpmlDirectoryServiceFactory()
 
 void OpmlDirectoryServiceFactory::init()
 {
-    ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory", i18n( "Podcast Directory" ) );
+    ServiceBase* service = new OpmlDirectoryService( this, QStringLiteral("OpmlDirectory"), i18n( "Podcast Directory" ) );
     m_initialized = true;
     Q_EMIT newService( service );
 }
@@ -55,12 +55,12 @@ void OpmlDirectoryServiceFactory::init()
 
 QString OpmlDirectoryServiceFactory::name()
 {
-    return "OpmlDirectory";
+    return QStringLiteral("OpmlDirectory");
 }
 
 KConfigGroup OpmlDirectoryServiceFactory::config()
 {
-    return Amarok::config( "Service_OpmlDirectory" );
+    return Amarok::config( QStringLiteral("Service_OpmlDirectory") );
 }
 
 
@@ -68,12 +68,12 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
  : ServiceBase( name, parent, false, prettyName )
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
-    setIcon( QIcon::fromTheme( "view-services-opml-amarok" ) );
+    setIcon( QIcon::fromTheme( QStringLiteral("view-services-opml-amarok") ) );
 
     setLongDescription( i18n( "A comprehensive list of searchable podcasts that you can subscribe to directly from within Amarok." ) );
 
     KIconLoader loader;
-    setImagePath( loader.iconPath( "view-services-opml-amarok", -128, true ) );
+    setImagePath( loader.iconPath( QStringLiteral("view-services-opml-amarok"), -128, true ) );
 
     The::amarokUrlHandler()->registerRunner( this, command() );
 
@@ -106,15 +106,15 @@ void OpmlDirectoryService::polish()
     opmlView->setDragDropMode ( QAbstractItemView::DragOnly );
     opmlView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
     setView( opmlView );
-    QString opmlLocation = Amarok::saveLocation() + "podcast_directory.opml";
+    QString opmlLocation = Amarok::saveLocation() + QStringLiteral("podcast_directory.opml");
 
     if( !QFile::exists( opmlLocation ) )
     {
         //copy from the standard data dir
-        QString schippedOpmlLocation = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/podcast_directory.opml" );
+        QString schippedOpmlLocation = QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/podcast_directory.opml") );
         if( !QFile::copy( schippedOpmlLocation, opmlLocation ) )
         {
-            debug() << QString( "Failed to copy from %1 to %2" )
+            debug() << QStringLiteral( "Failed to copy from %1 to %2" )
             .arg( schippedOpmlLocation, opmlLocation );
             //TODO: error box drawn in the view's area.
             return;
@@ -125,7 +125,7 @@ void OpmlDirectoryService::polish()
 
     m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
-    m_subscribeButton->setObjectName( "subscribeButton" );
+    m_subscribeButton->setObjectName( QStringLiteral("subscribeButton") );
     m_subscribeButton->setIcon( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ) );
 
     m_subscribeButton->setEnabled( false );
@@ -151,7 +151,7 @@ void OpmlDirectoryService::polish()
 QString
 OpmlDirectoryService::command() const
 {
-    return "service-podcastdirectory";
+    return QStringLiteral("service-podcastdirectory");
 }
 
 QString
@@ -164,7 +164,7 @@ bool
 OpmlDirectoryService::run(const AmarokUrl &url )
 {
     //make sure this category is shown.
-    AmarokUrl( "amarok://navigate/internet/OpmlDirectory" ).run();
+    AmarokUrl( QStringLiteral("amarok://navigate/internet/OpmlDirectory") ).run();
     if( url.path() == QLatin1String( "addOpml" ) )
     {
         OpmlDirectoryModel *opmlModel = qobject_cast<OpmlDirectoryModel *>( model() );

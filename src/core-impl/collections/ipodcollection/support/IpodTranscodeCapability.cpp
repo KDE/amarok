@@ -23,7 +23,7 @@ using namespace Capabilities;
 IpodTranscodeCapability::IpodTranscodeCapability( IpodCollection *coll, const QString &deviceDirPath  )
     : TranscodeCapability()
     , m_coll( coll )
-    , m_configFilePath( deviceDirPath + QString( "/AmarokTranscodingPrefs" ) )
+    , m_configFilePath( deviceDirPath + QStringLiteral( "/AmarokTranscodingPrefs" ) )
 {
 }
 

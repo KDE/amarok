@@ -23,6 +23,7 @@
 #include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneConfig.h"
 
+#include <KIO/StoredTransferJob>
 #include <KMessageBox>
 
 #include <QDir>

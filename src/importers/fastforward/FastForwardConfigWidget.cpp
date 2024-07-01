@@ -52,8 +52,8 @@ FastForwardConfigWidget::config() const
     QMetaEnum driverEnum = metaObject()->enumerator( enumId );
 
     cfg.insert( QStringLiteral("name"), m_targetName->text() );
-    cfg.insert( QStringLiteral("dbDriver"), driverEnum.valueToKey(
-                    Driver( m_connectionType->currentIndex() ) ) );
+    cfg.insert( QStringLiteral("dbDriver"), QLatin1String( driverEnum.valueToKey(
+                    Driver( m_connectionType->currentIndex() ) ) ) );
 
     cfg.insert( QStringLiteral("dbPath"), m_databaseLocation->text() );
     cfg.insert( QStringLiteral("dbName"), m_databaseName->text() );
@@ -91,7 +91,7 @@ FastForwardConfigWidget::populateFields()
     m_connectionType->insertItem( QSQLITE, QStringLiteral("SQLite") );
 
     const QByteArray dbDriver = m_config.value( QStringLiteral("dbDriver"),
-                                         driverEnum.valueToKey( QSQLITE ) ).toByteArray();
+                                         QLatin1String( driverEnum.valueToKey( QSQLITE ) ) ).toByteArray();
 
     int index = driverEnum.keyToValue( dbDriver.constData() );
     if( index == -1 )

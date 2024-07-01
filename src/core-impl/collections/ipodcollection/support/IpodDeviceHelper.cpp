@@ -431,7 +431,7 @@ IpodDeviceHelper::initializeIpod( const QString &mountPoint,
             if( error )
             {
                 errorMessage = i18nc( "Do not translate SysInfo",
-                                      "Failed to write SysInfo: %1", error->message );
+                                      "Failed to write SysInfo: %1", QLatin1String(error->message) );
                 g_error_free( error );
             }
             else

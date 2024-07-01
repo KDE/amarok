@@ -25,6 +25,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <KIO/Job>
+#include <KIO/StoredTransferJob>
 #include <KLocalizedString>
 
 #include <QDomDocument>
@@ -461,7 +462,7 @@ Dynamic::EchoNestBias::loadDataFromFile()
 {
     m_similarArtistMap.clear();
 
-    QFile file( Amarok::saveLocation() + "dynamic_echonest_similar.xml" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_echonest_similar.xml") );
 
     if( !file.exists() ||
         !file.open( QIODevice::ReadOnly ) )

@@ -31,6 +31,7 @@
 #include <QVariantMap>
 
 #include <KIO/Job>
+#include <KIO/StoredTransferJob>
 
 
 namespace Playdar
@@ -141,43 +142,43 @@ namespace Playdar
 
         auto object = doc.object();
 
-        if( !object.contains( "results" ) )
+        if( !object.contains( QStringLiteral("results") ) )
         {
             debug() << "Expecting results in Playdar's response, received none";
             Q_EMIT playdarError( Playdar::Controller::ErrorState( 6 ) );
             return;
         }
-        if( !object.contains( "qid" ) )
+        if( !object.contains( QStringLiteral("qid") ) )
         {
             debug() << "Expected qid in Playdar's response, received none";
             Q_EMIT playdarError( Playdar::Controller::ErrorState( 4 ) );
             return;
         }
-        if( object.value( "qid" ) != m_qid )
+        if( object.value( QStringLiteral("qid") ) != m_qid )
         {
             debug() << "A query received the wrong results from Playdar...";
             Q_EMIT playdarError( Playdar::Controller::ErrorState( 5 ) );
             return;
         }
         
-        m_artist = object.value( "artist" ).toString();
-        m_album = object.value( "album" ).toString();
-        m_title = object.value( "track" ).toString();
+        m_artist = object.value( QStringLiteral("artist") ).toString();
+        m_album = object.value( QStringLiteral("album") ).toString();
+        m_title = object.value( QStringLiteral("track") ).toString();
         
-        for( const auto &resultVariant : object.value( "results" ).toArray() )
+        for( const auto &resultVariant : object.value( QStringLiteral("results") ).toArray() )
         {
             auto result = resultVariant.toObject();
             Meta::PlaydarTrackPtr aTrack;
-            QUrl resultUrl( m_controller->urlForSid( result.value( "sid" ).toString() ) );
+            QUrl resultUrl( m_controller->urlForSid( result.value( QStringLiteral("sid") ).toString() ) );
             
-            QString trackSid = result.value( "sid" ).toString();
+            QString trackSid = result.value( QStringLiteral("sid") ).toString();
             QString trackUrl = resultUrl.url();
-            QString trackTitle = result.value( "track" ).toString();
-            QString trackArtist = result.value( "artist" ).toString();
-            QString trackAlbum = result.value( "album" ).toString();
-            QString trackType = result.value( "mimetype" ).toString();
-            QString trackSource = result.value( "source" ).toString();
-            qint64 trackLengthInSeconds( result.value( "duration" ).toInt() );
+            QString trackTitle = result.value( QStringLiteral("track") ).toString();
+            QString trackArtist = result.value( QStringLiteral("artist") ).toString();
+            QString trackAlbum = result.value( QStringLiteral("album") ).toString();
+            QString trackType = result.value( QStringLiteral("mimetype") ).toString();
+            QString trackSource = result.value( QStringLiteral("source") ).toString();
+            qint64 trackLengthInSeconds( result.value( QStringLiteral("duration") ).toInt() );
             aTrack = new Meta::PlaydarTrack
             (
                 trackSid,
@@ -186,10 +187,10 @@ namespace Playdar
                 trackArtist,
                 trackAlbum,
                 trackType,
-                result.value( "score" ).toDouble() * 100,
+                result.value( QStringLiteral("score") ).toDouble() * 100,
                 ( trackLengthInSeconds * 1000 ), //convert s to ms
-                result.value( "bitrate" ).toInt(),
-                result.value( "size" ).toInt(),
+                result.value( QStringLiteral("bitrate") ).toInt(),
+                result.value( QStringLiteral("size") ).toInt(),
                 trackSource
             );
             

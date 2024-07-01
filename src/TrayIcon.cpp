@@ -65,14 +65,14 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 #ifdef Q_OS_APPLE
     // Add these functions to the dock icon menu in OS X
     qt_mac_set_dock_menu( contextMenu() );
-    contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
+    contextMenu()->addAction( ac->action( QStringLiteral("playlist_playmedia") ) );
     contextMenu()->addSeparator();
 #endif
 
-    contextMenu()->addAction( ac->action( "prev"       ) );
-    contextMenu()->addAction( ac->action( "play_pause" ) );
-    contextMenu()->addAction( ac->action( "stop"       ) );
-    contextMenu()->addAction( ac->action( "next"       ) );
+    contextMenu()->addAction( ac->action( QStringLiteral("prev")       ) );
+    contextMenu()->addAction( ac->action( QStringLiteral("play_pause") ) );
+    contextMenu()->addAction( ac->action( QStringLiteral("stop")       ) );
+    contextMenu()->addAction( ac->action( QStringLiteral("next")       ) );
 
     m_separator = contextMenu()->addSeparator();
     contextMenu()->addActions( actionCollection() ); // quit and restore
@@ -81,7 +81,7 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Initializing system tray icon" );
 
-    setIconByName( "amarok-symbolic" );
+    setIconByName( QStringLiteral("amarok-symbolic") );
     updateOverlayIcon();
     updateToolTipIcon();
     updateMenu();
@@ -128,12 +128,12 @@ Amarok::TrayIcon::updateToolTipIcon()
         }
         else
         {
-            setToolTipIconByName( "amarok" );
+            setToolTipIconByName( QStringLiteral("amarok") );
         }
     }
     else
     {
-        setToolTipIconByName( "amarok" );
+        setToolTipIconByName( QStringLiteral("amarok") );
     }
 }
 
@@ -172,12 +172,12 @@ Amarok::TrayIcon::updateToolTip()
             QString stars;
             for( int i = 0; i < rating / 2; ++i )
                 stars += QStringLiteral( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/star.png" ) )
+                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/star.png") ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
             if( rating % 2 )
                 stars += QStringLiteral( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/smallstar.png" ) )
+                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/smallstar.png") ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
 
@@ -193,7 +193,7 @@ Amarok::TrayIcon::updateToolTip()
         const QDateTime lastPlayed = statistics->lastPlayed();
         tooltip << i18n( "Last played: %1", Amarok::verboseTimeSince( lastPlayed ) );
 
-        setToolTipSubTitle( tooltip.join("<br>") );
+        setToolTipSubTitle( tooltip.join( QStringLiteral("<br>") ) );
     }
     else
     {
@@ -329,9 +329,9 @@ void
 Amarok::TrayIcon::updateOverlayIcon()
 {
     if( The::engineController()->isPlaying() )
-        setOverlayIconByName( "media-playback-start" );
+        setOverlayIconByName( QStringLiteral("media-playback-start") );
     else if( The::engineController()->isPaused() )
-        setOverlayIconByName( "media-playback-pause" );
+        setOverlayIconByName( QStringLiteral("media-playback-pause") );
     else
         setOverlayIconByName( QString() );
 }

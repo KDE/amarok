@@ -96,7 +96,7 @@ AmarokScriptEngine::enumObject( const QMetaEnum &metaEnum )
 {
     QJSValue enumObj = newObject();
     for( int i = 0; i< metaEnum.keyCount(); ++i )
-        enumObj.setProperty( metaEnum.key(i), QJSEngine::toScriptValue( metaEnum.value(i) ) );
+        enumObj.setProperty( QLatin1String(metaEnum.key(i)), QJSEngine::toScriptValue( metaEnum.value(i) ) );
     return enumObj;
 }
 

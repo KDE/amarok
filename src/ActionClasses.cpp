@@ -33,6 +33,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/Osd.h"
 
+#include <QActionGroup>
 #include <QKeySequence>
 
 #include <KAuthorized>
@@ -231,7 +232,7 @@ ToggleAction::ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCo
         , m_function( f )
 {
     setText(text);
-    ac->addAction(name, this);
+    ac->addAction(QLatin1String(name), this);
 }
 
 void ToggleAction::setChecked( bool b )
@@ -263,7 +264,7 @@ SelectAction::SelectAction( const QString &text, void ( *f ) ( int ), KActionCol
 {
     PERF_LOG( "In SelectAction" );
     setText(text);
-    ac->addAction(name, this);
+    ac->addAction(QLatin1String(name), this);
 }
 
 void SelectAction::setCurrentItem( int n )

@@ -183,7 +183,7 @@ Track::prettyUrl() const
     QString artistName = artist() ? artist()->prettyName() : i18n( "Unknown Artist" );
     QString trackName = !name().isEmpty() ? name() : i18n( "Unknown track" );
 
-    return  QString( "%1: %2 - %3" ).arg( collName, artistName, trackName );
+    return QStringLiteral( "%1: %2 - %3" ).arg( collName, artistName, trackName );
 }
 
 QString
@@ -267,7 +267,7 @@ Track::setImage( const QImage &newImage )
 
         QTemporaryFile tempImageFile;
         tempImageFile.setAutoRemove( false ); // file will be removed in ~Track()
-        tempImageFile.setFileTemplate( QDir::tempPath() + "/XXXXXX.png" );
+        tempImageFile.setFileTemplate( QDir::tempPath() + QStringLiteral("/XXXXXX.png") );
         // we save the file to disk rather than pass image data to save several megabytes of RAM
         if( tempImageFile.open() )
             m_tempImageFilePath = tempImageFile.fileName();

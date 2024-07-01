@@ -73,9 +73,9 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     // try to set up the dialog such that the full width of the
     // document is visible without horizontal scroll-bars being required
     const qreal idealWidth = licenseBrowser->document()->idealWidth()
-        + (2 * QApplication::style()->pixelMetric(QStyle::PM_DefaultChildMargin))
+        + QApplication::style()->pixelMetric(QStyle::PM_LayoutLeftMargin)
+        + QApplication::style()->pixelMetric(QStyle::PM_LayoutRightMargin)
         + licenseBrowser->verticalScrollBar()->width() * 2;
-//TODO KF5:PM_DefaultChildMargin is obsolete. Look in QStyle docs for correctly replacing it.
 
     // try to allow enough height for a reasonable number of lines to be shown
     const int idealHeight = metrics.height() * 30;

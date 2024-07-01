@@ -19,6 +19,7 @@
 #include <KConfigGroup>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
+#include <KIO/MkdirJob>
 #include <KIO/Job>
 
 #include <QAction>

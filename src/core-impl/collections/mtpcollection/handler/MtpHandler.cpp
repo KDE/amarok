@@ -297,7 +297,7 @@ MtpHandler::getDeviceInfo()
         m_capacity = m_device->storage->MaxCapacity;
     }
 
-    QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
+    QString modelname = QLatin1String( LIBMTP_Get_Modelname( m_device ) );
 
     // NOTE: on next libmtp bump, may reintroduce owner name
     // for now it doesn't work as expected
@@ -997,7 +997,7 @@ MtpHandler::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
 int
 MtpHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_mtpTrackHash.value( track )->date ).midRef( 0, 4 ).toUInt();
+    return QString::fromUtf8( m_mtpTrackHash.value( track )->date ).left( 4 ).toUInt();
 }
 
 qint64

@@ -85,7 +85,7 @@ KConfigGroup MagnatuneServiceFactory::config()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *name )
-        : ServiceBase( name, parent )
+        : ServiceBase( QLatin1String(name), parent )
         , m_downloadHandler( nullptr )
         , m_redownloadHandler( nullptr )
         , m_needUpdateWidget( nullptr )

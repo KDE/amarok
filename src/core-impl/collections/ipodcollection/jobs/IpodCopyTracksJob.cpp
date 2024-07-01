@@ -26,7 +26,7 @@
 #include "FileType.h"
 #include "transcoding/TranscodingJob.h"
 
-#include <KIO/CopyJob>
+#include <KIO/FileCopyJob>
 #include <KIO/Job>
 #include <KMessageBox>
 

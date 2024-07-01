@@ -21,6 +21,7 @@
 
 #include "QtBinding.h"
 
+#include <QIODevice>
 #include <QObject>
 #include <QTextStream>
 

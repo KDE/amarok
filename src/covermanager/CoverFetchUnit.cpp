@@ -149,7 +149,7 @@ QString
 CoverFetchPayload::sanitizeQuery( const QString &query )
 {
     QString cooked( query );
-    cooked.remove( QChar('?') );
+    cooked.remove( QLatin1Char('?') );
     return cooked;
 }
 
@@ -465,8 +465,8 @@ CoverFetchArtPayload::prepareUrls()
 
     if( xml.hasError() )
     {
-        warning() << QString( "Error occurred when preparing %1 urls for %2: %3" )
-            .arg( sourceString(), (album() ? album()->name() : "'unknown'"), xml.errorString() );
+        warning() << QStringLiteral( "Error occurred when preparing %1 urls for %2: %3" )
+            .arg( sourceString(), (album() ? album()->name() : QStringLiteral("'unknown'")), xml.errorString() );
         debug() << urls();
     }
 }
@@ -491,7 +491,7 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
                 continue;
 
             CoverFetch::Metadata metadata;
-            metadata[ QStringLiteral("source") ] = "Discogs";
+            metadata[ QStringLiteral("source") ] = QStringLiteral("Discogs");
             if( n == QStringLiteral("title") )
                 metadata[ QStringLiteral("title") ] = xml.readElementText();
             else if( n == QStringLiteral("country") )

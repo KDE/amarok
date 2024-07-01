@@ -213,7 +213,7 @@ FileBrowser::Private::updateHeaderState()
 }
 
 FileBrowser::FileBrowser( const char *name, QWidget *parent )
-    : BrowserCategory( name, parent )
+    : BrowserCategory( QLatin1String(name), parent )
     , d( new FileBrowser::Private( this ) )
 {
     setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, "
@@ -412,7 +412,7 @@ FileBrowser::setupAddItems()
     if( d->currentPath == placesUrl )
         return; // no more items to add
 
-    QString workingUrl = d->currentPath.toDisplayString( QUrl::StripTrailingSlash );
+    const QString workingUrl = d->currentPath.toDisplayString( QUrl::StripTrailingSlash );
     int currentPosition = 0;
 
     QString name;
@@ -467,7 +467,7 @@ FileBrowser::setupAddItems()
     addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
 
     // other additional items
-    while( !workingUrl.midRef( currentPosition ).isEmpty() )
+    while( workingUrl.length() > currentPosition )
     {
         int nextPosition = workingUrl.indexOf( QLatin1Char('/'), currentPosition ) + 1;
         if( nextPosition <= 0 )

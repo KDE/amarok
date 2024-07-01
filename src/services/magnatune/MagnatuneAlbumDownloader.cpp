@@ -53,7 +53,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
     m_currentAlbumUnpackLocation = info.unpackLocation();
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation;
 
-    m_currentAlbumFileName = info.albumCode() + ".zip";
+    m_currentAlbumFileName = info.albumCode() + QStringLiteral(".zip");
 
     debug() << "Using temporary location: " << m_tempDir->path() + QLatin1Char('/') + m_currentAlbumFileName;
 

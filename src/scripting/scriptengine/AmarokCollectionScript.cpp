@@ -29,7 +29,7 @@
 
 #define SCRIPTING_DEPRECATED( x ) \
                                     AmarokScriptEngine *amarokScriptEngine = dynamic_cast<AmarokScriptEngine*>(parent()); \
-                                    if( amarokScriptEngine ) amarokScriptEngine->invokableDeprecatedCall( x );
+                                    if( amarokScriptEngine ) amarokScriptEngine->invokableDeprecatedCall( QStringLiteral(x) );
 
 using namespace AmarokScript;
 

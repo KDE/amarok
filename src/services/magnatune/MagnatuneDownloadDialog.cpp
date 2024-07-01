@@ -20,7 +20,7 @@
 #include "core/support/Debug.h"
 
 #include <KConfigGroup>
-#include <KIOWidgets/KUrlRequester>
+#include <KUrlRequester>
 
 
 MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WindowFlags fl  )
@@ -45,7 +45,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     QString path = downloadTargetURLRequester->url().url();
 
     //store to config for next download:
-    KConfigGroup config = Amarok::config( "Service_Magnatune" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Service_Magnatune") );
     config.writeEntry( "Download Format", format );
     config.writeEntry( "Download Path", path );
     
@@ -75,7 +75,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( const MagnatuneDownloadInfo &info
     infoEdit->setText( info.downloadMessage() );
 
     //restore format and path from last time, if any.
-    KConfigGroup config = Amarok::config("Service_Magnatune");
+    KConfigGroup config = Amarok::config( QStringLiteral("Service_Magnatune") );
     QString format = config.readEntry( "Download Format", QString() );
     QString path = config.readEntry( "Download Path", QString() );
 

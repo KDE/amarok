@@ -22,6 +22,7 @@
 #include <KColorScheme>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KStatefulBrush>
 
 #include <QAction>
 #include <QHBoxLayout>

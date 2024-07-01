@@ -120,10 +120,10 @@ QVariant AppletModel::data(const QModelIndex& index, int role) const
             return package.fileUrl("mainscript");
 
         case Collapsed:
-            return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + "_collapsed", false);
+            return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + QStringLiteral("_collapsed"), false);
 
         case ContentHeight:
-            return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + "_contentHeight", 300);
+            return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + QStringLiteral("_contentHeight"), 300);
     }
 
     return QVariant();
@@ -142,13 +142,13 @@ bool Context::AppletModel::setData(const QModelIndex& index, const QVariant& val
     {
         case Collapsed:
         {
-            Amarok::config(QStringLiteral("Context")).writeEntry(package.metadata().pluginId() + "_collapsed", value.toBool());
+            Amarok::config(QStringLiteral("Context")).writeEntry(package.metadata().pluginId() + QStringLiteral("_collapsed"), value.toBool());
             Q_EMIT dataChanged(index, index, QVector<int>{role});
             return true;
         }
         case ContentHeight:
         {
-            Amarok::config(QStringLiteral("Context")).writeEntry(package.metadata().pluginId() + "_contentHeight", value.toReal());
+            Amarok::config(QStringLiteral("Context")).writeEntry(package.metadata().pluginId() + QStringLiteral("_contentHeight"), value.toReal());
             Q_EMIT dataChanged(index, index, QVector<int>{role});
             return true;
         }
@@ -198,7 +198,7 @@ void Context::AppletModel::setAppletContentHeight(const QString& id, qreal heigh
     auto package = findPackage(id);
     if (package.isValid())
     {
-        Amarok::config(QStringLiteral("Context")).writeEntry(id + "_contentHeight", height);
+        Amarok::config(QStringLiteral("Context")).writeEntry(id + QStringLiteral("_contentHeight"), height);
         int row = m_packages.indexOf(package);
         auto index = createIndex(row, 0);
         Q_EMIT dataChanged(index, index, QVector<int>{ContentHeight});

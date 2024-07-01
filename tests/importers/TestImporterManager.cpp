@@ -62,7 +62,7 @@ TestImporterManager::creatingProviderShouldSetConfigAndParent()
     m_mockManager->init();
     StatSyncing::ProviderPtr providerPtr = m_mockManager->createProvider( cfg );
 
-    QVERIFY( dynamic_cast<MockProvider*>(providerPtr.data())->config().contains( "customField" ) );
+    QVERIFY( dynamic_cast<MockProvider*>(providerPtr.data())->config().contains( QStringLiteral( "customField" ) ) );
     QCOMPARE( dynamic_cast<MockProvider*>(providerPtr.data())->manager(), m_mockManager );
 }
 

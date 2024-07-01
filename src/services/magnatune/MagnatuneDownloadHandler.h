@@ -25,6 +25,11 @@
 #include "MagnatuneMeta.h"
 
 
+namespace KIO
+{
+    class TransferJob;
+}
+
 /**
 The main class responsible for handling of downloads from Magnatune.com
 

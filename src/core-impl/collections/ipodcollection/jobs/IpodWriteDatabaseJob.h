@@ -18,6 +18,7 @@
 #define IPODWRITEDATABASEJOB_H
 
 #include <ThreadWeaver/Job>
+#include <QObject>
 
 class IpodCollection;
 

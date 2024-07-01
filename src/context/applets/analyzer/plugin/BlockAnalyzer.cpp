@@ -69,10 +69,19 @@ Analyzer::Worker * BlockAnalyzer::createWorker() const
     return worker;
 }
 
+
 void
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 BlockAnalyzer::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+#else
+BlockAnalyzer::geometryChange(const QRectF &newGeometry, const QRectF &oldGeometry)
+#endif
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QQuickFramebufferObject::geometryChanged( newGeometry, oldGeometry );
+#else
+    QQuickFramebufferObject::geometryChange( newGeometry, oldGeometry );
+#endif
     if( ( oldGeometry.height() == 0 || newGeometry.height() == 0 ) && oldGeometry.height() != newGeometry.height() )
     {
         drawNeedChanged( newGeometry.height() != 0 ); // Stop data processing if applet is minimized

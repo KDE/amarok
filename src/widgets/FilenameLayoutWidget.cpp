@@ -205,7 +205,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         { QStringLiteral("."), QStringLiteral("filename-dot-amarok"), Dot },
         { QStringLiteral(" "), QStringLiteral("filename-space-amarok"), Space },
         { i18n( "Collection root" ), QStringLiteral("drive-harddisk"), CollectionRoot },
-        { QString(), nullptr, Space }
+        { QString(), QString(), Space }
     };
 
     for( int i = 0; !tokenDefinitions[i].name.isNull(); ++i )

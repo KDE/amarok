@@ -1101,7 +1101,7 @@ TestSqlScanManager::testPartialUpdate()
 
     // Do some partial scanning and statistic generating for the tracks
     QList<QUrl> directoryWatcherSimulator;
-    directoryWatcherSimulator << QUrl::fromUserInput( m_tmpCollectionDir->path() + "/Pop" );
+    directoryWatcherSimulator << QUrl::fromUserInput( m_tmpCollectionDir->path() + QStringLiteral("/Pop") );
     incrementalScanAndWait( directoryWatcherSimulator );
     album = m_collection->registry()->getAlbum( QStringLiteral("Thriller"), QStringLiteral("Michael Jackson") );
     QVERIFY( album );

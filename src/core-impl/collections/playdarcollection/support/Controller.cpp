@@ -155,13 +155,13 @@ namespace Playdar {
 
         auto object = doc.object();
         
-        if( !object.contains("name") )
+        if( !object.contains(QStringLiteral("name")) )
         {
             debug() << "Expected a service name from Playdar, received none";
             Q_EMIT playdarError( Playdar::Controller::ErrorState( MissingServiceName ) );
             return;
         }
-        if( object.value("name").toString() != QStringLiteral( "playdar" ) )
+        if( object.value(QStringLiteral("name")).toString() != QStringLiteral( "playdar" ) )
         {
             debug() << "Expected Playdar, got response from some other service";
             Q_EMIT playdarError( Playdar::Controller::ErrorState( WrongServiceName ) );
@@ -202,14 +202,14 @@ namespace Playdar {
 
         auto object = doc.object();
 
-        if( !object.contains( "qid" ) )
+        if( !object.contains( QStringLiteral("qid") ) )
         {
             debug() << "Expected qid in Playdar's response, but didn't get it";
             Q_EMIT playdarError( Playdar::Controller::ErrorState( MissingQid ) );
             return;
         }
         
-        Query* query = new Query( object.value( "qid" ).toString(), this, m_queriesShouldWaitForSolutions );
+        Query* query = new Query( object.value( QStringLiteral("qid") ).toString(), this, m_queriesShouldWaitForSolutions );
         
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         Q_EMIT queryReady( query );

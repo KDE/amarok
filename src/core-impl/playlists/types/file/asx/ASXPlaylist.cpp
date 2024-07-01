@@ -71,7 +71,7 @@ ASXPlaylist::processContent( QTextStream &stream )
             QString url = urlMatch.captured( 2 );
             url.replace( QRegularExpression( QLatin1String("&(?!amp;|quot;|apos;|lt;|gt;)") ), QStringLiteral("&amp;") );
 
-            QString urlReplacement = urlMatch.captured( 1 ) % url % "\"";
+            QString urlReplacement = urlMatch.captured( 1 ) % url % QStringLiteral("\"");
             tagReplacement.replace( urlMatch.captured(0).toLocal8Bit().toLower(),
                                     urlReplacement.toLocal8Bit() );
         }

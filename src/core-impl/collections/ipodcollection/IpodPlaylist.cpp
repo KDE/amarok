@@ -86,7 +86,7 @@ QUrl
 IpodPlaylist::uidUrl() const
 {
     // integer reading is atomic, no lock needed
-    QString collId = m_coll ? m_coll->collectionId() : "removedipodcollection:/";
+    QString collId = m_coll ? m_coll->collectionId() : QStringLiteral("removedipodcollection:/");
     return QUrl( QStringLiteral( "%1/playlists/%2" ).arg( collId ).arg( m_playlist->id ) );
 }
 
