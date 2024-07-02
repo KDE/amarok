@@ -33,9 +33,9 @@
 
 #include <KLocalizedString>
 
-#include <DNSSD/RemoteService>
-#include <DNSSD/ServiceBase>
-#include <DNSSD/ServiceBrowser>
+#include <KDNSSD/RemoteService>
+#include <KDNSSD/ServiceBase>
+#include <KDNSSD/ServiceBrowser>
 
 using namespace Collections;
 

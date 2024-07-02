@@ -31,7 +31,7 @@
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <DNSSD/RemoteService>
+#include <KDNSSD/RemoteService>
 
 namespace KDNSSD {
     class ServiceBrowser;

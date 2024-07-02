@@ -6,6 +6,7 @@ VERSION 3.0.2
   FEATURES:
 
   CHANGES:
+   * Amarok now depends on KDE Frameworks 5.84.
    * Cleanup of unused code and various changes that improve Qt6 compatibility
      but shouldn't affect functionality.
    * Remove old derelict openDesktop.org integrations from about dialog. This also

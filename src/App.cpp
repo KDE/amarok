@@ -573,7 +573,7 @@ void App::slotConfigAmarokWithEmptyPage()
 
 void App::slotConfigShortcuts()
 {
-    KShortcutsDialog::configure( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, mainWindow() );
+    KShortcutsDialog::showDialog( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, mainWindow() );
     AmarokConfig::self()->save();
 }
 
