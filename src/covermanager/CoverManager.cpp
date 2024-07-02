@@ -97,7 +97,7 @@ CoverManager::CoverManager( QWidget *parent )
 {
     DEBUG_BLOCK
 
-    setObjectName( "TheCoverManager" );
+    setObjectName( QStringLiteral("TheCoverManager") );
 
     s_instance = this;
 
@@ -132,7 +132,7 @@ CoverManager::CoverManager( QWidget *parent )
 
     ArtistItem *item = nullptr;
     item = new ArtistItem( i18n( "All Artists" ) );
-    item->setIcon(0, QIcon::fromTheme( "media-optical-audio-amarok" ) );
+    item->setIcon(0, QIcon::fromTheme( QStringLiteral("media-optical-audio-amarok") ) );
     m_items.append( item );
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
@@ -165,7 +165,7 @@ CoverManager::slotContinueConstruction() //SLOT
     for( Meta::ArtistPtr artist : m_artistList )
     {
         ArtistItem* item = new ArtistItem( m_artistView, artist );
-        item->setIcon( 0, QIcon::fromTheme( "view-media-artist-amarok" ) );
+        item->setIcon( 0, QIcon::fromTheme( QStringLiteral("view-media-artist-amarok") ) );
         m_items.append( item );
     }
     m_artistView->insertTopLevelItems( 0, m_items );
@@ -205,7 +205,7 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_viewMenu, &QMenu::triggered, this, &CoverManager::slotAlbumFilterTriggered );
 
     //fetch missing covers button
-    m_fetchButton = new QPushButton( QIcon( "get-hot-new-stuff-amarok" ), i18n("Fetch Missing Covers"), hbox );
+    m_fetchButton = new QPushButton( QIcon( QStringLiteral("get-hot-new-stuff-amarok") ), i18n("Fetch Missing Covers"), hbox );
     connect( m_fetchButton, &QAbstractButton::clicked, this, &CoverManager::fetchMissingCovers );
 
     m_selectAllAlbums->setChecked( true );
@@ -229,7 +229,7 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_progress, &CompoundProgressBar::allDone, this, &CoverManager::progressAllDone );
 
     QSize size = this->screen()->size() / 1.5;
-    QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
+    QSize sz = Amarok::config( QStringLiteral("Cover Manager") ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
 
     m_splitter->setStretchFactor( m_splitter->indexOf( m_artistView ), 1 );
@@ -269,7 +269,7 @@ CoverManager::slotContinueConstruction() //SLOT
 
 CoverManager::~CoverManager()
 {
-    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
+    Amarok::config( QStringLiteral("Cover Manager") ).writeEntry( "Window Size", size() );
     qDeleteAll( m_coverItems );
     delete m_coverView;
     m_coverView = nullptr;
@@ -308,7 +308,7 @@ CoverManager::fetchMissingCovers() //SLOT
             m_fetchCovers += coverItem->albumPtr();
     }
 
-    debug() << QString( "Fetching %1 missing covers" ).arg( m_fetchCovers.size() );
+    debug() << QStringLiteral( "Fetching %1 missing covers" ).arg( m_fetchCovers.size() );
 
     ProgressBar *fetchProgressBar = new ProgressBar( this );
     fetchProgressBar->setDescription( i18n( "Fetching" ) );
@@ -737,7 +737,7 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WindowFlags f )
 {
     DEBUG_BLOCK
 
-    setObjectName( name );
+    setObjectName( QLatin1String(name) );
     setWindowFlags( f );
     setViewMode( QListView::IconMode );
     setMovement( QListView::Static );

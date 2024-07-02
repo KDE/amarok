@@ -38,7 +38,7 @@ BlockAnalyzer::BlockAnalyzer( QQuickItem *parent )
     , m_fadeBarsPixmaps( FADE_SIZE ) //vector<QPixmap>
 {
     setTextureFollowsItemSize( true );
-    setObjectName( "Blocky" );
+    setObjectName( QStringLiteral("Blocky") );
 
     m_columnWidth = config().readEntry( "columnWidth", 4 );
     m_fallSpeed = (FallSpeed) config().readEntry( "fallSpeed", (int) Medium );

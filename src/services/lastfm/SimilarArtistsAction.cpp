@@ -29,12 +29,12 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     connect( this, &SimilarArtistsAction::triggered, this, &SimilarArtistsAction::slotTriggered );
 
     setIcon( QIcon::fromTheme("view-services-lastfm-amarok") );
-    setProperty( "popupdropper_svg_id", "lastfm" );
+    setProperty( "popupdropper_svg_id", QStringLiteral("lastfm") );
 }
 
 void SimilarArtistsAction::slotTriggered()
 {
-    const QString url = "lastfm://artist/" + artist()->prettyName() + "/similarartists";
+    const QString url = QStringLiteral("lastfm://artist/") + artist()->prettyName() + QStringLiteral("/similarartists");
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( QUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnPlayMediaAction );
 }

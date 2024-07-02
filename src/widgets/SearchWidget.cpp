@@ -71,7 +71,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     if( advanced )
     {
         m_filterAction = new QAction( QIcon::fromTheme( QStringLiteral("document-properties") ), i18n( "Edit filter" ), this );
-        m_filterAction->setObjectName( "filter" );
+        m_filterAction->setObjectName( QStringLiteral("filter") );
         m_toolBar->addAction( m_filterAction );
 
         connect( m_filterAction, &QAction::triggered, this, &SearchWidget::slotShowFilterEditor );

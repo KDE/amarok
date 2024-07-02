@@ -31,9 +31,9 @@ class MusicBrainzFinder : public QObject
 
     public:
         explicit MusicBrainzFinder( QObject *parent = nullptr,
-                                    const QString &host = "musicbrainz.org",
+                                    const QString &host = QStringLiteral("musicbrainz.org"),
                                     const int port = 80,
-                                    const QString &pathPrefix = "/ws/2",
+                                    const QString &pathPrefix = QStringLiteral("/ws/2"),
                                     const QString &username = QString(),
                                     const QString &password = QString() );
 

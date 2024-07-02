@@ -32,7 +32,7 @@
 #include <KLocalizedString>
 
 
-#define APIURL "https://api.lyrics.ovh/v1/"
+#define APIURL QStringLiteral("https://api.lyrics.ovh/v1/")
 
 
 LyricsManager* LyricsManager::s_self = nullptr;
@@ -163,7 +163,7 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
 
     QJsonDocument document = QJsonDocument::fromJson( data );
 
-    if( document.isNull() || !document.object().contains( "lyrics" ) )
+    if( document.isNull() || !document.object().contains( QStringLiteral("lyrics") ) )
     {
         if( track->album() && track->album()->albumArtist() )
         {
@@ -190,7 +190,7 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
         return;
     }
 
-    QString lyricString = document.object().value( "lyrics" ).toString();
+    QString lyricString = document.object().value( QStringLiteral("lyrics") ).toString();
     if( lyricString.contains( QStringLiteral( "\r\n" ) ) )
     {
         int lindex = lyricString.indexOf( QStringLiteral( "\r\n" ) ); // lyrics.ovh lyrics start from second row
@@ -205,7 +205,7 @@ void LyricsManager::sanitizeTitle( QString& title )
     const QString magnatunePreviewString = QStringLiteral( "PREVIEW: buy it at www.magnatune.com" );
 
     if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
-        title = title.remove( " (" + magnatunePreviewString + ')' );
+        title = title.remove( QStringLiteral(" (") + magnatunePreviewString + QLatin1Char(')') );
 
     title = title.remove( QStringLiteral( "(Live)" ) );
     title = title.remove( QStringLiteral( "(live)" ) );
@@ -218,7 +218,7 @@ void LyricsManager::sanitizeArtist( QString& artist )
     const QString magnatunePreviewString = QStringLiteral( "PREVIEW: buy it at www.magnatune.com" );
 
     if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
-        artist = artist.remove( " (" + magnatunePreviewString + ')' );
+        artist = artist.remove( QStringLiteral(" (") + magnatunePreviewString + QLatin1Char(')') );
 
     // strip "featuring <someone else>" from the artist
     int strip = artist.toLower().indexOf( QLatin1String(" ft. "));

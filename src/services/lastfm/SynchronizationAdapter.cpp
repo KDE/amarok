@@ -45,7 +45,7 @@ SynchronizationAdapter::~SynchronizationAdapter()
 QString
 SynchronizationAdapter::id() const
 {
-    return "lastfm";
+    return QLatin1String("lastfm");
 }
 
 QString
@@ -64,7 +64,7 @@ SynchronizationAdapter::description() const
 QIcon
 SynchronizationAdapter::icon() const
 {
-    return QIcon::fromTheme( "view-services-lastfm-amarok" );
+    return QIcon::fromTheme( QLatin1String("view-services-lastfm-amarok") );
 }
 
 qint64
@@ -174,15 +174,15 @@ SynchronizationAdapter::slotArtistsReceived()
         warning() << __PRETTY_FUNCTION__ << "Error parsing Last.fm reply:" << lfm.parseError().message();
         return;
     }
-    lastfm::XmlQuery artists = lfm[ "artists" ];
+    lastfm::XmlQuery artists = lfm[ QStringLiteral("artists") ];
     bool ok = false;
-    int page = artists.attribute( "page" ).toInt( &ok );
+    int page = artists.attribute( QStringLiteral("page") ).toInt( &ok );
     if( !ok )
     {
         warning() << __PRETTY_FUNCTION__ << "cannot read page number";
         return;
     }
-    int totalPages = artists.attribute( "totalPages" ).toInt( &ok );
+    int totalPages = artists.attribute( QStringLiteral("totalPages") ).toInt( &ok );
     if( !ok )
     {
         warning() << __PRETTY_FUNCTION__ << "cannot read total number or pages";
@@ -191,7 +191,7 @@ SynchronizationAdapter::slotArtistsReceived()
     debug() << __PRETTY_FUNCTION__ << "page" << page << "of" << totalPages;
 
     // following is based on lastfm::Artist::list():
-    for( const lastfm::XmlQuery &xq : lfm.children( "artist" ) )
+    for( const lastfm::XmlQuery &xq : lfm.children( QStringLiteral("artist") ) )
     {
         lastfm::Artist artist( xq );
         m_artists.insert( artist.name() );
@@ -223,21 +223,21 @@ SynchronizationAdapter::slotTracksReceived()
         warning() << __PRETTY_FUNCTION__ << "Error parsing Last.fm reply:" << lfm.parseError().message();
         return;
     }
-    lastfm::XmlQuery tracks = lfm[ "tracks" ];
+    lastfm::XmlQuery tracks = lfm[ QStringLiteral("tracks") ];
     bool ok = false;
-    int page = tracks.attribute( "page" ).toInt( &ok );
+    int page = tracks.attribute( QLatin1String("page") ).toInt( &ok );
     if( !ok )
     {
         warning() << __PRETTY_FUNCTION__ << "cannot read page number";
         return;
     }
-    int totalPages = tracks.attribute( "totalPages" ).toInt( &ok );
+    int totalPages = tracks.attribute( QLatin1String("totalPages") ).toInt( &ok );
     if( !ok )
     {
         warning() << __PRETTY_FUNCTION__ << "cannot read total number or pages";
         return;
     }
-    QString searchedArtist = tracks.attribute( "artist" );
+    QString searchedArtist = tracks.attribute( QLatin1String("artist") );
     if( searchedArtist.isEmpty() )
     {
         warning() << __PRETTY_FUNCTION__ << "searchedArtist in Last.fm reply is empty";
@@ -245,13 +245,13 @@ SynchronizationAdapter::slotTracksReceived()
     }
 
     // following is based on lastfm::Track::list():
-    for( const lastfm::XmlQuery &xq : lfm.children( "track" ) )
+    for( const lastfm::XmlQuery &xq : lfm.children( QLatin1String("track") ) )
     {
-        QString name = xq[ "name" ].text();
-        int playCount = xq[ "playcount" ].text().toInt();
-        int tagCount = xq[ "tagcount" ].text().toInt();
-        QString artist = xq[ "artist" ][ "name" ].text();
-        QString album = xq[ "album" ][ "name" ].text();
+        QString name = xq[ QLatin1String("name") ].text();
+        int playCount = xq[ QLatin1String("playcount") ].text().toInt();
+        int tagCount = xq[ QLatin1String("tagcount") ].text().toInt();
+        QString artist = xq[ QLatin1String("artist") ][ QLatin1String("name") ].text();
+        QString album = xq[ QLatin1String("album") ][ QLatin1String("name") ].text();
 
         bool useRatings = m_config->useFancyRatingTags();
         StatSyncing::TrackPtr track( new SynchronizationTrack( artist, album, name,
@@ -288,9 +288,9 @@ SynchronizationAdapter::slotTagsReceived()
         return;
     }
     QSet<QString> tags;
-    for( const lastfm::XmlQuery &xq : lfm.children( "tag" ) )
+    for( const lastfm::XmlQuery &xq : lfm.children( QStringLiteral("tag") ) )
     {
-        tags.insert( xq[ "name" ].text() );
+        tags.insert( xq[ QStringLiteral("name") ].text() );
     }
     Q_ASSERT( !m_tagQueue.isEmpty() );
     SynchronizationTrack *track = dynamic_cast<SynchronizationTrack *>( m_tagQueue.first().data() );

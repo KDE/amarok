@@ -94,8 +94,8 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
         {
             if ( m_appendAction == nullptr )
             {
-                m_appendAction = new QAction ( QIcon::fromTheme( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
-                m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+                m_appendAction = new QAction ( QIcon::fromTheme( QStringLiteral("media-track-add-amarok") ), i18n ( "&Add to Playlist" ), this );
+                m_appendAction->setProperty( "popupdropper_svg_id", QStringLiteral("append") );
                 connect ( m_appendAction, &QAction::triggered, this, &LastFmTreeView::slotAppendChildTracks );
             }
 
@@ -103,8 +103,8 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
 
             if ( m_loadAction == nullptr )
             {
-                m_loadAction = new QAction ( QIcon::fromTheme( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-                m_appendAction->setProperty( "popupdropper_svg_id", "load" );
+                m_loadAction = new QAction ( QIcon::fromTheme( QStringLiteral("folder-open") ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+                m_appendAction->setProperty( "popupdropper_svg_id", QStringLiteral("load") );
                 connect ( m_loadAction, &QAction::triggered, this, &LastFmTreeView::slotReplacePlaylistByChildTracks );
             }
             actions.append ( m_loadAction );

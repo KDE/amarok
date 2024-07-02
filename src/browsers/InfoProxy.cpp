@@ -150,7 +150,7 @@ InfoProxy::loadHomePage()
         return;
     }
 
-    QString html = file.readAll();
+    QString html = QLatin1String(file.readAll());
 
     QUrl imageUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/") ) );
     QString imagePath = imageUrl.url();

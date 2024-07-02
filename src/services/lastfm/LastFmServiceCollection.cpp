@@ -26,7 +26,7 @@
 using namespace Collections;
 
 LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
-    : ServiceCollection( nullptr, "last.fm", "last.fm" )
+    : ServiceCollection( nullptr, QStringLiteral("last.fm"), QStringLiteral("last.fm") )
 {
     DEBUG_BLOCK
     Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( i18n( "%1's Streams", userName ) );
@@ -47,37 +47,37 @@ LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
 
     // Only show these if the user is a subscriber.
     QStringList lastfmPersonal;
-    lastfmPersonal << "personal" << "recommended" <<  "loved";
+    lastfmPersonal << QStringLiteral("personal") << QStringLiteral("recommended") << QStringLiteral("loved");
 
     for( const QString &station : lastfmPersonal )
     {
-        LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
+        LastFm::Track * track = new LastFm::Track( QStringLiteral("lastfm://user/") + userName + QStringLiteral("/") + station );
         Meta::TrackPtr trackPtr( track );
         userStreams->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 
     QStringList lastfmGenres;
-    lastfmGenres << "Alternative" << "Ambient" << "Chill Out" << "Classical"<< "Dance"
-            << "Electronica" << "Favorites" << "Gospel" << "Heavy Metal" << "Hip Hop"
-            << "Indie Rock" << "Industrial" << "Japanese" << "Pop" << "Psytrance"
-            << "Rap" << "Rock" << "Soundtrack" << "Techno" << "Trance";
+    lastfmGenres << QStringLiteral("Alternative") << QStringLiteral("Ambient") << QStringLiteral("Chill Out") << QStringLiteral("Classical") << QStringLiteral("Dance")
+            << QStringLiteral("Electronica") << QStringLiteral("Favorites") << QStringLiteral("Gospel") << QStringLiteral("Heavy Metal") << QStringLiteral("Hip Hop")
+            << QStringLiteral("Indie Rock") << QStringLiteral("Industrial") << QStringLiteral("Japanese") << QStringLiteral("Pop") << QStringLiteral("Psytrance")
+            << QStringLiteral("Rap") << QStringLiteral("Rock") << QStringLiteral("Soundtrack") << QStringLiteral("Techno") << QStringLiteral("Trance");
 
 
     for( const QString &genre : lastfmGenres )
     {
-        LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
+        LastFm::Track * track = new LastFm::Track( QStringLiteral("lastfm://globaltags/") + genre );
         Meta::TrackPtr trackPtr( track );
         globalTags->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 
     QMap< QString, QString > params;
-    params[ "method" ] = "user.getFriends";
-    params[ "user" ] = userName;
-    m_jobs[ "user.getFriends" ] = lastfm::ws::post( params );
+    params[ QStringLiteral("method") ] = QStringLiteral("user.getFriends");
+    params[ QStringLiteral("user") ] = userName;
+    m_jobs[ QStringLiteral("user.getFriends") ] = lastfm::ws::post( params );
 
-    connect( m_jobs[ "user.getFriends" ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsLoved );
+    connect( m_jobs[ QStringLiteral("user.getFriends") ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsLoved );
     //connect( m_jobs[ "user.getFriends" ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsPersonal );
 
     //TODO Automatically add similar artist streams for the users favorite artists.
@@ -91,7 +91,7 @@ LastFmServiceCollection::~LastFmServiceCollection()
 bool
 LastFmServiceCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.scheme() == "lastfm";
+    return url.scheme() == QStringLiteral("lastfm");
 }
 
 
@@ -118,22 +118,22 @@ LastFmServiceCollection::prettyName() const
 void LastFmServiceCollection::slotAddFriendsLoved()
 {
     DEBUG_BLOCK
-    if( !m_jobs[ "user.getFriends" ] )
+    if( !m_jobs[ QStringLiteral("user.getFriends") ] )
     {
         debug() << "BAD! got no result object";
         return;
     }
-    switch (m_jobs[ "user.getFriends" ]->error())
+    switch (m_jobs[ QStringLiteral("user.getFriends") ]->error())
     {
         case QNetworkReply::NoError:
         {
             lastfm::XmlQuery lfm;
-            if( lfm.parse( m_jobs[ "user.getFriends" ]->readAll() ) )
+            if( lfm.parse( m_jobs[ QStringLiteral("user.getFriends") ]->readAll() ) )
             {
-                for( const lastfm::XmlQuery &e : lfm[ "friends" ].children( "user" ) )
+                for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("friends") ].children( "user" ) )
                 {
-                    const QString name = e[ "name" ].text();
-                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+                    const QString name = e[ QStringLiteral("name") ].text();
+                    LastFm::Track *track = new LastFm::Track( QStringLiteral("lastfm://user/") + name + QStringLiteral("/loved") );
                     Meta::TrackPtr trackPtr( track );
                     m_friendsLoved->addTrack( trackPtr );
                     addTrack( trackPtr );
@@ -162,23 +162,23 @@ void LastFmServiceCollection::slotAddFriendsLoved()
 void LastFmServiceCollection::slotAddFriendsPersonal()
 {
     DEBUG_BLOCK
-    if( !m_jobs[ "user.getFriends" ] )
+    if( !m_jobs[ QStringLiteral("user.getFriends") ] )
     {
         debug() << "BAD! got no result object";
         return;
     }
 
-    switch (m_jobs[ "user.getFriends" ]->error())
+    switch (m_jobs[ QStringLiteral("user.getFriends") ]->error())
     {
         case QNetworkReply::NoError:
         {
             lastfm::XmlQuery lfm;
-            if( lfm.parse( m_jobs[ "user.getFriends" ]->readAll() ) )
+            if( lfm.parse( m_jobs[ QStringLiteral("user.getFriends") ]->readAll() ) )
             {
-                for( const lastfm::XmlQuery &e : lfm[ "friends" ].children( "user" ) )
+                for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("friends") ].children( QStringLiteral("user") ) )
                 {
-                    const QString name = e[ "name" ].text();
-                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+                    const QString name = e[ QStringLiteral("name") ].text();
+                    LastFm::Track *track = new LastFm::Track( QStringLiteral("lastfm://user/") + name + QStringLiteral("/personal") );
                     Meta::TrackPtr trackPtr( track );
                     m_friendsPersonal->addTrack( trackPtr );
                     addTrack( trackPtr );
@@ -201,7 +201,7 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
             break;
     }
 
-    m_jobs[ "user.getFriends" ]->deleteLater();
+    m_jobs[ QStringLiteral("user.getFriends") ]->deleteLater();
 }
 
 QueryMaker*

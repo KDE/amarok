@@ -141,23 +141,23 @@ PhotosEngine::update( bool force )
 
         QStringList tags = m_keywords;
         tags << m_artist;
-        tags << "music";
+        tags << QStringLiteral("music");
         tags.removeDuplicates();
 
         // Query flickr, order by relevance, 10 max
         // Flickr :http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
         QUrl flickrUrl;
         QUrlQuery query;
-        flickrUrl.setScheme( "https" );
-        flickrUrl.setHost( "api.flickr.com" );
-        flickrUrl.setPath( "/services/rest/" );
-        query.addQueryItem( "method", "flickr.photos.search" );
-        query.addQueryItem( "api_key", Amarok::flickrApiKey() );
-        query.addQueryItem( "per_page", QString::number( m_nbPhotos ) );
-        query.addQueryItem( "sort", "relevance" );
-        query.addQueryItem( "media", "photos" );
-        query.addQueryItem( "content_type", QString::number(1) );
-        query.addQueryItem( "text", tags.join(" ") );
+        flickrUrl.setScheme( QStringLiteral("https") );
+        flickrUrl.setHost( QStringLiteral("api.flickr.com") );
+        flickrUrl.setPath( QStringLiteral("/services/rest/") );
+        query.addQueryItem( QStringLiteral("method"), QStringLiteral("flickr.photos.search") );
+        query.addQueryItem( QStringLiteral("api_key"), Amarok::flickrApiKey() );
+        query.addQueryItem( QStringLiteral("per_page"), QString::number( m_nbPhotos ) );
+        query.addQueryItem( QStringLiteral("sort"), QStringLiteral("relevance") );
+        query.addQueryItem( QStringLiteral("media"), QStringLiteral("photos") );
+        query.addQueryItem( QStringLiteral("content_type"), QString::number(1) );
+        query.addQueryItem( QStringLiteral("text"), tags.join(QStringLiteral(" ")) );
         flickrUrl.setQuery( query );
         debug() << "Flickr url:" << flickrUrl;
 

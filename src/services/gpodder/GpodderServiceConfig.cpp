@@ -63,7 +63,7 @@ GpodderServiceConfig::load()
     DEBUG_BLOCK
     debug() << "Load config";
 
-    KConfigGroup config = Amarok::config( configSectionName() );
+    KConfigGroup config = Amarok::config( QLatin1String(configSectionName()) );
 
     m_enableProvider = config.readEntry( "enableProvider", false );
     m_ignoreWallet = config.readEntry( "ignoreWallet", false );
@@ -73,20 +73,20 @@ GpodderServiceConfig::load()
 
     if( m_wallet )
     {
-        if( !m_wallet->hasFolder( "Amarok" ) )
-            m_wallet->createFolder( "Amarok" );
+        if( !m_wallet->hasFolder( QStringLiteral("Amarok") ) )
+            m_wallet->createFolder( QStringLiteral("Amarok") );
 
         // do a one-time transfer
         // can remove at some point in the future, post-2.2
-        m_wallet->setFolder( "Amarok" );
+        m_wallet->setFolder( QStringLiteral("Amarok") );
 
-        if( m_wallet->readPassword( "gpodder_password", m_password ) != 0 )
+        if( m_wallet->readPassword( QStringLiteral("gpodder_password"), m_password ) != 0 )
             debug() << "Failed to read gpodder.net password from kwallet!";
         else
         {
             QByteArray rawUsername;
 
-            if( m_wallet->readEntry( "gpodder_username", rawUsername ) != 0 )
+            if( m_wallet->readEntry( QStringLiteral("gpodder_username"), rawUsername ) != 0 )
                 debug() << "Failed to read gpodder.net username from kwallet.. :(";
             else
                 m_username = QString::fromUtf8( rawUsername );
@@ -110,7 +110,7 @@ GpodderServiceConfig::save()
 
     debug() << "Save config";
 
-    KConfigGroup config = Amarok::config( configSectionName() );
+    KConfigGroup config = Amarok::config( QLatin1String(configSectionName()) );
 
     config.writeEntry( "enableProvider", m_enableProvider );
     config.writeEntry( "ignoreWallet", m_ignoreWallet );
@@ -125,12 +125,12 @@ GpodderServiceConfig::save()
 
     if( m_wallet )
     {
-        m_wallet->setFolder( "Amarok" );
+        m_wallet->setFolder( QStringLiteral("Amarok") );
 
-        if( m_wallet->writeEntry( "gpodder_username", m_username.toUtf8() ) != 0 )
+        if( m_wallet->writeEntry( QStringLiteral("gpodder_username"), m_username.toUtf8() ) != 0 )
             debug() << "Failed to save gpodder.net username to kwallet!";
 
-        if( m_wallet->writePassword( "gpodder_password", m_password ) != 0 )
+        if( m_wallet->writePassword( QStringLiteral("gpodder_password"), m_password ) != 0 )
             debug() << "Failed to save gpodder.net pw to kwallet!";
     }
     else
@@ -193,8 +193,8 @@ GpodderServiceConfig::reset()
 {
     debug() << "Reset config";
 
-    m_username = "";
-    m_password = "";
+    m_username = QStringLiteral("");
+    m_password = QStringLiteral("");
     m_enableProvider = false;
     m_ignoreWallet = false;
 }
@@ -206,7 +206,7 @@ GpodderServiceConfig::textDialogYes() //SLOT
 
     if ( !m_ignoreWallet )
     {
-        KConfigGroup config = Amarok::config( configSectionName() );
+        KConfigGroup config = Amarok::config( QLatin1String(configSectionName()) );
 
         m_ignoreWallet = true;
         config.writeEntry( "ignoreWallet", m_ignoreWallet );
@@ -224,7 +224,7 @@ GpodderServiceConfig::textDialogNo() //SLOT
 
     if ( m_ignoreWallet )
     {
-        KConfigGroup config = Amarok::config( configSectionName() );
+        KConfigGroup config = Amarok::config( QLatin1String(configSectionName()) );
 
         m_ignoreWallet = false;
         config.writeEntry( "ignoreWallet", m_ignoreWallet );

@@ -73,7 +73,7 @@ SqlTrack::getTrackReturnValues()
 {
     //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
     // NOTE: when changing this, always check that SqlTrack::TrackReturnIndex enum remains valid
-    return "urls.id, urls.deviceid, urls.rpath, urls.directory, urls.uniqueid, "
+    return QStringLiteral("urls.id, urls.deviceid, urls.rpath, urls.directory, urls.uniqueid, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
            "statistics.score, statistics.rating, "
@@ -88,19 +88,19 @@ SqlTrack::getTrackReturnValues()
            "albums.name, albums.id, albums.artist, " // TODO: again here
            "genres.name, genres.id, " // TODO: again here
            "composers.name, composers.id, " // TODO: again here
-           "years.name, years.id"; // TODO: again here
+           "years.name, years.id"); // TODO: again here
 }
 
 QString
 SqlTrack::getTrackJoinConditions()
 {
-    return "LEFT JOIN tracks ON urls.id = tracks.url "
+    return QStringLiteral("LEFT JOIN tracks ON urls.id = tracks.url "
            "LEFT JOIN statistics ON urls.id = statistics.url "
            "LEFT JOIN artists ON tracks.artist = artists.id "
            "LEFT JOIN albums ON tracks.album = albums.id "
            "LEFT JOIN genres ON tracks.genre = genres.id "
            "LEFT JOIN composers ON tracks.composer = composers.id "
-           "LEFT JOIN years ON tracks.year = years.id";
+           "LEFT JOIN years ON tracks.year = years.id");
 }
 
 int
@@ -330,7 +330,7 @@ SqlTrack::setUidUrl( const QString &uid )
     QString newid = uid;
     QString protocol;
     if( m_collection )
-        protocol = m_collection->uidUrlProtocol()+"://";
+        protocol = m_collection->uidUrlProtocol()+QStringLiteral("://");
     if( !newid.startsWith( protocol ) )
         newid.prepend( protocol );
 
@@ -474,7 +474,7 @@ SqlTrack::type() const
     return m_url.isLocalFile()
            ? Amarok::FileTypeSupport::toString( m_filetype )
             // don't localize. This is used in different files to identify streams, see EngineController quirks
-           : "stream";
+           : QStringLiteral("stream");
 }
 
 void
@@ -1061,26 +1061,26 @@ SqlTrack::updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
 
     // keep this in sync with SqlPlaylist::saveTracks()!
     if( fields.contains( Meta::valUrl ) )
-        tags << QString( "url='%1'" ).arg( storage->escape( m_url.path() ) );
+        tags << QStringLiteral( "url='%1'" ).arg( storage->escape( m_url.path() ) );
     if( fields.contains( Meta::valTitle ) )
-        tags << QString( "title='%1'" ).arg( storage->escape( m_title ) );
+        tags << QStringLiteral( "title='%1'" ).arg( storage->escape( m_title ) );
     if( fields.contains( Meta::valAlbum ) )
-        tags << QString( "album='%1'" ).arg( m_album ? storage->escape( m_album->prettyName() ) : "" );
+        tags << QStringLiteral( "album='%1'" ).arg( m_album ? storage->escape( m_album->prettyName() ) : QStringLiteral("") );
     if( fields.contains( Meta::valArtist ) )
-        tags << QString( "artist='%1'" ).arg( m_artist ? storage->escape( m_artist->prettyName() ) : "" );
+        tags << QStringLiteral( "artist='%1'" ).arg( m_artist ? storage->escape( m_artist->prettyName() ) : QStringLiteral("") );
     if( fields.contains( Meta::valLength ) )
-        tags << QString( "length=%1").arg( QString::number( m_length ) );
+        tags << QStringLiteral( "length=%1").arg( QString::number( m_length ) );
     if( fields.contains( Meta::valUniqueId ) )
     {
         // SqlPlaylist mirrors uniqueid to url, update it too, bug 312128
-        tags << QString( "url='%1'" ).arg( storage->escape( m_uid ) );
-        tags << QString( "uniqueid='%1'" ).arg( storage->escape( m_uid ) );
+        tags << QStringLiteral( "url='%1'" ).arg( storage->escape( m_uid ) );
+        tags << QStringLiteral( "uniqueid='%1'" ).arg( storage->escape( m_uid ) );
     }
 
     if( !tags.isEmpty() )
     {
-        QString update = "UPDATE playlist_tracks SET %1 WHERE uniqueid = '%2';";
-        update = update.arg( tags.join( ", " ), storage->escape( oldUid ) );
+        QString update = QStringLiteral("UPDATE playlist_tracks SET %1 WHERE uniqueid = '%2';");
+        update = update.arg( tags.join( QStringLiteral(", ") ), storage->escape( oldUid ) );
         storage->query( update );
     }
 }
@@ -1100,7 +1100,7 @@ SqlTrack::updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldU
     if( !tags.isEmpty() )
     {
         tags = tags.remove(0, 1); // the first character is always a ','
-        QString update = "UPDATE images SET %1 WHERE path = '%2';";
+        QString update = QStringLiteral("UPDATE images SET %1 WHERE path = '%2';");
         update = update.arg( tags, storage->escape( oldUid ) );
         storage->query( update );
     }
@@ -1112,7 +1112,7 @@ SqlTrack::prettyTitle( const QString &filename ) //static
     QString s = filename; //just so the code is more readable
 
     //remove .part extension if it exists
-    if (s.endsWith( ".part" ))
+    if (s.endsWith( QStringLiteral(".part") ))
         s = s.left( s.length() - 5 );
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
@@ -1149,21 +1149,21 @@ SqlTrack::cachedLyrics() const
 void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
-    QString query = QString( "SELECT count(*) FROM lyrics WHERE url = %1").arg( m_urlId );
+    QString query = QStringLiteral( "SELECT count(*) FROM lyrics WHERE url = %1").arg( m_urlId );
     const QStringList queryResult = m_collection->sqlStorage()->query( query );
     if( queryResult.isEmpty() )
         return;  // error in the query?
 
     if( queryResult.first().toInt() == 0 )
     {
-        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( %1, '%2' )" )
+        QString insert = QStringLiteral( "INSERT INTO lyrics( url, lyrics ) VALUES ( %1, '%2' )" )
                             .arg( QString::number( m_urlId ),
                                   m_collection->sqlStorage()->escape( lyrics ) );
         m_collection->sqlStorage()->insert( insert, "lyrics" );
     }
     else
     {
-        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = %2" )
+        QString update = QStringLiteral( "UPDATE lyrics SET lyrics = '%1' WHERE url = %2" )
                             .arg( m_collection->sqlStorage()->escape( lyrics ),
                                   QString::number( m_urlId ) );
         m_collection->sqlStorage()->query( update );
@@ -1457,7 +1457,7 @@ SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 
 
 //--------------- class Album ---------------------------------
-const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
+const QString SqlAlbum::AMAROK_UNSET_MAGIC = QStringLiteral( "AMAROK_UNSET_MAGIC" );
 
 SqlAlbum::SqlAlbum( Collections::SqlCollection *collection, int id, const QString &name, int artist )
     : Album()
@@ -1729,15 +1729,15 @@ SqlAlbum::removeImage()
     // Update the database image path
     // Set the album image to a magic value which will tell Amarok not to fetch it automatically
     const int unsetId = unsetImageId();
-    QString query = "UPDATE albums SET image = %1 WHERE id = %2";
+    QString query = QStringLiteral("UPDATE albums SET image = %1 WHERE id = %2");
     m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
 
     // From here on we check if there are any remaining references to that particular image in the database
     // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
     // If there are, we need to leave it since other albums will reference this particular image path.
     //
-    query = "SELECT count( albums.id ) FROM albums "
-                    "WHERE albums.image = %1";
+    query = QStringLiteral("SELECT count( albums.id ) FROM albums "
+                    "WHERE albums.image = %1");
     QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
 
     if( !res.isEmpty() )
@@ -1747,7 +1747,7 @@ SqlAlbum::removeImage()
         // If there are no more references to this particular image, then we should clean up
         if( references <= 0 )
         {
-            query = "DELETE FROM images WHERE id = %1";
+            query = QStringLiteral("DELETE FROM images WHERE id = %1");
             m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
 
             // remove the large cover only if it was cached.
@@ -1765,7 +1765,7 @@ SqlAlbum::removeImage()
             for( const QString &image : cachedImages )
             {
                 bool r = QFile::remove( cacheDir.filePath( image ) );
-                debug() << "deleting cached image: " << image << " : " + ( r ? QStringLiteral("ok") : QStringLiteral("fail") );
+                debug() << "deleting cached image: " << image << " : " << ( r ? QStringLiteral("ok") : QStringLiteral("fail") );
             }
 
             CoverCache::invalidateAlbum( this );
@@ -1788,7 +1788,7 @@ SqlAlbum::unsetImageId() const
     if( m_unsetImageId >= 0 )
         return m_unsetImageId;
 
-    QString query = "SELECT id FROM images WHERE path = '%1'";
+    QString query = QStringLiteral("SELECT id FROM images WHERE path = '%1'");
     QStringList res = m_collection->sqlStorage()->query( query.arg( AMAROK_UNSET_MAGIC ) );
 
     // We already have the AMAROK_UNSET_MAGIC variable in the database
@@ -1799,7 +1799,7 @@ SqlAlbum::unsetImageId() const
     else
     {
         // We need to create this value
-        query = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
+        query = QStringLiteral( "INSERT INTO images( path ) VALUES ( '%1' )" )
                          .arg( m_collection->sqlStorage()->escape( AMAROK_UNSET_MAGIC ) );
         m_unsetImageId = m_collection->sqlStorage()->insert( query, "images" );
     }
@@ -1860,8 +1860,8 @@ SqlAlbum::largeDiskCachePath() const
 QString
 SqlAlbum::scaledDiskCachePath( int size ) const
 {
-    const QByteArray widthKey = QByteArray::number( size ) + '@';
-    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    const QString widthKey = QString::number( size ) + QLatin1Char('@');
+    QDir cacheCoverDir( Amarok::saveLocation( QStringLiteral("albumcovers/cache/") ) );
     QString key = md5sum( QString(), QString(), m_imagePath );
 
     if( !cacheCoverDir.exists( widthKey + key ) )
@@ -1896,7 +1896,7 @@ SqlAlbum::largeImagePath()
         return m_imagePath;
 
     // Look up in the database
-    QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;"; // TODO: shouldn't we do a JOIN here?
+    QString query = QStringLiteral("SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;"); // TODO: shouldn't we do a JOIN here?
     QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
     if( !res.isEmpty() )
     {
@@ -1910,7 +1910,7 @@ SqlAlbum::largeImagePath()
         // embedded image (e.g. id3v2 APIC
         // We store embedded images as unique ids in the database
         // we will get the real image later on from the track.
-        if( m_imagePath.startsWith( m_collection->uidUrlProtocol()+"://" ) )
+        if( m_imagePath.startsWith( m_collection->uidUrlProtocol()+QStringLiteral("://") ) )
             return m_imagePath;
 
         // normal file
@@ -1943,15 +1943,15 @@ SqlAlbum::setImage( const QString &path )
     if( m_imagePath == path )
         return;
 
-    QString query = "SELECT id FROM images WHERE path = '%1'";
+    QString query = QStringLiteral("SELECT id FROM images WHERE path = '%1'");
     query = query.arg( m_collection->sqlStorage()->escape( path ) );
     QStringList res = m_collection->sqlStorage()->query( query );
 
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
+        QString insert = QStringLiteral( "INSERT INTO images( path ) VALUES ( '%1' )" )
         .arg( m_collection->sqlStorage()->escape( path ) );
-        m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
+        m_imageId = m_collection->sqlStorage()->insert( insert, QStringLiteral("images") );
     }
     else
         m_imageId = res.first().toInt();

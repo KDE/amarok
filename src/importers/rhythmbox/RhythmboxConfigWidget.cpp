@@ -31,7 +31,7 @@ RhythmboxConfigWidget::RhythmboxConfigWidget( const QVariantMap &config, QWidget
                 QDir::homePath() + QStringLiteral("/.local/share/rhythmbox/rhythmdb.xml") );
 
     KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
-    dbField->setFilter( "rhythmdb.xml" );
+    dbField->setFilter( QStringLiteral("rhythmdb.xml") );
     addField( QStringLiteral("dbPath"), i18n( "Database location" ), dbField, QStringLiteral("text") );
 }
 

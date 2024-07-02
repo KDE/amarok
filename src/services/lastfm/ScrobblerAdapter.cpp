@@ -48,7 +48,7 @@ ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmService
         if( !dir.exists() )
         {
             debug() << "creating" << dir.absolutePath() << "directory for liblastfm";
-            dir.mkpath( "." );
+            dir.mkpath( QLatin1String(".") );
         }
     }
 
@@ -101,7 +101,7 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
     lastfm::MutableTrack lfmTrack;
     copyTrackMetadata( lfmTrack, track );
     // since liblastfm >= 1.0.3 it interprets following extra property:
-    lfmTrack.setExtra( "playCount", QString::number( playcount ) );
+    lfmTrack.setExtra( QLatin1String("playCount"), QString::number( playcount ) );
     lfmTrack.setTimeStamp( time.isValid() ? time : QDateTime::currentDateTime() );
     debug() << "scrobble: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
             << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
@@ -233,11 +233,11 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
         to.setTrackNumber( track->trackNumber() );
 
     lastfm::Track::Source source = lastfm::Track::Player;
-    if( track->type() == "stream/lastfm" )
+    if( track->type() == QLatin1String("stream/lastfm") )
         source = lastfm::Track::LastFmRadio;
-    else if( track->type().startsWith( "stream" ) )
+    else if( track->type().startsWith( QLatin1String("stream") ) )
         source = lastfm::Track::NonPersonalisedBroadcast;
-    else if( track->collection() && track->collection()->collectionId() != "localCollection" )
+    else if( track->collection() && track->collection()->collectionId() != QLatin1String("localCollection") )
         source = lastfm::Track::MediaDevice;
     to.setSource( source );
 }
@@ -282,7 +282,7 @@ ScrobblerAdapter::announceTrackCorrections( const lastfm::Track &track )
     line = printCorrected( Meta::valAlbumArtist, track.albumArtist( orig ), track.albumArtist( correct ) );
     if( !line.isEmpty() )
         lines << line;
-    Amarok::Logger::longMessage( lines.join( "<br>" ) );
+    Amarok::Logger::longMessage( lines.join( QLatin1String("<br>") ) );
 }
 
 bool

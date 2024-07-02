@@ -58,7 +58,7 @@ void
 ScriptImporter::loadExtension( const QString& src )
 {
     DEBUG_BLOCK
-    m_engine->importModule( "amarok/" + src );
+    m_engine->importModule( QStringLiteral("amarok/") + src );
 }
 
 bool
@@ -68,7 +68,7 @@ ScriptImporter::loadQtBinding( const QString& binding )
         QJSValue scriptObj;
 
         /* Export QT classes for script only if requested */
-        if (binding == "qt.core") {
+        if (binding == QStringLiteral("qt.core")) {
             debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.core] imported";
             QtBindings::Core::ByteArray::installJSType( m_engine );
             QtBindings::Core::CoreApplication::installJSType( m_engine );
@@ -82,26 +82,26 @@ ScriptImporter::loadQtBinding( const QString& binding )
             QtBindings::Core::TextStream::installJSType( m_engine );
             QtBindings::Core::Translator::installJSType( m_engine );
             QtBindings::Core::Url::installJSType( m_engine );
-        } else if (binding == "qt.network") {
+        } else if (binding == QStringLiteral("qt.network")) {
             QString message(binding +
-                            " not available in Qt5 and no wrapper yet for this Amarok version");
+                            QStringLiteral(" not available in Qt5 and no wrapper yet for this Amarok version"));
             warning() << __PRETTY_FUNCTION__ << message;
-            m_engine->evaluate("console.warn(" + message + ")");
-        } else if (binding == "qt.xml") {
+            m_engine->evaluate(QStringLiteral("console.warn(") + message + QStringLiteral(")"));
+        } else if (binding == QStringLiteral("qt.xml")) {
             QString message(binding +
-                            " not available in Qt5 and no wrapper yet for this Amarok version");
+                            QStringLiteral(" not available in Qt5 and no wrapper yet for this Amarok version"));
             warning() << __PRETTY_FUNCTION__ << message;
-            m_engine->evaluate("console.warn(" + message + ")");
-        } else if (binding == "qt.gui") {
+            m_engine->evaluate(QStringLiteral("console.warn(") + message + QStringLiteral(")"));
+        } else if (binding == QStringLiteral("qt.gui")) {
             debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.gui] imported";
             QtBindings::Gui::CheckBox::installJSType( m_engine );
             QtBindings::Gui::Label::installJSType( m_engine );
             QtBindings::Gui::DialogButtonBox::installJSType( m_engine );
-        } else if (binding == "qt.sql") {
+        } else if (binding == QStringLiteral("qt.sql")) {
             debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.sql] imported";
             QtBindings::Sql::SqlQuery::installJSType( m_engine );
 #ifdef WITH_QT_UITOOLS
-        } else if (binding == "qt.uitools") {
+        } else if (binding == QStringLiteral("qt.uitools")) {
             debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.uitools] imported";
             QtBindings::UiTools::UiLoader::installJSType( m_engine );
 #endif
@@ -131,16 +131,16 @@ ScriptImporter::include( const QString& relativeFilename )
     if (m_qtScriptCompat) {
         //QTBUG-69408 - const is not supported by ES5. Replace it with 'var'
         QRegularExpression removeConst(
-                "const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *=",
+                QStringLiteral("const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *="),
                 QRegularExpression::DotMatchesEverythingOption );
-        importScript.replace( removeConst, "var \\1 =");
+        importScript.replace( removeConst, QStringLiteral("var \\1 ="));
     }
     QJSValue result = m_engine->evaluate(importScript, relativeFilename);
     if (result.isError()) {
-        error() << "Uncaught exception at " << result.property("name").toString() << ":";
-        error() << result.property("filename").toString() << ":" << result.property("lineNumber").toInt();
-        error() << result.property("message").toString();
-        error() << result.property("stack").toString();
+        error() << "Uncaught exception at " << result.property(QStringLiteral("name")).toString() << ":";
+        error() << result.property(QStringLiteral("filename")).toString() << ":" << result.property(QStringLiteral("lineNumber")).toInt();
+        error() << result.property(QStringLiteral("message")).toString();
+        error() << result.property(QStringLiteral("stack")).toString();
         return false;
     }
     return true;
@@ -150,13 +150,13 @@ QStringList
 ScriptImporter::availableBindings() const
 {
     return QStringList()
-    << "qt.core"
-    << "qt.network"
-    << "qt.xml"
-    << "qt.gui"
-    << "qt.sql"
+    << QStringLiteral("qt.core")
+    << QStringLiteral("qt.network")
+    << QStringLiteral("qt.xml")
+    << QStringLiteral("qt.gui")
+    << QStringLiteral("qt.sql")
 #ifdef WITH_QT_UITOOLS
-    << "qt.uitools"
+    << QStringLiteral("qt.uitools")
 #endif
     ;
 }

@@ -37,5 +37,5 @@ LastFmStreamInfoCapability::streamName() const
 QString
 LastFmStreamInfoCapability::streamSource() const
 {
-    return "last.fm";
+    return QStringLiteral("last.fm");
 }

@@ -94,7 +94,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     debug() << QStringLiteral("Adding interactive cover fetch for: '%1' from %2")
         .arg( album->name(),
-              Amarok::config("Cover Fetcher").readEntry("Interactive Image Source", "LastFm") );
+              Amarok::config(QStringLiteral("Cover Fetcher")).readEntry("Interactive Image Source", "LastFm") );
     switch( fetchSource() )
     {
     case CoverFetch::LastFm:
@@ -131,7 +131,7 @@ void
 CoverFetcher::queueQuery( const Meta::AlbumPtr &album, const QString &query, int page )
 {
     QTimer::singleShot( 0, m_queue, [=] () { m_queue->addQuery( query, fetchSource(), page, album ); } );
-    debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query, QString::number( page ) );
+    debug() << QStringLiteral( "Queueing cover fetch query: '%1' (page %2)" ).arg( query, QString::number( page ) );
 }
 
 void
@@ -139,7 +139,7 @@ CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
 {
     QString query( album->name() );
     if( album->hasAlbumArtist() )
-        query += ' ' + album->albumArtist()->name();
+        query += QLatin1Char(' ') + album->albumArtist()->name();
     queueQuery( album, query, 1 );
 }
 
@@ -461,12 +461,12 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr &unit,
 CoverFetch::Source
 CoverFetcher::fetchSource() const
 {
-    const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    const KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     const QString sourceEntry = config.readEntry( "Interactive Image Source", "LastFm" );
     CoverFetch::Source source;
-    if( sourceEntry == "LastFm" )
+    if( sourceEntry == QStringLiteral("LastFm") )
         source = CoverFetch::LastFm;
-    else if( sourceEntry == "Google" )
+    else if( sourceEntry == QStringLiteral("Google") )
         source = CoverFetch::Google;
     else
         source = CoverFetch::Discogs;

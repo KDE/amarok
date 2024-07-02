@@ -104,7 +104,7 @@ private:
     void setupModelData( LastFmTreeItem *parent );
 
     QIcon avatar( const QString &username, const QUrl &avatarUrl ) const;
-    QString mapTypeToUrl( LastFm::Type type, const QString &key = "" );
+    QString mapTypeToUrl( LastFm::Type type, const QString &key = QStringLiteral("") );
 
     void appendUserStations( LastFmTreeItem* item, const QString& user );
 

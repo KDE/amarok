@@ -140,7 +140,7 @@ GpodderServiceSettings::finished()
     }
     if( !deviceExists )
     {
-        debug() << "Create new device " % deviceID;
+        debug() << QStringLiteral("Create new device ") % deviceID;
 
         mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
                                m_configDialog->kcfg_GpodderPassword->text(),

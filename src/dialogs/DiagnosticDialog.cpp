@@ -110,7 +110,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     for( KPluginInfo aInfo : aScripts )
     {
         if( aInfo.isPluginEnabled() )
-            aScriptString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
+            aScriptString += QStringLiteral("   ") + aInfo.name() + QStringLiteral(" (") + aInfo.version() + QStringLiteral(")\n");
     }
 
 
@@ -124,7 +124,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     QString aPluginString;
     for( const auto &aInfo : qAsConst(aPlugins) )
     {
-        aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
+        aPluginString += QStringLiteral("   ") + aInfo.name() + QStringLiteral(" (") + aInfo.version() + QStringLiteral(")\n");
     }
 
     // Get applets
@@ -134,7 +134,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     for ( const QString &applet : appletList )
     {
         // Currently we cannot extract the applet version number this way
-        appletString += "   " + applet + '\n';
+        appletString += QStringLiteral("   ") + applet + QLatin1Char('\n');
     }
 
     const BackendDescriptor aPhononBackend = getPreferredBackend();
@@ -171,8 +171,8 @@ const BackendDescriptor
 DiagnosticDialog::getPreferredBackend() const
 {
     QList<QString> iidPreference;
-    QSettings settings("kde.org", "libphonon");
-    const int size = settings.beginReadArray("Backends");
+    QSettings settings(QStringLiteral("kde.org"), QStringLiteral("libphonon"));
+    const int size = settings.beginReadArray(QStringLiteral("Backends"));
     for (int i = 0; i < size; ++i) {
         settings.setArrayIndex(i);
         iidPreference.append(settings.value(QStringLiteral("iid")).toString());

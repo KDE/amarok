@@ -51,7 +51,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
             m_tracks << track;
     }
     ui->setupUi( this );
-    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
+    KConfigGroup group = Amarok::config( QStringLiteral("MusicBrainzTagDialog") );
     KWindowConfig::restoreWindowSize( windowHandle(), group );
 
     init();
@@ -60,7 +60,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
 
 MusicBrainzTagger::~MusicBrainzTagger()
 {
-    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
+    KConfigGroup group = Amarok::config( QStringLiteral("MusicBrainzTagDialog") );
     group.writeEntry( "geometry", saveGeometry() );
     delete ui;
 }
@@ -90,9 +90,9 @@ MusicBrainzTagger::init()
         QToolBar *toolBar = new QToolBar( this );
         toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-        QAction *lastAction = toolBar->addAction( QIcon::fromTheme( "tools-wizard" ), i18n( "Choose Best Matches" ), m_resultsModel, &MusicBrainzTagsModel::chooseBestMatches );
+        QAction *lastAction = toolBar->addAction( QIcon::fromTheme( QStringLiteral("tools-wizard") ), i18n( "Choose Best Matches" ), m_resultsModel, &MusicBrainzTagsModel::chooseBestMatches );
         lastAction->setToolTip( i18n( "Use the top result for each undecided track. Alternatively, you can click on <b>Choose Best Matches from This Album</b> in the context menu of a good suggestion; it may give even better results because it prevents mixing different album releases together." ) );
-        lastAction = toolBar->addAction( QIcon::fromTheme( "edit-clear" ), i18n( "Clear Choices" ), m_resultsModel, &MusicBrainzTagsModel::clearChoices );
+        lastAction = toolBar->addAction( QIcon::fromTheme( QStringLiteral("edit-clear") ), i18n( "Clear Choices" ), m_resultsModel, &MusicBrainzTagsModel::clearChoices );
         lastAction->setToolTip( i18n( "Clear all choices, even manually made ones." ) );
 
         toolBar->addSeparator();

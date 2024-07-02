@@ -294,7 +294,7 @@ GpodderProvider::prettyName() const
 QIcon
 GpodderProvider::icon() const
 {
-    return QIcon::fromTheme( "view-services-gpodder-amarok" );
+    return QIcon::fromTheme( QStringLiteral("view-services-gpodder-amarok") );
 }
 
 Playlists::PlaylistList
@@ -345,9 +345,9 @@ GpodderProvider::channelActions( PodcastChannelList channels )
 
     if( m_removeAction == nullptr )
     {
-        m_removeAction = new QAction( QIcon::fromTheme( "edit-delete" ),
+        m_removeAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ),
                 i18n( "&Delete Channel and Episodes" ), this );
-        m_removeAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_removeAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
         connect( m_removeAction,  SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
     }
     //Set the episode list as data that we'll retrieve in the slot
@@ -430,14 +430,14 @@ GpodderProvider::slotSyncPlaylistRemoved( Playlists::PlaylistPtr playlist )
 qulonglong
 GpodderProvider::subscriptionTimestamp()
 {
-    KConfigGroup config = Amarok::config( GpodderServiceConfig::configSectionName() );
+    KConfigGroup config = Amarok::config( QLatin1String(GpodderServiceConfig::configSectionName()) );
     return config.readEntry( "subscriptionTimestamp", 0 );
 }
 
 void
 GpodderProvider::setSubscriptionTimestamp( qulonglong newTimestamp )
 {
-    KConfigGroup config = Amarok::config( GpodderServiceConfig::configSectionName() );
+    KConfigGroup config = Amarok::config( QLatin1String(GpodderServiceConfig::configSectionName()) );
     config.writeEntry( "subscriptionTimestamp", newTimestamp );
 }
 
@@ -832,7 +832,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
     {
         if( tempEpisodeAction->action() == EpisodeAction::Play )
         {
-            debug() << QString( "Adding a new play status to episode: %1" )
+            debug() << QStringLiteral( "Adding a new play status to episode: %1" )
                        .arg( tempEpisodeAction->episodeUrl().toString() );
 
             m_episodeStatusMap.insert( tempEpisodeAction->episodeUrl(), tempEpisodeAction );
@@ -862,7 +862,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
                 {
                     if( !episode )
                     {
-                        debug() << QString( "New episode to be added found: %1" )
+                        debug() << QStringLiteral( "New episode to be added found: %1" )
                                    .arg( tempEpisodeAction->episodeUrl().toString() );
 
                         PodcastEpisodePtr tempEpisode;
@@ -874,7 +874,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
                     }
                     else
                     {
-                        debug() << QString( "Marking an existent episode as new: %1" )
+                        debug() << QStringLiteral( "Marking an existent episode as new: %1" )
                                    .arg( tempEpisodeAction->episodeUrl().toString() );
 
                         episode->setNew( true );
@@ -882,13 +882,13 @@ GpodderProvider::episodeActionsInCascadeFinished()
                 }
                 else if( tempEpisodeAction->action() == EpisodeAction::Download )
                 {
-                    debug() << QString( "Adding a new download status to episode: %1" )
+                    debug() << QStringLiteral( "Adding a new download status to episode: %1" )
                                .arg( tempEpisodeAction->episodeUrl().toString() );
 
                 }
                 else if( tempEpisodeAction->action() == EpisodeAction::Delete )
                 {
-                    debug() << QString( "Adding a new delete status to episode: %1" )
+                    debug() << QStringLiteral( "Adding a new delete status to episode: %1" )
                                .arg( tempEpisodeAction->episodeUrl().toString() );
 
                 }
@@ -899,7 +899,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
             {
                 //For some reason the podcast and/or episode for this action
                 //wasn't found
-                debug() << QString( "Episode and/or channel not found" );
+                debug() << QStringLiteral( "Episode and/or channel not found" );
             }
 
         }
@@ -1106,7 +1106,7 @@ void GpodderProvider::slotEpisodeMarkedAsNew( PodcastEpisodePtr episode )
 inline KConfigGroup
 GpodderProvider::gpodderActionsConfig() const
 {
-    return Amarok::config( "GPodder Cached Episode Actions" );
+    return Amarok::config( QStringLiteral("GPodder Cached Episode Actions") );
 }
 
 void GpodderProvider::loadCachedEpisodeActions()
@@ -1161,7 +1161,7 @@ void GpodderProvider::loadCachedEpisodeActions()
                     debug() << "Action isn't a valid alternative.";
                 else
                 {
-                    debug() << QString( "Loaded %1 action." ).arg( episodeUrl );
+                    debug() << QStringLiteral( "Loaded %1 action." ).arg( episodeUrl );
 
                     EpisodeActionPtr tempEpisodeAction = EpisodeActionPtr(
                                 new EpisodeAction( QUrl( actionsDetails[0] ),
@@ -1225,7 +1225,7 @@ void GpodderProvider::saveCachedEpisodeActions()
 inline KConfigGroup
 GpodderProvider::gpodderPodcastsConfig() const
 {
-    return Amarok::config( "GPodder Cached Podcast Changes" );
+    return Amarok::config( QStringLiteral("GPodder Cached Podcast Changes") );
 }
 
 void GpodderProvider::loadCachedPodcastsChanges()
@@ -1243,14 +1243,14 @@ void GpodderProvider::loadCachedPodcastsChanges()
 
     for( QString podcastUrl : podcastsUrlsToAdd )
     {
-        debug() << QString( "New channel to subscribe: %1" ).arg( podcastUrl );
+        debug() << QStringLiteral( "New channel to subscribe: %1" ).arg( podcastUrl );
 
         m_addList.append( QUrl( podcastUrl ) );
     }
 
     for( QString podcastUrl : podcastsUrlsToRemove )
     {
-        debug() << QString( "New channel to unsubscribe: %1 action." ).arg( podcastUrl );
+        debug() << QStringLiteral( "New channel to unsubscribe: %1 action." ).arg( podcastUrl );
 
         m_removeList.append( QUrl( podcastUrl ) );
     }

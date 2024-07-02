@@ -97,7 +97,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
         , m_signupInfoWidget( nullptr )
 {
     DEBUG_BLOCK
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     //initTopPanel( );
 
     setShortDescription( i18n( "\"Fair trade\" online music store" ) );
@@ -276,7 +276,7 @@ void MagnatuneStore::initBottomPanel()
         m_downloadAlbumButton->setEnabled( true );
     }
 
-    m_downloadAlbumButton->setObjectName( "downloadButton" );
+    m_downloadAlbumButton->setObjectName( QStringLiteral("downloadButton") );
     m_downloadAlbumButton->setIcon( QIcon::fromTheme( QStringLiteral("download-amarok") ) );
     
     connect( m_downloadAlbumButton, &QPushButton::clicked, this, &MagnatuneStore::download );

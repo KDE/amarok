@@ -77,7 +77,7 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     m_separator = contextMenu()->addSeparator();
     contextMenu()->addActions( actionCollection() ); // quit and restore
 
-    contextMenu()->setObjectName( "TrayIconContextMenu" );
+    contextMenu()->setObjectName( QStringLiteral("TrayIconContextMenu") );
 
     PERF_LOG( "Initializing system tray icon" );
 

@@ -36,7 +36,7 @@ namespace QtBindings
             Q_INVOKABLE File(const QString &name, QObject *parent);
             Q_INVOKABLE File(QObject *parent);
             Q_INVOKABLE File(const QString &name);
-            Q_INVOKABLE virtual ~File();;
+            Q_INVOKABLE virtual ~File();
             Q_INVOKABLE static bool copy(const QString &fileName, const QString &newName);
             Q_INVOKABLE static QString decodeName(const char *localFileName);
             Q_INVOKABLE static QString decodeName(const QByteArray &localFileName);

@@ -3,8 +3,6 @@ add_subdirectory( support )
 include_directories(
   ..
   ${AMAROK_SOURCE_TREE}
-  ${AMAROK_SOURCE_TREE}/collection
-  ${AMAROK_SOURCE_TREE}/meta
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
 )

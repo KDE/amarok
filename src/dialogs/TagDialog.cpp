@@ -54,11 +54,11 @@
 
 namespace Meta {
 namespace Field {
-    const QString LABELS = "labels";
-    const QString LYRICS = "lyrics";
-    const QString TYPE = "type";
-    const QString COLLECTION = "collection";
-    const QString NOTE = "note";
+    const QString LABELS = QStringLiteral("labels");
+    const QString LYRICS = QStringLiteral("lyrics");
+    const QString TYPE = QStringLiteral("type");
+    const QString COLLECTION = QStringLiteral("collection");
+    const QString NOTE = QStringLiteral("note");
 }
 }
 
@@ -128,7 +128,7 @@ TagDialog::~TagDialog()
 {
     DEBUG_BLOCK
 
-    Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", ui->qTabWidget->currentIndex() );
+    Amarok::config( QStringLiteral("TagDialog") ).writeEntry( "CurrentTab", ui->qTabWidget->currentIndex() );
 
     if( m_currentAlbum )
         unsubscribeFrom( m_currentAlbum );
@@ -507,7 +507,7 @@ void TagDialog::initUi()
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
 
-    KConfigGroup config = Amarok::config( "TagDialog" );
+    KConfigGroup config = Amarok::config( QStringLiteral("TagDialog") );
 
     ui->qTabWidget->addTab( ui->summaryTab   , i18n( "Summary" ) );
     ui->qTabWidget->addTab( ui->tagsTab      , i18n( "Tags" ) );
@@ -666,7 +666,7 @@ TagDialog::startDataQueries()
 inline const QString
 TagDialog::unknownSafe( const QString &s ) const
 {
-    return ( s.isNull() || s.isEmpty() || s == "?" || s == "-" )
+    return ( s.isNull() || s.isEmpty() || s == QStringLiteral("?") || s == QStringLiteral("-") )
            ? i18nc( "The value for this tag is not known", "Unknown" )
            : s;
 }

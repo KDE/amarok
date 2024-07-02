@@ -70,7 +70,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
-    : PopupWidget( nullptr )
+    : PopupWidget( QString() )
 {
     setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
 
@@ -144,7 +144,7 @@ ScriptItem::pause()
         return;
     }
     */
-    if( m_info.category() == "Scriptable Service" )
+    if( m_info.category() == QStringLiteral("Scriptable Service") )
         The::scriptableServiceManager()->removeRunningScript( m_name );
 
     if( m_info.isPluginEnabled() )
@@ -154,7 +154,7 @@ ScriptItem::pause()
         m_info.save();
     }
 
-    m_log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
+    m_log << QStringLiteral( "%1 Script ended" ).arg( QTime::currentTime().toString() );
     m_running = false;
 }
 
@@ -162,7 +162,7 @@ QString
 ScriptItem::specPath() const
 {
     QFileInfo info( m_url.path() );
-    const QString specPath = QString( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() );
+    const QString specPath = QStringLiteral( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() );
     return specPath;
 }
 
@@ -229,17 +229,17 @@ ScriptItem::start( bool silent )
     if (m_qtScriptCompat) {
         //QTBUG-69408 - const is not supported by ES5. Replace it with 'var'
         QRegularExpression removeConst(
-                "const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *=",
+                QStringLiteral("const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *="),
                 QRegularExpression::DotMatchesEverythingOption );
         m_engineResult = m_engine->evaluate(
-               QString(scriptFile.readAll()).replace( removeConst, "var \\1 =" ),
+               QString(scriptFile.readAll()).replace( removeConst, QStringLiteral("var \\1 =") ),
                 m_name);
     } else {
         m_engineResult = m_engine->evaluate(scriptFile.readAll(), m_name);
     }
     m_output << m_engineResult.toString();
     debug() << "After Evaluation "<< m_name;
-    Q_EMIT evaluated( m_output.join( "\n" ) );
+    Q_EMIT evaluated( m_output.join( QStringLiteral("\n") ) );
     scriptFile.close();
 
     if ( m_running )

@@ -480,7 +480,7 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
         if( !xml.isStartElement() || xml.name() != QStringLiteral("release") )
             continue;
 
-        const QString releaseId = xml.attributes().value( "id" ).toString();
+        const QString releaseId = xml.attributes().value( QStringLiteral("id") ).toString();
         while( !xml.atEnd() && !xml.hasError() )
         {
             xml.readNext();
@@ -512,8 +512,8 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
                     if( xml.name() == QStringLiteral("image") )
                     {
                         const QXmlStreamAttributes &attr = xml.attributes();
-                        const QUrl thburl( attr.value( "uri150" ).toString() );
-                        const QUrl uri( attr.value( "uri" ).toString() );
+                        const QUrl thburl( attr.value( QStringLiteral("uri150") ).toString() );
+                        const QUrl uri( attr.value( QStringLiteral("uri") ).toString() );
                         const QUrl url = (m_size == CoverFetch::ThumbSize) ? thburl : uri;
                         if( !url.isValid() )
                             continue;
@@ -522,9 +522,9 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
                         metadata[ QStringLiteral("releaseurl")   ] = QStringLiteral("http://discogs.com/release/") + releaseId;
                         metadata[ QStringLiteral("normalarturl") ] = uri.url();
                         metadata[ QStringLiteral("thumbarturl")  ] = thburl.url();
-                        metadata[ QStringLiteral("width")        ] = attr.value( "width"  ).toString();
-                        metadata[ QStringLiteral("height")       ] = attr.value( "height" ).toString();
-                        metadata[ QStringLiteral("type")         ] = attr.value( "type"   ).toString();
+                        metadata[ QStringLiteral("width")        ] = attr.value( QStringLiteral("width")  ).toString();
+                        metadata[ QStringLiteral("height")       ] = attr.value( QStringLiteral("height") ).toString();
+                        metadata[ QStringLiteral("type")         ] = attr.value( QStringLiteral("type")   ).toString();
                         m_urls.insert( url, metadata );
                     }
                     else
@@ -646,7 +646,7 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             }
             else if( n == QStringLiteral("image") )
             {
-                QString sizeStr = xml.attributes().value("size").toString();
+                QString sizeStr = xml.attributes().value(QStringLiteral("size")).toString();
                 coverUrlHash[ sizeStr ] = xml.readElementText();
             }
         }

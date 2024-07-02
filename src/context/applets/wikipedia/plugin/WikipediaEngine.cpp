@@ -42,7 +42,7 @@ WikipediaEngine::WikipediaEngine( QObject* parent )
     , useMobileVersion( false )
     , m_pauseState( false )
 {
-    preferredLangs = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
+    preferredLangs = Amarok::config(QStringLiteral("Wikipedia Applet")).readEntry( "PreferredLang", QStringList() << QStringLiteral("en") );
 
     EngineController *engine = The::engineController();
 
@@ -399,22 +399,22 @@ WikipediaEngine::_paletteChanged( const QPalette &palette )
     DEBUG_BLOCK
 
     // read css, replace color placeholders, write to file, load into page
-    QFile file( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/WikipediaCustomStyle.css" ) );
+    QFile file( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/WikipediaCustomStyle.css") ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
         QString contents = QString( file.readAll() );
-        contents.replace( "/*{text_color}*/", palette.text().color().name() );
-        contents.replace( "/*{link_color}*/", palette.link().color().name() );
-        contents.replace( "/*{link_hover_color}*/", palette.linkVisited().color().name() );
-        contents.replace( "/*{background_color}*/", palette.base().color().name() );
+        contents.replace( QStringLiteral("/*{text_color}*/"), palette.text().color().name() );
+        contents.replace( QStringLiteral("/*{link_color}*/"), palette.link().color().name() );
+        contents.replace( QStringLiteral("/*{link_hover_color}*/"), palette.linkVisited().color().name() );
+        contents.replace( QStringLiteral("/*{background_color}*/"), palette.base().color().name() );
 
         const QString abg = palette.window().color().name();
-        contents.replace( "/*{shaded_text_background_color}*/", abg );
-        contents.replace( "/*{table_background_color}*/", abg );
-        contents.replace( "/*{headings_background_color}*/", abg );
+        contents.replace( QStringLiteral("/*{shaded_text_background_color}*/"), abg );
+        contents.replace( QStringLiteral("/*{table_background_color}*/"), abg );
+        contents.replace( QStringLiteral("/*{headings_background_color}*/"), abg );
 
         const QString atbg = palette.alternateBase().color().name();
-        contents.replace( "/*{alternate_table_background_color}*/", atbg );
+        contents.replace( QStringLiteral("/*{alternate_table_background_color}*/"), atbg );
 
         if( m_css == contents )
             return;
@@ -432,7 +432,7 @@ void
 WikipediaEngine::fetchWikiUrl( const QString &title, const QString &urlPrefix )
 {
     QUrl pageUrl;
-    QString host( ".wikipedia.org" );
+    QString host( QStringLiteral(".wikipedia.org") );
     pageUrl.setScheme( QLatin1String( "https" ) );
 
 //     if( useMobileVersion )
@@ -683,24 +683,24 @@ WikipediaEngine::wikiParse( QString &wiki )
         }
     };
 
-    QString header = QString( "<html>\n<head>\n<title>%1</title>\n</head>\n<body>\n" ).arg( title );
+    QString header = QStringLiteral( "<html>\n<head>\n<title>%1</title>\n</head>\n<body>\n" ).arg( title );
 
     // add own stylesheet
     if( !m_css.isEmpty() )
     {
-        removeTag( "<link rel=\"stylesheet\"", "/>" );
+        removeTag( QStringLiteral("<link rel=\"stylesheet\""), QStringLiteral("/>") );
         int index = header.indexOf( QStringLiteral( "</head>" ) );
-        header.insert( index, QString( "\n<style>\n%1\n</style>\n" ).arg( m_css ) );
+        header.insert( index, QStringLiteral( "\n<style>\n%1\n</style>\n" ).arg( m_css ) );
     }
 
     wiki.prepend( header );
 
     // lets remove the warning box
-    removeTag( "<table class=\"metadata plainlinks ambox", "</table>" );
+    removeTag( QStringLiteral("<table class=\"metadata plainlinks ambox"), QStringLiteral("</table>") );
     // remove protection policy (we don't do edits)
-    removeTag( "<div><a href=\"/wiki/Wikipedia:Protection_policy", "</a></div>" );
+    removeTag( QStringLiteral("<div><a href=\"/wiki/Wikipedia:Protection_policy"), QStringLiteral("</a></div>") );
     // lets also remove the "lock" image
-    removeTag( "<div class=\"metadata topicon\" ", "</a></div>" );
+    removeTag( QStringLiteral("<div class=\"metadata topicon\" "), QStringLiteral("</a></div>") );
     // remove <audio> tags (can lead to crashes in QtWebKit)
 //     removeTag( "<audio", "</audio>" );
 
@@ -883,18 +883,18 @@ WikipediaEngine::setLanguage(const QString& language)
 void
 WikipediaEngine::setUrl(const QUrl& url)
 {
-    if( !url.host().endsWith( ".wikipedia.org" ) )
+    if( !url.host().endsWith( QStringLiteral(".wikipedia.org") ) )
     {
-        setMessage( QString( "<a href=\"%1\">").arg( url.toString() ) +
+        setMessage( QStringLiteral( "<a href=\"%1\">").arg( url.toString() ) +
             i18nc( "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. %1 is the url of the link",
-                   "Click to open %1 in a web browser", url.toString() ) + "</a>" );
+                   "Click to open %1 in a web browser", url.toString() ) + QStringLiteral("</a>") );
         return;
     }
     QUrl monobookUrl = url;
     monobookUrl.setPath( QLatin1String("/w/index.php") );
 
     QUrlQuery query;
-    query.addQueryItem( QLatin1String("title"), url.path().mid( url.path().lastIndexOf("/") + 1 ) );
+    query.addQueryItem( QLatin1String("title"), url.path().mid( url.path().lastIndexOf(QStringLiteral("/")) + 1 ) );
     query.addQueryItem( QLatin1String("redirects"), QString::number(1) );
     query.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
     monobookUrl.setQuery( query );

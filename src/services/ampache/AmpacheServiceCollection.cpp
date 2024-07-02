@@ -32,7 +32,7 @@ using namespace Collections;
 AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase *service,
                                                     const QUrl &server,
                                                     const QString &sessionId )
-    : ServiceCollection( service, "AmpacheCollection", "AmpacheCollection" )
+    : ServiceCollection( service, QStringLiteral("AmpacheCollection"), QStringLiteral("AmpacheCollection") )
     , m_server( server )
     , m_sessionId( sessionId )
 {
@@ -52,7 +52,7 @@ AmpacheServiceCollection::queryMaker()
 QString
 AmpacheServiceCollection::collectionId() const
 {
-    return "Ampache: " + m_server.url();
+    return QStringLiteral("Ampache: ") + m_server.url();
 }
 
 QString
@@ -93,19 +93,19 @@ void AmpacheServiceCollection::slotLookupComplete( const Meta::TrackPtr& )
 void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
 {
     //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
+    QDomDocument doc( QStringLiteral("reply") );
     doc.setContent( xml );
-    QDomElement root = doc.firstChildElement( "root" );
-    QDomElement song = root.firstChildElement( "song" );
+    QDomElement root = doc.firstChildElement( QStringLiteral("root") );
+    QDomElement song = root.firstChildElement( QStringLiteral("song") );
 
-    m_urlTrackId = song.attribute( "id", "0" ).toInt();
+    m_urlTrackId = song.attribute( QStringLiteral("id"), QStringLiteral("0") ).toInt();
 
-    QDomElement element = song.firstChildElement( "title" );
+    QDomElement element = song.firstChildElement( QStringLiteral("title") );
 
     QString title = element.text();
-    if ( title.isEmpty() ) title = "Unknown";
+    if ( title.isEmpty() ) title = QStringLiteral("Unknown");
 
-    element = song.firstChildElement( "url" );
+    element = song.firstChildElement( QStringLiteral("url") );
 
     m_urlTrack = new Meta::AmpacheTrack( title, m_service );
     Meta::TrackPtr trackPtr( m_urlTrack );
@@ -113,24 +113,24 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
     m_urlTrack->setUidUrl( element.text() );
     m_urlTrack->setId( m_urlTrackId );
 
-    element = song.firstChildElement( "time" );
+    element = song.firstChildElement( QStringLiteral("time") );
     m_urlTrack->setLength( element.text().toInt() * 1000 );
 
-    element = song.firstChildElement( "track" );
+    element = song.firstChildElement( QStringLiteral("track") );
     m_urlTrack->setTrackNumber( element.text().toInt() );
 
-    QDomElement albumElement = song.firstChildElement( "album" );
-    m_urlAlbumId = albumElement.attribute( "id", "0" ).toInt();
+    QDomElement albumElement = song.firstChildElement( QStringLiteral("album") );
+    m_urlAlbumId = albumElement.attribute( QStringLiteral("id"), QStringLiteral("0") ).toInt();
 
     Meta::AmpacheAlbum *album = new Meta::AmpacheAlbum( albumElement.text() );
 
-    QDomElement artElement = song.firstChildElement( "art" );
+    QDomElement artElement = song.firstChildElement( QStringLiteral("art") );
     album->setCoverUrl( artElement.text() );
 
     album->addTrack( trackPtr );
     m_urlTrack->setAlbumPtr( Meta::AlbumPtr( album ) );
 
-    QDomElement artistElement = song.firstChildElement( "artist" );
+    QDomElement artistElement = song.firstChildElement( QStringLiteral("artist") );
     Meta::ServiceArtist *artist = new Meta::ServiceArtist( artistElement.text() );
 
     Meta::ArtistPtr artistPtr( artist );
@@ -173,9 +173,9 @@ AmpacheTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
     QUrl requestUrl = m_server;
     requestUrl.setPath( m_server.path() + QStringLiteral("/server/xml.server.php") );
     QUrlQuery query;
-    query.addQueryItem( "action", "url_to_song" );
-    query.addQueryItem( "auth", m_sessionId );
-    query.addQueryItem( "url", m_url.toEncoded() );
+    query.addQueryItem( QStringLiteral("action"), QStringLiteral("url_to_song") );
+    query.addQueryItem( QStringLiteral("auth"), m_sessionId );
+    query.addQueryItem( QStringLiteral("url"), m_url.toEncoded() );
     requestUrl.setQuery( query );
 
     QNetworkRequest req( requestUrl );

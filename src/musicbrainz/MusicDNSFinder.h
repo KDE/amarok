@@ -26,18 +26,18 @@
 #include <QTimer>
 #include <ThreadWeaver/Job>
 
-#define AMAROK_MUSICDNS_CLIENT_ID "0c6019606b1d8a54d0985e448f3603ca"
+#define AMAROK_MUSICDNS_CLIENT_ID QStringLiteral("0c6019606b1d8a54d0985e448f3603ca")
 
 class MusicDNSFinder: public QObject
 {
     Q_OBJECT
     public:
         explicit MusicDNSFinder( QObject *parent = nullptr,
-                        const QString &host = "ofa.musicdns.org",
+                        const QString &host = QStringLiteral("ofa.musicdns.org"),
                         const int port = 80,
-                        const QString &pathPrefix = "/ofa/1",
+                        const QString &pathPrefix = QStringLiteral("/ofa/1"),
                         const QString &clietnId = AMAROK_MUSICDNS_CLIENT_ID,
-                        const QString &clientVersion = AMAROK_VERSION  );
+                        const QString &clientVersion = QStringLiteral(AMAROK_VERSION)  );
     public Q_SLOTS:
         void run( const Meta::TrackList &tracks );
 

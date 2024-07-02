@@ -37,10 +37,10 @@ Downloader::Downloader( QJSEngine* engine )
 {
     QJSValue scriptObj = engine->newQObject( this );
     scriptObj.setPrototype( QJSValue() );
-    const QJSValue stringDownloadCtor = scriptObj.property( "downloader_prototype_ctor" );
+    const QJSValue stringDownloadCtor = scriptObj.property( QStringLiteral("downloader_prototype_ctor") );
     engine->globalObject().setProperty( QStringLiteral("Downloader"), stringDownloadCtor); //kept for compat
     engine->globalObject().setProperty( QStringLiteral("StringDownloader"), stringDownloadCtor ); //added for clarity
-    const QJSValue dataDownloadCtor = scriptObj.property( "dataDownloader_prototype_ctor(" );
+    const QJSValue dataDownloadCtor = scriptObj.property( QStringLiteral("dataDownloader_prototype_ctor(") );
     engine->globalObject().setProperty( QStringLiteral("DataDownloader"), dataDownloadCtor );
 }
 

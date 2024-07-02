@@ -106,7 +106,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
     {
         const QString &name = m_album->albumArtist()->name();
         completionNames << name;
-        firstRunQuery += ' ' + name;
+        firstRunQuery += QLatin1Char(' ') + name;
     }
     m_query = firstRunQuery;
     m_album->setSuppressImageAutoFetch( true );
@@ -208,7 +208,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
     splitter->addWidget( vbox );
 //     setMainWidget( splitter );
 
-    const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    const KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
     m_sortEnabled = config.readEntry( "Sort by Size", false );
     m_sortAction->setChecked( m_sortEnabled );
@@ -241,7 +241,7 @@ CoverFoundDialog::~CoverFoundDialog()
 {
     m_album->setSuppressImageAutoFetch( false );
 
-    const QList<QListWidgetItem*> &viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
+    const QList<QListWidgetItem*> &viewItems = m_view->findItems( QStringLiteral("*"), Qt::MatchWildcard );
     qDeleteAll( viewItems );
     delete m_dialog.data();
 }
@@ -249,7 +249,7 @@ CoverFoundDialog::~CoverFoundDialog()
 void CoverFoundDialog::hideEvent( QHideEvent *event )
 {
     KConfigGroup config = Amarok::config( QStringLiteral("Cover Fetcher") );
-    config.writeEntry( "geometry", saveGeometry() );
+    config.writeEntry( QStringLiteral("geometry"), saveGeometry() );
     event->accept();
 }
 
@@ -271,11 +271,11 @@ void CoverFoundDialog::addToView( CoverFoundItem *item )
 {
     const CoverFetch::Metadata &metadata = item->metadata();
 
-    if( m_sortEnabled && metadata.contains( "width" ) && metadata.contains( "height" ) )
+    if( m_sortEnabled && metadata.contains( QStringLiteral("width") ) && metadata.contains( QStringLiteral("height") ) )
     {
         if( m_isSorted )
         {
-            const int size = metadata.value( "width" ).toInt() * metadata.value( "height" ).toInt();
+            const int size = metadata.value( QStringLiteral("width") ).toInt() * metadata.value( QStringLiteral("height") ).toInt();
             QList< int >::iterator i = std::lower_bound( m_sortSizes.begin(), m_sortSizes.end(), size );
             m_sortSizes.insert( i, size );
             const int index = m_sortSizes.count() - m_sortSizes.indexOf( size ) - 1;
@@ -526,7 +526,7 @@ bool CoverFoundDialog::fetchBigPix()
 {
     DEBUG_BLOCK
     CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
-    const QUrl url( item->metadata().value( "normalarturl" ) );
+    const QUrl url( item->metadata().value( QStringLiteral("normalarturl") ) );
     if( !url.isValid() )
         return false;
 
@@ -663,7 +663,7 @@ void CoverFoundDialog::sortCoversBySize()
     DEBUG_BLOCK
 
     m_sortSizes.clear();
-    QList< QListWidgetItem* > viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
+    QList< QListWidgetItem* > viewItems = m_view->findItems( QStringLiteral("*"), Qt::MatchWildcard );
     QMultiMap<int, CoverFoundItem*> sortItems;
 
     // get a list of cover items sorted (automatically by qmap) by size
@@ -671,7 +671,7 @@ void CoverFoundDialog::sortCoversBySize()
     {
         CoverFoundItem *coverItem = dynamic_cast<CoverFoundItem*>( viewItem );
         const CoverFetch::Metadata &meta = coverItem->metadata();
-        const int itemSize = meta.value( "width" ).toInt() * meta.value( "height" ).toInt();
+        const int itemSize = meta.value( QStringLiteral("width") ).toInt() * meta.value( QStringLiteral("height") ).toInt();
         sortItems.insert( itemSize, coverItem );
         m_sortSizes << itemSize;
     }
@@ -778,9 +778,9 @@ void CoverFoundSideBar::setPixmap( const QPixmap &pixmap )
 void CoverFoundSideBar::updateNotes()
 {
     bool enableNotes( false );
-    if( m_metadata.contains( "notes" ) )
+    if( m_metadata.contains( QStringLiteral("notes") ) )
     {
-        const QString notes = m_metadata.value( "notes" );
+        const QString notes = m_metadata.value( QStringLiteral("notes") );
         if( !notes.isEmpty() )
         {
             m_notes->setText( notes );
@@ -840,14 +840,14 @@ void CoverFoundSideBar::updateMetaTable()
 
     QString refUrl;
 
-    const QString source = m_metadata.value( "source" );
+    const QString source = m_metadata.value( QStringLiteral("source") );
     if( source == QStringLiteral("Last.fm") || source == QStringLiteral("Discogs") )
     {
-        refUrl = m_metadata.value( "releaseurl" );
+        refUrl = m_metadata.value( QStringLiteral("releaseurl") );
     }
     else if( source == QStringLiteral("Google") )
     {
-        refUrl = m_metadata.value( "imgrefurl" );
+        refUrl = m_metadata.value( QStringLiteral("imgrefurl") );
     }
 
     if( !refUrl.isEmpty() )

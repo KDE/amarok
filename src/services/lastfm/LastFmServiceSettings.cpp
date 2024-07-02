@@ -110,9 +110,9 @@ LastFmServiceSettings::testLogin()
 
     QMap<QString, QString> query;
 
-    query[ "method" ] = "auth.getMobileSession";
-    query[ "password" ] = m_configDialog->kcfg_ScrobblerPassword->text().toUtf8();
-    query[ "username" ] = m_configDialog->kcfg_ScrobblerUsername->text().toUtf8();
+    query[ QStringLiteral("method") ] = QStringLiteral("auth.getMobileSession");
+    query[ QStringLiteral("password") ] = m_configDialog->kcfg_ScrobblerPassword->text().toUtf8();
+    query[ QStringLiteral("username") ] = m_configDialog->kcfg_ScrobblerUsername->text().toUtf8();
     m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthenticated );
@@ -130,7 +130,7 @@ LastFmServiceSettings::onAuthenticated()
     {
         case QNetworkReply::NoError:
              debug() << "NoError";
-             if( lfm.children( "error" ).size() > 0 )
+             if( lfm.children( QStringLiteral("error") ).size() > 0 )
              {
                  debug() << "ERROR from last.fm:" << lfm.text();
                  m_configDialog->testLogin->setText( i18nc( "The operation was rejected by the server", "Failed" ) );

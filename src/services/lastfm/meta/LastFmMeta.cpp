@@ -50,9 +50,9 @@ Track::Track( lastfm::Track track )
     d->track = track.title();
     d->lastFmTrack = track;
     QMap< QString, QString > params;
-    params[ "method" ] = "track.getInfo";
-    params[ "artist" ] = track.artist();
-    params[ "track" ]  = track.title();
+    params[ QStringLiteral("method") ] = QStringLiteral("track.getInfo");
+    params[ QStringLiteral("artist") ] = track.artist();
+    params[ QStringLiteral("track") ]  = track.title();
 
     d->trackFetch = lastfm::ws::post( params );
 
@@ -68,7 +68,7 @@ Track::~Track()
 void Track::init( int id /* = -1*/ )
 {
     if( id != -1 )
-        d->lastFmUri = QUrl( "lastfm://play/tracks/" + QString::number( id ) );
+        d->lastFmUri = QUrl( QStringLiteral("lastfm://play/tracks/") + QString::number( id ) );
     d->length = 0;
 
     d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( d ) );
@@ -77,13 +77,13 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
-    QAction *banAction = new QAction( QIcon::fromTheme( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    QAction *banAction = new QAction( QIcon::fromTheme( QStringLiteral("remove-amarok") ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, &QAction::triggered, this, &Track::ban );
     m_trackActions.append( banAction );
 
-    QAction *skipAction = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    QAction *skipAction = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, &QAction::triggered, this, &Track::skipTrack );
@@ -229,7 +229,7 @@ Track::bitrate() const
 QString
 Track::type() const
 {
-    return "stream/lastfm";
+    return QStringLiteral("stream/lastfm");
 }
 
 bool
@@ -261,69 +261,69 @@ Track::streamName() const
     {
         QString customPart = QUrl::fromPercentEncoding( elements[2].toUtf8() );
 
-        if( elements[1] == "globaltags" )
+        if( elements[1] == QStringLiteral("globaltags") )
         {
             // lastfm://globaltag/<tag>
             return i18n( "Global Tag Radio: \"%1\"", customPart );
         }
-        else if( elements[1] == "usertags" )
+        else if( elements[1] == QStringLiteral("usertags") )
         {
             // lastfm://usertag/<tag>
             return i18n( "User Tag Radio: \"%1\"", customPart );
         }
-        else if( elements[1] == "artist" )
+        else if( elements[1] == QStringLiteral("artist") )
         {
             if( elements.size() >= 4 )
             {
                 // lastfm://artist/<artist>/similarartists
-                if( elements[3] == "similarartists" )
+                if( elements[3] == QStringLiteral("similarartists") )
                     return i18n( "Similar Artists to \"%1\"", customPart );
 
                 // lastfm://artist/<artist>/fans
-                else if( elements[3] == "fans" )
+                else if( elements[3] == QStringLiteral("fans") )
                     return i18n( "Artist Fan Radio: \"%1\"", customPart );
             }
         }
-        else if( elements[1] == "user" )
+        else if( elements[1] == QStringLiteral("user") )
         {
             if( elements.size() >= 4 )
             {
                 // lastfm://user/<user>/neighbours
-                if( elements[3] == "neighbours" )
+                if( elements[3] == QStringLiteral("neighbours") )
                     return i18n( "%1's Neighbor Radio", elements[2] );
 
                 // lastfm://user/<user>/personal
-                else if( elements[3] == "personal" )
+                else if( elements[3] == QStringLiteral("personal") )
                     return i18n( "%1's Personal Radio", elements[2] );
 
                 // lastfm://user/<user>/mix
-                else if( elements[3] == "mix" )
+                else if( elements[3] == QStringLiteral("mix") )
                     return i18n( "%1's Mix Radio", elements[2] );
 
                 // lastfm://user/<user>/recommended
-                else if( elements.size() < 5 && elements[3] == "recommended" )
+                else if( elements.size() < 5 && elements[3] == QStringLiteral("recommended") )
                     return i18n( "%1's Recommended Radio", elements[2] );
 
                 // lastfm://user/<user>/recommended/<popularity>
-                else if( elements.size() >= 5 && elements[3] == "recommended" )
+                else if( elements.size() >= 5 && elements[3] == QStringLiteral("recommended") )
                     return i18n( "%1's Recommended Radio (Popularity %2)", elements[2], elements[4] );
             }
         }
-        else if( elements[1] == "group" )
+        else if( elements[1] == QStringLiteral("group") )
         {
             // lastfm://group/<group>
             return i18n( "Group Radio: %1", elements[2] );
         }
-        else if( elements[1] == "play" )
+        else if( elements[1] == QStringLiteral("play") )
         {
             if( elements.size() >= 4 )
             {
                 // lastfm://play/tracks/<track #s>
-                if ( elements[2] == "tracks" )
+                if ( elements[2] == QStringLiteral("tracks") )
                     return i18n( "Track Radio" );
 
                     // lastfm://play/artists/<artist #s>
-                else if ( elements[2] == "artists" )
+                else if ( elements[2] == QStringLiteral("artists") )
                     return i18n( "Artist Radio" );
             }
         }
@@ -350,8 +350,8 @@ void Track::slotResultReady()
         lastfm::XmlQuery lfm;
         if( lfm.parse( d->trackFetch->readAll() ) )
         {
-            QString id = lfm[ "track" ][ "id" ].text();
-            QString streamable = lfm[ "track" ][ "streamable" ].text();
+            QString id = lfm[ QStringLiteral("track") ][ QStringLiteral("id") ].text();
+            QString streamable = lfm[ QStringLiteral("track") ][ QStringLiteral("streamable") ].text();
             if( streamable.toInt() == 1 )
                 init( id.toInt() );
             else
@@ -430,7 +430,7 @@ QString LastFm::Track::sourceDescription()
 QPixmap LastFm::Track::emblem()
 {
     if (  !d->track.isEmpty() )
-        return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-lastfm.png" ) );
+        return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-lastfm.png") ) );
     else
         return QPixmap();
 }
@@ -438,7 +438,7 @@ QPixmap LastFm::Track::emblem()
 QString LastFm::Track::scalableEmblem()
 {
     if ( !d->track.isEmpty() )
-        return QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-lastfm-scalable.svg" );
+        return QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-lastfm-scalable.svg") );
     else
         return QString();
 }

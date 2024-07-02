@@ -23,7 +23,7 @@
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
     : QDialog(parent, fl)
 {
-    setObjectName( name );
+    setObjectName( QLatin1String(name) );
     setModal( modal );
     setupUi(this);
     redownloadButton->setEnabled ( false );

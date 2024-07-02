@@ -219,12 +219,12 @@ AmpacheServiceQueryMaker::fetchArtists()
         return;
     }
 
-    QUrl request = getRequestUrl( "artists" );
+    QUrl request = getRequestUrl( QStringLiteral("artists") );
     QUrlQuery query( request );
 
     if ( !d->artistFilter.isEmpty() )
     {
-        query.addQueryItem( "filter", d->artistFilter );
+        query.addQueryItem( QStringLiteral("filter"), d->artistFilter );
         request.setQuery( query );
     }
 
@@ -257,9 +257,9 @@ AmpacheServiceQueryMaker::fetchAlbums()
     {
         for( int id : d->parentArtistIds )
         {
-            QUrl request = getRequestUrl( "artist_albums" );
+            QUrl request = getRequestUrl( QStringLiteral("artist_albums") );
             QUrlQuery query( request );
-            query.addQueryItem( "filter", QString::number( id ) );
+            query.addQueryItem( QStringLiteral("filter"), QString::number( id ) );
             request.setQuery( query );
 
             d->expectedReplies.ref();
@@ -268,12 +268,12 @@ AmpacheServiceQueryMaker::fetchAlbums()
     }
     else
     {
-        QUrl request = getRequestUrl( "albums" );
+        QUrl request = getRequestUrl( QStringLiteral("albums") );
         QUrlQuery query( request );
 
         if ( !d->albumFilter.isEmpty() )
         {
-            query.addQueryItem( "filter", d->albumFilter );
+            query.addQueryItem( QStringLiteral("filter"), d->albumFilter );
             request.setQuery( query );
         }
 
@@ -334,9 +334,9 @@ AmpacheServiceQueryMaker::fetchTracks()
     {
         for( int id : d->parentAlbumIds )
         {
-            QUrl request = getRequestUrl( "album_songs" );
+            QUrl request = getRequestUrl( QStringLiteral("album_songs") );
             QUrlQuery query( request );
-            query.addQueryItem( "filter", QString::number( id ) );
+            query.addQueryItem( QStringLiteral("filter"), QString::number( id ) );
             request.setQuery( query );
 
             d->expectedReplies.ref();
@@ -347,9 +347,9 @@ AmpacheServiceQueryMaker::fetchTracks()
     {
         for( int id : d->parentArtistIds )
         {
-            QUrl request = getRequestUrl( "artist_songs" );
+            QUrl request = getRequestUrl( QStringLiteral("artist_songs") );
             QUrlQuery query( request );
-            query.addQueryItem( "filter", QString::number( id ) );
+            query.addQueryItem( QStringLiteral("filter"), QString::number( id ) );
             request.setQuery( query );
 
             d->expectedReplies.ref();
@@ -358,7 +358,7 @@ AmpacheServiceQueryMaker::fetchTracks()
     }
     else
     {
-        QUrl request = getRequestUrl( "songs" );
+        QUrl request = getRequestUrl( QStringLiteral("songs") );
 
         d->expectedReplies.ref();
         The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::trackDownloadComplete );
@@ -381,16 +381,16 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, const QByteAr
     // DEBUG_BLOCK
 
     // so lets figure out what we got here:
-    QDomDocument doc( "reply" );
+    QDomDocument doc( QStringLiteral("reply") );
     doc.setContent( data );
-    QDomElement root = doc.firstChildElement( "root" );
+    QDomElement root = doc.firstChildElement( QStringLiteral("root") );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before continuing
-    QDomElement domError = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement(QStringLiteral( "error") );
 
     if ( !domError.isNull() )
     {
-        warning() << "Error getting Artist List" << domError.text() << "Code:" << domError.attribute("code");
+        warning() << "Error getting Artist List" << domError.text() << "Code:" << domError.attribute(QStringLiteral("code"));
         AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
         if( !parentService )
             return;
@@ -402,8 +402,8 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, const QByteAr
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
 
-        QDomElement element = n.firstChildElement( "name" );
-        int artistId = e.attribute( "id", "0").toInt();
+        QDomElement element = n.firstChildElement( QStringLiteral("name") );
+        int artistId = e.attribute( QStringLiteral("id"), QStringLiteral("0")).toInt();
 
         // check if we have the artist already
         Meta::ArtistPtr artistPtr = d->collection->artistById( artistId );
@@ -451,16 +451,16 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, const QByteArr
     // DEBUG_BLOCK
 
      //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
+    QDomDocument doc( QStringLiteral("reply") );
     doc.setContent( data );
-    QDomElement root = doc.firstChildElement( "root" );
+    QDomElement root = doc.firstChildElement( QStringLiteral("root") );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before continuing
-    QDomElement domError = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( QStringLiteral("error") );
 
     if( !domError.isNull() )
     {
-        warning() << "Error getting Album List" << domError.text() << "Code:" << domError.attribute("code");
+        warning() << "Error getting Album List" << domError.text() << "Code:" << domError.attribute(QStringLiteral("code"));
         AmpacheService *parentService = dynamic_cast< AmpacheService * >(d->collection->service());
         if( parentService == nullptr )
             return;
@@ -474,10 +474,10 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, const QByteArr
 
         // --- the album artist
         Meta::ArtistPtr artistPtr;
-        QDomElement artistElement = n.firstChildElement( "artist" );
+        QDomElement artistElement = n.firstChildElement( QStringLiteral("artist") );
         if( !artistElement.isNull() )
         {
-            int artistId = artistElement.attribute( "id", "0").toInt();
+            int artistId = artistElement.attribute( QStringLiteral("id"), QStringLiteral("0")).toInt();
             // check if we already know the artist
             artistPtr = d->collection->artistById( artistId );
             if( !artistPtr.data() )
@@ -495,16 +495,16 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, const QByteArr
             }
         }
 
-        QDomElement element = n.firstChildElement( "name" );
+        QDomElement element = n.firstChildElement( QStringLiteral("name") );
         QString title = element.text();
 
         Meta::AmpacheAlbum::AmpacheAlbumInfo info;
-        info.id = e.attribute( "id", "0" ).toInt();
+        info.id = e.attribute( QStringLiteral("id"), QStringLiteral("0") ).toInt();
 
-        element = n.firstChildElement( "disk" );
+        element = n.firstChildElement( QStringLiteral("disk") );
         info.discNumber = element.text().toInt();
 
-        element = n.firstChildElement( "year" );
+        element = n.firstChildElement( QStringLiteral("year") );
         info.year = element.text().toInt();
 
         // check if we have the album already
@@ -523,7 +523,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, const QByteArr
                 album->setAlbumArtist( artistPtr );
 
                 // -- cover
-                element = n.firstChildElement( "art" );
+                element = n.firstChildElement( QStringLiteral("art") );
 
                 QString coverUrl = element.text();
                 album->setCoverUrl( coverUrl );
@@ -569,16 +569,16 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, const QByteArr
     // DEBUG_BLOCK
 
      //so lets figure out what we got here:
-    QDomDocument doc( "reply" );
+    QDomDocument doc( QStringLiteral("reply") );
     doc.setContent( data );
-    QDomElement root = doc.firstChildElement( "root" );
+    QDomElement root = doc.firstChildElement( QStringLiteral("root") );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before continuing
-    QDomElement domError = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( QStringLiteral("error") );
 
     if( !domError.isNull() )
     {
-        warning() << "Error getting Track Download " << domError.text() << "Code:" << domError.attribute("code");
+        warning() << "Error getting Track Download " << domError.text() << "Code:" << domError.attribute(QStringLiteral("code"));
         AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
         if( parentService == nullptr )
             return;
@@ -590,37 +590,37 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, const QByteArr
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
 
-        int trackId = e.attribute( "id", "0" ).toInt();
+        int trackId = e.attribute( QStringLiteral("id"), QStringLiteral("0") ).toInt();
         Meta::TrackPtr trackPtr = d->collection->trackById( trackId );
 
         if( !trackPtr )
         {
             // new track
 
-            QDomElement element = n.firstChildElement( "title" );
+            QDomElement element = n.firstChildElement( QStringLiteral("title") );
             QString title = element.text();
             Meta::AmpacheTrack * track = new Meta::AmpacheTrack( title, d->collection->service() );
             trackPtr = track;
 
             track->setId( trackId );
 
-            element = n.firstChildElement( "url" );
+            element = n.firstChildElement( QStringLiteral("url") );
             track->setUidUrl( element.text() );
 
-            element = n.firstChildElement( "time" );
+            element = n.firstChildElement( QStringLiteral("time") );
             track->setLength( element.text().toInt() * 1000 );
 
-            element = n.firstChildElement( "track" );
+            element = n.firstChildElement( QStringLiteral("track") );
             track->setTrackNumber( element.text().toInt() );
 
-            element = n.firstChildElement( "rating" );
+            element = n.firstChildElement( QStringLiteral("rating") );
             track->statistics()->setRating( element.text().toDouble() * 2.0 );
 
-            QDomElement albumElement = n.firstChildElement( "album" );
-            int albumId = albumElement.attribute( "id", "0").toInt();
+            QDomElement albumElement = n.firstChildElement( QStringLiteral("album") );
+            int albumId = albumElement.attribute( QStringLiteral("id"), QStringLiteral("0")).toInt();
 
-            QDomElement artistElement = n.firstChildElement( "artist" );
-            int artistId = artistElement.attribute( "id", "0").toInt();
+            QDomElement artistElement = n.firstChildElement( QStringLiteral("artist") );
+            int artistId = artistElement.attribute( QStringLiteral("id"), QStringLiteral("0")).toInt();
 
             Meta::ArtistPtr artistPtr = d->collection->artistById( artistId );
             // TODO: this assumes that we query all artist before tracks
@@ -723,26 +723,26 @@ AmpacheServiceQueryMaker::getRequestUrl( const QString &action ) const
     QUrl url = d->server;
     QString scheme = url.scheme();
 
-    if( scheme != "http" && scheme != "https" )
-        url.setScheme( "http" );
+    if( scheme != QStringLiteral("http") && scheme != QStringLiteral("https") )
+        url.setScheme( QStringLiteral("http") );
 
     QUrlQuery query( url );
 
     url = url.adjusted( QUrl::StripTrailingSlash );
-    url.setPath( url.path() + "/server/xml.server.php" );
+    url.setPath( url.path() + QStringLiteral("/server/xml.server.php") );
 
-    query.addQueryItem( "auth", d->sessionId );
+    query.addQueryItem( QStringLiteral("auth"), d->sessionId );
 
     if( !action.isEmpty() )
-        query.addQueryItem( "action", action );
+        query.addQueryItem( QStringLiteral("action"), action );
 
     if( d->dateFilter > 0 )
     {
         QDateTime from;
         from.setSecsSinceEpoch( d->dateFilter );
-        query.addQueryItem( "add", from.toString( Qt::ISODate ) );
+        query.addQueryItem( QStringLiteral("add"), from.toString( Qt::ISODate ) );
     }
-    query.addQueryItem( "limit", QString::number( d->maxsize ) );
+    query.addQueryItem( QStringLiteral("limit"), QString::number( d->maxsize ) );
     url.setQuery( query );
 
     return url;

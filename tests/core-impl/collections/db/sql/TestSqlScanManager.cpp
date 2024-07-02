@@ -790,28 +790,28 @@ TestSqlScanManager::testLargeInsert()
 
     QXmlStreamWriter writer( buffer );
 
-    writer.writeStartElement( "scanner" );
+    writer.writeStartElement( QStringLiteral("scanner") );
 
     int trackCount = 0;
 
     // some simulated normal albums
     for( int dirId = 0; dirId < 2000; dirId++ )
     {
-        writer.writeStartElement( "directory" );
-        writer.writeTextElement( "path", QString::number(dirId) );
-        writer.writeTextElement( "rpath", QLatin1Char('/') + QString::number(dirId) );
-        writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
+        writer.writeStartElement( QStringLiteral("directory") );
+        writer.writeTextElement( QStringLiteral("path"), QString::number(dirId) );
+        writer.writeTextElement( QStringLiteral("rpath"), QLatin1Char('/') + QString::number(dirId) );
+        writer.writeTextElement( QStringLiteral("mtime"), QString::number(aDate.toSecsSinceEpoch()) );
 
         for( int trackId = 0; trackId < 20; trackId++ )
         {
-            writer.writeStartElement( "track" );
-            writer.writeTextElement( "uniqueid", QStringLiteral("uid") + QString::number(trackCount) );
-            writer.writeTextElement( "path", QStringLiteral("/path") + QString::number(trackCount) );
-            writer.writeTextElement( "rpath", QStringLiteral("path") + QString::number(trackCount) );
+            writer.writeStartElement( QStringLiteral("track") );
+            writer.writeTextElement( QStringLiteral("uniqueid"), QStringLiteral("uid") + QString::number(trackCount) );
+            writer.writeTextElement( QStringLiteral("path"), QStringLiteral("/path") + QString::number(trackCount) );
+            writer.writeTextElement( QStringLiteral("rpath"), QStringLiteral("path") + QString::number(trackCount) );
             trackCount++;
-            writer.writeTextElement( "title", QStringLiteral("track") + QString::number(trackCount) );
-            writer.writeTextElement( "artist", QStringLiteral("artist") + QString::number(dirId) );
-            writer.writeTextElement( "album", QString::number(dirId) );
+            writer.writeTextElement( QStringLiteral("title"), QStringLiteral("track") + QString::number(trackCount) );
+            writer.writeTextElement( QStringLiteral("artist"), QStringLiteral("artist") + QString::number(dirId) );
+            writer.writeTextElement( QStringLiteral("album"), QString::number(dirId) );
             writer.writeEndElement();
         }
 
@@ -821,23 +821,23 @@ TestSqlScanManager::testLargeInsert()
     // a simulated genre folders
     for( int dirId = 0; dirId < 7; dirId++ )
     {
-        writer.writeStartElement( "directory" );
-        writer.writeTextElement( "path", QStringLiteral("genre") + QString::number(dirId) );
-        writer.writeTextElement( "rpath", QStringLiteral("/genre") + QString::number(dirId) );
-        writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
+        writer.writeStartElement( QStringLiteral("directory") );
+        writer.writeTextElement( QStringLiteral("path"), QStringLiteral("genre") + QString::number(dirId) );
+        writer.writeTextElement( QStringLiteral("rpath"), QStringLiteral("/genre") + QString::number(dirId) );
+        writer.writeTextElement( QStringLiteral("mtime"), QString::number(aDate.toSecsSinceEpoch()) );
 
         for( int albumId = 0; albumId < 1000; albumId++ )
         {
-            writer.writeStartElement( "track" );
-            writer.writeTextElement( "uniqueid", QStringLiteral("uid") + QString::number(trackCount) );
-            writer.writeTextElement( "path", QStringLiteral("/path") + QString::number(trackCount) );
-            writer.writeTextElement( "rpath", QStringLiteral("path") + QString::number(trackCount) );
+            writer.writeStartElement( QStringLiteral("track") );
+            writer.writeTextElement( QStringLiteral("uniqueid"), QStringLiteral("uid") + QString::number(trackCount) );
+            writer.writeTextElement( QStringLiteral("path"), QStringLiteral("/path") + QString::number(trackCount) );
+            writer.writeTextElement( QStringLiteral("rpath"), QStringLiteral("path") + QString::number(trackCount) );
             trackCount++;
-            writer.writeTextElement( "title", QStringLiteral("track") + QString::number(trackCount) );
-            writer.writeTextElement( "artist",
+            writer.writeTextElement( QStringLiteral("title"), QStringLiteral("track") + QString::number(trackCount) );
+            writer.writeTextElement( QStringLiteral("artist"),
                                       QStringLiteral("artist") + QString::number(dirId) +
                                       QStringLiteral("xx") + QString::number(albumId) );
-            writer.writeTextElement( "album",
+            writer.writeTextElement( QStringLiteral("album"),
                                       QStringLiteral("genre album") + QString::number(dirId) +
                                       QStringLiteral("xx") + QString::number(albumId) );
             writer.writeEndElement();
@@ -849,19 +849,19 @@ TestSqlScanManager::testLargeInsert()
     // A simulated amarok 1.4 collection folder
     for( int dirId = 0; dirId < 3000; dirId++ )
     {
-        writer.writeStartElement( "directory" );
-        writer.writeTextElement( "path", QStringLiteral("collection") + QString::number(dirId) );
-        writer.writeTextElement( "rpath", QStringLiteral("/collection") + QString::number(dirId) );
-        writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
+        writer.writeStartElement( QStringLiteral("directory") );
+        writer.writeTextElement( QStringLiteral("path"), QStringLiteral("collection") + QString::number(dirId) );
+        writer.writeTextElement( QStringLiteral("rpath"), QStringLiteral("/collection") + QString::number(dirId) );
+        writer.writeTextElement( QStringLiteral("mtime"), QString::number(aDate.toSecsSinceEpoch()) );
 
-        writer.writeStartElement( "track" );
-        writer.writeTextElement( "uniqueid", QStringLiteral("uid") + QString::number(trackCount) );
-        writer.writeTextElement( "path", QStringLiteral("/path") + QString::number(trackCount) );
-        writer.writeTextElement( "rpath", QStringLiteral("path") + QString::number(trackCount) );
+        writer.writeStartElement( QStringLiteral("track") );
+        writer.writeTextElement( QStringLiteral("uniqueid"), QStringLiteral("uid") + QString::number(trackCount) );
+        writer.writeTextElement( QStringLiteral("path"), QStringLiteral("/path") + QString::number(trackCount) );
+        writer.writeTextElement( QStringLiteral("rpath"), QStringLiteral("path") + QString::number(trackCount) );
         trackCount++;
-        writer.writeTextElement( "title", QStringLiteral("track") + QString::number(trackCount) );
-        writer.writeTextElement( "artist", QStringLiteral("album artist") + QString::number(dirId % 200) );
-        writer.writeTextElement( "album", QStringLiteral("album") + QString::number(dirId % 300) );
+        writer.writeTextElement( QStringLiteral("title"), QStringLiteral("track") + QString::number(trackCount) );
+        writer.writeTextElement( QStringLiteral("artist"), QStringLiteral("album artist") + QString::number(dirId % 200) );
+        writer.writeTextElement( QStringLiteral("album"), QStringLiteral("album") + QString::number(dirId % 300) );
         writer.writeEndElement();
 
         writer.writeEndElement();

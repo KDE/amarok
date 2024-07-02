@@ -44,8 +44,8 @@ namespace AmarokScript
             Q_INVOKABLE QString escape( const QString& str );
 
             Q_INVOKABLE void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
-            Q_INVOKABLE QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
-            Q_INVOKABLE QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
+            Q_INVOKABLE QString toUtf8( const QByteArray& lyrics, const QString& encoding = QStringLiteral("UTF-8") );
+            Q_INVOKABLE QString QStringtoUtf8( const QString& lyrics, const QString& encoding = QStringLiteral("UTF-8") );
             Q_INVOKABLE QByteArray fromUtf8( const QString& str, const QString& encoding );
 
         Q_SIGNALS:

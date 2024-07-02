@@ -74,7 +74,7 @@ public:
         if( !url.isValid() )
         {
             const QMetaObject *mo = receiver->metaObject();
-            debug() << QStringLiteral( "Error: URL '%1' is invalid (from %2)" ).arg( url.url(), mo->className() );
+            debug() << QStringLiteral( "Error: URL '%1' is invalid (from %2)" ).arg( url.url(), QLatin1String(mo->className()) );
             return nullptr;
         }
 

@@ -61,7 +61,7 @@ LastFmServiceFactory::LastFmServiceFactory()
 void
 LastFmServiceFactory::init()
 {
-    ServiceBase *service = new LastFmService( this, "Last.fm" );
+    ServiceBase *service = new LastFmService( this, QStringLiteral("Last.fm") );
     m_initialized = true;
     Q_EMIT newService( service );
 }
@@ -69,7 +69,7 @@ LastFmServiceFactory::init()
 QString
 LastFmServiceFactory::name()
 {
-    return "Last.fm";
+    return QStringLiteral("Last.fm");
 }
 
 KConfigGroup
@@ -81,7 +81,7 @@ LastFmServiceFactory::config()
 bool
 LastFmServiceFactory::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.scheme() == "lastfm";
+    return url.scheme() == QStringLiteral("lastfm");
 }
 
 
@@ -98,9 +98,9 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
 {
     DEBUG_BLOCK
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
-    setIcon( QIcon::fromTheme( "view-services-lastfm-amarok" ) );
+    setIcon( QIcon::fromTheme( QStringLiteral("view-services-lastfm-amarok") ) );
     setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends" ) );
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_lastfm.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_lastfm.png") ) );
 
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
@@ -126,7 +126,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
-    QAction *loveAction = new QAction( QIcon::fromTheme( "love-amarok" ), i18n( "Last.fm: Love" ), this );
+    QAction *loveAction = new QAction( QIcon::fromTheme( QStringLiteral("love-amarok") ), i18n( "Last.fm: Love" ), this );
     connect( loveAction, &QAction::triggered, this, &LastFmService::loveCurrentTrack );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     The::globalCurrentTrackActions()->addAction( loveAction );
@@ -205,9 +205,9 @@ LastFmService::slotReconfigure()
         }
 
         QMap<QString, QString> query;
-        query[ "method" ] = "auth.getMobileSession";
-        query[ "password" ] = m_config->password();
-        query[ "username" ] = m_config->username();
+        query[ QStringLiteral("method") ] = QStringLiteral("auth.getMobileSession");
+        query[ QStringLiteral("password") ] = m_config->password();
+        query[ QStringLiteral("username") ] = m_config->username();
         m_authenticateReply = lastfm::ws::post( query );
         connect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated ); // calls continueReconfiguring()
     }
@@ -237,7 +237,7 @@ LastFmService::continueReconfiguring()
     else if( !m_scrobbler && authenticated && m_config->scrobble() )
     {
         debug() << __PRETTY_FUNCTION__ << "creating and registering ScrobblerAdapter";
-        m_scrobbler = QSharedPointer<ScrobblerAdapter>( new ScrobblerAdapter( "Amarok", m_config ) );
+        m_scrobbler = QSharedPointer<ScrobblerAdapter>( new ScrobblerAdapter( QStringLiteral("Amarok"), m_config ) );
         controller->registerScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
     }
 
@@ -276,14 +276,14 @@ LastFmService::onAuthenticated()
         case QNetworkReply::NoError:
         {
             lastfm::XmlQuery lfm;
-            if( !lfm.parse( m_authenticateReply->readAll() ) || lfm.children( "error" ).size() > 0 )
+            if( !lfm.parse( m_authenticateReply->readAll() ) || lfm.children( QStringLiteral("error") ).size() > 0 )
             {
                 debug() << "error from authenticating with last.fm service:" << lfm.text();
                 m_config->setSessionKey( QString() );
                 m_config->save();
                 break;
             }
-            m_config->setSessionKey( lfm[ "session" ][ "key" ].text() );
+            m_config->setSessionKey( lfm[ QStringLiteral("session") ][ QStringLiteral("key") ].text() );
             m_config->save();
 
             break;
@@ -320,18 +320,18 @@ LastFmService::onGetUserInfo()
         {
             lastfm::XmlQuery lfm;
             if( lfm.parse( reply->readAll() ) ) {
-                m_country = lfm["user"]["country"].text();
-                m_age = lfm["user"]["age"].text();
-                m_gender = lfm["user"]["gender"].text();
-                m_playcount = lfm["user"]["playcount"].text();
-                m_subscriber = lfm["user"]["subscriber"].text() == "1";
+                m_country = lfm[QStringLiteral("user")][QStringLiteral("country")].text();
+                m_age = lfm[QStringLiteral("user")][QStringLiteral("age")].text();
+                m_gender = lfm[QStringLiteral("user")][QStringLiteral("gender")].text();
+                m_playcount = lfm[QStringLiteral("user")][QStringLiteral("playcount")].text();
+                m_subscriber = lfm[QStringLiteral("user")][QStringLiteral("subscriber")].text() == QStringLiteral("1");
 
                 debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
-                if( !lfm["user"][ "image" ].text().isEmpty() )
+                if( !lfm[QStringLiteral("user")][ QStringLiteral("image") ].text().isEmpty() )
                 {
-                    debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
+                    debug() << "profile avatar: " <<lfm[QStringLiteral("user")][ QStringLiteral("image") ].text();
                     AvatarDownloader* downloader = new AvatarDownloader();
-                    QUrl url( lfm["user"][ "image" ].text() );
+                    QUrl url( lfm[QStringLiteral("user")][ QStringLiteral("image") ].text() );
                     downloader->downloadAvatar( m_config->username(),  url);
                     connect( downloader, &AvatarDownloader::avatarDownloaded,
                              this, &LastFmService::onAvatarDownloaded );
@@ -431,7 +431,7 @@ LastFmService::polish()
         if( !m_avatar )
         {
             int m = LastFmTreeModel::avatarSize();
-            m_avatarLabel->setPixmap( QIcon::fromTheme( "filename-artist-amarok" ).pixmap(m, m) );
+            m_avatarLabel->setPixmap( QIcon::fromTheme( QStringLiteral("filename-artist-amarok") ).pixmap(m, m) );
             m_avatarLabel->setFixedSize( m, m );
         }
         else
@@ -459,8 +459,8 @@ LastFmService::polish()
         m_customStationEdit->setClearButtonEnabled( true );
         updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton;
-        m_customStationButton->setObjectName( "customButton" );
-        m_customStationButton->setIcon( QIcon::fromTheme( "media-playback-start-amarok" ) );
+        m_customStationButton->setObjectName( QStringLiteral("customButton") );
+        m_customStationButton->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-start-amarok") ) );
         QHBoxLayout *hbox = new QHBoxLayout();
         hbox->addWidget(m_customStationCombo);
         hbox->addWidget(m_customStationEdit);
@@ -499,13 +499,13 @@ void LastFmService::playCustomStation()
     debug() << "Selected combo " <<m_customStationCombo->currentIndex();
     switch ( m_customStationCombo->currentIndex() ) {
         case 0:
-            station = "lastfm://artist/" + text + "/similarartists";
+            station = QStringLiteral("lastfm://artist/") + text + QStringLiteral("/similarartists");
             break;
         case 1:
-            station = "lastfm://globaltags/" + text;
+            station = QStringLiteral("lastfm://globaltags/") + text;
             break;
         case 2:
-            station = "lastfm://user/" + text + "/personal";
+            station = QStringLiteral("lastfm://user/") + text + QStringLiteral("/personal");
             break;
         default:
             return;

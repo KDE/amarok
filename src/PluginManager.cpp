@@ -63,7 +63,7 @@ Plugins::PluginManager::PluginManager( QObject *parent )
     : QObject( parent )
 {
     DEBUG_BLOCK
-    setObjectName( "PluginManager" );
+    setObjectName( QStringLiteral("PluginManager") );
     s_instance = this;
 
     PERF_LOG( "Initialising Plugin Manager" )
@@ -98,7 +98,7 @@ Plugins::PluginManager::plugins( Type type ) const
     for( const auto &pluginInfo : m_pluginsByType.value( type ) )
     {
         auto info = KPluginInfo( pluginInfo );
-        info.setConfig( Amarok::config( "Plugins" ) );
+        info.setConfig( Amarok::config( QStringLiteral("Plugins") ) );
         infos << info;
     }
 
@@ -230,8 +230,8 @@ Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
     // mysql storage and collection are vital. They need to be loaded always
 
     auto raw = plugin.rawData();
-    int version = raw.value( "X-KDE-Amarok-framework-version" ).toInt();
-    int rank = raw.value( "X-KDE-Amarok-rank" ).toInt();
+    int version = raw.value( QStringLiteral("X-KDE-Amarok-framework-version") ).toInt();
+    int rank = raw.value( QStringLiteral("X-KDE-Amarok-rank") ).toInt();
 
     if( version != s_pluginFrameworkVersion )
     {
@@ -250,7 +250,7 @@ Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
 
     if( !vital.isUndefined())
     {
-        if( vital.toBool() || vital.toString().toLower() == "true" )
+        if( vital.toBool() || vital.toString().toLower() == QStringLiteral("true") )
         {
             debug() << "Plugin" << plugin.pluginId() << "is vital";
             return true;
@@ -258,7 +258,7 @@ Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
     }
 
     KPluginInfo info = KPluginInfo( plugin );
-    info.setConfig( Amarok::config( "Plugins" ) );
+    info.setConfig( Amarok::config( QStringLiteral("Plugins") ) );
     info.load();
 
     return info.isPluginEnabled();
@@ -285,7 +285,7 @@ Plugins::PluginManager::createFactory( const KPluginMetaData &pluginInfo )
 
     if( !pluginFactory )
     {
-        warning() << QString( "Failed to get factory '%1' from QPluginLoader: %2" )
+        warning() << QStringLiteral( "Failed to get factory '%1' from QPluginLoader: %2" )
                      .arg( name, loader.errorString() );
         return QSharedPointer<Plugins::PluginFactory>();
     }

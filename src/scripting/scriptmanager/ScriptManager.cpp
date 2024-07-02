@@ -56,7 +56,7 @@ ScriptManager::ScriptManager( QObject* parent )
     : QObject( parent )
 {
     DEBUG_BLOCK
-    setObjectName( "ScriptManager" );
+    setObjectName( QStringLiteral("ScriptManager") );
 
     s_instance = this;
 
@@ -135,7 +135,7 @@ ScriptManager::createMetadaFromSpec( const QString &specPath )
 {
     // KPluginMetaData and KPluginInfo require file suffix to be .desktop. Thus create temporary file with suffix
     QFile specFile( specPath );
-    QTemporaryFile desktopFile( QDir::tempPath() + "/XXXXXX.desktop" );
+    QTemporaryFile desktopFile( QDir::tempPath() + QStringLiteral("/XXXXXX.desktop") );
 
     if ( !specFile.open( QIODevice::ReadOnly ) ) {
         warning() << "Could not read from spec file: " << specPath;
@@ -197,7 +197,7 @@ ScriptManager::updateAllScripts() // SLOT
     // remove deleted scripts
     for( ScriptItem *item : m_scripts )
     {
-        const QString specPath = QString( "%1/script.spec" ).arg( QFileInfo( item->url().path() ).path() );
+        const QString specPath = QStringLiteral( "%1/script.spec" ).arg( QFileInfo( item->url().path() ).path() );
         if( !QFile::exists( specPath ) )
         {
             debug() << "Removing script " << item->info().pluginName();
@@ -209,7 +209,7 @@ ScriptManager::updateAllScripts() // SLOT
     m_nScripts = foundScripts.count();
 
     // get timestamp of the last update check
-    KConfigGroup config = Amarok::config( "ScriptManager" );
+    KConfigGroup config = Amarok::config( QStringLiteral("ScriptManager") );
     const uint lastCheck = config.readEntry( "LastUpdateCheck", QVariant( 0 ) ).toUInt();
     const uint now = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
     bool autoUpdateScripts = AmarokConfig::autoUpdateScripts();
@@ -273,7 +273,7 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     ScriptItem *item = m_scripts.value( name );
     connect( item, &ScriptItem::signalHandlerException,
              this, &ScriptManager::handleException );
-    if( item->info().category() == "Lyrics" )
+    if( item->info().category() == QStringLiteral("Lyrics") )
     {
         m_lyricsScript = name;
         debug() << "lyrics script started:" << name;
@@ -287,7 +287,7 @@ ScriptManager::handleException(const QJSValue& value)
 {
     DEBUG_BLOCK
 
-    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", value.property("name").toString(), value.property("message").toString() ), Amarok::Logger::Error );
+    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", value.property(QStringLiteral("name")).toString(), value.property(QStringLiteral("message")).toString() ), Amarok::Logger::Error );
 }
 
 void
@@ -333,7 +333,7 @@ ScriptManager::slotConfigChanged()
     {
         const QString name = item->info().pluginName();
         bool enabledByDefault = item->info().isPluginEnabledByDefault();
-        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+        bool enabled = Amarok::config( QStringLiteral("Plugins") ).readEntry( name + QStringLiteral("Enabled"), enabledByDefault );
 
         if( !item->running() && enabled )
         {
@@ -356,8 +356,8 @@ ScriptManager::loadScript( const QString& path )
     //SupportAPIVersion << QLatin1String("API V1.0.0") << QLatin1String("API V1.0.1");
     QString ScriptVersion;
     QFileInfo info( path );
-    const QString jsonPath = QString( "%1/script.json" ).arg( info.path() );
-    const QString specPath = QString( "%1/script.spec" ).arg( info.path() );
+    const QString jsonPath = QStringLiteral( "%1/script.json" ).arg( info.path() );
+    const QString specPath = QStringLiteral( "%1/script.spec" ).arg( info.path() );
     KPluginMetaData pluginMetadata;
 
     if( QFile::exists( jsonPath ) )

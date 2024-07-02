@@ -136,7 +136,7 @@ MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
     {
         bool found = false;
         for( QString PUID : parser->puid() )
-            if( PUID != "00000000-0000-0000-0000-000000000000" )
+            if( PUID != QStringLiteral("00000000-0000-0000-0000-000000000000") )
             {
                 found = true;
                 Q_EMIT trackFound( m_parsers.value( parser ), PUID );
@@ -192,29 +192,29 @@ MusicDNSFinder::compileRequest( const QString &fingerprint, const Meta::TrackPtr
 {
     QUrl url;
     QUrlQuery query;
-    url.setScheme( "http" );
+    url.setScheme( QStringLiteral("http") );
     url.setHost( mdns_host );
     url.setPort( mdns_port );
-    url.setPath( mdns_pathPrefix+"/track/" );
-    query.addQueryItem( "gnr", "" );
-    query.addQueryItem( "art", track->artist().isNull()?"":track->artist()->name() );
-    query.addQueryItem( "rmd", "0" );
-    query.addQueryItem( "cid", mdns_clientId );
-    query.addQueryItem( "alb", track->album().isNull()?"":track->album()->name() );
-    query.addQueryItem( "fmt", "" );
-    query.addQueryItem( "brt", QString::number( track->bitrate() ) );
-    query.addQueryItem( "cvr", mdns_clientVersion );
-    query.addQueryItem( "fpt", fingerprint );
-    query.addQueryItem( "ttl", track->name().isNull()?track->playableUrl().fileName().remove(
-                             QRegularExpression( "^.*(\\.+(?:\\w{2,5}))$" ) ):track->name() );
-    query.addQueryItem( "tnm", "" );
-    query.addQueryItem( "lkt", "" );
-    query.addQueryItem( "dur", QString::number( track->length() ) );
-    query.addQueryItem( "yrr", "" );
+    url.setPath( mdns_pathPrefix+QStringLiteral("/track/") );
+    query.addQueryItem( QStringLiteral("gnr"), QStringLiteral("") );
+    query.addQueryItem( QStringLiteral("art"), track->artist().isNull()?QStringLiteral(""):track->artist()->name() );
+    query.addQueryItem( QStringLiteral("rmd"), QStringLiteral("0") );
+    query.addQueryItem( QStringLiteral("cid"), mdns_clientId );
+    query.addQueryItem( QStringLiteral("alb"), track->album().isNull()?QStringLiteral(""):track->album()->name() );
+    query.addQueryItem( QStringLiteral("fmt"), QStringLiteral("") );
+    query.addQueryItem( QStringLiteral("brt"), QString::number( track->bitrate() ) );
+    query.addQueryItem( QStringLiteral("cvr"), mdns_clientVersion );
+    query.addQueryItem( QStringLiteral("fpt"), fingerprint );
+    query.addQueryItem( QStringLiteral("ttl"), track->name().isNull()?track->playableUrl().fileName().remove(
+                             QRegularExpression( QStringLiteral("^.*(\\.+(?:\\w{2,5}))$") ) ):track->name() );
+    query.addQueryItem( QStringLiteral("tnm"), QStringLiteral("") );
+    query.addQueryItem( QStringLiteral("lkt"), QStringLiteral("") );
+    query.addQueryItem( QStringLiteral("dur"), QString::number( track->length() ) );
+    query.addQueryItem( QStringLiteral("yrr"), QStringLiteral("") );
     url.setQuery( query );
 
     QNetworkRequest req( url );
-    req.setRawHeader( "User-Agent" , "Amarok" );
+    req.setRawHeader( "User-Agent", "Amarok" );
     req.setRawHeader( "Connection", "Keep-Alive" );
 
     if( !_timer->isActive() )

@@ -50,7 +50,7 @@ void AmpacheServiceFactory::init()
     for( int i = 0; i < servers.size(); i++ )
     {
         AmpacheServerEntry server = servers.at( i );
-        ServiceBase* service = new AmpacheService( this, "Ampache (" + server.name + ')', server.url, server. username, server.password );
+        ServiceBase* service = new AmpacheService( this, QStringLiteral("Ampache (") + server.name + QLatin1Char(')'), server.url, server. username, server.password );
         Q_EMIT newService( service );
     }
 }
@@ -89,9 +89,9 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     DEBUG_BLOCK
     connect( m_ampacheLogin, &AmpacheAccountLogin::loginSuccessful, this, &AmpacheService::onLoginSuccessful );
     setShortDescription( i18n( "Amarok frontend for your Ampache server" ) );
-    setIcon( QIcon::fromTheme( "view-services-ampache-amarok" ) );
+    setIcon( QIcon::fromTheme( QStringLiteral("view-services-ampache-amarok") ) );
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_ampache.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_ampache.png") ) );
 #ifdef HAVE_LIBLASTFM
     m_infoParser = new LastfmInfoParser();
 #endif

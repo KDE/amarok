@@ -81,7 +81,7 @@ class Track::Private : public QObject
             : lastFmUri( QUrl() )
             , currentTrackStartTime( 0 )
         {
-            artist = QString ( "Last.fm" );
+            artist = QStringLiteral ( "Last.fm" );
         }
 
         ~Private() override
@@ -106,8 +106,8 @@ class Track::Private : public QObject
             trackPath = trackInfo.url();
 
             // need to reset other items
-            albumUrl = "";
-            trackUrl = "";
+            albumUrl = QStringLiteral("");
+            trackUrl = QStringLiteral("");
             albumArt = QImage();
 
             if( newTrackInfo )
@@ -121,9 +121,9 @@ class Track::Private : public QObject
             if( !trackInfo.isNull() )
             {
                 QMap< QString, QString > params;
-                params[ "method" ] = "track.getInfo";
-                params[ "artist" ] = artist;
-                params[ "track" ] = track;
+                params[ QStringLiteral("method") ] = QStringLiteral("track.getInfo");
+                params[ QStringLiteral("artist") ] = artist;
+                params[ QStringLiteral("track") ] = track;
 
                 m_userFetch = lastfm::ws::post( params );
 
@@ -141,13 +141,13 @@ class Track::Private : public QObject
                 lastfm::XmlQuery lfm;
                 if( lfm.parse( m_userFetch->readAll() ) )
                 {
-                    albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
-                    trackUrl = lfm[ "track" ][ "url" ].text();
-                    artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
+                    albumUrl = lfm[ QStringLiteral("track") ][ QStringLiteral("album") ][ QStringLiteral("url") ].text();
+                    trackUrl = lfm[ QStringLiteral("track") ][ QStringLiteral("url") ].text();
+                    artistUrl = lfm[ QStringLiteral("track") ][ QStringLiteral("artist") ][ QStringLiteral("url") ].text();
 
                     notifyObservers();
 
-                    imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
+                    imageUrl = lfm[ QStringLiteral("track") ][ QStringLiteral("album") ][ QStringLiteral("image size=large") ].text();
 
                     if( !imageUrl.isEmpty() )
                     {
@@ -257,15 +257,15 @@ public:
             QString sizeKey = QString::number( size ) + QLatin1Char('@');
 
             QImage image;
-            QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-            if( cacheCoverDir.exists( sizeKey + "lastfm-default-cover.png" ) )
-                image = QImage( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
+            QDir cacheCoverDir = QDir( Amarok::saveLocation( QStringLiteral("albumcovers/cache/") ) );
+            if( cacheCoverDir.exists( sizeKey + QStringLiteral("lastfm-default-cover.png") ) )
+                image = QImage( cacheCoverDir.filePath( sizeKey + QStringLiteral("lastfm-default-cover.png") ) );
             else
             {
-                QImage orgImage = QImage( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
+                QImage orgImage = QImage( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/lastfm-default-cover.png") ) ); //optimize this!
                 //scaled() does not change the original image but returns a scaled copy
                 image = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-                image.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
+                image.save( cacheCoverDir.filePath( sizeKey + QStringLiteral("lastfm-default-cover.png") ), "PNG" );
             }
 
             return image;

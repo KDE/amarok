@@ -51,7 +51,7 @@ TestSqlAlbum::~TestSqlAlbum()
 void
 TestSqlAlbum::initTestCase()
 {
-    AmarokConfig::instance("amarokrc");
+    AmarokConfig::instance(QStringLiteral("amarokrc"));
     if( !s_tmpDir )
         s_tmpDir = new QTemporaryDir();
     QVERIFY( s_tmpDir->isValid() );
@@ -71,20 +71,20 @@ void
 TestSqlAlbum::init()
 {
     //setup base data
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'artist1');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'artist2');" );
-    m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (1, 'artist1');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (2, 'artist2');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (3, 'artist3');") );
 
-    m_storage->query( "INSERT INTO composers(id, name) VALUES (1, 'composer1');" );
-    m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
-    m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (1, 'composer1');") );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (1, 'genre1');") );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (1, '1');") );
 
-    m_storage->query( "INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');" );
+    m_storage->query( QStringLiteral("INSERT INTO directories(id, deviceid, dir) VALUES (1, -1, './');") );
 
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, 'uid://1');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, 'uid://2');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, 'uid:/3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, -1, './MeNeitherToo.mp3', 1, 'uid:/4');" );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (1, -1, './IDoNotExist.mp3', 1, 'uid://1');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, 'uid://2');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, 'uid:/3');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, -1, './MeNeitherToo.mp3', 1, 'uid:/4');") );
 
     CoverFetcher::destroy();
 
@@ -94,28 +94,28 @@ TestSqlAlbum::init()
 void
 TestSqlAlbum::cleanup()
 {
-    m_storage->query( "TRUNCATE TABLE years;" );
-    m_storage->query( "TRUNCATE TABLE genres;" );
-    m_storage->query( "TRUNCATE TABLE composers;" );
-    m_storage->query( "TRUNCATE TABLE albums;" );
-    m_storage->query( "TRUNCATE TABLE artists;" );
-    m_storage->query( "TRUNCATE TABLE tracks;" );
-    m_storage->query( "TRUNCATE TABLE urls;" );
-    m_storage->query( "TRUNCATE TABLE directories;" );
-    m_storage->query( "TRUNCATE TABLE urls_labels;" );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE years;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE genres;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE composers;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE albums;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE artists;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE tracks;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE urls;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE directories;") );
+    m_storage->query( QStringLiteral("TRUNCATE TABLE urls_labels;") );
 }
 
 void
 TestSqlAlbum::testTracks()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (2, 'album2',1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (2,2,'track2',1,1,1,1,1 );" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (3,3,'trackInOtherAlbum',1,2,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (2, 'album2',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',1,1,1,1,1 );") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (3,3,'trackInOtherAlbum',1,2,1,1,1 );") );
 
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( 1 );
     Meta::SqlAlbum *sqlAlbum = static_cast<Meta::SqlAlbum*>( album.data() );
@@ -126,20 +126,20 @@ TestSqlAlbum::testTracks()
 
     // remove one track
     Meta::SqlTrack *sqlTrack = static_cast<Meta::SqlTrack*>( tracks.first().data() );
-    sqlTrack->setAlbum( "newAlbum" );
+    sqlTrack->setAlbum( QStringLiteral("newAlbum") );
     QCOMPARE( sqlAlbum->tracks().count(), 1 );
 }
 
 void
 TestSqlAlbum::testIsCompilation()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
 
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (2, 'compilation',NULL);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (2,2,'track2',1,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (2, 'compilation',NULL);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',1,1,1,1,1 );") );
 
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( 1 );
     QVERIFY( !album->isCompilation() );
@@ -153,19 +153,19 @@ TestSqlAlbum::testIsCompilation()
 void
 TestSqlAlbum::testAlbumArtist()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);") );
 
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( 1 );
     QVERIFY( !album->isCompilation() );
     QVERIFY( album->hasAlbumArtist() );
     QVERIFY( album->albumArtist() );
-    QCOMPARE( album->albumArtist()->name(), QString( "artist1" ) );
+    QCOMPARE( album->albumArtist()->name(), QStringLiteral( "artist1" ) );
 }
 
 void
 TestSqlAlbum::testImage()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'imageTestAlbum',1);" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'imageTestAlbum',1);") );
 
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( 1 );
     Meta::SqlAlbum *sqlAlbum = static_cast<Meta::SqlAlbum*>( album.data() );
@@ -199,7 +199,7 @@ TestSqlAlbum::testImage()
 void
 TestSqlAlbum::testCapabilities()
 {
-    Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Test album", "test artist" );
+    Meta::AlbumPtr album = m_collection->registry()->getAlbum( QStringLiteral("Test album"), QStringLiteral("test artist") );
 
     QVERIFY( album->hasCapabilityInterface( Capabilities::Capability::Actions ) );
     Capabilities::ActionsCapability *ac = album->create<Capabilities::ActionsCapability>();
@@ -225,9 +225,9 @@ TestSqlAlbum::testSetCompilationWithoutExistingCompilation()
 {
     m_collection->registry()->emptyCache();
 
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
 //     auto newAlbum = m_collection->registry()->getAlbum(1);
@@ -250,10 +250,10 @@ TestSqlAlbum::testSetCompilationWithoutExistingCompilation()
 void
 TestSqlAlbum::testSetCompilationWithExistingCompilation()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'albumAndCompilation1',1);" );
-    m_storage->query( "INSERT INTO albums(id,name) VALUES (2, 'albumAndCompilation1');" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'albumAndCompilation1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name) VALUES (2, 'albumAndCompilation1');") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
     Meta::AlbumPtr compilation = m_collection->registry()->getAlbum( 2 );
     QVERIFY( compilation->isCompilation() );
 
@@ -274,15 +274,15 @@ TestSqlAlbum::testSetCompilationWithExistingCompilation()
     QVERIFY( album->isCompilation() );
     QCOMPARE( album, compilation ); //track returns new album, but the same object that we retrieved above
 
-    QStringList albumResult = m_storage->query( "SELECT name, artist FROM albums WHERE id = 1" );
+    QStringList albumResult = m_storage->query( QStringLiteral("SELECT name, artist FROM albums WHERE id = 1") );
 }
 
 void
 TestSqlAlbum::testUnsetCompilationWithoutExistingAlbum()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1',NULL);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'album1',NULL);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     Meta::AlbumPtr album = track->album();
@@ -296,17 +296,17 @@ TestSqlAlbum::testUnsetCompilationWithoutExistingAlbum()
     sqlAlbum = static_cast<Meta::SqlAlbum*>( album.data() );
     QVERIFY( album->hasAlbumArtist() );
     QVERIFY( !album->isCompilation() );
-    QCOMPARE( album->name(), QString( "album1" ) ); //album name did not change
+    QCOMPARE( album->name(), QStringLiteral( "album1" ) ); //album name did not change
     QCOMPARE( album->albumArtist()->name(), track->artist()->name() ); //artist is the same
 }
 
 void
 TestSqlAlbum::testUnsetCompilationWithExistingAlbum()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'albumAndCompilation1',NULL);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (2, 'albumAndCompilation1',1);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1, 'albumAndCompilation1',NULL);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (2, 'albumAndCompilation1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     Meta::AlbumPtr compilation = track->album();
@@ -327,15 +327,15 @@ TestSqlAlbum::testUnsetCompilationWithExistingAlbum()
 void
 TestSqlAlbum::testUnsetCompilationWithMultipleExistingAlbums()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1,'albumAndCompilation1',NULL);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (2,'albumAndCompilation1',1);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (3,'albumAndCompilation1',2);" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (2,2,'track2',2,3,1,1,1 );" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (3,3,'track3',1,2,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1,'albumAndCompilation1',NULL);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (2,'albumAndCompilation1',1);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (3,'albumAndCompilation1',2);") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',2,3,1,1,1 );") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (3,3,'track3',1,2,1,1,1 );") );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     Meta::AlbumPtr compilation = track->album();
@@ -361,15 +361,15 @@ TestSqlAlbum::testUnsetCompilationWithMultipleExistingAlbums()
 void
 TestSqlAlbum::testUnsetCompilationWithArtistAFeaturingB()
 {
-    m_storage->query( "INSERT INTO artists(id,name) VALUES (4,'artist1 feat. artist2');" );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id,name) VALUES (4,'artist1 feat. artist2');") );
 
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1,'albumAndCompilation1',NULL);" );
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (2,'albumAndCompilation1',1);" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1,'albumAndCompilation1',NULL);") );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (2,'albumAndCompilation1',1);") );
 
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',4,1,1,1,1 );" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (2,2,'track2',1,2,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',4,1,1,1,1 );") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',1,2,1,1,1 );") );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     Meta::AlbumPtr compilation = track->album();
@@ -386,20 +386,20 @@ TestSqlAlbum::testUnsetCompilationWithArtistAFeaturingB()
     QVERIFY( album->hasAlbumArtist() );
     QVERIFY( !album->isCompilation() );
     QCOMPARE( album->name(), compilation->name() ); //album name did not change
-    QCOMPARE( track->artist()->name(), QString( "artist1 feat. artist2" ) );
-    QCOMPARE( album->albumArtist()->name(), QString("artist1") ); // artist is the same
+    QCOMPARE( track->artist()->name(), QStringLiteral( "artist1 feat. artist2" ) );
+    QCOMPARE( album->albumArtist()->name(), QStringLiteral("artist1") ); // artist is the same
     QCOMPARE( sqlAlbum->id(), 2 ); // the albums should be the already existing one
 }
 
 void
 TestSqlAlbum::testUnsetCompilationWithMultipleArtists()
 {
-    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1,'album1',NULL);" );
+    m_storage->query( QStringLiteral("INSERT INTO albums(id,name,artist) VALUES (1,'album1',NULL);") );
 
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
-    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
-                      "VALUES (2,2,'track2',2,1,1,1,1 );" );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );") );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',2,1,1,1,1 );") );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
     Meta::AlbumPtr compilation = track->album();

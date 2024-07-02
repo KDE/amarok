@@ -37,7 +37,7 @@ SlimToolbar::SlimToolbar( QWidget * parent )
     , m_currentTrackToolbar( nullptr )
     , m_volumePopupButton( nullptr )
 {
-    setObjectName( "Slim Toolbar" );
+    setObjectName( QStringLiteral("Slim Toolbar") );
 
     setIconSize( QSize( 28, 28 ) );
     layout()->setSpacing( 0 );

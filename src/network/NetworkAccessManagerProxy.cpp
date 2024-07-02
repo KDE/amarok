@@ -47,7 +47,7 @@ void NetworkAccessManagerProxy::destroy()
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
     : KIO::Integration::AccessManager( parent )
-    , m_userAgent( QStringLiteral( "Amarok/" ) + AMAROK_VERSION )
+    , m_userAgent( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) )
 #ifdef DEBUG_BUILD_TYPE
     , m_viewer( nullptr )
 #endif // DEBUG_BUILD_TYPE

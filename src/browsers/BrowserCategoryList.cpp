@@ -340,7 +340,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
                 debug() << "error opening file:" << file.fileName() << "Error: " << file.error();
                 return;
             }
-            m_infoHtmlTemplate = file.readAll();
+            m_infoHtmlTemplate = QLatin1String(file.readAll());
             file.close();
 
             m_infoHtmlTemplate.replace( QLatin1String("{background_color}"), The::paletteHandler()->highlightColor().lighter( 150 ).name() );

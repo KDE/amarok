@@ -107,7 +107,7 @@ namespace AmarokScript
                 // Remove all entries which are still pointing
                 // to the source URL.
                 hash.remove( sourceUrl );
-            };
+            }
 
             QMultiHash<QUrl, QJSEngine *> m_engines;
             QMultiHash<QUrl, QJSValue> m_values;

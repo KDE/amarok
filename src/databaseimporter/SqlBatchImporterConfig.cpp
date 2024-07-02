@@ -48,7 +48,7 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QFileSystemModel( completer ) );
     m_inputFilePathInput->setCompleter( completer );
-    m_inputFilePathInput->setText( QDir::homePath() + "/result.xml" );
+    m_inputFilePathInput->setText( QDir::homePath() + QStringLiteral("/result.xml") );
     label->setBuddy( m_inputFilePathInput );
 
     databaseLayout->addWidget( explanationLabel, 0, 0, 1, 2 );

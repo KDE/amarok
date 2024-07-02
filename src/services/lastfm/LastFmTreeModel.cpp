@@ -38,7 +38,7 @@ using namespace LastFm;
 LastFmTreeModel::LastFmTreeModel( QObject *parent )
     : QAbstractItemModel( parent )
 {
-    m_rootItem = new LastFmTreeItem( LastFm::Root, "Hello" );
+    m_rootItem = new LastFmTreeItem( LastFm::Root, QStringLiteral("Hello") );
     setupModelData( m_rootItem );
 
     QNetworkReply *reply;
@@ -72,14 +72,14 @@ LastFmTreeModel::slotAddFriends()
     lastfm::XmlQuery lfm;
     if( lfm.parse( reply->readAll() ) )
     {
-        QList<lastfm::XmlQuery> children = lfm[ "friends" ].children( "user" );
+        QList<lastfm::XmlQuery> children = lfm[ QStringLiteral("friends") ].children( "user" );
         int start = m_myFriends->childCount();
         QModelIndex parent = index( m_myFriends->row(), 0 );
         beginInsertRows( parent, start, start + children.size() );
 
         for( const lastfm::XmlQuery &e : children )
         {
-            const QString name = e[ "name" ].text();
+            const QString name = e[ QStringLiteral("name") ].text();
 
             LastFmTreeItem* afriend = new LastFmTreeItem( mapTypeToUrl(LastFm::FriendsChild, name),
                                                           LastFm::FriendsChild, name, m_myFriends );
@@ -152,10 +152,10 @@ LastFmTreeModel::slotAddTopArtists()
     lastfm::XmlQuery lfm;
     if( lfm.parse( reply->readAll() ) )
     {
-        for( const lastfm::XmlQuery &e : lfm[ "topartists" ].children( "artist" ) )
+        for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("topartists") ].children( "artist" ) )
         {
-            QString name = e[ "name" ].text();
-            int playcount = e[ "playcount" ].text().toInt();
+            QString name = e[ QStringLiteral("name") ].text();
+            int playcount = e[ QStringLiteral("playcount") ].text().toInt();
             playcountArtists.insert( playcount, name );
         }
     }
@@ -266,7 +266,7 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
 QIcon
 LastFmTreeModel::avatar( const QString &username, const QUrl &avatarUrl ) const
 {
-    QIcon defaultIcon( "filename-artist-amarok" );
+    QIcon defaultIcon( QStringLiteral("filename-artist-amarok") );
     if( username.isEmpty() )
         return defaultIcon;
     if( m_avatars.contains(username) )
@@ -332,33 +332,33 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
         switch( i->type() )
         {
         case MyRecommendations:
-            return QIcon::fromTheme( "lastfm-recommended-radio-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-recommended-radio-amarok") );
         case TopArtists:
         case PersonalRadio:
-            return QIcon::fromTheme( "lastfm-personal-radio-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-personal-radio-amarok") );
         case MixRadio:
-            return QIcon::fromTheme( "lastfm-mix-radio-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-mix-radio-amarok") );
         case MyTags:
-            return QIcon::fromTheme( "lastfm-my-tags-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-my-tags-amarok") );
         case Friends:
-            return QIcon::fromTheme( "lastfm-my-friends-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-my-friends-amarok") );
 
         case RecentlyPlayedTrack:
             Q_FALLTHROUGH();
         case RecentlyLovedTrack:
             Q_FALLTHROUGH();
         case RecentlyBannedTrack:
-            return QIcon::fromTheme( "icon_track" );
+            return QIcon::fromTheme( QStringLiteral("icon_track") );
         case MyTagsChild:
-            return QIcon::fromTheme( "lastfm-tag-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-tag-amarok") );
 
         case FriendsChild:
             return avatar( i->data().toString(), i->avatarUrl() );
         case UserChildPersonal:
-            return QIcon::fromTheme( "lastfm-personal-radio-amarok" );
+            return QIcon::fromTheme( QStringLiteral("lastfm-personal-radio-amarok") );
 
         case HistoryStation:
-            return QIcon::fromTheme( "icon_radio" );
+            return QIcon::fromTheme( QStringLiteral("icon_radio") );
 
         default:
             break;
@@ -509,21 +509,21 @@ LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
     switch( type )
     {
     case MyRecommendations:
-        return "lastfm://user/" + encoded_username + "/recommended";
+        return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/recommended");
     case PersonalRadio:
-        return "lastfm://user/" + encoded_username + "/personal";
+        return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/personal");
     case MixRadio:
-        return "lastfm://user/" + encoded_username + "/mix";
+        return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/mix");
     case MyTagsChild:
-        return "lastfm://usertags/" + encoded_username + "/" + QUrl::toPercentEncoding( key );
+        return QStringLiteral("lastfm://usertags/") + encoded_username + QStringLiteral("/") + QUrl::toPercentEncoding( key );
     case FriendsChild:
-        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
+        return QStringLiteral("lastfm://user/") + QUrl::toPercentEncoding( key ) + QStringLiteral("/personal");
     case ArtistsChild:
-        return "lastfm://artist/" + QUrl::toPercentEncoding( key ) + "/similarartists";
+        return QStringLiteral("lastfm://artist/") + QUrl::toPercentEncoding( key ) + QStringLiteral("/similarartists");
     case UserChildPersonal:
-        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
+        return QStringLiteral("lastfm://user/") + QUrl::toPercentEncoding( key ) + QStringLiteral("/personal");
     default:
-        return "";
+        return QStringLiteral("");
     }
 }
 

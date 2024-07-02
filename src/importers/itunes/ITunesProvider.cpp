@@ -75,7 +75,7 @@ ITunesProvider::readXml( const QString &byArtist )
         QXmlStreamReader xml( &dbFile );
         if( xml.readNextStartElement() )
         {
-            if( xml.name() == QStringLiteral("plist") && xml.attributes().value("version") == QStringLiteral("1.0") )
+            if( xml.name() == QStringLiteral("plist") && xml.attributes().value(QStringLiteral("version")) == QStringLiteral("1.0") )
                 readPlist( xml, byArtist );
             else
                 xml.raiseError( QStringLiteral("the database is ill-formed or version unsupported") );
@@ -268,7 +268,7 @@ ITunesProvider::writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
             else
             {
                 writer.writeCharacters( lastWhitespace );
-                writer.writeTextElement( "key", type );
+                writer.writeTextElement( QStringLiteral("key"), type );
             }
 
             lastWhitespace.clear();
@@ -284,14 +284,14 @@ ITunesProvider::writeTrack( QXmlStreamReader &reader, QXmlStreamWriter &writer,
     if( const int rating = dirtyData.value( Meta::valRating ).toInt() )
     {
         writer.writeCharacters( keyWhitespace );
-        writer.writeTextElement( "key", "Rating" );
-        writer.writeTextElement( "integer", QString::number( rating ) );
+        writer.writeTextElement( QStringLiteral("key"), QStringLiteral("Rating") );
+        writer.writeTextElement( QStringLiteral("integer"), QString::number( rating ) );
     }
     if( const int playCount = dirtyData.value( Meta::valPlaycount ).toInt() )
     {
         writer.writeCharacters( keyWhitespace );
-        writer.writeTextElement( "key", "Play Count" );
-        writer.writeTextElement( "integer", QString::number( playCount ) );
+        writer.writeTextElement( QStringLiteral("key"), QStringLiteral("Play Count") );
+        writer.writeTextElement( QStringLiteral("integer"), QString::number( playCount ) );
     }
 
     writer.writeCharacters( lastWhitespace );
@@ -346,7 +346,7 @@ ITunesProvider::commitTracks()
         if( reader.isStartElement() && reader.name() == QStringLiteral( "key" ) )
         {
             const QString text = reader.readElementText();
-            writer.writeTextElement( "key", text );
+            writer.writeTextElement( QStringLiteral("key"), text );
 
             if( text == QStringLiteral("Tracks") )
                 writeTracks( reader, writer, dirtyData );

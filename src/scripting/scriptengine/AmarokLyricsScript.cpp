@@ -38,7 +38,7 @@ AmarokLyricsScript::AmarokLyricsScript( QJSEngine *engine )
     : QObject( engine )
 {
     QJSValue scriptObject = engine->newQObject( this );
-    engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Lyrics"), scriptObject );
     connect( ScriptManager::instance(), &ScriptManager::fetchLyrics,
              this, &AmarokLyricsScript::fetchLyrics );
 }

@@ -112,7 +112,7 @@ namespace QtBindings {
     };
 
     // Remove namespace
-    template<class T> const QByteArray Base<T>::typeName = QString( T::staticMetaObject.className() )
+    template<class T> const QByteArray Base<T>::typeName = QString( QLatin1String( T::staticMetaObject.className() ) )
         .remove(  QRegularExpression( QStringLiteral("^.*::") ) ).toLatin1();
     template<class T> const QByteArray Base<T>::typeNamePtr = typeName + "*";
     template<class T> const QByteArray Base<T>::typeNameRef = typeName + "&";

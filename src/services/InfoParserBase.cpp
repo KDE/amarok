@@ -52,7 +52,7 @@ void InfoParserBase::showLoading( const QString &message )
             return;
         }
 
-        s_loadingBaseHtml = file.readAll();
+        s_loadingBaseHtml = QLatin1String(file.readAll());
     }
 
     QString currentHtml = s_loadingBaseHtml;

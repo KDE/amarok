@@ -166,8 +166,8 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     qInstallMessageHandler( [] ( QtMsgType type, const QMessageLogContext &context, const QString &msg )
     {
         Q_UNUSED( type );
-        QString category(context.category);
-        if ( category.compare( "js" ) == 0 ) {
+        QString category(QLatin1String(context.category));
+        if ( category.compare( QStringLiteral("js") ) == 0 ) {
 
             QString scriptName( context.file );
             // clean "file:" from file name
@@ -177,7 +177,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
             ScriptConsoleItem *searchResult = instance()->getScriptListDockWidget()->getScript( scriptName );
             if (searchResult != nullptr ) {
                 // Found it - update its console widget
-                QString logEntry = QString("[%1: %2] %3")
+                QString logEntry = QStringLiteral("[%1: %2] %3")
                 .arg( scriptName )
                 .arg( context.line )
                 .arg( msg );

@@ -117,7 +117,7 @@ SynchronizationTrack::commit()
         // implicitly we remove all ratingLabels here by not including them in m_newLabels
         if( m_newRating > 0 )
         {
-            QString ratingLabel = QString( "%1 of 10 stars" ).arg( m_newRating );
+            QString ratingLabel = QStringLiteral( "%1 of 10 stars" ).arg( m_newRating );
             m_newLabels.insert( ratingLabel );
             m_ratingLabels = QSet<QString>() << ratingLabel;
         }
@@ -156,7 +156,7 @@ SynchronizationTrack::parseAndSaveLastFmTags( const QSet<QString> &tags )
     m_rating = 0;
 
     // we still match and explicitly ignore rating tags even in m_useFancyRatingTags is false
-    QRegularExpression rx( QRegularExpression::anchoredPattern( "([0-9]{1,3}) of ([0-9]{1,3}) stars" ), QRegularExpression::CaseInsensitiveOption );
+    QRegularExpression rx( QRegularExpression::anchoredPattern( QStringLiteral("([0-9]{1,3}) of ([0-9]{1,3}) stars") ), QRegularExpression::CaseInsensitiveOption );
     for( const QString &tag : tags )
     {
         QRegularExpressionMatch rmatch = rx.match( tag );

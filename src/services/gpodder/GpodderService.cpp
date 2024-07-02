@@ -64,7 +64,7 @@ GpodderServiceFactory::name()
 KConfigGroup
 GpodderServiceFactory::config()
 {
-    return Amarok::config( GpodderServiceConfig::configSectionName() );
+    return Amarok::config( QLatin1String(GpodderServiceConfig::configSectionName()) );
 }
 
 void
@@ -220,7 +220,7 @@ GpodderService::polish()
     m_subscribeButton = new QPushButton();
     m_subscribeButton->setParent( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
-    m_subscribeButton->setObjectName( "subscribeButton" );
+    m_subscribeButton->setObjectName( QStringLiteral("subscribeButton") );
     m_subscribeButton->setIcon( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ) );
 
     m_subscribeButton->setEnabled( true );
@@ -262,7 +262,7 @@ GpodderService::enableGpodderProvider( const QString &username )
 
     QString deviceName = QLatin1String( "amarok-" ) % QHostInfo::localHostName();
 
-    debug() << QString( "Enabling GpodderProvider( Username: %1 - Device: %1 )" )
+    debug() << QStringLiteral( "Enabling GpodderProvider( Username: %1 - Device: %1 )" )
                         .arg( username )
                         .arg( deviceName );
 

@@ -41,7 +41,7 @@ QString Amarok2ConfigDialog::s_currentPage = QStringLiteral("GeneralConfig");
 //////////////////////////////////////////////////////////////////////////////////////////
 
 Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCoreConfigSkeleton *config )
-   : KConfigDialog( parent, name, config )
+   : KConfigDialog( parent, QLatin1String(name), config )
 {
     DEBUG_BLOCK
     setAttribute( Qt::WA_DeleteOnClose );

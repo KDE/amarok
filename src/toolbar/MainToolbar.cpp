@@ -79,7 +79,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     , m_trackBarAnimationTimer( 0 )
 {
     DEBUG_BLOCK
-    setObjectName( "MainToolbar" );
+    setObjectName( QStringLiteral("MainToolbar") );
 
     m_promoString = i18n( "Rediscover Your Music" );
 

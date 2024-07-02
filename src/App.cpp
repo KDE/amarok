@@ -100,7 +100,7 @@ App::App(int &argc, char **argv)
     KLocalizedString::setApplicationDomain("amarok");
 
     // required for last.fm plugin to grab app version
-    setApplicationVersion( AMAROK_VERSION );
+    setApplicationVersion( QStringLiteral(AMAROK_VERSION) );
 
     qRegisterMetaType<Meta::DataPtr>();
     qRegisterMetaType<Meta::DataList>();
@@ -262,8 +262,8 @@ App::handleCliArgs(const QString &cwd)
     DEBUG_BLOCK
 
     //TODO Resolve positional arguments using cwd
-    if( m_args->isSet( "cwd" ) ) {
-        m_cwd = m_args->value( "cwd" );
+    if( m_args->isSet( QStringLiteral("cwd") ) ) {
+        m_cwd = m_args->value( QStringLiteral("cwd") );
     } else {
         m_cwd = cwd;
     }
@@ -280,25 +280,25 @@ App::handleCliArgs(const QString &cwd)
                 QUrl feedUrl = Podcasts::PodcastProvider::toFeedUrl( url.url() );
                 The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
             }
-            else if( url.scheme() == "amarok" )
+            else if( url.scheme() == QStringLiteral("amarok") )
                 s_delayedAmarokUrls.append( url.url() );
             else
                 list << url;
         }
 
         Playlist::AddOptions options;
-        if( m_args->isSet( "queue" ) )
+        if( m_args->isSet( QStringLiteral("queue") ) )
            options = Playlist::OnQueueToPlaylistAction;
-        else if( m_args->isSet( "append" ) )
+        else if( m_args->isSet( QStringLiteral("append") ) )
            options = Playlist::OnAppendToPlaylistAction;
-        else if( m_args->isSet( "load" ) )
+        else if( m_args->isSet( QStringLiteral("load") ) )
             options = Playlist::OnReplacePlaylistAction;
         else
             options = Playlist::OnPlayMediaAction;
 
         The::playlistController()->insertOptioned( list, options );
     }
-    else if ( m_args->isSet( "cdplay" ) )
+    else if ( m_args->isSet( QStringLiteral("cdplay") ) )
         The::mainWindow()->playAudioCd();
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -306,17 +306,17 @@ App::handleCliArgs(const QString &cwd)
     //thus pause is the least destructive, followed by stop as brakes are the most important bit of a car(!)
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
-    else if ( m_args->isSet( "pause" ) )
+    else if ( m_args->isSet( QStringLiteral("pause") ) )
         The::engineController()->pause();
-    else if ( m_args->isSet( "stop" ) )
+    else if ( m_args->isSet( QStringLiteral("stop") ) )
         The::engineController()->stop();
-    else if ( m_args->isSet( "play-pause" ) )
+    else if ( m_args->isSet( QStringLiteral("play-pause") ) )
         The::engineController()->playPause();
-    else if ( m_args->isSet( "play" ) ) //will restart if we are playing
+    else if ( m_args->isSet( QStringLiteral("play") ) ) //will restart if we are playing
         The::engineController()->play();
-    else if ( m_args->isSet( "next" ) )
+    else if ( m_args->isSet( QStringLiteral("next") ) )
         The::playlistActions()->next();
-    else if ( m_args->isSet( "previous" ) )
+    else if ( m_args->isSet( QStringLiteral("previous") ) )
         The::playlistActions()->back();
     else // no args given
         haveArgs = false;
@@ -357,26 +357,26 @@ App::initCliArgs(QCommandLineParser *parser)
     // Update main.cpp (below KUniqueApplication::start() wrt instanceOptions) aswell if needed!
     QList<QCommandLineOption> options;
 
-    options.append(QCommandLineOption("+[URL(s)]", i18n( "Files/URLs to open" )));
-    options.append(QCommandLineOption("cdplay", i18n("Immediately start playing an audio cd")));
-    options.append(QCommandLineOption(QStringList() << "r" << "previous", i18n( "Skip backwards in playlist" )));
-    options.append(QCommandLineOption(QStringList() << "p" << "play", i18n( "Start playing current playlist" )));
-    options.append(QCommandLineOption(QStringList() << "t" << "play-pause", i18n( "Play if stopped, pause if playing" )));
-    options.append(QCommandLineOption("pause", i18n( "Pause playback" )));
-    options.append(QCommandLineOption(QStringList() << "s" << "stop", i18n( "Stop playback" )));
-    options.append(QCommandLineOption(QStringList() << "f" << "next", i18n( "Skip forwards in playlist" )
-    + "\n\n\n"
+    options.append(QCommandLineOption(QStringLiteral("+[URL(s)]"), i18n( "Files/URLs to open" )));
+    options.append(QCommandLineOption(QStringLiteral("cdplay"), i18n("Immediately start playing an audio cd")));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("r") << QStringLiteral("previous"), i18n( "Skip backwards in playlist" )));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("p") << QStringLiteral("play"), i18n( "Start playing current playlist" )));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("t") << QStringLiteral("play-pause"), i18n( "Play if stopped, pause if playing" )));
+    options.append(QCommandLineOption(QStringLiteral("pause"), i18n( "Pause playback" )));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("s") << QStringLiteral("stop"), i18n( "Stop playback" )));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("f") << QStringLiteral("next"), i18n( "Skip forwards in playlist" )
+    + QStringLiteral("\n\n\n")
     + i18n("Additional options:")));
-    options.append(QCommandLineOption(QStringList() << "a" << "append", i18n( "Append files/URLs to playlist" )));
-    options.append(QCommandLineOption("queue", i18n("Queue URLs after the currently playing track")));
-    options.append(QCommandLineOption(QStringList() << "l" << "load", i18n("Load URLs, replacing current playlist")));
-    options.append(QCommandLineOption(QStringList() << "d" << "debug", i18n("Print verbose debugging information")));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("a") << QStringLiteral("append"), i18n( "Append files/URLs to playlist" )));
+    options.append(QCommandLineOption(QStringLiteral("queue"), i18n("Queue URLs after the currently playing track")));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("l") << QStringLiteral("load"), i18n("Load URLs, replacing current playlist")));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("debug"), i18n("Print verbose debugging information")));
     // HACK should https://github.com/lastfm/liblastfm/pull/37 ever get merged, this option can be removed
-    options.append(QCommandLineOption("debug-with-lastfm", i18n("Print verbose debugging information")));
-    options.append(QCommandLineOption("debug-audio", i18n("Print verbose debugging information from the audio system")));
-    options.append(QCommandLineOption(QStringList() << "c" << "coloroff", i18n("Disable colorization for debug output.")));
-    options.append(QCommandLineOption(QStringList() << "m" << "multipleinstances", i18n("Allow running multiple Amarok instances")));
-    options.append(QCommandLineOption("cwd", i18n( "Base for relative filenames/URLs" )));
+    options.append(QCommandLineOption(QStringLiteral("debug-with-lastfm"), i18n("Print verbose debugging information")));
+    options.append(QCommandLineOption(QStringLiteral("debug-audio"), i18n("Print verbose debugging information from the audio system")));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("c") << QStringLiteral("coloroff"), i18n("Disable colorization for debug output.")));
+    options.append(QCommandLineOption(QStringList() << QStringLiteral("m") << QStringLiteral("multipleinstances"), i18n("Allow running multiple Amarok instances")));
+    options.append(QCommandLineOption(QStringLiteral("cwd"), i18n( "Base for relative filenames/URLs" )));
 
     parser->addOptions(options);      //add our own options
 }
@@ -441,11 +441,11 @@ App::continueInit()
 
     PERF_LOG( "Begin App::continueInit" )
 
-    AmarokConfig::instance( "amarokrc" );
+    AmarokConfig::instance( QStringLiteral("amarokrc") );
     newInstance();
 
-    const bool restoreSession = m_args->positionalArguments().isEmpty() || m_args->isSet( "append" )
-                                || m_args->isSet( "queue" )
+    const bool restoreSession = m_args->positionalArguments().isEmpty() || m_args->isSet( QStringLiteral("append") )
+                                || m_args->isSet( QStringLiteral("queue") )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
 #ifdef DEBUG_BUILD_TYPE
@@ -467,7 +467,7 @@ App::continueInit()
         m_tray = new Amarok::TrayIcon( m_mainWindow );
 
     PERF_LOG( "Creating DBus handlers" )
-    QDBusConnection::sessionBus().registerService("org.mpris.amarok");
+    QDBusConnection::sessionBus().registerService(QStringLiteral("org.mpris.amarok"));
     new CollectionDBusHandler( this );
     new Amarok::Mpris2( this );
     PERF_LOG( "Done creating DBus handlers" )
@@ -516,16 +516,16 @@ App::continueInit()
                  i18n( "The Amarok database reported the following errors:"
                  "\n%1\nIn most cases you will need to resolve these errors "
                  "before Amarok will run properly.",
-                 StorageManager::instance()->getLastErrors().join( "\n" ) ) );
+                 StorageManager::instance()->getLastErrors().join( QStringLiteral("\n") ) ) );
         StorageManager::instance()->clearLastErrors();
-        slotConfigAmarok( "DatabaseConfig" );
+        slotConfigAmarok( QStringLiteral("DatabaseConfig") );
     }
     else
     {
         handleFirstRun();
     }
 
-    if( AmarokConfig::resumePlayback() && restoreSession && !m_args->isSet( "stop" ) ) {
+    if( AmarokConfig::resumePlayback() && restoreSession && !m_args->isSet( QStringLiteral("stop") ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();
@@ -554,7 +554,7 @@ void App::activateRequested(const QStringList &arguments, const QString & cwd)
 
 void App::slotConfigAmarok( const QString& page )
 {
-    KConfigDialog *dialog = KConfigDialog::exists( "settings" );
+    KConfigDialog *dialog = KConfigDialog::exists( QStringLiteral("settings") );
     if( !dialog )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
@@ -636,7 +636,7 @@ int App::newInstance()
 
 void App::handleFirstRun()
 {
-    KConfigGroup config = Amarok::config( "General" );
+    KConfigGroup config = Amarok::config( QStringLiteral("General") );
     if( !config.readEntry( "First Run", true ) )
         return;
 
@@ -664,7 +664,7 @@ void App::handleFirstRun()
             break;
         }
         case KMessageBox::No:
-            slotConfigAmarok( "CollectionConfig" );
+            slotConfigAmarok( QStringLiteral("CollectionConfig") );
             break;
         default:
             break;

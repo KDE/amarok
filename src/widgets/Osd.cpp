@@ -56,7 +56,7 @@ namespace ShadowEngine
 
 namespace Amarok
 {
-    inline QPixmap icon() { return KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ); }
+    inline QPixmap icon() { return KIconLoader::global()->iconPath( QStringLiteral("amarok"), -KIconLoader::SizeHuge ); }
 }
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
@@ -85,7 +85,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     #endif
     setWindowFlags( flags );
     setAttribute( Qt::WA_TranslucentBackground );
-    setObjectName( name );
+    setObjectName( QLatin1String(name) );
     setFocusPolicy( Qt::NoFocus );
 
     m_timer->setSingleShot( true );
@@ -246,9 +246,9 @@ OSDWidget::determineMetrics( const int M )
     const QSize max = QApplication::screens()[ screen() ]->size() - margin;
 
     // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
-    m_text.replace( QRegularExpression( " +\n" ), "\n" );
+    m_text.replace( QRegularExpression( QStringLiteral(" +\n") ), QStringLiteral("\n") );
     // remove consecutive line breaks
-    m_text.replace( QRegularExpression( "\n+" ), "\n" );
+    m_text.replace( QRegularExpression( QStringLiteral("\n+") ), QStringLiteral("\n") );
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
@@ -257,7 +257,7 @@ OSDWidget::determineMetrics( const int M )
 
     if( m_showVolume )
     {
-        static const QString tmp = QString ("******").insert( 3,
+        static const QString tmp = QStringLiteral("******").insert( 3,
             ( i18n("Volume: 100% (muted)" ) ) );
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
@@ -268,13 +268,13 @@ OSDWidget::determineMetrics( const int M )
         rect = tmpRect;
 
         if ( The::engineController()->isMuted() )
-            m_cover = The::svgHandler()->renderSvg( "Muted", 200, 200, "Muted" );
+            m_cover = The::svgHandler()->renderSvg( QStringLiteral("Muted"), 200, 200, QStringLiteral("Muted") );
         else if( m_volume > 66 )
-            m_cover = The::svgHandler()->renderSvg( "Volume", 200, 200, "Volume" );
+            m_cover = The::svgHandler()->renderSvg( QStringLiteral("Volume"), 200, 200, QStringLiteral("Volume") );
         else if ( m_volume > 33 )
-            m_cover = The::svgHandler()->renderSvg( "Volume_mid", 200, 200, "Volume_mid" );
+            m_cover = The::svgHandler()->renderSvg( QStringLiteral("Volume_mid"), 200, 200, QStringLiteral("Volume_mid") );
         else
-            m_cover = The::svgHandler()->renderSvg( "Volume_low", 200, 200, "Volume_low" );
+            m_cover = The::svgHandler()->renderSvg( QStringLiteral("Volume_low"), 200, 200, QStringLiteral("Volume_low") );
     }
     // Don't show both volume and rating
     else if( m_rating )
@@ -359,7 +359,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     QColor windowBackground = QGuiApplication::palette().color( QPalette::Window );
     windowBackground.setAlphaF( backgroundOpacity() );
     p.fillRect( e->rect(), windowBackground );
-    QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
+    QPixmap background = The::svgHandler()->renderSvgWithDividers( QStringLiteral("service_list_item"), width(), height(), QStringLiteral("service_list_item") );
     p.drawPixmap( 0, 0, background );
 
     //p.setPen( Qt::white ); // Revert this when the background can be colorized again.
@@ -398,10 +398,10 @@ OSDWidget::paintEvent( QPaintEvent *e )
     if( pos > 3000 )
     {
         QTimer::singleShot( 1000, this, [=] () { update(); });
-        osdtext.replace("%{\eA%}", QString(Meta::msToPrettyTime( pos ) + '/') );
+        osdtext.replace( QStringLiteral("%{\eA%}"), QString(Meta::msToPrettyTime( pos ) + QLatin1Char('/') ) );
     }
     else
-        osdtext.replace("%{\eA%}", "" );
+        osdtext.replace( QStringLiteral("%{\eA%}"), QStringLiteral("") );
 
     QPainter p2( &pixmap );
     p2.setFont( font() );
@@ -495,7 +495,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
         : OSDWidget( parent )
         , m_dragging( false )
 {
-    setObjectName( "osdpreview" );
+    setObjectName( QStringLiteral("osdpreview") );
     setDuration( 0 );
     setImage( Amarok::icon() );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
@@ -668,14 +668,14 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         setRating( track->statistics()->rating() );
         text = track->prettyName();
         if( track->artist() && !track->artist()->prettyName().isEmpty() )
-            text = track->artist()->prettyName() + " – " + text;
+            text = track->artist()->prettyName() + QStringLiteral(" – ") + text;
         if( track->album() && !track->album()->prettyName().isEmpty() )
-            text += "\n (" + track->album()->prettyName() + ") ";
+            text += QStringLiteral("\n (") + track->album()->prettyName() + QStringLiteral(") ");
         else
-            text += '\n';
+            text += QLatin1Char('\n');
         if( track->length() > 0 )
         {
-            text += "%{\eA%}"; // Add a tag to be replaced later
+            text += QStringLiteral("%{\eA%}"); // Add a tag to be replaced later
             text += Meta::msToPrettyTime( track->length() );
         }
     }
@@ -683,7 +683,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     if( text.isEmpty() )
         text =  track->playableUrl().fileName();
 
-    if( text.startsWith( "- " ) ) //When we only have a title tag, _something_ prepends a fucking hyphen. Remove that.
+    if( text.startsWith( QStringLiteral("- ") ) ) //When we only have a title tag, _something_ prepends a fucking hyphen. Remove that.
         text = text.mid( 2 );
 
     if( text.isEmpty() ) //still
@@ -751,7 +751,7 @@ Amarok::OSD::trackPlaying( const Meta::TrackPtr &track )
 void
 Amarok::OSD::stopped()
 {
-    setImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) );
+    setImage( KIconLoader::global()->iconPath( QStringLiteral("amarok"), -KIconLoader::SizeHuge ) );
     setRating( 0 ); // otherwise stars from last rating change are visible
     OSDWidget::show( i18n( "Stopped" ) );
     setPaused(false);
@@ -760,7 +760,7 @@ Amarok::OSD::stopped()
 void
 Amarok::OSD::paused()
 {
-    setImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) );
+    setImage( KIconLoader::global()->iconPath( QStringLiteral("amarok"), -KIconLoader::SizeHuge ) );
     setRating( 0 ); // otherwise stars from last rating change are visible
     OSDWidget::show( i18n( "Paused" ) );
     setPaused(true);

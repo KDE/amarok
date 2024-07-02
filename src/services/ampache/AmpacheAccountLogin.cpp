@@ -58,7 +58,7 @@ AmpacheAccountLogin::reauthenticate()
     DEBUG_BLOCK
 
     // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
-    QUrl url = getRequestUrl( "ping" );
+    QUrl url = getRequestUrl( QStringLiteral("ping") );
 
     debug() << "Verifying Ampache Version Using: " << url.url();
 
@@ -87,7 +87,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &dat
     debug() << "Version reply: " << data;
     int version = getVersion( doc );
 
-    QUrl url = getRequestUrl( "handshake" );
+    QUrl url = getRequestUrl( QStringLiteral("handshake") );
     QUrlQuery query( url );
     QString timestamp = QString::number( QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000 );
     QString passPhrase;
@@ -96,7 +96,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &dat
     if( version > 350000 )
     {
         debug() << "New Password Scheme " << version;
-        query.addQueryItem( "version", "350001" );
+        query.addQueryItem( QStringLiteral("version"), QStringLiteral("350001") );
 
         QCryptographicHash sha256Hash( QCryptographicHash::Sha256 );
         sha256Hash.addData( m_password.toUtf8() );
@@ -120,8 +120,8 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &dat
         passPhrase = md5Hash.result().toHex();
     }
 
-    query.addQueryItem( "timestamp", timestamp );
-    query.addQueryItem( "auth", passPhrase );
+    query.addQueryItem( QStringLiteral("timestamp"), timestamp );
+    query.addQueryItem( QStringLiteral("auth"), passPhrase );
     url.setQuery( query );
 
     debug() << "Authenticating with string: " << url.url() << passPhrase;
@@ -150,10 +150,10 @@ void AmpacheAccountLogin::authenticationComplete( const QUrl &requestUrl, const 
 
     // so lets figure out what we got here:
     debug() << "Authentication reply: " << data;
-    QDomElement root = doc.firstChildElement("root");
+    QDomElement root = doc.firstChildElement(QStringLiteral("root"));
 
     //find status code:
-    QDomElement element = root.firstChildElement("auth");
+    QDomElement element = root.firstChildElement(QStringLiteral("auth"));
     if( element.isNull() )
     {
         // Default the Version down if it didn't work
@@ -177,11 +177,11 @@ AmpacheAccountLogin::getVersion( const QDomDocument& doc ) const
 {
     DEBUG_BLOCK
 
-    QDomElement root = doc.firstChildElement("root");
+    QDomElement root = doc.firstChildElement(QStringLiteral("root"));
     //is this an error?
-    QDomElement error = root.firstChildElement("error");
+    QDomElement error = root.firstChildElement(QStringLiteral("error"));
     //find status code:
-    QDomElement version = root.firstChildElement("version");
+    QDomElement version = root.firstChildElement(QStringLiteral("version"));
 
     // It's OK if we get a null response from the version, that just means we're dealing with an older version
     if( !error.isNull() )
@@ -224,8 +224,8 @@ AmpacheAccountLogin::generalVerify( QNetworkReply *reply, const QDomDocument& do
         return false;
     }
 
-    QDomElement root = doc.firstChildElement("root");
-    QDomElement error = root.firstChildElement("error");
+    QDomElement root = doc.firstChildElement(QStringLiteral("root"));
+    QDomElement error = root.firstChildElement(QStringLiteral("error"));
 
     if( !error.isNull() )
     {
@@ -257,22 +257,22 @@ AmpacheAccountLogin::getRequestUrl( const QString &action ) const
     */
 
     QUrl url = m_server;
-    url.setPath( m_server.path() + "/server/xml.server.php" );
+    url.setPath( m_server.path() + QStringLiteral("/server/xml.server.php") );
     QString scheme = m_server.scheme();
 
-    if( scheme != "http" && scheme != "https" )
-        url.setScheme( "http" );
+    if( scheme != QStringLiteral("http") && scheme != QStringLiteral("https") )
+        url.setScheme( QStringLiteral("http") );
 
     QUrlQuery query( m_server );
 
     if( !action.isEmpty() )
-        query.addQueryItem( "action", action );
+        query.addQueryItem( QStringLiteral("action"), action );
 
-    if( !m_username.isEmpty() && action != "ping" )
-        query.addQueryItem( "user", m_username );
+    if( !m_username.isEmpty() && action != QStringLiteral("ping") )
+        query.addQueryItem( QStringLiteral("user"), m_username );
 
-    if( !m_sessionId.isEmpty() && action == "ping" )
-        query.addQueryItem( "auth", m_sessionId );
+    if( !m_sessionId.isEmpty() && action == QStringLiteral("ping") )
+        query.addQueryItem( QStringLiteral("auth"), m_sessionId );
 
     url.setQuery( query );
 

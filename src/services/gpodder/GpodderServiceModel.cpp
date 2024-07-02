@@ -46,15 +46,15 @@ GpodderServiceModel::GpodderServiceModel( ApiRequest *request, QObject *parent )
     
     m_rootItem = new GpodderTreeItem( );
 
-    m_topTagsItem = new GpodderTreeItem( m_rootItem, "Top Tags" );
+    m_topTagsItem = new GpodderTreeItem( m_rootItem, QStringLiteral("Top Tags") );
     m_rootItem->appendChild( m_topTagsItem );
 
-    m_topPodcastsItem = new GpodderTreeItem( m_rootItem, "Top Podcasts" );
+    m_topPodcastsItem = new GpodderTreeItem( m_rootItem, QStringLiteral("Top Podcasts") );
     m_rootItem->appendChild( m_topPodcastsItem );
 
     if ( config.isDataLoaded() && config.enableProvider() )
     {
-        m_suggestedPodcastsItem = new GpodderTreeItem( m_rootItem, "Suggested Podcasts" );
+        m_suggestedPodcastsItem = new GpodderTreeItem( m_rootItem, QStringLiteral("Suggested Podcasts") );
         m_rootItem->appendChild( m_suggestedPodcastsItem );
 
     }

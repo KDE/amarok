@@ -87,7 +87,7 @@ ScriptConsoleItem::~ScriptConsoleItem()
 KPluginInfo
 ScriptConsoleItem::createSpecFile( const QString &name, const QString &category, const QString &path )
 {
-    QString specs = QString( "[Desktop Entry]"
+    QString specs = QStringLiteral( "[Desktop Entry]"
                             "\nIcon=\"\""
                             "\nType=script"
                             "\nServiceTypes=KPluginInfo"
@@ -103,7 +103,7 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
     QFile file( specPath );
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Couldn't write to " + path;
+        debug() << "Couldn't write to " << path;
         return KPluginInfo();
     }
     QTextStream stream( &file );
@@ -189,7 +189,7 @@ ScriptConsoleItem::handleError( QJSValue *result )
 {
     QString errorString = QStringLiteral( "Script Error: %1 (line: %2)" )
                         .arg( result->toString() )
-                        .arg( result->property("lineNumber").toInt() );
+                        .arg( result->property(QStringLiteral("lineNumber")).toInt() );
 
     return errorString;
 }

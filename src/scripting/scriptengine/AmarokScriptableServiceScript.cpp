@@ -36,7 +36,7 @@ ScriptableServiceScript::ScriptableServiceScript( QJSEngine* engine )
     DEBUG_BLOCK
     QJSValue scriptObj = engine->newQObject( this );
     scriptObj.setPrototype( QJSValue() );
-    const QJSValue ctor = scriptObj.property("ScriptableServiceScript_prototype_ctor");
+    const QJSValue ctor = scriptObj.property(QStringLiteral("ScriptableServiceScript_prototype_ctor"));
     engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript_prototype_ctor"), ctor );
     // Simulates creation of ScriptableServiceScript object of QTScript
     engine->evaluate( QStringLiteral("function ScriptableServiceScript( serviceName, levels, shortDescription, rootHtml, showSearchBar) {"

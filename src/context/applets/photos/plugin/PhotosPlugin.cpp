@@ -39,7 +39,7 @@ public:
     QNetworkReply *createRequest( Operation op, const QNetworkRequest &req, QIODevice * outgoingData=0 ) override
     {
         QNetworkRequest newreq=req;
-        newreq.setRawHeader("User-Agent", ( ( QStringLiteral( "Amarok/" ) + AMAROK_VERSION ) ).toUtf8() );
+        newreq.setRawHeader("User-Agent", ( ( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) ) ).toUtf8() );
         QNetworkReply *reply = QNetworkAccessManager::createRequest( op, newreq, outgoingData );
         return reply;
     }
@@ -63,7 +63,7 @@ class PhotosPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char* uri) override
     {
-        Q_ASSERT(uri == QLatin1String("org.kde.amarok.photos"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.amarok.photos"));
 
         qmlRegisterSingletonType<PhotosEngine>(uri, 1, 0, "PhotosEngine", photos_engine_provider);
     }

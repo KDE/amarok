@@ -582,13 +582,13 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
     QVariantMap metadata = guessMetadata( track );
 
     // These characters are not considered in the query, and some of them can break it.
-    QRegularExpression unsafe( "[.,:;!?()\\[\\]{}\"]" );
+    QRegularExpression unsafe( QStringLiteral("[.,:;!?()\\[\\]{}\"]") );
     // http://lucene.apache.org/core/old_versioned_docs/versions/3_4_0/queryparsersyntax.html#Escaping Special Characters
-    QRegularExpression special( "([+\\-!(){}\\[\\]\\^\"~*?:\\\\]|&&|\\|\\|)" );
-    QString escape( "\\\\1" );
+    QRegularExpression special( QStringLiteral("([+\\-!(){}\\[\\]\\^\"~*?:\\\\]|&&|\\|\\|)") );
+    QString escape( QStringLiteral("\\\\1") );
     // We use fuzzy search to bypass typos and small mistakes.
     QRegularExpression endOfWord( "([a-zA-Z0-9])(\\s|$)" );
-    QString fuzzy( "\\1~\\2" );
+    QString fuzzy( QStringLiteral("\\1~\\2") );
     /*
      * The query results in:
      * ("track~ title~"^20 track~ title~) AND artist:("artist~ name~"^2 artist~ name~) AND release:("album~ name~"^7 album~ name~)
@@ -601,20 +601,20 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
      */
 #define VALUE( k ) metadata.value( k ).toString().remove( unsafe ).replace( special, escape ).replace( endOfWord, fuzzy )
     if( metadata.contains( Meta::Field::TITLE ) )
-        queryString += QString( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
+        queryString += QStringLiteral( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
     if( metadata.contains( Meta::Field::ARTIST ) )
-        queryString += QString( " AND artist:(\"%1\"^2 %1)" ).arg( VALUE( Meta::Field::ARTIST ) );
+        queryString += QStringLiteral( " AND artist:(\"%1\"^2 %1)" ).arg( VALUE( Meta::Field::ARTIST ) );
     if( metadata.contains( Meta::Field::ALBUM ) )
-        queryString += QString( " AND release:(\"%1\"^7 %1)" ).arg( VALUE( Meta::Field::ALBUM ) );
+        queryString += QStringLiteral( " AND release:(\"%1\"^7 %1)" ).arg( VALUE( Meta::Field::ALBUM ) );
 #undef VALUE
 
     m_parsedMetadata.insert( track, metadata );
 
     QUrl url;
     QUrlQuery query;
-    url.setPath( mb_pathPrefix + "/recording" );
-    query.addQueryItem( "limit", "10" );
-    query.addQueryItem( "query", queryString );
+    url.setPath( mb_pathPrefix + QStringLiteral("/recording") );
+    query.addQueryItem( QStringLiteral("limit"), QStringLiteral("10") );
+    query.addQueryItem( QStringLiteral("query"), queryString );
     url.setQuery( query );
 
     return compileRequest( url );
@@ -625,8 +625,8 @@ MusicBrainzFinder::compilePUIDRequest( const QString &puid )
 {
     QUrl url;
     QUrlQuery query;
-    url.setPath( mb_pathPrefix + "/recording" );
-    query.addQueryItem( "query", "puid:" + puid );
+    url.setPath( mb_pathPrefix + QStringLiteral("/recording") );
+    query.addQueryItem( QStringLiteral("query"), QStringLiteral("puid:") + puid );
     url.setQuery( query );
 
     return compileRequest( url );
@@ -637,8 +637,8 @@ MusicBrainzFinder::compileReleaseGroupRequest( const QString &releaseGroupID )
 {
     QUrl url;
     QUrlQuery query;
-    url.setPath( mb_pathPrefix + "/release-group/" + releaseGroupID );
-    query.addQueryItem( "inc", "artists" );
+    url.setPath( mb_pathPrefix + QStringLiteral("/release-group/") + releaseGroupID );
+    query.addQueryItem( QStringLiteral("inc"), QStringLiteral("artists") );
     url.setQuery( query );
 
     return compileRequest( url );
@@ -647,7 +647,7 @@ MusicBrainzFinder::compileReleaseGroupRequest( const QString &releaseGroupID )
 QNetworkRequest
 MusicBrainzFinder::compileRequest( QUrl &url )
 {
-    url.setScheme( "http" );
+    url.setScheme( QStringLiteral("http") );
     url.setHost( mb_host );
     url.setPort( mb_port );
 

@@ -323,10 +323,10 @@ void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
             else
             {
                 QMap< QString, QString > params;
-                params[ "method" ] = "user.getWeeklyArtistChart";
-                params[ "user" ] = lastfm::ws::Username;
-                params[ "from" ] = QString::number( lastWeekTime );
-                params[ "to" ] = QString::number( m_weeklyToTimes[m_weeklyFromTimes.indexOf(lastWeekTime)] );
+                params[ QStringLiteral("method") ] = QStringLiteral("user.getWeeklyArtistChart");
+                params[ QStringLiteral("user") ] = lastfm::ws::Username;
+                params[ QStringLiteral("from") ] = QString::number( lastWeekTime );
+                params[ QStringLiteral("to") ] = QString::number( m_weeklyToTimes[m_weeklyFromTimes.indexOf(lastWeekTime)] );
 
                 QNetworkReply* reply = lastfm::ws::get( params );
                 connect( reply, &QNetworkReply::finished,
@@ -362,15 +362,15 @@ Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
     {
         // debug() << "got response:" << lfm;
         QStringList artists;
-        for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
+        for( int i = 0; i < lfm[ QStringLiteral("weeklyartistchart") ].children( "artist" ).size(); i++ )
         {
             if( i == 12 ) // only up to 12 artist.
                 break;
-            lastfm::XmlQuery artist = lfm[ "weeklyartistchart" ].children( "artist" ).at( i );
-            artists.append( artist[ "name" ].text() );
+            lastfm::XmlQuery artist = lfm[ QStringLiteral("weeklyartistchart") ].children( "artist" ).at( i );
+            artists.append( artist[ QStringLiteral("name") ].text() );
         }
 
-        uint week = QDomElement( lfm[ "weeklyartistchart" ] ).attribute( "from" ).toUInt();
+        uint week = QDomElement( lfm[ QStringLiteral("weeklyartistchart") ] ).attribute( "from" ).toUInt();
         m_weeklyArtistMap.insert( week, artists );
         debug() << "got artists:" << artists << week;
 
@@ -409,7 +409,7 @@ Dynamic::WeeklyTopBias::weeklyTimesQueryFinished() // SLOT
         return;
     }
 
-    QDomNodeList nodes = doc.elementsByTagName( "chart" );
+    QDomNodeList nodes = doc.elementsByTagName( QStringLiteral("chart") );
     if( nodes.count() == 0 )
     {
         debug() << "USER has no history! can't do this!";
@@ -419,12 +419,12 @@ Dynamic::WeeklyTopBias::weeklyTimesQueryFinished() // SLOT
     for( int i = 0; i < nodes.size(); i++ )
     {
         QDomNode n = nodes.at( i );
-        m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
-        m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
+        m_weeklyFromTimes.append( n.attributes().namedItem( QStringLiteral("from") ).nodeValue().toUInt() );
+        m_weeklyToTimes.append( n.attributes().namedItem( QStringLiteral("to") ).nodeValue().toUInt() );
 
         // debug() << "weeklyTimesResult"<<i<<":"<<m_weeklyFromTimes.last()<<"to"<<m_weeklyToTimes.last();
-        m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
-        m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
+        m_weeklyFromTimes.append( n.attributes().namedItem( QStringLiteral("from") ).nodeValue().toUInt() );
+        m_weeklyToTimes.append( n.attributes().namedItem( QStringLiteral("to") ).nodeValue().toUInt() );
     }
 
     m_weeklyTimesJob->deleteLater();
@@ -460,7 +460,7 @@ Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
 void
 Dynamic::WeeklyTopBias::loadFromFile()
 {
-    QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_topweeklyartists.xml") );
     file.open( QIODevice::ReadOnly | QIODevice::Text );
     QTextStream in( &file );
     while( !in.atEnd() )
@@ -475,12 +475,12 @@ Dynamic::WeeklyTopBias::loadFromFile()
 void
 Dynamic::WeeklyTopBias::saveDataToFile() const
 {
-    QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_topweeklyartists.xml") );
     file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out( &file );
     for( uint key : m_weeklyArtistMap.keys() )
     {
-        out << key << "#" << m_weeklyArtistMap[ key ].join( "^" ) << Qt::endl;
+        out << key << "#" << m_weeklyArtistMap[ key ].join( QStringLiteral("^") ) << Qt::endl;
     }
     file.close();
 

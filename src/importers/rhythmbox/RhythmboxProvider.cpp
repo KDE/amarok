@@ -79,7 +79,7 @@ RhythmboxProvider::readXml( const QString &byArtist )
         {
             if( xml.name() ==  QStringLiteral("rhythmdb") )
             {
-                if( xml.attributes().value("version") !=  QStringLiteral("1.8") )
+                if( xml.attributes().value(QStringLiteral("version")) !=  QStringLiteral("1.8") )
                     warning() << __PRETTY_FUNCTION__ << "unsupported database version";
 
                 readRhythmdb( xml, byArtist );
@@ -103,7 +103,7 @@ RhythmboxProvider::readRhythmdb( QXmlStreamReader &xml, const QString &byArtist 
 
     while( xml.readNextStartElement() )
     {
-        if( xml.name() == QStringLiteral("entry") && xml.attributes().value( "type" ) == QStringLiteral("song") )
+        if( xml.name() == QStringLiteral("entry") && xml.attributes().value( QStringLiteral("type") ) == QStringLiteral("song") )
             readSong( xml, byArtist );
         else
             xml.skipCurrentElement();

@@ -1585,20 +1585,20 @@ PodcastReader::attribute( const char *namespaceUri, const char *name ) const
     // workaround, because Qt seems to have a bug:
     // when the default namespace is used attributes
     // aren't inside this namespace for some reason
-    if( m_xmlReader.attributes().hasAttribute( namespaceUri, name ) )
-        return m_xmlReader.attributes().value( namespaceUri, name );
+    if( m_xmlReader.attributes().hasAttribute( QLatin1String(namespaceUri), QLatin1String(name) ) )
+        return m_xmlReader.attributes().value( QLatin1String(namespaceUri), QLatin1String(name) );
     else
-        return m_xmlReader.attributes().value( QString(), name );
+        return m_xmlReader.attributes().value( QString(), QLatin1String(name) );
 }
 
 bool
 PodcastReader::hasAttribute( const char *namespaceUri, const char *name ) const
 {
     // see PodcastReader::attribute()
-    if( m_xmlReader.attributes().hasAttribute( namespaceUri, name ) )
+    if( m_xmlReader.attributes().hasAttribute( QLatin1String(namespaceUri), QLatin1String(name) ) )
         return true;
     else
-        return m_xmlReader.attributes().hasAttribute( QString(), name );
+        return m_xmlReader.attributes().hasAttribute( QString(), QLatin1String(name) );
 }
 
 QDateTime
