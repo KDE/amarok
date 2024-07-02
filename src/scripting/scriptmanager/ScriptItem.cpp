@@ -201,9 +201,9 @@ ScriptItem::timerEvent( QTimerEvent* event )
 QString
 ScriptItem::handleError( QJSValue *result )
 {
-    QString errorString = QString( "Script Error: %1 (line: %2)" )
+    QString errorString = QStringLiteral( "Script Error: %1 (line: %2)" )
                           .arg( result->toString() )
-                          .arg( result->property("lineNumber").toInt() );
+                          .arg( result->property(QStringLiteral("lineNumber")).toInt() );
     error() << errorString;
     //engine->clearExceptions();
     stop();

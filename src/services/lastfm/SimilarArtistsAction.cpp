@@ -28,7 +28,7 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
 {
     connect( this, &SimilarArtistsAction::triggered, this, &SimilarArtistsAction::slotTriggered );
 
-    setIcon( QIcon::fromTheme("view-services-lastfm-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("view-services-lastfm-amarok")) );
     setProperty( "popupdropper_svg_id", QStringLiteral("lastfm") );
 }
 

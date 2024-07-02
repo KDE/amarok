@@ -81,7 +81,7 @@ SqlPlaylistGroup::save()
         QString query = QStringLiteral("INSERT INTO playlist_groups ( parent_id, name, \
                 description) VALUES ( %1, '%2', '%3' );");
         query = query.arg( QString::number( parentId ), m_name, m_description );
-        m_dbId = sqlStorage->insert( query, nullptr );
+        m_dbId = sqlStorage->insert( query, QString() );
     }
 }
 

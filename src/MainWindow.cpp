@@ -255,7 +255,7 @@ MainWindow::init()
 
         //TODO: parent these browsers?
         PERF_LOG( "Creating CollectionWidget" )
-        m_collectionBrowser = new CollectionWidget( "collections", nullptr );
+        m_collectionBrowser = new CollectionWidget( QStringLiteral("collections"), nullptr );
         //TODO: rename "Music Collections
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( QIcon::fromTheme( QStringLiteral("drive-harddisk") ) );
@@ -427,7 +427,7 @@ MainWindow::closeEvent( QCloseEvent *e )
         KMessageBox::information( this,
                 i18n( "<qt>Closing the main window will keep Amarok running in the System Tray. "
                       "Use <B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</qt>" ),
-                i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
+                i18n( "Docking in System Tray" ), QStringLiteral("hideOnCloseInfo") );
 
         hide();
         e->ignore();

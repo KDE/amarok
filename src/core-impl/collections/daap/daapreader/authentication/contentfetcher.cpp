@@ -38,7 +38,7 @@ ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QS
  , m_port( port )
  , m_selfDestruct( false )
 {
-    setObjectName( name );
+    setObjectName( QLatin1String(name) );
     QByteArray pass = password.toUtf8();
     if( !password.isNull() )
     {

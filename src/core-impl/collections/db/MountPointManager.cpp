@@ -43,7 +43,7 @@ MountPointManager::MountPointManager( QObject *parent, QSharedPointer<SqlStorage
     , m_ready( false )
 {
     DEBUG_BLOCK
-    setObjectName( "MountPointManager" );
+    setObjectName( QStringLiteral("MountPointManager") );
 
     if ( !Amarok::config( QStringLiteral("Collection") ).readEntry( "DynamicCollection", true ) )
     {

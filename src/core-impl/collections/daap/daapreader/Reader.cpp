@@ -47,24 +47,24 @@ Reader::Reader( Collections::DaapCollection* mc, const QString& host, quint16 po
     , m_sessionId( -1 )
     , m_password( password )
 {
-    setObjectName( name );
+    setObjectName( QLatin1String(name) );
     debug() << "Host: " << host << " port: " << port;
 
     // these content codes are needed to learn all others
-    m_codes["mccr"] = Code( "dmap.contentcodesresponse", CONTAINER );
-    m_codes["mstt"] = Code( "dmap.status", LONG );
-    m_codes["mdcl"] = Code( "dmap.dictionary", CONTAINER );
+    m_codes[QStringLiteral("mccr")] = Code( QStringLiteral("dmap.contentcodesresponse"), CONTAINER );
+    m_codes[QStringLiteral("mstt")] = Code( QStringLiteral("dmap.status"), LONG );
+    m_codes[QStringLiteral("mdcl")] = Code( QStringLiteral("dmap.dictionary"), CONTAINER );
     // mcnm is actually an int, but string makes parsing easier
-    m_codes["mcnm"] = Code( "dmap.contentcodesnumber", STRING );
-    m_codes["mcna"] = Code( "dmap.contentcodesname", STRING );
-    m_codes["mcty"] = Code( "dmap.contentcodestype", SHORT );
+    m_codes[QStringLiteral("mcnm")] = Code( QStringLiteral("dmap.contentcodesnumber"), STRING );
+    m_codes[QStringLiteral("mcna")] = Code( QStringLiteral("dmap.contentcodesname"), STRING );
+    m_codes[QStringLiteral("mcty")] = Code( QStringLiteral("dmap.contentcodestype"), SHORT );
 
     // stupid, stupid. The reflection just isn't good enough
     // to connect to an iPhoto server.
-    m_codes["ppro"] = Code( "dpap.protocolversion", LONG );
-    m_codes["avdb"] = Code( "daap.serverdatabases", CONTAINER );
-    m_codes["adbs"] = Code( "daap.databasesongs", CONTAINER );
-    m_codes["pret"] = Code( "dpap.unknown", CONTAINER );
+    m_codes[QStringLiteral("ppro")] = Code( QStringLiteral("dpap.protocolversion"), LONG );
+    m_codes[QStringLiteral("avdb")] = Code( QStringLiteral("daap.serverdatabases"), CONTAINER );
+    m_codes[QStringLiteral("adbs")] = Code( QStringLiteral("daap.databasesongs"), CONTAINER );
+    m_codes[QStringLiteral("pret")] = Code( QStringLiteral("dpap.unknown"), CONTAINER );
 }
 
 Reader::~Reader()
@@ -77,7 +77,7 @@ Reader::logoutRequest()
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerLogoutHttp" );
     connect( http, &ContentFetcher::httpError, this, &Reader::fetchingError );
     connect( http, &ContentFetcher::finished, this, &Reader::logoutRequestFinished );
-    http->getDaap( "/logout?" + m_loginString );
+    http->getDaap( QStringLiteral("/logout?") + m_loginString );
 }
 
 void
@@ -95,7 +95,7 @@ Reader::loginRequest()
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
     connect( http, &ContentFetcher::httpError, this, &Reader::fetchingError );
     connect( http, &ContentFetcher::finished, this, &Reader::contentCodesReceived );
-    http->getDaap( "/content-codes" );
+    http->getDaap( QStringLiteral("/content-codes") );
 }
 
 void
@@ -107,16 +107,16 @@ Reader::contentCodesReceived()
 
     QDataStream raw( http->results() );
     Map contentCodes = parse( raw );
-    QList<QVariant> root = contentCodes["mccr"].toList();
+    QList<QVariant> root = contentCodes[QStringLiteral("mccr")].toList();
     if( root.isEmpty() )
         return; //error
-    root = root[0].toMap().value( "mdcl" ).toList();
+    root = root[0].toMap().value( QStringLiteral("mdcl") ).toList();
     for( const QVariant &v : root )
     {
         Map entry = v.toMap();
-        QString code = entry.value( "mcnm" ).toList().value( 0 ).toString();
-        QString name = entry.value( "mcna" ).toList().value( 0 ).toString();
-        ContentTypes type = ContentTypes( entry.value( "mcty" ).toList().value( 0 ).toInt() );
+        QString code = entry.value( QStringLiteral("mcnm") ).toList().value( 0 ).toString();
+        QString name = entry.value( QStringLiteral("mcna") ).toList().value( 0 ).toString();
+        ContentTypes type = ContentTypes( entry.value( QStringLiteral("mcty") ).toList().value( 0 ).toInt() );
         if( !m_codes.contains( code ) && !code.isEmpty() && type > 0 )
         {
             m_codes[code] = Code( name, type );
@@ -126,7 +126,7 @@ Reader::contentCodesReceived()
 
     connect( http, &ContentFetcher::loginRequired,
              this, &Reader::loginHeaderReceived );
-    http->getDaap( "/login" );
+    http->getDaap( QStringLiteral("/login") );
 }
 
 void
@@ -153,9 +153,9 @@ Reader::loginFinished()
 
     QDataStream raw( http->results() );
     Map loginResults = parse( raw );
-    QVariantList list = loginResults.value( "mlog" ).toList();
+    QVariantList list = loginResults.value( QStringLiteral("mlog") ).toList();
     debug() << "list size is " << list.size();
-    QVariantList innerList = list.value( 0 ).toMap().value( "mlid" ).toList();
+    QVariantList innerList = list.value( 0 ).toMap().value( QStringLiteral("mlid") ).toList();
     debug() << "innerList size is " << innerList.size();
     if( innerList.isEmpty() )
     {
@@ -163,9 +163,9 @@ Reader::loginFinished()
         return;
     }
     m_sessionId = innerList.value( 0 ).toInt();
-    m_loginString = "session-id=" + QString::number( m_sessionId );
+    m_loginString = QStringLiteral("session-id=") + QString::number( m_sessionId );
     connect( http, &ContentFetcher::finished, this, &Reader::updateFinished );
-    http->getDaap( "/update?" + m_loginString );
+    http->getDaap( QStringLiteral("/update?") + m_loginString );
 }
 
 void
@@ -177,15 +177,15 @@ Reader::updateFinished()
 
     QDataStream raw( http->results() );
     Map updateResults = parse( raw );
-    if( updateResults["mupd"].toList().isEmpty() )
+    if( updateResults[QLatin1String("mupd")].toList().isEmpty() )
         return; //error
-    if( updateResults["mupd"].toList()[0].toMap()["musr"].toList().isEmpty() )
+    if( updateResults[QLatin1String("mupd")].toList()[0].toMap()[QStringLiteral("musr")].toList().isEmpty() )
         return; //error
-    m_loginString = m_loginString + "&revision-number="  +
-            QString::number( updateResults["mupd"].toList()[0].toMap()["musr"].toList()[0].toInt() );
+    m_loginString = m_loginString + QStringLiteral("&revision-number=")  +
+            QString::number( updateResults[QLatin1String("mupd")].toList()[0].toMap()[QLatin1String("musr")].toList()[0].toInt() );
 
     connect( http, &ContentFetcher::finished, this, &Reader::databaseIdFinished );
-    http->getDaap( "/databases?" + m_loginString );
+    http->getDaap( QStringLiteral("/databases?") + m_loginString );
 }
 
 void
@@ -196,7 +196,7 @@ Reader::databaseIdFinished()
 
     QDataStream raw( http->results() );
     Map dbIdResults = parse( raw );
-    m_databaseId = QString::number( dbIdResults["avdb"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList()[0].toMap()["miid"].toList()[0].toInt() );
+    m_databaseId = QString::number( dbIdResults[QStringLiteral("avdb")].toList()[0].toMap()[QStringLiteral("mlcl")].toList()[0].toMap()[QStringLiteral("mlit")].toList()[0].toMap()[QStringLiteral("miid")].toList()[0].toInt() );
     connect( http, &ContentFetcher::finished, this, &Reader::songListFinished );
     http->getDaap( QStringLiteral("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
                 .arg( m_databaseId, m_loginString ) );
@@ -256,7 +256,7 @@ Reader::parseSongList( const QByteArray &data, bool set_collection )
         if( !tagData.isValid() )
             continue;
 
-        QString tag = QString( rawTag );
+        QString tag = QLatin1String( rawTag );
 
         if( m_codes[tag].type == CONTAINER )
         {
@@ -264,27 +264,27 @@ Reader::parseSongList( const QByteArray &data, bool set_collection )
              continue;
         }
 
-        if( tag == "astn" )
+        if( tag == QStringLiteral("astn") )
             trackNumber = tagData.toInt();
-        else if( tag == "asyr" )
+        else if( tag == QStringLiteral("asyr") )
             year = tagData.toInt();
-        else if( tag == "miid" )
+        else if( tag == QStringLiteral("miid") )
             itemId = tagData.toString();
-        else if(tag == "astm" )
+        else if(tag == QStringLiteral("astm") )
             songTime = tagData.toInt();
-        else if( tag== "asfm" )
+        else if( tag== QStringLiteral("asfm") )
             format = tagData.toString();
-        else if( tag == "minm" )
+        else if( tag == QStringLiteral("minm") )
             title = tagData.toString();
-        else if( tag == "asal" )
+        else if( tag == QStringLiteral("asal") )
             album = tagData.toString();
-        else if( tag == "asar" )
+        else if( tag == QStringLiteral("asar") )
             artist = tagData.toString();
-        else if( tag == "ascp" )
+        else if( tag == QStringLiteral("ascp") )
             composer = tagData.toString();
-        else if( tag == "ascm" )
+        else if( tag == QStringLiteral("ascm") )
             comment = tagData.toString();
-        else if( tag == "asgn" )
+        else if( tag == QStringLiteral("asgn") )
             genre = tagData.toString();
     }
 
@@ -415,7 +415,7 @@ Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
         raw >> var ; \
         ret = QVariant(var); \
     }
-    switch( m_codes[tag].type )
+    switch( m_codes[QLatin1String(tag)].type )
     {
         case CHAR:
         {
@@ -462,7 +462,7 @@ Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
         {
             qint32 verData;
             READ_DATA( verData )
-            QString version( "%1.%2.%3" );
+            QString version( QStringLiteral("%1.%2.%3") );
             version = version.arg( verData >> 16, (verData >> 8) & 0xFF, verData & 0xFF);
             ret = QVariant( version );
             break;
@@ -505,7 +505,7 @@ Reader::parse( QDataStream &raw )
         if( !tagData.isValid() )
             continue;
 
-        if( m_codes[tag].type == CONTAINER )
+        if( m_codes[QLatin1String(tag)].type == CONTAINER )
         {
             QDataStream substream( tagData.toByteArray() );
             addElement( childMap, tag, QVariant( parse( substream ) ) );
@@ -520,10 +520,10 @@ void
 Reader::addElement( Map &parentMap, char* tag, const QVariant &element )
 {
     QList<QVariant> list;
-    Map::Iterator it = parentMap.find( tag );
+    Map::Iterator it = parentMap.find( QLatin1String(tag) );
     if ( it == parentMap.end() ) {
         list.append( element );
-        parentMap.insert( tag, QVariant( list ) );
+        parentMap.insert( QLatin1String(tag), QVariant( list ) );
     } else {
         list = it.value().toList();
         list.append( element );

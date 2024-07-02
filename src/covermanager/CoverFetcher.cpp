@@ -65,7 +65,7 @@ CoverFetcher::CoverFetcher()
     : QObject()
 {
     DEBUG_BLOCK
-    setObjectName( "CoverFetcher" );
+    setObjectName( QStringLiteral("CoverFetcher") );
     qRegisterMetaType<CoverFetchUnit::Ptr>("CoverFetchUnit::Ptr");
 
     s_instance = this;

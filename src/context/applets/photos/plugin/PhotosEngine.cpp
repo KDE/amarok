@@ -152,7 +152,7 @@ PhotosEngine::update( bool force )
         flickrUrl.setHost( QStringLiteral("api.flickr.com") );
         flickrUrl.setPath( QStringLiteral("/services/rest/") );
         query.addQueryItem( QStringLiteral("method"), QStringLiteral("flickr.photos.search") );
-        query.addQueryItem( QStringLiteral("api_key"), Amarok::flickrApiKey() );
+        query.addQueryItem( QStringLiteral("api_key"), QLatin1String(Amarok::flickrApiKey()) );
         query.addQueryItem( QStringLiteral("per_page"), QString::number( m_nbPhotos ) );
         query.addQueryItem( QStringLiteral("sort"), QStringLiteral("relevance") );
         query.addQueryItem( QStringLiteral("media"), QStringLiteral("photos") );
@@ -218,12 +218,12 @@ PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
             QStringView title  = attr.value( QLatin1String("title") );
 
             QUrl photoUrl;
-            photoUrl.setScheme( "https" );
+            photoUrl.setScheme( QStringLiteral("https") );
             photoUrl.setHost( QStringLiteral("live.staticflickr.com") );
             photoUrl.setPath( QStringLiteral("/%1/%2_%3.jpg").arg( server.toString(), id.toString(), secret.toString() ) );
 
             QUrl pageUrl;
-            pageUrl.setScheme( "https" );
+            pageUrl.setScheme( QStringLiteral("https") );
             pageUrl.setHost( QLatin1String("www.flickr.com") );
             pageUrl.setPath( QStringLiteral("/photos/%1/%2").arg( owner.toString(), id.toString() ) );
 

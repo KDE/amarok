@@ -59,8 +59,8 @@ DaapCollectionFactory::init()
     case KDNSSD::ServiceBrowser::Working:
         //don't block Amarok's startup by connecting to DAAP servers
         QTimer::singleShot( 1000, this, &DaapCollectionFactory::connectToManualServers );
-        m_browser = new KDNSSD::ServiceBrowser("_daap._tcp");
-        m_browser->setObjectName("daapServiceBrowser");
+        m_browser = new KDNSSD::ServiceBrowser(QStringLiteral("_daap._tcp"));
+        m_browser->setObjectName(QStringLiteral("daapServiceBrowser"));
         connect( m_browser, &KDNSSD::ServiceBrowser::serviceAdded,
                  this, &DaapCollectionFactory::foundDaap );
         connect( m_browser, &KDNSSD::ServiceBrowser::serviceRemoved,

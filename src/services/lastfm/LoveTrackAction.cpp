@@ -24,8 +24,8 @@ LoveTrackAction::LoveTrackAction( LastFmService * service )
     : GlobalCollectionTrackAction( i18n( "Last.fm: Love" ), service )
     , m_service( service )
 {
-    setIcon( QIcon::fromTheme( "love-amarok") );
-    setProperty( "popupdropper_svg_id", "lastfm" );
+    setIcon( QIcon::fromTheme( QStringLiteral("love-amarok")) );
+    setProperty( "popupdropper_svg_id", QStringLiteral("lastfm") );
 
     connect( this, &LoveTrackAction::triggered, this, &LoveTrackAction::slotTriggered );
 }

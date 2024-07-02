@@ -46,7 +46,7 @@ DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton
     {
         // check the meta object if there is a testSettings slot available
         if( factory->metaObject()->
-            indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)") ) >= 0 )
+            indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)").constData() ) >= 0 )
             testFunctionAvailable = true;
     }
     button_Test->setEnabled( testFunctionAvailable );

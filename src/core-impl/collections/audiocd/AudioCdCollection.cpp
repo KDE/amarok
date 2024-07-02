@@ -85,12 +85,12 @@ AudioCdCollection::~AudioCdCollection()
 QUrl
 AudioCdCollection::audiocdUrl( const QString &path ) const
 {
-    QUrl url("audiocd:/" + path);
+    QUrl url(QStringLiteral("audiocd:/") + path);
 
     if( !m_device.isEmpty() )
     {
         QUrlQuery query;
-        query.addQueryItem( "device", m_device );
+        query.addQueryItem( QStringLiteral("device"), m_device );
         url.setQuery( query );
     }
 
@@ -179,16 +179,16 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     QString year;
     QString genre;
 
-    startIndex = cddbInfo.indexOf( "DTITLE=", 0 );
+    startIndex = cddbInfo.indexOf( QStringLiteral("DTITLE="), 0 );
     if ( startIndex != -1 )
     {
         startIndex += 7;
-        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        endIndex = cddbInfo.indexOf( QStringLiteral("\n"), startIndex );
         QString compoundTitle = cddbInfo.mid( startIndex, endIndex - startIndex );
 
         debug() << "compoundTitle: " << compoundTitle;
 
-        QStringList compoundTitleList = compoundTitle.split( " / " );
+        QStringList compoundTitleList = compoundTitle.split( QStringLiteral(" / ") );
 
         artist = compoundTitleList.at( 0 );
         album = compoundTitleList.at( 1 );
@@ -203,11 +203,11 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     memoryCollection()->addAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
 
 
-    startIndex = cddbInfo.indexOf( "DYEAR=", 0 );
+    startIndex = cddbInfo.indexOf( QStringLiteral("DYEAR="), 0 );
     if ( startIndex != -1 )
     {
         startIndex += 6;
-        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        endIndex = cddbInfo.indexOf( QStringLiteral("\n"), startIndex );
         year = cddbInfo.mid( startIndex, endIndex - startIndex );
     }
 
@@ -215,11 +215,11 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     memoryCollection()->addYear( Meta::YearPtr::staticCast( yearPtr ) );
 
 
-    startIndex = cddbInfo.indexOf( "DGENRE=", 0 );
+    startIndex = cddbInfo.indexOf( QStringLiteral("DGENRE="), 0 );
     if ( startIndex != -1 )
     {
         startIndex += 7;
-        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        endIndex = cddbInfo.indexOf( QStringLiteral("\n"), startIndex );
         genre = cddbInfo.mid( startIndex, endIndex - startIndex );
     }
 
@@ -228,30 +228,30 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
     m_discCddbId = unknownCddbId;
 
-    startIndex = cddbInfo.indexOf( "DISCID=", 0 );
+    startIndex = cddbInfo.indexOf( QStringLiteral("DISCID="), 0 );
     if ( startIndex != -1 )
     {
         startIndex += 7;
-        endIndex = cddbInfo.indexOf( "\n", startIndex );
+        endIndex = cddbInfo.indexOf( QStringLiteral("\n"), startIndex );
         m_discCddbId = cddbInfo.mid( startIndex, endIndex - startIndex );
     }
 
     //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
 
     //get the list of tracknames
-    startIndex = cddbInfo.indexOf( "TTITLE0=", 0 );
+    startIndex = cddbInfo.indexOf( QStringLiteral("TTITLE0="), 0 );
     if ( startIndex != -1 )
     {
-        endIndex = cddbInfo.indexOf( "\nEXTD=", startIndex );
+        endIndex = cddbInfo.indexOf( QStringLiteral("\nEXTD="), startIndex );
         QString tracksBlock = cddbInfo.mid( startIndex, endIndex - startIndex );
         debug() << "Tracks block: " << tracksBlock;
-        QStringList tracksBlockList = tracksBlock.split( '\n' );
+        QStringList tracksBlockList = tracksBlock.split( QLatin1Char('\n') );
 
         int numberOfTracks = tracksBlockList.count();
 
         for ( int i = 0; i < numberOfTracks; i++ )
         {
-            QString prefix = "TTITLE" + QString::number( i ) + QLatin1Char('=');
+            QString prefix = QStringLiteral("TTITLE") + QString::number( i ) + QLatin1Char('=');
             debug() << "prefix: " << prefix;
             QString trackName = tracksBlockList.at( i );
             trackName = trackName.remove( prefix );
@@ -259,9 +259,9 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             QString trackArtist;
             //check if a track artist is included in the track name:
 
-            if ( trackName.contains( " / " ) )
+            if ( trackName.contains( QStringLiteral(" / ") ) )
             {
-                QStringList trackArtistList = trackName.split( " / " );
+                QStringList trackArtistList = trackName.split( QStringLiteral(" / ") );
                 trackName = trackArtistList.at( 1 );
                 trackArtist = trackArtistList.at( 0 );
 
@@ -269,18 +269,18 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
             debug() << "Track name: " << trackName;
 
-            QString padding = (i + 1) < 10 ? "0" : QString();
+            QString padding = (i + 1) < 10 ? QStringLiteral("0") : QString();
 
             QString baseFileName = m_fileNamePattern;
             debug() << "Track Base File Name (before): " << baseFileName;
 
-            baseFileName.replace( "%{title}", trackName, Qt::CaseInsensitive );
-            baseFileName.replace( "%{number}", padding  + QString::number( i + 1 ), Qt::CaseInsensitive );
-            baseFileName.replace( "%{albumtitle}", album, Qt::CaseInsensitive );
-            baseFileName.replace( "%{trackartist}", trackArtist, Qt::CaseInsensitive );
-            baseFileName.replace( "%{albumartist}", artist, Qt::CaseInsensitive );
-            baseFileName.replace( "%{year}", year, Qt::CaseInsensitive );
-            baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{title}"), trackName, Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{number}"), padding  + QString::number( i + 1 ), Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{albumtitle}"), album, Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{trackartist}"), trackArtist, Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{albumartist}"), artist, Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{year}"), year, Qt::CaseInsensitive );
+            baseFileName.replace( QStringLiteral("%{genre}"), genre, Qt::CaseInsensitive );
 
             //we hack the url so the engine controller knows what track on the CD to play..
             QUrl baseUrl = audiocdUrl( m_discCddbId + QLatin1Char('/') + QString::number( i + 1 ) );
@@ -347,21 +347,21 @@ AudioCdCollection::checkForStartPlayRequest()
 QString
 AudioCdCollection::trackBaseFileName( int i ) const
 {
-    return QStringLiteral( "Track%1" ).arg( i, 2, 10, QChar('0') );
+    return QStringLiteral( "Track%1" ).arg( i, 2, 10, QLatin1Char('0') );
 }
 
 
 QString
 AudioCdCollection::trackWavFileName( int i ) const
 {
-    return trackBaseFileName( i ) + ".wav";
+    return trackBaseFileName( i ) + QStringLiteral(".wav");
 }
 
 
 QString
 AudioCdCollection::trackDisplayName( int i ) const
 {
-    return i18n( "Track" ) + ' ' + QString::number( i );
+    return i18n( "Track" ) + QLatin1Char(' ') + QString::number( i );
 }
 
 
@@ -394,7 +394,7 @@ AudioCdCollection::prettyName() const
 QIcon
 AudioCdCollection::icon() const
 {
-    return QIcon::fromTheme( "media-optical-audio" );
+    return QIcon::fromTheme( QStringLiteral("media-optical-audio") );
 }
 
 void
@@ -409,13 +409,13 @@ AudioCdCollection::encodingFormat() const
     switch( m_encodingFormat )
     {
         case WAV:
-            return "wav";
+            return QStringLiteral("wav");
         case FLAC:
-            return "flac";
+            return QStringLiteral("flac");
         case OGG:
-            return "ogg";
+            return QStringLiteral("ogg");
         case MP3:
-            return "mp3";
+            return QStringLiteral("mp3");
     }
     return QString();
 }
@@ -428,11 +428,11 @@ AudioCdCollection::copyableFilePath( const QString &fileName ) const
         case WAV:
             return audiocdUrl( fileName ).url();
         case FLAC:
-            return audiocdUrl( "FLAC/" + fileName ).url();
+            return audiocdUrl( QStringLiteral("FLAC/") + fileName ).url();
         case OGG:
-            return audiocdUrl( "Ogg Vorbis/" + fileName ).url();
+            return audiocdUrl( QStringLiteral("Ogg Vorbis/") + fileName ).url();
         case MP3:
-            return audiocdUrl( "MP3/" + fileName ).url();
+            return audiocdUrl( QStringLiteral("MP3/") + fileName ).url();
     }
     return QString();
 }
@@ -459,7 +459,7 @@ AudioCdCollection::eject()
 
     if ( track )
     {
-        if( track->playableUrl().url().startsWith( "audiocd:/" ) )
+        if( track->playableUrl().url().startsWith( QStringLiteral("audiocd:/") ) )
             The::engineController()->stop();
     }
 
@@ -545,7 +545,7 @@ AudioCdCollection::noInfoAvailable()
 void
 AudioCdCollection::readAudioCdSettings()
 {
-    KSharedConfigPtr conf = KSharedConfig::openConfig( "kcmaudiocdrc" );
+    KSharedConfigPtr conf = KSharedConfig::openConfig( QStringLiteral("kcmaudiocdrc") );
     KConfigGroup filenameConf = conf->group( "FileName" );
 
     m_fileNamePattern = filenameConf.readEntry( "file_name_template", "%{trackartist} - %{number} - %{title}" );
@@ -555,7 +555,7 @@ AudioCdCollection::readAudioCdSettings()
 bool
 AudioCdCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.scheme() == "audiocd";
+    return url.scheme() == QStringLiteral("audiocd");
 }
 
 Meta::TrackPtr
@@ -565,7 +565,7 @@ AudioCdCollection::trackForUrl( const QUrl &url )
     if( memoryCollection()->trackMap().contains( url.url() ) )
         return memoryCollection()->trackMap().value( url.url() );
 
-    QRegularExpression trackUrlScheme( "^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})" );
+    QRegularExpression trackUrlScheme( QStringLiteral("^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})") );
     if( url.url().indexOf( trackUrlScheme ) != 0 )
     {
         warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct scheme" << trackUrlScheme;
@@ -600,7 +600,7 @@ AudioCdCollection::updateProxyTracks()
     for( const QUrl &url : m_proxyMap.keys() )
     {
 
-        QString urlString = url.url().remove( "audiocd:/" );
+        QString urlString = url.url().remove( QStringLiteral("audiocd:/") );
         const QStringList &parts = urlString.split( QLatin1Char('/') );
 
         if( parts.count() != 2 )

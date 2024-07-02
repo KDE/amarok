@@ -86,7 +86,7 @@ class DaapCollection : public Collections::Collection
 
         QString collectionId() const override;
         QString prettyName() const override;
-        QIcon icon() const override { return QIcon::fromTheme("network-server"); }
+        QIcon icon() const override { return QIcon::fromTheme(QStringLiteral("network-server")); }
 
         void serverOffline();
 

@@ -43,12 +43,12 @@ namespace QtBindings {
 
             // Install type only once along program execution
             if ( !QMetaType::isRegistered( QMetaType::type( typeName ) ) ) {
-                qRegisterMetaType<T>( typeName );
-                qRegisterMetaType<T>( typeNameRef );
-                qRegisterMetaType<T*>( typeNamePtr );
-                qRegisterMetaType<T>(  "const " + typeName );
-                qRegisterMetaType<T>(  "const " + typeNameRef );
-                qRegisterMetaType<T*>( "const " + typeNamePtr );
+                qRegisterMetaType<T>( typeName.constData() );
+                qRegisterMetaType<T>( typeNameRef.constData() );
+                qRegisterMetaType<T*>( typeNamePtr.constData() );
+                qRegisterMetaType<T>(  QByteArray("const ").append(typeName).constData() );
+                qRegisterMetaType<T>(  QByteArray("const ").append(typeNameRef).constData() );
+                qRegisterMetaType<T*>( QByteArray("const ").append(typeNamePtr).constData() );
 
                 /* Converter allows passing parameters to C++ via value and const-ref */
                 bool conv = QMetaType::registerConverter<QObject*,T>( [] (QObject* qObjPtr) {
@@ -81,7 +81,7 @@ namespace QtBindings {
                 /* TODO - non-static methods are filtered out by being slots since
                  * tags do not work for Q_INVOKABLE. Change this to tags if fixed */
                 if (classObj.method(i).methodType() == QMetaMethod::Method)
-                    methodList << classObj.method(i).name();
+                    methodList << QLatin1String( classObj.method(i).name() );
             }
             return methodList;
         }
@@ -116,7 +116,7 @@ namespace QtBindings {
         .remove(  QRegularExpression( QStringLiteral("^.*::") ) ).toLatin1();
     template<class T> const QByteArray Base<T>::typeNamePtr = typeName + "*";
     template<class T> const QByteArray Base<T>::typeNameRef = typeName + "&";
-    template<class T> const QString Base<T>::qTypeName( QStringLiteral("Q") + typeName );
+    template<class T> const QString Base<T>::qTypeName( QStringLiteral("Q") + QLatin1String(typeName) );
 }
 
 

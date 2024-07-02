@@ -181,7 +181,7 @@ ScriptManager::updateAllScripts() // SLOT
     QStringList locations = QStandardPaths::standardLocations( QStandardPaths::GenericDataLocation );
     for( const auto &location : locations )
     {
-        QDir dir( location + "/amarok/scripts" );
+        QDir dir( location + QStringLiteral("/amarok/scripts") );
 
         if( !dir.exists() )
             continue;

@@ -52,7 +52,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-    setObjectName( "CollectionSetup" );
+    setObjectName( QStringLiteral("CollectionSetup") );
     s_instance = this;
 
     m_ui.view->setAnimated( true );

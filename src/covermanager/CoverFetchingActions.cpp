@@ -156,7 +156,7 @@ SetCustomCoverAction::slotTriggered()
     const auto mt( QImageReader::supportedMimeTypes() );
     QStringList mimetypes;
     for( const auto &mimetype : mt )
-        mimetypes << QString( mimetype );
+        mimetypes << QLatin1String( mimetype );
 
     QFileDialog dlg;
 

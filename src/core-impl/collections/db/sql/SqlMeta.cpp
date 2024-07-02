@@ -405,7 +405,7 @@ SqlTrack::setAlbumArtist( const QString &newAlbumArtist )
     if( m_album.isNull() )
         return;
 
-    if( !newAlbumArtist.compare( "Various Artists", Qt::CaseInsensitive ) ||
+    if( !newAlbumArtist.compare( QStringLiteral("Various Artists"), Qt::CaseInsensitive ) ||
         !newAlbumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) )
     {
         commitIfInNonBatchUpdate( Meta::valCompilation, true );
@@ -1095,7 +1095,7 @@ SqlTrack::updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldU
     QString tags;
 
     if( fields.contains( Meta::valUniqueId ) )
-        tags += QString( ",path='%1'" ).arg( storage->escape( m_uid ) );
+        tags += QStringLiteral( ",path='%1'" ).arg( storage->escape( m_uid ) );
 
     if( !tags.isEmpty() )
     {
@@ -1159,7 +1159,7 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
         QString insert = QStringLiteral( "INSERT INTO lyrics( url, lyrics ) VALUES ( %1, '%2' )" )
                             .arg( QString::number( m_urlId ),
                                   m_collection->sqlStorage()->escape( lyrics ) );
-        m_collection->sqlStorage()->insert( insert, "lyrics" );
+        m_collection->sqlStorage()->insert( insert, QStringLiteral("lyrics") );
     }
     else
     {
@@ -1252,11 +1252,11 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
             return;
         }
 
-        QString countQuery = "SELECT COUNT(*) FROM urls_labels WHERE url = %1 AND label = %2;";
+        QString countQuery = QStringLiteral("SELECT COUNT(*) FROM urls_labels WHERE url = %1 AND label = %2;");
         QStringList countRs = m_collection->sqlStorage()->query( countQuery.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ) );
         if( !countRs.isEmpty() && countRs.first().toInt() == 0 )
         {
-            QString insert = "INSERT INTO urls_labels(url,label) VALUES (%1,%2);";
+            QString insert = QStringLiteral("INSERT INTO urls_labels(url,label) VALUES (%1,%2);");
             m_collection->sqlStorage()->insert( insert.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ), "urls_labels" );
 
             if( m_labelsInCache )
@@ -1530,7 +1530,7 @@ SqlAlbum::tracks()
     else
     {
         // Wait for tracks to be loaded
-        forever
+        for(;;)
         {
             QMutexLocker locker( &m_mutex );
             if( m_tracksLoaded == Loaded )
@@ -1751,15 +1751,15 @@ SqlAlbum::removeImage()
             m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
 
             // remove the large cover only if it was cached.
-            QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+            QDir largeCoverDir( Amarok::saveLocation( QStringLiteral("albumcovers/large/") ) );
             if( QFileInfo(m_imagePath).absoluteDir() == largeCoverDir )
                 QFile::remove( m_imagePath );
 
             // remove all cache images
             QString key = md5sum( QString(), QString(), m_imagePath );
-            QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+            QDir        cacheDir( Amarok::saveLocation( QStringLiteral("albumcovers/cache/") ) );
             QStringList cacheFilter;
-            cacheFilter << QString( "*@" ) + key;
+            cacheFilter << QStringLiteral( "*@" ) + key;
             QStringList cachedImages = cacheDir.entryList( cacheFilter );
 
             for( const QString &image : cachedImages )
@@ -1801,7 +1801,7 @@ SqlAlbum::unsetImageId() const
         // We need to create this value
         query = QStringLiteral( "INSERT INTO images( path ) VALUES ( '%1' )" )
                          .arg( m_collection->sqlStorage()->escape( AMAROK_UNSET_MAGIC ) );
-        m_unsetImageId = m_collection->sqlStorage()->insert( query, "images" );
+        m_unsetImageId = m_collection->sqlStorage()->insert( query, QStringLiteral("images") );
     }
     return m_unsetImageId;
 }
@@ -1848,7 +1848,7 @@ SqlAlbum::largeDiskCachePath() const
     if( artist.isEmpty() && m_name.isEmpty() )
         return QString();
 
-    QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+    QDir largeCoverDir( Amarok::saveLocation( QStringLiteral("albumcovers/large/") ) );
     const QString key = md5sum( artist, m_name, QString() );
 
     if( !key.isEmpty() )

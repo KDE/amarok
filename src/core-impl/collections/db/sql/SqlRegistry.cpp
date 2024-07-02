@@ -36,7 +36,7 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     , m_collectionChanged( false )
 {
     DEBUG_BLOCK
-    setObjectName( "SqlRegistry" );
+    setObjectName( QStringLiteral("SqlRegistry") );
 
     // -- remove unneeded entries from the database.
     // we have to do this now before anyone can hold references

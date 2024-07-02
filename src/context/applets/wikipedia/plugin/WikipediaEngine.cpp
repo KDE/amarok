@@ -242,7 +242,7 @@ WikipediaEngine::_parseLangLinksResult( const QUrl &url, const QByteArray &data,
         }
         else
         {
-            QStringList refinePossibleLangs = preferredLangs.filter( QRegularExpression("^(en|fr|de|pl).*$") );
+            QStringList refinePossibleLangs = preferredLangs.filter( QRegularExpression(QStringLiteral("^(en|fr|de|pl).*$")) );
             if( refinePossibleLangs.isEmpty() )
             {
                 clear();
@@ -297,7 +297,7 @@ WikipediaEngine::_parseListingResult( const QUrl &url,
 
     if( titles.isEmpty() )
     {
-        QStringList refinePossibleLangs = preferredLangs.filter( QRegularExpression("^(en|fr|de|pl).*$") );
+        QStringList refinePossibleLangs = preferredLangs.filter( QRegularExpression(QStringLiteral("^(en|fr|de|pl).*$")) );
         int index = refinePossibleLangs.indexOf( hostLang );
         if( (index != -1) && (index < refinePossibleLangs.count() - 1) )
             fetchListing( title, refinePossibleLangs.value( index + 1 ).split( QLatin1Char(':') ).back() );

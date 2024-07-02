@@ -164,7 +164,7 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 
 
     // debug() << "Adding Magnatune track " << queryString;
-    int trackId = sqlDb->insert( queryString, nullptr );
+    int trackId = sqlDb->insert( queryString, QString() );
 
     return trackId;
 
@@ -190,7 +190,7 @@ MagnatuneDatabaseHandler::insertAlbum( ServiceAlbum *album )
 
     //debug() << "Adding Magnatune album " << queryString;
 
-    return sqlDb->insert( queryString, nullptr );
+    return sqlDb->insert( queryString, QString() );
 }
 
 
@@ -211,7 +211,7 @@ MagnatuneDatabaseHandler::insertArtist( ServiceArtist *artist )
 
     //debug() << "Adding Magnatune artist " << queryString;
 
-    return sqlDb->insert( queryString, nullptr );
+    return sqlDb->insert( queryString, QString() );
 }
 
 
@@ -249,7 +249,7 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods
 
 
         //debug() << "Adding Magnatune mood: " << queryString;
-        sqlDb->insert( queryString, nullptr );
+        sqlDb->insert( queryString, QString() );
     }
 }
 
@@ -300,7 +300,7 @@ int MagnatuneDatabaseHandler::insertGenre(ServiceGenre * genre)
 
     //debug() << "Adding Jamendo genre " << queryString;
 
-    return sqlDb->insert( queryString, nullptr );
+    return sqlDb->insert( queryString, QString() );
 }
 
 

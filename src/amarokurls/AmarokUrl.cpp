@@ -164,7 +164,7 @@ bool AmarokUrl::saveToDb()
         QString query = QStringLiteral("INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );");
         query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ),
                            sql->escape( m_description ), sql->escape( m_customValue ) );
-        m_id = StorageManager::instance()->sqlStorage()->insert( query, nullptr );
+        m_id = StorageManager::instance()->sqlStorage()->insert( query, QString() );
     }
 
     return true;
