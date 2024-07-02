@@ -71,7 +71,7 @@ OpmlDirectoryView::keyPressEvent( QKeyEvent *event )
     {
         case Qt::Key_Delete:
         {
-            foreach( const QItemSelectionRange &range, selectionModel()->selection() )
+            for( const QItemSelectionRange &range : selectionModel()->selection() )
                 model()->removeRows( range.top(), range.height(), range.parent() );
             event->accept();
             return;

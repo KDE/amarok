@@ -338,7 +338,7 @@ MountPointManager::slotDeviceAdded( const QString &udi )
     DEBUG_BLOCK
     Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
-    //Looking for a specific udi in predicate seems flaky/buggy; the foreach loop barely
+    //Looking for a specific udi in predicate seems flaky/buggy; the for loop barely
     //takes any time, so just be safe
     bool found = false;
     debug() << "looking for udi " << udi;
@@ -359,7 +359,11 @@ MountPointManager::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
     m_handlerMapMutex.lock();
-    foreach( DeviceHandler *dh, m_handlerMap )
+    // Actually this copy isn't probably necessary as the function returns right after any
+    // alteration of the looped m_handlerMap, but I'm definitely not confident enough & not
+    // able to test well enough to loop it here raw
+    const auto map = m_handlerMap;
+    for( DeviceHandler *dh : map )
     {
         if( dh->deviceMatchesUdi( udi ) )
         {

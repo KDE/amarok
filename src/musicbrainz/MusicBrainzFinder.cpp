@@ -228,7 +228,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
             }
 
             lengthTolerance *= 1000;
-            foreach( QVariantMap track, parser->tracks.values() )
+            for( QVariantMap track : parser->tracks.values() )
             {
 #define SIMILARITY( k ) similarity( metadata.value( k ).toString().toLower(), \
                                     track.value( k ).toString().toLower() )
@@ -253,7 +253,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
                 if( track.contains( MusicBrainz::RELEASELIST ) )
                 {
                     // We try to send as many tracks as are the related releases.
-                    foreach( const QString &releaseID,
+                    for( const QString &releaseID :
                              track.value( MusicBrainz::RELEASELIST ).toStringList() )
                     {
                         /*
@@ -296,7 +296,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
                          * result in duplicated entries (which is bad for several
                          * reasons).
                          */
-                        foreach( const QVariant &info,
+                        for( const QVariant &info :
                                  track.value( MusicBrainz::TRACKINFO ).toMap().value( releaseID ).toList() )
                         {
                             QVariantMap trackInfo = info.toMap();
@@ -531,7 +531,7 @@ MusicBrainzFinder::guessMetadata( const Meta::TrackPtr &track ) const
         ( track->album().isNull() || track->album()->name().isEmpty() ) )
     {
         Meta::FieldHash tags = Meta::Tag::TagGuesser::guessTags( track->playableUrl().fileName() );
-        foreach( const quint64 &key, tags.keys() )
+        for( const quint64 key : tags.keys() )
         {
             switch( key )
             {

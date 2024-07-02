@@ -757,7 +757,8 @@ SqlPodcastChannel::applyPurge()
     {
         int purgeIndex = 0;
 
-        foreach( SqlPodcastEpisodePtr episode, m_episodes )
+        const auto episodes = m_episodes;
+        for( SqlPodcastEpisodePtr episode : episodes )
         {
             if ( !episode->isKeep() )
             {
@@ -854,7 +855,8 @@ void
 SqlPodcastChannel::deleteFromDb()
 {
     auto sqlStorage = StorageManager::instance()->sqlStorage();
-    foreach( SqlPodcastEpisodePtr sqlEpisode, m_episodes )
+    const auto episodes = m_episodes;
+    for( SqlPodcastEpisodePtr sqlEpisode : episodes )
     {
        sqlEpisode->deleteFromDb();
        m_episodes.removeOne( sqlEpisode );

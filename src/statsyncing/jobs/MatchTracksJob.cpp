@@ -274,7 +274,7 @@ MatchTracksJob::takeTracksEqualTo( const TrackPtr &track,
                                    PerProviderTrackList &providerTracks )
 {
     PerProviderTrackList ret;
-    foreach( ProviderPtr provider, providerTracks.keys() )
+    for( ProviderPtr provider : providerTracks.keys() )
     {
         while( !providerTracks[ provider ].isEmpty() &&
                track->equals( *providerTracks[ provider ].first(), s_comparisonFields ) )

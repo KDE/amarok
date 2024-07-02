@@ -876,10 +876,13 @@ CollectionTreeView::copySelectedToLocalCollection()
     Collections::Collection *collection = nullptr;
     const QList<Collections::Collection*> collections = CollectionManager::instance()->collections().keys();
 
-    foreach( collection, collections )
+    for( const auto &c : collections )
     {
-        if ( collection->collectionId() == QLatin1String("localCollection") )
+        if ( c->collectionId() == QLatin1String("localCollection") )
+        {
+            collection = c;
             break;
+        }
     }
 
     if( !collection )

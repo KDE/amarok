@@ -217,18 +217,18 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 
     int episodeId = dbResult[0].toInt();
     int channelId = dbResult[2].toInt();
-    bool found = false;
+
     Podcasts::SqlPodcastChannelPtr channel;
-    foreach( channel, m_channels )
+    for( const auto &ch : m_channels )
     {
-        if( channel->dbId() == channelId )
+        if( ch->dbId() == channelId )
         {
-            found = true;
+            channel = ch;
             break;
         }
     }
 
-    if( !found )
+    if( channel.isNull() )
     {
         error() << QStringLiteral( "There is a track in the database with url/guid=%1 (%2) "
                             "but there is no channel with dbId=%3 in our list!" )
@@ -236,8 +236,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
         return SqlPodcastEpisodePtr();
     }
 
-    Podcasts::SqlPodcastEpisodePtr episode;
-    foreach( episode, channel->sqlEpisodes() )
+    for( auto episode : channel->sqlEpisodes() )
         if( episode->dbId() == episodeId )
             return episode;
 

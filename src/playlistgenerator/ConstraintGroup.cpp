@@ -187,7 +187,7 @@ ConstraintGroup::satisfaction( const Meta::TrackList& l ) const
     }
 
     // remove the independent constraints from the hash
-    foreach( int key, constraintMatchTypes.uniqueKeys() ) {
+    for( int key : constraintMatchTypes.uniqueKeys() ) {
         QList<int> vals = constraintMatchTypes.values( key );
         if ( vals.size() <= 1 ) {
             constraintMatchTypes.remove( key );
@@ -221,7 +221,7 @@ ConstraintGroup::combineInterdependentConstraints( const Meta::TrackList& l, con
 {
     /* Handle interdependent constraints properly.
      * See constraints/Matching.h for a description of why this is necessary. */
-    foreach( int key, cmt.uniqueKeys() ) {
+    for( int key : cmt.uniqueKeys() ) {
         QList<int> vals = cmt.values( key );
         // set up the blank matching array
         QBitArray m;

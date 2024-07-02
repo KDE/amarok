@@ -383,7 +383,7 @@ Playlist::PlaylistLayoutEditDialog::toggleUpDownButtons()
 void
 Playlist::PlaylistLayoutEditDialog::apply()  //SLOT
 {
-    foreach( const QString &layoutName, m_layoutsMap->keys() )
+    for( const QString &layoutName : m_layoutsMap->keys() )
     {
         PlaylistLayout layout = m_layoutsMap->value( layoutName );
 

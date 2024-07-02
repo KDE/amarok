@@ -125,7 +125,8 @@ ScriptConsole::ScriptConsole( QWidget *parent )
 
     QMenu *viewMenu = new QMenu( this );
     viewMenu->setTitle( i18n( "&View" ) );
-    foreach( QDockWidget *dockWidget, findChildren<QDockWidget*>() )
+    auto dwlist = findChildren<QDockWidget*>();
+    for( QDockWidget *dockWidget : dwlist )
     {
         if( dockWidget->parentWidget() == this )
             viewMenu->addAction( dockWidget->toggleViewAction() );

@@ -91,9 +91,9 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
         KActionMenu *action = new KActionMenu( m_artistIcon, i18n( "Go to Artist Page" ), menu );
         if( artists.size() > 1 )
         {
-            foreach( const QVariant &id, artists.keys() )
+            for( const QString &id : artists.keys() )
             {
-                QAction *subAction = new QAction( artists.value( id.toString() ).toString(), action );
+                QAction *subAction = new QAction( artists.value( id ).toString(), action );
                 subAction->setData( id );
                 connect( subAction, &QAction::triggered, this, &MusicBrainzTagsView::openArtistPage );
                 action->addAction( subAction );

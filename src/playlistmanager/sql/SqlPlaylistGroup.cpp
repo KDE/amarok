@@ -207,7 +207,8 @@ SqlPlaylistGroup::allChildGroups() const
 {
     SqlPlaylistGroupList groups;
     groups << childSqlGroups();
-    foreach( SqlPlaylistGroupPtr childGroup, groups )
+    const auto cg = groups;
+    for( const SqlPlaylistGroupPtr &childGroup : cg )
     {
         groups << childGroup->allChildGroups();
     }
@@ -219,7 +220,7 @@ SqlPlaylistGroup::allChildPlaylists() const
 {
     SqlPlaylistList playlists;
     playlists << childSqlPlaylists();
-    foreach( SqlPlaylistGroupPtr childGroup, childSqlGroups() )
+    for( SqlPlaylistGroupPtr childGroup : childSqlGroups() )
     {
         playlists << childGroup->allChildPlaylists();
     }

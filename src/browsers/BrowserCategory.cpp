@@ -159,7 +159,8 @@ BrowserCategory::addAdditionalItem( BrowserBreadcrumbItem * item )
 void
 BrowserCategory::clearAdditionalItems()
 {
-    foreach( BrowserBreadcrumbItem *item, m_additionalItems )
+    const auto items = m_additionalItems;
+    for( BrowserBreadcrumbItem *item : items)
     {
         m_additionalItems.removeAll( item );
         /* deleting immediately isn't safe, this method may be called from an inner

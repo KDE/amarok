@@ -154,7 +154,7 @@ PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
             //Search for any slaves created before their master ("early slaves")
             //To set-up a sync between them
             //Only search in the category of the new playlist, i.e. no cross category syncing.
-            foreach( Playlists::PlaylistPtr existingPlaylist, m_playlistMap.values( category ) )
+            for( Playlists::PlaylistPtr existingPlaylist : m_playlistMap.values( category ) )
             {
                 //If this is a slave asSyncedPlaylist() will make it part of the syncedPlaylist
                 if( m_syncRelStore->asSyncedPlaylist( existingPlaylist ) == syncedPlaylist )
@@ -216,10 +216,10 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 void
 PlaylistManager::removePlaylists( Playlists::PlaylistProvider *provider )
 {
-    foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
+    for( Playlists::PlaylistPtr playlist : m_playlistMap.values( provider->category() ) )
         if( playlist->provider() && playlist->provider() == provider )
         {
-            foreach( SyncedPlaylistPtr syncedPlaylist, m_syncedPlaylistMap.keys( playlist ) )
+            for( SyncedPlaylistPtr syncedPlaylist : m_syncedPlaylistMap.keys( playlist ) )
                 m_syncedPlaylistMap.remove( syncedPlaylist, playlist );
 
             removePlaylist( playlist, provider->category() );
@@ -471,7 +471,7 @@ PlaylistManager::setupSync( const Playlists::PlaylistPtr master, const Playlists
 
     m_syncRelStore->addSync( master, slave );
 
-    foreach( const Playlists::PlaylistPtr tempPlaylist, m_playlistMap )
+    for( const Playlists::PlaylistPtr &tempPlaylist : m_playlistMap )
     {
         if( master == tempPlaylist )
         {
@@ -480,7 +480,7 @@ PlaylistManager::setupSync( const Playlists::PlaylistPtr master, const Playlists
         }
     }
 
-    foreach( const Playlists::PlaylistPtr tempPlaylist, m_playlistMap )
+    for( const Playlists::PlaylistPtr &tempPlaylist : m_playlistMap )
     {
         if( slave == tempPlaylist )
         {

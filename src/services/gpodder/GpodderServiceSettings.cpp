@@ -125,12 +125,11 @@ GpodderServiceSettings::finished()
 
     bool deviceExists = false;
     QList<mygpo::DevicePtr> ptrList = m_devices->devicesList();
-    mygpo::DevicePtr devPtr;
 
     QString hostname = QHostInfo::localHostName();
     QString deviceID = QLatin1String( "amarok-" ) % hostname;
 
-    foreach( devPtr, ptrList )
+    for( const auto &devPtr : ptrList )
     {
         if( devPtr->id().compare( deviceID ) == 0 )
         {
