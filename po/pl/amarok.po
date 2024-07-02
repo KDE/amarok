@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-01 01:44+0000\n"
+"POT-Creation-Date: 2024-07-02 01:44+0000\n"
 "PO-Revision-Date: 2024-05-28 19:09+0200\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
@@ -180,79 +180,79 @@ msgstr "Odwiedź stronę domową osoby współtworzącej"
 msgid "Name"
 msgstr "Nazwa"
 
-#: ActionClasses.cpp:88
+#: ActionClasses.cpp:89
 #, kde-format
 msgid "Amarok Menu"
 msgstr "Menu Amaroka"
 
-#: ActionClasses.cpp:179
+#: ActionClasses.cpp:180
 #, kde-format
 msgid "Play/Pause"
 msgstr "Odtwarzaj/Wstrzymaj"
 
-#: ActionClasses.cpp:316
+#: ActionClasses.cpp:317
 #, kde-format
 msgid "Click to change"
 msgstr "Kliknij, aby zmienić"
 
-#: ActionClasses.cpp:333
+#: ActionClasses.cpp:334
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "Tryb &Replay Gain"
 
-#: ActionClasses.cpp:335
+#: ActionClasses.cpp:336
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "&Wyłączony"
 
-#: ActionClasses.cpp:336
+#: ActionClasses.cpp:337
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "&Utwór"
 
-#: ActionClasses.cpp:337
+#: ActionClasses.cpp:338
 #, kde-format
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:357
+#: ActionClasses.cpp:358
 #, kde-format
 msgid "Burn"
 msgstr "Nagraj"
 
-#: ActionClasses.cpp:396
+#: ActionClasses.cpp:397
 #, kde-format
 msgid "Current Playlist"
 msgstr "Bieżąca lista odtwarzania"
 
-#: ActionClasses.cpp:397
+#: ActionClasses.cpp:398
 #, kde-format
 msgid "Selected Tracks"
 msgstr "Wybrane utwory"
 
-#: ActionClasses.cpp:428 scripting/scriptconsole/ScriptConsole.cpp:100
+#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:100
 #, kde-format
 msgid "Stop"
 msgstr "Zatrzymaj"
 
-#: ActionClasses.cpp:472
+#: ActionClasses.cpp:473
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Zatrzymaj po bieżącym utworze"
 
-#: ActionClasses.cpp:489
+#: ActionClasses.cpp:490
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Zatrzymaj po bieżącym utworze: wyłączone"
 
-#: ActionClasses.cpp:494
+#: ActionClasses.cpp:495
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Zatrzymaj po bieżącym utworze: włączone"
 
-#: ActionClasses.cpp:498
+#: ActionClasses.cpp:499
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -260,7 +260,7 @@ msgid "No track playing"
 msgstr "Nie jest odtwarzany żaden utwór"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:502
+#: ActionClasses.cpp:503
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
 #: main.cpp:92 MainWindow.cpp:109
 #, kde-format
@@ -2057,7 +2057,7 @@ msgid "Composer"
 msgstr "Kompozytor"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:94
+#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Gatunek"
@@ -2203,7 +2203,7 @@ msgstr[0] "Czy na pewno chcesz przenieść ten element do kosza?"
 msgstr[1] "Czy na pewno chcesz przenieść te %1 elementy do kosza?"
 msgstr[2] "Czy na pewno chcesz przenieść te %1 elementów do kosza?"
 
-#: browsers/InfoProxy.cpp:166
+#: browsers/InfoProxy.cpp:168
 #, kde-format
 msgid "Home"
 msgstr "Katalog domowy"
@@ -2616,7 +2616,7 @@ msgid "Enter new folder name:"
 msgstr "Podaj nową nazwę katalogu:"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:258
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:259
 #, kde-format
 msgid "Confirm Delete"
 msgstr "Potwierdź usunięcie"
@@ -2801,7 +2801,7 @@ msgstr "Ustawienia ogólne"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:72
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:73
 #, kde-format
 msgid "Local Collection"
 msgstr "Lokalny zbiór"
@@ -4792,28 +4792,28 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Uaktualnianie schematu bazy danych Amaroka"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:529
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:530
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Utwór źródłowy nie istnieje: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:540
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:541
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Nie można było utworzyć katalogu: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:617
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Przenoszenie: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:619
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Transkodowanie: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:663
-#: core-impl/collections/support/FileCollectionLocation.cpp:87
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, kde-format
 msgid "Removing: %1"
 msgstr "Usuwanie: %1"
@@ -5449,7 +5449,7 @@ msgid "Media Device playlists"
 msgstr "Listy odtwarzania urządzenia mediów"
 
 #: core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp:75
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:167
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:168
 #, kde-format
 msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
@@ -5673,12 +5673,12 @@ msgstr "Kosz"
 msgid "Moving to trash: %1"
 msgstr "Przenoszenie do kosza: %1"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:194
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:195
 #, kde-format
 msgid "&Delete Episode"
 msgstr "&Usuń odcinek"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:260
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:261
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
@@ -5686,12 +5686,12 @@ msgstr[0] "Czy na pewno chcesz usunąć ten odcinek?"
 msgstr[1] "Czy na pewno chcesz usunąć te %1 odcinki?"
 msgstr[2] "Czy na pewno chcesz usunąć tych %1 odcinków?"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:278
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:279
 #, kde-format
 msgid "Yes, delete from %1."
 msgstr "Tak, usuń z %1."
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:333
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
 #: services/gpodder/GpodderProvider.cpp:349
 #, kde-format
 msgid "&Delete Channel and Episodes"
@@ -9208,13 +9208,13 @@ msgid "Location:"
 msgstr "Położenie:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:65
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:66
 #, kde-format
 msgid "&Previous"
 msgstr "&Poprzedni"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:62
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:63
 #, kde-format
 msgid "&Next"
 msgstr "&Następny"
@@ -9556,13 +9556,13 @@ msgstr "Utwór przypada po poprzednim utworze w albumie"
 msgid "Track is in the same album as previous track"
 msgstr "Utwór jest w tym samym albumie, co poprzedni utwór"
 
-#: dynamic/biases/EchoNestBias.cpp:45
+#: dynamic/biases/EchoNestBias.cpp:46
 #, kde-format
 msgctxt "Name of the \"EchoNest\" bias"
 msgid "EchoNest similar artist"
 msgstr "EchoNest podobnych wykonawców"
 
-#: dynamic/biases/EchoNestBias.cpp:54
+#: dynamic/biases/EchoNestBias.cpp:55
 #, kde-format
 msgctxt "Description of the \"EchoNest\" bias"
 msgid ""
@@ -9572,13 +9572,13 @@ msgstr ""
 "Ukierunkowanie \"EchoNest\" znajduje utwory na echo nest i dodaje tylko "
 "podobne utwory."
 
-#: dynamic/biases/EchoNestBias.cpp:125
+#: dynamic/biases/EchoNestBias.cpp:126
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
 msgstr "Podobny do poprzedniego wykonawcy (zgłoszone przez EchoNest)"
 
-#: dynamic/biases/EchoNestBias.cpp:128
+#: dynamic/biases/EchoNestBias.cpp:129
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
@@ -9586,7 +9586,7 @@ msgstr ""
 "Podobny do jakiegokolwiek wykonawcy na bieżącej liście odtwarzania "
 "(zgłoszone przez EchoNest)"
 
-#: dynamic/biases/EchoNestBias.cpp:141
+#: dynamic/biases/EchoNestBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
@@ -9595,13 +9595,13 @@ msgstr ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> myśli, że wykonawca "
 "jest podobny do"
 
-#: dynamic/biases/EchoNestBias.cpp:143
+#: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
 #, kde-format
 msgid "the previous track's artist"
 msgstr "wykonawca poprzedniego utworu"
 
-#: dynamic/biases/EchoNestBias.cpp:144
+#: dynamic/biases/EchoNestBias.cpp:145
 #, kde-format
 msgid "one of the artist in the current playlist"
 msgstr "jeden z wykonawców na bieżącej liście odtwarzania"
@@ -11241,7 +11241,7 @@ msgstr "Przełącz główne okno"
 msgid "Toggle Full Screen"
 msgstr "Przełącz pełny ekran"
 
-#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:48
+#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:49
 #, kde-format
 msgid "Search playlist"
 msgstr "Znajdź na liście odtwarzania"
@@ -12109,7 +12109,7 @@ msgstr "Szybkość transmisji"
 msgid "Sample Rate"
 msgstr "Próbkowanie"
 
-#: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:108
+#: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:109
 #, kde-format
 msgid "Rating"
 msgstr "Ocena"
@@ -12199,42 +12199,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Lista odtwarzania"
 
-#: playlist/ProgressiveSearchWidget.cpp:52
+#: playlist/ProgressiveSearchWidget.cpp:53
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Zacznij pisać aby przeszukiwać progresywnie listę odtwarzania"
 
-#: playlist/ProgressiveSearchWidget.cpp:73
+#: playlist/ProgressiveSearchWidget.cpp:74
 #, kde-format
 msgid "Tracks"
 msgstr "Utwory"
 
-#: playlist/ProgressiveSearchWidget.cpp:80
+#: playlist/ProgressiveSearchWidget.cpp:81
 #, kde-format
 msgid "Albums"
 msgstr "Albumy"
 
-#: playlist/ProgressiveSearchWidget.cpp:87
+#: playlist/ProgressiveSearchWidget.cpp:88
 #, kde-format
 msgid "Artists"
 msgstr "Wykonawcy"
 
-#: playlist/ProgressiveSearchWidget.cpp:101
+#: playlist/ProgressiveSearchWidget.cpp:102
 #, kde-format
 msgid "Composers"
 msgstr "Kompozytorzy"
 
-#: playlist/ProgressiveSearchWidget.cpp:115
+#: playlist/ProgressiveSearchWidget.cpp:116
 #, kde-format
 msgid "Years"
 msgstr "Lata"
 
-#: playlist/ProgressiveSearchWidget.cpp:124
+#: playlist/ProgressiveSearchWidget.cpp:125
 #, kde-format
 msgid "Show only matches"
 msgstr "Pokaż tylko pasujące"
 
-#: playlist/ProgressiveSearchWidget.cpp:136
+#: playlist/ProgressiveSearchWidget.cpp:137
 #, kde-format
 msgid "Search Preferences"
 msgstr "Ustawienia wyszukiwania"
@@ -14924,12 +14924,12 @@ msgstr "Informacja z Magnatune"
 msgid "&Download"
 msgstr "&Pobierz"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:83
+#: services/magnatune/MagnatuneDownloadHandler.cpp:84
 #, kde-format
 msgid "Processing download"
 msgstr "Przetwarzanie pobierania"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:148
+#: services/magnatune/MagnatuneDownloadHandler.cpp:149
 #, kde-format
 msgid ""
 "There seems to be an error in the supplied membership information. Please "
@@ -14938,7 +14938,7 @@ msgstr ""
 "We wprowadzonej informacji członkowskiej znajduje się błąd. Proszę ją "
 "poprawić i spróbować ponownie."
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:148
+#: services/magnatune/MagnatuneDownloadHandler.cpp:149
 #, kde-format
 msgid "Could not process download"
 msgstr "Nie można było pobrać albumu"
@@ -14958,55 +14958,55 @@ msgstr ""
 "Użytkownik: %3\n"
 "Hasło: %4\n"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:31
+#: services/magnatune/MagnatuneInfoParser.cpp:32
 #, kde-format
 msgid "Loading artist info..."
 msgstr "Wczytywanie szczegółów o wykonawcy..."
 
-#: services/magnatune/MagnatuneInfoParser.cpp:41
+#: services/magnatune/MagnatuneInfoParser.cpp:42
 #, kde-format
 msgid "Fetching %1 Artist Info"
 msgstr "Pobieranie informacji o wykonawcy %1"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:50
+#: services/magnatune/MagnatuneInfoParser.cpp:51
 #, kde-format
 msgid "Loading album info..."
 msgstr "Wczytywanie informacji o albumie..."
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
-#: services/magnatune/MagnatuneInfoParser.cpp:72
+#: services/magnatune/MagnatuneInfoParser.cpp:73
 #, kde-format
 msgid "Release Year: %1"
 msgstr "Rok wydania: %1"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:77
+#: services/magnatune/MagnatuneInfoParser.cpp:78
 #, kde-format
 msgid "Description:"
 msgstr "Opis:"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:81
+#: services/magnatune/MagnatuneInfoParser.cpp:82
 #, kde-format
 msgid "From Magnatune.com"
 msgstr "Z Magnatune.com"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:163
+#: services/magnatune/MagnatuneInfoParser.cpp:164
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
 msgstr "Pobieranie strony tytułowej Magnatune.com..."
 
-#: services/magnatune/MagnatuneInfoParser.cpp:166
+#: services/magnatune/MagnatuneInfoParser.cpp:167
 #, kde-format
 msgid "Fetching Magnatune.com front page"
 msgstr "Pobieranie strony tytułowej Magnatune.com"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:177
-#: services/magnatune/MagnatuneInfoParser.cpp:191
+#: services/magnatune/MagnatuneInfoParser.cpp:178
+#: services/magnatune/MagnatuneInfoParser.cpp:192
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
 msgstr "Pobieranie twojej strony ulubionych Magnatune.com..."
 
-#: services/magnatune/MagnatuneInfoParser.cpp:202
-#: services/magnatune/MagnatuneInfoParser.cpp:216
+#: services/magnatune/MagnatuneInfoParser.cpp:203
+#: services/magnatune/MagnatuneInfoParser.cpp:217
 #, kde-format
 msgid "Loading your personal Magnatune.com recommendations page..."
 msgstr "Pobieranie twojej osobistej strony poleceń Magnatune.com..."
@@ -15561,12 +15561,12 @@ msgstr "Dodaj lokalny lub zdalny plik OPML do dołączenia do listy."
 msgid "If left blank the title from the OPML will be used."
 msgstr "Jeżeli pozostawisz puste, to zostanie użyty tytuł z OPML."
 
-#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:56
+#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
 msgid "Loading Podcast Info..."
 msgstr "Pobieranie informacji o podcaście..."
 
-#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
+#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:67
 #, kde-format
 msgid "Fetching Podcast Info"
 msgstr "Pobieranie informacji o podcaście"

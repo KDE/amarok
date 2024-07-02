@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-01 01:44+0000\n"
+"POT-Creation-Date: 2024-07-02 01:44+0000\n"
 "PO-Revision-Date: 2024-05-07 17:44+0300\n"
 "Last-Translator: Tuomas Nurmi <tuomas@tuomasn.fi>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -180,79 +180,79 @@ msgstr "Vieraile tekijän kotisivuilla"
 msgid "Name"
 msgstr "Nimi"
 
-#: ActionClasses.cpp:88
+#: ActionClasses.cpp:89
 #, kde-format
 msgid "Amarok Menu"
 msgstr "Amarok-valikko"
 
-#: ActionClasses.cpp:179
+#: ActionClasses.cpp:180
 #, kde-format
 msgid "Play/Pause"
 msgstr "Soita/tauko"
 
-#: ActionClasses.cpp:316
+#: ActionClasses.cpp:317
 #, kde-format
 msgid "Click to change"
 msgstr "Muuta napsauttamalla"
 
-#: ActionClasses.cpp:333
+#: ActionClasses.cpp:334
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "&ReplayGain-voimakkuudentasaus"
 
-#: ActionClasses.cpp:335
+#: ActionClasses.cpp:336
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "&Ei käytössä"
 
-#: ActionClasses.cpp:336
+#: ActionClasses.cpp:337
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "&Kappale"
 
-#: ActionClasses.cpp:337
+#: ActionClasses.cpp:338
 #, kde-format
 msgid "&Album"
 msgstr "&Albumi"
 
-#: ActionClasses.cpp:357
+#: ActionClasses.cpp:358
 #, kde-format
 msgid "Burn"
 msgstr "Polta"
 
-#: ActionClasses.cpp:396
+#: ActionClasses.cpp:397
 #, kde-format
 msgid "Current Playlist"
 msgstr "Nykyinen soittolista"
 
-#: ActionClasses.cpp:397
+#: ActionClasses.cpp:398
 #, kde-format
 msgid "Selected Tracks"
 msgstr "Valitut kappaleet"
 
-#: ActionClasses.cpp:428 scripting/scriptconsole/ScriptConsole.cpp:100
+#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:100
 #, kde-format
 msgid "Stop"
 msgstr "Pysäytä"
 
-#: ActionClasses.cpp:472
+#: ActionClasses.cpp:473
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Pysäytä tämän kappaleen jälkeen"
 
-#: ActionClasses.cpp:489
+#: ActionClasses.cpp:490
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Toistoa ei pysäytetä tämän kappaleen jälkeen."
 
-#: ActionClasses.cpp:494
+#: ActionClasses.cpp:495
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Toisto pysäytetään tämän kappaleen jälkeen."
 
-#: ActionClasses.cpp:498
+#: ActionClasses.cpp:499
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -262,7 +262,7 @@ msgstr "Amarok ei nyt soita mitään"
 # pmap: =:gen=Amarokin:
 # pmap: =:elat=Amarokista:
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:502
+#: ActionClasses.cpp:503
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
 #: main.cpp:92 MainWindow.cpp:109
 #, kde-format
@@ -2062,7 +2062,7 @@ msgid "Composer"
 msgstr "Säveltäjä"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:94
+#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Tyylilaji"
@@ -2203,7 +2203,7 @@ msgid_plural "Are you sure you want to move these %1 items to trash?"
 msgstr[0] "Haluatko varmasti siirtää tämän tietueen roskakoriin?"
 msgstr[1] "Haluatko varmasti siirtää nämä %1 tietuetta roskakoriin?"
 
-#: browsers/InfoProxy.cpp:166
+#: browsers/InfoProxy.cpp:168
 #, kde-format
 msgid "Home"
 msgstr "Toistolähteet"
@@ -2609,7 +2609,7 @@ msgid "Enter new folder name:"
 msgstr "Anna kansiolle uusi nimi:"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:258
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:259
 #, kde-format
 msgid "Confirm Delete"
 msgstr "Vahvista poisto"
@@ -2792,7 +2792,7 @@ msgstr "Amarokin yleisasetukset"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:72
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:73
 #, kde-format
 msgid "Local Collection"
 msgstr "Paikallinen kokoelma"
@@ -4776,28 +4776,28 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Päivitetään Amarokin tietokantaskeemaa"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:529
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:530
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Lähdekappaletta ei ole olemassa: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:540
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:541
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Kansiota ei voitu luoda: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:617
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Siirretään: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:619
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Muunnetaan: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:663
-#: core-impl/collections/support/FileCollectionLocation.cpp:87
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, kde-format
 msgid "Removing: %1"
 msgstr "Poistetaan: %1"
@@ -5403,7 +5403,7 @@ msgid "Media Device playlists"
 msgstr "Medialaitteen soittolistat"
 
 #: core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp:75
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:167
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:168
 #, kde-format
 msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
@@ -5616,24 +5616,24 @@ msgstr "Roskakori"
 msgid "Moving to trash: %1"
 msgstr "Siirretään roskakoriin: %1"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:194
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:195
 #, kde-format
 msgid "&Delete Episode"
 msgstr "&Poista jakso"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:260
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:261
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
 msgstr[0] "Haluatko varmasti poistaa tämän jakson?"
 msgstr[1] "Haluatko varmasti poistaa nämä %1 jaksoa?"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:278
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:279
 #, kde-format
 msgid "Yes, delete from %1."
 msgstr "Kyllä, poista kohteesta %1."
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:333
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
 #: services/gpodder/GpodderProvider.cpp:349
 #, kde-format
 msgid "&Delete Channel and Episodes"
@@ -9111,13 +9111,13 @@ msgid "Location:"
 msgstr "Sijainti:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:65
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:66
 #, kde-format
 msgid "&Previous"
 msgstr "&Edellinen"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:62
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:63
 #, kde-format
 msgid "&Next"
 msgstr "&Seuraava"
@@ -9459,13 +9459,13 @@ msgstr "Kappale seuraa edellistä kappaletta albumilla"
 msgid "Track is in the same album as previous track"
 msgstr "Kappale on samalta albumilta kuin edellinen"
 
-#: dynamic/biases/EchoNestBias.cpp:45
+#: dynamic/biases/EchoNestBias.cpp:46
 #, kde-format
 msgctxt "Name of the \"EchoNest\" bias"
 msgid "EchoNest similar artist"
 msgstr "EchoNest – samankaltainen artisti"
 
-#: dynamic/biases/EchoNestBias.cpp:54
+#: dynamic/biases/EchoNestBias.cpp:55
 #, kde-format
 msgctxt "Description of the \"EchoNest\" bias"
 msgid ""
@@ -9473,20 +9473,20 @@ msgid ""
 "tracks."
 msgstr "EchoNest-vinouma lisää EchoNestistä vain samankaltaisia kappaleita."
 
-#: dynamic/biases/EchoNestBias.cpp:125
+#: dynamic/biases/EchoNestBias.cpp:126
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
 msgstr "Samankaltainen kuin edellinen artisti (EchoNestin mukaan)"
 
-#: dynamic/biases/EchoNestBias.cpp:128
+#: dynamic/biases/EchoNestBias.cpp:129
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
 msgstr ""
 "Samankaltainen kuin mikä tahansa soittolistan artisti (EchoNestin mukaan)"
 
-#: dynamic/biases/EchoNestBias.cpp:141
+#: dynamic/biases/EchoNestBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
@@ -9495,13 +9495,13 @@ msgstr ""
 "<a href=\"http://the.echonest.com/\">the echonestin</a> mielestä tämä "
 "artisti on samankaltainen kuin"
 
-#: dynamic/biases/EchoNestBias.cpp:143
+#: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
 #, kde-format
 msgid "the previous track's artist"
 msgstr "edellisen kappaleen artisti"
 
-#: dynamic/biases/EchoNestBias.cpp:144
+#: dynamic/biases/EchoNestBias.cpp:145
 #, kde-format
 msgid "one of the artist in the current playlist"
 msgstr "joku soittolistan artisteista"
@@ -11140,7 +11140,7 @@ msgstr "Näytä tai piilota soittolistaikkuna"
 msgid "Toggle Full Screen"
 msgstr "Koko näytön tila"
 
-#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:48
+#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:49
 #, kde-format
 msgid "Search playlist"
 msgstr "Hae soittolistalta"
@@ -12007,7 +12007,7 @@ msgstr "Bittinopeus"
 msgid "Sample Rate"
 msgstr "Näytteenottotaajuus"
 
-#: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:108
+#: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:109
 #, kde-format
 msgid "Rating"
 msgstr "Arvostelu"
@@ -12098,42 +12098,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Soittolista"
 
-#: playlist/ProgressiveSearchWidget.cpp:52
+#: playlist/ProgressiveSearchWidget.cpp:53
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Etsi soittolistalta kirjoittamalla"
 
-#: playlist/ProgressiveSearchWidget.cpp:73
+#: playlist/ProgressiveSearchWidget.cpp:74
 #, kde-format
 msgid "Tracks"
 msgstr "Kappaleet"
 
-#: playlist/ProgressiveSearchWidget.cpp:80
+#: playlist/ProgressiveSearchWidget.cpp:81
 #, kde-format
 msgid "Albums"
 msgstr "Albumit"
 
-#: playlist/ProgressiveSearchWidget.cpp:87
+#: playlist/ProgressiveSearchWidget.cpp:88
 #, kde-format
 msgid "Artists"
 msgstr "Artistit"
 
-#: playlist/ProgressiveSearchWidget.cpp:101
+#: playlist/ProgressiveSearchWidget.cpp:102
 #, kde-format
 msgid "Composers"
 msgstr "Säveltäjät"
 
-#: playlist/ProgressiveSearchWidget.cpp:115
+#: playlist/ProgressiveSearchWidget.cpp:116
 #, kde-format
 msgid "Years"
 msgstr "Julkaisuvuodet"
 
-#: playlist/ProgressiveSearchWidget.cpp:124
+#: playlist/ProgressiveSearchWidget.cpp:125
 #, kde-format
 msgid "Show only matches"
 msgstr "Näytä vain hakutulokset"
 
-#: playlist/ProgressiveSearchWidget.cpp:136
+#: playlist/ProgressiveSearchWidget.cpp:137
 #, kde-format
 msgid "Search Preferences"
 msgstr "Hakuasetukset"
@@ -14804,12 +14804,12 @@ msgstr "Magnatune-tiedot"
 msgid "&Download"
 msgstr "&Lataa"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:83
+#: services/magnatune/MagnatuneDownloadHandler.cpp:84
 #, kde-format
 msgid "Processing download"
 msgstr "Käsitellään latausta"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:148
+#: services/magnatune/MagnatuneDownloadHandler.cpp:149
 #, kde-format
 msgid ""
 "There seems to be an error in the supplied membership information. Please "
@@ -14817,7 +14817,7 @@ msgid ""
 msgstr ""
 "Annetuissa jäsentiedoissa tuntuu olevan virhe. Korjaa se ja yritä uudelleen."
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:148
+#: services/magnatune/MagnatuneDownloadHandler.cpp:149
 #, kde-format
 msgid "Could not process download"
 msgstr "Latausta ei voitu käsitellä"
@@ -14836,55 +14836,55 @@ msgstr ""
 "Käyttäjätunnus: %3\n"
 "Salasana: %4\n"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:31
+#: services/magnatune/MagnatuneInfoParser.cpp:32
 #, kde-format
 msgid "Loading artist info..."
 msgstr "Ladataan tietoja artistista…"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:41
+#: services/magnatune/MagnatuneInfoParser.cpp:42
 #, kde-format
 msgid "Fetching %1 Artist Info"
 msgstr "Haetaan %1 tietoja artistista"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:50
+#: services/magnatune/MagnatuneInfoParser.cpp:51
 #, kde-format
 msgid "Loading album info..."
 msgstr "Ladataan tietoja albumista…"
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
-#: services/magnatune/MagnatuneInfoParser.cpp:72
+#: services/magnatune/MagnatuneInfoParser.cpp:73
 #, kde-format
 msgid "Release Year: %1"
 msgstr "Julkaisuvuosi: %1"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:77
+#: services/magnatune/MagnatuneInfoParser.cpp:78
 #, kde-format
 msgid "Description:"
 msgstr "Kuvaus:"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:81
+#: services/magnatune/MagnatuneInfoParser.cpp:82
 #, kde-format
 msgid "From Magnatune.com"
 msgstr "Magnatune.comista"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:163
+#: services/magnatune/MagnatuneInfoParser.cpp:164
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
 msgstr "Haetaan Magnatune.com-palvelun etusivua…"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:166
+#: services/magnatune/MagnatuneInfoParser.cpp:167
 #, kde-format
 msgid "Fetching Magnatune.com front page"
 msgstr "Haetaan Magnatune.com-palvelun etusivua"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:177
-#: services/magnatune/MagnatuneInfoParser.cpp:191
+#: services/magnatune/MagnatuneInfoParser.cpp:178
+#: services/magnatune/MagnatuneInfoParser.cpp:192
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
 msgstr "Haetaan suosikkejasi Magnatune.com-palvelusta…"
 
-#: services/magnatune/MagnatuneInfoParser.cpp:202
-#: services/magnatune/MagnatuneInfoParser.cpp:216
+#: services/magnatune/MagnatuneInfoParser.cpp:203
+#: services/magnatune/MagnatuneInfoParser.cpp:217
 #, kde-format
 msgid "Loading your personal Magnatune.com recommendations page..."
 msgstr "Haetaan suosikkejasi Magnatune.com-palvelusta…"
@@ -15435,12 +15435,12 @@ msgstr "Lisää luetteloon paikallinen tai etä-OPML-tiedosto."
 msgid "If left blank the title from the OPML will be used."
 msgstr "Jos jätetään tyhjäksi, käytetään OPML:sta saatua nimeä."
 
-#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:56
+#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
 msgid "Loading Podcast Info..."
 msgstr "Haetaan podcastin tietoja…"
 
-#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
+#: services/opmldirectory/OpmlDirectoryInfoParser.cpp:67
 #, kde-format
 msgid "Fetching Podcast Info"
 msgstr "Haetaan tietoja podcastista"
