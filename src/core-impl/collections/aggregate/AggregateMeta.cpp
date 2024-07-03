@@ -169,11 +169,21 @@ AggregateTrack::prettyUrl() const
 QString
 AggregateTrack::uidUrl() const
 {
-    // this is where it gets interesting
-    // a uidUrl for a AggregateTrack probably has to be generated
-    // from the parts of the key in AggregateCollection
-    // need to think about this some more
-    return QString();
+    // Blank uidUrl causes bugs in playlist (at least moodbar caching, possibly others), so using any is
+    // likely to be better than none, especially since single track is by far the most common case.
+    QString uid;
+    for( const Meta::TrackPtr &track : m_tracks )
+    {
+        if( !track->uidUrl().isNull() )
+        {
+            uid = track->uidUrl();
+            //Local SQL collection is probably the best one to prefer if there are many
+            if( m_tracks.length() > 1 && CollectionManager::instance()->primaryCollection() &&
+                uid.startsWith( CollectionManager::instance()->primaryCollection()->uidUrlProtocol() ) )
+                return uid;
+        }
+    }
+    return uid;
 }
 
 QString
