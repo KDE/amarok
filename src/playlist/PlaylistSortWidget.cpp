@@ -172,6 +172,8 @@ void
 SortWidget::readSortPath( const QString &sortPath )
 {
     trimToLevel();
+    if( sortPath.length() == 0) //avoid a warning by not confusing following code with empty string splitting
+        return;
 
     QStringList levels = sortPath.split( QLatin1Char('-') );
     for( const QString &level : levels )
