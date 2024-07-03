@@ -136,12 +136,12 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     connect( m_scriptListDock, &ScriptListDockWidget::edit, this, &ScriptConsole::slotEditScript );
     connect( m_scriptListDock, &ScriptListDockWidget::currentItemChanged, this, &ScriptConsole::setCurrentScriptItem );
 
-    QListWidgetItem *item = new QListWidgetItem( "The Amarok Script Console allows you to easily execute"
+    QListWidgetItem *item = new QListWidgetItem( QStringLiteral( "The Amarok Script Console allows you to easily execute"
                                                 "JavaScript with access to all functions\nand methods you would"
                                                 "have in an Amarok script.\nInformation on scripting for Amarok is"
                                                 "available at:\nhttp://community.kde.org/Amarok/Development#Scripting"
                                                 "\nExecute code: CTRL-Enter\nBack in code history: Page Up"
-                                                "\nForward in code history: Page Down"
+                                                "\nForward in code history: Page Down")
                                                , nullptr );
     item->setFlags( Qt::NoItemFlags );
     m_scriptListDock->addItem( item );
@@ -166,7 +166,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         QString category(QLatin1String(context.category));
         if ( category.compare( QStringLiteral("js") ) == 0 ) {
 
-            QString scriptName( context.file );
+            QString scriptName( QLatin1String(context.file) );
             // clean "file:" from file name
             scriptName.remove( 0, 5);
 

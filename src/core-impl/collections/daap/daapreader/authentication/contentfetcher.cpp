@@ -63,7 +63,7 @@ ContentFetcher::getDaap( const QString &command, QIODevice* musicFile /*= 0*/ )
     url.setPort( m_port );
     QNetworkRequest request( url );
     char hash[33] = {0};
-    const char *cmd = command.toLatin1();
+    const char *cmd = command.toLatin1().constData();
     GenerateHash(3, reinterpret_cast<const unsigned char*>( cmd ), 2, reinterpret_cast<unsigned char*>(hash), 0 /*s_requestId*/);
 
     if( !m_authorize.isEmpty() )

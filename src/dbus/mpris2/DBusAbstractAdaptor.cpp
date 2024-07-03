@@ -94,7 +94,7 @@ void DBusAbstractAdaptor::_m_emitPropertiesChanged()
         QDBusMessage signal = QDBusMessage::createSignal( m_path,
              QStringLiteral("org.freedesktop.DBus.Properties"),
              QStringLiteral("PropertiesChanged") );
-        signal << metaObject()->classInfo( ifaceIndex ).value();
+        signal << QLatin1String(metaObject()->classInfo( ifaceIndex ).value());
         signal << m_updatedProperties;
         signal << m_invalidatedProperties;
         m_connection.send( signal );

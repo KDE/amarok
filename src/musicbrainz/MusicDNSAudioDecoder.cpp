@@ -143,9 +143,9 @@ MusicDNSAudioDecoder::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         decode( track->playableUrl().toLocalFile(), &data, m_sampleLength );
         if( data.duration() > MIN_SAMPLE_LENGTH )
         {
-            QString fingerprint( ofa_create_print( ( unsigned char * ) data.data(),
+            QString fingerprint( QLatin1String( ofa_create_print( ( unsigned char * ) data.data(),
                                                    OFA_LITTLE_ENDIAN, ( data.length() >> 1 ),
-                                                   data.sRate(), data.channels() ) );
+                                                   data.sRate(), data.channels() ) ) );
             Q_EMIT trackDecoded( track, fingerprint );
         }
         else
@@ -193,7 +193,7 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
     bool isOk = true;
     av_log_set_level(AV_LOG_VERBOSE);
 
-    if( avformat_open_input( &pFormatCtx, fileName.toLocal8Bit(), nullptr, nullptr ) < 0 )
+    if( avformat_open_input( &pFormatCtx, fileName.toLocal8Bit().constData(), nullptr, nullptr ) < 0 )
     {
         warning() << QLatin1String( "Unable to open input file: " ) + fileName;
         return 0;

@@ -445,8 +445,8 @@ Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
         {
             QByteArray stringData( tagLength, ' ' );
             raw.readRawData( stringData.data(), tagLength );
-            ret = QVariant(QString::fromUtf8( stringData, tagLength ));
-            DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
+            ret = QVariant(QString::fromUtf8( stringData.constData(), tagLength ));
+            DEBUGTAG( QString::fromUtf8( stringData.constData(), tagLength ) )
             break;
         }
         case DATE:

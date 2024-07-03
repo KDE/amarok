@@ -91,7 +91,7 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl( const QUrl &url )
     BookmarkList list;
 
     //See PlayUrlGenerator for the description of a 'play' amarokurl
-    QString track_encoded = url.toEncoded().toBase64();
+    QString track_encoded = QLatin1String( url.toEncoded().toBase64() );
 
     // The last character of a base64 encoded string is always '=', which
     // chokes the SQL. Since we are using a substring like text comparison

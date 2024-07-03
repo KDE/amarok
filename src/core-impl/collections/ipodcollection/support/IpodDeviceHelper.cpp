@@ -449,7 +449,7 @@ IpodDeviceHelper::initializeIpod( const QString &mountPoint,
 
     GError *error = nullptr;
     success = itdb_init_ipod( QFile::encodeName( mountPoint ), nullptr /* model number */,
-                              name.toUtf8(), &error );
+                              name.toUtf8().constData(), &error );
     errorMessage.clear();
     if( error )
     {
@@ -471,7 +471,7 @@ IpodDeviceHelper::setIpodName( Itdb_iTunesDB *itdb, const QString &newName )
     if( !mpl )
         return;
     g_free( mpl->name );
-    mpl->name = g_strdup( newName.toUtf8() );
+    mpl->name = g_strdup( newName.toUtf8().constData() );
 }
 
 bool

@@ -50,7 +50,7 @@ IpodPlaylist::IpodPlaylist( const Meta::TrackList &tracks, const QString &name,
     : m_coll( collection )
     , m_type( type )
 {
-    m_playlist = itdb_playlist_new( name.toUtf8(), false /* Smart playlist */ );
+    m_playlist = itdb_playlist_new( name.toUtf8().constData(), false /* Smart playlist */ );
     Q_ASSERT( m_playlist );
 
     if( m_type != Normal )

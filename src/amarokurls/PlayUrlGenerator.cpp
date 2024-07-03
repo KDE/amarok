@@ -68,7 +68,7 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds,
     if( !track )
         return url;
 
-    const QString trackUrl = track->playableUrl().toEncoded().toBase64();
+    const QString trackUrl = QLatin1String( track->playableUrl().toEncoded().toBase64() );
     url.setCommand( QStringLiteral("play") );
     url.setPath( trackUrl );
     url.setArg( QStringLiteral("pos"), secondsString );

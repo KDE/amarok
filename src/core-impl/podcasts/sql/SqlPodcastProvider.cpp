@@ -689,9 +689,9 @@ SqlPodcastProvider::slotExportOpml()
     {
         OpmlOutline *channelOutline = new OpmlOutline();
         #define addAttr( k, v ) channelOutline->addAttribute( k, v )
-        addAttr( "text", channel->title() );
-        addAttr( "type", "rss" );
-        addAttr( "xmlUrl", channel->url().url() );
+        addAttr( QStringLiteral("text"), channel->title() );
+        addAttr( QStringLiteral("type"), QStringLiteral("rss") );
+        addAttr( QStringLiteral("xmlUrl"), channel->url().url() );
         rootOutlines << channelOutline;
     }
 

@@ -153,8 +153,8 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
                KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
                KCoreAddons::versionString(),                        // KDE Frameworks
-               qVersion(),                                          // Qt
-               Phonon::phononVersion(),                             // Phonon
+               QLatin1String(qVersion()),                           // Qt
+               QLatin1String(Phonon::phononVersion()),              // Phonon
                aPhononBackend.name,
                aPhononBackend.version,
                aPhononBackend.website,                              // & Backend

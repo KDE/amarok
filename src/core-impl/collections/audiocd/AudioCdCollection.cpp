@@ -50,7 +50,7 @@
 
 using namespace Collections;
 
-static const QString unknownCddbId( "unknown" );
+static const QString unknownCddbId( QStringLiteral("unknown") );
 
 AudioCdCollectionFactory::AudioCdCollectionFactory()
     : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )

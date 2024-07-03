@@ -66,7 +66,7 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_trackNumber( 0 )
     , m_discNumber( 0 )
     , m_createDate( QDateTime::currentDateTime() )
-    , m_comment( QString( "" ) )
+    , m_comment( QStringLiteral( "" ) )
     , m_source( source )
 {
     QUrlQuery query;

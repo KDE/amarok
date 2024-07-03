@@ -108,7 +108,7 @@ void BookmarkGroup::save()
         //insert new
         QString query = QStringLiteral("INSERT INTO bookmark_groups ( parent_id, name, description, custom) VALUES ( %1, '%2', '%3', '%4' );");
         query = query.arg( QString::number( parentId ), m_name, m_description, m_customType );
-        m_dbId = StorageManager::instance()->sqlStorage()->insert( query, nullptr );
+        m_dbId = StorageManager::instance()->sqlStorage()->insert( query, QString() );
 
     }
 }

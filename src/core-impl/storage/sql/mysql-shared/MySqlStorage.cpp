@@ -113,7 +113,7 @@ QStringList MySqlStorage::query( const QString& statement )
         return values;
     }
 
-    int res = mysql_query( m_db, statement.toUtf8() ); 
+    int res = mysql_query( m_db, statement.toUtf8().constData() );
     
     if( res )
     {
@@ -166,7 +166,7 @@ int MySqlStorage::insert( const QString& statement, const QString& /* table */ )
         return 0;
     }
 
-    int res = mysql_query( m_db, statement.toUtf8() ); 
+    int res = mysql_query( m_db, statement.toUtf8().constData() );
     if( res )
     {
         reportError( statement );
@@ -294,13 +294,13 @@ bool
 MySqlStorage::sharedInit( const QString &databaseName )
 {
     QMutexLocker locker( &m_mutex );
-    if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8'" ).toUtf8() ) )
+    if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8'" ).toUtf8().constData() ) )
         reportError( QStringLiteral("SET NAMES 'utf8' died") );
-    if( mysql_query( m_db, QStringLiteral( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
+    if( mysql_query( m_db, QStringLiteral( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8().constData() ) )
         reportError( QStringLiteral( "Could not create %1 database" ).arg( databaseName ) );
-    if( mysql_query( m_db, QStringLiteral( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
+    if( mysql_query( m_db, QStringLiteral( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8().constData() ) )
         reportError( QStringLiteral("Could not alter database charset/collation") );
-    if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( databaseName ).toUtf8() ) )
+    if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( databaseName ).toUtf8().constData() ) )
     {
         reportError( QStringLiteral("Could not select database") );
         return false; // this error is fatal

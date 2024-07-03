@@ -79,10 +79,10 @@ public:
 Q_SIGNALS:
     void minFreqChanged();
     void maxFreqChanged();
-    void scopeSizeChanged( uint );
+    void scopeSizeChanged( int );
     void windowFunctionChanged( WindowFunction );
     void sampleSizeChanged( uint );
-    void calculateExpFactorNeeded( qreal, qreal, uint );
+    void calculateExpFactorNeeded( qreal, qreal, int );
 
 protected:
     Base( QQuickItem* );

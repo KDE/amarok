@@ -587,7 +587,7 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
     QRegularExpression special( QStringLiteral("([+\\-!(){}\\[\\]\\^\"~*?:\\\\]|&&|\\|\\|)") );
     QString escape( QStringLiteral("\\\\1") );
     // We use fuzzy search to bypass typos and small mistakes.
-    QRegularExpression endOfWord( "([a-zA-Z0-9])(\\s|$)" );
+    QRegularExpression endOfWord( QStringLiteral("([a-zA-Z0-9])(\\s|$)") );
     QString fuzzy( QStringLiteral("\\1~\\2") );
     /*
      * The query results in:

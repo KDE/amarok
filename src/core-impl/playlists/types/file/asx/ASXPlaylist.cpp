@@ -62,8 +62,8 @@ ASXPlaylist::processContent( QTextStream &stream )
     while ( ( index = data.indexOf( tagPattern, index ) ) != -1 )
     {
         QRegularExpressionMatch tagMatch = tagPattern.match( data, index );
-        QString original = tagMatch.captured( 1 ).toLocal8Bit();
-        QString tagReplacement = tagMatch.captured( 1 ).toLower().toLocal8Bit();
+        QString original = tagMatch.captured( 1 );
+        QString tagReplacement = tagMatch.captured( 1 ).toLower();
         if ( original.indexOf( urlPattern, 0 ) != -1  )
         {
             QRegularExpressionMatch urlMatch = urlPattern.match( original, 0 );
@@ -72,8 +72,8 @@ ASXPlaylist::processContent( QTextStream &stream )
             url.replace( QRegularExpression( QLatin1String("&(?!amp;|quot;|apos;|lt;|gt;)") ), QStringLiteral("&amp;") );
 
             QString urlReplacement = urlMatch.captured( 1 ) % url % QStringLiteral("\"");
-            tagReplacement.replace( urlMatch.captured(0).toLocal8Bit().toLower(),
-                                    urlReplacement.toLocal8Bit() );
+            tagReplacement.replace( urlMatch.captured(0).toLower(),
+                                    urlReplacement );
         }
         data.replace( original, tagReplacement );
         index += tagMatch.capturedLength();

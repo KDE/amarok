@@ -451,13 +451,13 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
         .replace( QRegularExpression( QStringLiteral("%b") ), albumName )
         .replace( QRegularExpression( QStringLiteral("%g") ), genreName );
         // check if it exists
-        uint32_t check_folder = subfolderNameToID(( *it ).toUtf8(), m_folders, parent_id );
+        uint32_t check_folder = subfolderNameToID(( *it ).toUtf8().constData(), m_folders, parent_id );
         // create if not exists (if requested)
         if ( check_folder == 0 )
         {
             if ( create )
             {
-                check_folder = createFolder(( *it ).toUtf8() , parent_id );
+                check_folder = createFolder(( *it ).toUtf8().constData() , parent_id );
                 if ( check_folder == 0 )
                 {
                     return 0;
@@ -489,7 +489,7 @@ MtpHandler::getDefaultParentId( void )
     // Otherwise look for a folder called "Music"
     else if ( m_folders != nullptr )
     {
-        parent_id = folderNameToID( qstrdup( QStringLiteral( "Music" ).toUtf8() ), m_folders );
+        parent_id = folderNameToID( qstrdup( QStringLiteral( "Music" ).toUtf8().constData() ), m_folders );
         if ( !parent_id )
         {
             debug() << "Parent folder could not be found. Going to use top level.";
@@ -617,7 +617,7 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
-    return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), nullptr, nullptr );
+    return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8().constData(), nullptr, nullptr );
 }
 
 int
@@ -695,7 +695,7 @@ MtpHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrack
 
 
 
-    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( srcTrack->playableUrl().path().toUtf8() ), m_mtpTrackHash.value( destTrack ),
+    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( srcTrack->playableUrl().path().toUtf8().constData() ), m_mtpTrackHash.value( destTrack ),
                                            nullptr, nullptr );
 
     debug() << "sent";
@@ -859,7 +859,7 @@ MtpHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, 
     // Make new playlist
 
     LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
-    metadata->name = qstrdup( name.toUtf8() );
+    metadata->name = qstrdup( name.toUtf8().constData() );
     const int trackCount = tracklist.count();
     if( trackCount > 0 )
     {
@@ -1112,19 +1112,19 @@ MtpHandler::usedCapacity() const
 void
 MtpHandler::libSetTitle( Meta::MediaDeviceTrackPtr& track, const QString& title )
 {
-    m_mtpTrackHash.value( track )->title = ( title.isEmpty() ? qstrdup( "" ) : qstrdup( title.toUtf8() ) );
+    m_mtpTrackHash.value( track )->title = ( title.isEmpty() ? qstrdup( "" ) : qstrdup( title.toUtf8().constData() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->title;
 }
 void
 MtpHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
 {
-    m_mtpTrackHash.value( track )->album = ( album.isEmpty() ? qstrdup( "" ) : qstrdup( album.toUtf8() ) );
+    m_mtpTrackHash.value( track )->album = ( album.isEmpty() ? qstrdup( "" ) : qstrdup( album.toUtf8().constData() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->album;
 }
 void
 MtpHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
 {
-    m_mtpTrackHash.value( track )->artist = ( artist.isEmpty() ? qstrdup( "" ) : qstrdup( artist.toUtf8() ) );
+    m_mtpTrackHash.value( track )->artist = ( artist.isEmpty() ? qstrdup( "" ) : qstrdup( artist.toUtf8().constData() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->artist;
 }
 
@@ -1139,13 +1139,13 @@ MtpHandler::libSetAlbumArtist( MediaDeviceTrackPtr &track, const QString &albumA
 void
 MtpHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
-    m_mtpTrackHash.value( track )->composer = ( composer.isEmpty() ? qstrdup( "" ) : qstrdup( composer.toUtf8() ) );
+    m_mtpTrackHash.value( track )->composer = ( composer.isEmpty() ? qstrdup( "" ) : qstrdup( composer.toUtf8().constData() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->composer;
 }
 void
 MtpHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
 {
-    m_mtpTrackHash.value( track )->genre = ( genre.isEmpty() ? qstrdup( "" ) : qstrdup( genre.toUtf8() ) );
+    m_mtpTrackHash.value( track )->genre = ( genre.isEmpty() ? qstrdup( "" ) : qstrdup( genre.toUtf8().constData() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->genre;
 }
 void
@@ -1155,7 +1155,7 @@ MtpHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
     {
         QString date;
         QTextStream( &date ) << year.toInt() << "0101T0000.0";
-        m_mtpTrackHash.value( track )->date = qstrdup( date.toUtf8() );
+        m_mtpTrackHash.value( track )->date = qstrdup( date.toUtf8().constData() );
     }
     else
         m_mtpTrackHash.value( track )->date = qstrdup( "00010101T0000.0" );
@@ -1277,7 +1277,7 @@ void
 MtpHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack )
 {
     if( !srcTrack->playableUrl().fileName().isEmpty() )
-        m_mtpTrackHash.value( destTrack )->filename = qstrdup( srcTrack->playableUrl().fileName().toUtf8() );
+        m_mtpTrackHash.value( destTrack )->filename = qstrdup( srcTrack->playableUrl().fileName().toUtf8().constData() );
 }
 
 void

@@ -153,7 +153,7 @@ Track::setTitle( const QString &newTitle )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->title );
-    m_track->title = g_strdup( newTitle.toUtf8() );
+    m_track->title = g_strdup( newTitle.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valTitle, newTitle );
 }
 
@@ -221,7 +221,7 @@ Track::setAlbum( const QString &newAlbum )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->album );
-    m_track->album = g_strdup( newAlbum.toUtf8() );
+    m_track->album = g_strdup( newAlbum.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valAlbum, newAlbum );
 }
 
@@ -230,7 +230,7 @@ Track::setAlbumArtist( const QString &newAlbumArtist )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->albumartist );
-    m_track->albumartist = g_strdup( newAlbumArtist.toUtf8() );
+    m_track->albumartist = g_strdup( newAlbumArtist.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valAlbumArtist, newAlbumArtist );
 }
 
@@ -291,7 +291,7 @@ Track::setArtist( const QString &newArtist )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->artist );
-    m_track->artist = g_strdup( newArtist.toUtf8() );
+    m_track->artist = g_strdup( newArtist.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valArtist, newArtist );
 }
 
@@ -307,7 +307,7 @@ Track::setComposer( const QString &newComposer )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->composer );
-    m_track->composer = g_strdup( newComposer.toUtf8() );
+    m_track->composer = g_strdup( newComposer.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valComposer, newComposer );
 }
 
@@ -323,7 +323,7 @@ Track::setGenre( const QString &newGenre )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->genre );
-    m_track->genre = g_strdup( newGenre.toUtf8() );
+    m_track->genre = g_strdup( newGenre.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valGenre, newGenre );
 }
 
@@ -366,7 +366,7 @@ void Track::setComment( const QString &newComment )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->comment );
-    m_track->comment = g_strdup( newComment.toUtf8() );
+    m_track->comment = g_strdup( newComment.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valComment, newComment );
 }
 
@@ -611,7 +611,7 @@ Track::setType( const QString &newType )
 {
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->filetype );
-    m_track->filetype = g_strdup( newType.toUtf8() );
+    m_track->filetype = g_strdup( newType.toUtf8().constData() );
     commitIfInNonBatchUpdate( Meta::valFormat, newType );
 }
 

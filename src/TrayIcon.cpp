@@ -57,7 +57,11 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     setStatus( KStatusNotifierItem::Active );
 
     // Remove the "Configure Amarok..." action, as it makes no sense in the tray menu
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    const QString preferences = QLatin1String(KStandardAction::name( KStandardAction::Preferences ));
+#else
     const QString preferences = KStandardAction::name( KStandardAction::Preferences );
+#endif
     contextMenu()->removeAction( ac->action( preferences ) );
 
     PERF_LOG( "Before adding actions" );

@@ -1256,7 +1256,7 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
         if( !countRs.isEmpty() && countRs.first().toInt() == 0 )
         {
             QString insert = QStringLiteral("INSERT INTO urls_labels(url,label) VALUES (%1,%2);");
-            m_collection->sqlStorage()->insert( insert.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ), "urls_labels" );
+            m_collection->sqlStorage()->insert( insert.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ), QStringLiteral("urls_labels") );
 
             if( m_labelsInCache )
             {
@@ -1294,7 +1294,7 @@ SqlTrack::removeLabel( const Meta::LabelPtr &label )
     }
     if( sqlLabel )
     {
-        QString query = "DELETE FROM urls_labels WHERE label = %2 and url = (SELECT url FROM tracks WHERE id = %1);";
+        QString query = QStringLiteral("DELETE FROM urls_labels WHERE label = %2 and url = (SELECT url FROM tracks WHERE id = %1);");
         m_collection->sqlStorage()->query( query.arg( QString::number( m_trackId ), QString::number( sqlLabel->id() ) ) );
         if( m_labelsInCache )
         {
@@ -1755,7 +1755,7 @@ SqlAlbum::removeImage()
                 QFile::remove( m_imagePath );
 
             // remove all cache images
-            QString key = md5sum( QString(), QString(), m_imagePath );
+            QString key = QLatin1String( md5sum( QString(), QString(), m_imagePath ) );
             QDir        cacheDir( Amarok::saveLocation( QStringLiteral("albumcovers/cache/") ) );
             QStringList cacheFilter;
             cacheFilter << QStringLiteral( "*@" ) + key;
@@ -1848,7 +1848,7 @@ SqlAlbum::largeDiskCachePath() const
         return QString();
 
     QDir largeCoverDir( Amarok::saveLocation( QStringLiteral("albumcovers/large/") ) );
-    const QString key = md5sum( artist, m_name, QString() );
+    const QString key = QLatin1String( md5sum( artist, m_name, QString() ) );
 
     if( !key.isEmpty() )
         return largeCoverDir.filePath( key );
@@ -1861,7 +1861,7 @@ SqlAlbum::scaledDiskCachePath( int size ) const
 {
     const QString widthKey = QString::number( size ) + QLatin1Char('@');
     QDir cacheCoverDir( Amarok::saveLocation( QStringLiteral("albumcovers/cache/") ) );
-    QString key = md5sum( QString(), QString(), m_imagePath );
+    QString key = QLatin1String( md5sum( QString(), QString(), m_imagePath ) );
 
     if( !cacheCoverDir.exists( widthKey + key ) )
     {
@@ -1875,11 +1875,11 @@ SqlAlbum::scaledDiskCachePath( int size ) const
         else
         {
             QString oldKey;
-            oldKey = md5sum( artist, m_name, m_imagePath );
+            oldKey = QLatin1String( md5sum( artist, m_name, m_imagePath ) );
             if( cacheCoverDir.exists( widthKey + oldKey ) )
                 cacheCoverDir.remove( widthKey + oldKey );
 
-            oldKey = md5sum( artist, m_name, QString() );
+            oldKey = QLatin1String( md5sum( artist, m_name, QString() ) );
             if( cacheCoverDir.exists( widthKey + oldKey ) )
                 cacheCoverDir.remove( widthKey + oldKey );
         }

@@ -364,7 +364,7 @@ int main( int argc, char *argv[] )
         // Check if an option for a running instance is set
         bool isSet = false;
         for( int i = 0; i < instanceOptions.size(); ++i )
-            if( parser.isSet( instanceOptions[ i ] ) )
+            if( parser.isSet( QLatin1String(instanceOptions[ i ]) ) )
                 isSet = true;
 
         if ( !isSet )

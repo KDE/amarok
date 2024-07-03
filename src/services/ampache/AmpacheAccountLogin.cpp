@@ -99,13 +99,13 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &dat
 
         QCryptographicHash sha256Hash( QCryptographicHash::Sha256 );
         sha256Hash.addData( m_password.toUtf8() );
-        QString hashedPassword = sha256Hash.result().toHex();
+        QString hashedPassword = QLatin1String(sha256Hash.result().toHex());
 
         QString rawHandshake = timestamp + hashedPassword;
         sha256Hash.reset();
         sha256Hash.addData( rawHandshake.toUtf8() );
 
-        passPhrase = sha256Hash.result().toHex();
+        passPhrase = QLatin1String(sha256Hash.result().toHex());
 
     }
     else
@@ -116,7 +116,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &dat
         QCryptographicHash md5Hash( QCryptographicHash::Md5 );
 
         md5Hash.addData( rawHandshake.toUtf8() );
-        passPhrase = md5Hash.result().toHex();
+        passPhrase = QLatin1String(md5Hash.result().toHex());
     }
 
     query.addQueryItem( QStringLiteral("timestamp"), timestamp );
