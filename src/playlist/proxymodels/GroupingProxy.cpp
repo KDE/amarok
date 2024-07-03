@@ -28,6 +28,7 @@
 #include "core/collections/Collection.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/support/MetaKeys.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/support/Debug.h"
@@ -306,7 +307,8 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                 if( track1->album()->prettyName().isEmpty() || track2->album()->prettyName().isEmpty() )
                     return false;
                 else
-                    return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
+                    return ( Meta::AlbumKey( track1->album() ) == Meta::AlbumKey( track2->album() ) )
+                        && ( track1->discNumber() == track2->discNumber() );
             }
             return false;
         case 1: //Artist
