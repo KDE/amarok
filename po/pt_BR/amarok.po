@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2021-06-20 14:10-0300\n"
 "Last-Translator: Thiago Masato Costa Sueto <herzenschein@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -2046,8 +2046,8 @@ msgstr "Vários artistas"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2078,8 +2078,8 @@ msgstr "Artista do álbum"
 msgid "Composer"
 msgstr "Compositor"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Gênero"
@@ -2095,7 +2095,7 @@ msgstr "Ano"
 msgid "Label"
 msgstr "Rótulo"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4436,8 +4436,8 @@ msgstr "Recarregar as tablaturas com o seguinte título e artista"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8040,190 +8040,6 @@ msgstr ""
 "Múltiplas coincidências ambíguas foram encontradas para <b><font color='red'>"
 "%1</font></b>, foi descartada."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> arquivo selecionado."
-msgstr[1] "<b>%1</b> arquivos selecionados."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Estes itens serão <b>apagados definitivamente</b> do seu disco rígido.</"
-"qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Estes itens serão movidos para a Lixeira.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Enviar para a Lixeira"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Prestes a excluir os arquivos selecionados"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Apagando arquivos"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Substituto do ícone, não na GUI"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Placeholder do método de apagamento, nunca mostrado ao usuário."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Lista dos arquivos que serão excluídos."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Essa é a lista dos itens que serão excluídos."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Placeholder para o número de arquivos, não na GUI"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Excluir arquivos em vez de movê-los para a Lixeira"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Se selecionada, os arquivos serão permanentemente removidos,\n"
-"ao invés de serem colocados na Lixeira"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Se esta opção estiver selecionada, os arquivos serão "
-"<b>permanentemente excluídos</b>, em vez de serem movidos para a Lixeira.</"
-"p>\n"
-"\n"
-"<p><em>Use está opção com cuidado</em>: A maioria dos sistemas de arquivos "
-"não consegue recuperar arquivos excluídos de maneira confiável.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Selecionar plugin para %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Configurar dispositivo de mídia"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Comando pré-&conexão:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Exemplo: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Defina aqui um comando para ser executado antes que o seu dispositivo de "
-"mídia seja conectado (por exemplo, um comando de montagem).\n"
-"%d será substituído pelo nó do dispositivo, %m pelo ponto de montagem.\n"
-"Comandos vazios não serão executados."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Comando pós-&desconexão:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Exemplo: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Defina aqui um comando para ser executado após o seu dispositivo de mídia "
-"ser desconectado (por exemplo, um comando de ejeção).\n"
-"%d será substituído pelo nó do dispositivo, %m pelo ponto de montagem.\n"
-"Comandos vazios não serão executados."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Converter antes de transferir para o dispositivo"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Converter para o formato preferido (%1) pelo dispositivo"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Sempre que possível"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Quando for necessário"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Remover arquivos convertidos após a transferência"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Para esta função, um script de \"Conversão\" tem que estar em execução"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8639,7 +8455,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Opções"
@@ -9387,61 +9202,6 @@ msgstr "Título desconhecido"
 #, kde-format
 msgid "Unknown year"
 msgstr "Ano desconhecido"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Transferir fila para o dispositivo"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Localização das músicas"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Suas músicas serão transferidas para:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Suas músicas podem ser agrupadas automaticamente\n"
-"de muitas maneiras diferentes. Cada grupo irá criar\n"
-"pastas baseadas nos critérios especificados.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Grupos"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Selecione o primeiro grupo:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Selecione o segundo grupo:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Selecione o terceiro grupo:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Converter espaços para underscores"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11488,12 +11248,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Layouts de lista de músicas"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Configurar layouts de lista de músicas..."
@@ -16273,16 +16033,6 @@ msgstr "Número de reproduções: %1"
 msgid "Last played: %1"
 msgstr "Última reprodução: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Clique para mais analisadores"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Visualizações"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16663,6 +16413,172 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "vazio"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> arquivo selecionado."
+#~ msgstr[1] "<b>%1</b> arquivos selecionados."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Estes itens serão <b>apagados definitivamente</b> do seu disco rígido."
+#~ "</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Estes itens serão movidos para a Lixeira.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Enviar para a Lixeira"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Prestes a excluir os arquivos selecionados"
+
+#~ msgid "Deleting files"
+#~ msgstr "Apagando arquivos"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Substituto do ícone, não na GUI"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Placeholder do método de apagamento, nunca mostrado ao usuário."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Lista dos arquivos que serão excluídos."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Essa é a lista dos itens que serão excluídos."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Placeholder para o número de arquivos, não na GUI"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Excluir arquivos em vez de movê-los para a Lixeira"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Se selecionada, os arquivos serão permanentemente removidos,\n"
+#~ "ao invés de serem colocados na Lixeira"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Se esta opção estiver selecionada, os arquivos serão "
+#~ "<b>permanentemente excluídos</b>, em vez de serem movidos para a Lixeira."
+#~ "</p>\n"
+#~ "\n"
+#~ "<p><em>Use está opção com cuidado</em>: A maioria dos sistemas de "
+#~ "arquivos não consegue recuperar arquivos excluídos de maneira confiável.</"
+#~ "p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Selecionar plugin para %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Configurar dispositivo de mídia"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Comando pré-&conexão:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Exemplo: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Defina aqui um comando para ser executado antes que o seu dispositivo de "
+#~ "mídia seja conectado (por exemplo, um comando de montagem).\n"
+#~ "%d será substituído pelo nó do dispositivo, %m pelo ponto de montagem.\n"
+#~ "Comandos vazios não serão executados."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Comando pós-&desconexão:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Exemplo: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Defina aqui um comando para ser executado após o seu dispositivo de mídia "
+#~ "ser desconectado (por exemplo, um comando de ejeção).\n"
+#~ "%d será substituído pelo nó do dispositivo, %m pelo ponto de montagem.\n"
+#~ "Comandos vazios não serão executados."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Converter antes de transferir para o dispositivo"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Converter para o formato preferido (%1) pelo dispositivo"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Sempre que possível"
+
+#~ msgid "When necessary"
+#~ msgstr "Quando for necessário"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Remover arquivos convertidos após a transferência"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Para esta função, um script de \"Conversão\" tem que estar em execução"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Transferir fila para o dispositivo"
+
+#~ msgid "Music Location"
+#~ msgstr "Localização das músicas"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Suas músicas serão transferidas para:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Suas músicas podem ser agrupadas automaticamente\n"
+#~ "de muitas maneiras diferentes. Cada grupo irá criar\n"
+#~ "pastas baseadas nos critérios especificados.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Grupos"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Selecione o primeiro grupo:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Selecione o segundo grupo:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Selecione o terceiro grupo:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Converter espaços para underscores"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Clique para mais analisadores"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Visualizações"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Obter dados do openDesktop.org para conhecer melhor a equipe"

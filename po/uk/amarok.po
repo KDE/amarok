@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-06-19 08:16+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
@@ -2037,8 +2037,8 @@ msgstr "Різні виконавці"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2069,8 +2069,8 @@ msgstr "Виконавець альбому"
 msgid "Composer"
 msgstr "Композитор"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Жанр"
@@ -2086,7 +2086,7 @@ msgstr "Рік"
 msgid "Label"
 msgstr "Надпис"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4449,8 +4449,8 @@ msgstr "Перезавантажити акорди з вказаною назв
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8204,190 +8204,6 @@ msgstr ""
 "Для <b><font color='red'>%1</font></b> було знайдено декілька неоднозначних "
 "відповідників, зайві відкинуто."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "вибрано <b>%1</b> файл."
-msgstr[1] "вибрано <b>%1</b> файли."
-msgstr[2] "вибрано <b>%1</b> файлів."
-msgstr[3] "вибрано <b>%1</b> файл."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Ці елементи будуть <b>назавжди вилучені</b> з вашого жорсткого диска.</"
-"qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Ці елементи будуть пересунуті у смітник.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Пересунути у смітник"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Зараз вибрані файли буде вилучено"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Вилучення файлів"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Шаблон заміни піктограм (не в графічному інтерфейсі)"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Шаблон заміни методу вилучення (невидимий для користувача)."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Список файлів, які зараз будуть вилучені."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Це список елементів, які зараз будуть вилучені."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Шаблон заміни для кількості файлів (не в графічному інтерфейсі)"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Вилучати файли замість пересування їх у смітник"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Якщо увімкнено, файли будуть вилучені назавжди, а не пересунуті в смітник"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Якщо цей параметр увімкнено, файли будуть не пересунуті в смітник, а "
-"<b>назавжди вилучені</b>.</p>\n"
-"\n"
-"<p><em>Використовуйте цей параметр з обачністю</em>: Більшість файлових "
-"систем не можуть гарантовано відновити вилучені файли.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Виберіть додаток для %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Налаштувати пристрій носія"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Команда пе&ред-з'єднанням:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Наприклад: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Тут вкажіть команду, яку потрібно виконати перед з'єднанням з вашим "
-"пристроєм (напр., команду монтування).\n"
-"%d буде замінено вузлом пристрою, %m - точкою підключення.\n"
-"Порожні команди не виконуються."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Команда пі&сля-роз'єднання:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Наприклад: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Тут вкажіть команду, яку потрібно виконати після від'єднання від вашого "
-"пристрою (напр., команду виштовхування).\n"
-"%d буде замінено вузлом пристрою, %m - точкою підключення.\n"
-"Порожні команди не виконуються."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "Пере&кодувати перед перенесенням до пристрою"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Перекодувати в бажаний формат (%1) для пристрою"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Коли можливо"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Коли потрібно"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Вилучити перекодовані файли після перенесення"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Для цієї функціональності повинен виконуватись скрипт типу «Transcode»"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8800,7 +8616,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Параметри"
@@ -9552,61 +9367,6 @@ msgstr "Невідома назва"
 #, kde-format
 msgid "Unknown year"
 msgstr "Невідомий рік"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Перенести чергу на пристрій"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Адреса музики"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Вашу музику буде перенесено на:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Вашу музику можна автоматично згрупувати\n"
-"по категоріях. Кожне групування створить\n"
-"каталоги на основі вказаних критеріїв.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Групування"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Виберіть перше групування:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Виберіть друге групування:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Виберіть третє групування:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Перетворити пробіли на «_»"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11653,12 +11413,12 @@ msgstr ""
 "%0\n"
 "кГц"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Компонування списків композицій"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Компонування списку композицій…"
@@ -16526,16 +16286,6 @@ msgstr "К-ть відтворень: %1"
 msgid "Last played: %1"
 msgstr "Останнє відтворення: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Інші аналізатори"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Візуалізації"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16929,6 +16679,171 @@ msgstr "Виконавець: %1"
 #, kde-format
 msgid "empty"
 msgstr "порожньо"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "вибрано <b>%1</b> файл."
+#~ msgstr[1] "вибрано <b>%1</b> файли."
+#~ msgstr[2] "вибрано <b>%1</b> файлів."
+#~ msgstr[3] "вибрано <b>%1</b> файл."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Ці елементи будуть <b>назавжди вилучені</b> з вашого жорсткого диска."
+#~ "</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Ці елементи будуть пересунуті у смітник.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Пересунути у смітник"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Зараз вибрані файли буде вилучено"
+
+#~ msgid "Deleting files"
+#~ msgstr "Вилучення файлів"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Шаблон заміни піктограм (не в графічному інтерфейсі)"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Шаблон заміни методу вилучення (невидимий для користувача)."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Список файлів, які зараз будуть вилучені."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Це список елементів, які зараз будуть вилучені."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Шаблон заміни для кількості файлів (не в графічному інтерфейсі)"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Вилучати файли замість пересування їх у смітник"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Якщо увімкнено, файли будуть вилучені назавжди, а не пересунуті в смітник"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Якщо цей параметр увімкнено, файли будуть не пересунуті в смітник, "
+#~ "а <b>назавжди вилучені</b>.</p>\n"
+#~ "\n"
+#~ "<p><em>Використовуйте цей параметр з обачністю</em>: Більшість файлових "
+#~ "систем не можуть гарантовано відновити вилучені файли.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Виберіть додаток для %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Налаштувати пристрій носія"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Команда пе&ред-з'єднанням:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Наприклад: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Тут вкажіть команду, яку потрібно виконати перед з'єднанням з вашим "
+#~ "пристроєм (напр., команду монтування).\n"
+#~ "%d буде замінено вузлом пристрою, %m - точкою підключення.\n"
+#~ "Порожні команди не виконуються."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Команда пі&сля-роз'єднання:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Наприклад: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Тут вкажіть команду, яку потрібно виконати після від'єднання від вашого "
+#~ "пристрою (напр., команду виштовхування).\n"
+#~ "%d буде замінено вузлом пристрою, %m - точкою підключення.\n"
+#~ "Порожні команди не виконуються."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "Пере&кодувати перед перенесенням до пристрою"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Перекодувати в бажаний формат (%1) для пристрою"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Коли можливо"
+
+#~ msgid "When necessary"
+#~ msgstr "Коли потрібно"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Вилучити перекодовані файли після перенесення"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Для цієї функціональності повинен виконуватись скрипт типу «Transcode»"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Перенести чергу на пристрій"
+
+#~ msgid "Music Location"
+#~ msgstr "Адреса музики"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Вашу музику буде перенесено на:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Вашу музику можна автоматично згрупувати\n"
+#~ "по категоріях. Кожне групування створить\n"
+#~ "каталоги на основі вказаних критеріїв.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Групування"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Виберіть перше групування:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Виберіть друге групування:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Виберіть третє групування:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Перетворити пробіли на «_»"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Інші аналізатори"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Візуалізації"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Отримати дані з openDesktop.org, щоб дізнатися більше про команду"

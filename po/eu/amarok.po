@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -2042,8 +2042,8 @@ msgstr "Hainbat artista"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2074,8 +2074,8 @@ msgstr "Albuma Artista"
 msgid "Composer"
 msgstr "Konpositorea"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Generoa"
@@ -2091,7 +2091,7 @@ msgstr "Urtea"
 msgid "Label"
 msgstr "Etiketa"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4416,8 +4416,8 @@ msgstr "Birkargatu fitxak honako titulu eta artistarekin"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8055,190 +8055,6 @@ msgstr ""
 "<b><font color='red'>%1</font></b> URLarekin bat datozen aurkitutako hainbat "
 "anbiguotasun baztertu egin dira."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "Fitxategi <b>1</b> hautatuta."
-msgstr[1] "<b>%1</b> fitxategi hautatuta."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Elementu hauek <b>betirako ezabatuko</b> dira disko gogorretik.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Elementu hauek Zakarrontzira botako dira.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Bota zakarrontzira"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Hautatutako fitxategiak ezabatzera doa"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Fitxategiak ezabatzen"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ikonoaren leku-marka, interfazean ez"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr ""
-"Ezabatzeko metodoaren leku-marka, ez zaio erabiltzaileari inoiz erakusten."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Ezabatuko diren fitxategien zerrenda."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Ezabatuko diren elementuen zerrenda da."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Fitxategi-kopuruaren leku-marka, interfazean ez"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Ezabatu fitxategiak zakarrontzira bota ordez"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Aktibatuta badago, fitxategiak betirako ezabatu egingo dira zakarrontziko "
-"direktoriora bota ordez."
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Aktibatuta badago, fitxategiak betirako ezabatu egingo dira "
-"zakarrontziko direktoriora bota ordez.</p>\n"
-"\n"
-"<p><em>Erabili aukera hau kontu handiarekin</em>: fitxategi-sistema gehienek "
-"ezin izaten dute fidagarritasunez berreskuratu ezabatutako fitxategiak.</p></"
-"qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Hautatu plugina %1(e)ntzat"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Konfiguratu multimediako gailua"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Aurrekonexioko komandoa:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Adibidea: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Ezarri komandoa zure gailuarekin konektatu aurretik exekutatzeko (adib. "
-"'mount' komandoa).\n"
-"%d gailuaren nodoarekin ordezten da, %m muntatze-puntuarekin.\n"
-"Komando hutsak ez dira exekutatuko."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "&Deskonexio ondorengo komandoa:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Adibidea: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Ezarri komandoa zure gailuarekin konektatu aurretik exekutatzeko (adib. "
-"'mount' komandoa).\n"
-"%d gailuaren nodoarekin ordezten da, %m muntatze-puntuarekin.\n"
-"Komando hutsak ez dira exekutatuko."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Kodetu gailura transferitu aurretik"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Kodetu hobetsitako formatura (%1) gailuarentzako"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Ahal denean"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Beharrezkoa denean"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Kendu kodetutako fitxategiak transferitu ondoren"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "\"Transcode\" script mota exekutatu behar da eginbide honentzako"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8652,7 +8468,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Aukerak"
@@ -9400,61 +9215,6 @@ msgstr "Titulu ezezaguna"
 #, kde-format
 msgid "Unknown year"
 msgstr "Urte ezezaguna"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Transferitu ilara gailura"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Musikaren kokalekua"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Musika hona transferituko da:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Zure musika taldeetan automatikoki elkartuta eduki\n"
-"ditzakezu hainbat eratan. Talde bakoitzak direktorioak\n"
-"sortuko ditu irizpide zehatzetan oinarrituz.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Taldekatzea"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Hautatu lehenengo taldekatzea:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Hautatu bigarrengo taldekatzea:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Hautatu hirugarrengo taldekatzea:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Bihurtu zuriuneak azpimarretan"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11517,12 +11277,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Zerrendaren diseinuak"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Konfiguratu zerrendaren diseinuak..."
@@ -16314,16 +16074,6 @@ msgstr "Erreprodukzio kopurua: %1"
 msgid "Last played: %1"
 msgstr "Erreproduzitutako azkena: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Egin klik analizatzaile gehiagorako"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Bisualizazioak"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16703,6 +16453,170 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "hutsik"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "Fitxategi <b>1</b> hautatuta."
+#~ msgstr[1] "<b>%1</b> fitxategi hautatuta."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Elementu hauek <b>betirako ezabatuko</b> dira disko gogorretik.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Elementu hauek Zakarrontzira botako dira.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Bota zakarrontzira"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Hautatutako fitxategiak ezabatzera doa"
+
+#~ msgid "Deleting files"
+#~ msgstr "Fitxategiak ezabatzen"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ikonoaren leku-marka, interfazean ez"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr ""
+#~ "Ezabatzeko metodoaren leku-marka, ez zaio erabiltzaileari inoiz erakusten."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Ezabatuko diren fitxategien zerrenda."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Ezabatuko diren elementuen zerrenda da."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Fitxategi-kopuruaren leku-marka, interfazean ez"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Ezabatu fitxategiak zakarrontzira bota ordez"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Aktibatuta badago, fitxategiak betirako ezabatu egingo dira zakarrontziko "
+#~ "direktoriora bota ordez."
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Aktibatuta badago, fitxategiak betirako ezabatu egingo dira "
+#~ "zakarrontziko direktoriora bota ordez.</p>\n"
+#~ "\n"
+#~ "<p><em>Erabili aukera hau kontu handiarekin</em>: fitxategi-sistema "
+#~ "gehienek ezin izaten dute fidagarritasunez berreskuratu ezabatutako "
+#~ "fitxategiak.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Hautatu plugina %1(e)ntzat"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Konfiguratu multimediako gailua"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Aurrekonexioko komandoa:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Adibidea: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Ezarri komandoa zure gailuarekin konektatu aurretik exekutatzeko (adib. "
+#~ "'mount' komandoa).\n"
+#~ "%d gailuaren nodoarekin ordezten da, %m muntatze-puntuarekin.\n"
+#~ "Komando hutsak ez dira exekutatuko."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "&Deskonexio ondorengo komandoa:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Adibidea: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Ezarri komandoa zure gailuarekin konektatu aurretik exekutatzeko (adib. "
+#~ "'mount' komandoa).\n"
+#~ "%d gailuaren nodoarekin ordezten da, %m muntatze-puntuarekin.\n"
+#~ "Komando hutsak ez dira exekutatuko."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Kodetu gailura transferitu aurretik"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Kodetu hobetsitako formatura (%1) gailuarentzako"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Ahal denean"
+
+#~ msgid "When necessary"
+#~ msgstr "Beharrezkoa denean"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Kendu kodetutako fitxategiak transferitu ondoren"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "\"Transcode\" script mota exekutatu behar da eginbide honentzako"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Transferitu ilara gailura"
+
+#~ msgid "Music Location"
+#~ msgstr "Musikaren kokalekua"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Musika hona transferituko da:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Zure musika taldeetan automatikoki elkartuta eduki\n"
+#~ "ditzakezu hainbat eratan. Talde bakoitzak direktorioak\n"
+#~ "sortuko ditu irizpide zehatzetan oinarrituz.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Taldekatzea"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Hautatu lehenengo taldekatzea:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Hautatu bigarrengo taldekatzea:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Hautatu hirugarrengo taldekatzea:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Bihurtu zuriuneak azpimarretan"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Egin klik analizatzaile gehiagorako"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Bisualizazioak"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Lortu datuak «openDesktop.org»etik taldeari buruz gehiago jakiteko"

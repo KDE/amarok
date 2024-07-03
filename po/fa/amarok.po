@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2012-01-25 09:17+0330\n"
 "Last-Translator: Mohammad Reza Mirdamadi <mohi@ubuntu.ir>\n"
 "Language-Team: Farsi (Persian) <>\n"
@@ -1984,8 +1984,8 @@ msgstr "هنرمندان مختلف"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2017,8 +2017,8 @@ msgstr "هنرمند آلبوم"
 msgid "Composer"
 msgstr "مؤلف"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "نوع"
@@ -2034,7 +2034,7 @@ msgstr "سال"
 msgid "Label"
 msgstr "برچسب"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4364,8 +4364,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7826,187 +7826,6 @@ msgid ""
 "been discarded."
 msgstr ""
 
-#: dialogs/deletedialog.cpp:63
-#, fuzzy, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>%1</b> پرونده، برگزیده شد."
-msgstr[1] ""
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>این فقره‌ها<b>به طور دائم</b>از دیسک سختتان حذف می‌شود.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>این فقره‌ها به لاوک زباله حرکت داده می‌شوند.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&ارسال به زباله‌"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "درحال حذف پرونده‌های برگزیده"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "حذف پرونده‌ها"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "جانگهدار شمایل، نه در ونک"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "جانگهدار روش حذف، هرگز برای کاربر نمایش داده نشود."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "فهرست پرونده‌هایی که در شرف حذف هستند."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "این فهرست فقره‌هایی است که در شرف حذف هستند."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "جانگهدار برای تعدادی از پرونده‌ها، نه در ونک"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&حذف پرونده‌ها به جای حرکت دادن آنها به زباله‌"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"اگر علامت زده شود، پرونده‌ها به جای این که در لاوک زباله جای داده شوند، به "
-"طور دائم حذف می‌شوند"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>اگر این جعبه علامت زده شود، پرونده‌ها<b>به جای این که در لاوک زباله "
-"جای داده شوند</b>به طور دائم حذف می‌شوند.</p>\n"
-"\n"
-"<p><em>از این گزینه با احتیاط استفاده کنید</em>: اغلب سیستمهای پرونده قادر "
-"به بازگرداندن موثق پرونده‌های حذف‌شده نمی‌باشند.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "پیکربندی دستگاه رسانه"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "فرمان &پیش‌اتصال:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "مثال: سوار کردن %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"یک فرمان تنظیم کنید تا پیش از اتصال به دستگاه شما )مثلاً یک فرمان سوار "
-"کردن( در اینجا اجرا شود.\n"
-"%d با گره دستگاه، %m با نقطه سوار شدن جایگزین می‌شود.\n"
-"فرمانهای خالی اجرا نمی‌شوند."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "فرمان &پس قطع:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "مثال: پس زدن %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"یک فرمان تنظیم کنید تا پس از قطع از دستگاه شما )مثلاً یک فرمان پس زدن( در "
-"اینجا اجرا شود.\n"
-"%d با گره دستگاه، %m با نقطه سوار کردن جایگزین می‌شود.\n"
-"فرمانهای خالی اجرا نمی‌شوند."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&ترارمز پیش از انتقال به دستگاه"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "ترارمز به قالب ارجح )%1( برای دستگاه"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "در صورت امکان"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "در صورت لزوم"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "حذف پرونده‌های ترارمزشده پس از انتقال"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "برای این ویژگی، یک دست‌نوشته از نوع »ترارمز« باید اجرا شود"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8407,7 +8226,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "گزینه‌ها"
@@ -9090,61 +8908,6 @@ msgstr "هنرمند ناشناخته"
 #| msgid "Unknown Genre"
 msgid "Unknown year"
 msgstr "نوع ناشناخته"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "انتقال صف به دستگاه"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "محل موسیقی"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"موسیقیتان انتقال می‌یابد به:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"می‌توانید موسیقیتان را به طور خودکار به\n"
-"روشهای مختلف گروه‌بندی شده داشته باشید. هر گروه‌بندی\n"
-"بر اساس معیارهای مشخص، فهرستهای راهنما ایجاد می‌کند.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "گروه‌بندیها"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "برگزیدن اولین گروه‌بندی:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "برگزیدن دومین گروه‌بندی:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "برگزیدن سومین گروه‌بندی:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "تبدیل فاصله‌ها به خطوط تیره زیرین"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11159,12 +10922,12 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr ""
@@ -15657,16 +15420,6 @@ msgstr "دفعات پخش: %1"
 msgid "Last played: %1"
 msgstr "آخرین پخش: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "فشار برای تحلیل‌کننده‌های بیشتر"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&تجسمات‌"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16052,6 +15805,165 @@ msgstr "هنرمند: %1"
 #, kde-format
 msgid "empty"
 msgstr "خالی"
+
+#, fuzzy
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>%1</b> پرونده، برگزیده شد."
+#~ msgstr[1] ""
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt>این فقره‌ها<b>به طور دائم</b>از دیسک سختتان حذف می‌شود.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>این فقره‌ها به لاوک زباله حرکت داده می‌شوند.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&ارسال به زباله‌"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "درحال حذف پرونده‌های برگزیده"
+
+#~ msgid "Deleting files"
+#~ msgstr "حذف پرونده‌ها"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "جانگهدار شمایل، نه در ونک"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "جانگهدار روش حذف، هرگز برای کاربر نمایش داده نشود."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "فهرست پرونده‌هایی که در شرف حذف هستند."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "این فهرست فقره‌هایی است که در شرف حذف هستند."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "جانگهدار برای تعدادی از پرونده‌ها، نه در ونک"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&حذف پرونده‌ها به جای حرکت دادن آنها به زباله‌"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "اگر علامت زده شود، پرونده‌ها به جای این که در لاوک زباله جای داده شوند، به "
+#~ "طور دائم حذف می‌شوند"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>اگر این جعبه علامت زده شود، پرونده‌ها<b>به جای این که در لاوک زباله "
+#~ "جای داده شوند</b>به طور دائم حذف می‌شوند.</p>\n"
+#~ "\n"
+#~ "<p><em>از این گزینه با احتیاط استفاده کنید</em>: اغلب سیستمهای پرونده "
+#~ "قادر به بازگرداندن موثق پرونده‌های حذف‌شده نمی‌باشند.</p></qt>"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "پیکربندی دستگاه رسانه"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "فرمان &پیش‌اتصال:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "مثال: سوار کردن %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "یک فرمان تنظیم کنید تا پیش از اتصال به دستگاه شما )مثلاً یک فرمان سوار "
+#~ "کردن( در اینجا اجرا شود.\n"
+#~ "%d با گره دستگاه، %m با نقطه سوار شدن جایگزین می‌شود.\n"
+#~ "فرمانهای خالی اجرا نمی‌شوند."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "فرمان &پس قطع:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "مثال: پس زدن %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "یک فرمان تنظیم کنید تا پس از قطع از دستگاه شما )مثلاً یک فرمان پس زدن( در "
+#~ "اینجا اجرا شود.\n"
+#~ "%d با گره دستگاه، %m با نقطه سوار کردن جایگزین می‌شود.\n"
+#~ "فرمانهای خالی اجرا نمی‌شوند."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&ترارمز پیش از انتقال به دستگاه"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "ترارمز به قالب ارجح )%1( برای دستگاه"
+
+#~ msgid "Whenever possible"
+#~ msgstr "در صورت امکان"
+
+#~ msgid "When necessary"
+#~ msgstr "در صورت لزوم"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "حذف پرونده‌های ترارمزشده پس از انتقال"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "برای این ویژگی، یک دست‌نوشته از نوع »ترارمز« باید اجرا شود"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "انتقال صف به دستگاه"
+
+#~ msgid "Music Location"
+#~ msgstr "محل موسیقی"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "موسیقیتان انتقال می‌یابد به:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "می‌توانید موسیقیتان را به طور خودکار به\n"
+#~ "روشهای مختلف گروه‌بندی شده داشته باشید. هر گروه‌بندی\n"
+#~ "بر اساس معیارهای مشخص، فهرستهای راهنما ایجاد می‌کند.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "گروه‌بندیها"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "برگزیدن اولین گروه‌بندی:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "برگزیدن دومین گروه‌بندی:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "برگزیدن سومین گروه‌بندی:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "تبدیل فاصله‌ها به خطوط تیره زیرین"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "فشار برای تحلیل‌کننده‌های بیشتر"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&تجسمات‌"
 
 #~ msgid "Network error"
 #~ msgstr "خطای شبکه"

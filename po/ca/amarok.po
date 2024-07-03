@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-06-19 10:56+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -2039,8 +2039,8 @@ msgstr "Artistes diversos"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2071,8 +2071,8 @@ msgstr "Artista de l'àlbum"
 msgid "Composer"
 msgstr "Compositor"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Gènere"
@@ -2088,7 +2088,7 @@ msgstr "Any"
 msgid "Label"
 msgstr "Etiqueta"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4430,8 +4430,8 @@ msgstr "Recarrega les tabulatures pel títol i artista següent"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8039,191 +8039,6 @@ msgstr ""
 "S'han trobat múltiples coincidències ambigües per a <b><font color='red'>%1</"
 "font></b>, es descarta."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "S'ha seleccionat <b>1</b> fitxer."
-msgstr[1] "S'han seleccionat <b>%1</b> fitxers."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Aquests elements se <b>suprimiran permanentment</b> del disc dur</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Aquests elements es mouran a la Paperera.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Llença a la paperera"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Esteu a punt de suprimir els fitxers seleccionats"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "S'estan suprimint els fitxers"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Lloc de reserva d'icona, no es troba a l'IGU"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr ""
-"Lloc de reserva per a mètode de supressió, no es mostra mai a l'usuari."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Llista dels fitxers que estan a punt de ser suprimits."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Aquesta és la llista dels elements que estan a punt de ser suprimits."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Lloc de reserva per al nombre de fitxers, no està a l'IGU"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Suprimeix els fitxers en lloc de llençar-los a la paperera"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Si està activat, els fitxers s'eliminaran definitivament en comptes de "
-"llençar-los a la paperera"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Si aquesta casella està activada, els fitxers s'<b>eliminaran "
-"definitivament</b> en comptes de llençar-los a la paperera.</p>\n"
-"\n"
-"<p><em>Utilitzeu aquesta opció amb cautela</em>: La majoria dels sistemes de "
-"fitxers són incapaços de recuperar un fitxer suprimit.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Seleccioneu el connector per a %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Configura el dispositiu de suports"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Ordre de preconnexió:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Exemple: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Establiu aquí una ordre a executar just abans de connectar-se amb el "
-"dispositiu (p. ex. una ordre «mount»).\n"
-"%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
-"Una ordre buida no s'executarà."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Ordre de post&desconnexió:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Exemple: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Establiu aquí una ordre a executar just després de desconnectar-se del "
-"dispositiu (p. ex. una ordre «eject»).\n"
-"%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
-"Una ordre buida no s'executarà."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Transcodifica abans de transferir al dispositiu"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Transcodifica al format preferit (%1) pel dispositiu"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Sempre que sigui possible"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Quan sigui necessari"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Elimina els fitxers transcodificats després de transferir"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr ""
-"Per a aquesta funcionalitat, s'ha d'estar executant un script del tipus "
-"«transcodificar»"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8637,7 +8452,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Opcions"
@@ -9388,61 +9202,6 @@ msgstr "Títol desconegut"
 #, kde-format
 msgid "Unknown year"
 msgstr "Any desconegut"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Transfereix la cua al dispositiu"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Ubicació de la música"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"La seva música es transferirà a:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Podeu tenir la vostra música agrupada automàticament\n"
-"en una gran varietat de maneres. Cada agrupació\n"
-"crearà directoris basant-se en un cert criteri.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Agrupaments"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Seleccioneu la primera agrupació:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Seleccioneu la segona agrupació:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Seleccioneu la tercera agrupació:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Converteix els espais en caràcters de subratllat"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11488,12 +11247,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Formats de llista de reproducció"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Configura els formats de la llista de reproducció..."
@@ -16281,16 +16040,6 @@ msgstr "Nombre de reproduccions: %1"
 msgid "Last played: %1"
 msgstr "Escoltada per darrera vegada: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Feu clic per a més analitzadors"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Visualitzacions"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16672,6 +16421,172 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "S'ha seleccionat <b>1</b> fitxer."
+#~ msgstr[1] "S'han seleccionat <b>%1</b> fitxers."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Aquests elements se <b>suprimiran permanentment</b> del disc dur</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Aquests elements es mouran a la Paperera.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Llença a la paperera"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Esteu a punt de suprimir els fitxers seleccionats"
+
+#~ msgid "Deleting files"
+#~ msgstr "S'estan suprimint els fitxers"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Lloc de reserva d'icona, no es troba a l'IGU"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr ""
+#~ "Lloc de reserva per a mètode de supressió, no es mostra mai a l'usuari."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Llista dels fitxers que estan a punt de ser suprimits."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr ""
+#~ "Aquesta és la llista dels elements que estan a punt de ser suprimits."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Lloc de reserva per al nombre de fitxers, no està a l'IGU"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Suprimeix els fitxers en lloc de llençar-los a la paperera"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Si està activat, els fitxers s'eliminaran definitivament en comptes de "
+#~ "llençar-los a la paperera"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Si aquesta casella està activada, els fitxers s'<b>eliminaran "
+#~ "definitivament</b> en comptes de llençar-los a la paperera.</p>\n"
+#~ "\n"
+#~ "<p><em>Utilitzeu aquesta opció amb cautela</em>: La majoria dels sistemes "
+#~ "de fitxers són incapaços de recuperar un fitxer suprimit.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Seleccioneu el connector per a %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Configura el dispositiu de suports"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Ordre de preconnexió:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Exemple: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Establiu aquí una ordre a executar just abans de connectar-se amb el "
+#~ "dispositiu (p. ex. una ordre «mount»).\n"
+#~ "%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
+#~ "Una ordre buida no s'executarà."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Ordre de post&desconnexió:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Exemple: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Establiu aquí una ordre a executar just després de desconnectar-se del "
+#~ "dispositiu (p. ex. una ordre «eject»).\n"
+#~ "%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
+#~ "Una ordre buida no s'executarà."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Transcodifica abans de transferir al dispositiu"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Transcodifica al format preferit (%1) pel dispositiu"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Sempre que sigui possible"
+
+#~ msgid "When necessary"
+#~ msgstr "Quan sigui necessari"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Elimina els fitxers transcodificats després de transferir"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Per a aquesta funcionalitat, s'ha d'estar executant un script del tipus "
+#~ "«transcodificar»"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Transfereix la cua al dispositiu"
+
+#~ msgid "Music Location"
+#~ msgstr "Ubicació de la música"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "La seva música es transferirà a:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Podeu tenir la vostra música agrupada automàticament\n"
+#~ "en una gran varietat de maneres. Cada agrupació\n"
+#~ "crearà directoris basant-se en un cert criteri.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Agrupaments"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Seleccioneu la primera agrupació:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Seleccioneu la segona agrupació:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Seleccioneu la tercera agrupació:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Converteix els espais en caràcters de subratllat"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Feu clic per a més analitzadors"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Visualitzacions"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

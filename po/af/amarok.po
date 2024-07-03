@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2010-01-30 14:30+0000\n"
 "Last-Translator: Emile Joubert <emile.joubert@gmail.com>\n"
 "Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
@@ -2058,8 +2058,8 @@ msgstr "Verskeie Kunstenaars"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2091,8 +2091,8 @@ msgstr "Album Kunstenaar"
 msgid "Composer"
 msgstr "Komponis"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
@@ -2108,7 +2108,7 @@ msgstr "Jaar"
 msgid "Label"
 msgstr "Etiket"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4575,8 +4575,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8285,189 +8285,6 @@ msgstr ""
 "Vele dubbelsinnige pasmaats vir <b><font color='red'>%1</font></b> gevind en "
 "verwerp"
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> lêer gekies."
-msgstr[1] "<b>%1</b> lêers gekies."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Hierdie items sal <b>permanent geskrap</b> word van jou hardeskyf.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Hierdie items sal na die Asblik geskuif word.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Stuur na die Asblik"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Op die punt om geselekteerde lêers uit te vee"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Skrap lêers"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ikoon Plekhouer - nie in GUI nie"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Skrap-metode plekhouer - onsigbaar vir gebruiker."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Lys lêers wat geskrap gaan word."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Hierdie is die lys van items wat nou geskrap gaan word."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Plekhouer vir die aantal lêers - nie in GUI nie"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "Skrap lêers i.p.v. om na die asblik te skuif"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Indien gemerk, sal die lêers onherroepbaar uitgevee word i.p.v. om hulle in "
-"die Asblik te plaas."
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>As hierdie blokkie gemerk is, sal die lêers <b>onherroepbaar geskrap</"
-"b> word, in plaas daarvan om hulle na die Asblik te skuif.</p>\n"
-"\n"
-"<p><em>Gebruik hierdie opsie oordeelkundig</em>: Meeste lêerstelsels is nie "
-"in staat om lêers betroubaar te ontskrap nie.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Kies Inprop vir %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Stel Media Toestel Op"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Voor-koppel opdrag:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Voorbeeld: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Stel 'n opdrag hier op wat uitgevoer moet word om aan die toestel te "
-"koppel.\n"
-"%d sal met die toestel node vervang word en %m met die gids waar die toestel "
-"gekoppel moet word.\n"
-"Leë opdragte sal nie uitgevoer word nie."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Na-ontkoppel opdrag:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Voorbeeld: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Stel 'n opdrag hier op wat uitgevoer moet word nadat die toestel ontkoppel "
-"is (bv. 'n uitskiet ('eject') opdrag).\n"
-"%d word met die toestel node vervang, %m met hegpunt ('mount point').\n"
-"Leë opdragte sal nie uitgevoer word nie."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "Transkodeer voor oordrag na die toestel"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Transkodeer na die toestel se voorkeur formaat (%1)"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Indien moontlik"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Indien nodig"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Verwyder getranskodeerde lêers na oordrag"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Vir hierdie kenmerk moet 'n skrip van tipe \"Transkodeer\" loop"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
@@ -8882,7 +8699,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Opsies"
@@ -9714,61 +9530,6 @@ msgstr "Onbekende Kunstenaar"
 #| msgid "Unknown Genre"
 msgid "Unknown year"
 msgstr "Onbekende Genre"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Wagtou Oordra na Toestel"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Musiek Ligging"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Jou musiek sal oorgedra word na:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Jy kan jou musiek outomaties op 'n verskeidenheid van\n"
-"maniere groepeer. Elke groepering sal gidse skep\n"
-"gebaseer is op die gespesifiseerde kriteria.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Groeperings"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Kies eerste groepering:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Kies die tweede groepering:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Kies derde groepering:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Vervang spasies met onderstrepies (_)"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11859,12 +11620,12 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Speellys Uitlegte"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, fuzzy, kde-format
 #| msgid "Configure playlist layouts..."
 msgid "Configure Playlist Layouts..."
@@ -16784,16 +16545,6 @@ msgstr "Speel telling"
 msgid "Last played: %1"
 msgstr "Laas gespeel"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Kliek vir nog analiseerders"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "Visualiserings"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -17209,6 +16960,170 @@ msgstr "Kunstenaar \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> lêer gekies."
+#~ msgstr[1] "<b>%1</b> lêers gekies."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Hierdie items sal <b>permanent geskrap</b> word van jou hardeskyf.</"
+#~ "qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Hierdie items sal na die Asblik geskuif word.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Stuur na die Asblik"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Op die punt om geselekteerde lêers uit te vee"
+
+#~ msgid "Deleting files"
+#~ msgstr "Skrap lêers"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ikoon Plekhouer - nie in GUI nie"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Skrap-metode plekhouer - onsigbaar vir gebruiker."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Lys lêers wat geskrap gaan word."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Hierdie is die lys van items wat nou geskrap gaan word."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Plekhouer vir die aantal lêers - nie in GUI nie"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "Skrap lêers i.p.v. om na die asblik te skuif"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Indien gemerk, sal die lêers onherroepbaar uitgevee word i.p.v. om hulle "
+#~ "in die Asblik te plaas."
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>As hierdie blokkie gemerk is, sal die lêers <b>onherroepbaar "
+#~ "geskrap</b> word, in plaas daarvan om hulle na die Asblik te skuif.</p>\n"
+#~ "\n"
+#~ "<p><em>Gebruik hierdie opsie oordeelkundig</em>: Meeste lêerstelsels is "
+#~ "nie in staat om lêers betroubaar te ontskrap nie.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Kies Inprop vir %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Stel Media Toestel Op"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Voor-koppel opdrag:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Voorbeeld: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Stel 'n opdrag hier op wat uitgevoer moet word om aan die toestel te "
+#~ "koppel.\n"
+#~ "%d sal met die toestel node vervang word en %m met die gids waar die "
+#~ "toestel gekoppel moet word.\n"
+#~ "Leë opdragte sal nie uitgevoer word nie."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Na-ontkoppel opdrag:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Voorbeeld: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Stel 'n opdrag hier op wat uitgevoer moet word nadat die toestel "
+#~ "ontkoppel is (bv. 'n uitskiet ('eject') opdrag).\n"
+#~ "%d word met die toestel node vervang, %m met hegpunt ('mount point').\n"
+#~ "Leë opdragte sal nie uitgevoer word nie."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "Transkodeer voor oordrag na die toestel"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Transkodeer na die toestel se voorkeur formaat (%1)"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Indien moontlik"
+
+#~ msgid "When necessary"
+#~ msgstr "Indien nodig"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Verwyder getranskodeerde lêers na oordrag"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Vir hierdie kenmerk moet 'n skrip van tipe \"Transkodeer\" loop"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Wagtou Oordra na Toestel"
+
+#~ msgid "Music Location"
+#~ msgstr "Musiek Ligging"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Jou musiek sal oorgedra word na:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Jy kan jou musiek outomaties op 'n verskeidenheid van\n"
+#~ "maniere groepeer. Elke groepering sal gidse skep\n"
+#~ "gebaseer is op die gespesifiseerde kriteria.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Groeperings"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Kies eerste groepering:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Kies die tweede groepering:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Kies derde groepering:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Vervang spasies met onderstrepies (_)"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Kliek vir nog analiseerders"
+
+#~ msgid "&Visualizations"
+#~ msgstr "Visualiserings"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

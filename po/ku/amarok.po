@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -2005,8 +2005,8 @@ msgstr "Hunermendên cur bi cur"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2038,8 +2038,8 @@ msgstr "Hunermendê Albumê "
 msgid "Composer"
 msgstr "Bestekar"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Cûre"
@@ -2055,7 +2055,7 @@ msgstr "Sal"
 msgid "Label"
 msgstr "Etîket"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4502,8 +4502,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8159,183 +8159,6 @@ msgid ""
 "been discarded."
 msgstr "<b><font color='red'>Çewtî:</font></b> %1"
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> pel hate hilbijartin."
-msgstr[1] "<b>%1</b> pel hatin hilbijartin."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Ew hêman dê <b>mayinde werin jê birin</b> jê dîska we ya sabît.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Ew hêman dê bên avêtina Çopê.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Bişîne Sergo"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Hema hema dê pelên hatine hilbijartin jê bibe"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Pel jê têne birin"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Cîgirê Îkonê, ne di GUI de"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Metoda jê birina cîgirê, qet nayê nîşandanê bikarhêner."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Lîsteya pelên dê werin jê birin."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Eve lîsteya hêmanên dê werin jê birin e."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Cîgir ji bo hejmara pelan, ne di GUI de"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "Pelan şûna guhastina çopê wan &jê bibe"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Heke were nîşan kirin, pel şûna guhastina Çopê dê mayinde werin rakirin"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Ji bo %1 Pêvek Hilbijêre"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Cîhazê Çapemeniyê Ava Bike"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Fermana berî pêwendiyê:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Mînak: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Berî tu cîhazê girêdî ji bo xebitandinê fermanekê hilbijêre (mînak fermaneke "
-"mount).\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Fermanên vala nayên xebitandin."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Fermana piştî Pêwendiyê &Bibire"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Mînak: eject%d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Piştî te cîhpaz girêda ji bo xebitandinê fermanekê hilbijêre (mînak fermana "
-"eject).\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Fermanên vala nayên xebitandin."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Berî tu derbasî cîhazê bikî kodkirinê biguhare"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Kodê veguherîne teşeya (%1) ya ji bo cîhazê tê tercîh kirin"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Heta ku pêkan be"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Heke pêwist be"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Dema veguhastina dosiyên kodkirina wan hatine guhartin qediya, jê bibe"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr ""
-"Ji bo vê taybetmendiyê divê skrîpteke weke \"Transcode\" were xebitandin"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
@@ -8742,7 +8565,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Vebijêrk"
@@ -9518,58 +9340,6 @@ msgstr "Hunermendê Nenas"
 #| msgid "Unknown Genre"
 msgid "Unknown year"
 msgstr "Cureyê Nenas"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Rêza Veguheztina ji Cîhaz re"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Cihê Muzîkê"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Muzîka te wê were guhastina ji:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Dabeşkirin"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Dabeşkirina pêşîn hilbijêrî:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Dabeşkirina duyemîn hilbijêrî:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Dabeşkirina sêyemîn hilbijêrî:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Valahiyan veguherîne xêzikên jêrîn"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11696,13 +11466,13 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgid "Playlist Layouts"
 msgstr "Navê Lîsteya Lêdanê:"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, fuzzy, kde-format
 #| msgid "Configure Applets..."
 msgid "Configure Playlist Layouts..."
@@ -16596,16 +16366,6 @@ msgstr "Hejmara lêdanan"
 msgid "Last played: %1"
 msgstr "Yê dawî hatiye lêdan"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Ji bo zêdetir analîzkeran bitikîne"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Zindîkirin"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -17020,6 +16780,147 @@ msgstr "Hunermend \"%1\""
 #, kde-format
 msgid "empty"
 msgstr ""
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> pel hate hilbijartin."
+#~ msgstr[1] "<b>%1</b> pel hatin hilbijartin."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Ew hêman dê <b>mayinde werin jê birin</b> jê dîska we ya sabît.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Ew hêman dê bên avêtina Çopê.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Bişîne Sergo"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Hema hema dê pelên hatine hilbijartin jê bibe"
+
+#~ msgid "Deleting files"
+#~ msgstr "Pel jê têne birin"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Cîgirê Îkonê, ne di GUI de"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Metoda jê birina cîgirê, qet nayê nîşandanê bikarhêner."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Lîsteya pelên dê werin jê birin."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Eve lîsteya hêmanên dê werin jê birin e."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Cîgir ji bo hejmara pelan, ne di GUI de"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "Pelan şûna guhastina çopê wan &jê bibe"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Heke were nîşan kirin, pel şûna guhastina Çopê dê mayinde werin rakirin"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Ji bo %1 Pêvek Hilbijêre"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Cîhazê Çapemeniyê Ava Bike"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Fermana berî pêwendiyê:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Mînak: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Berî tu cîhazê girêdî ji bo xebitandinê fermanekê hilbijêre (mînak "
+#~ "fermaneke mount).\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Fermanên vala nayên xebitandin."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Fermana piştî Pêwendiyê &Bibire"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Mînak: eject%d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Piştî te cîhpaz girêda ji bo xebitandinê fermanekê hilbijêre (mînak "
+#~ "fermana eject).\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Fermanên vala nayên xebitandin."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Berî tu derbasî cîhazê bikî kodkirinê biguhare"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Kodê veguherîne teşeya (%1) ya ji bo cîhazê tê tercîh kirin"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Heta ku pêkan be"
+
+#~ msgid "When necessary"
+#~ msgstr "Heke pêwist be"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr ""
+#~ "Dema veguhastina dosiyên kodkirina wan hatine guhartin qediya, jê bibe"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Ji bo vê taybetmendiyê divê skrîpteke weke \"Transcode\" were xebitandin"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Rêza Veguheztina ji Cîhaz re"
+
+#~ msgid "Music Location"
+#~ msgstr "Cihê Muzîkê"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Muzîka te wê were guhastina ji:\n"
+#~ "%1"
+
+#~ msgid "Groupings"
+#~ msgstr "Dabeşkirin"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Dabeşkirina pêşîn hilbijêrî:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Dabeşkirina duyemîn hilbijêrî:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Dabeşkirina sêyemîn hilbijêrî:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Valahiyan veguherîne xêzikên jêrîn"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Ji bo zêdetir analîzkeran bitikîne"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Zindîkirin"
 
 #, fuzzy
 #~| msgid "Framework Version"

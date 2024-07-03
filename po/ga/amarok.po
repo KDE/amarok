@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -2027,8 +2027,8 @@ msgstr "Ealaíontóirí Éagsúla"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2060,8 +2060,8 @@ msgstr "Ealaíontóir an Albaim"
 msgid "Composer"
 msgstr "Cumadóir"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Seánra"
@@ -2077,7 +2077,7 @@ msgstr "Bliain"
 msgid "Label"
 msgstr "Lipéad"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4473,8 +4473,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8251,190 +8251,6 @@ msgstr ""
 "Aimsíodh níos mó ná amhrán amháin comhoiriúnach do <b><font color='red'>%1</"
 "font></b>, caite i dtraipisí."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "Roghnaíodh <b>1</b> chomhad."
-msgstr[1] "Roghnaíodh <b>%1</b> chomhad."
-msgstr[2] "Roghnaíodh <b>%1</b> chomhad."
-msgstr[3] "Roghnaíodh <b>%1</b> gcomhad."
-msgstr[4] "Roghnaíodh <b>%1</b> comhad."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Scriosfar na míreanna seo ó do dhiosca crua <b>go brách</b>.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Bogfar na míreanna seo go dtí an Bruscar.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Cuir sa Bhruscar"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Ar tí na comhaid roghnaithe a scriosadh"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Comhaid á scriosadh"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ionadchoinneálaí Deilbhín, nach bhfuil sa chomhéadan"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Ionadchoinneálaí modh scriosta, nach dtaispeántar don úsáideoir."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Liosta na gcomhad atá tú ar tí a scriosadh."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Seo é an liosta míreanna atá tú ar tí a scriosadh."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Ionadchoinneálaí de líon na gcomhad, nach bhfuil sa chomhéadan"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Scrios comhaid in ionad iad a chur sa bhruscar"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Má thiceálann tú é seo, scriosfar comhaid go buan in ionad iad a chur sa "
-"Bhruscar"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Má thiceálann tú an bosca seo, scriosfar comhaid <b>go buan</b> in "
-"ionad iad a chur sa Bhruscar.</p>\n"
-"\n"
-"<p><em>Bí cúramach leis an rogha seo!</em>: Ní féidir comhaid scriosta a "
-"fháil ar ais ar fhormhór córas oibriúcháin.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Roghnaigh Breiseán le haghaidh %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Cumraigh Gléas Meán"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Ordú réamhnasctha:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Sampla: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Socraigh ordú a rithfear sula gceanglófar le do ghléas (m.sh. ordú "
-"feistithe).\n"
-"Cuirtear nód an ghléas in ionad %d, agus an pointe feistithe in ionad %m.\n"
-"Ní rithfear orduithe folmha."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "&Ordú iar-dínasctha:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Sampla: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Socraigh ordú a rithfear tar éis duit dícheangal ó do ghléas (m.sh. ordú "
-"díchurtha).\n"
-"Cuirtear nód an ghléas in ionad %d, agus an pointe feistithe in ionad %m.\n"
-"Ní rithfear orduithe folmha."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Traschódaigh roimh aistriú go gléas"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Traschódaigh go dtí an fhormáid is fearr (%1) leis an ngléas"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Nuair is féidir"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Nuair is gá"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Bain comhaid thraschódaithe i ndiaidh iad a aistriú"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Don ghné seo, ní mór script den chineál \"Transcode\" a bheith ag rith"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8859,7 +8675,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Roghanna"
@@ -9639,61 +9454,6 @@ msgstr "Teideal anaithnid"
 #, kde-format
 msgid "Unknown year"
 msgstr "Bliain anaithnid"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Aistrigh an ciú go gléas"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Suíomh an Cheoil"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Aistreofar do chuid ceoil go:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Tig leat do chuid ceoil a ghrúpáil go huathoibríoch\n"
-"ar bhealaigh éagsúla. Cruthóidh gach grúpáil\n"
-"comhadlanna bunaithe ar na critéir roghnaithe.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Grúpálacha"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Roghnaigh an chéad ghrúpáil:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Roghnaigh an dara grúpáil:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Roghnaigh an tríú grúpáil:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Tiontaigh spásanna go fostríocanna"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11738,12 +11498,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Leaganacha amach seinmliostaí"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Cumraigh Leaganacha Amach Seinmliostaí..."
@@ -16539,16 +16299,6 @@ msgstr "Líon seinnte: %1"
 msgid "Last played: %1"
 msgstr "Seinnte is déanaí: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Cliceáil le haghaidh tuilleadh anailíseoirí"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Amharcléirithe"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16960,6 +16710,174 @@ msgstr "Ealaíontóir: %1"
 #, kde-format
 msgid "empty"
 msgstr "folamh"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "Roghnaíodh <b>1</b> chomhad."
+#~ msgstr[1] "Roghnaíodh <b>%1</b> chomhad."
+#~ msgstr[2] "Roghnaíodh <b>%1</b> chomhad."
+#~ msgstr[3] "Roghnaíodh <b>%1</b> gcomhad."
+#~ msgstr[4] "Roghnaíodh <b>%1</b> comhad."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Scriosfar na míreanna seo ó do dhiosca crua <b>go brách</b>.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Bogfar na míreanna seo go dtí an Bruscar.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Cuir sa Bhruscar"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Ar tí na comhaid roghnaithe a scriosadh"
+
+#~ msgid "Deleting files"
+#~ msgstr "Comhaid á scriosadh"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ionadchoinneálaí Deilbhín, nach bhfuil sa chomhéadan"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Ionadchoinneálaí modh scriosta, nach dtaispeántar don úsáideoir."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Liosta na gcomhad atá tú ar tí a scriosadh."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Seo é an liosta míreanna atá tú ar tí a scriosadh."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Ionadchoinneálaí de líon na gcomhad, nach bhfuil sa chomhéadan"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Scrios comhaid in ionad iad a chur sa bhruscar"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Má thiceálann tú é seo, scriosfar comhaid go buan in ionad iad a chur sa "
+#~ "Bhruscar"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Má thiceálann tú an bosca seo, scriosfar comhaid <b>go buan</b> in "
+#~ "ionad iad a chur sa Bhruscar.</p>\n"
+#~ "\n"
+#~ "<p><em>Bí cúramach leis an rogha seo!</em>: Ní féidir comhaid scriosta a "
+#~ "fháil ar ais ar fhormhór córas oibriúcháin.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Roghnaigh Breiseán le haghaidh %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Cumraigh Gléas Meán"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Ordú réamhnasctha:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Sampla: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Socraigh ordú a rithfear sula gceanglófar le do ghléas (m.sh. ordú "
+#~ "feistithe).\n"
+#~ "Cuirtear nód an ghléas in ionad %d, agus an pointe feistithe in ionad "
+#~ "%m.\n"
+#~ "Ní rithfear orduithe folmha."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "&Ordú iar-dínasctha:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Sampla: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Socraigh ordú a rithfear tar éis duit dícheangal ó do ghléas (m.sh. ordú "
+#~ "díchurtha).\n"
+#~ "Cuirtear nód an ghléas in ionad %d, agus an pointe feistithe in ionad "
+#~ "%m.\n"
+#~ "Ní rithfear orduithe folmha."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Traschódaigh roimh aistriú go gléas"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Traschódaigh go dtí an fhormáid is fearr (%1) leis an ngléas"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Nuair is féidir"
+
+#~ msgid "When necessary"
+#~ msgstr "Nuair is gá"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Bain comhaid thraschódaithe i ndiaidh iad a aistriú"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Don ghné seo, ní mór script den chineál \"Transcode\" a bheith ag rith"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Aistrigh an ciú go gléas"
+
+#~ msgid "Music Location"
+#~ msgstr "Suíomh an Cheoil"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Aistreofar do chuid ceoil go:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Tig leat do chuid ceoil a ghrúpáil go huathoibríoch\n"
+#~ "ar bhealaigh éagsúla. Cruthóidh gach grúpáil\n"
+#~ "comhadlanna bunaithe ar na critéir roghnaithe.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Grúpálacha"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Roghnaigh an chéad ghrúpáil:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Roghnaigh an dara grúpáil:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Roghnaigh an tríú grúpáil:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Tiontaigh spásanna go fostríocanna"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Cliceáil le haghaidh tuilleadh anailíseoirí"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Amharcléirithe"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

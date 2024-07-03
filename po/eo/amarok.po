@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-06-28 21:02+0200\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
@@ -1988,8 +1988,8 @@ msgstr "Diversaj artistoj"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2020,8 +2020,8 @@ msgstr "Albuma artisto"
 msgid "Composer"
 msgstr "Komponisto"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Ĝenro"
@@ -2037,7 +2037,7 @@ msgstr "Jaro"
 msgid "Label"
 msgstr "Etikedo"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4354,8 +4354,8 @@ msgstr "Reŝargi langetojn kun la sekvaj titolo kaj artisto"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7910,187 +7910,6 @@ msgstr ""
 "Multoblaj ambiguaj kongruoj trovitaj por <b><font color='red'>%1</font></b>, "
 "estas forĵetitaj."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> dosiero elektita."
-msgstr[1] "<b>%1</b> dosieroj elektitaj."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Tiuj eroj estas <b>ĉiame forigotaj</b> el via disko.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Tiuj eroj estas metotaj en la rubujo.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Meti en la rubu&jo"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Forigonte la elektitajn dosierojn"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Foriganta la dosierojn"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Piktogram-Lokokupilo, ne en GUI"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Forigmetoda lokokupilo, neniam montrita al uzanto."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Listo de dosieroj kiuj estas forigotaj."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Ĉi tio estas la listo de aĵoj kiuj estas forigotaj."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Lokokupilo por nombro da dosieroj, ne en GUI"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "Forigi la &dosierojn anstataŭ meti ilin en la rubujo"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Se markite, dosieroj estos konstante forigitaj anstataŭ esti metitaj en la "
-"Rubujon"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Se ĉi tiu skatolo estas markita, dosieroj estos <b>konstante "
-"forigitaj</b> anstataŭ esti metitaj en la Rubujon.</p>\n"
-"\n"
-"<p><em>Uzu ĉi tiun elekteblon kun singardo</em>: Plej multaj dosiersistemoj "
-"ne kapablas fidinde malforviŝi dosierojn.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Elekti kromaĵon por %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Agordi mediodisponaĵon"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Antaŭ&kroĉada komando:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Ekzemple: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Agordu komandon por ruliĝi antaŭ ol konekti al via aparato (ekz. munta "
-"komando) ĉi tie.\n"
-"%d estas anstataŭigita per la aparata nodo, %m per la munta punkto.\n"
-"Malplenaj komandoj ne estas plenumitaj."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Post&malkroĉada komando:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Ekzemple: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Agordu komandon por ruliĝi post malkonekto de via aparato (ekz. forĵeta "
-"komando) ĉi tie.\n"
-"%d estas anstataŭigita per la aparata nodo, %m per la munta punkto.\n"
-"Malplenaj komandoj ne estas plenumitaj."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Transkodigi antaŭ transmeti al la aparato"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Transkodigi al la preferata formato (%1) de la aparato."
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Tuj kiam eblas"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Kiam bezonatas"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Forigi la transkodatajn dosierojn post la transmetado"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Por ĉi tiu funkcio, skripto de tipo \"Transcode\" devas ruliĝi"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8502,7 +8321,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Elektebloj"
@@ -9244,61 +9062,6 @@ msgstr "Nekonata titolo"
 #, kde-format
 msgid "Unknown year"
 msgstr "Nekonata jaro"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Transloki Vicon al Aparato"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Muzika Loko"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Via muziko estos transdonita al:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Vi povas aŭtomate grupigi vian muzikon laŭ diversaj manieroj. Ĉiu grupiĝo "
-"kreos\n"
-"dosierujojn surbaze de la specifitaj kriterioj.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Grupaĵoj"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Elektu la unuan grupaĵon:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Elektu la duan grupaĵon:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Elektu la trian grupaĵon:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Konverti la spacsignojn al substrekoj"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11336,12 +11099,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Ludlisto Aranĝoj"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Agordi Ludlistajn Aranĝojn..."
@@ -16063,16 +15826,6 @@ msgstr "Ludkalkulo: %1"
 msgid "Last played: %1"
 msgstr "Laste ludita: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Klaku por pliaj analiziloj"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Vidigoj"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16452,6 +16205,167 @@ msgstr "Artisto: %1"
 #, kde-format
 msgid "empty"
 msgstr "malplena"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> dosiero elektita."
+#~ msgstr[1] "<b>%1</b> dosieroj elektitaj."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt>Tiuj eroj estas <b>ĉiame forigotaj</b> el via disko.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Tiuj eroj estas metotaj en la rubujo.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Meti en la rubu&jo"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Forigonte la elektitajn dosierojn"
+
+#~ msgid "Deleting files"
+#~ msgstr "Foriganta la dosierojn"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Piktogram-Lokokupilo, ne en GUI"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Forigmetoda lokokupilo, neniam montrita al uzanto."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Listo de dosieroj kiuj estas forigotaj."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Ĉi tio estas la listo de aĵoj kiuj estas forigotaj."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Lokokupilo por nombro da dosieroj, ne en GUI"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "Forigi la &dosierojn anstataŭ meti ilin en la rubujo"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Se markite, dosieroj estos konstante forigitaj anstataŭ esti metitaj en "
+#~ "la Rubujon"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Se ĉi tiu skatolo estas markita, dosieroj estos <b>konstante "
+#~ "forigitaj</b> anstataŭ esti metitaj en la Rubujon.</p>\n"
+#~ "\n"
+#~ "<p><em>Uzu ĉi tiun elekteblon kun singardo</em>: Plej multaj "
+#~ "dosiersistemoj ne kapablas fidinde malforviŝi dosierojn.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Elekti kromaĵon por %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Agordi mediodisponaĵon"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Antaŭ&kroĉada komando:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Ekzemple: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Agordu komandon por ruliĝi antaŭ ol konekti al via aparato (ekz. munta "
+#~ "komando) ĉi tie.\n"
+#~ "%d estas anstataŭigita per la aparata nodo, %m per la munta punkto.\n"
+#~ "Malplenaj komandoj ne estas plenumitaj."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Post&malkroĉada komando:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Ekzemple: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Agordu komandon por ruliĝi post malkonekto de via aparato (ekz. forĵeta "
+#~ "komando) ĉi tie.\n"
+#~ "%d estas anstataŭigita per la aparata nodo, %m per la munta punkto.\n"
+#~ "Malplenaj komandoj ne estas plenumitaj."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Transkodigi antaŭ transmeti al la aparato"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Transkodigi al la preferata formato (%1) de la aparato."
+
+#~ msgid "Whenever possible"
+#~ msgstr "Tuj kiam eblas"
+
+#~ msgid "When necessary"
+#~ msgstr "Kiam bezonatas"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Forigi la transkodatajn dosierojn post la transmetado"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Por ĉi tiu funkcio, skripto de tipo \"Transcode\" devas ruliĝi"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Transloki Vicon al Aparato"
+
+#~ msgid "Music Location"
+#~ msgstr "Muzika Loko"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Via muziko estos transdonita al:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Vi povas aŭtomate grupigi vian muzikon laŭ diversaj manieroj. Ĉiu grupiĝo "
+#~ "kreos\n"
+#~ "dosierujojn surbaze de la specifitaj kriterioj.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Grupaĵoj"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Elektu la unuan grupaĵon:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Elektu la duan grupaĵon:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Elektu la trian grupaĵon:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Konverti la spacsignojn al substrekoj"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Klaku por pliaj analiziloj"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Vidigoj"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Akiru datumojn de openDesktop.org por lerni pli pri la teamo"

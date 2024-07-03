@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-05-07 17:44+0300\n"
 "Last-Translator: Tuomas Nurmi <tuomas@tuomasn.fi>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -2028,8 +2028,8 @@ msgstr "Useita artisteja"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2061,8 +2061,8 @@ msgstr "Albumin artisti"
 msgid "Composer"
 msgstr "Säveltäjä"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Tyylilaji"
@@ -2078,7 +2078,7 @@ msgstr "Vuosi"
 msgid "Label"
 msgstr "Nimike"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4398,8 +4398,8 @@ msgstr "Päivitä tabulatuurit seuraavan nimen ja artistin perusteella"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7966,189 +7966,6 @@ msgstr ""
 "Löytyi useita moniselitteisiä osumia: <b><font color='red'>%1</font></b>; "
 "hylättiin."
 
-# ruma bold, ruma piste
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>Yksi</b> tiedosto valittu."
-msgstr[1] "<b>%1</b> tiedostoa valittu."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Nämä nimekkeet poistetaan levyltä <b>pysyvästi</b>.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Nämä nimikkeet siirretään <i>roskakoriin</i>.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Siirrä &roskakoriin"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Tiedostoja ollaan poistamassa"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Poistetaan tiedostoja"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "☠☢☣ ja lumiukot ☃ naukuu"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "☠☢☣ ja vettä ☂ sataa"
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Tämä on lista nimikkeistä, jotka ovat poistettavana."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Tämä on lista nimikkeistä, jotka ovat poistettavana."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "☠☢☣ ja aurinko ☀ paistaa"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Poista tiedostot"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr "Mikäli valittu, tiedoston poistetaan, eikä niitä siirretä roskakoriin."
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Mikäli valittu, yllä olevat tiedostot <b>poistetaan</b>, eikä niitä "
-"siirretä roskakoriin. </p>\n"
-"\n"
-"<p><em>Varoitus</em>: On todennäköistä, että et pysty palauttamaan "
-"tiedostoja, jotka on poistettu.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Valitse liitännäinen (%1)"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Medialaitteen asetukset"
-
-# Voi KREMFSAKFM
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Ennen yhdistämistä:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Esimerkki: mount %d"
-
-# Että kieranhäntä mä vihaan näitä rivinvaihtoja
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Voit määritellä komennon, joka suoritetaan ennen kuin laitteeseen "
-"yhdistetään (esimerkiksi laitteen liittäminen tiedostojärjestelmään).\n"
-"%d korvataan laitetiedostolla ja %m liitoskohdalla.\n"
-"Tyhjiä komentoja ei suoriteta."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Yhdistämisen &jälkeen:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Esimerkki: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Voit määritellä komennon, joka suoritetaan yhteyden katkaisun jälkeen "
-"(esimerkiksi laitteen irrottaminen).\n"
-"%d korvataan laitetiedostolla ja %m liitoskohdalla.\n"
-"Tyhjiä komentoja ei suoriteta."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Muunna laitteeseen siirrettävät kappaleet"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Muunna laitteen suosimaan muotoon (%1)"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Aina kun mahdollista"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Aina kun pakollista"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Poista muunnetut tiedostot siirtämisen jälkeen"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr ""
-"Tämä ominaisuutta varten pitää olla Transcode-tyyppinen komentosarja päällä"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8561,7 +8378,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Asetukset"
@@ -9313,61 +9129,6 @@ msgstr "Tuntematon kappale"
 #, kde-format
 msgid "Unknown year"
 msgstr "Tuntematon vuosi"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Laitteen siirtojono"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Musiikin sijainti"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Musiikki siirretään kohteeseen:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Musiikin voi järjestellä useilla eri tavoilla.\n"
-"Jokainen lajittelutapa luo uusia alihakemistoja.\n"
-"\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Lajittelu"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Ensimmäinen lajitteluperuste:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Toinen lajitteluperuste:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Kolmas lajitteluperuste:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Korvaa välilyönnit alaviivalla (_)"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11403,12 +11164,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Soittolistan asettelut"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Muokkaa soittolistan asetteluita…"
@@ -16168,16 +15929,6 @@ msgstr "Soittokertoja: %1"
 msgid "Last played: %1"
 msgstr "Viimeksi soitettu: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Näytä lisää analysaattoreita napsauttamalla"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Visualisaatiot"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16560,6 +16311,171 @@ msgstr "Artisti: %1"
 #, kde-format
 msgid "empty"
 msgstr "tyhjä"
+
+# ruma bold, ruma piste
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>Yksi</b> tiedosto valittu."
+#~ msgstr[1] "<b>%1</b> tiedostoa valittu."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt>Nämä nimekkeet poistetaan levyltä <b>pysyvästi</b>.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Nämä nimikkeet siirretään <i>roskakoriin</i>.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Siirrä &roskakoriin"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Tiedostoja ollaan poistamassa"
+
+#~ msgid "Deleting files"
+#~ msgstr "Poistetaan tiedostoja"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "☠☢☣ ja lumiukot ☃ naukuu"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "☠☢☣ ja vettä ☂ sataa"
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Tämä on lista nimikkeistä, jotka ovat poistettavana."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Tämä on lista nimikkeistä, jotka ovat poistettavana."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "☠☢☣ ja aurinko ☀ paistaa"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Poista tiedostot"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Mikäli valittu, tiedoston poistetaan, eikä niitä siirretä roskakoriin."
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Mikäli valittu, yllä olevat tiedostot <b>poistetaan</b>, eikä "
+#~ "niitä siirretä roskakoriin. </p>\n"
+#~ "\n"
+#~ "<p><em>Varoitus</em>: On todennäköistä, että et pysty palauttamaan "
+#~ "tiedostoja, jotka on poistettu.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Valitse liitännäinen (%1)"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Medialaitteen asetukset"
+
+# Voi KREMFSAKFM
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Ennen yhdistämistä:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Esimerkki: mount %d"
+
+# Että kieranhäntä mä vihaan näitä rivinvaihtoja
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Voit määritellä komennon, joka suoritetaan ennen kuin laitteeseen "
+#~ "yhdistetään (esimerkiksi laitteen liittäminen tiedostojärjestelmään).\n"
+#~ "%d korvataan laitetiedostolla ja %m liitoskohdalla.\n"
+#~ "Tyhjiä komentoja ei suoriteta."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Yhdistämisen &jälkeen:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Esimerkki: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Voit määritellä komennon, joka suoritetaan yhteyden katkaisun jälkeen "
+#~ "(esimerkiksi laitteen irrottaminen).\n"
+#~ "%d korvataan laitetiedostolla ja %m liitoskohdalla.\n"
+#~ "Tyhjiä komentoja ei suoriteta."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Muunna laitteeseen siirrettävät kappaleet"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Muunna laitteen suosimaan muotoon (%1)"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Aina kun mahdollista"
+
+#~ msgid "When necessary"
+#~ msgstr "Aina kun pakollista"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Poista muunnetut tiedostot siirtämisen jälkeen"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Tämä ominaisuutta varten pitää olla Transcode-tyyppinen komentosarja "
+#~ "päällä"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Laitteen siirtojono"
+
+#~ msgid "Music Location"
+#~ msgstr "Musiikin sijainti"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Musiikki siirretään kohteeseen:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Musiikin voi järjestellä useilla eri tavoilla.\n"
+#~ "Jokainen lajittelutapa luo uusia alihakemistoja.\n"
+#~ "\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Lajittelu"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Ensimmäinen lajitteluperuste:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Toinen lajitteluperuste:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Kolmas lajitteluperuste:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Korvaa välilyönnit alaviivalla (_)"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Näytä lisää analysaattoreita napsauttamalla"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Visualisaatiot"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Etsi lisätietoa ryhmästä openDesktop.orgista"

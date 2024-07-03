@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4 Applications\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2022-09-27 18:12+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -2012,8 +2012,8 @@ msgstr "Berbagai Artis"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2044,8 +2044,8 @@ msgstr "Album Artis"
 msgid "Composer"
 msgstr "Pencipta"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
@@ -2061,7 +2061,7 @@ msgstr "Tahun"
 msgid "Label"
 msgstr "Label"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4397,8 +4397,8 @@ msgstr "Muat ulang tab karena menunggu judul dan artis"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7980,189 +7980,6 @@ msgstr ""
 "Beberapa kesamaan ditemukan untuk <b><font color='red'> %1</font></b>, yang "
 "telah dibuang."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> file dipilih."
-msgstr[1] "<b>%1</b> file dipilih."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Item tersebut akan <b>dihapus secara permanen</b> dari hard disk-mu.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Item tersebut akan dipindah ke Tong Sampah.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Kirim ke Tong Sampah"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Tentang penghapusan file yang dipilih"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Menghapus file"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ikon pengganti, tidak pada GUI"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr ""
-"Penghapusan metode placeholder, tidak pernah ditampilkan untuk pengguna."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Daftar file yang akan dihapus."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Ini adalah daftar tentang butir yang akan dihapus."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Penggantian nomor pada file, bukan dalam GUI"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Hapus file daripada memindah mereka ke tong sampah"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Jika dicentang, file akan dibuang secara permanen bukannya ditempatkan di "
-"Tong Sampah"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Jika dicentang, file akan <b>dibuang secara permanen</b> bukannya "
-"ditempatkan di Tong Sampah.</p>\n"
-"\n"
-"<p><em>Gunakan opsi ini dengan hati-hati</em>: filesystem tidak bisa "
-"mengembalikan file yang sudah dihapus.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Pilih Plugin untuk %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Konfigurasikan Media Peranti"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Perintah pra-&koneksi:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Contoh: kait %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Set sebuah perintah yang harus dijalankan sebelum mengkoneksikan ke "
-"perantimu (misalnya perintah mount) ini. \n"
-"%d digantikan oleh peranti node, %m oleh titik kait. \n"
-"Perintah-perintah yang kosong tidak akan dijalankan."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Perintah paska &diskoneksi:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Contoh: keluarkan  %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Set sebuah perintah yang akan dijalankan setelah mendiskoneksi dari "
-"perantimu (misalnya perintah eject) ini. \n"
-"%d digantikan oleh peranti node, %m oleh titik kait. \n"
-"Perintah-perintah yang kosong tidak akan dijalankan."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Transkode sebelum mentransfer ke peranti"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Transkode ke format yang diinginkan (%1) untuk peranti"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Sedapat mungkin"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Bila diperlukan"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Buang file yang ditranskode setelah transfer"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Untuk fitur ini, ketik skrip \"Transkode\" untuk menjalankan"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8573,7 +8390,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Opsi"
@@ -9315,61 +9131,6 @@ msgstr "Judul tidak diketahui"
 #, kde-format
 msgid "Unknown year"
 msgstr "Tahun tidak diketahui"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Transfer Antrean ke Peranti"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Lokasi Musik"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Musikmu akan ditranfer ke:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Kamu bisa memiliki musikmu secara otomatis dikelompokkan dalam\n"
-"berbagai cara. Setiap pengelompokan akan menciptakan\n"
-"direktori berdasarkan kriteria yang ditetapkan.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Pengelompokkan"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Pilih pengelompokan pertama:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Pilih pengelompokan kedua:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Pilih pengelompokan ketiga:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Konversi spasi dengan garis bawah"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11414,12 +11175,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Tata-letak Playlist"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Konfigurasikan Tata-letak Playlist..."
@@ -16176,16 +15937,6 @@ msgstr "Jumlah putar: %1"
 msgid "Last played: %1"
 msgstr "Terakhir diputar: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Klik untuk lebih banyak menganalisa"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Visualisasi"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16565,6 +16316,170 @@ msgstr "Artis: %1"
 #, kde-format
 msgid "empty"
 msgstr "kosong"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> file dipilih."
+#~ msgstr[1] "<b>%1</b> file dipilih."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Item tersebut akan <b>dihapus secara permanen</b> dari hard disk-mu.</"
+#~ "qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Item tersebut akan dipindah ke Tong Sampah.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Kirim ke Tong Sampah"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Tentang penghapusan file yang dipilih"
+
+#~ msgid "Deleting files"
+#~ msgstr "Menghapus file"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ikon pengganti, tidak pada GUI"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr ""
+#~ "Penghapusan metode placeholder, tidak pernah ditampilkan untuk pengguna."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Daftar file yang akan dihapus."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Ini adalah daftar tentang butir yang akan dihapus."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Penggantian nomor pada file, bukan dalam GUI"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Hapus file daripada memindah mereka ke tong sampah"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Jika dicentang, file akan dibuang secara permanen bukannya ditempatkan di "
+#~ "Tong Sampah"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Jika dicentang, file akan <b>dibuang secara permanen</b> bukannya "
+#~ "ditempatkan di Tong Sampah.</p>\n"
+#~ "\n"
+#~ "<p><em>Gunakan opsi ini dengan hati-hati</em>: filesystem tidak bisa "
+#~ "mengembalikan file yang sudah dihapus.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Pilih Plugin untuk %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Konfigurasikan Media Peranti"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Perintah pra-&koneksi:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Contoh: kait %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Set sebuah perintah yang harus dijalankan sebelum mengkoneksikan ke "
+#~ "perantimu (misalnya perintah mount) ini. \n"
+#~ "%d digantikan oleh peranti node, %m oleh titik kait. \n"
+#~ "Perintah-perintah yang kosong tidak akan dijalankan."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Perintah paska &diskoneksi:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Contoh: keluarkan  %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Set sebuah perintah yang akan dijalankan setelah mendiskoneksi dari "
+#~ "perantimu (misalnya perintah eject) ini. \n"
+#~ "%d digantikan oleh peranti node, %m oleh titik kait. \n"
+#~ "Perintah-perintah yang kosong tidak akan dijalankan."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Transkode sebelum mentransfer ke peranti"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Transkode ke format yang diinginkan (%1) untuk peranti"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Sedapat mungkin"
+
+#~ msgid "When necessary"
+#~ msgstr "Bila diperlukan"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Buang file yang ditranskode setelah transfer"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Untuk fitur ini, ketik skrip \"Transkode\" untuk menjalankan"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Transfer Antrean ke Peranti"
+
+#~ msgid "Music Location"
+#~ msgstr "Lokasi Musik"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Musikmu akan ditranfer ke:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Kamu bisa memiliki musikmu secara otomatis dikelompokkan dalam\n"
+#~ "berbagai cara. Setiap pengelompokan akan menciptakan\n"
+#~ "direktori berdasarkan kriteria yang ditetapkan.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Pengelompokkan"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Pilih pengelompokan pertama:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Pilih pengelompokan kedua:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Pilih pengelompokan ketiga:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Konversi spasi dengan garis bawah"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Klik untuk lebih banyak menganalisa"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Visualisasi"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

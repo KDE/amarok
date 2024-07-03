@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-06-19 11:41+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -2041,8 +2041,8 @@ msgstr "Çeşitli Sanatçılar"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2073,8 +2073,8 @@ msgstr "Albüm Sanatçısı"
 msgid "Composer"
 msgstr "Besteci"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Tarz"
@@ -2090,7 +2090,7 @@ msgstr "Yıl"
 msgid "Label"
 msgstr "Etiket"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4418,8 +4418,8 @@ msgstr "Aşağıdaki başlığa ve sanatçıya sahip sekmeleri yeniden yükle"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7994,186 +7994,6 @@ msgstr ""
 "<b><font color='red'>%1</font></b> için birden çok belirsiz eşleşme bulundu, "
 "çıkarıldı."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>%1</b> dosya seçildi."
-msgstr[1] "<b>%1</b> dosya seçildi."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Bu ögeler sabit diskinizden <b>kalıcı olarak silinecek</b>.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Bu ögeler çöp kutusuna taşınacak.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Çöp Kutusuna At"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Seçili dosyalar silinmek üzere"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Dosyalar siliniyor"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Simge yer tutucusu, arayüzde değil"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Silme yöntemi yer tutucusu, kullanıcıya gösterilmez"
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Silinmek üzere olan dosyaların listesi."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Bu, silinecek olan dosyaların listesidir."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Dosya sayısı yer tutucusu, arayüzde değil"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Dosyaları çöp kutusuna taşımak yerine sil"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"İşaretlenirse dosyalar Çöp Kutusu’na atılmak yerine kalıcı olarak kaldırılır"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Bu kutu işaretlenirse dosyalar Çöp Kutusu’na atılmak yerine <b>kalıcı "
-"olarak kaldırılır</b>.</p>\n"
-"\n"
-"<p><em>Bu seçeneği dikkatli kullanın</em>: Çoğu dosya sistemi, silinen "
-"dosyaları güvenilir bir şekilde geri getiremez.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "%1 için Eklenti Seç"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Ortam Aygıtını Yapılandır"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Bağlama öncesi komutu:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Örnek: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Aygıtınıza bağlanmadan önce çalıştırılacak bir komutu (örn. bağlama komutu) "
-"buradan ayarlayın.\n"
-"%d, aygıt düğümüyle, %m ise bağlama noktasıyla değiştirilir.\n"
-"Boş komutlar yürütülmez."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Bağlantı kesimi sonrası komu&t:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Örnek: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Aygıt bağlantısı kesilmeden önce çalıştırılacak bir komutu (örn. çıkar "
-"komutu) buradan ayarlayın.\n"
-"%d, aygıt düğümüyle, %m ise bağlama noktasıyla değiştirilir.\n"
-"Boş komutlar yürütülmez."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Aygıta aktarmadan önce arakodla"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Aygıt için yeğlenen biçime (%1) arakodla"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Olabildiğince"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Gerekli olduğunda"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Arakodlanan dosyaları aktarma sonrası kaldır"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Bu özellik için “Transcode” gibi bir betik çalışıyor olmalıdır"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8582,7 +8402,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Seçenekler"
@@ -9325,61 +9144,6 @@ msgstr "Bilinmeyen başlık"
 #, kde-format
 msgid "Unknown year"
 msgstr "Bilinmeyen yıl"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Kuyruğu Aygıta Aktar"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Müzik Konumu"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Müzikleriniz şuraya aktarılacak:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Müziğinizin çeşitli biçimlerde kendiliğinden\n"
-"gruplandırılmasını sağlayabilirsiniz. Her gruplama,\n"
-"belirtilen kriterlere göre dizinler oluşturacaktır.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Gruplamalar"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Birinci gruplamayı seç:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "İkinci gruplamayı seç:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Üçüncü gruplamayı seç:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Boşlukları alt çizgilere dönüştür"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11418,12 +11182,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Çalma Listesi Yerleşimleri"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Çalma Listesi Yerleşimlerini Yapılandır…"
@@ -16156,16 +15920,6 @@ msgstr "Çalma sayısı: %1"
 msgid "Last played: %1"
 msgstr "Son çalma tarihi: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Daha fazla çözümleyici için tıkla"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Görselleştirmeler"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16545,6 +16299,168 @@ msgstr "Sanatçı: %1"
 #, kde-format
 msgid "empty"
 msgstr "boş"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>%1</b> dosya seçildi."
+#~ msgstr[1] "<b>%1</b> dosya seçildi."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Bu ögeler sabit diskinizden <b>kalıcı olarak silinecek</b>.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Bu ögeler çöp kutusuna taşınacak.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Çöp Kutusuna At"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Seçili dosyalar silinmek üzere"
+
+#~ msgid "Deleting files"
+#~ msgstr "Dosyalar siliniyor"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Simge yer tutucusu, arayüzde değil"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Silme yöntemi yer tutucusu, kullanıcıya gösterilmez"
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Silinmek üzere olan dosyaların listesi."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Bu, silinecek olan dosyaların listesidir."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Dosya sayısı yer tutucusu, arayüzde değil"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Dosyaları çöp kutusuna taşımak yerine sil"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "İşaretlenirse dosyalar Çöp Kutusu’na atılmak yerine kalıcı olarak "
+#~ "kaldırılır"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Bu kutu işaretlenirse dosyalar Çöp Kutusu’na atılmak yerine "
+#~ "<b>kalıcı olarak kaldırılır</b>.</p>\n"
+#~ "\n"
+#~ "<p><em>Bu seçeneği dikkatli kullanın</em>: Çoğu dosya sistemi, silinen "
+#~ "dosyaları güvenilir bir şekilde geri getiremez.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "%1 için Eklenti Seç"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Ortam Aygıtını Yapılandır"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Bağlama öncesi komutu:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Örnek: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Aygıtınıza bağlanmadan önce çalıştırılacak bir komutu (örn. bağlama "
+#~ "komutu) buradan ayarlayın.\n"
+#~ "%d, aygıt düğümüyle, %m ise bağlama noktasıyla değiştirilir.\n"
+#~ "Boş komutlar yürütülmez."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Bağlantı kesimi sonrası komu&t:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Örnek: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Aygıt bağlantısı kesilmeden önce çalıştırılacak bir komutu (örn. çıkar "
+#~ "komutu) buradan ayarlayın.\n"
+#~ "%d, aygıt düğümüyle, %m ise bağlama noktasıyla değiştirilir.\n"
+#~ "Boş komutlar yürütülmez."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Aygıta aktarmadan önce arakodla"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Aygıt için yeğlenen biçime (%1) arakodla"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Olabildiğince"
+
+#~ msgid "When necessary"
+#~ msgstr "Gerekli olduğunda"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Arakodlanan dosyaları aktarma sonrası kaldır"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Bu özellik için “Transcode” gibi bir betik çalışıyor olmalıdır"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Kuyruğu Aygıta Aktar"
+
+#~ msgid "Music Location"
+#~ msgstr "Müzik Konumu"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Müzikleriniz şuraya aktarılacak:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Müziğinizin çeşitli biçimlerde kendiliğinden\n"
+#~ "gruplandırılmasını sağlayabilirsiniz. Her gruplama,\n"
+#~ "belirtilen kriterlere göre dizinler oluşturacaktır.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Gruplamalar"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Birinci gruplamayı seç:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "İkinci gruplamayı seç:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Üçüncü gruplamayı seç:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Boşlukları alt çizgilere dönüştür"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Daha fazla çözümleyici için tıkla"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Görselleştirmeler"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

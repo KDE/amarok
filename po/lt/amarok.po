@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -2036,8 +2036,8 @@ msgstr "Įvairūs atlikėjai"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2068,8 +2068,8 @@ msgstr "Albumo atlikėjas"
 msgid "Composer"
 msgstr "Kompozitorius"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Žanras"
@@ -2085,7 +2085,7 @@ msgstr "Metai"
 msgid "Label"
 msgstr "Etiketė"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4491,8 +4491,8 @@ msgstr "Iš naujo įkelti korteles su šiuo pavadinimu ir atlikėju"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8262,189 +8262,6 @@ msgid ""
 "been discarded."
 msgstr "<b><font color='red'>Klaida:</font></b> %1"
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "Pažymėtas <b>%1</b> failas."
-msgstr[1] "Pažymėti <b>%1</b> failai."
-msgstr[2] "Pažymėta <b>%1</b> failų."
-msgstr[3] "Pažymėtas <b>%1</b> failas."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Šie failai bus <b>negrąžinamai pašalinti</b> iš kieto disko.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Šie elementai bus perkelti į šiukšlių dėžę</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Išmesti į šiu&kšliadėžę"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Rengiamasi pašalinti pažymėtus failus"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Failai šalinami"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ženkliuko objektas, nepriklauso grafinei išvaizdai"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Šalinimo metodo objektas, naudotojui nematomas."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Failų, kuriuos ketinama pašalinti, sąrašas."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Failus, esančius šiame sąraše, ketinama pašalinti."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Failų skaičiaus objektas, nepriklauso grafinei išvaizdai"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Failus pašalinti, į šiukšliadėžę neperkelti"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Įjungus šią parinktį failai į šiukšliadėžę nebus perkelti, bus visiškai "
-"pašalinti"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Įjungus šią parinktį failai į šiukšliadėžę nebus perkelti, bus "
-"<b>visiškai pašalinti</b>.</p>\n"
-"\n"
-"<p><em>Būkite atsargūs</em>: daugumoje failų sistemų pašalintų failų būna "
-"nebeįmanoma atstatyti.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Pažymėti %1 papildinį"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Derinti muzikos įrenginį"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Komanda prieš prijungiant:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Pavyzdžiui: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Įrašykite komandą, kuri bus įvykdyta prieš prijungiant įrenginį (pavyzdžiui "
-"prijungimo mount komanda).\n"
-"%d bus pakeistas į įrenginio failo numerį (node), %m į prijungimo vietą.\n"
-"Tuščios komandos nevykdomos."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Komanda po &atjungimo:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Pavyzdžiui: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Įrašykite komandą, kuri bus įvykdyta atjungus įrenginį (pavyzdžiui cd "
-"stalčiaus atidarymo komanda eject).\n"
-"%d bus pakeistas į įrenginio failo numerį (node), %m į prijungimo vietą.\n"
-"Tuščios komandos nevykdomos."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Perkoduoti prieš siunčiant į muzikos įrenginį"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Perkoduoti dainas į pageidaujamą (%1) formatą"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Kai tik įmanoma"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Kai reikia"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Persiųstus perkoduotus failus pašalinti"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Norint perkoduoti dainas, turi būti paleistas perkodavimo scenarijus"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8843,7 +8660,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Parinktys"
@@ -9595,61 +9411,6 @@ msgstr "Nežinomas pavadinimas"
 #, kde-format
 msgid "Unknown year"
 msgstr "Nežinomi metai"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Siųsti dainas į įrenginį"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Muzikos vieta"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Muzika bus persiųsta į:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Muzika gali būti sugrupuota įvairiais \n"
-"būdais. Grupuojant kiekvienu būdu \n"
-"bus sukurti atitinkami aplankai.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Grupavimo būdai"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Nurodykite pirmąjį grupavimo lygį:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Nurodykite antrąjį grupavimo lygį:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Nurodykite trečiąjį grupavimo lygį:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Keisti tarpo simbolius pabraukimo simboliais"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11730,12 +11491,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Grojaraščio išdėstymai"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Konfigūruoti grojaraščio išdėstymus..."
@@ -16585,16 +16346,6 @@ msgstr "Grojimų skaičius: %1"
 msgid "Last played: %1"
 msgstr "Paskiausiai grota: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Spragtelėję pele pamatysite daugiau vaizdinių"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Vaizdiniai"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -17001,6 +16752,171 @@ msgstr "Atlikėjas: %1"
 #, kde-format
 msgid "empty"
 msgstr "tuščia"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "Pažymėtas <b>%1</b> failas."
+#~ msgstr[1] "Pažymėti <b>%1</b> failai."
+#~ msgstr[2] "Pažymėta <b>%1</b> failų."
+#~ msgstr[3] "Pažymėtas <b>%1</b> failas."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Šie failai bus <b>negrąžinamai pašalinti</b> iš kieto disko.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Šie elementai bus perkelti į šiukšlių dėžę</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Išmesti į šiu&kšliadėžę"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Rengiamasi pašalinti pažymėtus failus"
+
+#~ msgid "Deleting files"
+#~ msgstr "Failai šalinami"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ženkliuko objektas, nepriklauso grafinei išvaizdai"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Šalinimo metodo objektas, naudotojui nematomas."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Failų, kuriuos ketinama pašalinti, sąrašas."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Failus, esančius šiame sąraše, ketinama pašalinti."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Failų skaičiaus objektas, nepriklauso grafinei išvaizdai"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Failus pašalinti, į šiukšliadėžę neperkelti"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Įjungus šią parinktį failai į šiukšliadėžę nebus perkelti, bus visiškai "
+#~ "pašalinti"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Įjungus šią parinktį failai į šiukšliadėžę nebus perkelti, bus "
+#~ "<b>visiškai pašalinti</b>.</p>\n"
+#~ "\n"
+#~ "<p><em>Būkite atsargūs</em>: daugumoje failų sistemų pašalintų failų būna "
+#~ "nebeįmanoma atstatyti.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Pažymėti %1 papildinį"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Derinti muzikos įrenginį"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Komanda prieš prijungiant:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Pavyzdžiui: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Įrašykite komandą, kuri bus įvykdyta prieš prijungiant įrenginį "
+#~ "(pavyzdžiui prijungimo mount komanda).\n"
+#~ "%d bus pakeistas į įrenginio failo numerį (node), %m į prijungimo vietą.\n"
+#~ "Tuščios komandos nevykdomos."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Komanda po &atjungimo:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Pavyzdžiui: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Įrašykite komandą, kuri bus įvykdyta atjungus įrenginį (pavyzdžiui cd "
+#~ "stalčiaus atidarymo komanda eject).\n"
+#~ "%d bus pakeistas į įrenginio failo numerį (node), %m į prijungimo vietą.\n"
+#~ "Tuščios komandos nevykdomos."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Perkoduoti prieš siunčiant į muzikos įrenginį"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Perkoduoti dainas į pageidaujamą (%1) formatą"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Kai tik įmanoma"
+
+#~ msgid "When necessary"
+#~ msgstr "Kai reikia"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Persiųstus perkoduotus failus pašalinti"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr ""
+#~ "Norint perkoduoti dainas, turi būti paleistas perkodavimo scenarijus"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Siųsti dainas į įrenginį"
+
+#~ msgid "Music Location"
+#~ msgstr "Muzikos vieta"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Muzika bus persiųsta į:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Muzika gali būti sugrupuota įvairiais \n"
+#~ "būdais. Grupuojant kiekvienu būdu \n"
+#~ "bus sukurti atitinkami aplankai.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Grupavimo būdai"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Nurodykite pirmąjį grupavimo lygį:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Nurodykite antrąjį grupavimo lygį:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Nurodykite trečiąjį grupavimo lygį:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Keisti tarpo simbolius pabraukimo simboliais"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Spragtelėję pele pamatysite daugiau vaizdinių"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Vaizdiniai"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

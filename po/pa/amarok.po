@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -1980,8 +1980,8 @@ msgstr "ਕਈ ਕਲਾਕਾਰ"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2012,8 +2012,8 @@ msgstr "ਐਲਬਮ ਕਲਾਕਾਰ"
 msgid "Composer"
 msgstr "ਸੰਗੀਤਕਾਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "ਧੁਨ"
@@ -2029,7 +2029,7 @@ msgstr "ਸਾਲ"
 msgid "Label"
 msgstr "ਲੇਬਲ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4335,8 +4335,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7776,177 +7776,6 @@ msgid ""
 "been discarded."
 msgstr ""
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> ਫਾਇਲ ਚੁਣੀਆਂ।"
-msgstr[1] "<b>%1</b> ਫਾਇਲਾਂ ਚੁਣੀਆਂ।"
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>ਇਹ ਆਈਟਮਾਂ ਨੂੰ ਤੁਹਾਡੀ ਹਾਰਡ ਡਿਸਕ ਤੋਂ <b>ਹਮੇਸ਼ਾ ਲਈ ਹਟਾ ਦਿੱਤਾ</b> ਜਾਵੇਗਾ</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>ਇਹਨਾਂ ਆਈਟਮਾਂ ਨੂੰ ਰੱਦੀ 'ਚ ਭੇਜਿਆ ਜਾਵੇਗਾ।</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "ਰੱਦੀ 'ਚ ਭੇਜੋ(&S)"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਹਟਾਉਣ ਬਾਰੇ"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "ਫਾਇਲਾਂ ਹਟਾਈਆਂ ਜਾਦੀਆਂ ਹਨ"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "ਆਈਕਾਨ ਥਾਂ, GUI ਵਿੱਚ ਨਹੀਂ"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "ਥਾਂ ਲਈ ਹਟਾਉਣ ਦਾ ਢੰਗ, ਜੋ ਕਿ ਯੂਜ਼ਰ ਕਦੇ ਨਾ ਵੇਖੇਗਾ।"
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "ਫਾਇਲਾਂ ਦੀ ਸੂਚੀ, ਜਿਨ੍ਹਾਂ ਨੂੰ ਹਟਾਇਆ ਜਾਣਾ ਹੈ।"
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "ਇਹ ਉਹਨਾਂ ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ ਹੈ, ਜਿੰਨ੍ਹਾਂ ਨੂੰ ਹਟਾਇਆ ਜਾਣਾ ਹੈ।"
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "ਫਾਇਲਾਂ ਦੇ ਨੰਬਰ ਲਈ ਥਾਂ, GUI ਵਿੱਚ ਨਹੀਂ"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਣ ਦੀ ਬਜਾਏ ਹਟਾ ਦਿਓ(&D)"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr "ਜੇਕਰ ਚੋਣ ਕੀਤੀ ਗਈ ਤਾਂ ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ 'ਚ ਰੱਖਣ ਦੀ ਬਜਾਏ ਹਮੇਸ਼ਾਂ ਲਈ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>ਜੇਕਰ ਇਹ ਬਕਸੇ ਦੀ ਚੋਣ ਕੀਤੀ ਗਈ ਤਾਂ ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਣ ਦੀ ਬਜਾਏ <b>ਹਮੇਸ਼ਾ</b> "
-"ਲਈ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ।</p>\n"
-"\n"
-"<p><em>ਇਹ ਚੋਣ ਨੂੰ ਧਿਆਨ ਨਾਲ ਵਰਤੋਂ</em>: ਬਹੁਤੇ ਫਾਇਲ ਸਿਸਟਮ ਹਟਾਈਆਂ ਗਈਆਂ ਫਾਇਲਾਂ ਨੂੰ ਠੀਕ ਢੰਗ "
-"ਨਾਲ ਮੁੜ-ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕਦੇ ਹਨ।</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "%1 ਲਈ ਪਲੱਗਇਨ ਚੁਣੋ"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "ਮੀਡਿਆ ਜੰਤਰ ਸੰਰਚਨਾ"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "ਪ੍ਰੀ-ਕੁਨੈਕਟ ਕਮਾਂਡ(&c):"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "ਜਿਵੇਂ: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "ਪੋਸਟ-ਡਿਸ-ਕੁਨੈਕਟ  ਕਮਾਂਡ(&d):"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "ਜਿਵੇਂ: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "ਟਰੈਕ ਮੀਡਿਆ ਜੰਤਰ ਉੱਤੇ ਭੇਜੋ(&T)"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "ਜੰਤਰ ਵਾਸਤੇ ਟਰਾਂਸਕੋਡ ਲਈ ਪਸੰਦੀਦਾ ਫਾਰਮੈਟ (%1)"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "ਜਦੋਂ ਸੰਭਵ ਹੋਵੇ"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "ਜਦੋਂ ਲੋੜ ਹੋਵੇ"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "ਟਰਾਂਸਫਰ ਕਰਨ ਬਾਦ ਟਰਾਸਕੋਡ ਕੀਤੀ ਫਾਇਲ ਹਟਾਓ"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "ਇਹ ਫੀਚਰ ਵਰਤਣ ਲਈ, \"Transcode\" ਕਿਸਮ ਦੀ ਸਕ੍ਰਿਪਟ ਚੱਲਦੀ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8356,7 +8185,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "ਚੋਣ"
@@ -9096,61 +8924,6 @@ msgstr "ਅਣਜਾਣ ਟਾਈਟਲ"
 #, kde-format
 msgid "Unknown year"
 msgstr "ਅਣਜਾਣ ਸਾਲ"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "ਕਤਾਰ ਜੰਤਰ ਉੱਤੇ ਭੇਜੋ"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "ਸੰਗੀਤ ਟਿਕਾਣਾ"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"ਤੁਹਾਡਾ ਸੰਗੀਤ ਭੇਜਿਆ ਜਾਵੇਗਾ:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"ਤੁਸੀਂ ਆਪਣੇ ਸੰਗੀਤ ਨੂੰ ਕਈ ਢੰਗਾਂ ਨਾਲ ਸੰਗਠਿਤ ਕਰ ਸਕਦੇ ਹੋ।\n"
-"ਹਰੇਕ ਗਰੁੱਪ ਖਾਸ ਸੀਮਾ ਦੇ ਉੱਤੇ ਅਧਾਰਿਤ ਡਾਇਰੈਕਟਰੀਆਂ\n"
-"ਬਣਾਏਗਾ।\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "ਗਰੁਪਿੰਗ"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "ਪਹਿਲਾਂ ਗਰੁੱਪ ਚੁਣੋ:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "ਦੂਜਾ ਗਰੁੱਪ ਚੁਣੋ:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "ਤੀਜਾ ਗਰੁੱਪ ਚੁਣੇ:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "ਖਾਲੀ ਥਾਂ ਨੂੰ _ ਨਾਲ ਬਦਲੋ"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11195,12 +10968,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਲੇਆਉਟ"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "ਪਲੇਅਲਿਸਟ ਲੇਆਉਟ ਸੰਰਚਨਾ..."
@@ -15811,16 +15584,6 @@ msgstr "ਚੱਲਣ ਗਿਣਤੀ: %1"
 msgid "Last played: %1"
 msgstr "ਆਖਰੀ ਚਲਾਇਆ: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "ਹੋਰ ਸਮਤੋਲਾਂ ਲਈ ਦਬਾਉ"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "ਦਿੱਖ(&V)"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16205,6 +15968,143 @@ msgstr "ਕਲਾਕਾਰ: %1"
 #, kde-format
 msgid "empty"
 msgstr "ਖਾਲੀ"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> ਫਾਇਲ ਚੁਣੀਆਂ।"
+#~ msgstr[1] "<b>%1</b> ਫਾਇਲਾਂ ਚੁਣੀਆਂ।"
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt>ਇਹ ਆਈਟਮਾਂ ਨੂੰ ਤੁਹਾਡੀ ਹਾਰਡ ਡਿਸਕ ਤੋਂ <b>ਹਮੇਸ਼ਾ ਲਈ ਹਟਾ ਦਿੱਤਾ</b> ਜਾਵੇਗਾ</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>ਇਹਨਾਂ ਆਈਟਮਾਂ ਨੂੰ ਰੱਦੀ 'ਚ ਭੇਜਿਆ ਜਾਵੇਗਾ।</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "ਰੱਦੀ 'ਚ ਭੇਜੋ(&S)"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਹਟਾਉਣ ਬਾਰੇ"
+
+#~ msgid "Deleting files"
+#~ msgstr "ਫਾਇਲਾਂ ਹਟਾਈਆਂ ਜਾਦੀਆਂ ਹਨ"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "ਆਈਕਾਨ ਥਾਂ, GUI ਵਿੱਚ ਨਹੀਂ"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "ਥਾਂ ਲਈ ਹਟਾਉਣ ਦਾ ਢੰਗ, ਜੋ ਕਿ ਯੂਜ਼ਰ ਕਦੇ ਨਾ ਵੇਖੇਗਾ।"
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "ਫਾਇਲਾਂ ਦੀ ਸੂਚੀ, ਜਿਨ੍ਹਾਂ ਨੂੰ ਹਟਾਇਆ ਜਾਣਾ ਹੈ।"
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "ਇਹ ਉਹਨਾਂ ਆਈਟਮਾਂ ਦੀ ਸੂਚੀ ਹੈ, ਜਿੰਨ੍ਹਾਂ ਨੂੰ ਹਟਾਇਆ ਜਾਣਾ ਹੈ।"
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "ਫਾਇਲਾਂ ਦੇ ਨੰਬਰ ਲਈ ਥਾਂ, GUI ਵਿੱਚ ਨਹੀਂ"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਣ ਦੀ ਬਜਾਏ ਹਟਾ ਦਿਓ(&D)"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr "ਜੇਕਰ ਚੋਣ ਕੀਤੀ ਗਈ ਤਾਂ ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ 'ਚ ਰੱਖਣ ਦੀ ਬਜਾਏ ਹਮੇਸ਼ਾਂ ਲਈ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>ਜੇਕਰ ਇਹ ਬਕਸੇ ਦੀ ਚੋਣ ਕੀਤੀ ਗਈ ਤਾਂ ਫਾਇਲਾਂ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਣ ਦੀ ਬਜਾਏ <b>ਹਮੇਸ਼ਾ</"
+#~ "b> ਲਈ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ।</p>\n"
+#~ "\n"
+#~ "<p><em>ਇਹ ਚੋਣ ਨੂੰ ਧਿਆਨ ਨਾਲ ਵਰਤੋਂ</em>: ਬਹੁਤੇ ਫਾਇਲ ਸਿਸਟਮ ਹਟਾਈਆਂ ਗਈਆਂ ਫਾਇਲਾਂ ਨੂੰ ਠੀਕ ਢੰਗ "
+#~ "ਨਾਲ ਮੁੜ-ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕਦੇ ਹਨ।</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "%1 ਲਈ ਪਲੱਗਇਨ ਚੁਣੋ"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "ਮੀਡਿਆ ਜੰਤਰ ਸੰਰਚਨਾ"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "ਪ੍ਰੀ-ਕੁਨੈਕਟ ਕਮਾਂਡ(&c):"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "ਜਿਵੇਂ: mount %d"
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "ਪੋਸਟ-ਡਿਸ-ਕੁਨੈਕਟ  ਕਮਾਂਡ(&d):"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "ਜਿਵੇਂ: eject %d"
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "ਟਰੈਕ ਮੀਡਿਆ ਜੰਤਰ ਉੱਤੇ ਭੇਜੋ(&T)"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "ਜੰਤਰ ਵਾਸਤੇ ਟਰਾਂਸਕੋਡ ਲਈ ਪਸੰਦੀਦਾ ਫਾਰਮੈਟ (%1)"
+
+#~ msgid "Whenever possible"
+#~ msgstr "ਜਦੋਂ ਸੰਭਵ ਹੋਵੇ"
+
+#~ msgid "When necessary"
+#~ msgstr "ਜਦੋਂ ਲੋੜ ਹੋਵੇ"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "ਟਰਾਂਸਫਰ ਕਰਨ ਬਾਦ ਟਰਾਸਕੋਡ ਕੀਤੀ ਫਾਇਲ ਹਟਾਓ"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "ਇਹ ਫੀਚਰ ਵਰਤਣ ਲਈ, \"Transcode\" ਕਿਸਮ ਦੀ ਸਕ੍ਰਿਪਟ ਚੱਲਦੀ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "ਕਤਾਰ ਜੰਤਰ ਉੱਤੇ ਭੇਜੋ"
+
+#~ msgid "Music Location"
+#~ msgstr "ਸੰਗੀਤ ਟਿਕਾਣਾ"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "ਤੁਹਾਡਾ ਸੰਗੀਤ ਭੇਜਿਆ ਜਾਵੇਗਾ:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "ਤੁਸੀਂ ਆਪਣੇ ਸੰਗੀਤ ਨੂੰ ਕਈ ਢੰਗਾਂ ਨਾਲ ਸੰਗਠਿਤ ਕਰ ਸਕਦੇ ਹੋ।\n"
+#~ "ਹਰੇਕ ਗਰੁੱਪ ਖਾਸ ਸੀਮਾ ਦੇ ਉੱਤੇ ਅਧਾਰਿਤ ਡਾਇਰੈਕਟਰੀਆਂ\n"
+#~ "ਬਣਾਏਗਾ।\n"
+
+#~ msgid "Groupings"
+#~ msgstr "ਗਰੁਪਿੰਗ"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "ਪਹਿਲਾਂ ਗਰੁੱਪ ਚੁਣੋ:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "ਦੂਜਾ ਗਰੁੱਪ ਚੁਣੋ:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "ਤੀਜਾ ਗਰੁੱਪ ਚੁਣੇ:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "ਖਾਲੀ ਥਾਂ ਨੂੰ _ ਨਾਲ ਬਦਲੋ"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "ਹੋਰ ਸਮਤੋਲਾਂ ਲਈ ਦਬਾਉ"
+
+#~ msgid "&Visualizations"
+#~ msgstr "ਦਿੱਖ(&V)"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "ਟੀਮ ਬਾਰੇ ਹੋਰ ਜਾਣਨ ਲਈ openDesktop.org ਤੋਂ ਡਾਟਾ ਲਵੋ"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-06-19 15:48+0200\n"
 "Last-Translator: Vit Pelcak <vpelcak@suse.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -2014,8 +2014,8 @@ msgstr "Různí umělci"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2046,8 +2046,8 @@ msgstr "Umělec alba"
 msgid "Composer"
 msgstr "Skladatel"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Žánr"
@@ -2063,7 +2063,7 @@ msgstr "Rok"
 msgid "Label"
 msgstr "Popisek"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4400,8 +4400,8 @@ msgstr "Obnovit tabulaturu s následujícím názvem a umělcem"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8025,187 +8025,6 @@ msgstr ""
 "Více nejednoznačných shod nalezených v případě <b><font color='red'>%1</"
 "font></b> bylo vyřazeno."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> soubor vybrán."
-msgstr[1] "<b>%1</b> soubory vybrány."
-msgstr[2] "<b>%1</b> souborů vybráno."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Tyto položky budou <b>navždy smazány</b> z vašeho disku.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Tyto položky budou přesunuty do koše.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Pře&sunout do koše"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Smazat vybrané soubory"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Probíhá mazání souborů"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Zástupný znak ikony, který není vidět v GUI"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Zástupný znak pro způsob smazání, uživateli se nikdy neukáže."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Seznam souborů, které budou smazány."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Toto je seznam souborů, které budou smazány."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Zástupný znak pro počet souborů, který není vidět v GUI"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "Smazat sou&bory místo jejich přesouvání do koše"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Je-li zaškrtnuto, soubory budou navždy odstraněny namísto přesunu do koše"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt> <p>Je-li zaškrtnuto, soubory budou <b>navždy odstraněny</b> namísto "
-"přesunu do koše.</p>\n"
-" \n"
-" <p><em>Používejte tuto volbu s rozvahou</em>: většina souborových systémů "
-"není schopna smazané soubory spolehlivě obnovit.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Vybrat přídavný modul pro %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Nastavit multimediální zařízení"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Příkaz pře&d připojením:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Příklad: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Zadejte příkaz, který se použije před připojením k vašemu zařízení (např. "
-"příkaz mount).\n"
-"%d je nahrazeno uzlem zařízení, %m je nahrazeno přípojným bodem.\n"
-"Příkazy bez pomocných proměnných nebudou provedeny."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Příkaz po o&dpojení:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Příklad: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Zadejte příkaz, který se má použít po odpojení vašeho zařízení (např. příkaz "
-"pro vysunutí média).\n"
-"%d je nahrazeno uzlem zařízení, %m je nahrazeno přípojným bodem.\n"
-"Příkazy bez pomocných proměnných nebudou provedeny."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "Překódova&t před přenosem na zařízení"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Překódovat do formátu upřednostňovaného (%1) pro toto zařízení"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Kdykoliv je to možné"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Pokud je to nutné"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Po přenosu odstranit překódované soubory"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Aby byla tato funkce dostupná, musí běžet skript typu \"Transcode\""
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8619,7 +8438,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Volby"
@@ -9363,61 +9181,6 @@ msgstr "Neznámý název"
 #, kde-format
 msgid "Unknown year"
 msgstr "Neznámý rok"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Přenést frontu na zařízení"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Umístění hudby"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Vaše hudba bude přenesena na:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Můžete mít svou hudbu automaticky seskupenou\n"
-"různými způsoby. Seskupením vzniknou adresáře\n"
-"založené na stanovených měřítkách.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Seskupení"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Vyberte první seskupení:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Vyberte druhé seskupení:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Vyberte třetí seskupení:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Převést mezery na podtržení"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11453,12 +11216,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Rozvržení seznamu skladeb"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Nastavit rozvržení seznamu skladeb..."
@@ -16233,16 +15996,6 @@ msgstr "Počet přehrání: %1"
 msgid "Last played: %1"
 msgstr "Naposledy hrané: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Klikněte pro další analyzátory"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Vizualizace"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16629,6 +16382,167 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> soubor vybrán."
+#~ msgstr[1] "<b>%1</b> soubory vybrány."
+#~ msgstr[2] "<b>%1</b> souborů vybráno."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt>Tyto položky budou <b>navždy smazány</b> z vašeho disku.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Tyto položky budou přesunuty do koše.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Pře&sunout do koše"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Smazat vybrané soubory"
+
+#~ msgid "Deleting files"
+#~ msgstr "Probíhá mazání souborů"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Zástupný znak ikony, který není vidět v GUI"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Zástupný znak pro způsob smazání, uživateli se nikdy neukáže."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Seznam souborů, které budou smazány."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Toto je seznam souborů, které budou smazány."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Zástupný znak pro počet souborů, který není vidět v GUI"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "Smazat sou&bory místo jejich přesouvání do koše"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Je-li zaškrtnuto, soubory budou navždy odstraněny namísto přesunu do koše"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt> <p>Je-li zaškrtnuto, soubory budou <b>navždy odstraněny</b> namísto "
+#~ "přesunu do koše.</p>\n"
+#~ " \n"
+#~ " <p><em>Používejte tuto volbu s rozvahou</em>: většina souborových "
+#~ "systémů není schopna smazané soubory spolehlivě obnovit.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Vybrat přídavný modul pro %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Nastavit multimediální zařízení"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Příkaz pře&d připojením:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Příklad: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Zadejte příkaz, který se použije před připojením k vašemu zařízení (např. "
+#~ "příkaz mount).\n"
+#~ "%d je nahrazeno uzlem zařízení, %m je nahrazeno přípojným bodem.\n"
+#~ "Příkazy bez pomocných proměnných nebudou provedeny."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Příkaz po o&dpojení:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Příklad: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Zadejte příkaz, který se má použít po odpojení vašeho zařízení (např. "
+#~ "příkaz pro vysunutí média).\n"
+#~ "%d je nahrazeno uzlem zařízení, %m je nahrazeno přípojným bodem.\n"
+#~ "Příkazy bez pomocných proměnných nebudou provedeny."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "Překódova&t před přenosem na zařízení"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Překódovat do formátu upřednostňovaného (%1) pro toto zařízení"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Kdykoliv je to možné"
+
+#~ msgid "When necessary"
+#~ msgstr "Pokud je to nutné"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Po přenosu odstranit překódované soubory"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Aby byla tato funkce dostupná, musí běžet skript typu \"Transcode\""
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Přenést frontu na zařízení"
+
+#~ msgid "Music Location"
+#~ msgstr "Umístění hudby"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Vaše hudba bude přenesena na:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Můžete mít svou hudbu automaticky seskupenou\n"
+#~ "různými způsoby. Seskupením vzniknou adresáře\n"
+#~ "založené na stanovených měřítkách.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Seskupení"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Vyberte první seskupení:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Vyberte druhé seskupení:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Vyberte třetí seskupení:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Převést mezery na podtržení"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Klikněte pro další analyzátory"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Vizualizace"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Více informací o týmu se dozvíte z openDesktop.org"

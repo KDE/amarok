@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2015-02-04 19:01+0000\n"
 "Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -1931,8 +1931,8 @@ msgstr ""
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -1963,8 +1963,8 @@ msgstr "فنّان الألبوم"
 msgid "Composer"
 msgstr "الملحّن"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "النّوع"
@@ -1980,7 +1980,7 @@ msgstr "السّنة"
 msgid "Label"
 msgstr "اللصيقة"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4317,8 +4317,8 @@ msgstr "أعد تحميل الألسنة بالعنوان والفنّان ال�
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7909,182 +7909,6 @@ msgid ""
 "been discarded."
 msgstr ""
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>لا</b> ملفّات محدّدة."
-msgstr[1] "<b>ملفّ واحد</b> محدّد."
-msgstr[2] "<b>ملفّان</b> محدّدان."
-msgstr[3] "<b>%1</b> ملفّات محدّدة."
-msgstr[4] "<b>%1</b> ملفًّا محدّدًا."
-msgstr[5] "<b>%1</b> ملفّ محدّد."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt><b>ستُزال </b> هذه الملفّات <b>نهائيًّا</b> من قرصك الصّلب.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>ستُنقل هذه الملفّات إلى سلّة المهملات.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "أ&رسل إلى المهملات"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr ""
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "يحذف الملفّات"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "ماسك مكان للأيقونة، ليس في الواجهة الرّسوميّة"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "ماسك مكان طريقة الحذف، أبدًا لا تظهره للمستخدم."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "قائمة الملفّات الّتي على وشك الحذف."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "هذه قائمة العناصر الّتي على وشك الحذف."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "ماسك مكان عدد الملفّات، ليس في الواجهة الرّسوميّة"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "ا&حذف الملفّات بدل نقلها إلى المهملات"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr "إن أُشّر، ستُزال الملفّات نهائيًّا بدلًا من وضعها في سلّة المهملات"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "اختر ملحقة لِـ %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "اضبط جهاز الوسائط"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"عيّن أمرًا ليُشغّل قبل الاتّصال بجهازك (مثل أمر ضمّ) هنا.\n"
-"%d يُستبدَل بعقدة الجهاز، %m بنقطة الضمّ.\n"
-"لن تُنفّذ الأوامر الفارغة."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"عيّن أمرًا ليُشغّل قبل قطع الاتّصال بجهازك (مثل أمر إزالة ضمّ) هنا.\n"
-"%d يُستبدَل بعقدة الجهاز، %m بنقطة الضمّ.\n"
-"لن تُنفّذ الأوامر الفارغة."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "عند الحاجة"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr ""
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr ""
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8493,7 +8317,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "خيارات"
@@ -9171,56 +8994,6 @@ msgstr "عنوان مجهول"
 #, kde-format
 msgid "Unknown year"
 msgstr "سنة مجهولة"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "انقل الاصطفاف إلى الجهاز"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "مكان الموسيقى"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr ""
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "حوّل المسافات إلى شرطات تحتيّة"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11229,12 +11002,12 @@ msgstr ""
 "%0\n"
 "ك.هرتز"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "تخطيطات قوائم التّشغيل"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "اضبط تخطيطات قوائم التّشغيل..."
@@ -15771,16 +15544,6 @@ msgstr "مرّات التّشغيل: %1"
 msgid "Last played: %1"
 msgstr "آخر تشغيل: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr ""
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr ""
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16187,6 +15950,90 @@ msgstr "الفنّان: %1"
 #, kde-format
 msgid "empty"
 msgstr "فارغ"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>لا</b> ملفّات محدّدة."
+#~ msgstr[1] "<b>ملفّ واحد</b> محدّد."
+#~ msgstr[2] "<b>ملفّان</b> محدّدان."
+#~ msgstr[3] "<b>%1</b> ملفّات محدّدة."
+#~ msgstr[4] "<b>%1</b> ملفًّا محدّدًا."
+#~ msgstr[5] "<b>%1</b> ملفّ محدّد."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt><b>ستُزال </b> هذه الملفّات <b>نهائيًّا</b> من قرصك الصّلب.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>ستُنقل هذه الملفّات إلى سلّة المهملات.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "أ&رسل إلى المهملات"
+
+#~ msgid "Deleting files"
+#~ msgstr "يحذف الملفّات"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "ماسك مكان للأيقونة، ليس في الواجهة الرّسوميّة"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "ماسك مكان طريقة الحذف، أبدًا لا تظهره للمستخدم."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "قائمة الملفّات الّتي على وشك الحذف."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "هذه قائمة العناصر الّتي على وشك الحذف."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "ماسك مكان عدد الملفّات، ليس في الواجهة الرّسوميّة"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "ا&حذف الملفّات بدل نقلها إلى المهملات"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr "إن أُشّر، ستُزال الملفّات نهائيًّا بدلًا من وضعها في سلّة المهملات"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "اختر ملحقة لِـ %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "اضبط جهاز الوسائط"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "عيّن أمرًا ليُشغّل قبل الاتّصال بجهازك (مثل أمر ضمّ) هنا.\n"
+#~ "%d يُستبدَل بعقدة الجهاز، %m بنقطة الضمّ.\n"
+#~ "لن تُنفّذ الأوامر الفارغة."
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "عيّن أمرًا ليُشغّل قبل قطع الاتّصال بجهازك (مثل أمر إزالة ضمّ) هنا.\n"
+#~ "%d يُستبدَل بعقدة الجهاز، %m بنقطة الضمّ.\n"
+#~ "لن تُنفّذ الأوامر الفارغة."
+
+#~ msgid "When necessary"
+#~ msgstr "عند الحاجة"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "انقل الاصطفاف إلى الجهاز"
+
+#~ msgid "Music Location"
+#~ msgstr "مكان الموسيقى"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "حوّل المسافات إلى شرطات تحتيّة"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "احصل على بيانات من openDesktop.org لتعلّم المزيد عن الفريق"

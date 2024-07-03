@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -2018,8 +2018,8 @@ msgstr "Verscheden Künstlers"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2051,8 +2051,8 @@ msgstr "Album-Künstler"
 msgid "Composer"
 msgstr "Komponist"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Musikoort"
@@ -2068,7 +2068,7 @@ msgstr "Johr"
 msgid "Label"
 msgstr "Firma"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4445,8 +4445,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8075,189 +8075,6 @@ msgid ""
 "been discarded."
 msgstr "<b><font color='red'>Fehler:</font></b> %1"
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> Datei utsöcht."
-msgstr[1] "<b>%1</b> Dateien utsöcht."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Disse Indrääg warrt <b>duerhaftig</b> vun Dien Fastplaat <b>wegdaan</b>."
-"</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Disse Indrääg warrt na de Affalltünn verschaven.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Na &Affalltünn verschuven"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Utsöcht Stücken wegdoon"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Dateien wegdoon"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Lüttbild-Platzholler, nich binnen Böversiet"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Platzholler för Wegdo-Metood, kriggt de Bruker nienich to sehn."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "List vun Dateien, de wegdaan warrn schöölt"
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Dit is de List vun Indrääg, de wegdaan warrn schöölt."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Platzholler för Dateitall, nich binnen Böversiet"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "Dateien &wegdoon, nich na de Affalltünn verschuven"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Wenn anmaakt, warrt Dateien direktemang wegdaan, nich na de Affalltünn "
-"verschaven"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Is dit anmaakt, warrt Dateien <b>duerhaftig wegmaakt</b> ansteed dat "
-"se na de Affalltünn verschaven warrt.</p>\n"
-"\n"
-"<p><em>Bruuk disse Optschoon achtsam</em>: De mehrsten Dateisystemen köönt "
-"wegdaan Dateien nich seker wedderherstellen.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Moduul för \"%1\" utsöken"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Medienreedschap instellen"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&Tokoppel-Vörwegbefehl:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Bispill: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Hier kannst Du en Befehl angeven, den Du utföhren wullt, ehr de Reedschap "
-"tokoppelt warrt (a.B. en \"mount\"-Befehl)\n"
-"För \"%d\" warrt de Reedschapknütt insett, för \"%m\" de Inhangoort.\n"
-"Leddig Befehlen warrt nich utföhrt."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "&Afkoppel-Achterbefehl:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Bispill: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Hier kannst Du en Befehl angeven, den Du utföhren wullt, na dat de Reedschap "
-"afkoppelt wöör (a.B. en \"eject\"-Befehl)\n"
-"För \"%d\" warrt de Reedschapknütt insett, för \"%m\" de Inhangoort.\n"
-"Leddig Befehlen warrt nich utföhrt."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "Ehr't Överdregen na de Reedschap ü&mkoderen"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Ümkoderen na dat vörtrocken Formaat (%1) för de Reedschap"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Jümmers wenn mööglich"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Wenn nödig"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Ümkodeert Dateien na't Överdregen wegmaken"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "För disse Funkschoon mutt en Skript vun den Typ \"Ümkoderen\" lopen"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
@@ -8668,7 +8485,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Optschonen"
@@ -9447,61 +9263,6 @@ msgstr "Nich begäng Künstler"
 #| msgid "Unknown Genre"
 msgid "Unknown year"
 msgstr "Nich begäng Musikoort"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Töövreeg överdregen"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Oort för Musik"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Dien Musik warrt överdragen na:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Du kannst Dien Musik automaatsch mit en Reeg\n"
-"verscheden Metoden tohoop stellen laten. Elk\n"
-"Metood stellt Ornern langs de angeven Markmalen op.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Metoden"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Eerst Metood:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Tweet Metood:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Drütt Metood:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Freetekens mit Ünnerstreek utwesseln"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11596,12 +11357,12 @@ msgid ""
 "kHz"
 msgstr "%1 kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Afspeellist-Böversieden"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Afspeellist-Böversieden instellen..."
@@ -16402,16 +16163,6 @@ msgstr "Afspeelklock: %1"
 msgid "Last played: %1"
 msgstr "Tolest speelt: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "För mehr Frequenzkiekers hier klicken"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Filmmakers"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16809,6 +16560,169 @@ msgstr "Künstler: %1"
 #, kde-format
 msgid "empty"
 msgstr "leddig"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> Datei utsöcht."
+#~ msgstr[1] "<b>%1</b> Dateien utsöcht."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Disse Indrääg warrt <b>duerhaftig</b> vun Dien Fastplaat <b>wegdaan</"
+#~ "b>.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Disse Indrääg warrt na de Affalltünn verschaven.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Na &Affalltünn verschuven"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Utsöcht Stücken wegdoon"
+
+#~ msgid "Deleting files"
+#~ msgstr "Dateien wegdoon"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Lüttbild-Platzholler, nich binnen Böversiet"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Platzholler för Wegdo-Metood, kriggt de Bruker nienich to sehn."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "List vun Dateien, de wegdaan warrn schöölt"
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Dit is de List vun Indrääg, de wegdaan warrn schöölt."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Platzholler för Dateitall, nich binnen Böversiet"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "Dateien &wegdoon, nich na de Affalltünn verschuven"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Wenn anmaakt, warrt Dateien direktemang wegdaan, nich na de Affalltünn "
+#~ "verschaven"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Is dit anmaakt, warrt Dateien <b>duerhaftig wegmaakt</b> ansteed "
+#~ "dat se na de Affalltünn verschaven warrt.</p>\n"
+#~ "\n"
+#~ "<p><em>Bruuk disse Optschoon achtsam</em>: De mehrsten Dateisystemen "
+#~ "köönt wegdaan Dateien nich seker wedderherstellen.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Moduul för \"%1\" utsöken"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Medienreedschap instellen"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&Tokoppel-Vörwegbefehl:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Bispill: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Hier kannst Du en Befehl angeven, den Du utföhren wullt, ehr de Reedschap "
+#~ "tokoppelt warrt (a.B. en \"mount\"-Befehl)\n"
+#~ "För \"%d\" warrt de Reedschapknütt insett, för \"%m\" de Inhangoort.\n"
+#~ "Leddig Befehlen warrt nich utföhrt."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "&Afkoppel-Achterbefehl:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Bispill: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Hier kannst Du en Befehl angeven, den Du utföhren wullt, na dat de "
+#~ "Reedschap afkoppelt wöör (a.B. en \"eject\"-Befehl)\n"
+#~ "För \"%d\" warrt de Reedschapknütt insett, för \"%m\" de Inhangoort.\n"
+#~ "Leddig Befehlen warrt nich utföhrt."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "Ehr't Överdregen na de Reedschap ü&mkoderen"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Ümkoderen na dat vörtrocken Formaat (%1) för de Reedschap"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Jümmers wenn mööglich"
+
+#~ msgid "When necessary"
+#~ msgstr "Wenn nödig"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Ümkodeert Dateien na't Överdregen wegmaken"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "För disse Funkschoon mutt en Skript vun den Typ \"Ümkoderen\" lopen"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Töövreeg överdregen"
+
+#~ msgid "Music Location"
+#~ msgstr "Oort för Musik"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Dien Musik warrt överdragen na:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Du kannst Dien Musik automaatsch mit en Reeg\n"
+#~ "verscheden Metoden tohoop stellen laten. Elk\n"
+#~ "Metood stellt Ornern langs de angeven Markmalen op.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Metoden"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Eerst Metood:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Tweet Metood:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Drütt Metood:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Freetekens mit Ünnerstreek utwesseln"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "För mehr Frequenzkiekers hier klicken"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Filmmakers"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Vun openDesktop.org mehr Informatschonen över den Koppel halen"

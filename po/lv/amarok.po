@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -2022,8 +2022,8 @@ msgstr "Dažādi izpildītāji"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2054,8 +2054,8 @@ msgstr "Albuma izpildītājs"
 msgid "Composer"
 msgstr "Komponists"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Žanrs"
@@ -2071,7 +2071,7 @@ msgstr "Gads"
 msgid "Label"
 msgstr "Ierakstu studija"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4449,8 +4449,8 @@ msgstr "Pārlādēt tabulatūras ar sekojošo nosaukumu un izpildītāju"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8149,187 +8149,6 @@ msgstr ""
 "Priekš <b><font color='red'>%1</font></b> tika atrastas vairākas divdomīgas "
 "sakritības, kas tika izmestas."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "Izvēlēts <b>%1</b> fails."
-msgstr[1] "Izvēlēti <b>%1</b> faili."
-msgstr[2] "Izvēlēts <b>%1</b> failu."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Šie celiņi tiks <b>neatgriezeniski izdzēsti</b> no jūsu cietā diska.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Šīs celiņi tiks izmesti miskastē.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Pārvietot uz &miskasti"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Grasās dzēst izvēlētos failus"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Dzēš failus"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ikonas vietturis, nav saskarnes sastāvdaļa"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Dzēšanas metodes vietturis, lietotājam netiek rādīts."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Dzēšamo failu saraksts."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Šis ir failu saraksts, kas tiks izdzēsti."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Failu skaita vietturis, nav saskarnes sastāvdaļa"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Dzēst failus, nevis pārvietot uz miskasti"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr "Ja ieslēgts, faili tiks pilnībā izdzēsti nevis pārvietoti uz miskasti"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Ja šis ir ieslēgts, faili tiks <b>neatgriezeniski izdzēsti</b>, nevis "
-"pārvietoti uz miskasti.</p>\n"
-"\n"
-"<p><em>Lietojiet uzmanīgi</em>: Vairums failu sistēmu nespēj droši atjaunot "
-"dzēstus failus.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Izvēlēties spraudni priekš %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Konfigurēt datu nesēju ierīci"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Pirms-&pieslēgšanas komanda:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Piemērs: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Šeit norādiet komandu, ko izpildīt pirms datu nesēja pieslēgšanas (piemēram, "
-"mount komanda).\n"
-"%d tiks aizvietots ar iekārtas mezglu, %m ar montēšanas punktu.\n"
-"Tukšas komandas netiek izpildītas."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Pēc-a&tvienošanas komanda:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Piemērs: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Šeit norādiet komandu, ko izpildīt pēc jūsu iekārtas atvienošanas (piemēram, "
-"eject).\n"
-"%d tiks aizvietots ar iekārtas mezglu, %m ar montēšanas punktu.\n"
-"Tukšas komandas netiek izpildītas."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Pārkodēt nosūtot uz ierīci"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Pārkodēt uz ierīces vēlamo formātu (%1)"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Kad iespējams"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Kan nepieciešams"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Pēc ielādes izdzēst pārkodētos failus"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Šai iespējai nepieciešamas \"Transcode\" skripts"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8744,7 +8563,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Opcijas"
@@ -9490,61 +9308,6 @@ msgstr "Nezināms nosaukums"
 #, kde-format
 msgid "Unknown year"
 msgstr "Nezināms gads"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Pārsūtīt rindu uz ierīci"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Mūzikas atrašanās vieta"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Mūzika tiks pārsūtīta uz:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Jūs varat automātiski grupēt mūziku\n"
-"vairākos veidos. Katrs grupējums izveidos\n"
-"mapes, izmantojot norādīto kritēriju.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Grupēšanas"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Izvēlieties pirmo grupēšanu:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Izvēlieties otro grupēšanu:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Izvēlieties trešo grupēšanu:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Pārveidot atstarpes par pasvītrojumiem"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11611,12 +11374,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Repertuāra izkārtojumi"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Konfigurēt repertuāra izkārtojumus..."
@@ -16427,16 +16190,6 @@ msgstr "Atskaņošanu skaits: %1"
 msgid "Last played: %1"
 msgstr "Pēdējoreiz atskaņots: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Nospiediet vairāk analizatoriem"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Vizualizācijas"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16829,6 +16582,169 @@ msgstr "Izpildītājs: %1"
 #, kde-format
 msgid "empty"
 msgstr "tukšs"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "Izvēlēts <b>%1</b> fails."
+#~ msgstr[1] "Izvēlēti <b>%1</b> faili."
+#~ msgstr[2] "Izvēlēts <b>%1</b> failu."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Šie celiņi tiks <b>neatgriezeniski izdzēsti</b> no jūsu cietā diska.</"
+#~ "qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Šīs celiņi tiks izmesti miskastē.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Pārvietot uz &miskasti"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Grasās dzēst izvēlētos failus"
+
+#~ msgid "Deleting files"
+#~ msgstr "Dzēš failus"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ikonas vietturis, nav saskarnes sastāvdaļa"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Dzēšanas metodes vietturis, lietotājam netiek rādīts."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Dzēšamo failu saraksts."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Šis ir failu saraksts, kas tiks izdzēsti."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Failu skaita vietturis, nav saskarnes sastāvdaļa"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Dzēst failus, nevis pārvietot uz miskasti"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Ja ieslēgts, faili tiks pilnībā izdzēsti nevis pārvietoti uz miskasti"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Ja šis ir ieslēgts, faili tiks <b>neatgriezeniski izdzēsti</b>, "
+#~ "nevis pārvietoti uz miskasti.</p>\n"
+#~ "\n"
+#~ "<p><em>Lietojiet uzmanīgi</em>: Vairums failu sistēmu nespēj droši "
+#~ "atjaunot dzēstus failus.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Izvēlēties spraudni priekš %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Konfigurēt datu nesēju ierīci"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Pirms-&pieslēgšanas komanda:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Piemērs: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Šeit norādiet komandu, ko izpildīt pirms datu nesēja pieslēgšanas "
+#~ "(piemēram, mount komanda).\n"
+#~ "%d tiks aizvietots ar iekārtas mezglu, %m ar montēšanas punktu.\n"
+#~ "Tukšas komandas netiek izpildītas."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Pēc-a&tvienošanas komanda:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Piemērs: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Šeit norādiet komandu, ko izpildīt pēc jūsu iekārtas atvienošanas "
+#~ "(piemēram, eject).\n"
+#~ "%d tiks aizvietots ar iekārtas mezglu, %m ar montēšanas punktu.\n"
+#~ "Tukšas komandas netiek izpildītas."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Pārkodēt nosūtot uz ierīci"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Pārkodēt uz ierīces vēlamo formātu (%1)"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Kad iespējams"
+
+#~ msgid "When necessary"
+#~ msgstr "Kan nepieciešams"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Pēc ielādes izdzēst pārkodētos failus"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Šai iespējai nepieciešamas \"Transcode\" skripts"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Pārsūtīt rindu uz ierīci"
+
+#~ msgid "Music Location"
+#~ msgstr "Mūzikas atrašanās vieta"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Mūzika tiks pārsūtīta uz:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Jūs varat automātiski grupēt mūziku\n"
+#~ "vairākos veidos. Katrs grupējums izveidos\n"
+#~ "mapes, izmantojot norādīto kritēriju.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Grupēšanas"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Izvēlieties pirmo grupēšanu:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Izvēlieties otro grupēšanu:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Izvēlieties trešo grupēšanu:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Pārveidot atstarpes par pasvītrojumiem"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Nospiediet vairāk analizatoriem"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Vizualizācijas"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

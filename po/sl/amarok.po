@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-06-19 09:26+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -2013,8 +2013,8 @@ msgstr "Več izvajalcev"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2045,8 +2045,8 @@ msgstr "Izvajalec albuma"
 msgid "Composer"
 msgstr "Skladatelj"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Zvrst"
@@ -2062,7 +2062,7 @@ msgstr "Leto"
 msgid "Label"
 msgstr "Oznaka"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4403,8 +4403,8 @@ msgstr "Znova naloži tablature z naslednjim naslovom in izvajalcem"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8103,189 +8103,6 @@ msgstr ""
 "Za <b><font color='red'>%1</font></b> je bilo najdenih več dvoumnih ujemanj, "
 "ki so zavrženi."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "Izbrana je <b>%1</b> datoteka."
-msgstr[1] "Izbrani sta <b>%1</b> datoteki."
-msgstr[2] "Izbrane so <b>%1</b> datoteke."
-msgstr[3] "Izbranih je <b>%1</b> datotek."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Ti predmeti bodo <b>trajno izbrisani</b> s trdega diska.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Ti predmeti bodo premaknjeni v Smeti.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "Premakni v Smeti"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Izbrane datoteke bodo izbrisane"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Brisanje datotek"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Vsebnik za ikono, ni v grafičen vmesniku"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Vsebnik za način brisanja, nikoli ni prikazan uporabniku."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Seznam datotek, ki bodo izbrisane."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "To je seznam predmetov, ki bodo izbrisani."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Vsebnik za število datotek, ni v uporabniškem vmesniku"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "Izbriši datoteke, namesto premikanja v Smeti"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Če je označeno, bodo datoteke trajno izbrisane, namesto da bi bile "
-"premaknjene v Smeti"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Če je označeno, bodo datoteke <b>trajno izbrisane</b>, namesto da bi "
-"bile premaknjene v Smeti</p>\n"
-"\n"
-"<p><em>Bodite previdni pri uporabi te možnosti</em>: večina datotečnih "
-"sistemov ne zmore zanesljivo povrniti izbrisanih datotek.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Izberite vstavek za %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Nastavi predstavnostno napravo"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Ukaz pred povezavo:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Primer: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Vnesite ukaz, ki se bo zagnal pred povezavo z vašo napravo (npr. ukaz za "
-"priklop).\n"
-"%d se zamenja z vozliščem naprave, %m s priklopno točko.\n"
-"Če pustite prazno, se ne izvede noben ukaz."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Ukaz po prekinitvi povezave:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Primer: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Vnesite ukaz, ki se bo zagnal po prekinitvi povezave z vašo napravo (npr. "
-"ukaz za odklop).\n"
-"%d se zamenja z vozliščem naprave, %m s priklopno točko.\n"
-"Če pustite prazno, se ne izvede noben ukaz."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "Prekodiraj pred prenosom na napravo"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Prekodiraj v prednostno vrsto (%1) za napravo"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Če je mogoče"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Ko je potrebno"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Po prenosu odstrani prekodirane datoteke"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Za to zmožnost mora biti zagnan skript vrste \"Prekodiraj\""
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8698,7 +8515,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Možnosti"
@@ -9443,61 +9259,6 @@ msgstr "Neznan naslov"
 #, kde-format
 msgid "Unknown year"
 msgstr "Neznano leto"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Vrsta za prenos na napravo"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Mesto glasbe"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Glasba bo prenesena v:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Vašo glasbo je mogoče združiti v skupine na\n"
-"različne načine. Za vsako razvrstitev bodo glede\n"
-"na navedene pogoje ustvarjene mape.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Razvrstitve v skupine"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Izberite prvo razvrstitev:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Izberite drugo razvrstitev:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Izberite tretjo razvrstitev:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Pretvori presledke v podčrtaje"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11539,12 +11300,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Razporedi za sezname predvajanja"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Nastavi razporede za sezname predvajanja ..."
@@ -16369,16 +16130,6 @@ msgstr "Število predvajanj: %1"
 msgid "Last played: %1"
 msgstr "Nazadnje predvajana: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Kliknite za dodatne preučevalnike"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "Predočenja"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16772,6 +16523,169 @@ msgstr "Izvajalec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prazno"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "Izbrana je <b>%1</b> datoteka."
+#~ msgstr[1] "Izbrani sta <b>%1</b> datoteki."
+#~ msgstr[2] "Izbrane so <b>%1</b> datoteke."
+#~ msgstr[3] "Izbranih je <b>%1</b> datotek."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr "<qt>Ti predmeti bodo <b>trajno izbrisani</b> s trdega diska.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Ti predmeti bodo premaknjeni v Smeti.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "Premakni v Smeti"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Izbrane datoteke bodo izbrisane"
+
+#~ msgid "Deleting files"
+#~ msgstr "Brisanje datotek"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Vsebnik za ikono, ni v grafičen vmesniku"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Vsebnik za način brisanja, nikoli ni prikazan uporabniku."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Seznam datotek, ki bodo izbrisane."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "To je seznam predmetov, ki bodo izbrisani."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Vsebnik za število datotek, ni v uporabniškem vmesniku"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "Izbriši datoteke, namesto premikanja v Smeti"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Če je označeno, bodo datoteke trajno izbrisane, namesto da bi bile "
+#~ "premaknjene v Smeti"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Če je označeno, bodo datoteke <b>trajno izbrisane</b>, namesto da "
+#~ "bi bile premaknjene v Smeti</p>\n"
+#~ "\n"
+#~ "<p><em>Bodite previdni pri uporabi te možnosti</em>: večina datotečnih "
+#~ "sistemov ne zmore zanesljivo povrniti izbrisanih datotek.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Izberite vstavek za %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Nastavi predstavnostno napravo"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Ukaz pred povezavo:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Primer: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Vnesite ukaz, ki se bo zagnal pred povezavo z vašo napravo (npr. ukaz za "
+#~ "priklop).\n"
+#~ "%d se zamenja z vozliščem naprave, %m s priklopno točko.\n"
+#~ "Če pustite prazno, se ne izvede noben ukaz."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Ukaz po prekinitvi povezave:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Primer: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Vnesite ukaz, ki se bo zagnal po prekinitvi povezave z vašo napravo (npr. "
+#~ "ukaz za odklop).\n"
+#~ "%d se zamenja z vozliščem naprave, %m s priklopno točko.\n"
+#~ "Če pustite prazno, se ne izvede noben ukaz."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "Prekodiraj pred prenosom na napravo"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Prekodiraj v prednostno vrsto (%1) za napravo"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Če je mogoče"
+
+#~ msgid "When necessary"
+#~ msgstr "Ko je potrebno"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Po prenosu odstrani prekodirane datoteke"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Za to zmožnost mora biti zagnan skript vrste \"Prekodiraj\""
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Vrsta za prenos na napravo"
+
+#~ msgid "Music Location"
+#~ msgstr "Mesto glasbe"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Glasba bo prenesena v:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Vašo glasbo je mogoče združiti v skupine na\n"
+#~ "različne načine. Za vsako razvrstitev bodo glede\n"
+#~ "na navedene pogoje ustvarjene mape.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Razvrstitve v skupine"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Izberite prvo razvrstitev:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Izberite drugo razvrstitev:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Izberite tretjo razvrstitev:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Pretvori presledke v podčrtaje"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Kliknite za dodatne preučevalnike"
+
+#~ msgid "&Visualizations"
+#~ msgstr "Predočenja"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr ""

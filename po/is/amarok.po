@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2024-05-25 10:53+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
@@ -2030,8 +2030,8 @@ msgstr "Ýmsir flytjendur"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2063,8 +2063,8 @@ msgstr "Flytjandi"
 msgid "Composer"
 msgstr "Tónskáld"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Tegund"
@@ -2080,7 +2080,7 @@ msgstr "Ár"
 msgid "Label"
 msgstr "Merki"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4473,8 +4473,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -8089,186 +8089,6 @@ msgid ""
 "been discarded."
 msgstr "<b><font color='red'>Villa:</font></b> %1"
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> skrá valin."
-msgstr[1] "<b>%1</b> skrár valdar."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Þessum hlutum verður <b>endanlega eytt</b> af harða disknum.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Þessir hlutir verða fluttir í ruslið.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Setja í ruslið"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Um það bil að eyða völdum skrám"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Eyði skrám"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Ígildi táknmyndar, ekki í GUI"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Ígildi fyrir eyðingaraðferð, aldrei sýnt notandanum."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Listi yfir skrár sem verður eytt."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Þetta er listi yfir skrár sem er verið að fara að eyða."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Ígildi fjölda skjala, ekki í GUI"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "&Eyða skrám í stað þess að setja þær í ruslið"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Ef valið, verður skrám endanlega eytt í stað þess að setja þær í ruslið"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Ef hakað er hér verður skrám <b>eytt til frambúðar</b> í stað þess að "
-"vera settar í ruslatunnuna.</p>\n"
-"\n"
-"<p><em>Notaðu þennan valmöguleika með varúð.</em>: Fæst skráakerfi geta "
-"endurheimt eyddar skrár.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Velja íforrit fyrir %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Stilla ferðatæki"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "&For-tengiskipun:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Dæmi: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Settu hér skipun sem á að keyra áður en tengst er tækinu (þ.e. "
-"tengiskipun).\n"
-"%d er skipt út með tækjahnúðnum, %m með tengipunktinum.\n"
-"Auðar skipanir eru ekki framkvæmdar."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Eftir-aften&giskipun:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Dæmi: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Settu hér skipun sem á að keyra eftir að tækið er aftengt (þ.e. kasta út "
-"skipun).\n"
-"%d er skipt út með tækjahnúðnum, %m með tengipunktinum.\n"
-"Auðar skipanir eru ekki framkvæmdar."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "&Umkóða áður en flutt er yfir í ferðatæki"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Umkóða í sjálfgefið snið tækisins (%1)"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Þegar það er mögulegt"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Þegar það er nauðsynlegt"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Fjarlægja umkóðaðar skrár eftir flutning"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Til að þetta virki verður \"Transcode\" skriftan að vera keyrandi"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8667,7 +8487,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Valmöguleikar"
@@ -9433,61 +9252,6 @@ msgstr "Óþekktur titill"
 #| msgid "Unknown Genre"
 msgid "Unknown year"
 msgstr "Óþekkt tegund"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Flytja biðröð yfir í tæki"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Staðsetning tónlistar"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Tónlistin þín verður flutt í:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Þú getur fengið tónlistina þína setta sjálfkrafa í\n"
-"mismunandi hópa. Hver hópun mun búa til möppu\n"
-"eftir ákveðnum forsendum.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Hópun"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Veldu fyrstu hópun:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Veldu aðra hópun:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Veldu þriðju hópun:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Umbreyta bilum í undirstrik"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, fuzzy, kde-format
@@ -11585,13 +11349,13 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgid "Playlist Layouts"
 msgstr "Heiti lagalista:"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, fuzzy, kde-format
 #| msgid "Configure playlist layouts..."
 msgid "Configure Playlist Layouts..."
@@ -16490,16 +16254,6 @@ msgstr "Afspilunartalning"
 msgid "Last played: %1"
 msgstr "Seinasta spilun"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Smelltu til að sjá fleiri tónmæla"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Sjónbrellur"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16903,6 +16657,167 @@ msgstr "Listamaður"
 #, fuzzy, kde-format
 msgid "empty"
 msgstr "Tómt"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> skrá valin."
+#~ msgstr[1] "<b>%1</b> skrár valdar."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Þessum hlutum verður <b>endanlega eytt</b> af harða disknum.</qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Þessir hlutir verða fluttir í ruslið.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Setja í ruslið"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Um það bil að eyða völdum skrám"
+
+#~ msgid "Deleting files"
+#~ msgstr "Eyði skrám"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Ígildi táknmyndar, ekki í GUI"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Ígildi fyrir eyðingaraðferð, aldrei sýnt notandanum."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Listi yfir skrár sem verður eytt."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Þetta er listi yfir skrár sem er verið að fara að eyða."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Ígildi fjölda skjala, ekki í GUI"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "&Eyða skrám í stað þess að setja þær í ruslið"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Ef valið, verður skrám endanlega eytt í stað þess að setja þær í ruslið"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Ef hakað er hér verður skrám <b>eytt til frambúðar</b> í stað þess "
+#~ "að vera settar í ruslatunnuna.</p>\n"
+#~ "\n"
+#~ "<p><em>Notaðu þennan valmöguleika með varúð.</em>: Fæst skráakerfi geta "
+#~ "endurheimt eyddar skrár.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Velja íforrit fyrir %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Stilla ferðatæki"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "&For-tengiskipun:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Dæmi: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Settu hér skipun sem á að keyra áður en tengst er tækinu (þ.e. "
+#~ "tengiskipun).\n"
+#~ "%d er skipt út með tækjahnúðnum, %m með tengipunktinum.\n"
+#~ "Auðar skipanir eru ekki framkvæmdar."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Eftir-aften&giskipun:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Dæmi: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Settu hér skipun sem á að keyra eftir að tækið er aftengt (þ.e. kasta út "
+#~ "skipun).\n"
+#~ "%d er skipt út með tækjahnúðnum, %m með tengipunktinum.\n"
+#~ "Auðar skipanir eru ekki framkvæmdar."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "&Umkóða áður en flutt er yfir í ferðatæki"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Umkóða í sjálfgefið snið tækisins (%1)"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Þegar það er mögulegt"
+
+#~ msgid "When necessary"
+#~ msgstr "Þegar það er nauðsynlegt"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Fjarlægja umkóðaðar skrár eftir flutning"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "Til að þetta virki verður \"Transcode\" skriftan að vera keyrandi"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Flytja biðröð yfir í tæki"
+
+#~ msgid "Music Location"
+#~ msgstr "Staðsetning tónlistar"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Tónlistin þín verður flutt í:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Þú getur fengið tónlistina þína setta sjálfkrafa í\n"
+#~ "mismunandi hópa. Hver hópun mun búa til möppu\n"
+#~ "eftir ákveðnum forsendum.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Hópun"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Veldu fyrstu hópun:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Veldu aðra hópun:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Veldu þriðju hópun:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Umbreyta bilum í undirstrik"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Smelltu til að sjá fleiri tónmæla"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Sjónbrellur"
 
 #~ msgid "Internet connection not available"
 #~ msgstr "Internettenging ekki tiltæk"

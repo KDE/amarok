@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-02 01:44+0000\n"
+"POT-Creation-Date: 2024-07-03 01:46+0000\n"
 "PO-Revision-Date: 2021-09-27 21:22+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <kde-i18n-doc@kde.org>\n"
@@ -2001,8 +2001,8 @@ msgstr "Diverse kunstnere"
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
-#: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
+#: playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:220
 #, kde-format
@@ -2033,8 +2033,8 @@ msgstr "Albummets kunstner"
 msgid "Composer"
 msgstr "Komponist"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
-#: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
+#: playlist/ProgressiveSearchWidget.cpp:95
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
@@ -2050,7 +2050,7 @@ msgstr "År"
 msgid "Label"
 msgstr "Etiket"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -4373,8 +4373,8 @@ msgstr "Genindlæs tabulaturer med følgende titel og kunstner"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
-#: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
 #: services/magnatune/MagnatuneStore.cpp:214
 #, kde-format
@@ -7941,186 +7941,6 @@ msgstr ""
 "Flere flertydige resultater fundet til <b><font color='red'>%1</font></b>, "
 "er blevet kasseret."
 
-#: dialogs/deletedialog.cpp:63
-#, kde-format
-msgid "<b>1</b> file selected."
-msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> fil valgt."
-msgstr[1] "<b>%1</b> filer valgt."
-
-#: dialogs/deletedialog.cpp:69
-#, kde-format
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr ""
-"<qt>Disse punkter vil blive <b>slettet fuldstændigt</b> fra harddisken.</qt>"
-
-#: dialogs/deletedialog.cpp:75
-#, kde-format
-msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Pisse punkter vil blive flyttet til papirkurven.</qt>"
-
-#: dialogs/deletedialog.cpp:87
-#, kde-format
-msgid "&Send to Trash"
-msgstr "&Send til papirkurv"
-
-#: dialogs/deletedialog.cpp:93
-#, kde-format
-msgid "About to delete selected files"
-msgstr "Er ved at slette markerede filer"
-
-#: dialogs/deletedialog.cpp:154
-#, kde-format
-msgid "Deleting files"
-msgstr "Sletter filer"
-
-#. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: dialogs/deletedialogbase.ui:41
-#, kde-format
-msgid "Icon Placeholder, not in GUI"
-msgstr "Pladsholder for ikon, ikke i den grafiske grænseflade"
-
-#. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: dialogs/deletedialogbase.ui:56
-#, kde-format
-msgid "Deletion method placeholder, never shown to user."
-msgstr "Pladsholder for sletningsmetode, vises aldrig til brugeren."
-
-#. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:79
-#, kde-format
-msgid "List of files that are about to be deleted."
-msgstr "Liste med filer som nu bliver slettet."
-
-#. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: dialogs/deletedialogbase.ui:82
-#, kde-format
-msgid "This is the list of items that are about to be deleted."
-msgstr "Dette er listen med punkter som nu bliver slettet."
-
-#. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: dialogs/deletedialogbase.ui:89
-#, kde-format
-msgid "Placeholder for number of files, not in GUI"
-msgstr "Pladsholder for antal filer, ikke i den grafiske grænseflade"
-
-#. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:102
-#, kde-format
-msgid "&Delete files instead of moving them to the trash"
-msgstr "S&let filer i stedet for at flytte dem til papirkurven"
-
-#. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:105
-#, kde-format
-msgid ""
-"If checked, files will be permanently removed instead of being placed in the "
-"Trash Bin"
-msgstr ""
-"Hvis markeret, fjernes filer permanent i stedet for at placeres i papirkurven"
-
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: dialogs/deletedialogbase.ui:110
-#, kde-format
-msgid ""
-"<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-"instead of being placed in the Trash Bin.</p>\n"
-"\n"
-"<p><em>Use this option with caution</em>: Most filesystems are unable to "
-"reliably undelete deleted files.</p></qt>"
-msgstr ""
-"<qt><p>Hvis dette felt er afkrydset, vil filer blive <b>fjernet permanent</"
-"b> i stedet for at blive puttet i papirkurven.</p>\n"
-" \n"
-" <p><em>Brug denne indstilling forsigtigt</em>: De fleste filsystemer kan "
-"ikke genskabe slettede filer på pålidelig vis.</p></qt>"
-
-#: dialogs/deviceconfiguredialog.cpp:44
-#, kde-format
-msgid "Select Plugin for %1"
-msgstr "Vælg plugin til %1"
-
-#: dialogs/deviceconfiguredialog.cpp:61
-#, kde-format
-msgid "Configure Media Device"
-msgstr "Indstil medieenhed"
-
-#: dialogs/deviceconfiguredialog.cpp:85
-#, kde-format
-msgid "Pre-&connect command:"
-msgstr "Kommando &inden forbindelse:"
-
-#: dialogs/deviceconfiguredialog.cpp:87
-#, kde-format
-msgid "Example: mount %d"
-msgstr "Eksempel: mount %d"
-
-#: dialogs/deviceconfiguredialog.cpp:89
-#, kde-format
-msgid ""
-"Set a command to be run before connecting to your device (e.g. a mount "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Sæt en kommando til at blive kørt, før du forbinder til din enhed (f.eks. en  mount-kommando) her.\n"
-" %d erstattes af enhedsfilen, %m af monteringspunktet.\n"
-" Tomme kommandoer køres ikke."
-
-#: dialogs/deviceconfiguredialog.cpp:92
-#, kde-format
-msgid "Post-&disconnect command:"
-msgstr "Kommando &efter forbindelse:"
-
-#: dialogs/deviceconfiguredialog.cpp:95
-#, kde-format
-msgid "Example: eject %d"
-msgstr "Eksempel: eject %d"
-
-#: dialogs/deviceconfiguredialog.cpp:96
-#, kde-format
-msgid ""
-"Set a command to be run after disconnecting from your device (e.g. an eject "
-"command) here.\n"
-"%d is replaced by the device node, %m by the mount point.\n"
-"Empty commands are not executed."
-msgstr ""
-"Indstil en kommando at køre efter der er afbrudt  fra din enhed (f.eks. en "
-"udskubningskommando).\n"
-"%d erstattes med enhedens knude, %m med monteringspunktet.\n"
-"Tomme kommandoer udføres ikke."
-
-#: dialogs/deviceconfiguredialog.cpp:100
-#, kde-format
-msgid "&Transcode before transferring to device"
-msgstr "Om&kod inden overførsel til enheden"
-
-#: dialogs/deviceconfiguredialog.cpp:107
-#, kde-format
-msgid "Transcode to preferred format (%1) for device"
-msgstr "Kod om til det format (%1) som enheden foretrækker"
-
-#: dialogs/deviceconfiguredialog.cpp:109
-#, kde-format
-msgid "Whenever possible"
-msgstr "Om muligt"
-
-#: dialogs/deviceconfiguredialog.cpp:112
-#, kde-format
-msgid "When necessary"
-msgstr "Om nødvendigt"
-
-#: dialogs/deviceconfiguredialog.cpp:119
-#, kde-format
-msgid "Remove transcoded files after transfer"
-msgstr "Fjern omkodede filer efter overførsel"
-
-#: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
-#, kde-format
-msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "For denne funktion skal et script af typen \"Transcode\" køre"
-
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
 msgid "Copy to Clipboard"
@@ -8532,7 +8352,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
 #: dialogs/OrganizeCollectionDialogBase.ui:64 dialogs/TagGuessOptions.ui:17
-#: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
 msgstr "Indstillinger"
@@ -9278,61 +9097,6 @@ msgstr "Ukendt titel"
 #, kde-format
 msgid "Unknown year"
 msgstr "Ukendt år"
-
-#: dialogs/transferdialog.cpp:61
-#, kde-format
-msgid "Transfer Queue to Device"
-msgstr "Overførselskø til enhed"
-
-#: dialogs/transferdialog.cpp:69
-#, kde-format
-msgid "Music Location"
-msgstr "Musikplacering"
-
-#: dialogs/transferdialog.cpp:73
-#, kde-format
-msgid ""
-"Your music will be transferred to:\n"
-"%1"
-msgstr ""
-"Din musik vil blive overført til:\n"
-"%1"
-
-#: dialogs/transferdialog.cpp:82
-#, kde-format
-msgid ""
-"You can have your music automatically grouped in\n"
-"a variety of ways. Each grouping will create\n"
-"directories based upon the specified criteria.\n"
-msgstr ""
-"Du kan lade musikken grupperes automatisk\n"
-"på et antal forskellige måder. Hver gruppering laver\n"
-"mapper baseret på de angivne kriterier.\n"
-
-#: dialogs/transferdialog.cpp:86
-#, kde-format
-msgid "Groupings"
-msgstr "Grupperinger"
-
-#: dialogs/transferdialog.cpp:89
-#, kde-format
-msgid "Select first grouping:\n"
-msgstr "Vælg første gruppering:\n"
-
-#: dialogs/transferdialog.cpp:91
-#, kde-format
-msgid "Select second grouping:\n"
-msgstr "Vælg anden gruppering:\n"
-
-#: dialogs/transferdialog.cpp:93
-#, kde-format
-msgid "Select third grouping:\n"
-msgstr "Vælg tredje gruppering:\n"
-
-#: dialogs/transferdialog.cpp:130
-#, kde-format
-msgid "Convert spaces to underscores"
-msgstr "Konvertér mellemrum til understregningstegn"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
 #, kde-format
@@ -11368,12 +11132,12 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: playlist/layouts/LayoutConfigAction.cpp:45
+#: playlist/layouts/LayoutConfigAction.cpp:43
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Spillelistelayouts"
 
-#: playlist/layouts/LayoutConfigAction.cpp:71
+#: playlist/layouts/LayoutConfigAction.cpp:69
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "Indstil spillelistelayouts..."
@@ -16091,16 +15855,6 @@ msgstr "Afspilningstæller: %1"
 msgid "Last played: %1"
 msgstr "Sidst spillet: %1"
 
-#: widgets/AnalyzerWidget.cpp:35
-#, kde-format
-msgid "Click for more analyzers"
-msgstr "Klik for flere analysatorer"
-
-#: widgets/AnalyzerWidget.cpp:69
-#, kde-format
-msgid "&Visualizations"
-msgstr "&Visualiseringer"
-
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
 msgid "Bookmark"
@@ -16480,6 +16234,169 @@ msgstr "Kunstner: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
+
+#~ msgid "<b>1</b> file selected."
+#~ msgid_plural "<b>%1</b> files selected."
+#~ msgstr[0] "<b>1</b> fil valgt."
+#~ msgstr[1] "<b>%1</b> filer valgt."
+
+#~ msgid ""
+#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
+#~ "qt>"
+#~ msgstr ""
+#~ "<qt>Disse punkter vil blive <b>slettet fuldstændigt</b> fra harddisken.</"
+#~ "qt>"
+
+#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
+#~ msgstr "<qt>Pisse punkter vil blive flyttet til papirkurven.</qt>"
+
+#~ msgid "&Send to Trash"
+#~ msgstr "&Send til papirkurv"
+
+#~ msgid "About to delete selected files"
+#~ msgstr "Er ved at slette markerede filer"
+
+#~ msgid "Deleting files"
+#~ msgstr "Sletter filer"
+
+#~ msgid "Icon Placeholder, not in GUI"
+#~ msgstr "Pladsholder for ikon, ikke i den grafiske grænseflade"
+
+#~ msgid "Deletion method placeholder, never shown to user."
+#~ msgstr "Pladsholder for sletningsmetode, vises aldrig til brugeren."
+
+#~ msgid "List of files that are about to be deleted."
+#~ msgstr "Liste med filer som nu bliver slettet."
+
+#~ msgid "This is the list of items that are about to be deleted."
+#~ msgstr "Dette er listen med punkter som nu bliver slettet."
+
+#~ msgid "Placeholder for number of files, not in GUI"
+#~ msgstr "Pladsholder for antal filer, ikke i den grafiske grænseflade"
+
+#~ msgid "&Delete files instead of moving them to the trash"
+#~ msgstr "S&let filer i stedet for at flytte dem til papirkurven"
+
+#~ msgid ""
+#~ "If checked, files will be permanently removed instead of being placed in "
+#~ "the Trash Bin"
+#~ msgstr ""
+#~ "Hvis markeret, fjernes filer permanent i stedet for at placeres i "
+#~ "papirkurven"
+
+#~ msgid ""
+#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
+#~ "instead of being placed in the Trash Bin.</p>\n"
+#~ "\n"
+#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
+#~ "reliably undelete deleted files.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Hvis dette felt er afkrydset, vil filer blive <b>fjernet "
+#~ "permanent</b> i stedet for at blive puttet i papirkurven.</p>\n"
+#~ " \n"
+#~ " <p><em>Brug denne indstilling forsigtigt</em>: De fleste filsystemer kan "
+#~ "ikke genskabe slettede filer på pålidelig vis.</p></qt>"
+
+#~ msgid "Select Plugin for %1"
+#~ msgstr "Vælg plugin til %1"
+
+#~ msgid "Configure Media Device"
+#~ msgstr "Indstil medieenhed"
+
+#~ msgid "Pre-&connect command:"
+#~ msgstr "Kommando &inden forbindelse:"
+
+#~ msgid "Example: mount %d"
+#~ msgstr "Eksempel: mount %d"
+
+#~ msgid ""
+#~ "Set a command to be run before connecting to your device (e.g. a mount "
+#~ "command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Sæt en kommando til at blive kørt, før du forbinder til din enhed (f.eks. "
+#~ "en  mount-kommando) her.\n"
+#~ " %d erstattes af enhedsfilen, %m af monteringspunktet.\n"
+#~ " Tomme kommandoer køres ikke."
+
+#~ msgid "Post-&disconnect command:"
+#~ msgstr "Kommando &efter forbindelse:"
+
+#~ msgid "Example: eject %d"
+#~ msgstr "Eksempel: eject %d"
+
+#~ msgid ""
+#~ "Set a command to be run after disconnecting from your device (e.g. an "
+#~ "eject command) here.\n"
+#~ "%d is replaced by the device node, %m by the mount point.\n"
+#~ "Empty commands are not executed."
+#~ msgstr ""
+#~ "Indstil en kommando at køre efter der er afbrudt  fra din enhed (f.eks. "
+#~ "en udskubningskommando).\n"
+#~ "%d erstattes med enhedens knude, %m med monteringspunktet.\n"
+#~ "Tomme kommandoer udføres ikke."
+
+#~ msgid "&Transcode before transferring to device"
+#~ msgstr "Om&kod inden overførsel til enheden"
+
+#~ msgid "Transcode to preferred format (%1) for device"
+#~ msgstr "Kod om til det format (%1) som enheden foretrækker"
+
+#~ msgid "Whenever possible"
+#~ msgstr "Om muligt"
+
+#~ msgid "When necessary"
+#~ msgstr "Om nødvendigt"
+
+#~ msgid "Remove transcoded files after transfer"
+#~ msgstr "Fjern omkodede filer efter overførsel"
+
+#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
+#~ msgstr "For denne funktion skal et script af typen \"Transcode\" køre"
+
+#~ msgid "Transfer Queue to Device"
+#~ msgstr "Overførselskø til enhed"
+
+#~ msgid "Music Location"
+#~ msgstr "Musikplacering"
+
+#~ msgid ""
+#~ "Your music will be transferred to:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Din musik vil blive overført til:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "You can have your music automatically grouped in\n"
+#~ "a variety of ways. Each grouping will create\n"
+#~ "directories based upon the specified criteria.\n"
+#~ msgstr ""
+#~ "Du kan lade musikken grupperes automatisk\n"
+#~ "på et antal forskellige måder. Hver gruppering laver\n"
+#~ "mapper baseret på de angivne kriterier.\n"
+
+#~ msgid "Groupings"
+#~ msgstr "Grupperinger"
+
+#~ msgid "Select first grouping:\n"
+#~ msgstr "Vælg første gruppering:\n"
+
+#~ msgid "Select second grouping:\n"
+#~ msgstr "Vælg anden gruppering:\n"
+
+#~ msgid "Select third grouping:\n"
+#~ msgstr "Vælg tredje gruppering:\n"
+
+#~ msgid "Convert spaces to underscores"
+#~ msgstr "Konvertér mellemrum til understregningstegn"
+
+#~ msgid "Click for more analyzers"
+#~ msgstr "Klik for flere analysatorer"
+
+#~ msgid "&Visualizations"
+#~ msgstr "&Visualiseringer"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Hent data fra openDesktop.org for at lære mere om holdet"
