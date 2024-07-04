@@ -117,7 +117,10 @@ AudioCdCollection::audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list 
         const KIO::UDSEntry &entry = *it;
         QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
         if( name.endsWith( QLatin1String(".txt") ) )
+        {
+            debug() << "got possible cddb entry" << name << "(" << entry.numberValue( KIO::UDSEntry::UDS_SIZE ) << ")";
             m_cddbTextFiles.insert( entry.numberValue( KIO::UDSEntry::UDS_SIZE ), audiocdUrl( name ) );
+        }
     }
 }
 
@@ -155,14 +158,21 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     }
 
     KIO::StoredTransferJob *tjob = static_cast<KIO::StoredTransferJob*>( job );
-    QString cddbInfo = tjob->data();
+    QString cddbInfo;
 
     KEncodingProber prober;
     KEncodingProber::ProberState result = prober.feed( tjob->data() );
-    if( result != KEncodingProber::NotMe )
+    if( result == KEncodingProber::FoundIt )
+    {
         cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( tjob->data() );
+        debug() << "Encoding" << prober.encoding()<<"(confidence"<<prober.confidence()<<")";
+    }
+    else // Encoding detection failed. This is 2020's, try UTF8.
+    {
+        cddbInfo = QString::fromUtf8( tjob->data() );
+        debug() << "Not sure about encoding (confidence" << prober.confidence() << "), so using UTF8.";
+    }
 
-    debug() << "Encoding: " << prober.encoding();
     debug() << "got cddb info: " << cddbInfo;
     if (cddbInfo.length() == 0) {
         job->deleteLater();
