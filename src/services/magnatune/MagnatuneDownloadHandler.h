@@ -76,7 +76,7 @@ private:
      * is generated from the artist and album names.
      * @param infoXml The info to store.
      */
-    void saveDownloadInfo(const QString &infoXml);
+    void saveDownloadInfo(const QByteArray &infoXml);
 
 
 protected Q_SLOTS:

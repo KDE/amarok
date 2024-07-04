@@ -27,7 +27,7 @@ class MusicDNSXmlParser : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        explicit MusicDNSXmlParser(QString &doc );
+        explicit MusicDNSXmlParser( QByteArray &doc );
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
         QStringList puid();
 

@@ -587,7 +587,7 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
         return ; //not the right job, so let's ignore it
 
 
-    QString timestampString = ( ( KIO::StoredTransferJob* ) job )->data();
+    QByteArray timestampString = ( ( KIO::StoredTransferJob* ) job )->data();
     debug() << "Magnatune timestamp: " << timestampString;
 
     bool ok;
@@ -718,9 +718,9 @@ void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
     if( addToFavoritesJob != m_favoritesJob )
         return;
 
-    QString result = m_favoritesJob->data();
+    QByteArray result = m_favoritesJob->data();
 
-    Amarok::Logger::longMessage( result );
+    Amarok::Logger::longMessage( QLatin1String(result) );
 
     //show the favorites page
     showFavoritesPage();

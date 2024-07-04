@@ -91,7 +91,7 @@ MusicDNSFinder::gotReply( QNetworkReply *reply )
     DEBUG_BLOCK
     if( reply->error() == QNetworkReply::NoError && m_replyes.contains( reply ) )
     {
-        QString document( reply->readAll() );
+        QByteArray document( reply->readAll() );
         MusicDNSXmlParser *parser = new MusicDNSXmlParser( document );
         if( !m_replyes.value( reply ).isNull() )
             m_parsers.insert( parser, m_replyes.value( reply ) );

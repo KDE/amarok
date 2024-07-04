@@ -393,7 +393,7 @@ QUrl Dynamic::EchoNestBias::createUrl( const QString &method, QMultiMap< QString
         i.next();
         QByteArray const key = QUrl::toPercentEncoding( i.key() );
         QByteArray const value = QUrl::toPercentEncoding( i.value() );
-        query.addQueryItem( key, value );
+        query.addQueryItem( QLatin1String( key ), QLatin1String( value ) );
     }
     url.setQuery( query );
 

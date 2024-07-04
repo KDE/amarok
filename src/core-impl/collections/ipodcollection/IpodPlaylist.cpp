@@ -102,7 +102,7 @@ IpodPlaylist::setName( const QString &name )
 {
     QWriteLocker locker( &m_playlistLock );
     g_free( m_playlist->name );
-    m_playlist->name = g_strdup( name.toUtf8() );
+    m_playlist->name = g_strdup( name.toUtf8().constData() );
 }
 
 Playlists::PlaylistProvider*

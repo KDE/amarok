@@ -142,7 +142,7 @@ PlaylistBrowserCategory::~PlaylistBrowserCategory()
 QString
 PlaylistBrowserCategory::filter() const
 {
-    return QUrl::toPercentEncoding( m_filterProxy->filterRegularExpression().pattern() );
+    return QString::fromLatin1( QUrl::toPercentEncoding( m_filterProxy->filterRegularExpression().pattern() ) );
 }
 
 void

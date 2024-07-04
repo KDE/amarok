@@ -57,10 +57,10 @@ private Q_SLOTS:
 
 private:
 
-    QString extractArtistInfo( const QString &artistPage );
-    QString generateMemberMenu();
-    QString generateHomeLink();
-    QString createArtistLinks( const QString &page );
+    QByteArray extractArtistInfo( const QByteArray &artistPage );
+    QByteArray generateMemberMenu();
+    QByteArray generateHomeLink();
+    QByteArray createArtistLinks( const QByteArray &page );
     
     KJob * m_infoDownloadJob;
     KJob * m_pageDownloadJob;

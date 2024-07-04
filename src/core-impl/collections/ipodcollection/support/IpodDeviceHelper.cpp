@@ -34,7 +34,7 @@ IpodDeviceHelper::parseItdb( const QString &mountPoint, QString &errorMsg )
     GError *error = nullptr;
 
     errorMsg.clear();
-    itdb = itdb_parse( QFile::encodeName( mountPoint ), &error );
+    itdb = itdb_parse( QFile::encodeName( mountPoint ).constData(), &error );
     if( error )
     {
         if( itdb )
@@ -194,7 +194,7 @@ hashAbNeeded( const Itdb_IpodGeneration &generation )
 static bool
 fileFound( const QString &mountPoint, const QString &relFilename )
 {
-    gchar *controlDir = itdb_get_device_dir( QFile::encodeName( mountPoint ) );
+    gchar *controlDir = itdb_get_device_dir( QFile::encodeName( mountPoint ).constData() );
     if( !controlDir )
         return false;
     QString absFilename = QStringLiteral( "%1/%2" ).arg( QFile::decodeName( controlDir ),
@@ -420,7 +420,7 @@ IpodDeviceHelper::initializeIpod( const QString &mountPoint,
         const char *modelNumberRaw = modelNumber.constData();
         Itdb_Device *device = itdb_device_new();
         // following call reads existing SysInfo
-        itdb_device_set_mountpoint( device, QFile::encodeName( mountPoint ) );
+        itdb_device_set_mountpoint( device, QFile::encodeName( mountPoint ).constData() );
         const char *field = "ModelNumStr";
         debug() << "Setting SysInfo field" << field << "to value" << modelNumberRaw;
         itdb_device_set_sysinfo( device, field, modelNumberRaw );
@@ -448,7 +448,7 @@ IpodDeviceHelper::initializeIpod( const QString &mountPoint,
         name = ipodName( nullptr ); // return fallback name
 
     GError *error = nullptr;
-    success = itdb_init_ipod( QFile::encodeName( mountPoint ), nullptr /* model number */,
+    success = itdb_init_ipod( QFile::encodeName( mountPoint ).constData(), nullptr /* model number */,
                               name.toUtf8().constData(), &error );
     errorMessage.clear();
     if( error )

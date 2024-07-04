@@ -403,20 +403,20 @@ GenericScannerJob::getScannerOutput()
     QByteArray newData = m_scanner->readAll();
     m_incompleteTagBuffer += newData;
 
-    int index = m_incompleteTagBuffer.lastIndexOf( QLatin1String("</scanner>") );
+    int index = m_incompleteTagBuffer.lastIndexOf( "</scanner>" );
     if( index >= 0 )
     {
         // append new data (we need to be locked. the reader is probably not thread save)
-        m_reader.addData( QString( m_incompleteTagBuffer.left( index + 10 ) ) );
+        m_reader.addData( m_incompleteTagBuffer.left( index + 10 ) );
         m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 10 );
     }
     else
     {
-        index = m_incompleteTagBuffer.lastIndexOf( QLatin1String("</directory>") );
+        index = m_incompleteTagBuffer.lastIndexOf( "</directory>" );
         if( index >= 0 )
         {
             // append new data (we need to be locked. the reader is probably not thread save)
-            m_reader.addData( QString( m_incompleteTagBuffer.left( index + 12 ) ) );
+            m_reader.addData( m_incompleteTagBuffer.left( index + 12 ) );
             m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 12 );
         }
     }

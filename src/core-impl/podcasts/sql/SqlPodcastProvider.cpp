@@ -1231,13 +1231,13 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     //TODO: what if result is false?
 
     QUrl localUrl = QUrl::fromLocalFile( dir.absolutePath() );
-    QString tempName;
+    QByteArray tempName;
     if( !sqlEpisode->guid().isEmpty() )
         tempName = QUrl::toPercentEncoding( sqlEpisode->guid() );
     else
         tempName = QUrl::toPercentEncoding( sqlEpisode->uidUrl() );
 
-    QString tempNameMd5( QCryptographicHash::hash( tempName.toUtf8(), QCryptographicHash::Md5 ).toHex() );
+    QLatin1String tempNameMd5( QCryptographicHash::hash( tempName, QCryptographicHash::Md5 ).toHex() );
 
     localUrl = localUrl.adjusted(QUrl::StripTrailingSlash);
     localUrl.setPath(localUrl.path() + QLatin1Char('/') + ( tempNameMd5 + PODCAST_TMP_POSTFIX ));

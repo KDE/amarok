@@ -27,7 +27,7 @@
 #include <QStringList>
 #include <QVariantList>
 
-MusicBrainzXmlParser::MusicBrainzXmlParser( const QString &doc )
+MusicBrainzXmlParser::MusicBrainzXmlParser( const QByteArray &doc )
     : QObject()
     , ThreadWeaver::Job()
     , m_doc( QStringLiteral("musicbrainz") )

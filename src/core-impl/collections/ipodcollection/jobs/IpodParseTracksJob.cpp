@@ -154,7 +154,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
 
 Meta::TrackList IpodParseTracksJob::findOrphanedTracks(const QSet< QString >& knownPaths)
 {
-    gchar *musicDirChar = itdb_get_music_dir( QFile::encodeName( m_coll->mountPoint() ) );
+    gchar *musicDirChar = itdb_get_music_dir( QFile::encodeName( m_coll->mountPoint() ).constData() );
     QString musicDirPath = QFile::decodeName( musicDirChar );
     g_free( musicDirChar );
     musicDirChar = nullptr;

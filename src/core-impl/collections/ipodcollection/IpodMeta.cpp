@@ -274,7 +274,7 @@ Track::setImage( const QImage &newImage )
         if( tempImageFile.isOpen() && image.save( &tempImageFile, "PNG" ) )
             /* this function remembers image path, it also forgets previous images (if any)
              * and sets artwork_size, artwork_count and has_artwork m_track fields */
-            itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFilePath ) );
+            itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFilePath ).constData() );
     }
     commitIfInNonBatchUpdate( Meta::valImage, newImage );
 }

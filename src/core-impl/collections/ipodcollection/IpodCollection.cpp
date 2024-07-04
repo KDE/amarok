@@ -217,7 +217,7 @@ IpodCollection::createCapabilityInterface( Capabilities::Capability::Type type )
         }
         case Capabilities::Capability::Transcode:
         {
-            gchar *deviceDirChar = itdb_get_device_dir( QFile::encodeName( m_mountPoint ) );
+            gchar *deviceDirChar = itdb_get_device_dir( QFile::encodeName( m_mountPoint ).constData() );
             QString deviceDir = QFile::decodeName( deviceDirChar );
             g_free( deviceDirChar );
             return new Capabilities::IpodTranscodeCapability( this, deviceDir );

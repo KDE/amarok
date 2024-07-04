@@ -101,7 +101,7 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
     }
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downloadJob );
-    QString resultXml = QString( storedJob->data() );
+    QByteArray resultXml = storedJob->data();
 
     debug() << Qt::endl << Qt::endl << "result: " << resultXml;
 
@@ -123,7 +123,7 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
 
 
     MagnatuneDownloadInfo downloadInfo;
-    if ( downloadInfo.initFromString( resultXml, m_membershipDownload ) )
+    if ( downloadInfo.initFromString( QLatin1String(resultXml), m_membershipDownload ) )
     {
 
         downloadInfo.setAlbumCode( m_currentAlbum->albumCode() );
@@ -156,7 +156,7 @@ void MagnatuneDownloadHandler::setParent( QWidget * parent )
 
 }
 
-void MagnatuneDownloadHandler::saveDownloadInfo( const QString &infoXml )
+void MagnatuneDownloadHandler::saveDownloadInfo( const QByteArray &infoXml )
 {
 
     MagnatuneDatabaseHandler dbHandler;

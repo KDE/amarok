@@ -124,7 +124,7 @@ ScriptImporter::include( const QString& relativeFilename )
         warning() << "cannot open the include file: " << file.fileName();
         return false;
     }
-    QString importScript(QString(file.readAll()));
+    QString importScript(QString::fromUtf8(file.readAll())); //probably no sense not to assume utf8
     if (m_qtScriptCompat) {
         //QTBUG-69408 - const is not supported by ES5. Replace it with 'var'
         QRegularExpression removeConst(

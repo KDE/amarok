@@ -89,12 +89,12 @@ void TestAmarokUrls::testEncoding()
 
     QUrl qUrl( urlString );
 
-    QCOMPARE( url.url(), QString( qUrl.toEncoded() ) );
+    QCOMPARE( url.url(), QString( qUrl.toString( QUrl::FullyEncoded ) ) );
 
 
     //check that we do  not "double encode" anything
     AmarokUrl url2( QStringLiteral("amarok://navigate/collections?filter=artist:%22Code%20Monkeys%22&levels=artist-album") );
-    QCOMPARE( url2.url(), QString( qUrl.toEncoded() ) );
+    QCOMPARE( url2.url(), QString( qUrl.toString( QUrl::FullyEncoded ) ) );
 }
 
 

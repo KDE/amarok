@@ -118,7 +118,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
         /* determine destination filename; we cannot use ipodTrack because as it has no itdb
          * (and thus mountpoint) set */
         GError *error = nullptr;
-        gchar *destFilename = itdb_cp_get_dest_filename( nullptr, mountPoint, fakeSrcName, &error );
+        gchar *destFilename = itdb_cp_get_dest_filename( nullptr, mountPoint.constData(), fakeSrcName.constData(), &error );
         if( error )
         {
             warning() << "Cannot construct iPod track filename:" << error->message;
@@ -173,7 +173,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
         // create a new track object by copying meta-data from existing one:
         IpodMeta::Track *ipodTrack = new IpodMeta::Track( track );
         // tell the track it has been copied:
-        bool accepted = ipodTrack->finalizeCopying( mountPoint, destFilename );
+        bool accepted = ipodTrack->finalizeCopying( mountPoint.constData(), destFilename );
         g_free( destFilename );
         destFilename = nullptr;
         if( !accepted )

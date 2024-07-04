@@ -57,7 +57,7 @@ void MagnatuneInfoParser::getInfo(const AlbumPtr &album)
     QString infoHtml = QStringLiteral("<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>");
 
-    infoHtml += generateHomeLink();
+    infoHtml += QLatin1String( generateHomeLink() );
     infoHtml += QStringLiteral("<div align=\"center\"><strong>");
     infoHtml += artistName;
     infoHtml += QStringLiteral("</strong><br><em>");
@@ -108,45 +108,45 @@ MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 
 
 
-    QString infoString = ( (KIO::StoredTransferJob* ) downLoadJob )->data();
+    QByteArray infoString = ( (KIO::StoredTransferJob* ) downLoadJob )->data();
     //debug() << "MagnatuneInfoParser: Artist info downloaded: " << infoString;
     infoString = extractArtistInfo( infoString );
 
     //debug() << "html: " << trimmedInfo;
 
-    Q_EMIT ( info( infoString ) );
+    Q_EMIT ( info( QLatin1String(infoString) ) );
 
 }
 
-QString
-MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
+QByteArray
+MagnatuneInfoParser::extractArtistInfo( const QByteArray &artistPage )
 {
-    QString trimmedHtml;
+    QByteArray trimmedHtml;
 
 
-    int sectionStart = artistPage.indexOf( QStringLiteral("<!-- ARTISTBODY -->") );
-    int sectionEnd = artistPage.indexOf( QStringLiteral("<!-- /ARTISTBODY -->"), sectionStart );
+    int sectionStart = artistPage.indexOf( QByteArray("<!-- ARTISTBODY -->") );
+    int sectionEnd = artistPage.indexOf( QByteArray("<!-- /ARTISTBODY -->"), sectionStart );
 
     trimmedHtml = artistPage.mid( sectionStart, sectionEnd - sectionStart );
 
-    int buyStartIndex = trimmedHtml.indexOf( QStringLiteral("<!-- PURCHASE -->") );
+    int buyStartIndex = trimmedHtml.indexOf( QByteArray("<!-- PURCHASE -->") );
     int buyEndIndex;
 
     //we are going to integrate the buying of music (I hope) so remove these links
 
     while ( buyStartIndex != -1 )
     {
-        buyEndIndex = trimmedHtml.indexOf( QStringLiteral("<!-- /PURCHASE -->"), buyStartIndex ) + 18;
+        buyEndIndex = trimmedHtml.indexOf( QByteArray("<!-- /PURCHASE -->"), buyStartIndex ) + 18;
         trimmedHtml.remove( buyStartIndex, buyEndIndex - buyStartIndex );
-        buyStartIndex = trimmedHtml.indexOf( QStringLiteral("<!-- PURCHASE -->"), buyStartIndex );
+        buyStartIndex = trimmedHtml.indexOf( QByteArray("<!-- PURCHASE -->"), buyStartIndex );
     }
 
 
-    QString infoHtml = QStringLiteral("<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
+    QByteArray infoHtml = QByteArray("<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>");
     infoHtml += generateHomeLink();
     infoHtml += trimmedHtml;
-    infoHtml += QStringLiteral("</BODY></HTML>");
+    infoHtml += QByteArray("</BODY></HTML>");
 
 
     return infoHtml;
@@ -228,20 +228,20 @@ void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
     if ( downLoadJob != m_pageDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+    QByteArray infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
 
     //insert menu
     MagnatuneConfig config;
     if( config.isMember() )
-        infoString.replace( QStringLiteral("<!--MENU_TOKEN-->"), generateMemberMenu() );
+        infoString.replace( QByteArray("<!--MENU_TOKEN-->"), generateMemberMenu() );
 
     //insert fancy amarok url links to the artists
     infoString = createArtistLinks( infoString );
 
     if( m_cachedFrontpage.isEmpty() )
-        m_cachedFrontpage = infoString;
+        m_cachedFrontpage = QLatin1String(infoString);
 
-    Q_EMIT ( info( infoString ) );
+    Q_EMIT ( info( QLatin1String(infoString) ) );
 }
 
 void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
@@ -256,62 +256,62 @@ void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
 
 
 
-    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+    QByteArray infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
 
     //insert menu
     MagnatuneConfig config;
     if( config.isMember() )
-        infoString.replace( QStringLiteral("<!--MENU_TOKEN-->"), generateMemberMenu() );
+        infoString.replace( QByteArray("<!--MENU_TOKEN-->"), generateMemberMenu() );
 
     //make sure that any pages that use the old command name "service_magnatune" replaces it with "service-magnatune"
-    infoString.replace( QStringLiteral("service_magnatune"), QStringLiteral("service-magnatune") );
+    infoString.replace( QByteArray("service_magnatune"), QByteArray("service-magnatune") );
 
-    Q_EMIT ( info( infoString ) );
+    Q_EMIT ( info( QLatin1String(infoString) ) );
 }
 
 
-QString MagnatuneInfoParser::generateMemberMenu()
+QByteArray MagnatuneInfoParser::generateMemberMenu()
 {
-    QString homeUrl = QStringLiteral("amarok://service-magnatune?command=show_home");
-    QString favoritesUrl = QStringLiteral("amarok://service-magnatune?command=show_favorites");
-    QString recommendationsUrl = QStringLiteral("amarok://service-magnatune?command=show_recommendations");
+    QByteArray homeUrl = QByteArray("amarok://service-magnatune?command=show_home");
+    QByteArray favoritesUrl = QByteArray("amarok://service-magnatune?command=show_favorites");
+    QByteArray recommendationsUrl = QByteArray("amarok://service-magnatune?command=show_recommendations");
 
-    QString menu = QStringLiteral("<div align='right'>"
-                       "[<a href='") + homeUrl + QStringLiteral("' >Home</a>]&nbsp;"
-                       "[<a href='") + favoritesUrl + QStringLiteral("' >Favorites</a>]&nbsp;"
-                       "[<a href='") + recommendationsUrl + QStringLiteral("' >Recommendations</a>]&nbsp;"
+    QByteArray menu = QByteArray("<div align='right'>"
+                       "[<a href='") + homeUrl + QByteArray("' >Home</a>]&nbsp;"
+                       "[<a href='") + favoritesUrl + QByteArray("' >Favorites</a>]&nbsp;"
+                       "[<a href='") + recommendationsUrl + QByteArray("' >Recommendations</a>]&nbsp;"
                     "</div>");
 
     return menu;
 }
 
-QString
+QByteArray
 MagnatuneInfoParser::generateHomeLink()
 {
-    QString homeUrl = QStringLiteral("amarok://service-magnatune?command=show_home");
-    QString link = QStringLiteral("<div align='right'>"
-                    "[<a href='") + homeUrl + QStringLiteral("' >Home</a>]&nbsp;"
+    QByteArray homeUrl = QByteArray("amarok://service-magnatune?command=show_home");
+    QByteArray link = QByteArray("<div align='right'>"
+                    "[<a href='") + homeUrl + QByteArray("' >Home</a>]&nbsp;"
                    "</div>");
 
     return link;
 }
 
-QString
-MagnatuneInfoParser::createArtistLinks( const QString &page )
+QByteArray
+MagnatuneInfoParser::createArtistLinks( const QByteArray &page )
 {
     //the artist name is wrapped in <!--ARTIST_TOKEN-->artist<!--/ARTIST_TOKEN-->
 
-    QString returnPage = page;
+    QByteArray returnPage = page;
 
-    int startTokenLength = QStringLiteral( "<!--ARTIST_TOKEN-->" ).length();
+    int startTokenLength = QByteArray( "<!--ARTIST_TOKEN-->" ).length();
 
     int offset = 0;
-    int startTokenIndex = page.indexOf( QStringLiteral("<!--ARTIST_TOKEN-->"), offset );
+    int startTokenIndex = page.indexOf( QByteArray("<!--ARTIST_TOKEN-->"), offset );
     int endTokenIndex = 0;
 
     while( startTokenIndex != -1 )
     {
-        endTokenIndex = page.indexOf( QStringLiteral("<!--/ARTIST_TOKEN-->"), startTokenIndex );
+        endTokenIndex = page.indexOf( QByteArray("<!--/ARTIST_TOKEN-->"), startTokenIndex );
         if( endTokenIndex == -1 )
             break; //bail out
 
@@ -320,16 +320,16 @@ MagnatuneInfoParser::createArtistLinks( const QString &page )
         //get the artist namespace
 
         int artistLength = endTokenIndex - ( startTokenIndex + startTokenLength );
-        QString artist = page.mid( startTokenIndex + startTokenLength, artistLength );
+        QByteArray artist = page.mid( startTokenIndex + startTokenLength, artistLength );
 
         //replace in the artist amarok url
 
-        QString replaceString = QStringLiteral("<!--ARTIST_TOKEN-->") + artist + QStringLiteral("<!--/ARTIST_TOKEN-->");
-        QString artistLink = QStringLiteral("<a href='amarok://navigate/internet/Magnatune.com?filter=artist:%22") + AmarokUrl::escape( artist ) +QStringLiteral( "%22&levels=artist-album'>") + artist + QStringLiteral("</a>");
+        QByteArray replaceString = QByteArray("<!--ARTIST_TOKEN-->") + artist + QByteArray("<!--/ARTIST_TOKEN-->");
+        QByteArray artistLink = QByteArray("<a href='amarok://navigate/internet/Magnatune.com?filter=artist:%22") + AmarokUrl::escape( QLatin1String(artist) ).toLatin1() +QByteArray( "%22&levels=artist-album'>") + artist + QByteArray("</a>");
 
         returnPage = returnPage.replace( replaceString, artistLink );
 
-        startTokenIndex = page.indexOf( QStringLiteral("<!--ARTIST_TOKEN-->"), offset );
+        startTokenIndex = page.indexOf( QByteArray("<!--ARTIST_TOKEN-->"), offset );
     }
 
     return returnPage;

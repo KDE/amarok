@@ -175,7 +175,7 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
     {
         if( reply->error() == QNetworkReply::NoError )
         {
-            QString document( reply->readAll() );
+            QByteArray document( reply->readAll() );
             MusicBrainzXmlParser *parser = new MusicBrainzXmlParser( document );
             m_parsers.insert( parser, m_replies.value( reply ) );
 

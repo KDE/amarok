@@ -231,10 +231,10 @@ ScriptItem::start( bool silent )
                 QStringLiteral("const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *="),
                 QRegularExpression::DotMatchesEverythingOption );
         m_engineResult = m_engine->evaluate(
-               QString(scriptFile.readAll()).replace( removeConst, QStringLiteral("var \\1 =") ),
+               QString::fromUtf8(scriptFile.readAll()).replace( removeConst, QStringLiteral("var \\1 =") ),
                 m_name);
     } else {
-        m_engineResult = m_engine->evaluate(scriptFile.readAll(), m_name);
+        m_engineResult = m_engine->evaluate(QString::fromUtf8(scriptFile.readAll()), m_name);
     }
     m_output << m_engineResult.toString();
     debug() << "After Evaluation "<< m_name;

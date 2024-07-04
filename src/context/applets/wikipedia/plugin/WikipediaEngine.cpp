@@ -79,7 +79,7 @@ WikipediaEngine::_wikiResult( const QUrl &url, const QByteArray &result, const N
     }
 
     debug() << "Received page from wikipedia:" << url;
-    QString wiki( result );
+    QString wiki = QLatin1String( result );
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
@@ -313,17 +313,17 @@ WikipediaEngine::_parseListingResult( const QUrl &url,
     {
     default:
     case Artist:
-        pattern = i18nc("Search pattern for an artist or band", ".*\\(.*(artist|band).*\\)").toLatin1();
+        pattern = i18nc("Search pattern for an artist or band", ".*\\(.*(artist|band).*\\)");
         break;
     case Composer:
-            pattern = i18nc("Search pattern for a composer", ".*\\(.*(composer|musician).*\\)").toLatin1();
+            pattern = i18nc("Search pattern for a composer", ".*\\(.*(composer|musician).*\\)");
         break;
     case Album:
-            pattern = i18nc("Search pattern for an album", ".*\\(.*(album|score|soundtrack).*\\)").toLatin1();
+            pattern = i18nc("Search pattern for an album", ".*\\(.*(album|score|soundtrack).*\\)");
         break;
 
     case Track:
-            pattern = i18nc("Search pattern for a song", ".*\\(.*(song|track).*\\)").toLatin1();
+            pattern = i18nc("Search pattern for a song", ".*\\(.*(song|track).*\\)");
         break;
     }
 
@@ -401,7 +401,7 @@ WikipediaEngine::_paletteChanged( const QPalette &palette )
     QFile file( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/WikipediaCustomStyle.css") ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QString contents = QString( file.readAll() );
+        QString contents = QLatin1String( file.readAll() );
         contents.replace( QStringLiteral("/*{text_color}*/"), palette.text().color().name() );
         contents.replace( QStringLiteral("/*{link_color}*/"), palette.link().color().name() );
         contents.replace( QStringLiteral("/*{link_hover_color}*/"), palette.linkVisited().color().name() );

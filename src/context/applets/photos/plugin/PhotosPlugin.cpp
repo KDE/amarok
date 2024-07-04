@@ -36,7 +36,7 @@ class PhotoAppletNetworkManager : public QNetworkAccessManager
 {
 public:
     PhotoAppletNetworkManager(QObject *parent) : QNetworkAccessManager(parent) { }
-    QNetworkReply *createRequest( Operation op, const QNetworkRequest &req, QIODevice * outgoingData=0 ) override
+    QNetworkReply *createRequest( Operation op, const QNetworkRequest &req, QIODevice * outgoingData = nullptr ) override
     {
         QNetworkRequest newreq=req;
         newreq.setRawHeader("User-Agent", ( ( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) ) ).toUtf8() );

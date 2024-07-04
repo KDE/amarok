@@ -148,7 +148,7 @@ class GenericScannerJob : public QObject, public ThreadWeaver::Job
 
         int m_restartCount;
         bool m_abortRequested;
-        QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
+        QByteArray m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
 
         KProcess *m_scanner;
         QString m_batchfilePath;

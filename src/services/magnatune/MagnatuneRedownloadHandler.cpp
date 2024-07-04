@@ -167,7 +167,7 @@ void MagnatuneRedownloadHandler::redownloadApiResult( KJob* job )
     }
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString resultXml = QString( storedJob->data() );
+    QByteArray resultXml = storedJob->data();
 
     debug() << Qt::endl << Qt::endl << "result: " << resultXml;
 

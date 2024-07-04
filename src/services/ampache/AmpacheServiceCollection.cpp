@@ -90,7 +90,7 @@ void AmpacheServiceCollection::slotLookupComplete( const Meta::TrackPtr& )
 {
 }
 
-void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
+void AmpacheTrackForUrlWorker::parseTrack( const QByteArray &xml )
 {
     //so lets figure out what we got here:
     QDomDocument doc( QStringLiteral("reply") );
@@ -175,7 +175,7 @@ AmpacheTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
     QUrlQuery query;
     query.addQueryItem( QStringLiteral("action"), QStringLiteral("url_to_song") );
     query.addQueryItem( QStringLiteral("auth"), m_sessionId );
-    query.addQueryItem( QStringLiteral("url"), m_url.toEncoded() );
+    query.addQueryItem( QStringLiteral("url"), m_url.toString( QUrl::FullyEncoded ) );
     requestUrl.setQuery( query );
 
     QNetworkRequest req( requestUrl );

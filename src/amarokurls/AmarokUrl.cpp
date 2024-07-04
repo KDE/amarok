@@ -134,7 +134,7 @@ QString AmarokUrl::url() const
         query.addQueryItem( argName, m_arguments[argName] );
 
     url.setQuery( query );
-    return url.toEncoded();
+    return url.toString( QUrl::FullyEncoded );
 }
 
 bool AmarokUrl::saveToDb()
@@ -222,7 +222,7 @@ QString AmarokUrl::customValue() const
 
 QString AmarokUrl::escape( const QString & in )
 {
-    return QUrl::toPercentEncoding( in.toUtf8() );
+    return QString::fromLatin1( QUrl::toPercentEncoding( in ) );
 }
 
 QString AmarokUrl::unescape( const QString & in )

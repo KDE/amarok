@@ -80,7 +80,7 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     if ( downLoadJob != m_rssDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    QString rssString = ((KIO::StoredTransferJob* ) downLoadJob)->data();
+    QByteArray rssString = ((KIO::StoredTransferJob* ) downLoadJob)->data();
 
     debug() << "rss: " << rssString;
 

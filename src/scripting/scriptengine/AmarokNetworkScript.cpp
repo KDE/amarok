@@ -171,7 +171,7 @@ AmarokDownloadHelper::resultString( const QUrl &url, const QByteArray &data, con
     QString str;
     if( encoding.isEmpty() )
     {
-        str = QString( data );
+        str = QString::fromUtf8( data );
     }
     else
     {

@@ -468,7 +468,7 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
                 return 0;
             }
         }
-        completePath += ( *it ).toUtf8() + QLatin1Char('/');
+        completePath += ( *it ) + QLatin1Char('/');
         // set new parent
         parent_id = check_folder;
     }

@@ -20,7 +20,7 @@
 
 #include "core/support/Debug.h"
 
-MusicDNSXmlParser::MusicDNSXmlParser( QString &doc )
+MusicDNSXmlParser::MusicDNSXmlParser( QByteArray &doc )
                     : QObject()
                     , ThreadWeaver::Job()
                     , m_doc( QStringLiteral("musicdns") )
