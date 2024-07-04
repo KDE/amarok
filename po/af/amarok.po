@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-03 01:46+0000\n"
+"POT-Creation-Date: 2024-07-04 01:43+0000\n"
 "PO-Revision-Date: 2010-01-30 14:30+0000\n"
 "Last-Translator: Emile Joubert <emile.joubert@gmail.com>\n"
 "Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
@@ -54,12 +54,12 @@ msgstr "Geen Groepering (Enkele Reël)"
 msgid "Verbose"
 msgstr "Breedspraaklik"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:52
+#: aboutdialog/ExtendedAboutDialog.cpp:48
 #, kde-format
 msgid "License Agreement"
 msgstr "Lisensie-ooreenkoms"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:97
+#: aboutdialog/ExtendedAboutDialog.cpp:93
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
@@ -68,7 +68,7 @@ msgstr ""
 "<qt>Geen inligting beskikbaar.<br />Die verskafde KAboutData voorwerp "
 "bestaan nie</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:108
+#: aboutdialog/ExtendedAboutDialog.cpp:104
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
@@ -77,12 +77,12 @@ msgstr ""
 "<qt>Geen inligting beskikbaar.<br />Die verskafde OcsData voorwerp bestaan "
 "nie</qt>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:119
+#: aboutdialog/ExtendedAboutDialog.cpp:115
 #, kde-format
 msgid "About %1"
 msgstr "Aangaande %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:145
+#: aboutdialog/ExtendedAboutDialog.cpp:141
 #, fuzzy, kde-format
 #| msgid ""
 #| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -94,17 +94,17 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Weergawe %2</b><br />Gebruik tans "
 "KDE %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:184
+#: aboutdialog/ExtendedAboutDialog.cpp:180
 #, kde-format
 msgid "License: %1"
 msgstr "Lisensie: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:198
+#: aboutdialog/ExtendedAboutDialog.cpp:194
 #, kde-format
 msgid "&About"
 msgstr "Aangaande"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:221
+#: aboutdialog/ExtendedAboutDialog.cpp:217
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -116,45 +116,45 @@ msgstr ""
 "Maak asb. gebruik van <a href=\"http://bugs.kde.org\">http://bugs.kde.org</"
 "a> om foute te rapporteer.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:226
-#: aboutdialog/ExtendedAboutDialog.cpp:232
+#: aboutdialog/ExtendedAboutDialog.cpp:222
+#: aboutdialog/ExtendedAboutDialog.cpp:228
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Rapporteer asb. foute aan <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:249
+#: aboutdialog/ExtendedAboutDialog.cpp:245
 #, kde-format
 msgid "A&uthor"
 msgstr "&Outeur"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:249
+#: aboutdialog/ExtendedAboutDialog.cpp:245
 #, kde-format
 msgid "A&uthors"
 msgstr "O&uteurs"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:268
+#: aboutdialog/ExtendedAboutDialog.cpp:264
 #, fuzzy, kde-format
 #| msgid "Former contributors"
 msgid "&Contributors"
 msgstr "Voormalige bydraers"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:292
+#: aboutdialog/ExtendedAboutDialog.cpp:288
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "&Donors"
 msgstr "Aflaai"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:321
+#: aboutdialog/ExtendedAboutDialog.cpp:317
 #, kde-format
 msgid "T&ranslation"
 msgstr "Vertaling"
 
-#: aboutdialog/OcsPersonItem.cpp:86
+#: aboutdialog/OcsPersonItem.cpp:82
 #, kde-format
 msgid "Email contributor"
 msgstr "Stuur E-pos aan bydraer"
 
-#: aboutdialog/OcsPersonItem.cpp:94
+#: aboutdialog/OcsPersonItem.cpp:90
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Besoek bydraer se webtuiste"
@@ -164,8 +164,8 @@ msgstr "Besoek bydraer se webtuiste"
 #. i18n: ectx: property (text), widget (QTreeWidget, requestDetails)
 #. i18n: ectx: property (text), widget (QTreeWidget, responseDetails)
 #. i18n: ectx: property (text), widget (QLabel, m_textLabel)
-#: aboutdialog/OcsPersonItem.ui:137 amarokurls/BookmarkModel.cpp:258
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:399
+#: aboutdialog/OcsPersonItem.ui:137 amarokurls/BookmarkModel.cpp:257
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:397
 #: network/NetworkRequests.ui:89 network/NetworkRequests.ui:103
 #: playlistgenerator/TreeModel.cpp:64
 #: services/ampache/AmpacheConfigWidget.ui:53
@@ -226,7 +226,7 @@ msgstr "Huidige Speellys"
 msgid "Selected Tracks"
 msgstr "Geselekteerde Snitte"
 
-#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:100
+#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:97
 #, kde-format
 msgid "Stop"
 msgstr "Stop"
@@ -248,7 +248,7 @@ msgstr "Stop na huidige snit: Aan"
 
 #: ActionClasses.cpp:499
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
 #, kde-format
 msgid "No track playing"
 msgstr "Geen snit speel tans"
@@ -256,7 +256,7 @@ msgstr "Geen snit speel tans"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:503
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
-#: main.cpp:92 MainWindow.cpp:109
+#: main.cpp:92 MainWindow.cpp:107
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -926,7 +926,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "Aktiveer/Deaktiveer die Voor-skerm Vertoon (\"On-Screen Display\")"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:46
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:44
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "Gebruik Growl vir kennisgewings"
@@ -1581,12 +1581,12 @@ msgid "Unknown"
 msgstr "Onbekend"
 
 # bladgids?
-#: amarokurls/BookmarkCurrentButton.cpp:32 amarokurls/BookmarkModel.cpp:536
+#: amarokurls/BookmarkCurrentButton.cpp:32 amarokurls/BookmarkModel.cpp:535
 #, kde-format
 msgid "New Bookmark"
 msgstr "Nuwe Boekmerk"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:783
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:781
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Boekmerk Bestuurder"
@@ -1607,85 +1607,85 @@ msgstr "Filter boekmerke"
 msgid "Start typing to progressively filter the bookmarks"
 msgstr "Begin tik om die boekmerke geleidelik te filter"
 
-#: amarokurls/BookmarkMetaActions.cpp:31
+#: amarokurls/BookmarkMetaActions.cpp:30
 #, kde-format
 msgid "Bookmark this Album"
 msgstr "Boekmerk hierdie Album"
 
-#: amarokurls/BookmarkMetaActions.cpp:47
+#: amarokurls/BookmarkMetaActions.cpp:46
 #, kde-format
 msgid "Bookmark this Artist"
 msgstr "Boekmerk hierdie Kunstenaar"
 
-#: amarokurls/BookmarkMetaActions.cpp:62
+#: amarokurls/BookmarkMetaActions.cpp:61
 #, kde-format
 msgid "Add Position Marker"
 msgstr "Voeg Posisie Merker By"
 
-#: amarokurls/BookmarkModel.cpp:86
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:400
+#: amarokurls/BookmarkModel.cpp:85
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:398
 #, kde-format
 msgid "Group"
 msgstr "Groep"
 
-#: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:320 playlist/PlaylistModel.cpp:939
+#: amarokurls/BookmarkModel.cpp:258
+#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:935
 #, kde-format
 msgid "Type"
 msgstr "Soort"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: amarokurls/BookmarkModel.cpp:260 network/NetworkRequests.ui:46
+#: amarokurls/BookmarkModel.cpp:259 network/NetworkRequests.ui:46
 #, kde-format
 msgid "URL"
 msgstr "URL"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: amarokurls/BookmarkModel.cpp:261
+#: amarokurls/BookmarkModel.cpp:260
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:63
 #, kde-format
 msgid "Description"
 msgstr "Beskrywing"
 
-#: amarokurls/BookmarkModel.cpp:511
+#: amarokurls/BookmarkModel.cpp:510
 #, kde-format
 msgid "New Group"
 msgstr "Nuwe Groep"
 
-#: amarokurls/BookmarkModel.cpp:537
+#: amarokurls/BookmarkModel.cpp:536
 #: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "geen"
 
-#: amarokurls/BookmarkTreeView.cpp:109
+#: amarokurls/BookmarkTreeView.cpp:108
 #, kde-format
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Laai"
 
-#: amarokurls/BookmarkTreeView.cpp:115 browsers/filebrowser/FileView.cpp:414
+#: amarokurls/BookmarkTreeView.cpp:114 browsers/filebrowser/FileView.cpp:409
 #, kde-format
 msgid "&Delete"
 msgstr "&Skrap"
 
-#: amarokurls/BookmarkTreeView.cpp:122
+#: amarokurls/BookmarkTreeView.cpp:121
 #, kde-format
 msgid "&Create timecode track"
 msgstr "&Skep timecode snit"
 
-#: amarokurls/BookmarkTreeView.cpp:369
+#: amarokurls/BookmarkTreeView.cpp:368
 #, kde-format
 msgid "New Timecode Track"
 msgstr "Nuwe Timecode Snit"
 
-#: amarokurls/BookmarkTreeView.cpp:370 amarokurls/BookmarkTreeView.cpp:371
-#: amarokurls/BookmarkTreeView.cpp:372
+#: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
+#: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:483
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:484
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:485
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1227
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:486 MainWindow.cpp:1225
 #, kde-format
 msgid "Unknown"
 msgstr "Onbekend"
@@ -1707,7 +1707,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Konteks"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:285
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
 #, kde-format
 msgid "Files"
 msgstr "Lêers"
@@ -1738,7 +1738,7 @@ msgstr "Kunstenaar \"%1\" van %2"
 msgid "Artist \"%1\""
 msgstr "Kunstenaar \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:779
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:777
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Boekmerk Media Bronne Aansig"
@@ -1764,98 +1764,98 @@ msgctxt ""
 msgid "Play"
 msgstr "Terugspeel"
 
-#: App.cpp:360
+#: App.cpp:358
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Lêers/URLs om oop te maak"
 
-#: App.cpp:361
+#: App.cpp:359
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr ""
 
-#: App.cpp:362
+#: App.cpp:360
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Spring terugwaarts in die speel lys"
 
-#: App.cpp:363
+#: App.cpp:361
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Begin om die huidige speel lys te speel"
 
-#: App.cpp:364
+#: App.cpp:362
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Speel indien gestop, wag indien besig is om te speel"
 
-#: App.cpp:365
+#: App.cpp:363
 #, kde-format
 msgid "Pause playback"
 msgstr "Pouseer terugspeel"
 
-#: App.cpp:366
+#: App.cpp:364
 #, kde-format
 msgid "Stop playback"
 msgstr "Stop terugspeel"
 
-#: App.cpp:367
+#: App.cpp:365
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Spring vorentoe in die speellys"
 
-#: App.cpp:369
+#: App.cpp:367
 #, kde-format
 msgid "Additional options:"
 msgstr "Verdere opsies:"
 
-#: App.cpp:370
+#: App.cpp:368
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Las lêers/URLs agter aan speellys"
 
-#: App.cpp:371
+#: App.cpp:369
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Plaas URLs in die wagtou na die snit wat tans speel"
 
-#: App.cpp:372
+#: App.cpp:370
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Laai URLs en vervang die huidige speellys met die resultaat"
 
-#: App.cpp:373 App.cpp:375
+#: App.cpp:371 App.cpp:373
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Druk breedvoerige ontfoutingsinligting"
 
-#: App.cpp:376
+#: App.cpp:374
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "Druk breedvoerige ontfoutingsinligting"
 
-#: App.cpp:377
+#: App.cpp:375
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:378
+#: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Laat veelvuldige Amarok instansies toe om te loop"
 
-#: App.cpp:379
+#: App.cpp:377
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Basis wat vir relatiewe lêername/URLs gebruik moet word"
 
-#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Databasis Fout"
 
-#: App.cpp:516
+#: App.cpp:514
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1864,12 +1864,12 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:583
+#: App.cpp:581
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Besig om lêers na die asblik te skuif"
 
-#: App.cpp:649
+#: App.cpp:647
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1878,30 +1878,30 @@ msgstr ""
 "'n Musiekpad (%1) is ingestel by Stelsel Instellings. \n"
 "Wil jy dit as 'n versameling gids gebruik?"
 
-#: browsers/BrowserBreadcrumbItem.cpp:70
+#: browsers/BrowserBreadcrumbItem.cpp:68
 #, fuzzy, kde-format
 #| msgid "Media Sources"
 msgid "Media Sources Home"
 msgstr "Media Bronne"
 
-#: browsers/BrowserCategoryList.cpp:54
+#: browsers/BrowserCategoryList.cpp:52
 #, kde-format
 msgid "Filter Music Sources"
 msgstr "Filter Musiek Bronne"
 
-#: browsers/BrowserDock.cpp:34
+#: browsers/BrowserDock.cpp:33
 #, fuzzy, kde-format
 #| msgid "Media Sources"
 msgid "&Media Sources"
 msgstr "Media Bronne"
 
-#: browsers/BrowserDock.cpp:74
+#: browsers/BrowserDock.cpp:73
 #, fuzzy, kde-format
 #| msgid "Media Sources"
 msgid "Go Up in Media Sources Pane"
 msgstr "Media Bronne"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:147
+#: browsers/collectionbrowser/CollectionWidget.cpp:144
 #, fuzzy, kde-format
 #| msgid ""
 #| "This is where you will find your local music, as well as music from "
@@ -1913,47 +1913,47 @@ msgstr ""
 "Dit is waar jy jou plaaslike musiek sal vind, sowel as musiek van draagbare "
 "media spelers en CDs."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:927
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:925
 #, kde-format
 msgid "Search collection"
 msgstr "Deursoek versameling"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:173
+#: browsers/collectionbrowser/CollectionWidget.cpp:170
 #, fuzzy, kde-format
 #| msgid "last month"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Hour"
 msgstr "verlede maand"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:175
+#: browsers/collectionbrowser/CollectionWidget.cpp:172
 #, fuzzy, kde-format
 #| msgid "Add Podcast"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added Today"
 msgstr "Voeg Potgooi by"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:177
+#: browsers/collectionbrowser/CollectionWidget.cpp:174
 #, fuzzy, kde-format
 #| msgid "last week"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Week"
 msgstr "verlede week"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:179
+#: browsers/collectionbrowser/CollectionWidget.cpp:176
 #, fuzzy, kde-format
 #| msgid "last month"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
 msgstr "verlede maand"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:181
+#: browsers/collectionbrowser/CollectionWidget.cpp:178
 #, fuzzy, kde-format
 #| msgid "First Played"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
 msgstr "Eerste keer Gespeel"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:200
+#: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, fuzzy, kde-format
 #| msgid " - "
 msgctxt ""
@@ -1962,54 +1962,54 @@ msgctxt ""
 msgid " / "
 msgstr " - "
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:213
+#: browsers/collectionbrowser/CollectionWidget.cpp:210
 #, kde-format
 msgid "First Level"
 msgstr "Vlak Een"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:214
+#: browsers/collectionbrowser/CollectionWidget.cpp:211
 #, kde-format
 msgid "Second Level"
 msgstr "Vlak Twee"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:215
+#: browsers/collectionbrowser/CollectionWidget.cpp:212
 #, kde-format
 msgid "Third Level"
 msgstr "Vlak Drie"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:249
+#: browsers/collectionbrowser/CollectionWidget.cpp:246
 #, kde-format
 msgid "Show Years"
 msgstr "Vertoon Jare"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:254
+#: browsers/collectionbrowser/CollectionWidget.cpp:251
 #, fuzzy, kde-format
 #| msgid "Track Number"
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
 msgstr "Snit Nommer"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:259
+#: browsers/collectionbrowser/CollectionWidget.cpp:256
 #, fuzzy, kde-format
 #| msgid "Show under Various Artists"
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
 msgstr "Vertoon in Verskeie Kunstenaars"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:264
+#: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
 msgid "Show Cover Art"
 msgstr "Vertoon Omslagkuns"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:271
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:88
+#: browsers/collectionbrowser/CollectionWidget.cpp:268
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:85
 #, kde-format
 msgid "Merged View"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:278
-#: services/jamendo/JamendoService.cpp:161
-#: services/magnatune/MagnatuneStore.cpp:229
+#: browsers/collectionbrowser/CollectionWidget.cpp:275
+#: services/jamendo/JamendoService.cpp:159
+#: services/magnatune/MagnatuneStore.cpp:228
 #, kde-format
 msgid "Sort Options"
 msgstr "Sortering Opsies"
@@ -2028,7 +2028,7 @@ msgid "Counting..."
 msgstr "Telling"
 
 #: browsers/CollectionTreeItem.cpp:176
-#: playlist/proxymodels/GroupingProxy.cpp:188
+#: playlist/proxymodels/GroupingProxy.cpp:189
 #, kde-format
 msgid "1 track"
 msgid_plural "%1 tracks"
@@ -2043,25 +2043,25 @@ msgid "Unknown"
 msgstr "Onbekend"
 
 #: browsers/CollectionTreeItemModelBase.cpp:397
-#: core-impl/collections/db/sql/SqlMeta.cpp:409
+#: core-impl/collections/db/sql/SqlMeta.cpp:408
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:98
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
 msgstr "Verskeie Kunstenaars"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1102
-#: browsers/CollectionTreeView.cpp:369
+#: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
-#: playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
+#: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
-#: services/magnatune/MagnatuneStore.cpp:220
+#: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
 msgid "Album"
 msgstr "Album"
@@ -2079,26 +2079,26 @@ msgstr "Snitte deur hierdie Kunstenaar"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
 #: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
-#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:929
+#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:925
 #, kde-format
 msgid "Album Artist"
 msgstr "Album Kunstenaar"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1108
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
-#: playlist/PlaylistModel.cpp:930
+#: playlist/PlaylistModel.cpp:926
 #, kde-format
 msgid "Composer"
 msgstr "Komponis"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
-#: playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
+#: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1112
-#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:931
+#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Year"
 msgstr "Jaar"
@@ -2114,53 +2114,53 @@ msgstr "Etiket"
 msgid "None"
 msgstr "Geen"
 
-#: browsers/CollectionTreeView.cpp:356 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
 msgstr ""
 
-#: browsers/CollectionTreeView.cpp:389
+#: browsers/CollectionTreeView.cpp:387
 #, kde-format
 msgid "Collection"
 msgstr "Versameling"
 
-#: browsers/CollectionTreeView.cpp:413
+#: browsers/CollectionTreeView.cpp:411
 #, kde-format
 msgid "Copy to Collection"
 msgstr "Kopieer na Versameling"
 
-#: browsers/CollectionTreeView.cpp:422 browsers/filebrowser/FileView.cpp:126
+#: browsers/CollectionTreeView.cpp:420 browsers/filebrowser/FileView.cpp:121
 #, kde-format
 msgid "Move to Collection"
 msgstr "Skuif na Versameling"
 
-#: browsers/CollectionTreeView.cpp:436
+#: browsers/CollectionTreeView.cpp:434
 #, fuzzy, kde-format
 #| msgid "Moving files to trash"
 msgid "Move Tracks to Trash"
 msgstr "Besig om lêers na die asblik te skuif"
 
-#: browsers/CollectionTreeView.cpp:447
+#: browsers/CollectionTreeView.cpp:445
 #, kde-format
 msgid "Delete Tracks"
 msgstr "Skrap Snitte"
 
-#: browsers/CollectionTreeView.cpp:716 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
 msgstr "Nog..."
 
-#: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
+#: browsers/CollectionTreeView.cpp:1087 browsers/filebrowser/FileView.cpp:378
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Voeg by Speellys"
 
-#: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
+#: browsers/CollectionTreeView.cpp:1098 browsers/filebrowser/FileView.cpp:389
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
@@ -2168,30 +2168,30 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Vervang Speellys"
 
-#: browsers/CollectionTreeView.cpp:1149
+#: browsers/CollectionTreeView.cpp:1147
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organiseer Lêers"
 
-#: browsers/CollectionTreeView.cpp:1182 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1180 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "Wysig Snit Besonderhede"
 
-#: browsers/filebrowser/FileBrowser.cpp:70
+#: browsers/filebrowser/FileBrowser.cpp:69
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr ""
 
-#: browsers/filebrowser/FileBrowser.cpp:80
+#: browsers/filebrowser/FileBrowser.cpp:79
 #, kde-format
 msgid "Filter Files"
 msgstr "Filter Lêers"
 
-#: browsers/filebrowser/FileBrowser.cpp:219
+#: browsers/filebrowser/FileBrowser.cpp:218
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2202,13 +2202,13 @@ msgstr ""
 "dié lêers deel uitmaak van jou plaaslike versameling. Jy kan dié lêers dan "
 "by die speellys voeg en ander basiese lêer take uitvoer."
 
-#: browsers/filebrowser/FileView.cpp:403
+#: browsers/filebrowser/FileView.cpp:398
 #, fuzzy, kde-format
 #| msgid "&Send to Trash"
 msgid "&Move to Trash"
 msgstr "Stuur na die Asblik"
 
-#: browsers/filebrowser/FileView.cpp:571
+#: browsers/filebrowser/FileView.cpp:566
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, fuzzy, kde-format
 #| msgid "Confirm Delete"
@@ -2216,7 +2216,7 @@ msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "Bevestig Verwyder"
 
-#: browsers/filebrowser/FileView.cpp:572
+#: browsers/filebrowser/FileView.cpp:567
 #, fuzzy, kde-format
 #| msgid "Are you sure you want to delete this playlist?"
 #| msgid_plural "Are you sure you want to delete these %1 playlists?"
@@ -2225,7 +2225,7 @@ msgid_plural "Are you sure you want to delete these %1 items?"
 msgstr[0] "Is jy seker jy wil hierdie speellys skrap?"
 msgstr[1] "Is jy seker jy wil hierdie %1 speellys lêers skrap?"
 
-#: browsers/filebrowser/FileView.cpp:578
+#: browsers/filebrowser/FileView.cpp:573
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, fuzzy, kde-format
 #| msgid "Moving files to trash"
@@ -2233,7 +2233,7 @@ msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "Besig om lêers na die asblik te skuif"
 
-#: browsers/filebrowser/FileView.cpp:579
+#: browsers/filebrowser/FileView.cpp:574
 #, fuzzy, kde-format
 #| msgid "Are you sure you want to delete this playlist?"
 #| msgid_plural "Are you sure you want to delete these %1 playlists?"
@@ -2247,89 +2247,89 @@ msgstr[1] "Is jy seker jy wil hierdie %1 speellys lêers skrap?"
 msgid "Home"
 msgstr "Tuis"
 
-#: browsers/playlistbrowser/APGCategory.cpp:39
+#: browsers/playlistbrowser/APGCategory.cpp:38
 #, kde-format
 msgid "Automated Playlist Generator"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:40
-#: browsers/playlistbrowser/APGCategory.cpp:47
+#: browsers/playlistbrowser/APGCategory.cpp:39
+#: browsers/playlistbrowser/APGCategory.cpp:46
 #, fuzzy, kde-format
 #| msgid "Clear the playlist sorting configuration."
 msgid "Create playlists by specifying criteria"
 msgstr "Wis die speellys sorteeropstelling"
 
-#: browsers/playlistbrowser/APGCategory.cpp:63
+#: browsers/playlistbrowser/APGCategory.cpp:62
 #, kde-format
 msgid "Add new preset"
 msgstr "Voeg nuwe voorafinstelling by"
 
-#: browsers/playlistbrowser/APGCategory.cpp:66
+#: browsers/playlistbrowser/APGCategory.cpp:65
 #, fuzzy, kde-format
 #| msgid "Delete preset"
 msgid "Edit selected preset"
 msgstr "Skrap voorafinstelling"
 
-#: browsers/playlistbrowser/APGCategory.cpp:71
+#: browsers/playlistbrowser/APGCategory.cpp:70
 #, fuzzy, kde-format
 #| msgid "Delete the preset."
 msgid "Delete selected preset"
 msgstr "Skrap die voorafinstelling."
 
-#: browsers/playlistbrowser/APGCategory.cpp:76
+#: browsers/playlistbrowser/APGCategory.cpp:75
 #, fuzzy, kde-format
 #| msgid "Add new preset"
 msgid "Import a new preset"
 msgstr "Voeg nuwe voorafinstelling by"
 
-#: browsers/playlistbrowser/APGCategory.cpp:80
+#: browsers/playlistbrowser/APGCategory.cpp:79
 #, fuzzy, kde-format
 #| msgid "Error deleting preset"
 msgid "Export the selected preset"
 msgstr "Fout tydens skrap van voorafinstelling"
 
-#: browsers/playlistbrowser/APGCategory.cpp:87
+#: browsers/playlistbrowser/APGCategory.cpp:86
 #, kde-format
 msgid "Run APG with selected preset"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:93
+#: browsers/playlistbrowser/APGCategory.cpp:92
 #, fuzzy, kde-format
 #| msgid "Presets"
 msgid "APG Presets"
 msgstr "Voorafinstellings"
 
-#: browsers/playlistbrowser/APGCategory.cpp:107
+#: browsers/playlistbrowser/APGCategory.cpp:106
 #, fuzzy, kde-format
 #| msgid "General Options"
 msgid "Generator Optimization"
 msgstr "Algemene Opsies"
 
-#: browsers/playlistbrowser/APGCategory.cpp:111
+#: browsers/playlistbrowser/APGCategory.cpp:110
 #, kde-format
 msgid "Speed"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:116
+#: browsers/playlistbrowser/APGCategory.cpp:115
 #, kde-format
 msgid "Accuracy"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:44
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:43
 #, fuzzy, kde-format
 #| msgid "Edit &case"
 msgctxt "Bias dialog window title"
 msgid "Edit bias"
 msgstr "Wysig kas"
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:49
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:48
 #, fuzzy, kde-format
 #| msgid "Match Type:"
 msgctxt "Bias selection label in bias view."
 msgid "Match Type:"
 msgstr "Pas Tipe:"
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:129
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:128
 #, kde-format
 msgid ""
 "This bias is a replacement for another bias\n"
@@ -2337,22 +2337,22 @@ msgid ""
 "The original bias name was %1."
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:196
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:195
 #, kde-format
 msgid "This bias has no settings."
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:46
+#: browsers/playlistbrowser/DynamicCategory.cpp:44
 #, kde-format
 msgid "Dynamic Playlists"
 msgstr "Dinamiese Speellyste"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:47
+#: browsers/playlistbrowser/DynamicCategory.cpp:45
 #, kde-format
 msgid "Dynamically updating parameter based playlists"
 msgstr "Dateer parameter-gebaseerde speellyste dinamies op"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:50
+#: browsers/playlistbrowser/DynamicCategory.cpp:48
 #, kde-format
 msgid ""
 "With a dynamic playlist, Amarok becomes your own personal dj, automatically "
@@ -2361,27 +2361,27 @@ msgstr ""
 "Met dinamiese speellyste word Amarok jou persoonlike platejoggie. Amarok "
 "kies outomaties snitte gebaseer op 'n aantal parameters wat jy kies."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:65
+#: browsers/playlistbrowser/DynamicCategory.cpp:63
 #, kde-format
 msgid "Previous:"
 msgstr "Vorige:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:70
+#: browsers/playlistbrowser/DynamicCategory.cpp:68
 #, kde-format
 msgid "Number of previous tracks to remain in the playlist."
 msgstr "Aantal vorige snitte om in die speellys agter te bly."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:75
+#: browsers/playlistbrowser/DynamicCategory.cpp:73
 #, kde-format
 msgid "Upcoming:"
 msgstr "Opkomend:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:81
+#: browsers/playlistbrowser/DynamicCategory.cpp:79
 #, kde-format
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "Aantal opkomende snitte om by die speellys te voeg."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:103
+#: browsers/playlistbrowser/DynamicCategory.cpp:101
 #, fuzzy, kde-format
 #| msgctxt "Podcast published on date"
 #| msgid "On"
@@ -2389,122 +2389,122 @@ msgctxt "Turn dynamic mode on"
 msgid "On"
 msgstr "Op"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:106
+#: browsers/playlistbrowser/DynamicCategory.cpp:104
 #, kde-format
 msgid "Turn dynamic mode on."
 msgstr "Aktiveer dinamiese modus."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:110
+#: browsers/playlistbrowser/DynamicCategory.cpp:108
 #, fuzzy, kde-format
 #| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 #| msgid "Re&move Duplicates"
 msgid "Duplicates"
 msgstr "Verwyder Duplikate"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:112
 #, fuzzy, kde-format
 #| msgid "The status of dynamic mode."
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
 msgstr "Die stand van dinamiese modus"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:118
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, fuzzy, kde-format
 #| msgctxt "toggle the \"new\" status of this podcast episode"
 #| msgid "&New"
 msgid "New"
 msgstr "Nuwe"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:120
+#: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, fuzzy, kde-format
 #| msgid "New playlist layout"
 msgid "New playlist"
 msgstr "Nuwe speellys uitleg"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:124
+#: browsers/playlistbrowser/DynamicCategory.cpp:122
 #, kde-format
 msgid "Edit"
 msgstr "Wysig"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:126
+#: browsers/playlistbrowser/DynamicCategory.cpp:124
 #, fuzzy, kde-format
 #| msgid "Error deleting preset"
 msgid "Edit the selected playlist or bias"
 msgstr "Fout tydens skrap van voorafinstelling"
 
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
-#: browsers/playlistbrowser/DynamicCategory.cpp:130
+#: browsers/playlistbrowser/DynamicCategory.cpp:128
 #: dialogs/EqualizerDialog.ui:76
 #, fuzzy, kde-format
 #| msgid "&Delete"
 msgid "Delete"
 msgstr "&Skrap"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:133
+#: browsers/playlistbrowser/DynamicCategory.cpp:131
 #, fuzzy, kde-format
 #| msgid "Delete the preset."
 msgid "Delete the selected playlist or bias"
 msgstr "Skrap die voorafinstelling."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:137
+#: browsers/playlistbrowser/DynamicCategory.cpp:135
 #, kde-format
 msgid "Repopulate"
 msgstr "Herbevolk"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:138
+#: browsers/playlistbrowser/DynamicCategory.cpp:136
 #, kde-format
 msgid "Replace the upcoming tracks with fresh ones."
 msgstr "Vervang die opkomende snitte met nuwes."
 
-#: browsers/playlistbrowser/DynamicView.cpp:223
+#: browsers/playlistbrowser/DynamicView.cpp:219
 #, fuzzy, kde-format
 #| msgid "Rename playlist layout"
 msgid "&Rename playlist"
 msgstr "Hernoem speellys uitleg"
 
-#: browsers/playlistbrowser/DynamicView.cpp:227
+#: browsers/playlistbrowser/DynamicView.cpp:223
 #, fuzzy, kde-format
 #| msgid "Add a new bias."
 msgid "&Add new Bias"
 msgstr "Voeg 'n nuwe sydigheid by"
 
-#: browsers/playlistbrowser/DynamicView.cpp:231
+#: browsers/playlistbrowser/DynamicView.cpp:227
 #, fuzzy, kde-format
 #| msgctxt "clear playlist"
 #| msgid "&Clear Playlist"
 msgid "&Clone Playlist"
 msgstr "&Wis Speellys"
 
-#: browsers/playlistbrowser/DynamicView.cpp:235
+#: browsers/playlistbrowser/DynamicView.cpp:231
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgid "&Delete playlist"
 msgstr "Skrap speellys uitleg"
 
-#: browsers/playlistbrowser/DynamicView.cpp:249
+#: browsers/playlistbrowser/DynamicView.cpp:245
 #, fuzzy, kde-format
 #| msgid "&Add Media..."
 msgid "&Edit bias..."
 msgstr "Media Byvoeg..."
 
-#: browsers/playlistbrowser/DynamicView.cpp:253
+#: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
 msgid "&Clone bias"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicView.cpp:263
+#: browsers/playlistbrowser/DynamicView.cpp:259
 #, fuzzy, kde-format
 #| msgid "Delete Files"
 msgid "&Delete bias"
 msgstr "Skrap Lêers"
 
-#: browsers/playlistbrowser/DynamicView.cpp:270
+#: browsers/playlistbrowser/DynamicView.cpp:266
 #, fuzzy, kde-format
 #| msgid "Add a new bias."
 msgid "&Add new bias"
 msgstr "Voeg 'n nuwe sydigheid by"
 
-#: browsers/playlistbrowser/PlaylistBrowser.cpp:43
+#: browsers/playlistbrowser/PlaylistBrowser.cpp:41
 #, kde-format
 msgid ""
 "The playlist browser contains your list of imported and saved playlists. It "
@@ -2515,24 +2515,24 @@ msgstr ""
 "Dit is ook waar jy kragtige dinamiese speellyste kan spesifiseer en jou "
 "potgooi inskrywings en episodes bestuur."
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:78
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:75
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
 #, kde-format
 msgid "Add Folder"
 msgstr "Gids Byvoeg"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:83
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:80
 #, fuzzy, kde-format
 #| msgid "Media Sources"
 msgid "Visible Sources"
 msgstr "Media Bronne"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:189
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:186
 #, kde-format
 msgid "Folders are only shown in <b>merged view</b>."
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:285
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:282
 #, fuzzy, kde-format
 #| msgid "New Folder"
 #| msgid_plural "New Folder (%1)"
@@ -2540,7 +2540,7 @@ msgctxt "default name for new folder"
 msgid "New Folder"
 msgstr "Nuwe Gids"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:121
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:119
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "number of playlists from one source"
@@ -2549,14 +2549,14 @@ msgid_plural "%1 playlists"
 msgstr[0] "Speellys"
 msgstr[1] "Speellys"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:126
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:124
 #, fuzzy, kde-format
 #| msgid "Loading"
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
 msgstr "Laai tans"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:173
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:171
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "number of playlists from one source"
@@ -2565,18 +2565,18 @@ msgid_plural "%1 playlists"
 msgstr[0] "Speellys"
 msgstr[1] "Speellys"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:401
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:399
 #, kde-format
 msgid "Source"
 msgstr "Bron"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:63
 #, fuzzy, kde-format
 #| msgid "Create Smart Playlist"
 msgid "Create an Empty Playlist"
 msgstr "Skep 'n Slim Speellys"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:81
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:77
 #, fuzzy, kde-format
 #| msgctxt "toggle the \"new\" status of this podcast episode"
 #| msgid "&New"
@@ -2584,25 +2584,25 @@ msgctxt "toggle the \"new\" status  of this podcast episode"
 msgid "&New"
 msgstr "Nuwe"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:87
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:83
 #, fuzzy, kde-format
 #| msgid "&Rename"
 msgid "&Rename..."
 msgstr "Hernoem"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:94
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:90
 #, fuzzy, kde-format
 #| msgid "&Delete"
 msgid "&Delete..."
 msgstr "&Skrap"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:108
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:104
 #, fuzzy, kde-format
 #| msgid "&Export Playlist As..."
 msgid "&Export As..."
 msgstr "&Voer Stroom Uit As..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, fuzzy, kde-format
 #| msgctxt "The amount of tracks being edited"
 #| msgid "1 Track"
@@ -2613,7 +2613,7 @@ msgid_plural "%1 Tracks"
 msgstr[0] "1 Snit"
 msgstr[1] "Besonderhede vir %1 Snitte"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, fuzzy, kde-format
 #| msgctxt "Remove a track from a saved playlist"
 #| msgid "Remove From \"%1\""
@@ -2621,7 +2621,7 @@ msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Verwyder Van \"%1\""
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2630,7 +2630,7 @@ msgid_plural "%1 Playlists"
 msgstr[0] "Speellys"
 msgstr[1] "Speellys"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, fuzzy, kde-format
 #| msgid "Removing Track from Device"
 #| msgid_plural "Removing Tracks from Device"
@@ -2640,7 +2640,7 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "Verwyder Snit van Toestel"
 msgstr[1] "Verwyder Snit van Toestel"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2649,7 +2649,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "Skrap speellys uitleg"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2658,51 +2658,51 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "Skrap speellys uitleg"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, fuzzy, kde-format
 #| msgid "Configure Playlist Info Applet"
 msgid "Confirm Playlist Deletion"
 msgstr "Speellys Inligting Miniprogram Opstel"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:451
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:449
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Gebruik relatiewe pad vir stoor"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:384 MainWindow.cpp:464
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: covermanager/CoverFoundDialog.cpp:382 MainWindow.cpp:462
 #, kde-format
 msgid "Save As"
 msgstr "Stoor As"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:37
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
 #, kde-format
 msgid "&Rename Folder..."
 msgstr "&Hernoem Gids"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:41
 #, kde-format
 msgid "&Delete Folder"
 msgstr "Skrap &Gids"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:320
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:319
 #, kde-format
 msgid "New name"
 msgstr "Nuwe naam"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:322
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:321
 #, kde-format
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "Gee nuwe gids naam:"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:338
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:259
 #, kde-format
 msgid "Confirm Delete"
 msgstr "Bevestig Verwyder"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:340
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
 #, fuzzy, kde-format
 #| msgid "Are you sure you want to delete this playlist?"
 #| msgid_plural "Are you sure you want to delete these %1 playlists?"
@@ -2710,19 +2710,19 @@ msgid "Are you sure you want to delete this folder and its contents?"
 msgstr "Is jy seker jy wil hierdie speellys skrap?"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_podcastCheckBox)
-#: browsers/playlistbrowser/PodcastCategory.cpp:82
+#: browsers/playlistbrowser/PodcastCategory.cpp:78
 #: core-impl/collections/umscollection/UmsConfiguration.ui:136
 #, kde-format
 msgid "Podcasts"
 msgstr "Potgooie"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:83
+#: browsers/playlistbrowser/PodcastCategory.cpp:79
 #, fuzzy, kde-format
 #| msgid "List of subscribed podcasts and episodes"
 msgid "List of podcast subscriptions and episodes"
 msgstr "Lys potgooi en episode inskrywings"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:86
+#: browsers/playlistbrowser/PodcastCategory.cpp:82
 #, kde-format
 msgid ""
 "Manage your podcast subscriptions and browse individual episodes. "
@@ -2733,44 +2733,44 @@ msgstr ""
 "kan hier na die skyf afgelaai word, of jy kan Amarok vra om dit outomaties "
 "laat doen."
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:96
+#: browsers/playlistbrowser/PodcastCategory.cpp:92
 #, kde-format
 msgid "&Add Podcast"
 msgstr "&Potgooi Byvoeg"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:103
+#: browsers/playlistbrowser/PodcastCategory.cpp:99
 #, kde-format
 msgid "&Update All"
 msgstr "&Opdateer Elkeen"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:111
-#: browsers/playlistbrowser/PodcastCategory.cpp:114
+#: browsers/playlistbrowser/PodcastCategory.cpp:107
+#: browsers/playlistbrowser/PodcastCategory.cpp:110
 #, kde-format
 msgid "Import OPML File"
 msgstr "Invoer OPML Lêers"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:168
+#: browsers/playlistbrowser/PodcastCategory.cpp:164
 #, kde-format
 msgid "By"
 msgstr "Deur"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:207
+#: browsers/playlistbrowser/PodcastCategory.cpp:203
 #, kde-format
 msgctxt "Podcast published on date"
 msgid "On"
 msgstr "Op"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:225
+#: browsers/playlistbrowser/PodcastCategory.cpp:221
 #, kde-format
 msgid "File Size:"
 msgstr "Lêer Grootte"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:237
+#: browsers/playlistbrowser/PodcastCategory.cpp:233
 #, kde-format
 msgid "Subscription Date:"
 msgstr "Inteken Datum:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:245
+#: browsers/playlistbrowser/PodcastCategory.cpp:241
 #, kde-format
 msgid "Keywords:"
 msgstr "Sleutelwoorde:"
@@ -2807,8 +2807,8 @@ msgstr "Potgooie Opstel..."
 msgid "Scan Interval..."
 msgstr "Skandering Tydsinterval..."
 
-#: browsers/playlistbrowser/PodcastModel.cpp:217
-#: browsers/playlistbrowser/PodcastModel.cpp:269
+#: browsers/playlistbrowser/PodcastModel.cpp:216
+#: browsers/playlistbrowser/PodcastModel.cpp:268
 #, fuzzy, kde-format
 #| msgid "IRC channels: "
 msgctxt "number of podcasts from one source"
@@ -2818,24 +2818,24 @@ msgstr[0] "IRC kanale: "
 msgstr[1] "IRC kanale: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:321
+#: browsers/playlistbrowser/PodcastModel.cpp:320
 #: context/applets/tabs/ReloadEditDialog.ui:86
-#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
+#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:923
 #, kde-format
 msgid "Title"
 msgstr "Titel"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:322 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:512
 #, kde-format
 msgid "Summary"
 msgstr "Opsomming"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:342
+#: browsers/playlistbrowser/PodcastModel.cpp:341
 #, kde-format
 msgid "Add Podcast"
 msgstr "Voeg Potgooi by"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:343
+#: browsers/playlistbrowser/PodcastModel.cpp:342
 #, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Gee RSS 1.0/2.0 of Atom voer URL:"
@@ -2950,7 +2950,7 @@ msgid "Configure Plugins"
 msgstr "Phonon Opstel"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:378
+#: scripting/scriptconsole/ScriptConsole.cpp:375
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Scripts"
@@ -3016,19 +3016,19 @@ msgstr ""
 msgid "Transcode tracks:"
 msgstr "Lukrake Snitte"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:103
+#: configdialog/dialogs/DatabaseConfig.cpp:102
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:104
+#: configdialog/dialogs/DatabaseConfig.cpp:103
 #, fuzzy, kde-format
 #| msgctxt "The operation completed as expected"
 #| msgid "Success"
 msgid "Success"
 msgstr "Sukses"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:106
+#: configdialog/dialogs/DatabaseConfig.cpp:105
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -3037,20 +3037,20 @@ msgid ""
 "properly."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:136
+#: configdialog/dialogs/DatabaseConfig.cpp:135
 #, kde-format
 msgid ""
 "Changes to database settings only take\n"
 "effect after Amarok is restarted."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:137
+#: configdialog/dialogs/DatabaseConfig.cpp:136
 #, fuzzy, kde-format
 #| msgid "Rating changed"
 msgid "Database settings changed"
 msgstr "Keuring gewysig"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:156
+#: configdialog/dialogs/DatabaseConfig.cpp:155
 #, kde-format
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
@@ -3185,7 +3185,7 @@ msgstr ""
 "Toegangsregte kan toegeken word met die volgende SQL opdrag (na die wagwoord "
 "met die korrekte een vervang word):"
 
-#: configdialog/dialogs/ExcludedLabelsDialog.cpp:53
+#: configdialog/dialogs/ExcludedLabelsDialog.cpp:50
 #, fuzzy, kde-format
 #| msgid "Exclude"
 msgid "Excluded Labels"
@@ -3698,7 +3698,7 @@ msgstr "Gebruik Growl vir kennisgewings"
 msgid "Use &system notifications"
 msgstr "Gebruik Growl vir kennisgewings"
 
-#: configdialog/dialogs/PlaybackConfig.cpp:38
+#: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
 msgid "Current Phonon backend does not support volume fading"
 msgstr ""
@@ -3807,48 +3807,48 @@ msgstr "Plaas URLs in die wagtou na die snit wat tans speel"
 msgid "&Pause playback on suspend"
 msgstr "Pouseer terugspeel"
 
-#: configdialog/dialogs/PluginsConfig.cpp:44
+#: configdialog/dialogs/PluginsConfig.cpp:43
 #, fuzzy, kde-format
 #| msgid "Collection"
 msgid "Collections"
 msgstr "Versameling"
 
-#: configdialog/dialogs/PluginsConfig.cpp:47
+#: configdialog/dialogs/PluginsConfig.cpp:46
 #, kde-format
 msgid "Internet Services"
 msgstr "Internet Dienste"
 
-#: configdialog/dialogs/PluginsConfig.cpp:50
+#: configdialog/dialogs/PluginsConfig.cpp:49
 #, fuzzy, kde-format
 #| msgid "Statistics"
 msgid "Statistics importers"
 msgstr "Statistiek"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:132
+#: configdialog/dialogs/ScriptsConfig.cpp:131
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:138
+#: configdialog/dialogs/ScriptsConfig.cpp:137
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Select Archived Script"
 msgstr "Deursoek skripte"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:153
+#: configdialog/dialogs/ScriptsConfig.cpp:152
 #, fuzzy, kde-format
 #| msgid "Invalid gift card code"
 msgid "Invalid Archive"
 msgstr "Ongeldige geskenkbewys kode"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:163
-#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: configdialog/dialogs/ScriptsConfig.cpp:162
+#: configdialog/dialogs/ScriptsConfig.cpp:176
 #, fuzzy, kde-format
 #| msgid "&Install Script"
 msgid "Invalid Script File"
 msgstr "&Installeer Skrip"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:184
+#: configdialog/dialogs/ScriptsConfig.cpp:183
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3856,24 +3856,24 @@ msgid ""
 "Selected Script's Version: %3"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:194
 #, fuzzy, kde-format
 #| msgid "The iPod was successfully initialized."
 msgid "The script %1 was successfully installed"
 msgstr "Die iPod is suksesvol geïnisialiseer."
 
-#: configdialog/dialogs/ScriptsConfig.cpp:207
+#: configdialog/dialogs/ScriptsConfig.cpp:206
 #, fuzzy, kde-format
 #| msgid "General"
 msgid "Generic"
 msgstr "Algemeen"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:211 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "Lirieke"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:215
+#: configdialog/dialogs/ScriptsConfig.cpp:214
 #, fuzzy, kde-format
 #| msgid "Simple Search"
 msgid "Scriptable Service"
@@ -3894,7 +3894,7 @@ msgstr "&Installeer Skrip"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
-#: scripting/scriptconsole/ScriptConsole.cpp:74
+#: scripting/scriptconsole/ScriptConsole.cpp:71
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Script Console"
@@ -3915,7 +3915,7 @@ msgstr ""
 msgid "Enable Script Console"
 msgstr "Bestuur voorafinstellings"
 
-#: configdialog/dialogs/ScriptSelector.cpp:37
+#: configdialog/dialogs/ScriptSelector.cpp:38
 #, kde-format
 msgid "Search Scripts"
 msgstr "Deursoek skripte"
@@ -3962,7 +3962,7 @@ msgid "&Queue"
 msgstr "Wagtou"
 
 #: context/applets/albums/plugin/AlbumsEngine.cpp:288
-#: playlist/view/PlaylistViewCommon.cpp:265
+#: playlist/view/PlaylistViewCommon.cpp:266
 #, kde-format
 msgid "Edit Track Details"
 msgstr "Wysig Snit Besonderhede"
@@ -4016,13 +4016,13 @@ msgid "Sample size:"
 msgstr "Steekproef tempo:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
-#: playlist/PlaylistModel.cpp:945
+#: playlist/PlaylistModel.cpp:941
 #, kde-format
 msgid "Play Count"
 msgstr "Speel Telling"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
-#: playlist/PlaylistModel.cpp:943
+#: playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Score"
 msgstr "Evaluasie"
@@ -4054,7 +4054,7 @@ msgstr "Verwyder Miniprogram"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
 #: context/applets/similarartists/ArtistWidget.cpp:131
-#: playlist/view/PlaylistViewCommon.cpp:202
+#: playlist/view/PlaylistViewCommon.cpp:203
 #, fuzzy, kde-format
 #| msgid "Media Sources"
 msgid "Show in Media Sources"
@@ -4575,10 +4575,10 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:456
-#: services/magnatune/MagnatuneStore.cpp:214
+#: services/lastfm/LastFmService.cpp:454
+#: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
 msgstr "Kunstenaar"
@@ -4696,7 +4696,7 @@ msgid "Don't change page automatically"
 msgstr "Opdateer die plaaslike Magnatune databasis."
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:364
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:363
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4716,57 +4716,57 @@ msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
 msgstr "Kopieer na Versameling"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:270
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:269
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Kon nie Wikipedia inligting onttrek nie: %1"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:93
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:249
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:307
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:92
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:248
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:306
 #, kde-format
 msgid "No information found..."
 msgstr "Geen inligting gevind nie..."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:327
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
 msgctxt "Search pattern for a song"
 msgid ".*\\(.*(song|track).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:532
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:531
 #, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:757
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:756
 #, fuzzy, kde-format
 #| msgid "Cover Manager"
 msgid "Choose Language"
 msgstr "Omslag Bestuurder"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:890
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:889
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4827,12 +4827,12 @@ msgstr "Weier vertoning in Verskeie Kunstenaars"
 msgid "Show under Various Artists"
 msgstr "Vertoon in Verskeie Kunstenaars"
 
-#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
+#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:102
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 - Gestop %2"
 
-#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:108
+#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:107
 #, kde-format
 msgid "Playback Ended Markers"
 msgstr "Terugspeel Eindmerkers"
@@ -4845,7 +4845,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Versameling Opdateer"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:391
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:390
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -4973,14 +4973,14 @@ msgstr "Laai afgeleë versameling van gasheer %1"
 msgid "Music share at %1"
 msgstr "Musiek deling by %1"
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:243
+#: core-impl/collections/db/sql/SqlCollection.cpp:241
 #, kde-format
 msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:245
+#: core-impl/collections/db/sql/SqlCollection.cpp:243
 #, fuzzy, kde-format
 #| msgid "Updating podcast channel"
 msgid "Updating Amarok database schema"
@@ -5014,7 +5014,7 @@ msgstr "Dra oor: %1"
 msgid "Removing: %1"
 msgstr "Speel tans: %1"
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:85
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:84
 #, kde-format
 msgid ""
 "<ul><li>%1</li></ul>In most cases this means that not all of your tracks "
@@ -5023,13 +5023,13 @@ msgid ""
 "information about duplicate tracks."
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:89
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:88
 #, fuzzy, kde-format
 #| msgid "Collection Scan Error"
 msgid "Errors During Collection Scan"
 msgstr "Versameling Skandeer Fout"
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:212
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:211
 #, kde-format
 msgid ""
 "Duplicates found, the second file will be ignored:\n"
@@ -5089,14 +5089,14 @@ msgid "Disconnected iPod/iPad/iPhone"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:89
 #, fuzzy, kde-format
 #| msgid "Collection"
 msgid "Unknown Collection"
 msgstr "Versameling"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
@@ -5105,7 +5105,7 @@ msgid "Unknown Artist"
 msgstr "Onbekende Kunstenaar"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:94
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
@@ -5329,7 +5329,7 @@ msgstr "Inisialiseer iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
-#: covermanager/CoverFoundDialog.cpp:744
+#: covermanager/CoverFoundDialog.cpp:742
 #, fuzzy, kde-format
 #| msgid "Track Information"
 msgid "Information"
@@ -5662,7 +5662,7 @@ msgstr "Kon nie die speellys stoor nie."
 msgid "Playdar Collection"
 msgstr "Instaan Versameling"
 
-#: core-impl/collections/playdarcollection/PlaydarMeta.cpp:122
+#: core-impl/collections/playdarcollection/PlaydarMeta.cpp:121
 #, fuzzy, kde-format
 #| msgid "Search collection"
 msgid "Source collection removed"
@@ -7032,7 +7032,7 @@ msgctxt "One word translation used in the collection filter"
 msgid "lyrics"
 msgstr "Lirieke"
 
-#: core/meta/support/MetaUtility.cpp:421
+#: core/meta/support/MetaUtility.cpp:420
 #, kde-format
 msgctxt ""
 "the time format for a time length when the time is below 1 hour see QTime "
@@ -7040,7 +7040,7 @@ msgctxt ""
 msgid "m:ss"
 msgstr ""
 
-#: core/meta/support/MetaUtility.cpp:428
+#: core/meta/support/MetaUtility.cpp:427
 #, fuzzy, kde-format
 #| msgid "%1 layout"
 msgctxt "number of days with spacing for the pretty time"
@@ -7049,7 +7049,7 @@ msgid_plural "%1 days, "
 msgstr[0] "%1 uitleg"
 msgstr[1] "%1 uitleg"
 
-#: core/meta/support/MetaUtility.cpp:429
+#: core/meta/support/MetaUtility.cpp:428
 #, kde-format
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
@@ -7057,7 +7057,7 @@ msgctxt ""
 msgid "h:mm:ss"
 msgstr ""
 
-#: core/meta/support/MetaUtility.cpp:443
+#: core/meta/support/MetaUtility.cpp:442
 #, fuzzy, kde-format
 #| msgid "year"
 msgctxt "number of years for the pretty time"
@@ -7066,7 +7066,7 @@ msgid_plural "%1 years"
 msgstr[0] "jaar"
 msgstr[1] "jaar"
 
-#: core/meta/support/MetaUtility.cpp:445
+#: core/meta/support/MetaUtility.cpp:444
 #, fuzzy, kde-format
 #| msgid "Months"
 msgctxt "number of months for the pretty time"
@@ -7075,7 +7075,7 @@ msgid_plural "%1 months"
 msgstr[0] "Maande"
 msgstr[1] "Maande"
 
-#: core/meta/support/MetaUtility.cpp:447
+#: core/meta/support/MetaUtility.cpp:446
 #, fuzzy, kde-format
 #| msgid "%1 layout"
 msgctxt "number of days for the pretty time"
@@ -7084,7 +7084,7 @@ msgid_plural "%1 days"
 msgstr[0] "%1 uitleg"
 msgstr[1] "%1 uitleg"
 
-#: core/meta/support/MetaUtility.cpp:449
+#: core/meta/support/MetaUtility.cpp:448
 #, fuzzy, kde-format
 #| msgid "Hours"
 msgctxt "number of hours for the pretty time"
@@ -7093,7 +7093,7 @@ msgid_plural "%1 hours"
 msgstr[0] "Ure"
 msgstr[1] "Ure"
 
-#: core/meta/support/MetaUtility.cpp:451
+#: core/meta/support/MetaUtility.cpp:450
 #, fuzzy, kde-format
 #| msgid "Minutes"
 msgctxt "number of minutes for the pretty time"
@@ -7102,7 +7102,7 @@ msgid_plural "%1 minutes"
 msgstr[0] "Minute"
 msgstr[1] "Minute"
 
-#: core/meta/support/MetaUtility.cpp:453
+#: core/meta/support/MetaUtility.cpp:452
 #, fuzzy, kde-format
 #| msgid "Seconds"
 msgctxt "number of seconds for the pretty time"
@@ -7181,13 +7181,13 @@ msgid "unknown type"
 msgstr "onbekende soort"
 
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:89
-#: playlist/PlaylistModel.cpp:499
+#: playlist/PlaylistModel.cpp:495
 #, kde-format
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Nooit"
 
-#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:503
+#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:499
 #, kde-format
 msgctxt "When this track was last played"
 msgid "Unknown"
@@ -7600,18 +7600,18 @@ msgid ""
 "not support Ogg Vorbis."
 msgstr ""
 
-#: core/transcoding/TranscodingConfiguration.cpp:109
+#: core/transcoding/TranscodingConfiguration.cpp:110
 #, fuzzy, kde-format
 #| msgid "Invalid email"
 msgid "Invalid"
 msgstr "Ongeldige e-pos"
 
-#: core/transcoding/TranscodingConfiguration.cpp:111
+#: core/transcoding/TranscodingConfiguration.cpp:112
 #, kde-format
 msgid "Just Copy"
 msgstr ""
 
-#: core/transcoding/TranscodingConfiguration.cpp:135
+#: core/transcoding/TranscodingConfiguration.cpp:136
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
@@ -7619,7 +7619,7 @@ msgctxt "%1 example: 'Compression level' %2 example: '5'"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: core/transcoding/TranscodingConfiguration.cpp:142
+#: core/transcoding/TranscodingConfiguration.cpp:143
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
@@ -7629,21 +7629,21 @@ msgctxt ""
 msgid "%1, %2"
 msgstr "%1 %2"
 
-#: core/transcoding/TranscodingConfiguration.cpp:210
+#: core/transcoding/TranscodingConfiguration.cpp:211
 #, fuzzy, kde-format
 #| msgid "Tracks"
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "All Tracks to %1"
 msgstr "Snitte"
 
-#: core/transcoding/TranscodingConfiguration.cpp:214
+#: core/transcoding/TranscodingConfiguration.cpp:215
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks to Device"
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "Non-%1 Tracks to %1"
 msgstr "Dra Snitte oor na Toestel"
 
-#: core/transcoding/TranscodingConfiguration.cpp:218
+#: core/transcoding/TranscodingConfiguration.cpp:219
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "When Needed to %1"
@@ -7680,46 +7680,46 @@ msgstr "Haal van omslag vir '%1' gekanselleer."
 msgid "Unable to find a cover for '%1'."
 msgstr "Kon nie omslag vir '%1' vind nie."
 
-#: covermanager/CoverFetchingActions.cpp:47
+#: covermanager/CoverFetchingActions.cpp:44
 #, kde-format
 msgid "Fetch Cover"
 msgid_plural "Fetch Covers"
 msgstr[0] "Haal Omslag"
 msgstr[1] "Haal Omslae"
 
-#: covermanager/CoverFetchingActions.cpp:49
+#: covermanager/CoverFetchingActions.cpp:46
 #, kde-format
 msgid "Fetch the artwork for this album"
 msgid_plural "Fetch artwork for %1 albums"
 msgstr[0] "Haal die kunswerk vir hierdie album"
 msgstr[1] "Haal die kunswerk vir %1 albums"
 
-#: covermanager/CoverFetchingActions.cpp:76
-#: covermanager/CoverFoundDialog.cpp:381
+#: covermanager/CoverFetchingActions.cpp:73
+#: covermanager/CoverFoundDialog.cpp:379
 #, kde-format
 msgid "Display Cover"
 msgstr "Vertoon Omslag"
 
-#: covermanager/CoverFetchingActions.cpp:78
+#: covermanager/CoverFetchingActions.cpp:75
 #, kde-format
 msgid "Display artwork for this album"
 msgstr "Vertoon kunswerk vir hierdie album"
 
-#: covermanager/CoverFetchingActions.cpp:96
+#: covermanager/CoverFetchingActions.cpp:93
 #, kde-format
 msgid "Unset Cover"
 msgid_plural "Unset Covers"
 msgstr[0] "Omslag Wegstel"
 msgstr[1] "Omslae Wegstel"
 
-#: covermanager/CoverFetchingActions.cpp:98
+#: covermanager/CoverFetchingActions.cpp:95
 #, kde-format
 msgid "Remove artwork for this album"
 msgid_plural "Remove artwork for %1 albums"
 msgstr[0] "Verwyder kunswerk vir hierdie album"
 msgstr[1] "Verwyder kunswerk vir %1 albums"
 
-#: covermanager/CoverFetchingActions.cpp:111
+#: covermanager/CoverFetchingActions.cpp:108
 #, kde-format
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
@@ -7727,35 +7727,35 @@ msgid_plural ""
 msgstr[0] "Is jy seker jy wil hierdie omslag uit die Versameling verwyder?"
 msgstr[1] "Is jy seker jy wil %1 omslae uit die Versameling verwyder?"
 
-#: covermanager/CoverFetchingActions.cpp:134
+#: covermanager/CoverFetchingActions.cpp:131
 #, kde-format
 msgid "Set Custom Cover"
 msgstr "Stel Pasmaak Omslag"
 
-#: covermanager/CoverFetchingActions.cpp:136
+#: covermanager/CoverFetchingActions.cpp:133
 #, kde-format
 msgid "Set custom artwork for this album"
 msgid_plural "Set custom artwork for these %1 albums"
 msgstr[0] "Stel pasmaak kunswerk op vir hierdie album"
 msgstr[1] "Stel pasmaak kunswerk op vir hierdie %1 albums"
 
-#: covermanager/CoverFetchingActions.cpp:167
+#: covermanager/CoverFetchingActions.cpp:164
 #, kde-format
 msgid "Select Cover Image File"
 msgstr "Kies Omslag Beeld Lêer"
 
-#: covermanager/CoverFoundDialog.cpp:89
+#: covermanager/CoverFoundDialog.cpp:87
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
 msgid "Finding cover for"
 msgstr "Haal tans omslag vir %1..."
 
-#: covermanager/CoverFoundDialog.cpp:120
+#: covermanager/CoverFoundDialog.cpp:118
 #, kde-format
 msgid "Enter Custom Search"
 msgstr "Invoer Pasmaak Soektog"
 
-#: covermanager/CoverFoundDialog.cpp:137
+#: covermanager/CoverFoundDialog.cpp:135
 #: services/lastfm/LastFmServiceCollection.cpp:115
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
@@ -7764,303 +7764,303 @@ msgstr "Invoer Pasmaak Soektog"
 msgid "Last.fm"
 msgstr "last.fm"
 
-#: covermanager/CoverFoundDialog.cpp:138
+#: covermanager/CoverFoundDialog.cpp:136
 #, kde-format
 msgid "Google"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:139
+#: covermanager/CoverFoundDialog.cpp:137
 #, fuzzy, kde-format
 #| msgid "Disc #"
 msgid "Discogs"
 msgstr "Skyf #"
 
-#: covermanager/CoverFoundDialog.cpp:152
+#: covermanager/CoverFoundDialog.cpp:150
 #, kde-format
 msgid "Sort by size"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:406
+#: covermanager/CoverFoundDialog.cpp:404
 #, fuzzy, kde-format
 #| msgid "Save Location:"
 msgid "Cover Image Save Location"
 msgstr "Stoor Ligging:"
 
-#: covermanager/CoverFoundDialog.cpp:435 covermanager/CoverFoundDialog.cpp:454
+#: covermanager/CoverFoundDialog.cpp:433 covermanager/CoverFoundDialog.cpp:452
 #, fuzzy, kde-format
 #| msgid "The cover could not be retrieved."
 msgid "Sorry, the cover could not be saved."
 msgstr "Die omslag kon nie onttrek word nie."
 
-#: covermanager/CoverFoundDialog.cpp:519
+#: covermanager/CoverFoundDialog.cpp:517
 #, fuzzy, kde-format
 #| msgid "The cover could not be retrieved."
 msgid "Sorry, the cover image could not be retrieved."
 msgstr "Die omslag kon nie onttrek word nie."
 
-#: covermanager/CoverFoundDialog.cpp:539
+#: covermanager/CoverFoundDialog.cpp:537
 #, fuzzy, kde-format
 #| msgid "Fetching Cover"
 msgid "Fetching Large Cover"
 msgstr "Haal Omslag"
 
-#: covermanager/CoverFoundDialog.cpp:540
+#: covermanager/CoverFoundDialog.cpp:538
 #, fuzzy, kde-format
 #| msgid "Download to:"
 msgid "Download Progress"
 msgstr "Aflaai na:"
 
-#: covermanager/CoverFoundDialog.cpp:542
+#: covermanager/CoverFoundDialog.cpp:540
 #, fuzzy, kde-format
 #| msgid "&Cancel"
 msgid "Cancel"
 msgstr "&Kanselleer"
 
-#: covermanager/CoverFoundDialog.cpp:703
+#: covermanager/CoverFoundDialog.cpp:701
 #, fuzzy, kde-format
 #| msgid "Search %1"
 msgid "Search"
 msgstr "Deursoek %1"
 
-#: covermanager/CoverFoundDialog.cpp:703
+#: covermanager/CoverFoundDialog.cpp:701
 #, kde-format
 msgid "Search For More Results"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:719
+#: covermanager/CoverFoundDialog.cpp:717
 #, fuzzy, kde-format
 #| msgid "No covers found."
 msgid "No Images Found"
 msgstr "Geen omslae gevind."
 
-#: covermanager/CoverFoundDialog.cpp:720
+#: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverFoundDialog.cpp:745
+#: covermanager/CoverFoundDialog.cpp:743
 #, fuzzy, kde-format
 #| msgid "None"
 msgid "Notes"
 msgstr "Geen"
 
-#: covermanager/CoverFoundDialog.cpp:817
+#: covermanager/CoverFoundDialog.cpp:815
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgctxt "@item::intable"
 msgid "Artist"
 msgstr "Kunstenaar"
 
-#: covermanager/CoverFoundDialog.cpp:818
+#: covermanager/CoverFoundDialog.cpp:816
 #, fuzzy, kde-format
 #| msgid "Counting"
 msgctxt "@item::intable"
 msgid "Country"
 msgstr "Telling"
 
-#: covermanager/CoverFoundDialog.cpp:819
+#: covermanager/CoverFoundDialog.cpp:817
 #, fuzzy, kde-format
 #| msgid "Database"
 msgctxt "@item::intable"
 msgid "Date"
 msgstr "Databasis"
 
-#: covermanager/CoverFoundDialog.cpp:820
+#: covermanager/CoverFoundDialog.cpp:818
 #, fuzzy, kde-format
 #| msgid "Format:"
 msgctxt "@item::intable File Format"
 msgid "Format"
 msgstr "Formaat:"
 
-#: covermanager/CoverFoundDialog.cpp:821
+#: covermanager/CoverFoundDialog.cpp:819
 #, kde-format
 msgctxt "@item::intable Image Height"
 msgid "Height"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:822 covermanager/CoverFoundDialog.cpp:827
+#: covermanager/CoverFoundDialog.cpp:820 covermanager/CoverFoundDialog.cpp:825
 #, fuzzy, kde-format
 #| msgid "Title"
 msgctxt "@item::intable Album Title"
 msgid "Title"
 msgstr "Titel"
 
-#: covermanager/CoverFoundDialog.cpp:823
+#: covermanager/CoverFoundDialog.cpp:821
 #, fuzzy, kde-format
 #| msgid "Type"
 msgctxt "@item::intable Release Type"
 msgid "Type"
 msgstr "Soort"
 
-#: covermanager/CoverFoundDialog.cpp:824
+#: covermanager/CoverFoundDialog.cpp:822
 #, fuzzy, kde-format
 #| msgid "Reload"
 msgctxt "@item::intable Release Date"
 msgid "Released"
 msgstr "Herlaai"
 
-#: covermanager/CoverFoundDialog.cpp:825
+#: covermanager/CoverFoundDialog.cpp:823
 #, fuzzy, kde-format
 #| msgid "Size:"
 msgctxt "@item::intable File Size"
 msgid "Size"
 msgstr "Grootte:"
 
-#: covermanager/CoverFoundDialog.cpp:826
+#: covermanager/CoverFoundDialog.cpp:824
 #, fuzzy, kde-format
 #| msgid "Source"
 msgctxt "@item::intable Cover Provider"
 msgid "Source"
 msgstr "Bron"
 
-#: covermanager/CoverFoundDialog.cpp:828
+#: covermanager/CoverFoundDialog.cpp:826
 #, fuzzy, kde-format
 #| msgid "Width"
 msgctxt "@item::intable Image Width"
 msgid "Width"
 msgstr "Wydte"
 
-#: covermanager/CoverFoundDialog.cpp:862
+#: covermanager/CoverFoundDialog.cpp:860
 #, fuzzy, kde-format
 #| msgid "Playback"
 msgctxt "@item::intable URL"
 msgid "link"
 msgstr "Terugspeel"
 
-#: covermanager/CoverFoundDialog.cpp:868
+#: covermanager/CoverFoundDialog.cpp:866
 #, fuzzy, kde-format
 #| msgid "URL"
 msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:799
+#: covermanager/CoverManager.cpp:110 MainWindow.cpp:797
 #, kde-format
 msgid "Cover Manager"
 msgstr "Omslag Bestuurder"
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:123
 #, kde-format
 msgid "Albums By"
 msgstr "Albums Deur"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:133
 #, kde-format
 msgid "All Artists"
 msgstr "Alle Kunstenaars"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:66
+#: covermanager/CoverManager.cpp:179 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "Voer die soektog term hier in"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "All Albums"
 msgstr "Alle Albums"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums With Cover"
 msgstr "Albums Met 'n Omslag"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:194
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "Albums Sonder 'n Omslag"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:207
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "Haal Omslae wat Kort"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:313
 #, kde-format
 msgid "Fetching"
 msgstr "Haal tans"
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:408
 #, kde-format
 msgid "Loading"
 msgstr "Laai tans"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:619
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Klaar."
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:621
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " Omslag ongevonde"
 msgstr[1] " <b>%1</b> omslae ongevonde"
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Haal tans omslag vir %1 - %2..."
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:645
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Haal tans omslag vir %1..."
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:651
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "Haal tans 1 omslag: "
 msgstr[1] "Haal tans <b>%1</b> omslae... : "
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:653
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "1 gehaal"
 msgstr[1] "%1 gehaal"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:657
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:658
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "1 ongevonde"
 msgstr[1] "%1 ongevonde"
 
-#: covermanager/CoverManager.cpp:662
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Connecting..."
 msgstr "Koppel Tans..."
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:684
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "1 resultaat vir \"%2\""
 msgstr[1] "%1 resultate vir \"%2\""
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:688
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "1 album"
 msgstr[1] "%1 albums"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:700
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ""
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:700
 #, fuzzy, kde-format
 #| msgctxt "%1 is number of tracks, %2 is time"
 #| msgid "%1 track (%2)"
@@ -8068,7 +8068,7 @@ msgstr ""
 msgid "%1 by %2"
 msgstr "%1 snit (%2)"
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:705
 #, fuzzy, kde-format
 #| msgid " - ( <b>%1</b> without cover )"
 msgid "%2 - ( <b>1</b> without cover )"
@@ -8076,22 +8076,22 @@ msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] " - ( <b>%1</b> omslagloos )"
 msgstr[1] " - ( <b>%1</b> omslagloos )"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "Omslag Beeld"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "Geen Kunstenaar"
 
-#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
+#: covermanager/CoverViewDialog.cpp:32 covermanager/CoverViewDialog.cpp:43
 #, fuzzy, kde-format
 #| msgid "Cover size"
 msgid "Cover View"
@@ -8103,14 +8103,14 @@ msgstr "Omslag grootte"
 msgid "Could not open file \"%1\"."
 msgstr "Kon nie gids skep nie: %1"
 
-#: databaseimporter/SqlBatchImporterConfig.cpp:39
+#: databaseimporter/SqlBatchImporterConfig.cpp:36
 #, kde-format
 msgid ""
 "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
 "community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>."
 msgstr ""
 
-#: databaseimporter/SqlBatchImporterConfig.cpp:46
+#: databaseimporter/SqlBatchImporterConfig.cpp:43
 #, kde-format
 msgid "Input file"
 msgstr ""
@@ -8167,47 +8167,47 @@ msgstr ""
 msgid "Rescan '%1'"
 msgstr "Herskandeer"
 
-#: dialogs/DatabaseImporterDialog.cpp:41
+#: dialogs/DatabaseImporterDialog.cpp:39
 #, kde-format
 msgid "Import Collection"
 msgstr "Versameling Invoer"
 
-#: dialogs/DatabaseImporterDialog.cpp:49
+#: dialogs/DatabaseImporterDialog.cpp:47
 #, fuzzy, kde-format
 #| msgid "Podcast Configuration"
 msgid "Import configuration"
 msgstr "Potgooi Opstelling"
 
-#: dialogs/DatabaseImporterDialog.cpp:69
+#: dialogs/DatabaseImporterDialog.cpp:67
 #, kde-format
 msgid "Migrating"
 msgstr "Oordra"
 
-#: dialogs/DatabaseImporterDialog.cpp:101
+#: dialogs/DatabaseImporterDialog.cpp:99
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> No tracks were imported"
 msgstr ""
 "<b><font color='red'>Mislukking:</font></b> Geen snitte was ingevoer nie"
 
-#: dialogs/DatabaseImporterDialog.cpp:103
+#: dialogs/DatabaseImporterDialog.cpp:101
 #, kde-format
 msgid "<b><font color='green'>Success:</font></b> Imported %1 track"
 msgid_plural "<b><font color='green'>Success:</font></b> Imported %1 tracks"
 msgstr[0] "<b><font color='green'>Sukses:</font></b> %1 Snit ingevoer"
 msgstr[1] "<b><font color='green'>Sukses:</font></b> %1 Snitte ingevoer"
 
-#: dialogs/DatabaseImporterDialog.cpp:115
+#: dialogs/DatabaseImporterDialog.cpp:113
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> Unable to import statistics"
 msgstr ""
 "<b><font color='red'>Mislukking:</font></b> Kon nie statistieke invoer nie"
 
-#: dialogs/DatabaseImporterDialog.cpp:132
+#: dialogs/DatabaseImporterDialog.cpp:130
 #, kde-format
 msgid "<b><font color='red'>Error:</font></b> %1"
 msgstr "<b><font color='red'>Fout:</font></b> %1"
 
-#: dialogs/DatabaseImporterDialog.cpp:147
+#: dialogs/DatabaseImporterDialog.cpp:145
 #, fuzzy, kde-format
 #| msgctxt "Track has been imported, format: Artist - Track"
 #| msgid "Imported <b>%1 - %2</b>"
@@ -8215,25 +8215,25 @@ msgctxt "Track has been imported, format: Track"
 msgid "Imported <b>%1</b>"
 msgstr "<b>%1 - %2</b> Ingevoer"
 
-#: dialogs/DatabaseImporterDialog.cpp:150
+#: dialogs/DatabaseImporterDialog.cpp:148
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
 msgstr "<b>%1 - %2</b> Ingevoer"
 
-#: dialogs/DatabaseImporterDialog.cpp:153
+#: dialogs/DatabaseImporterDialog.cpp:151
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
 msgstr "<b>%1 - %2 (%3)</b> Ingevoer"
 
-#: dialogs/DatabaseImporterDialog.cpp:162
+#: dialogs/DatabaseImporterDialog.cpp:160
 #, kde-format
 msgctxt "Track has been discarded, format: Url"
 msgid "Discarded <b><font color='gray'>%1</font></b>"
 msgstr "<b><font color='gray'>%1</font></b> Verwerp"
 
-#: dialogs/DatabaseImporterDialog.cpp:177
+#: dialogs/DatabaseImporterDialog.cpp:175
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "Track has been imported by tags, format: Artist - Track, from Url, to Url"
@@ -8248,7 +8248,7 @@ msgstr ""
 "<b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;Ingevoer van %3<br/"
 ">&nbsp;&nbsp;na %4"
 
-#: dialogs/DatabaseImporterDialog.cpp:180
+#: dialogs/DatabaseImporterDialog.cpp:178
 #, kde-format
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track, from Url, to Url"
@@ -8259,7 +8259,7 @@ msgstr ""
 "<b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;Ingevoer van %3<br/"
 ">&nbsp;&nbsp;na %4"
 
-#: dialogs/DatabaseImporterDialog.cpp:183
+#: dialogs/DatabaseImporterDialog.cpp:181
 #, kde-format
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track (Album), from Url, "
@@ -8271,7 +8271,7 @@ msgstr ""
 "<b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;Ingevoer van "
 "%4<br/>&nbsp;&nbsp;na %5"
 
-#: dialogs/DatabaseImporterDialog.cpp:195
+#: dialogs/DatabaseImporterDialog.cpp:193
 #, fuzzy, kde-format
 #| msgctxt "Track has been matched ambigously, format: Url"
 #| msgid ""
@@ -8338,23 +8338,23 @@ msgid ""
 "%3\n"
 msgstr ""
 
-#: dialogs/EditFilterDialog.cpp:37
+#: dialogs/EditFilterDialog.cpp:36
 #, kde-format
 msgid "AND"
 msgstr "EN"
 
-#: dialogs/EditFilterDialog.cpp:38
+#: dialogs/EditFilterDialog.cpp:37
 #, kde-format
 msgid "OR"
 msgstr "ÓF"
 
-#: dialogs/EditFilterDialog.cpp:39
+#: dialogs/EditFilterDialog.cpp:38
 #, fuzzy, kde-format
 #| msgid "Sample Rate"
 msgid "Simple text"
 msgstr "Steekproef Tempo"
 
-#: dialogs/EditFilterDialog.cpp:48
+#: dialogs/EditFilterDialog.cpp:47
 #, kde-format
 msgid "Edit Filter"
 msgstr "Wysig Filter"
@@ -8374,7 +8374,7 @@ msgid "invert"
 msgstr "Internet"
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbAnd)
-#: dialogs/EditFilterDialog.ui:99 widgets/MetaQueryWidget.cpp:585
+#: dialogs/EditFilterDialog.ui:99 widgets/MetaQueryWidget.cpp:583
 #, kde-format
 msgid "and"
 msgstr "en"
@@ -9305,13 +9305,13 @@ msgid "Location:"
 msgstr "Ligging:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:66
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Previous"
 msgstr "Vorige"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:63
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
 #, kde-format
 msgid "&Next"
 msgstr "Volgende"
@@ -9329,7 +9329,7 @@ msgstr "Per Snit"
 msgid "Sa&ve && Close"
 msgstr "Stoor && Afsluit"
 
-#: dialogs/TagGuesserDialog.cpp:180
+#: dialogs/TagGuesserDialog.cpp:181
 #, fuzzy, no-c-format, kde-format
 #| msgctxt ""
 #| "Please do not translate the %foo words as they define a syntax used "
@@ -9367,13 +9367,13 @@ msgstr ""
 "color=\"%7\">%comment</font>, <font color=\"%8\">%genre</"
 "font>,                                      %ignore."
 
-#: dialogs/TagGuesserDialog.cpp:223
+#: dialogs/TagGuesserDialog.cpp:224
 #, fuzzy, kde-format
 #| msgid "Guess Tags From &Filename"
 msgid "Guess Tags from Filename"
 msgstr "Raai Merkers m.b.v. Lêernaam"
 
-#: dialogs/TagGuesserDialog.cpp:312
+#: dialogs/TagGuesserDialog.cpp:313
 #, kde-format
 msgctxt ""
 "Text to represent an empty tag. Braces (<>) are only to clarify emptiness."
@@ -9531,7 +9531,7 @@ msgstr "Onbekende Kunstenaar"
 msgid "Unknown year"
 msgstr "Onbekende Genre"
 
-#: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
+#: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:113
 #, fuzzy, kde-format
 #| msgid "Random Tracks"
 msgctxt "Random bias representation"
@@ -9582,20 +9582,20 @@ msgstr "Lukraak"
 msgid "Generating playlist..."
 msgstr "Skep speellys..."
 
-#: dynamic/biases/AlbumPlayBias.cpp:36
+#: dynamic/biases/AlbumPlayBias.cpp:35
 #, fuzzy, kde-format
 #| msgid "album"
 msgctxt "Name of the \"AlbumPlay\" bias"
 msgid "Album play"
 msgstr "album"
 
-#: dynamic/biases/AlbumPlayBias.cpp:45
+#: dynamic/biases/AlbumPlayBias.cpp:44
 #, kde-format
 msgctxt "Description of the \"AlbumPlay\" bias"
 msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:107
+#: dynamic/biases/AlbumPlayBias.cpp:106
 #, fuzzy, kde-format
 #| msgid "Fetch the artwork for this album"
 #| msgid_plural "Fetch artwork for %1 albums"
@@ -9603,30 +9603,30 @@ msgctxt "AlbumPlay bias representation"
 msgid "The next track from the album"
 msgstr "Haal die kunswerk vir hierdie album"
 
-#: dynamic/biases/AlbumPlayBias.cpp:110
+#: dynamic/biases/AlbumPlayBias.cpp:109
 #, fuzzy, kde-format
 #| msgid "Display artwork for this album"
 msgctxt "AlbumPlay bias representation"
 msgid "Any later track from the album"
 msgstr "Vertoon kunswerk vir hierdie album"
 
-#: dynamic/biases/AlbumPlayBias.cpp:113
+#: dynamic/biases/AlbumPlayBias.cpp:112
 #, kde-format
 msgctxt "AlbumPlay bias representation"
 msgid "Tracks from the same album"
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:123
+#: dynamic/biases/AlbumPlayBias.cpp:122
 #, kde-format
 msgid "Track directly follows previous track in album"
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:125
+#: dynamic/biases/AlbumPlayBias.cpp:124
 #, kde-format
 msgid "Track comes after previous track in album"
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:127
+#: dynamic/biases/AlbumPlayBias.cpp:126
 #, kde-format
 msgid "Track is in the same album as previous track"
 msgstr ""
@@ -9794,14 +9794,14 @@ msgstr ""
 msgid "of the album name (Album quiz)"
 msgstr ""
 
-#: dynamic/biases/SearchQueryBias.cpp:42
+#: dynamic/biases/SearchQueryBias.cpp:40
 #, fuzzy, kde-format
 #| msgid "Search %1"
 msgctxt "Name of the \"SearchQuery\" bias"
 msgid "Search"
 msgstr "Deursoek %1"
 
-#: dynamic/biases/SearchQueryBias.cpp:51
+#: dynamic/biases/SearchQueryBias.cpp:49
 #, kde-format
 msgctxt "Description of the \"SearchQuery\" bias"
 msgid ""
@@ -9810,7 +9810,7 @@ msgid ""
 "query as the collection browser."
 msgstr ""
 
-#: dynamic/biases/SearchQueryBias.cpp:118
+#: dynamic/biases/SearchQueryBias.cpp:116
 #, fuzzy, kde-format
 #| msgid "Search %1"
 msgctxt "SearchQuery bias representation"
@@ -9845,14 +9845,14 @@ msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "Aangaande %1"
 
-#: dynamic/BiasFactory.cpp:50
+#: dynamic/BiasFactory.cpp:49
 #, fuzzy, kde-format
 #| msgid "Random"
 msgctxt "Name of the random bias"
 msgid "Random"
 msgstr "Lukraak"
 
-#: dynamic/BiasFactory.cpp:57
+#: dynamic/BiasFactory.cpp:56
 #, kde-format
 msgctxt "Description of the random bias"
 msgid ""
@@ -9860,14 +9860,14 @@ msgid ""
 "whole collection without any bias."
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:68
+#: dynamic/BiasFactory.cpp:67
 #, fuzzy, kde-format
 #| msgid "and"
 msgctxt "Name of the \"And\" bias"
 msgid "And"
 msgstr "en"
 
-#: dynamic/BiasFactory.cpp:75
+#: dynamic/BiasFactory.cpp:74
 #, kde-format
 msgctxt "Description of the \"And\" bias"
 msgid ""
@@ -9875,13 +9875,13 @@ msgid ""
 "of the sub biases."
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:86
+#: dynamic/BiasFactory.cpp:85
 #, kde-format
 msgctxt "Name of the \"Or\" bias"
 msgid "Or"
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:93
+#: dynamic/BiasFactory.cpp:92
 #, kde-format
 msgctxt "Description of the \"Or\" bias"
 msgid ""
@@ -9889,42 +9889,42 @@ msgid ""
 "least one of the sub biases."
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:182 dynamic/BiasFactory.cpp:188
+#: dynamic/BiasFactory.cpp:181 dynamic/BiasFactory.cpp:187
 #, fuzzy, kde-format
 #| msgid "Photos Settings"
 msgid "Replacement for bias %1"
 msgstr "Foto Instellings"
 
-#: dynamic/DynamicModel.cpp:778
+#: dynamic/DynamicModel.cpp:777
 #, fuzzy, kde-format
 #| msgid "New playlist layout"
 msgctxt "Default name for new playlists"
 msgid "New playlist"
 msgstr "Nuwe speellys uitleg"
 
-#: dynamic/DynamicModel.cpp:915
+#: dynamic/DynamicModel.cpp:914
 #, kde-format
 msgid "Rock and Pop"
 msgstr ""
 
-#: dynamic/DynamicModel.cpp:916 equalizer/EqualizerPresets.cpp:93
+#: dynamic/DynamicModel.cpp:915 equalizer/EqualizerPresets.cpp:93
 #, fuzzy, kde-format
 #| msgid "ok"
 msgid "Rock"
 msgstr "goed"
 
-#: dynamic/DynamicModel.cpp:920 equalizer/EqualizerPresets.cpp:91
+#: dynamic/DynamicModel.cpp:919 equalizer/EqualizerPresets.cpp:91
 #, kde-format
 msgid "Pop"
 msgstr ""
 
-#: dynamic/DynamicModel.cpp:926
+#: dynamic/DynamicModel.cpp:925
 #, fuzzy, kde-format
 #| msgid "album"
 msgid "Album play"
 msgstr "album"
 
-#: dynamic/DynamicModel.cpp:936
+#: dynamic/DynamicModel.cpp:935
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgctxt "Name of a dynamic playlist"
@@ -10208,7 +10208,7 @@ msgstr "Rhythmbox"
 msgid "Rhythmbox Statistics Importer"
 msgstr ""
 
-#: importers/SimpleImporterConfigWidget.cpp:49
+#: importers/SimpleImporterConfigWidget.cpp:48
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgctxt "Name of the synchronization target"
@@ -10231,7 +10231,7 @@ msgstr "Onttrek verwante kunstenaars"
 msgid "Lyrics data could not be parsed"
 msgstr "Liriek data kon nie ontleed word nie"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:689
 #, kde-format
 msgid "No information available for this track"
 msgstr "Geen inligting is beskikbaar vir die snit nie"
@@ -11128,60 +11128,60 @@ msgstr "Christie Harris"
 msgid "ZImin Stanislav"
 msgstr ""
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:258
 #, kde-format
 msgid "Local Music"
 msgstr "Plaaslike Musiek"
 
-#: MainWindow.cpp:262
+#: MainWindow.cpp:260
 #, kde-format
 msgid "Local sources of content"
 msgstr "Plaaslike inhoudsbronne"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:271
+#: MainWindow.cpp:269
 #, kde-format
 msgid "Online sources of content"
 msgstr "Aanlyn inhoudsbronne"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:275
 #, kde-format
 msgid "Playlists"
 msgstr "Speellyste"
 
-#: MainWindow.cpp:279
+#: MainWindow.cpp:277
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Allerlei soorte speellyste"
 
-#: MainWindow.cpp:288
+#: MainWindow.cpp:286
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Deurblaai plaaslike hardeskyf opsoek na inhoud"
 
-#: MainWindow.cpp:331
+#: MainWindow.cpp:329
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "Aansig"
 
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 #, fuzzy, kde-format
 #| msgid "Lock layout"
 msgid "Lock Layout"
 msgstr "Grendel uitleg"
 
-#: MainWindow.cpp:371 MainWindow.cpp:1301
+#: MainWindow.cpp:369 MainWindow.cpp:1299
 #, fuzzy, kde-format
 #| msgid "Default Layout"
 msgid "Reset Layout"
 msgstr "Verstek Uitleg"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:426
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -11192,284 +11192,284 @@ msgstr ""
 "word. Gebruik <B>Afsluit</B> uit die kieslys, of die Amarok laai-ikoon om "
 "die toepassing te verlaat.</qt>"
 
-#: MainWindow.cpp:430
+#: MainWindow.cpp:428
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Vasmeer in Stelsel Laai"
 
-#: MainWindow.cpp:530
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Speel Media (Lêers of URLs)"
 
-#: MainWindow.cpp:530
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Media Byvoeg (Lêers of URLs)"
 
-#: MainWindow.cpp:550
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Add Stream"
 msgstr "Stroom Byvoeg"
 
-#: MainWindow.cpp:550
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Gee Stroom URL:"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:747
 #, kde-format
 msgid "&Add Media..."
 msgstr "Media Byvoeg..."
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:752
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Wis Speellys"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:757
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Wagtou"
 
-#: MainWindow.cpp:764
+#: MainWindow.cpp:762
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Verwyder Duplikate"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:769
 #, kde-format
 msgid "&Add Stream..."
 msgstr "Stroom Byvoeg..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:773
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Voer Stroom Uit As..."
 
-#: MainWindow.cpp:787
+#: MainWindow.cpp:785
 #, kde-format
 msgid "Equalizer"
 msgstr "Band menger"
 
-#: MainWindow.cpp:791 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:789 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Boekmerk Speellys Opstel"
 
-#: MainWindow.cpp:795
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Boekmerk Konteks Miniprogramme"
 
-#: MainWindow.cpp:803
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Play Media..."
 msgstr "Speel Media..."
 
-#: MainWindow.cpp:808
+#: MainWindow.cpp:806
 #, fuzzy, kde-format
 #| msgid "Save changes of currently selected preset"
 msgid "Edit Details of Currently Selected Track"
 msgstr "Stoor huidige voorafinstelling wysigings"
 
-#: MainWindow.cpp:814 MainWindow.cpp:820 MainWindow.cpp:827
+#: MainWindow.cpp:812 MainWindow.cpp:818 MainWindow.cpp:825
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "Soek Vooruit"
 
-#: MainWindow.cpp:834 MainWindow.cpp:840 MainWindow.cpp:847
+#: MainWindow.cpp:832 MainWindow.cpp:838 MainWindow.cpp:845
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "Soek Agteruit"
 
-#: MainWindow.cpp:853
+#: MainWindow.cpp:851
 #, kde-format
 msgid "Update Collection"
 msgstr "Versameling Opdateer"
 
-#: MainWindow.cpp:857
+#: MainWindow.cpp:855
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:865
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Previous Track"
 msgstr "Vorige Snit"
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:870
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "Keuring vir die huidige snit: 1"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:877
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgid "Shuffle Playlist"
 msgstr "Speellys"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:883
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Herbevolk Speellys"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:889
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "Verstek Dinamiese Speellys"
 
-#: MainWindow.cpp:895
+#: MainWindow.cpp:893
 #, kde-format
 msgid "Next Track"
 msgstr "Volgende Snit"
 
-#: MainWindow.cpp:900
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Increase Volume"
 msgstr "Vermeeder Luidheid"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:904
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Verminder Luidheid"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:910
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Wissel Hoof Venster"
 
-#: MainWindow.cpp:917
+#: MainWindow.cpp:915
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Verwissel Volskerm"
 
-#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:49
+#: MainWindow.cpp:920 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Deursoek speellys"
 
-#: MainWindow.cpp:932
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Show active track"
 msgstr "Dui aan werksame snit"
 
-#: MainWindow.cpp:936
+#: MainWindow.cpp:934
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Wys Kennisgewing Opspring"
 
-#: MainWindow.cpp:941
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Mute Volume"
 msgstr "Doof Luidheid"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:944
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Gaande oor Huidige Snit"
 
-#: MainWindow.cpp:951
+#: MainWindow.cpp:949
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Verban Huidige Snit"
 
-#: MainWindow.cpp:956
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Slaan Huidige Snit Oor"
 
-#: MainWindow.cpp:961 playlist/view/PlaylistViewCommon.cpp:117
+#: MainWindow.cpp:959 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Plaas Snit In Wagtou"
 
-#: MainWindow.cpp:966
+#: MainWindow.cpp:964
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:971
+#: MainWindow.cpp:969
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Keuring vir die huidige snit: 1"
 
-#: MainWindow.cpp:976
+#: MainWindow.cpp:974
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Keuring vir die huidige snit: 2"
 
-#: MainWindow.cpp:981
+#: MainWindow.cpp:979
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Keuring vir die huidige snit: 3"
 
-#: MainWindow.cpp:986
+#: MainWindow.cpp:984
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Keuring vir die huidige snit: 4"
 
-#: MainWindow.cpp:991
+#: MainWindow.cpp:989
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Keuring vir die huidige snit: 5"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:995
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1015
+#: MainWindow.cpp:1013
 #, kde-format
 msgid "&About Amarok"
 msgstr "Aangaande Amarok"
 
-#: MainWindow.cpp:1019
+#: MainWindow.cpp:1017
 #, fuzzy, kde-format
 #| msgid "St&atistics"
 msgid "&Diagnostics"
 msgstr "St&atistieke"
 
-#: MainWindow.cpp:1023
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1070
+#: MainWindow.cpp:1068
 #, kde-format
 msgid "&Music"
 msgstr "&Musiek"
 
-#: MainWindow.cpp:1072
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
+#: MainWindow.cpp:1094 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "Speellys"
 
-#: MainWindow.cpp:1113
+#: MainWindow.cpp:1111
 #, kde-format
 msgid "&Tools"
 msgstr "&Gereedskap"
 
-#: MainWindow.cpp:1128
+#: MainWindow.cpp:1126
 #, kde-format
 msgid "&Settings"
 msgstr "&Instellings"
 
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1169
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11477,23 +11477,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1172
+#: MainWindow.cpp:1170
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "Versteek kieslys"
 
-#: MainWindow.cpp:1214
+#: MainWindow.cpp:1212
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Wagtend :: %1"
 
-#: MainWindow.cpp:1227
+#: MainWindow.cpp:1225
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1301
+#: MainWindow.cpp:1299
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -11562,7 +11562,7 @@ msgid "Response"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:940
+#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:936
 #, kde-format
 msgid "Length"
 msgstr "Tydsduur"
@@ -11620,48 +11620,48 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:43
+#: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "Speellys Uitlegte"
 
-#: playlist/layouts/LayoutConfigAction.cpp:69
+#: playlist/layouts/LayoutConfigAction.cpp:66
 #, fuzzy, kde-format
 #| msgid "Configure playlist layouts..."
 msgid "Configure Playlist Layouts..."
 msgstr "Speellys uitlegte opstel..."
 
-#: playlist/layouts/LayoutEditDialog.cpp:75
+#: playlist/layouts/LayoutEditDialog.cpp:74
 #, kde-format
 msgid "Configuration for"
 msgstr "Opstelling vir"
 
-#: playlist/layouts/LayoutEditDialog.cpp:81
+#: playlist/layouts/LayoutEditDialog.cpp:80
 #, fuzzy, kde-format
 #| msgid "[prefix]"
 msgctxt "placeholder for a prefix"
 msgid "[prefix]"
 msgstr "[voorvoegsel]"
 
-#: playlist/layouts/LayoutEditDialog.cpp:85
+#: playlist/layouts/LayoutEditDialog.cpp:84
 #, fuzzy, kde-format
 #| msgid "[suffix]"
 msgctxt "placeholder for a suffix"
 msgid "[suffix]"
 msgstr "[agtervoegsel]"
 
-#: playlist/layouts/LayoutEditDialog.cpp:98
+#: playlist/layouts/LayoutEditDialog.cpp:97
 #, kde-format
 msgid "Width: "
 msgstr "Wydte: "
 
-#: playlist/layouts/LayoutEditDialog.cpp:101
+#: playlist/layouts/LayoutEditDialog.cpp:100
 #, fuzzy, kde-format
 #| msgid "custom"
 msgid "Custom"
 msgstr "pasmaak"
 
-#: playlist/layouts/LayoutEditDialog.cpp:102
+#: playlist/layouts/LayoutEditDialog.cpp:101
 #, fuzzy, kde-format
 #| msgid ""
 #| "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%.)"
@@ -11670,25 +11670,25 @@ msgid ""
 msgstr ""
 "'n Vasgestelde (absolute) waarde, óf 'n relatiewe waarde (bv. 128px of 12%.)"
 
-#: playlist/layouts/LayoutEditDialog.cpp:105
+#: playlist/layouts/LayoutEditDialog.cpp:104
 #, fuzzy, kde-format
 #| msgid "fit content"
 msgid "Fit content"
 msgstr "pas inhoud"
 
-#: playlist/layouts/LayoutEditDialog.cpp:106
+#: playlist/layouts/LayoutEditDialog.cpp:105
 #, kde-format
 msgid "Fit the element text"
 msgstr "Pas die element teks"
 
-#: playlist/layouts/LayoutEditDialog.cpp:108
+#: playlist/layouts/LayoutEditDialog.cpp:107
 #, fuzzy, kde-format
 #| msgid "Automatic"
 msgctxt "automatic width"
 msgid "Automatic"
 msgstr "Outomaties"
 
-#: playlist/layouts/LayoutEditDialog.cpp:109
+#: playlist/layouts/LayoutEditDialog.cpp:108
 #, kde-format
 msgid ""
 "Take homogeneous part of the space available to all elements with automatic "
@@ -11697,33 +11697,33 @@ msgstr ""
 "Neem homogene deel van die beskikbare ruimte na alle elemente met "
 "outomatiese wydte"
 
-#: playlist/layouts/LayoutEditDialog.cpp:144
+#: playlist/layouts/LayoutEditDialog.cpp:143
 #, kde-format
 msgid "Alignment: "
 msgstr "Belyning: "
 
-#: playlist/layouts/LayoutEditDialog.cpp:153
+#: playlist/layouts/LayoutEditDialog.cpp:152
 #, kde-format
 msgid "Font: "
 msgstr "Skriftipe: "
 
-#: playlist/layouts/LayoutEditDialog.cpp:242
+#: playlist/layouts/LayoutEditDialog.cpp:241
 #, fuzzy, kde-format
 #| msgid "Configuration for"
 msgid "Configuration for '%1'"
 msgstr "Opstelling vir"
 
-#: playlist/layouts/LayoutEditWidget.cpp:44
+#: playlist/layouts/LayoutEditWidget.cpp:43
 #, kde-format
 msgid "Show cover"
 msgstr "Wys omslag"
 
-#: playlist/layouts/LayoutEditWidget.cpp:84
+#: playlist/layouts/LayoutEditWidget.cpp:83
 #, kde-format
 msgid "Invalid playlist layout."
 msgstr "Ongeldige speellys uitleg."
 
-#: playlist/layouts/LayoutEditWidget.cpp:85
+#: playlist/layouts/LayoutEditWidget.cpp:84
 #, kde-format
 msgid "Encountered an unknown element name while reading layout."
 msgstr "'n Onbekende element naam het voorgekom tydens uitleg lees"
@@ -11912,7 +11912,7 @@ msgstr "Vertoon terugspeel kontroles inlyn"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
-#: services/ServiceBase.cpp:163
+#: services/ServiceBase.cpp:162
 #, kde-format
 msgid "Group By"
 msgstr "Groepeer Volgens"
@@ -11925,7 +11925,7 @@ msgid "Show tooltips"
 msgstr "Wys slegs pasmaats"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:503
 #, kde-format
 msgid "Preview"
 msgstr "Voorskou"
@@ -12001,21 +12001,21 @@ msgstr ""
 msgid "Add a sorting level to the playlist."
 msgstr "Voeg 'n sorteervlak by die speellys"
 
-#: playlist/PlaylistController.cpp:130
+#: playlist/PlaylistController.cpp:122
 #, fuzzy, kde-format
 #| msgid "&Add to playlist"
 msgctxt "name of the action in undo stack"
 msgid "Add tracks to playlist"
 msgstr "Voeg by speellys"
 
-#: playlist/PlaylistController.cpp:132
+#: playlist/PlaylistController.cpp:124
 #, fuzzy, kde-format
 #| msgid "Queue Track"
 msgctxt "name of the action in undo stack"
 msgid "Queue tracks"
 msgstr "Plaas Snit In Wagtou"
 
-#: playlist/PlaylistController.cpp:134
+#: playlist/PlaylistController.cpp:126
 #, fuzzy, kde-format
 #| msgctxt "Replace the currently loaded tracks with these"
 #| msgid "&Replace Playlist"
@@ -12117,19 +12117,19 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Titel (met snitnommer)"
 
-#: playlist/PlaylistDock.cpp:107
+#: playlist/PlaylistDock.cpp:104
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:180
+#: playlist/PlaylistDock.cpp:177
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Stoor Huidige Speellys"
 
-#: playlist/PlaylistDock.cpp:271
+#: playlist/PlaylistDock.cpp:268
 #, kde-format
 msgid "&Save playlist to \"%1\""
 msgstr "&Stoor speellys na \"%1\""
@@ -12171,88 +12171,88 @@ msgstr "Wagtou grootte: %1"
 msgid "Queue length: %1"
 msgstr "Wagtou lengte: %1"
 
-#: playlist/PlaylistModel.cpp:271 playlist/PlaylistModel.cpp:383
+#: playlist/PlaylistModel.cpp:267 playlist/PlaylistModel.cpp:379
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:306
+#: playlist/PlaylistModel.cpp:302
 #, kde-format
 msgid "(...)"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:335
+#: playlist/PlaylistModel.cpp:331
 #, kde-format
 msgctxt "%1: bitrate"
 msgid "%1 kbps"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:338
+#: playlist/PlaylistModel.cpp:334
 #, fuzzy, kde-format
 #| msgid "No information available for this track"
 msgid "No extra information available"
 msgstr "Geen inligting is beskikbaar vir die snit nie"
 
-#: playlist/PlaylistModel.cpp:926
+#: playlist/PlaylistModel.cpp:922
 #, kde-format
 msgctxt "The name of the file this track is stored in"
 msgid "Filename"
 msgstr "Lêernaam"
 
-#: playlist/PlaylistModel.cpp:933
+#: playlist/PlaylistModel.cpp:929
 #, kde-format
 msgid "Disc Number"
 msgstr "Skyf nommer"
 
-#: playlist/PlaylistModel.cpp:934
+#: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgctxt "The Track number for this item"
 msgid "Track"
 msgstr "Snit"
 
-#: playlist/PlaylistModel.cpp:935
+#: playlist/PlaylistModel.cpp:931
 #, kde-format
 msgid "BPM"
 msgstr "BPM"
 
-#: playlist/PlaylistModel.cpp:937
+#: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Comment"
 msgstr "Kommentaar"
 
-#: playlist/PlaylistModel.cpp:938
+#: playlist/PlaylistModel.cpp:934
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
 msgstr "Gids"
 
-#: playlist/PlaylistModel.cpp:941
+#: playlist/PlaylistModel.cpp:937
 #, kde-format
 msgid "Bitrate"
 msgstr "Bistempo"
 
-#: playlist/PlaylistModel.cpp:942
+#: playlist/PlaylistModel.cpp:938
 #, kde-format
 msgid "Sample Rate"
 msgstr "Steekproef Tempo"
 
-#: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:109
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "Keuring"
 
-#: playlist/PlaylistModel.cpp:946
+#: playlist/PlaylistModel.cpp:942
 #, kde-format
 msgctxt "Column name"
 msgid "Last Played"
 msgstr "Laas Gespeel"
 
-#: playlist/PlaylistModel.cpp:947
+#: playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Mood"
 msgstr "Gemoed"
 
-#: playlist/PlaylistModel.cpp:948
+#: playlist/PlaylistModel.cpp:944
 #, kde-format
 msgid "File Size"
 msgstr "Lêer grootte"
@@ -12286,7 +12286,7 @@ msgid "Move Down"
 msgstr "Omslag Gevind"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
-#: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:117
+#: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Dequeue Track"
 msgstr "Verwyder Snit Uit Wagtou"
@@ -12323,7 +12323,7 @@ msgstr "Deursoek %1"
 msgid "%1 layout"
 msgstr "%1 uitleg"
 
-#: playlist/PlaylistViewUrlRunner.cpp:90
+#: playlist/PlaylistViewUrlRunner.cpp:87
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt ""
@@ -12332,42 +12332,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Speellys"
 
-#: playlist/ProgressiveSearchWidget.cpp:53
+#: playlist/ProgressiveSearchWidget.cpp:51
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Begin tik om die speellys geleidelik te deursoek"
 
-#: playlist/ProgressiveSearchWidget.cpp:74
+#: playlist/ProgressiveSearchWidget.cpp:72
 #, kde-format
 msgid "Tracks"
 msgstr "Snitte"
 
-#: playlist/ProgressiveSearchWidget.cpp:81
+#: playlist/ProgressiveSearchWidget.cpp:79
 #, kde-format
 msgid "Albums"
 msgstr "Albums"
 
-#: playlist/ProgressiveSearchWidget.cpp:88
+#: playlist/ProgressiveSearchWidget.cpp:86
 #, kde-format
 msgid "Artists"
 msgstr "Kunstenaars"
 
-#: playlist/ProgressiveSearchWidget.cpp:102
+#: playlist/ProgressiveSearchWidget.cpp:100
 #, kde-format
 msgid "Composers"
 msgstr "Komponiste"
 
-#: playlist/ProgressiveSearchWidget.cpp:116
+#: playlist/ProgressiveSearchWidget.cpp:114
 #, kde-format
 msgid "Years"
 msgstr "Jare"
 
-#: playlist/ProgressiveSearchWidget.cpp:125
+#: playlist/ProgressiveSearchWidget.cpp:123
 #, kde-format
 msgid "Show only matches"
 msgstr "Wys slegs pasmaats"
 
-#: playlist/ProgressiveSearchWidget.cpp:137
+#: playlist/ProgressiveSearchWidget.cpp:135
 #, kde-format
 msgid "Search Preferences"
 msgstr "Soek Voorkeure"
@@ -12388,13 +12388,13 @@ msgstr "Snitte Verwyder"
 msgid "Tracks moved"
 msgstr "Snitte geskuif"
 
-#: playlist/view/listview/PrettyListView.cpp:689
+#: playlist/view/listview/PrettyListView.cpp:688
 #, fuzzy, kde-format
 #| msgid "Warning: tracks have been hidden in the playlist"
 msgid "Tracks have been hidden due to the active search."
 msgstr "Waarskuwing: die speellys bevat versteekte snitte"
 
-#: playlist/view/listview/PrettyListView.cpp:691
+#: playlist/view/listview/PrettyListView.cpp:690
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
@@ -12411,17 +12411,17 @@ msgstr "Die volgende bronne is beskikbaar vir hierdie snit:"
 msgid "OK"
 msgstr "&Goed"
 
-#: playlist/view/PlaylistViewCommon.cpp:157
+#: playlist/view/PlaylistViewCommon.cpp:158
 #, kde-format
 msgid "Stop Playing After This Track"
 msgstr "Hou Op Speel Na Hierdie Snit"
 
-#: playlist/view/PlaylistViewCommon.cpp:171
+#: playlist/view/PlaylistViewCommon.cpp:172
 #, kde-format
 msgid "Remove From Playlist"
 msgstr "Verwyder Vanuit Speellys"
 
-#: playlist/view/PlaylistViewCommon.cpp:245
+#: playlist/view/PlaylistViewCommon.cpp:246
 #, kde-format
 msgid "Select Source"
 msgstr "Kies Bron"
@@ -12855,7 +12855,7 @@ msgstr "Aantal snitte om te laai in die speellys ná die werksame snit."
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
-#: widgets/MetaQueryWidget.cpp:1018
+#: widgets/MetaQueryWidget.cpp:1016
 #, kde-format
 msgid "less than"
 msgstr "minder as"
@@ -13133,7 +13133,7 @@ msgid "\"%1\""
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:341
-#: widgets/MetaQueryWidget.cpp:1020
+#: widgets/MetaQueryWidget.cpp:1018
 #, fuzzy, kde-format
 #| msgid "equal to"
 msgctxt "a numerical tag (like year or track number) equals a value"
@@ -13147,7 +13147,7 @@ msgstr "gelyk aan"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
-#: widgets/MetaQueryWidget.cpp:1022
+#: widgets/MetaQueryWidget.cpp:1020
 #, kde-format
 msgid "greater than"
 msgstr "meer as"
@@ -13183,7 +13183,7 @@ msgid "within"
 msgstr "met"
 
 #: playlistgenerator/constraints/TagMatch.cpp:359
-#: widgets/MetaQueryWidget.cpp:1034
+#: widgets/MetaQueryWidget.cpp:1032
 #, fuzzy, kde-format
 #| msgid "equal to"
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
@@ -13206,7 +13206,7 @@ msgid "ends with"
 msgstr "eindig met"
 
 #: playlistgenerator/constraints/TagMatch.cpp:365
-#: widgets/MetaQueryWidget.cpp:1036
+#: widgets/MetaQueryWidget.cpp:1034
 #, fuzzy, kde-format
 #| msgid "contains"
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
@@ -13219,7 +13219,7 @@ msgid "regexp"
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:370
-#: widgets/MetaQueryWidget.cpp:1041
+#: widgets/MetaQueryWidget.cpp:1039
 #, fuzzy, kde-format
 #| msgid "Unknown Artist"
 msgid "unknown comparison"
@@ -13628,25 +13628,25 @@ msgid ""
 "constraints to find more tracks."
 msgstr ""
 
-#: playlistgenerator/Preset.cpp:45 playlistgenerator/Preset.cpp:58
+#: playlistgenerator/Preset.cpp:44 playlistgenerator/Preset.cpp:57
 #, fuzzy, kde-format
 #| msgid "New playlist layout"
 msgid "New playlist preset"
 msgstr "Nuwe speellys uitleg"
 
-#: playlistgenerator/Preset.cpp:48 playlistgenerator/Preset.cpp:70
+#: playlistgenerator/Preset.cpp:47 playlistgenerator/Preset.cpp:69
 #, fuzzy, kde-format
 #| msgid "Biased playlists"
 msgid "Unnamed playlist preset"
 msgstr "Sydige speellyste"
 
-#: playlistgenerator/Preset.cpp:132
+#: playlistgenerator/Preset.cpp:131
 #, fuzzy, kde-format
 #| msgid "Generating playlist..."
 msgid "Generating a new playlist"
 msgstr "Skep speellys..."
 
-#: playlistgenerator/Preset.cpp:150
+#: playlistgenerator/Preset.cpp:149
 #, kde-format
 msgid ""
 "The playlist generator created a playlist which does not meet all of your "
@@ -13689,87 +13689,87 @@ msgstr "Verbinding Instellings"
 msgid "APG Preset Name"
 msgstr "Gee voorafinstelling naam:"
 
-#: playlistgenerator/PresetModel.cpp:154
+#: playlistgenerator/PresetModel.cpp:151
 #, fuzzy, kde-format
 #| msgid "Import Collection"
 msgid "Import preset"
 msgstr "Versameling Invoer"
 
-#: playlistgenerator/PresetModel.cpp:156
+#: playlistgenerator/PresetModel.cpp:153
 #, fuzzy, kde-format
 #| msgid "Presets:"
 msgid "Preset files"
 msgstr "Voorafinstellings:"
 
-#: playlistgenerator/PresetModel.cpp:216
+#: playlistgenerator/PresetModel.cpp:213
 #, kde-format
 msgid "Preset exported to %1"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:223
+#: playlistgenerator/PresetModel.cpp:220
 #, fuzzy, kde-format
 #| msgid "Lyrics data could not be parsed"
 msgid "Preset could not be exported to %1"
 msgstr "Liriek data kon nie ontleed word nie"
 
-#: playlistgenerator/PresetModel.cpp:241
+#: playlistgenerator/PresetModel.cpp:238
 #, fuzzy, kde-format
 #| msgid "Database could not be found at: %1"
 msgid "Presets could not be imported from %1"
 msgstr "Databasis ongevonde te: %1"
 
-#: playlistgenerator/PresetModel.cpp:248
+#: playlistgenerator/PresetModel.cpp:245
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:250
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:251
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:255
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:256
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:257
+#: playlistgenerator/PresetModel.cpp:254
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:297
+#: playlistgenerator/PresetModel.cpp:294
 #, fuzzy, kde-format
 #| msgid "Import Collection"
 msgid "Export \"%1\" preset"
 msgstr "Versameling Invoer"
 
-#: playlistgenerator/PresetModel.cpp:299
+#: playlistgenerator/PresetModel.cpp:296
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr ""
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:98
+#: playlistmanager/file/PlaylistFileProvider.cpp:92
 #, kde-format
 msgid "Playlist Files on Disk"
 msgstr "Speellys Lêers op Skyf"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:289
+#: playlistmanager/file/PlaylistFileProvider.cpp:283
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
 msgstr "Kon nie die speellys lêer \"%1\" laai nie."
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:285
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:273
 #, kde-format
 msgid ""
 "Version %1 of playlist database schema encountered, however this Amarok "
@@ -13779,7 +13779,7 @@ msgid ""
 "older version of Amarok with a database written by newer version?"
 msgstr ""
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:292
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:280
 #, kde-format
 msgctxt ""
 "the user's 'database version' is newer and unsupported by this software "
@@ -13815,29 +13815,29 @@ msgstr ""
 msgid "Scanning music"
 msgstr "Skandeer musiek"
 
-#: scanner/GenericScannerJob.cpp:118
+#: scanner/GenericScannerJob.cpp:119
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr ""
 
-#: scanner/GenericScannerJob.cpp:147
+#: scanner/GenericScannerJob.cpp:148
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr ""
 
-#: scanner/GenericScannerJob.cpp:208
+#: scanner/GenericScannerJob.cpp:209
 #, fuzzy, kde-format
 #| msgid "Amarok Applet Manager"
 msgid "Could not find amarokcollectionscanner!"
 msgstr "Amarok Miniprogram Bestuurder"
 
-#: scanner/GenericScannerJob.cpp:269
+#: scanner/GenericScannerJob.cpp:270
 #, fuzzy, kde-format
 #| msgid "Amarok Applet Manager"
 msgid "Unable to start Amarok collection scanner."
 msgstr "Amarok Miniprogram Bestuurder"
 
-#: scanner/GenericScannerJob.cpp:318
+#: scanner/GenericScannerJob.cpp:319
 #, fuzzy, kde-format
 #| msgid ""
 #| "<p>Sorry, the collection scan had to be aborted.</p><p>Too many errors "
@@ -13851,115 +13851,115 @@ msgstr ""
 "<p>Jammer, skandering van die versameling moes gestaak word.</p><p>Te veel "
 "foute het opgeduik gedurende skandering.</p>"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:67
+#: scripting/scriptconsole/ScriptConsole.cpp:64
 #, kde-format
 msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:78
+#: scripting/scriptconsole/ScriptConsole.cpp:75
 #, fuzzy, kde-format
 #| msgid " PIN Code:"
 msgid "Code"
 msgstr "PIN Kode:"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
+#: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
 msgid "Console"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:80
+#: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Output"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:81
+#: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Error"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:104
+#: scripting/scriptconsole/ScriptConsole.cpp:101
 #, fuzzy, kde-format
 #| msgid "&Get More Scripts"
 msgid "Execute Script"
 msgstr "&Kry Nog Skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:108
+#: scripting/scriptconsole/ScriptConsole.cpp:105
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&New Script"
 msgstr "Deursoek skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:112
+#: scripting/scriptconsole/ScriptConsole.cpp:109
 #, fuzzy, kde-format
 #| msgid "&Get More Scripts"
 msgid "&Delete Script"
 msgstr "&Kry Nog Skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:115
+#: scripting/scriptconsole/ScriptConsole.cpp:112
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&Clear All Scripts"
 msgstr "Deursoek skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:118
+#: scripting/scriptconsole/ScriptConsole.cpp:115
 #, fuzzy, kde-format
 #| msgid "Previous Group"
 msgid "Previous Script"
 msgstr "Vorige Groep"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:122
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Next Script"
 msgstr "Deursoek skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:130
+#: scripting/scriptconsole/ScriptConsole.cpp:127
 #, fuzzy, kde-format
 #| msgctxt "@item:inmenu"
 #| msgid "&View"
 msgid "&View"
 msgstr "Aansig"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:215
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:230
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:420
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove script file from disk?"
 msgstr "&Verwyder Inskrywing"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:420
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "&Verwyder Inskrywing"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:453
+#: scripting/scriptconsole/ScriptConsole.cpp:450
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:93
+#: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
 msgid "Terminate"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:184
+#: scripting/scriptmanager/ScriptItem.cpp:183
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:340
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the name of the script author, "
@@ -13969,7 +13969,7 @@ msgid ""
 "author, %2 at %3, and ask him to upgrade it before the next Amarok release."
 msgstr ""
 
-#: scripting/scriptmanager/ScriptManager.cpp:290
+#: scripting/scriptmanager/ScriptManager.cpp:288
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13994,14 +13994,14 @@ msgstr "%1 Suksesvol geïnstalleer"
 msgid "Connection failure"
 msgstr "Verbinding"
 
-#: services/ampache/AmpacheAccountLogin.cpp:162
+#: services/ampache/AmpacheAccountLogin.cpp:161
 #, fuzzy, kde-format
 #| msgid "Authenticating"
 msgid "Authentication failed."
 msgstr "Bekragtiging"
 
-#: services/ampache/AmpacheAccountLogin.cpp:163
-#: services/ampache/AmpacheAccountLogin.cpp:234
+#: services/ampache/AmpacheAccountLogin.cpp:162
+#: services/ampache/AmpacheAccountLogin.cpp:233
 #, kde-format
 msgid "Authentication Error"
 msgstr "Bekragtigingsfout"
@@ -14135,7 +14135,7 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:219
 #: services/gpodder/GpodderServiceSettings.cpp:248
 #: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "Toets Aanteken"
@@ -14181,13 +14181,13 @@ msgstr ""
 msgid "Subscribe"
 msgstr "Inteken"
 
-#: services/gpodder/GpodderServiceConfig.cpp:157
+#: services/gpodder/GpodderServiceConfig.cpp:156
 #, fuzzy, kde-format
 #| msgid "Last.fm credentials"
 msgid "gpodder.net credentials"
 msgstr "Last.fm getuigskrifte"
 
-#: services/gpodder/GpodderServiceConfig.cpp:158
+#: services/gpodder/GpodderServiceConfig.cpp:157
 #, fuzzy, kde-format
 #| msgid ""
 #| "No running KWallet found. Would you like Amarok to save your Last.fm "
@@ -14199,7 +14199,7 @@ msgstr ""
 "KWallet loop nie. Moet Amarok jou Last.fm getuigskrifte in gewone teks stoor?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:101
+#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "Toets..."
@@ -14219,21 +14219,21 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:180
 #: services/gpodder/GpodderServiceSettings.cpp:189
 #: services/gpodder/GpodderServiceSettings.cpp:204
-#: services/lastfm/LastFmServiceSettings.cpp:149
-#: services/lastfm/LastFmServiceSettings.cpp:172
+#: services/lastfm/LastFmServiceSettings.cpp:147
+#: services/lastfm/LastFmServiceSettings.cpp:170
 #, kde-format
 msgid "Failed"
 msgstr "Misluk"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:141
+#: services/lastfm/LastFmServiceSettings.cpp:139
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Sukses"
 
 #: services/gpodder/GpodderServiceSettings.cpp:179
-#: services/lastfm/LastFmServiceSettings.cpp:149
+#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14268,17 +14268,17 @@ msgstr "Geen beskrywing beskikbaar..."
 msgid "From Jamendo.com"
 msgstr "Van Jamendo.com"
 
-#: services/jamendo/JamendoMeta.cpp:132
+#: services/jamendo/JamendoMeta.cpp:131
 #, kde-format
 msgid "A site where artists can freely share their music"
 msgstr "'n Werf waar kunstenaars hul musiek vrylik kan deel"
 
-#: services/jamendo/JamendoService.cpp:76
+#: services/jamendo/JamendoService.cpp:74
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
 msgstr ""
 
-#: services/jamendo/JamendoService.cpp:79
+#: services/jamendo/JamendoService.cpp:77
 #, fuzzy, kde-format
 #| msgid ""
 #| "Jamendo.com puts artists and music lovers in touch with each other. The "
@@ -14296,14 +14296,14 @@ msgstr ""
 "te deelen gebruikers om hulle almal gratis af te laai. Luister na en laai al "
 "Jamendo.com inhoud af met Amarok."
 
-#: services/jamendo/JamendoService.cpp:120
+#: services/jamendo/JamendoService.cpp:118
 #, kde-format
 msgctxt "Fetch new information from the website"
 msgid "Update"
 msgstr "Opdateer"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: services/jamendo/JamendoService.cpp:126
+#: services/jamendo/JamendoService.cpp:124
 #: services/magnatune/MagnatuneConfigWidget.ui:121
 #, kde-format
 msgid "Download"
@@ -14317,25 +14317,25 @@ msgstr "Aflaai"
 #.
 #. action = filterMenu->addAction( i18n( "Album" ) );
 #. connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
-#: services/jamendo/JamendoService.cpp:155
-#: services/magnatune/MagnatuneStore.cpp:223
+#: services/jamendo/JamendoService.cpp:153
+#: services/magnatune/MagnatuneStore.cpp:222
 #, kde-format
 msgid "Genre / Artist"
 msgstr "Genre / Kunstenaar"
 
-#: services/jamendo/JamendoService.cpp:158
-#: services/magnatune/MagnatuneStore.cpp:226
+#: services/jamendo/JamendoService.cpp:156
+#: services/magnatune/MagnatuneStore.cpp:225
 #, kde-format
 msgid "Genre / Artist / Album"
 msgstr "Genre / Kunstenaar / Album"
 
-#: services/jamendo/JamendoService.cpp:193
+#: services/jamendo/JamendoService.cpp:191
 #, fuzzy, kde-format
 #| msgid "Downloading Jamendo.com Database"
 msgid "Downloading Jamendo.com database..."
 msgstr "Jamendo.com Databasis Aflaai"
 
-#: services/jamendo/JamendoService.cpp:215
+#: services/jamendo/JamendoService.cpp:213
 #, kde-format
 msgid "Updating the local Jamendo database."
 msgstr "Opdateer die plaaslike Jamendo databasis."
@@ -14533,12 +14533,12 @@ msgid ""
 "will not be scrobbled</html>"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:98
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: Die sosiale musiek revolusie"
 
-#: services/lastfm/LastFmService.cpp:102
+#: services/lastfm/LastFmService.cpp:100
 #, fuzzy, kde-format
 #| msgid ""
 #| "Last.fm is a popular online service that provides personal radio stations "
@@ -14563,23 +14563,23 @@ msgstr ""
 "bygevoeg het of wie last.fm as jou musikale \"bure\" beskou."
 
 # Hierdie lyk na last.fm-spesifieke terminologie
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Gaande oor"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:293
+#: services/lastfm/LastFmService.cpp:291
 #, kde-format
 msgctxt "Last.fm: errorMessage"
 msgid "Either the username was not recognized, or the password was incorrect."
 msgstr "Óf die gebruikernaam is onherkenbaar, óf die wagwoord was verkeerd"
 
-#: services/lastfm/LastFmService.cpp:298
+#: services/lastfm/LastFmService.cpp:296
 #, kde-format
 msgctxt "Last.fm: errorMessage"
 msgid ""
@@ -14589,46 +14589,46 @@ msgstr ""
 "Daar was 'n kommunikasieprobleem met die Last.fm diens. Probeer asb. weer "
 "later."
 
-#: services/lastfm/LastFmService.cpp:383
+#: services/lastfm/LastFmService.cpp:381
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Gee 'n kunstenaar naam"
 
-#: services/lastfm/LastFmService.cpp:386
+#: services/lastfm/LastFmService.cpp:384
 #, kde-format
 msgid "Enter a tag"
 msgstr "Gee 'n merker"
 
-#: services/lastfm/LastFmService.cpp:389
+#: services/lastfm/LastFmService.cpp:387
 #, fuzzy, kde-format
 #| msgid "Enter a last.fm user name"
 msgid "Enter a Last.fm user name"
 msgstr "Gee 'n last.fm gebruikernaam"
 
-#: services/lastfm/LastFmService.cpp:402
+#: services/lastfm/LastFmService.cpp:400
 #, fuzzy, kde-format
 #| msgid "Username: "
 msgid "Username: %1"
 msgstr "Gebruikernaam: "
 
-#: services/lastfm/LastFmService.cpp:407
+#: services/lastfm/LastFmService.cpp:405
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "Speel Telling: %1 keer gespeel"
 msgstr[1] "Speel Telling: %1 kere gespeel"
 
-#: services/lastfm/LastFmService.cpp:453
+#: services/lastfm/LastFmService.cpp:451
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Skep 'n Pasmaak Last.fm Stasie"
 
-#: services/lastfm/LastFmService.cpp:456
+#: services/lastfm/LastFmService.cpp:454
 #, kde-format
 msgid "Tag"
 msgstr "Merker"
 
-#: services/lastfm/LastFmService.cpp:456
+#: services/lastfm/LastFmService.cpp:454
 #, kde-format
 msgid "User"
 msgstr "Gebruiker"
@@ -14653,17 +14653,17 @@ msgstr "Vriende se Geliefkoosde Radio"
 msgid "Friends' Personal Radio"
 msgstr "Vriende se Persoonlike Radio"
 
-#: services/lastfm/LastFmServiceConfig.cpp:218
+#: services/lastfm/LastFmServiceConfig.cpp:217
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:271
+#: services/lastfm/LastFmServiceConfig.cpp:270
 #, kde-format
 msgid "No running KWallet found."
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:272
+#: services/lastfm/LastFmServiceConfig.cpp:271
 #, fuzzy, kde-format
 #| msgid ""
 #| "No running KWallet found. Would you like Amarok to save your Last.fm "
@@ -14672,19 +14672,19 @@ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
 msgstr ""
 "KWallet loop nie. Moet Amarok jou Last.fm getuigskrifte in gewone teks stoor?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:136
+#: services/lastfm/LastFmServiceSettings.cpp:134
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Misluk"
 
-#: services/lastfm/LastFmServiceSettings.cpp:150
-#: services/lastfm/LastFmServiceSettings.cpp:173
+#: services/lastfm/LastFmServiceSettings.cpp:148
+#: services/lastfm/LastFmServiceSettings.cpp:171
 #, kde-format
 msgid "Test Login"
 msgstr "Toets Aanteken"
 
-#: services/lastfm/LastFmServiceSettings.cpp:172
+#: services/lastfm/LastFmServiceSettings.cpp:170
 #, fuzzy, kde-format
 #| msgid "Unable to retrieve from Flickr.com "
 msgid "Unable to connect to Last.fm service."
@@ -14927,12 +14927,12 @@ msgstr "Ontpak Magnatune.com aflaai..."
 msgid "Adding album cover to collection"
 msgstr "Voeg album omslag by versameling"
 
-#: services/magnatune/MagnatuneCollectionLocation.cpp:42
+#: services/magnatune/MagnatuneCollectionLocation.cpp:41
 #, kde-format
 msgid "Preview Tracks"
 msgstr "Voorskou Snitte"
 
-#: services/magnatune/MagnatuneCollectionLocation.cpp:54
+#: services/magnatune/MagnatuneCollectionLocation.cpp:53
 #, kde-format
 msgid ""
 "The tracks you are about to copy are Magnatune.com preview streams. For "
@@ -15142,12 +15142,12 @@ msgstr "Magnatune inligting"
 msgid "&Download"
 msgstr "Aflaai"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:84
+#: services/magnatune/MagnatuneDownloadHandler.cpp:83
 #, kde-format
 msgid "Processing download"
 msgstr "Verwerk aflaai"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:149
+#: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid ""
 "There seems to be an error in the supplied membership information. Please "
@@ -15156,7 +15156,7 @@ msgstr ""
 "Daar blyk 'n probleem te wees met die lidmaatskap besonderhede wat verskaf "
 "is. Stel dit asb. reg en probeer weer."
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:149
+#: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid "Could not process download"
 msgstr "Kon nie aflaai verwerk nie"
@@ -15230,7 +15230,7 @@ msgstr "Laai jou Magnatune.com gunstelinge blad..."
 msgid "Loading your personal Magnatune.com recommendations page..."
 msgstr "Laai jou persoonlike Magnatune.com aanbevelings blad..."
 
-#: services/magnatune/MagnatuneMeta.cpp:215
+#: services/magnatune/MagnatuneMeta.cpp:214
 #, kde-format
 msgid "The non evil record label that is fair to artists and customers alike"
 msgstr ""
@@ -15292,7 +15292,7 @@ msgstr "Heraflaai"
 msgid "Artist - Album"
 msgstr "Kunstenaar - Album"
 
-#: services/magnatune/MagnatuneRedownloadHandler.cpp:149
+#: services/magnatune/MagnatuneRedownloadHandler.cpp:148
 #, kde-format
 msgid "Getting list of previous Magnatune.com purchases"
 msgstr "Verkry die lys van vorige Magnatune.com aankope"
@@ -15399,13 +15399,13 @@ msgstr ""
 msgid "Close"
 msgstr "Afsluit"
 
-#: services/magnatune/MagnatuneStore.cpp:103
+#: services/magnatune/MagnatuneStore.cpp:102
 #, fuzzy, kde-format
 #| msgid "\"Fair trade\" online music store."
 msgid "\"Fair trade\" online music store"
 msgstr "\"Billike handel\" aanlyn musiekwinkel."
 
-#: services/magnatune/MagnatuneStore.cpp:107
+#: services/magnatune/MagnatuneStore.cpp:106
 #, no-c-format, kde-format
 msgid ""
 "Magnatune.com is a different kind of record company with the motto \"We are "
@@ -15420,48 +15420,48 @@ msgstr ""
 "bied ook \"eet jouself dik\" lidmaatskap watjou toelaat om soveel van hulle "
 "musiek aflaai as jy wil."
 
-#: services/magnatune/MagnatuneStore.cpp:217
+#: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist / Album"
 msgstr "Kunstenaar / Album"
 
-#: services/magnatune/MagnatuneStore.cpp:241
+#: services/magnatune/MagnatuneStore.cpp:240
 #, kde-format
 msgid "Re-download"
 msgstr "Heraflaai"
 
-#: services/magnatune/MagnatuneStore.cpp:244
+#: services/magnatune/MagnatuneStore.cpp:243
 #, kde-format
 msgid "Update Database"
 msgstr "Opdateer Databasis"
 
-#: services/magnatune/MagnatuneStore.cpp:247
+#: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Tools"
 msgstr "Gereedskap"
 
-#: services/magnatune/MagnatuneStore.cpp:268
+#: services/magnatune/MagnatuneStore.cpp:267
 #, kde-format
 msgid "Download Album"
 msgstr "Aflaai Album"
 
-#: services/magnatune/MagnatuneStore.cpp:275
+#: services/magnatune/MagnatuneStore.cpp:274
 #, kde-format
 msgid "Signup"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:326
+#: services/magnatune/MagnatuneStore.cpp:325
 #, fuzzy, kde-format
 #| msgid "Downloading Magnatune.com Database"
 msgid "Downloading Magnatune.com database..."
 msgstr "Laai Magnatune.com Databasis Af"
 
-#: services/magnatune/MagnatuneStore.cpp:355
+#: services/magnatune/MagnatuneStore.cpp:354
 #, kde-format
 msgid "Updating the local Magnatune database."
 msgstr "Opdateer die plaaslike Magnatune databasis."
 
-#: services/magnatune/MagnatuneStore.cpp:618
+#: services/magnatune/MagnatuneStore.cpp:617
 #, c-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
@@ -15476,27 +15476,27 @@ msgstr ""
 "gespesifiseerde gemoed by die speellys. Spasies in die gemoed argument  móét "
 "dmv. %%20 ontsnap word."
 
-#: services/magnatune/MagnatuneStore.cpp:629
+#: services/magnatune/MagnatuneStore.cpp:628
 #, kde-format
 msgid "ERROR: No arguments supplied"
 msgstr "FOUT: Geen argumente was verskaf nie"
 
-#: services/magnatune/MagnatuneStore.cpp:634
+#: services/magnatune/MagnatuneStore.cpp:633
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
 msgstr "FOUT: Verkeerde aantal argument vir addMoodyTracks"
 
-#: services/magnatune/MagnatuneStore.cpp:644
+#: services/magnatune/MagnatuneStore.cpp:643
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
 msgstr "FOUT: Ontledingsfout vir argument 2 ( telling )"
 
-#: services/magnatune/MagnatuneStore.cpp:648
+#: services/magnatune/MagnatuneStore.cpp:647
 #, kde-format
 msgid "ok"
 msgstr "goed"
 
-#: services/magnatune/MagnatuneStore.cpp:651
+#: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
 msgid "ERROR: Unknown argument."
 msgstr "FOUT: Onbekende argument"
@@ -15886,12 +15886,12 @@ msgstr "Voeg 'n sorteervlak by die speellys"
 msgid "Loading info..."
 msgstr "Laai inligting..."
 
-#: services/ServiceBase.cpp:337
+#: services/ServiceBase.cpp:336
 #, kde-format
 msgid "This service does not accept any messages"
 msgstr "Hierdie diens aanvaar geen boodskappe"
 
-#: services/ServiceBase.cpp:344
+#: services/ServiceBase.cpp:343
 #, kde-format
 msgid "ERROR: unknown message"
 msgstr "FOUT: onbekende boodskap"
@@ -15901,8 +15901,8 @@ msgstr "FOUT: onbekende boodskap"
 msgid "Neither playable nor downloadable url specified."
 msgstr ""
 
-#: services/ServicePluginManager.cpp:146 services/ServicePluginManager.cpp:163
-#: services/ServicePluginManager.cpp:180
+#: services/ServicePluginManager.cpp:144 services/ServicePluginManager.cpp:161
+#: services/ServicePluginManager.cpp:178
 #, kde-format
 msgid "No service named %1 is currently loaded"
 msgstr "'n Diens getiteld %1 is nie tans gelaai nie"
@@ -16089,19 +16089,19 @@ msgstr ""
 msgid "Select Fields to Synchronize"
 msgstr ""
 
-#: statsyncing/ui/ConfigureProviderDialog.cpp:39
+#: statsyncing/ui/ConfigureProviderDialog.cpp:35
 #, fuzzy, kde-format
 #| msgid "Configure Phonon"
 msgid "Configure Synchronization Target"
 msgstr "Phonon Opstel"
 
-#: statsyncing/ui/CreateProviderDialog.cpp:38
+#: statsyncing/ui/CreateProviderDialog.cpp:37
 #, fuzzy, kde-format
 #| msgid "Add Position Marker"
 msgid "Add Synchronization Target"
 msgstr "Voeg Posisie Merker By"
 
-#: statsyncing/ui/CreateProviderDialog.cpp:48
+#: statsyncing/ui/CreateProviderDialog.cpp:47
 #, kde-format
 msgid ""
 "<span style=\"color:red; font-weight:bold;\">Important:</span> before "
@@ -16109,13 +16109,13 @@ msgid ""
 "database file is not currently in use!"
 msgstr ""
 
-#: statsyncing/ui/CreateProviderDialog.cpp:61
+#: statsyncing/ui/CreateProviderDialog.cpp:60
 #, fuzzy, kde-format
 #| msgid "Cover Manager"
 msgid "Choose Target Type"
 msgstr "Omslag Bestuurder"
 
-#: statsyncing/ui/CreateProviderDialog.cpp:87
+#: statsyncing/ui/CreateProviderDialog.cpp:86
 #, fuzzy, kde-format
 #| msgid "Configure Services"
 msgid "Configure Target"
@@ -16307,19 +16307,19 @@ msgstr "Geselekteerde Snitte"
 msgid "Scrobbling"
 msgstr ""
 
-#: statusbar/CompoundProgressBar.cpp:66 statusbar/CompoundProgressBar.cpp:195
+#: statusbar/CompoundProgressBar.cpp:65 statusbar/CompoundProgressBar.cpp:194
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
 msgstr "Staak"
 
-#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
+#: statusbar/CompoundProgressBar.cpp:69 statusbar/CompoundProgressBar.cpp:206
 #, fuzzy, kde-format
 #| msgid "Multiple background tasks running"
 msgid "Multiple background tasks running (click to show)"
 msgstr "Veelvuldige agtergrondtake loop"
 
-#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
+#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Abort all background tasks"
 msgstr "Staak alle agtergrondtake"
@@ -16340,31 +16340,31 @@ msgid "Slim Toolbar"
 msgstr "Nou Nutsbalk"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:200
+#: widgets/Osd.cpp:199
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Luidheid: 100% (gedoof)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
 msgstr "Luidheid: %1%"
 
-#: transcoding/TranscodingAssistantDialog.cpp:47
+#: transcoding/TranscodingAssistantDialog.cpp:44
 #, fuzzy, kde-format
 #| msgid "Random Tracks"
 msgid "Transcode Tracks"
 msgstr "Lukrake Snitte"
 
-#: transcoding/TranscodingAssistantDialog.cpp:57
+#: transcoding/TranscodingAssistantDialog.cpp:54
 #, fuzzy, kde-format
 #| msgid "&Translucent"
 msgid "Transc&ode"
 msgstr "Deursigtig"
 
-#: transcoding/TranscodingAssistantDialog.cpp:68
+#: transcoding/TranscodingAssistantDialog.cpp:65
 #, kde-format
 msgid ""
 "While copying, you can choose to transcode your music files into another "
@@ -16373,17 +16373,17 @@ msgid ""
 "program."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:73
+#: transcoding/TranscodingAssistantDialog.cpp:70
 #, kde-format
 msgid "&Copy"
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:74
+#: transcoding/TranscodingAssistantDialog.cpp:71
 #, kde-format
 msgid "Just copy the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:78
+#: transcoding/TranscodingAssistantDialog.cpp:75
 #, kde-format
 msgid ""
 "While moving, you can choose to transcode your music files into another "
@@ -16393,25 +16393,25 @@ msgid ""
 "original location."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:84
+#: transcoding/TranscodingAssistantDialog.cpp:81
 #, fuzzy, kde-format
 #| msgid "Cover Found"
 msgid "&Move"
 msgstr "Omslag Gevind"
 
-#: transcoding/TranscodingAssistantDialog.cpp:85
+#: transcoding/TranscodingAssistantDialog.cpp:82
 #, kde-format
 msgid "Just move the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:152
+#: transcoding/TranscodingAssistantDialog.cpp:149
 #, fuzzy, kde-format
 #| msgid "No description available..."
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr "Geen beskrywing beskikbaar..."
 
-#: transcoding/TranscodingAssistantDialog.cpp:159
+#: transcoding/TranscodingAssistantDialog.cpp:156
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
@@ -16485,7 +16485,7 @@ msgstr ""
 msgid "Remember this choice for the next time"
 msgstr ""
 
-#: transcoding/TranscodingOptionsStackedWidget.cpp:56
+#: transcoding/TranscodingOptionsStackedWidget.cpp:55
 #, kde-format
 msgid ""
 "In order to configure the parameters of the transcoding operation, please "
@@ -16550,17 +16550,17 @@ msgstr "Laas gespeel"
 msgid "Bookmark"
 msgstr "Boekmerk"
 
-#: widgets/BreadcrumbItemButton.cpp:243
+#: widgets/BreadcrumbItemButton.cpp:242
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Lys en loop boekmerke, of skep nuwes"
 
-#: widgets/BreadcrumbItemButton.cpp:261
+#: widgets/BreadcrumbItemButton.cpp:260
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Amarok Boekmerke"
 
-#: widgets/BreadcrumbItemButton.cpp:280
+#: widgets/BreadcrumbItemButton.cpp:279
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr ""
@@ -16661,7 +16661,7 @@ msgstr "Skrap voorafinstelling"
 msgid "Preset Name"
 msgstr "Gee voorafinstelling naam:"
 
-#: widgets/MetaQueryWidget.cpp:132
+#: widgets/MetaQueryWidget.cpp:130
 #, fuzzy, kde-format
 #| msgid "Seconds"
 msgid "second"
@@ -16669,7 +16669,7 @@ msgid_plural "seconds"
 msgstr[0] "Sekondes"
 msgstr[1] "Sekondes"
 
-#: widgets/MetaQueryWidget.cpp:133
+#: widgets/MetaQueryWidget.cpp:131
 #, fuzzy, kde-format
 #| msgid "Minutes"
 msgid "minute"
@@ -16677,7 +16677,7 @@ msgid_plural "minutes"
 msgstr[0] "Minute"
 msgstr[1] "Minute"
 
-#: widgets/MetaQueryWidget.cpp:134
+#: widgets/MetaQueryWidget.cpp:132
 #, fuzzy, kde-format
 #| msgid "Hours"
 msgid "hour"
@@ -16685,7 +16685,7 @@ msgid_plural "hours"
 msgstr[0] "Ure"
 msgstr[1] "Ure"
 
-#: widgets/MetaQueryWidget.cpp:135
+#: widgets/MetaQueryWidget.cpp:133
 #, fuzzy, kde-format
 #| msgid "Days"
 msgid "day"
@@ -16693,7 +16693,7 @@ msgid_plural "days"
 msgstr[0] "Dae"
 msgstr[1] "Dae"
 
-#: widgets/MetaQueryWidget.cpp:136
+#: widgets/MetaQueryWidget.cpp:134
 #, fuzzy, kde-format
 #| msgid "last week"
 msgid "week"
@@ -16701,7 +16701,7 @@ msgid_plural "weeks"
 msgstr[0] "verlede week"
 msgstr[1] "verlede week"
 
-#: widgets/MetaQueryWidget.cpp:137
+#: widgets/MetaQueryWidget.cpp:135
 #, fuzzy, kde-format
 #| msgid "Months"
 msgid "month"
@@ -16709,7 +16709,7 @@ msgid_plural "months"
 msgstr[0] "Maande"
 msgstr[1] "Maande"
 
-#: widgets/MetaQueryWidget.cpp:138
+#: widgets/MetaQueryWidget.cpp:136
 #, fuzzy, kde-format
 #| msgid "year"
 msgid "year"
@@ -16717,96 +16717,96 @@ msgid_plural "years"
 msgstr[0] "jaar"
 msgstr[1] "jaar"
 
-#: widgets/MetaQueryWidget.cpp:320
+#: widgets/MetaQueryWidget.cpp:318
 #, kde-format
 msgid "Simple Search"
 msgstr "Eenvoudige Soektog"
 
-#: widgets/MetaQueryWidget.cpp:685
+#: widgets/MetaQueryWidget.cpp:683
 #, kde-format
 msgctxt "Unit for data rate kilo bit per seconds"
 msgid "kbps"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:687
+#: widgets/MetaQueryWidget.cpp:685
 #, fuzzy, kde-format
 #| msgid "Hz"
 msgctxt "Unit for sample rate"
 msgid "Hz"
 msgstr "Hz"
 
-#: widgets/MetaQueryWidget.cpp:689
+#: widgets/MetaQueryWidget.cpp:687
 #, kde-format
 msgctxt "Unit for file size in mega byte"
 msgid "MiB"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:843
+#: widgets/MetaQueryWidget.cpp:841
 #, kde-format
 msgctxt "time format for specifying track length - hours, minutes, seconds"
 msgid "h:m:ss"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:998
+#: widgets/MetaQueryWidget.cpp:996
 #, fuzzy, kde-format
 #| msgid "is before"
 msgctxt "The date lies before the given fixed date"
 msgid "before"
 msgstr "is voor"
 
-#: widgets/MetaQueryWidget.cpp:1000
+#: widgets/MetaQueryWidget.cpp:998
 #, fuzzy, kde-format
 #| msgid "none"
 msgctxt "The date is the same as the given fixed date"
 msgid "on"
 msgstr "geen"
 
-#: widgets/MetaQueryWidget.cpp:1002
+#: widgets/MetaQueryWidget.cpp:1000
 #, fuzzy, kde-format
 #| msgid "is after"
 msgctxt "The date is after the given fixed date"
 msgid "after"
 msgstr "is na"
 
-#: widgets/MetaQueryWidget.cpp:1004
+#: widgets/MetaQueryWidget.cpp:1002
 #, fuzzy, kde-format
 #| msgid "Between"
 msgctxt "The date is between the given fixed dates"
 msgid "between"
 msgstr "Tussen"
 
-#: widgets/MetaQueryWidget.cpp:1006
+#: widgets/MetaQueryWidget.cpp:1004
 #, fuzzy, kde-format
 #| msgid "Smaller Than"
 msgctxt "The date lies before the given time interval"
 msgid "older than"
 msgstr "Kleiner As"
 
-#: widgets/MetaQueryWidget.cpp:1008
+#: widgets/MetaQueryWidget.cpp:1006
 #, fuzzy, kde-format
 #| msgid "greater than"
 msgctxt "The date lies after the given time interval"
 msgid "newer than"
 msgstr "meer as"
 
-#: widgets/MetaQueryWidget.cpp:1024
+#: widgets/MetaQueryWidget.cpp:1022
 #, fuzzy, kde-format
 #| msgid "Between"
 msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "Tussen"
 
-#: widgets/Osd.cpp:186
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Keuring gewysig"
 
-#: widgets/Osd.cpp:261
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Luidheid: 100% (gedoof)"
 
-#: widgets/Osd.cpp:504
+#: widgets/Osd.cpp:503
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16815,13 +16815,13 @@ msgstr ""
 "Voor-Skem Vertoon Voorskou\n"
 "Sleep om te herposisioneer"
 
-#: widgets/Osd.cpp:756
+#: widgets/Osd.cpp:755
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "Stop"
 
-#: widgets/Osd.cpp:765
+#: widgets/Osd.cpp:764
 #, kde-format
 msgid "Paused"
 msgstr "Wagtend"
@@ -16838,7 +16838,7 @@ msgstr "Terugspeel"
 msgid "Pause"
 msgstr "Wagtend"
 
-#: widgets/PrettyTreeDelegate.cpp:219
+#: widgets/PrettyTreeDelegate.cpp:217
 #, kde-format
 msgctxt "Example: 3.5 GB free (unit is part of %1)"
 msgid "%1 free"
@@ -16861,52 +16861,52 @@ msgstr "Die tydsduur wat verstryk het vir die huidige liedjie"
 msgid "The amount of time remaining in current track"
 msgstr "Die oorblywende tydsduur vir die huidige liedjie"
 
-#: widgets/SearchWidget.cpp:51
+#: widgets/SearchWidget.cpp:50
 #, kde-format
 msgid "Enter space-separated terms to search."
 msgstr "Voer soekterme in, geskei deur spasies"
 
-#: widgets/SearchWidget.cpp:73 widgets/SearchWidget.cpp:167
+#: widgets/SearchWidget.cpp:72 widgets/SearchWidget.cpp:166
 #, kde-format
 msgid "Edit filter"
 msgstr "Wysig filter"
 
-#: widgets/SliderWidget.cpp:243
+#: widgets/SliderWidget.cpp:241
 #, kde-format
 msgid "Volume"
 msgstr "Luidheid"
 
-#: widgets/SliderWidget.cpp:244
+#: widgets/SliderWidget.cpp:242
 #, kde-format
 msgid "100%"
 msgstr "100%"
 
-#: widgets/SliderWidget.cpp:245
+#: widgets/SliderWidget.cpp:243
 #, kde-format
 msgid "80%"
 msgstr "80%"
 
-#: widgets/SliderWidget.cpp:246
+#: widgets/SliderWidget.cpp:244
 #, kde-format
 msgid "60%"
 msgstr "60%"
 
-#: widgets/SliderWidget.cpp:247
+#: widgets/SliderWidget.cpp:245
 #, kde-format
 msgid "40%"
 msgstr "40%"
 
-#: widgets/SliderWidget.cpp:248
+#: widgets/SliderWidget.cpp:246
 #, kde-format
 msgid "20%"
 msgstr "20%"
 
-#: widgets/SliderWidget.cpp:249
+#: widgets/SliderWidget.cpp:247
 #, kde-format
 msgid "0%"
 msgstr "0%"
 
-#: widgets/SliderWidget.cpp:410
+#: widgets/SliderWidget.cpp:408
 #, kde-format
 msgctxt ""
 "Tooltip shown when the mouse is over the progress slider, representing the "
@@ -16920,42 +16920,42 @@ msgstr "Spring na: %1"
 msgid "Drag in and out items from above."
 msgstr "Sleep items van bo in en uit."
 
-#: widgets/TokenWithLayout.cpp:232
+#: widgets/TokenWithLayout.cpp:229
 #, kde-format
 msgid "[prefix]"
 msgstr "[voorvoegsel]"
 
-#: widgets/TokenWithLayout.cpp:243
+#: widgets/TokenWithLayout.cpp:240
 #, kde-format
 msgid "[suffix]"
 msgstr "[agtervoegsel]"
 
-#: widgets/TrackSelectWidget.cpp:71
+#: widgets/TrackSelectWidget.cpp:68
 #, fuzzy, kde-format
 #| msgctxt "track from source"
 #| msgid "from <b>%1</b>"
 msgid "Checkpoint: <b>%1</b>"
 msgstr "van <b>%1</b>"
 
-#: widgets/TrackSelectWidget.cpp:91
+#: widgets/TrackSelectWidget.cpp:88
 #, fuzzy, kde-format
 #| msgid "Track:"
 msgid "Track: %1"
 msgstr "Snit:"
 
-#: widgets/TrackSelectWidget.cpp:93
+#: widgets/TrackSelectWidget.cpp:90
 #, fuzzy, kde-format
 #| msgid "Album \"%1\""
 msgid "Album: %1"
 msgstr "Album \"%1\""
 
-#: widgets/TrackSelectWidget.cpp:95
+#: widgets/TrackSelectWidget.cpp:92
 #, fuzzy, kde-format
 #| msgid "Artist \"%1\""
 msgid "Artist: %1"
 msgstr "Kunstenaar \"%1\""
 
-#: widgets/TrackSelectWidget.cpp:99
+#: widgets/TrackSelectWidget.cpp:96
 #, fuzzy, kde-format
 #| msgid "<empty>"
 msgid "empty"

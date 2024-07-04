@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-03 01:46+0000\n"
+"POT-Creation-Date: 2024-07-04 01:43+0000\n"
 "PO-Revision-Date: 2012-11-20 23:54+0200\n"
 "Last-Translator: Diego Iastrubni <elcuco@kde.org>\n"
 "Language-Team: Hebrew <kde-i18n-doc@kde.org>\n"
@@ -56,99 +56,99 @@ msgstr "הקבצות"
 msgid "Verbose"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:52
+#: aboutdialog/ExtendedAboutDialog.cpp:48
 #, kde-format
 msgid "License Agreement"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:97
+#: aboutdialog/ExtendedAboutDialog.cpp:93
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:108
+#: aboutdialog/ExtendedAboutDialog.cpp:104
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:119
+#: aboutdialog/ExtendedAboutDialog.cpp:115
 #, fuzzy, kde-format
 #| msgid "Album \"%1\""
 msgid "About %1"
 msgstr "אלבום \"%1\""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:145
+#: aboutdialog/ExtendedAboutDialog.cpp:141
 #, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
 "Frameworks %3</html>"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:184
+#: aboutdialog/ExtendedAboutDialog.cpp:180
 #, kde-format
 msgid "License: %1"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:198
+#: aboutdialog/ExtendedAboutDialog.cpp:194
 #, fuzzy, kde-format
 #| msgid "Abort"
 msgid "&About"
 msgstr "בטל"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:221
+#: aboutdialog/ExtendedAboutDialog.cpp:217
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:226
-#: aboutdialog/ExtendedAboutDialog.cpp:232
+#: aboutdialog/ExtendedAboutDialog.cpp:222
+#: aboutdialog/ExtendedAboutDialog.cpp:228
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:249
+#: aboutdialog/ExtendedAboutDialog.cpp:245
 #, fuzzy, kde-format
 #| msgid "Authors"
 msgid "A&uthor"
 msgstr "יוצרים"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:249
+#: aboutdialog/ExtendedAboutDialog.cpp:245
 #, fuzzy, kde-format
 #| msgid "Authors"
 msgid "A&uthors"
 msgstr "יוצרים"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:268
+#: aboutdialog/ExtendedAboutDialog.cpp:264
 #, fuzzy, kde-format
 #| msgid "Former contributors"
 msgid "&Contributors"
 msgstr "תורמים מהעבר"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:292
+#: aboutdialog/ExtendedAboutDialog.cpp:288
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "&Donors"
 msgstr "&הורד"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:321
+#: aboutdialog/ExtendedAboutDialog.cpp:317
 #, fuzzy, kde-format
 #| msgid "&Duration:"
 msgid "T&ranslation"
 msgstr "&משך זמן:"
 
-#: aboutdialog/OcsPersonItem.cpp:86
+#: aboutdialog/OcsPersonItem.cpp:82
 #, fuzzy, kde-format
 #| msgid "Former contributors"
 msgid "Email contributor"
 msgstr "תורמים מהעבר"
 
-#: aboutdialog/OcsPersonItem.cpp:94
+#: aboutdialog/OcsPersonItem.cpp:90
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr ""
@@ -158,8 +158,8 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QTreeWidget, requestDetails)
 #. i18n: ectx: property (text), widget (QTreeWidget, responseDetails)
 #. i18n: ectx: property (text), widget (QLabel, m_textLabel)
-#: aboutdialog/OcsPersonItem.ui:137 amarokurls/BookmarkModel.cpp:258
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:399
+#: aboutdialog/OcsPersonItem.ui:137 amarokurls/BookmarkModel.cpp:257
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:397
 #: network/NetworkRequests.ui:89 network/NetworkRequests.ui:103
 #: playlistgenerator/TreeModel.cpp:64
 #: services/ampache/AmpacheConfigWidget.ui:53
@@ -220,7 +220,7 @@ msgstr "רשימת־השמעה נוכחית"
 msgid "Selected Tracks"
 msgstr "רצועות מסומנות"
 
-#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:100
+#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:97
 #, kde-format
 msgid "Stop"
 msgstr "עצור"
@@ -244,7 +244,7 @@ msgstr "אוהב את הרצועה הנוכחית"
 
 #: ActionClasses.cpp:499
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
 #, kde-format
 msgid "No track playing"
 msgstr "שום רצועה מושמעת"
@@ -252,7 +252,7 @@ msgstr "שום רצועה מושמעת"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:503
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
-#: main.cpp:92 MainWindow.cpp:109
+#: main.cpp:92 MainWindow.cpp:107
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -911,7 +911,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "הפעל/בטל את התצוגה־על־המסך."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:46
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:44
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr ""
@@ -1559,12 +1559,12 @@ msgctxt "The command type of this url is not known"
 msgid "Unknown"
 msgstr "לא ידוע "
 
-#: amarokurls/BookmarkCurrentButton.cpp:32 amarokurls/BookmarkModel.cpp:536
+#: amarokurls/BookmarkCurrentButton.cpp:32 amarokurls/BookmarkModel.cpp:535
 #, kde-format
 msgid "New Bookmark"
 msgstr "סימנייה חדשה"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:783
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:781
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "מנהל סימניות"
@@ -1585,89 +1585,89 @@ msgstr "סנן סימניות"
 msgid "Start typing to progressively filter the bookmarks"
 msgstr ""
 
-#: amarokurls/BookmarkMetaActions.cpp:31
+#: amarokurls/BookmarkMetaActions.cpp:30
 #, kde-format
 msgid "Bookmark this Album"
 msgstr "סמן אלבום זה"
 
-#: amarokurls/BookmarkMetaActions.cpp:47
+#: amarokurls/BookmarkMetaActions.cpp:46
 #, kde-format
 msgid "Bookmark this Artist"
 msgstr "סמן אמן זה"
 
-#: amarokurls/BookmarkMetaActions.cpp:62
+#: amarokurls/BookmarkMetaActions.cpp:61
 #, kde-format
 msgid "Add Position Marker"
 msgstr ""
 
-#: amarokurls/BookmarkModel.cpp:86
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:400
+#: amarokurls/BookmarkModel.cpp:85
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:398
 #, fuzzy, kde-format
 #| msgid "Group By"
 msgid "Group"
 msgstr "קבץ לפי"
 
-#: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:320 playlist/PlaylistModel.cpp:939
+#: amarokurls/BookmarkModel.cpp:258
+#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:935
 #, kde-format
 msgid "Type"
 msgstr "סוג"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: amarokurls/BookmarkModel.cpp:260 network/NetworkRequests.ui:46
+#: amarokurls/BookmarkModel.cpp:259 network/NetworkRequests.ui:46
 #, kde-format
 msgid "URL"
 msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: amarokurls/BookmarkModel.cpp:261
+#: amarokurls/BookmarkModel.cpp:260
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:63
 #, fuzzy, kde-format
 #| msgid "Description:"
 msgid "Description"
 msgstr "תיאור:"
 
-#: amarokurls/BookmarkModel.cpp:511
+#: amarokurls/BookmarkModel.cpp:510
 #, kde-format
 msgid "New Group"
 msgstr "קבוצה חדשה"
 
-#: amarokurls/BookmarkModel.cpp:537
+#: amarokurls/BookmarkModel.cpp:536
 #: context/applets/similarartists/ArtistWidget.cpp:443
 #, fuzzy, kde-format
 #| msgid "None"
 msgid "none"
 msgstr "ללא"
 
-#: amarokurls/BookmarkTreeView.cpp:109
+#: amarokurls/BookmarkTreeView.cpp:108
 #, kde-format
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&טען"
 
-#: amarokurls/BookmarkTreeView.cpp:115 browsers/filebrowser/FileView.cpp:414
+#: amarokurls/BookmarkTreeView.cpp:114 browsers/filebrowser/FileView.cpp:409
 #, kde-format
 msgid "&Delete"
 msgstr "&מחק"
 
-#: amarokurls/BookmarkTreeView.cpp:122
+#: amarokurls/BookmarkTreeView.cpp:121
 #, kde-format
 msgid "&Create timecode track"
 msgstr ""
 
-#: amarokurls/BookmarkTreeView.cpp:369
+#: amarokurls/BookmarkTreeView.cpp:368
 #, fuzzy, kde-format
 #| msgid "Selected Tracks"
 msgid "New Timecode Track"
 msgstr "רצועות מסומנות"
 
-#: amarokurls/BookmarkTreeView.cpp:370 amarokurls/BookmarkTreeView.cpp:371
-#: amarokurls/BookmarkTreeView.cpp:372
+#: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
+#: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:483
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:484
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:485
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1227
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:486 MainWindow.cpp:1225
 #, kde-format
 msgid "Unknown"
 msgstr "לא ידוע "
@@ -1690,7 +1690,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "הערה"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:285
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
 #, kde-format
 msgid "Files"
 msgstr "קבצים"
@@ -1721,7 +1721,7 @@ msgstr "אמן \"%1\" מ־%2"
 msgid "Artist \"%1\""
 msgstr "אמן \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:779
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:777
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "סימניית תצוגת מקורות מדיה"
@@ -1747,99 +1747,99 @@ msgctxt ""
 msgid "Play"
 msgstr "נגן"
 
-#: App.cpp:360
+#: App.cpp:358
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "קבצים/כתובות לפתיחה"
 
-#: App.cpp:361
+#: App.cpp:359
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr ""
 
-#: App.cpp:362
+#: App.cpp:360
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "דלג אחורה ברשימת־ההשמעה"
 
-#: App.cpp:363
+#: App.cpp:361
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "התחל לנגן את רשימת־ההשמעה הנוכחית"
 
-#: App.cpp:364
+#: App.cpp:362
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "נגן במידה שמושהה, השהה במידה שמנגן"
 
-#: App.cpp:365
+#: App.cpp:363
 #, kde-format
 msgid "Pause playback"
 msgstr "השהה את ההשמעה"
 
-#: App.cpp:366
+#: App.cpp:364
 #, kde-format
 msgid "Stop playback"
 msgstr "עצור את ההשמעה"
 
-#: App.cpp:367
+#: App.cpp:365
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "דלג קדימה ברשימת־ההשמעה"
 
-#: App.cpp:369
+#: App.cpp:367
 #, kde-format
 msgid "Additional options:"
 msgstr "אפשרויות נוספות:"
 
-#: App.cpp:370
+#: App.cpp:368
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "הוסף קבצים/כתובות אל רשימת־ההשמעה"
 
-#: App.cpp:371
+#: App.cpp:369
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "הכנס כתובות לתור לאחר הרצועה הנוכחית המתנגנת"
 
-#: App.cpp:372
+#: App.cpp:370
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "טען כתובת אשר תחליף את רשימת־ההשמעה הנוכחית"
 
-#: App.cpp:373 App.cpp:375
+#: App.cpp:371 App.cpp:373
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr ""
 
-#: App.cpp:376
+#: App.cpp:374
 #, fuzzy, kde-format
 #| msgid "Enter login information for Last.fm"
 msgid "Print verbose debugging information from the audio system"
 msgstr "הכנס פרטי כניסה ל-Last.fm"
 
-#: App.cpp:377
+#: App.cpp:375
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:378
+#: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr ""
 
-#: App.cpp:379
+#: App.cpp:377
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "הבסיס עבור קבצים/כתובות יחסיים"
 
-#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
 #, fuzzy, kde-format
 #| msgid "Database Name"
 msgid "Database Error"
 msgstr "שם בסיס־נתונים"
 
-#: App.cpp:516
+#: App.cpp:514
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1848,91 +1848,91 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:583
+#: App.cpp:581
 #, kde-format
 msgid "Moving files to trash"
 msgstr "מעביר קבצים אל פח האשפה"
 
-#: App.cpp:649
+#: App.cpp:647
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
 
-#: browsers/BrowserBreadcrumbItem.cpp:70
+#: browsers/BrowserBreadcrumbItem.cpp:68
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
 msgid "Media Sources Home"
 msgstr "סיומת שם־הקובץ של המקור"
 
-#: browsers/BrowserCategoryList.cpp:54
+#: browsers/BrowserCategoryList.cpp:52
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
 msgid "Filter Music Sources"
 msgstr "סיומת שם־הקובץ של המקור"
 
-#: browsers/BrowserDock.cpp:34
+#: browsers/BrowserDock.cpp:33
 #, fuzzy, kde-format
 #| msgid "Media Sources"
 msgid "&Media Sources"
 msgstr "מקורות מדיה"
 
-#: browsers/BrowserDock.cpp:74
+#: browsers/BrowserDock.cpp:73
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
 msgid "Go Up in Media Sources Pane"
 msgstr "סיומת שם־הקובץ של המקור"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:147
+#: browsers/collectionbrowser/CollectionWidget.cpp:144
 #, kde-format
 msgid ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and CDs."
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:927
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:925
 #, fuzzy, kde-format
 #| msgid "Rescan Collection"
 msgid "Search collection"
 msgstr "סריקת האוסף מחדש"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:173
+#: browsers/collectionbrowser/CollectionWidget.cpp:170
 #, fuzzy, kde-format
 #| msgid "Play Count"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Hour"
 msgstr "מונה השמעות"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:175
+#: browsers/collectionbrowser/CollectionWidget.cpp:172
 #, fuzzy, kde-format
 #| msgid "&Add Podcast"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added Today"
 msgstr "&הוסף פוד־קסט"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:177
+#: browsers/collectionbrowser/CollectionWidget.cpp:174
 #, fuzzy, kde-format
 #| msgid "is between"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Week"
 msgstr "בין"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:179
+#: browsers/collectionbrowser/CollectionWidget.cpp:176
 #, fuzzy, kde-format
 #| msgid "Play Count"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
 msgstr "מונה השמעות"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:181
+#: browsers/collectionbrowser/CollectionWidget.cpp:178
 #, fuzzy, kde-format
 #| msgid "First Played"
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
 msgstr "הושמע לראשונה"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:200
+#: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, fuzzy, kde-format
 #| msgid " - "
 msgctxt ""
@@ -1941,56 +1941,56 @@ msgctxt ""
 msgid " / "
 msgstr " - "
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:213
+#: browsers/collectionbrowser/CollectionWidget.cpp:210
 #, kde-format
 msgid "First Level"
 msgstr ""
 
 # kde-il: Developer's personal comment -  translate only when make sence.
-#: browsers/collectionbrowser/CollectionWidget.cpp:214
+#: browsers/collectionbrowser/CollectionWidget.cpp:211
 #, kde-format
 msgid "Second Level"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:215
+#: browsers/collectionbrowser/CollectionWidget.cpp:212
 #, kde-format
 msgid "Third Level"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:249
+#: browsers/collectionbrowser/CollectionWidget.cpp:246
 #, kde-format
 msgid "Show Years"
 msgstr "הראה שנים"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:254
+#: browsers/collectionbrowser/CollectionWidget.cpp:251
 #, fuzzy, kde-format
 #| msgid "Track Number"
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
 msgstr "מספר הרצועה"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:259
+#: browsers/collectionbrowser/CollectionWidget.cpp:256
 #, fuzzy, kde-format
 #| msgid "Show under Various Artists"
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
 msgstr "הצג תחת אמנים שונים"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:264
+#: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, fuzzy, kde-format
 #| msgid "Show Years"
 msgid "Show Cover Art"
 msgstr "הראה שנים"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:271
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:88
+#: browsers/collectionbrowser/CollectionWidget.cpp:268
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:85
 #, kde-format
 msgid "Merged View"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:278
-#: services/jamendo/JamendoService.cpp:161
-#: services/magnatune/MagnatuneStore.cpp:229
+#: browsers/collectionbrowser/CollectionWidget.cpp:275
+#: services/jamendo/JamendoService.cpp:159
+#: services/magnatune/MagnatuneStore.cpp:228
 #, fuzzy, kde-format
 #| msgid "Options"
 msgid "Sort Options"
@@ -2010,7 +2010,7 @@ msgid "Counting..."
 msgstr "חיבור"
 
 #: browsers/CollectionTreeItem.cpp:176
-#: playlist/proxymodels/GroupingProxy.cpp:188
+#: playlist/proxymodels/GroupingProxy.cpp:189
 #, fuzzy, kde-format
 #| msgid "%1 track"
 #| msgid_plural "%1 tracks"
@@ -2027,25 +2027,25 @@ msgid "Unknown"
 msgstr "לא ידוע "
 
 #: browsers/CollectionTreeItemModelBase.cpp:397
-#: core-impl/collections/db/sql/SqlMeta.cpp:409
+#: core-impl/collections/db/sql/SqlMeta.cpp:408
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:98
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
 msgstr "אמנים שונים"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1102
-#: browsers/CollectionTreeView.cpp:369
+#: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:932
-#: playlist/view/PlaylistViewCommon.cpp:65
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
+#: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
-#: services/magnatune/MagnatuneStore.cpp:220
+#: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
 msgid "Album"
 msgstr "אלבום"
@@ -2063,26 +2063,26 @@ msgstr "סמן אמן זה"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
 #: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
-#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:929
+#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:925
 #, kde-format
 msgid "Album Artist"
 msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:1108
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
-#: playlist/PlaylistModel.cpp:930
+#: playlist/PlaylistModel.cpp:926
 #, kde-format
 msgid "Composer"
 msgstr "מלחין"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:936
-#: playlist/ProgressiveSearchWidget.cpp:95
+#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
+#: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "סגנון"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1112
-#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:931
+#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Year"
 msgstr "שנה"
@@ -2098,45 +2098,45 @@ msgstr "תווית"
 msgid "None"
 msgstr "ללא"
 
-#: browsers/CollectionTreeView.cpp:356 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
 msgstr ""
 
-#: browsers/CollectionTreeView.cpp:389
+#: browsers/CollectionTreeView.cpp:387
 #, kde-format
 msgid "Collection"
 msgstr "אוסף"
 
-#: browsers/CollectionTreeView.cpp:413
+#: browsers/CollectionTreeView.cpp:411
 #, kde-format
 msgid "Copy to Collection"
 msgstr "העתק אל האוסף"
 
-#: browsers/CollectionTreeView.cpp:422 browsers/filebrowser/FileView.cpp:126
+#: browsers/CollectionTreeView.cpp:420 browsers/filebrowser/FileView.cpp:121
 #, kde-format
 msgid "Move to Collection"
 msgstr "העבר אל האוסף"
 
-#: browsers/CollectionTreeView.cpp:436
+#: browsers/CollectionTreeView.cpp:434
 #, kde-format
 msgid "Move Tracks to Trash"
 msgstr "העבר רצועות אל פה האשפה"
 
-#: browsers/CollectionTreeView.cpp:447
+#: browsers/CollectionTreeView.cpp:445
 #, fuzzy, kde-format
 #| msgid "&Delete Tracks"
 msgid "Delete Tracks"
 msgstr "&מחק רצועות"
 
-#: browsers/CollectionTreeView.cpp:716 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
 msgstr "עוד..."
 
-#: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
+#: browsers/CollectionTreeView.cpp:1087 browsers/filebrowser/FileView.cpp:378
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
 #, fuzzy, kde-format
@@ -2144,8 +2144,8 @@ msgstr "עוד..."
 msgid "&Add to Playlist"
 msgstr "&הוסף לרשימת־השמעה"
 
-#: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
+#: browsers/CollectionTreeView.cpp:1098 browsers/filebrowser/FileView.cpp:389
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
 #, fuzzy, kde-format
@@ -2154,31 +2154,31 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "חזור על רשימת־ההשמעה"
 
-#: browsers/CollectionTreeView.cpp:1149
+#: browsers/CollectionTreeView.cpp:1147
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "סדר קבצים"
 
-#: browsers/CollectionTreeView.cpp:1182 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1180 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&עריכת פרטי רצועה"
 
-#: browsers/filebrowser/FileBrowser.cpp:70
+#: browsers/filebrowser/FileBrowser.cpp:69
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr ""
 
-#: browsers/filebrowser/FileBrowser.cpp:80
+#: browsers/filebrowser/FileBrowser.cpp:79
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "Filter Files"
 msgstr "המחיקה נכשלה"
 
-#: browsers/filebrowser/FileBrowser.cpp:219
+#: browsers/filebrowser/FileBrowser.cpp:218
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2186,13 +2186,13 @@ msgid ""
 "these files to the playlist as well as perform basic file operations."
 msgstr ""
 
-#: browsers/filebrowser/FileView.cpp:403
+#: browsers/filebrowser/FileView.cpp:398
 #, fuzzy, kde-format
 #| msgid "&Send to Trash"
 msgid "&Move to Trash"
 msgstr "&העבר לפח האשפה"
 
-#: browsers/filebrowser/FileView.cpp:571
+#: browsers/filebrowser/FileView.cpp:566
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, fuzzy, kde-format
 #| msgid "Configure Playback"
@@ -2200,7 +2200,7 @@ msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "הגדר השמעה"
 
-#: browsers/filebrowser/FileView.cpp:572
+#: browsers/filebrowser/FileView.cpp:567
 #, fuzzy, kde-format
 #| msgctxt "@info"
 #| msgid "Do you really want to delete these %1 tracks?"
@@ -2209,14 +2209,14 @@ msgid_plural "Are you sure you want to delete these %1 items?"
 msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 
-#: browsers/filebrowser/FileView.cpp:578
+#: browsers/filebrowser/FileView.cpp:573
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "אשר העברה אל פח האשפה"
 
-#: browsers/filebrowser/FileView.cpp:579
+#: browsers/filebrowser/FileView.cpp:574
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
@@ -2228,74 +2228,74 @@ msgstr[1] "האם אתה בטוח שאתה רוצה להעביר %1 פריטים
 msgid "Home"
 msgstr "בית"
 
-#: browsers/playlistbrowser/APGCategory.cpp:39
+#: browsers/playlistbrowser/APGCategory.cpp:38
 #, kde-format
 msgid "Automated Playlist Generator"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:40
-#: browsers/playlistbrowser/APGCategory.cpp:47
+#: browsers/playlistbrowser/APGCategory.cpp:39
+#: browsers/playlistbrowser/APGCategory.cpp:46
 #, kde-format
 msgid "Create playlists by specifying criteria"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:63
+#: browsers/playlistbrowser/APGCategory.cpp:62
 #, kde-format
 msgid "Add new preset"
 msgstr "הוסף אפשרויות קבועות חדשות"
 
-#: browsers/playlistbrowser/APGCategory.cpp:66
+#: browsers/playlistbrowser/APGCategory.cpp:65
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "Edit selected preset"
 msgstr "המחיקה נכשלה"
 
-#: browsers/playlistbrowser/APGCategory.cpp:71
+#: browsers/playlistbrowser/APGCategory.cpp:70
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "Delete selected preset"
 msgstr "המחיקה נכשלה"
 
-#: browsers/playlistbrowser/APGCategory.cpp:76
+#: browsers/playlistbrowser/APGCategory.cpp:75
 #, fuzzy, kde-format
 #| msgid "Add new preset"
 msgid "Import a new preset"
 msgstr "הוסף אפשרויות קבועות חדשות"
 
-#: browsers/playlistbrowser/APGCategory.cpp:80
+#: browsers/playlistbrowser/APGCategory.cpp:79
 #, fuzzy, kde-format
 #| msgid "About to delete selected files"
 msgid "Export the selected preset"
 msgstr "עמוד למחוק קבצים מסומנים"
 
-#: browsers/playlistbrowser/APGCategory.cpp:87
+#: browsers/playlistbrowser/APGCategory.cpp:86
 #, kde-format
 msgid "Run APG with selected preset"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:93
+#: browsers/playlistbrowser/APGCategory.cpp:92
 #, fuzzy, kde-format
 #| msgid "Presets"
 msgid "APG Presets"
 msgstr "אפשרויות קבועות"
 
-#: browsers/playlistbrowser/APGCategory.cpp:107
+#: browsers/playlistbrowser/APGCategory.cpp:106
 #, fuzzy, kde-format
 #| msgid "General Options"
 msgid "Generator Optimization"
 msgstr "אפשרויות כלליות"
 
-#: browsers/playlistbrowser/APGCategory.cpp:111
+#: browsers/playlistbrowser/APGCategory.cpp:110
 #, kde-format
 msgid "Speed"
 msgstr ""
 
-#: browsers/playlistbrowser/APGCategory.cpp:116
+#: browsers/playlistbrowser/APGCategory.cpp:115
 #, kde-format
 msgid "Accuracy"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:44
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:43
 #, fuzzy, kde-format
 #| msgid "Lyrics"
 msgctxt "Bias dialog window title"
@@ -2303,14 +2303,14 @@ msgid "Edit bias"
 msgstr "מילות־שיר"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:49
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:48
 #, fuzzy, kde-format
 #| msgid "Match:"
 msgctxt "Bias selection label in bias view."
 msgid "Match Type:"
 msgstr "התאמה:"
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:129
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:128
 #, kde-format
 msgid ""
 "This bias is a replacement for another bias\n"
@@ -2318,173 +2318,173 @@ msgid ""
 "The original bias name was %1."
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicBiasDialog.cpp:196
+#: browsers/playlistbrowser/DynamicBiasDialog.cpp:195
 #, kde-format
 msgid "This bias has no settings."
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:46
+#: browsers/playlistbrowser/DynamicCategory.cpp:44
 #, kde-format
 msgid "Dynamic Playlists"
 msgstr "רשימות־השמעה דינמיות"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:47
+#: browsers/playlistbrowser/DynamicCategory.cpp:45
 #, kde-format
 msgid "Dynamically updating parameter based playlists"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:50
+#: browsers/playlistbrowser/DynamicCategory.cpp:48
 #, kde-format
 msgid ""
 "With a dynamic playlist, Amarok becomes your own personal dj, automatically "
 "selecting tracks for you, based on a number of parameters that you select."
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:65
+#: browsers/playlistbrowser/DynamicCategory.cpp:63
 #, fuzzy, kde-format
 #| msgid "&Previous"
 msgid "Previous:"
 msgstr "&הקודם"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:70
+#: browsers/playlistbrowser/DynamicCategory.cpp:68
 #, fuzzy, kde-format
 #| msgid "The number of undo levels in the playlist."
 msgid "Number of previous tracks to remain in the playlist."
 msgstr "מספר רמות הביטול ברשימת־ההשמעה."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:75
+#: browsers/playlistbrowser/DynamicCategory.cpp:73
 #, kde-format
 msgid "Upcoming:"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:81
+#: browsers/playlistbrowser/DynamicCategory.cpp:79
 #, fuzzy, kde-format
 #| msgid "The number of undo levels in the playlist."
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "מספר רמות הביטול ברשימת־ההשמעה."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:103
+#: browsers/playlistbrowser/DynamicCategory.cpp:101
 #, fuzzy, kde-format
 #| msgid "On"
 msgctxt "Turn dynamic mode on"
 msgid "On"
 msgstr "פועל"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:106
+#: browsers/playlistbrowser/DynamicCategory.cpp:104
 #, kde-format
 msgid "Turn dynamic mode on."
 msgstr "הדלק מצב דינמי"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:110
+#: browsers/playlistbrowser/DynamicCategory.cpp:108
 #, fuzzy, kde-format
 #| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 #| msgid "Re&move Duplicates"
 msgid "Duplicates"
 msgstr "ה&סר כפילויות"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:112
 #, fuzzy, kde-format
 #| msgid "Turn dynamic mode on."
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
 msgstr "הדלק מצב דינמי"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:118
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgid "New"
 msgstr "&הבא"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:120
+#: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, fuzzy, kde-format
 #| msgid "New playlist layout"
 msgid "New playlist"
 msgstr "סידור רשימת־השמעה חדש"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:124
+#: browsers/playlistbrowser/DynamicCategory.cpp:122
 #, kde-format
 msgid "Edit"
 msgstr "עריכה"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:126
+#: browsers/playlistbrowser/DynamicCategory.cpp:124
 #, fuzzy, kde-format
 #| msgid "About to delete selected files"
 msgid "Edit the selected playlist or bias"
 msgstr "עמוד למחוק קבצים מסומנים"
 
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
-#: browsers/playlistbrowser/DynamicCategory.cpp:130
+#: browsers/playlistbrowser/DynamicCategory.cpp:128
 #: dialogs/EqualizerDialog.ui:76
 #, fuzzy, kde-format
 #| msgid "&Delete"
 msgid "Delete"
 msgstr "&מחק"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:133
+#: browsers/playlistbrowser/DynamicCategory.cpp:131
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "Delete the selected playlist or bias"
 msgstr "המחיקה נכשלה"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:137
+#: browsers/playlistbrowser/DynamicCategory.cpp:135
 #, kde-format
 msgid "Repopulate"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:138
+#: browsers/playlistbrowser/DynamicCategory.cpp:136
 #, kde-format
 msgid "Replace the upcoming tracks with fresh ones."
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicView.cpp:223
+#: browsers/playlistbrowser/DynamicView.cpp:219
 #, fuzzy, kde-format
 #| msgid "Rename playlist layout"
 msgid "&Rename playlist"
 msgstr "שנה את שם סידור רשימת־ההשמעה"
 
-#: browsers/playlistbrowser/DynamicView.cpp:227
+#: browsers/playlistbrowser/DynamicView.cpp:223
 #, fuzzy, kde-format
 #| msgid "Add new"
 msgid "&Add new Bias"
 msgstr "הוסף חדש"
 
-#: browsers/playlistbrowser/DynamicView.cpp:231
+#: browsers/playlistbrowser/DynamicView.cpp:227
 #, fuzzy, kde-format
 #| msgctxt "clear playlist"
 #| msgid "&Clear Playlist"
 msgid "&Clone Playlist"
 msgstr "&נקה רשימת־השמעה"
 
-#: browsers/playlistbrowser/DynamicView.cpp:235
+#: browsers/playlistbrowser/DynamicView.cpp:231
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgid "&Delete playlist"
 msgstr "מחק את סידור רשימת־ההשמעה"
 
-#: browsers/playlistbrowser/DynamicView.cpp:249
+#: browsers/playlistbrowser/DynamicView.cpp:245
 #, fuzzy, kde-format
 #| msgid "&Add Media..."
 msgid "&Edit bias..."
 msgstr "&הוסף מדיה..."
 
-#: browsers/playlistbrowser/DynamicView.cpp:253
+#: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
 msgid "&Clone bias"
 msgstr ""
 
-#: browsers/playlistbrowser/DynamicView.cpp:263
+#: browsers/playlistbrowser/DynamicView.cpp:259
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "&Delete bias"
 msgstr "המחיקה נכשלה"
 
-#: browsers/playlistbrowser/DynamicView.cpp:270
+#: browsers/playlistbrowser/DynamicView.cpp:266
 #, fuzzy, kde-format
 #| msgid "Add new"
 msgid "&Add new bias"
 msgstr "הוסף חדש"
 
-#: browsers/playlistbrowser/PlaylistBrowser.cpp:43
+#: browsers/playlistbrowser/PlaylistBrowser.cpp:41
 #, kde-format
 msgid ""
 "The playlist browser contains your list of imported and saved playlists. It "
@@ -2492,31 +2492,31 @@ msgid ""
 "podcast subscriptions and episodes."
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:78
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:75
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
 #, kde-format
 msgid "Add Folder"
 msgstr "הוסף תיקייה"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:83
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:80
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
 msgid "Visible Sources"
 msgstr "סיומת שם־הקובץ של המקור"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:189
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:186
 #, kde-format
 msgid "Folders are only shown in <b>merged view</b>."
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:285
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:282
 #, fuzzy, kde-format
 #| msgid "Add Folder"
 msgctxt "default name for new folder"
 msgid "New Folder"
 msgstr "הוסף תיקייה"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:121
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:119
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "number of playlists from one source"
@@ -2525,14 +2525,14 @@ msgid_plural "%1 playlists"
 msgstr[0] "רשימת־השמעה"
 msgstr[1] "רשימת־השמעה"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:126
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:124
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
 msgstr "דירוג"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:173
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:171
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "number of playlists from one source"
@@ -2541,42 +2541,42 @@ msgid_plural "%1 playlists"
 msgstr[0] "רשימת־השמעה"
 msgstr[1] "רשימת־השמעה"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:401
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:399
 #, fuzzy, kde-format
 #| msgid "Source"
 msgid "Source"
 msgstr "מקור"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:63
 #, fuzzy, kde-format
 #| msgid "Create Smart Playlist"
 msgid "Create an Empty Playlist"
 msgstr "צור רשימת־השמעה חכמה"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:81
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:77
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgctxt "toggle the \"new\" status  of this podcast episode"
 msgid "&New"
 msgstr "&הבא"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:87
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:83
 #, kde-format
 msgid "&Rename..."
 msgstr "&שנה שם..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:94
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:90
 #, kde-format
 msgid "&Delete..."
 msgstr "&מחק..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:108
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:104
 #, fuzzy, kde-format
 #| msgid "&Export Playlist As..."
 msgid "&Export As..."
 msgstr "&יצא רשימת־השמעה כ..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, fuzzy, kde-format
 #| msgctxt "The amount of tracks being edited"
 #| msgid "1 Track"
@@ -2587,7 +2587,7 @@ msgid_plural "%1 Tracks"
 msgstr[0] "רצועה אחת"
 msgstr[1] "מידע עבור %1 רצועות"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, fuzzy, kde-format
 #| msgctxt "Remove a track from a saved playlist"
 #| msgid "Remove From \"%1\""
@@ -2595,7 +2595,7 @@ msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "הסר מתוך \"%1\""
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2604,7 +2604,7 @@ msgid_plural "%1 Playlists"
 msgstr[0] "רשימת־השמעה"
 msgstr[1] "רשימת־השמעה"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, fuzzy, kde-format
 #| msgid "Deleting Tracks from iPod"
 msgctxt "%2 is saved playlist name"
@@ -2613,7 +2613,7 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "מוחק רצועות מ־iPod"
 msgstr[1] "מוחק רצועות מ־iPod"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2622,7 +2622,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "מחק את סידור רשימת־ההשמעה"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2631,56 +2631,56 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "מחק את סידור רשימת־ההשמעה"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, fuzzy, kde-format
 #| msgid "Configure Playback"
 msgid "Confirm Playlist Deletion"
 msgstr "הגדר השמעה"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:451
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:449
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "השתמש בנתיב יחסי &לשמירה"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:384 MainWindow.cpp:464
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: covermanager/CoverFoundDialog.cpp:382 MainWindow.cpp:462
 #, kde-format
 msgid "Save As"
 msgstr "שמירה בשם"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:37
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
 #, fuzzy, kde-format
 #| msgid "&Rename"
 msgid "&Rename Folder..."
 msgstr "&שנה שם"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:41
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "&Delete Folder"
 msgstr "המחיקה נכשלה"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:320
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:319
 #, fuzzy, kde-format
 #| msgid "File name"
 msgid "New name"
 msgstr "שם קובץ"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:322
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:321
 #, fuzzy, kde-format
 #| msgid "Enter new preset name:"
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "הכנס שם חדש לאפשרות קבועה:"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:338
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:259
 #, fuzzy, kde-format
 #| msgid "Configure Playback"
 msgid "Confirm Delete"
 msgstr "הגדר השמעה"
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:340
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
 #, fuzzy, kde-format
 #| msgctxt "@info"
 #| msgid "Do you really want to delete these %1 tracks?"
@@ -2688,18 +2688,18 @@ msgid "Are you sure you want to delete this folder and its contents?"
 msgstr "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_podcastCheckBox)
-#: browsers/playlistbrowser/PodcastCategory.cpp:82
+#: browsers/playlistbrowser/PodcastCategory.cpp:78
 #: core-impl/collections/umscollection/UmsConfiguration.ui:136
 #, kde-format
 msgid "Podcasts"
 msgstr "פוד־קסטים"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:83
+#: browsers/playlistbrowser/PodcastCategory.cpp:79
 #, kde-format
 msgid "List of podcast subscriptions and episodes"
 msgstr ""
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:86
+#: browsers/playlistbrowser/PodcastCategory.cpp:82
 #, kde-format
 msgid ""
 "Manage your podcast subscriptions and browse individual episodes. "
@@ -2707,50 +2707,50 @@ msgid ""
 "to do this automatically."
 msgstr ""
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:96
+#: browsers/playlistbrowser/PodcastCategory.cpp:92
 #, kde-format
 msgid "&Add Podcast"
 msgstr "&הוסף פוד־קסט"
 
 # kde-il: don't translate
-#: browsers/playlistbrowser/PodcastCategory.cpp:103
+#: browsers/playlistbrowser/PodcastCategory.cpp:99
 #, kde-format
 msgid "&Update All"
 msgstr "&עדכן הכול"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:111
-#: browsers/playlistbrowser/PodcastCategory.cpp:114
+#: browsers/playlistbrowser/PodcastCategory.cpp:107
+#: browsers/playlistbrowser/PodcastCategory.cpp:110
 #, fuzzy, kde-format
 #| msgid "Import playlist"
 msgid "Import OPML File"
 msgstr "יבא רשימת־השמעה"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:168
+#: browsers/playlistbrowser/PodcastCategory.cpp:164
 #, fuzzy, kde-format
 #| msgid "Modify"
 msgid "By"
 msgstr "שנה"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:207
+#: browsers/playlistbrowser/PodcastCategory.cpp:203
 #, fuzzy, kde-format
 #| msgid "On"
 msgctxt "Podcast published on date"
 msgid "On"
 msgstr "פועל"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:225
+#: browsers/playlistbrowser/PodcastCategory.cpp:221
 #, fuzzy, kde-format
 #| msgid "File Size"
 msgid "File Size:"
 msgstr "גודל קובץ"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:237
+#: browsers/playlistbrowser/PodcastCategory.cpp:233
 #, fuzzy, kde-format
 #| msgid "Description:"
 msgid "Subscription Date:"
 msgstr "תיאור:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:245
+#: browsers/playlistbrowser/PodcastCategory.cpp:241
 #, kde-format
 msgid "Keywords:"
 msgstr ""
@@ -2788,8 +2788,8 @@ msgid "Scan Interval..."
 msgstr "מרווח זמן לסריקה..."
 
 # kde-il: don't translate
-#: browsers/playlistbrowser/PodcastModel.cpp:217
-#: browsers/playlistbrowser/PodcastModel.cpp:269
+#: browsers/playlistbrowser/PodcastModel.cpp:216
+#: browsers/playlistbrowser/PodcastModel.cpp:268
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgctxt "number of podcasts from one source"
@@ -2799,25 +2799,25 @@ msgstr[0] "&עדכן הכול"
 msgstr[1] "&עדכן הכול"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:321
+#: browsers/playlistbrowser/PodcastModel.cpp:320
 #: context/applets/tabs/ReloadEditDialog.ui:86
-#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
+#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:923
 #, kde-format
 msgid "Title"
 msgstr "שם הרצועה"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:322 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:512
 #, kde-format
 msgid "Summary"
 msgstr "תקציר"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:342
+#: browsers/playlistbrowser/PodcastModel.cpp:341
 #, fuzzy, kde-format
 #| msgid "&Add Podcast"
 msgid "Add Podcast"
 msgstr "&הוסף פוד־קסט"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:343
+#: browsers/playlistbrowser/PodcastModel.cpp:342
 #, fuzzy, kde-format
 #| msgid "Enter Stream URL:"
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
@@ -2931,7 +2931,7 @@ msgid "Configure Plugins"
 msgstr "הגדר את Phonon"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:378
+#: scripting/scriptconsole/ScriptConsole.cpp:375
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Scripts"
@@ -2990,19 +2990,19 @@ msgstr ""
 msgid "Transcode tracks:"
 msgstr "רצועות אקראיות"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:103
+#: configdialog/dialogs/DatabaseConfig.cpp:102
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:104
+#: configdialog/dialogs/DatabaseConfig.cpp:103
 #, fuzzy, kde-format
 #| msgctxt "The operation completed as expected"
 #| msgid "Success"
 msgid "Success"
 msgstr "הצלחה"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:106
+#: configdialog/dialogs/DatabaseConfig.cpp:105
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -3011,20 +3011,20 @@ msgid ""
 "properly."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:136
+#: configdialog/dialogs/DatabaseConfig.cpp:135
 #, kde-format
 msgid ""
 "Changes to database settings only take\n"
 "effect after Amarok is restarted."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:137
+#: configdialog/dialogs/DatabaseConfig.cpp:136
 #, fuzzy, kde-format
 #| msgid "Rating changed"
 msgid "Database settings changed"
 msgstr "דירוג השתנה"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:156
+#: configdialog/dialogs/DatabaseConfig.cpp:155
 #, fuzzy, kde-format
 #| msgid "Password"
 msgctxt ""
@@ -3156,7 +3156,7 @@ msgstr ""
 "אם בסיס־הנתונים עדיין לא מוכן, ניתן להשתמש בפקודות ה-S&QL הבאות (לאחר החלפת "
 "הססמה עם הססמה הנכונה):"
 
-#: configdialog/dialogs/ExcludedLabelsDialog.cpp:53
+#: configdialog/dialogs/ExcludedLabelsDialog.cpp:50
 #, kde-format
 msgid "Excluded Labels"
 msgstr ""
@@ -3670,7 +3670,7 @@ msgstr "מיקום:"
 msgid "Use &system notifications"
 msgstr "מיקום:"
 
-#: configdialog/dialogs/PlaybackConfig.cpp:38
+#: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
 msgid "Current Phonon backend does not support volume fading"
 msgstr ""
@@ -3780,47 +3780,47 @@ msgstr "הכנס כתובות לתור לאחר הרצועה הנוכחית המ
 msgid "&Pause playback on suspend"
 msgstr "השהה את ההשמעה"
 
-#: configdialog/dialogs/PluginsConfig.cpp:44
+#: configdialog/dialogs/PluginsConfig.cpp:43
 #, fuzzy, kde-format
 #| msgid "Collection"
 msgid "Collections"
 msgstr "אוסף"
 
-#: configdialog/dialogs/PluginsConfig.cpp:47
+#: configdialog/dialogs/PluginsConfig.cpp:46
 #, kde-format
 msgid "Internet Services"
 msgstr "שירותי אינטרנט"
 
-#: configdialog/dialogs/PluginsConfig.cpp:50
+#: configdialog/dialogs/PluginsConfig.cpp:49
 #, fuzzy, kde-format
 #| msgid "Statistics"
 msgid "Statistics importers"
 msgstr "נתונים סטטיסטים"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:132
+#: configdialog/dialogs/ScriptsConfig.cpp:131
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:138
+#: configdialog/dialogs/ScriptsConfig.cpp:137
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Select Archived Script"
 msgstr "מחפש תסריטים"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:153
+#: configdialog/dialogs/ScriptsConfig.cpp:152
 #, kde-format
 msgid "Invalid Archive"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:163
-#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: configdialog/dialogs/ScriptsConfig.cpp:162
+#: configdialog/dialogs/ScriptsConfig.cpp:176
 #, fuzzy, kde-format
 #| msgid "&Install Script"
 msgid "Invalid Script File"
 msgstr "&התקן תסריטים"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:184
+#: configdialog/dialogs/ScriptsConfig.cpp:183
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3828,25 +3828,25 @@ msgid ""
 "Selected Script's Version: %3"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:194
 #, fuzzy, kde-format
 #| msgid "Device successfully disconnected"
 msgid "The script %1 was successfully installed"
 msgstr "ההתקן נותק בהצלחה"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:207
+#: configdialog/dialogs/ScriptsConfig.cpp:206
 #, fuzzy, kde-format
 #| msgctxt "Miscellaneous settings"
 #| msgid "General"
 msgid "Generic"
 msgstr "כללי"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:211 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "מילות־שיר"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:215
+#: configdialog/dialogs/ScriptsConfig.cpp:214
 #, fuzzy, kde-format
 #| msgid "Simple Search"
 msgid "Scriptable Service"
@@ -3867,7 +3867,7 @@ msgstr "&התקן תסריטים"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
-#: scripting/scriptconsole/ScriptConsole.cpp:74
+#: scripting/scriptconsole/ScriptConsole.cpp:71
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Script Console"
@@ -3888,7 +3888,7 @@ msgstr ""
 msgid "Enable Script Console"
 msgstr "&השג תסריטים נוספים"
 
-#: configdialog/dialogs/ScriptSelector.cpp:37
+#: configdialog/dialogs/ScriptSelector.cpp:38
 #, kde-format
 msgid "Search Scripts"
 msgstr "מחפש תסריטים"
@@ -3935,7 +3935,7 @@ msgid "&Queue"
 msgstr "&הכנס רצועה לתור"
 
 #: context/applets/albums/plugin/AlbumsEngine.cpp:288
-#: playlist/view/PlaylistViewCommon.cpp:265
+#: playlist/view/PlaylistViewCommon.cpp:266
 #, kde-format
 msgid "Edit Track Details"
 msgstr "עריכת פרטי הרצועה"
@@ -3987,13 +3987,13 @@ msgid "Sample size:"
 msgstr "קצב דגימה:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
-#: playlist/PlaylistModel.cpp:945
+#: playlist/PlaylistModel.cpp:941
 #, kde-format
 msgid "Play Count"
 msgstr "מונה השמעות"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
-#: playlist/PlaylistModel.cpp:943
+#: playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Score"
 msgstr "ניקוד"
@@ -4025,7 +4025,7 @@ msgstr "הסר"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
 #: context/applets/similarartists/ArtistWidget.cpp:131
-#: playlist/view/PlaylistViewCommon.cpp:202
+#: playlist/view/PlaylistViewCommon.cpp:203
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
 msgid "Show in Media Sources"
@@ -4551,10 +4551,10 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:928
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:456
-#: services/magnatune/MagnatuneStore.cpp:214
+#: services/lastfm/LastFmService.cpp:454
+#: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
 msgstr "אמן"
@@ -4674,7 +4674,7 @@ msgid "Don't change page automatically"
 msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:364
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:363
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4694,57 +4694,57 @@ msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
 msgstr "העתק אל האוסף"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:270
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:269
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:93
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:249
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:307
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:92
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:248
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:306
 #, kde-format
 msgid "No information found..."
 msgstr "לא נמצא מידע"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:327
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
 msgctxt "Search pattern for a song"
 msgid ".*\\(.*(song|track).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:532
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:531
 #, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:757
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:756
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgid "Choose Language"
 msgstr "דירוג"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:890
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:889
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4810,13 +4810,13 @@ msgstr "אל תציג תחת אמנים שונים"
 msgid "Show under Various Artists"
 msgstr "הצג תחת אמנים שונים"
 
-#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
+#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:102
 #, fuzzy, kde-format
 #| msgid "%1 - %2"
 msgid "%1 - Stopped %2"
 msgstr "%1 - %2"
 
-#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:108
+#: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:107
 #, kde-format
 msgid "Playback Ended Markers"
 msgstr ""
@@ -4829,7 +4829,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "עדכון האוסף"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:391
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:390
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, fuzzy, kde-format
 #| msgid "Play Audio CD"
@@ -4926,14 +4926,14 @@ msgstr ""
 msgid "Music share at %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:243
+#: core-impl/collections/db/sql/SqlCollection.cpp:241
 #, kde-format
 msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:245
+#: core-impl/collections/db/sql/SqlCollection.cpp:243
 #, fuzzy, kde-format
 #| msgid "Database Name"
 msgid "Updating Amarok database schema"
@@ -4968,7 +4968,7 @@ msgstr "מעביר: %1"
 msgid "Removing: %1"
 msgstr "הסר את זה %1"
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:85
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:84
 #, kde-format
 msgid ""
 "<ul><li>%1</li></ul>In most cases this means that not all of your tracks "
@@ -4977,12 +4977,12 @@ msgid ""
 "information about duplicate tracks."
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:89
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:88
 #, kde-format
 msgid "Errors During Collection Scan"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:212
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:211
 #, kde-format
 msgid ""
 "Duplicates found, the second file will be ignored:\n"
@@ -5042,14 +5042,14 @@ msgid "Disconnected iPod/iPad/iPhone"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:89
 #, fuzzy, kde-format
 #| msgid "Collection"
 msgid "Unknown Collection"
 msgstr "אוסף"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
@@ -5058,7 +5058,7 @@ msgid "Unknown Artist"
 msgstr "אמן לא ידוע"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:94
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
@@ -5281,7 +5281,7 @@ msgstr "הסר"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
-#: covermanager/CoverFoundDialog.cpp:744
+#: covermanager/CoverFoundDialog.cpp:742
 #, fuzzy, kde-format
 #| msgid "Track Information"
 msgid "Information"
@@ -5623,7 +5623,7 @@ msgstr "אין אפשרות לבצע את הליך הרכישה"
 msgid "Playdar Collection"
 msgstr "אוסף"
 
-#: core-impl/collections/playdarcollection/PlaydarMeta.cpp:122
+#: core-impl/collections/playdarcollection/PlaydarMeta.cpp:121
 #, fuzzy, kde-format
 #| msgid "Rescan Collection"
 msgid "Source collection removed"
@@ -6969,7 +6969,7 @@ msgctxt "One word translation used in the collection filter"
 msgid "lyrics"
 msgstr "מילות־שיר"
 
-#: core/meta/support/MetaUtility.cpp:421
+#: core/meta/support/MetaUtility.cpp:420
 #, kde-format
 msgctxt ""
 "the time format for a time length when the time is below 1 hour see QTime "
@@ -6977,7 +6977,7 @@ msgctxt ""
 msgid "m:ss"
 msgstr ""
 
-#: core/meta/support/MetaUtility.cpp:428
+#: core/meta/support/MetaUtility.cpp:427
 #, fuzzy, kde-format
 #| msgid " plays"
 msgctxt "number of days with spacing for the pretty time"
@@ -6986,7 +6986,7 @@ msgid_plural "%1 days, "
 msgstr[0] "סידור %1"
 msgstr[1] "סידור %1"
 
-#: core/meta/support/MetaUtility.cpp:429
+#: core/meta/support/MetaUtility.cpp:428
 #, kde-format
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
@@ -6994,7 +6994,7 @@ msgctxt ""
 msgid "h:mm:ss"
 msgstr ""
 
-#: core/meta/support/MetaUtility.cpp:443
+#: core/meta/support/MetaUtility.cpp:442
 #, fuzzy, kde-format
 #| msgid "year"
 msgctxt "number of years for the pretty time"
@@ -7003,7 +7003,7 @@ msgid_plural "%1 years"
 msgstr[0] "שנה"
 msgstr[1] "שנה"
 
-#: core/meta/support/MetaUtility.cpp:445
+#: core/meta/support/MetaUtility.cpp:444
 #, fuzzy, kde-format
 #| msgid "Months"
 msgctxt "number of months for the pretty time"
@@ -7012,7 +7012,7 @@ msgid_plural "%1 months"
 msgstr[0] "חודשים"
 msgstr[1] "חודשים"
 
-#: core/meta/support/MetaUtility.cpp:447
+#: core/meta/support/MetaUtility.cpp:446
 #, fuzzy, kde-format
 #| msgid " plays"
 msgctxt "number of days for the pretty time"
@@ -7021,7 +7021,7 @@ msgid_plural "%1 days"
 msgstr[0] "סידור %1"
 msgstr[1] "סידור %1"
 
-#: core/meta/support/MetaUtility.cpp:449
+#: core/meta/support/MetaUtility.cpp:448
 #, fuzzy, kde-format
 #| msgid "Hours"
 msgctxt "number of hours for the pretty time"
@@ -7030,7 +7030,7 @@ msgid_plural "%1 hours"
 msgstr[0] "שעות"
 msgstr[1] "שעות"
 
-#: core/meta/support/MetaUtility.cpp:451
+#: core/meta/support/MetaUtility.cpp:450
 #, fuzzy, kde-format
 #| msgid "Minutes"
 msgctxt "number of minutes for the pretty time"
@@ -7040,7 +7040,7 @@ msgstr[0] "דקות"
 msgstr[1] "דקות"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
-#: core/meta/support/MetaUtility.cpp:453
+#: core/meta/support/MetaUtility.cpp:452
 #, fuzzy, kde-format
 #| msgid "Seconds"
 msgctxt "number of seconds for the pretty time"
@@ -7118,13 +7118,13 @@ msgid "unknown type"
 msgstr "כותרת לא ידועה"
 
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:89
-#: playlist/PlaylistModel.cpp:499
+#: playlist/PlaylistModel.cpp:495
 #, kde-format
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "אף פעם"
 
-#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:503
+#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:499
 #, fuzzy, kde-format
 #| msgid "Unknown"
 msgctxt "When this track was last played"
@@ -7538,17 +7538,17 @@ msgid ""
 "not support Ogg Vorbis."
 msgstr ""
 
-#: core/transcoding/TranscodingConfiguration.cpp:109
+#: core/transcoding/TranscodingConfiguration.cpp:110
 #, kde-format
 msgid "Invalid"
 msgstr ""
 
-#: core/transcoding/TranscodingConfiguration.cpp:111
+#: core/transcoding/TranscodingConfiguration.cpp:112
 #, kde-format
 msgid "Just Copy"
 msgstr ""
 
-#: core/transcoding/TranscodingConfiguration.cpp:135
+#: core/transcoding/TranscodingConfiguration.cpp:136
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
@@ -7556,7 +7556,7 @@ msgctxt "%1 example: 'Compression level' %2 example: '5'"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: core/transcoding/TranscodingConfiguration.cpp:142
+#: core/transcoding/TranscodingConfiguration.cpp:143
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
@@ -7566,21 +7566,21 @@ msgctxt ""
 msgid "%1, %2"
 msgstr "%1 %2"
 
-#: core/transcoding/TranscodingConfiguration.cpp:210
+#: core/transcoding/TranscodingConfiguration.cpp:211
 #, fuzzy, kde-format
 #| msgid "Tracks"
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "All Tracks to %1"
 msgstr "רצועות"
 
-#: core/transcoding/TranscodingConfiguration.cpp:214
+#: core/transcoding/TranscodingConfiguration.cpp:215
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks to MTP Device"
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "Non-%1 Tracks to %1"
 msgstr "העברת רצועות אל התקן MTP"
 
-#: core/transcoding/TranscodingConfiguration.cpp:218
+#: core/transcoding/TranscodingConfiguration.cpp:219
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "When Needed to %1"
@@ -7621,46 +7621,46 @@ msgstr "מצרף עטיפה עבור %1..."
 msgid "Unable to find a cover for '%1'."
 msgstr "מצרף עטיפה עבור %1..."
 
-#: covermanager/CoverFetchingActions.cpp:47
+#: covermanager/CoverFetchingActions.cpp:44
 #, kde-format
 msgid "Fetch Cover"
 msgid_plural "Fetch Covers"
 msgstr[0] "צרף עטיפה"
 msgstr[1] "צרף עטיפופת"
 
-#: covermanager/CoverFetchingActions.cpp:49
+#: covermanager/CoverFetchingActions.cpp:46
 #, kde-format
 msgid "Fetch the artwork for this album"
 msgid_plural "Fetch artwork for %1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverFetchingActions.cpp:76
-#: covermanager/CoverFoundDialog.cpp:381
+#: covermanager/CoverFetchingActions.cpp:73
+#: covermanager/CoverFoundDialog.cpp:379
 #, kde-format
 msgid "Display Cover"
 msgstr "הצג עטיפה"
 
-#: covermanager/CoverFetchingActions.cpp:78
+#: covermanager/CoverFetchingActions.cpp:75
 #, kde-format
 msgid "Display artwork for this album"
 msgstr ""
 
-#: covermanager/CoverFetchingActions.cpp:96
+#: covermanager/CoverFetchingActions.cpp:93
 #, kde-format
 msgid "Unset Cover"
 msgid_plural "Unset Covers"
 msgstr[0] "הסר עטיפה"
 msgstr[1] "הסר עטיפות"
 
-#: covermanager/CoverFetchingActions.cpp:98
+#: covermanager/CoverFetchingActions.cpp:95
 #, kde-format
 msgid "Remove artwork for this album"
 msgid_plural "Remove artwork for %1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverFetchingActions.cpp:111
+#: covermanager/CoverFetchingActions.cpp:108
 #, kde-format
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
@@ -7668,36 +7668,36 @@ msgid_plural ""
 msgstr[0] "האם הנך בטוח שברצונך למחוק עטיפה זו מהאוסף?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 עטיפות אלו מהאוסף?"
 
-#: covermanager/CoverFetchingActions.cpp:134
+#: covermanager/CoverFetchingActions.cpp:131
 #, kde-format
 msgid "Set Custom Cover"
 msgstr "קבע עטיפה מותאמת אישית"
 
-#: covermanager/CoverFetchingActions.cpp:136
+#: covermanager/CoverFetchingActions.cpp:133
 #, kde-format
 msgid "Set custom artwork for this album"
 msgid_plural "Set custom artwork for these %1 albums"
 msgstr[0] "קבע עטיפה מותאמת אישית לאלבום הזה"
 msgstr[1] "קבע עטיפה מותאמת אישית לאלבומים האלו %1"
 
-#: covermanager/CoverFetchingActions.cpp:167
+#: covermanager/CoverFetchingActions.cpp:164
 #, kde-format
 msgid "Select Cover Image File"
 msgstr "בחר קובץ תמונת עטיפה"
 
-#: covermanager/CoverFoundDialog.cpp:89
+#: covermanager/CoverFoundDialog.cpp:87
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
 msgid "Finding cover for"
 msgstr "מצרף עטיפה עבור %1..."
 
-#: covermanager/CoverFoundDialog.cpp:120
+#: covermanager/CoverFoundDialog.cpp:118
 #, fuzzy, kde-format
 #| msgid "Set Custom Cover"
 msgid "Enter Custom Search"
 msgstr "קבע עטיפה מותאמת אישית"
 
-#: covermanager/CoverFoundDialog.cpp:137
+#: covermanager/CoverFoundDialog.cpp:135
 #: services/lastfm/LastFmServiceCollection.cpp:115
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
@@ -7706,308 +7706,308 @@ msgstr "קבע עטיפה מותאמת אישית"
 msgid "Last.fm"
 msgstr "last.fm"
 
-#: covermanager/CoverFoundDialog.cpp:138
+#: covermanager/CoverFoundDialog.cpp:136
 #, fuzzy, kde-format
 #| msgid "Goto"
 msgid "Google"
 msgstr "עבור"
 
-#: covermanager/CoverFoundDialog.cpp:139
+#: covermanager/CoverFoundDialog.cpp:137
 #, fuzzy, kde-format
 #| msgid "Disc #"
 msgid "Discogs"
 msgstr "דיסק #"
 
-#: covermanager/CoverFoundDialog.cpp:152
+#: covermanager/CoverFoundDialog.cpp:150
 #, kde-format
 msgid "Sort by size"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:406
+#: covermanager/CoverFoundDialog.cpp:404
 #, fuzzy, kde-format
 #| msgid "Save location:"
 msgid "Cover Image Save Location"
 msgstr "שמור מיקום:"
 
-#: covermanager/CoverFoundDialog.cpp:435 covermanager/CoverFoundDialog.cpp:454
+#: covermanager/CoverFoundDialog.cpp:433 covermanager/CoverFoundDialog.cpp:452
 #, fuzzy, kde-format
 #| msgid ""
 #| "Determines which Amazon server cover images should be retrieved from."
 msgid "Sorry, the cover could not be saved."
 msgstr "קובע מאיזה שרת של Amazon יימשכו עטיפות האלבומים."
 
-#: covermanager/CoverFoundDialog.cpp:519
+#: covermanager/CoverFoundDialog.cpp:517
 #, fuzzy, kde-format
 #| msgid ""
 #| "Determines which Amazon server cover images should be retrieved from."
 msgid "Sorry, the cover image could not be retrieved."
 msgstr "קובע מאיזה שרת של Amazon יימשכו עטיפות האלבומים."
 
-#: covermanager/CoverFoundDialog.cpp:539
+#: covermanager/CoverFoundDialog.cpp:537
 #, fuzzy, kde-format
 #| msgid "Fetching Cover"
 msgid "Fetching Large Cover"
 msgstr "צרף עטיפות"
 
-#: covermanager/CoverFoundDialog.cpp:540
+#: covermanager/CoverFoundDialog.cpp:538
 #, fuzzy, kde-format
 #| msgid "Download to:"
 msgid "Download Progress"
 msgstr "הורד אל:"
 
 # kde-il: don't translate
-#: covermanager/CoverFoundDialog.cpp:542
+#: covermanager/CoverFoundDialog.cpp:540
 #, fuzzy, kde-format
 #| msgid "&Cancel"
 msgid "Cancel"
 msgstr "&ביטול"
 
-#: covermanager/CoverFoundDialog.cpp:703
+#: covermanager/CoverFoundDialog.cpp:701
 #, fuzzy, kde-format
 #| msgid "&Search"
 msgid "Search"
 msgstr "&חפש"
 
-#: covermanager/CoverFoundDialog.cpp:703
+#: covermanager/CoverFoundDialog.cpp:701
 #, kde-format
 msgid "Search For More Results"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:719
+#: covermanager/CoverFoundDialog.cpp:717
 #, fuzzy, kde-format
 #| msgid "No purchases found!"
 msgid "No Images Found"
 msgstr "לא נמצאו רכישות."
 
-#: covermanager/CoverFoundDialog.cpp:720
+#: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverFoundDialog.cpp:745
+#: covermanager/CoverFoundDialog.cpp:743
 #, fuzzy, kde-format
 #| msgid "None"
 msgid "Notes"
 msgstr "ללא"
 
-#: covermanager/CoverFoundDialog.cpp:817
+#: covermanager/CoverFoundDialog.cpp:815
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgctxt "@item::intable"
 msgid "Artist"
 msgstr "אמן"
 
-#: covermanager/CoverFoundDialog.cpp:818
+#: covermanager/CoverFoundDialog.cpp:816
 #, fuzzy, kde-format
 #| msgid "Connection"
 msgctxt "@item::intable"
 msgid "Country"
 msgstr "חיבור"
 
-#: covermanager/CoverFoundDialog.cpp:819
+#: covermanager/CoverFoundDialog.cpp:817
 #, fuzzy, kde-format
 #| msgid "Database Name"
 msgctxt "@item::intable"
 msgid "Date"
 msgstr "שם בסיס־נתונים"
 
-#: covermanager/CoverFoundDialog.cpp:820
+#: covermanager/CoverFoundDialog.cpp:818
 #, fuzzy, kde-format
 #| msgid "Format:"
 msgctxt "@item::intable File Format"
 msgid "Format"
 msgstr "תבנית:"
 
-#: covermanager/CoverFoundDialog.cpp:821
+#: covermanager/CoverFoundDialog.cpp:819
 #, kde-format
 msgctxt "@item::intable Image Height"
 msgid "Height"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:822 covermanager/CoverFoundDialog.cpp:827
+#: covermanager/CoverFoundDialog.cpp:820 covermanager/CoverFoundDialog.cpp:825
 #, fuzzy, kde-format
 #| msgid "Title"
 msgctxt "@item::intable Album Title"
 msgid "Title"
 msgstr "שם הרצועה"
 
-#: covermanager/CoverFoundDialog.cpp:823
+#: covermanager/CoverFoundDialog.cpp:821
 #, fuzzy, kde-format
 #| msgid "Type"
 msgctxt "@item::intable Release Type"
 msgid "Type"
 msgstr "סוג"
 
-#: covermanager/CoverFoundDialog.cpp:824
+#: covermanager/CoverFoundDialog.cpp:822
 #, fuzzy, kde-format
 #| msgid "Redownload"
 msgctxt "@item::intable Release Date"
 msgid "Released"
 msgstr "הורד מחדש"
 
-#: covermanager/CoverFoundDialog.cpp:825
+#: covermanager/CoverFoundDialog.cpp:823
 #, fuzzy, kde-format
 #| msgid "Size:"
 msgctxt "@item::intable File Size"
 msgid "Size"
 msgstr "גודל:"
 
-#: covermanager/CoverFoundDialog.cpp:826
+#: covermanager/CoverFoundDialog.cpp:824
 #, fuzzy, kde-format
 #| msgid "Source"
 msgctxt "@item::intable Cover Provider"
 msgid "Source"
 msgstr "מקור"
 
-#: covermanager/CoverFoundDialog.cpp:828
+#: covermanager/CoverFoundDialog.cpp:826
 #, fuzzy, kde-format
 #| msgid "Width"
 msgctxt "@item::intable Image Width"
 msgid "Width"
 msgstr "רוחב"
 
-#: covermanager/CoverFoundDialog.cpp:862
+#: covermanager/CoverFoundDialog.cpp:860
 #, kde-format
 msgctxt "@item::intable URL"
 msgid "link"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:868
+#: covermanager/CoverFoundDialog.cpp:866
 #, kde-format
 msgctxt "@item::intable"
 msgid "URL"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:799
+#: covermanager/CoverManager.cpp:110 MainWindow.cpp:797
 #, kde-format
 msgid "Cover Manager"
 msgstr "מנהל עטיפות"
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:123
 #, kde-format
 msgid "Albums By"
 msgstr "אלבומים של"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:133
 #, kde-format
 msgid "All Artists"
 msgstr "כל האמנים"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:66
+#: covermanager/CoverManager.cpp:179 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "הזן כאן מונחי חיפוש"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "All Albums"
 msgstr "כל האלבומים"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums With Cover"
 msgstr "אלבומים בעלי עטיפה"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:194
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "אלבומים חסרי עטיפה"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:207
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "צרף עטיפות חסרות"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:313
 #, fuzzy, kde-format
 #| msgid "Fetching content.."
 msgid "Fetching"
 msgstr "מצרף תוכן..."
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:408
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgid "Loading"
 msgstr "דירוג"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:619
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "הסתיים."
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:621
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " עטיפה לא נמצאה"
 msgstr[1] " <b>%1</b> עטיפות לא נמצאו"
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "מצרף עטיפה עבור %1 - %2..."
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:645
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "מצרף עטיפה עבור %1..."
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:651
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "מצרף עטיפה אחת:"
 msgstr[1] "מצרף <b>%1</b> עטיפות...:"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:653
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "אחד צורף"
 msgstr[1] "%1 צורפו"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:657
 #, kde-format
 msgid " - "
 msgstr " - "
 
 # kde-il: don't translate
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:658
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "אחד לא נמצא"
 msgstr[1] "%1 לא נמצאו"
 
-#: covermanager/CoverManager.cpp:662
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Connecting..."
 msgstr "מתחבר..."
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:684
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "תוצאה אחת עבור \"%2\""
 msgstr[1] "%1 תוצאות עבור \"%2\""
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:688
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] " אלבום אחד"
 msgstr[1] "%1 אלבומים"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:700
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ""
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:700
 #, fuzzy, kde-format
 #| msgctxt "%1 is number of tracks, %2 is time"
 #| msgid "%1 track (%2)"
@@ -8015,7 +8015,7 @@ msgstr ""
 msgid "%1 by %2"
 msgstr "%1 רצועה (%2)"
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:705
 #, fuzzy, kde-format
 #| msgid " - ( <b>%1</b> without cover )"
 msgid "%2 - ( <b>1</b> without cover )"
@@ -8023,22 +8023,22 @@ msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] " - ( <b>%1</b> ללא עטיפה )"
 msgstr[1] " - ( <b>%1</b> ללא עטיפה )"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "תמונת עטיפה"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "אין אמן"
 
-#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
+#: covermanager/CoverViewDialog.cpp:32 covermanager/CoverViewDialog.cpp:43
 #, fuzzy, kde-format
 #| msgid "Cover image"
 msgid "Cover View"
@@ -8050,14 +8050,14 @@ msgstr "תמונת עטיפה"
 msgid "Could not open file \"%1\"."
 msgstr "אין אפשרות לבצע את %1"
 
-#: databaseimporter/SqlBatchImporterConfig.cpp:39
+#: databaseimporter/SqlBatchImporterConfig.cpp:36
 #, kde-format
 msgid ""
 "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
 "community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>."
 msgstr ""
 
-#: databaseimporter/SqlBatchImporterConfig.cpp:46
+#: databaseimporter/SqlBatchImporterConfig.cpp:43
 #, kde-format
 msgid "Input file"
 msgstr ""
@@ -8112,45 +8112,45 @@ msgstr ""
 msgid "Rescan '%1'"
 msgstr "סרוק מחדש את '%1'"
 
-#: dialogs/DatabaseImporterDialog.cpp:41
+#: dialogs/DatabaseImporterDialog.cpp:39
 #, kde-format
 msgid "Import Collection"
 msgstr "יבא האוסף"
 
-#: dialogs/DatabaseImporterDialog.cpp:49
+#: dialogs/DatabaseImporterDialog.cpp:47
 #, fuzzy, kde-format
 #| msgid "Podcast Configuration"
 msgid "Import configuration"
 msgstr "הגדרות פוד־קסט"
 
-#: dialogs/DatabaseImporterDialog.cpp:69
+#: dialogs/DatabaseImporterDialog.cpp:67
 #, kde-format
 msgid "Migrating"
 msgstr ""
 
-#: dialogs/DatabaseImporterDialog.cpp:101
+#: dialogs/DatabaseImporterDialog.cpp:99
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> No tracks were imported"
 msgstr "<b><font color='red'>נכשל:</font></b> לא הוספו רצועות"
 
-#: dialogs/DatabaseImporterDialog.cpp:103
+#: dialogs/DatabaseImporterDialog.cpp:101
 #, kde-format
 msgid "<b><font color='green'>Success:</font></b> Imported %1 track"
 msgid_plural "<b><font color='green'>Success:</font></b> Imported %1 tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: dialogs/DatabaseImporterDialog.cpp:115
+#: dialogs/DatabaseImporterDialog.cpp:113
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> Unable to import statistics"
 msgstr "<b><font color='red'>נכשל:</font></b> אין אפשרות לייבא סטטיסטיקות"
 
-#: dialogs/DatabaseImporterDialog.cpp:132
+#: dialogs/DatabaseImporterDialog.cpp:130
 #, kde-format
 msgid "<b><font color='red'>Error:</font></b> %1"
 msgstr "<b><font color='red'>שגיאה:</font></b> %1"
 
-#: dialogs/DatabaseImporterDialog.cpp:147
+#: dialogs/DatabaseImporterDialog.cpp:145
 #, fuzzy, kde-format
 #| msgctxt "Track has been imported, format: Artist - Track"
 #| msgid "Imported <b>%1 - %2</b>"
@@ -8158,26 +8158,26 @@ msgctxt "Track has been imported, format: Track"
 msgid "Imported <b>%1</b>"
 msgstr "Imported <b>%1 - %2</b>"
 
-#: dialogs/DatabaseImporterDialog.cpp:150
+#: dialogs/DatabaseImporterDialog.cpp:148
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
 msgstr "Imported <b>%1 - %2</b>"
 
-#: dialogs/DatabaseImporterDialog.cpp:153
+#: dialogs/DatabaseImporterDialog.cpp:151
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
 msgstr "Imported <b>%1 - %2 (%3)</b>"
 
-#: dialogs/DatabaseImporterDialog.cpp:162
+#: dialogs/DatabaseImporterDialog.cpp:160
 #, fuzzy, kde-format
 #| msgid "<b><font color='red'>Error:</font></b> %1"
 msgctxt "Track has been discarded, format: Url"
 msgid "Discarded <b><font color='gray'>%1</font></b>"
 msgstr "<b><font color='red'>שגיאה:</font></b> %1"
 
-#: dialogs/DatabaseImporterDialog.cpp:177
+#: dialogs/DatabaseImporterDialog.cpp:175
 #, kde-format
 msgctxt "Track has been imported by tags, format: Track, from Url, to Url"
 msgid ""
@@ -8185,7 +8185,7 @@ msgid ""
 ">&nbsp;&nbsp;to %3"
 msgstr ""
 
-#: dialogs/DatabaseImporterDialog.cpp:180
+#: dialogs/DatabaseImporterDialog.cpp:178
 #, kde-format
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track, from Url, to Url"
@@ -8194,7 +8194,7 @@ msgid ""
 "%3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
 
-#: dialogs/DatabaseImporterDialog.cpp:183
+#: dialogs/DatabaseImporterDialog.cpp:181
 #, kde-format
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track (Album), from Url, "
@@ -8204,7 +8204,7 @@ msgid ""
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
 
-#: dialogs/DatabaseImporterDialog.cpp:195
+#: dialogs/DatabaseImporterDialog.cpp:193
 #, fuzzy, kde-format
 #| msgid "<b><font color='red'>Error:</font></b> %1"
 msgctxt "Track has been matched ambiguously, format: Url"
@@ -8266,23 +8266,23 @@ msgid ""
 "%3\n"
 msgstr ""
 
-#: dialogs/EditFilterDialog.cpp:37
+#: dialogs/EditFilterDialog.cpp:36
 #, kde-format
 msgid "AND"
 msgstr "וגם"
 
-#: dialogs/EditFilterDialog.cpp:38
+#: dialogs/EditFilterDialog.cpp:37
 #, kde-format
 msgid "OR"
 msgstr "או"
 
-#: dialogs/EditFilterDialog.cpp:39
+#: dialogs/EditFilterDialog.cpp:38
 #, fuzzy, kde-format
 #| msgid "Sample Rate"
 msgid "Simple text"
 msgstr "קצב דגימה"
 
-#: dialogs/EditFilterDialog.cpp:48
+#: dialogs/EditFilterDialog.cpp:47
 #, kde-format
 msgid "Edit Filter"
 msgstr "ערוך מסנן"
@@ -8302,7 +8302,7 @@ msgid "invert"
 msgstr "אינטרנט"
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbAnd)
-#: dialogs/EditFilterDialog.ui:99 widgets/MetaQueryWidget.cpp:585
+#: dialogs/EditFilterDialog.ui:99 widgets/MetaQueryWidget.cpp:583
 #, kde-format
 msgid "and"
 msgstr "וגם"
@@ -9197,13 +9197,13 @@ msgid "Location:"
 msgstr "מיקום:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:66
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Previous"
 msgstr "&הקודם"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:63
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
 #, kde-format
 msgid "&Next"
 msgstr "&הבא"
@@ -9221,7 +9221,7 @@ msgstr "לפי רצוע&ה"
 msgid "Sa&ve && Close"
 msgstr "ש&מור וסגור"
 
-#: dialogs/TagGuesserDialog.cpp:180
+#: dialogs/TagGuesserDialog.cpp:181
 #, no-c-format, kde-format
 msgctxt ""
 "Please do not translate the %foo% words as they define a syntax used "
@@ -9237,13 +9237,13 @@ msgid ""
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 msgstr ""
 
-#: dialogs/TagGuesserDialog.cpp:223
+#: dialogs/TagGuesserDialog.cpp:224
 #, fuzzy, kde-format
 #| msgid "Guess Tags From &Filename"
 msgid "Guess Tags from Filename"
 msgstr "נחש תגיות &משמות־הקבצים"
 
-#: dialogs/TagGuesserDialog.cpp:312
+#: dialogs/TagGuesserDialog.cpp:313
 #, kde-format
 msgctxt ""
 "Text to represent an empty tag. Braces (<>) are only to clarify emptiness."
@@ -9407,7 +9407,7 @@ msgstr "אמן לא ידוע"
 msgid "Unknown year"
 msgstr "סגנון לא ידוע"
 
-#: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:115
+#: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:113
 #, fuzzy, kde-format
 #| msgid "Random Tracks"
 msgctxt "Random bias representation"
@@ -9458,20 +9458,20 @@ msgstr "אקראי"
 msgid "Generating playlist..."
 msgstr "יוצר רשימת־השמעה..."
 
-#: dynamic/biases/AlbumPlayBias.cpp:36
+#: dynamic/biases/AlbumPlayBias.cpp:35
 #, fuzzy, kde-format
 #| msgid "album"
 msgctxt "Name of the \"AlbumPlay\" bias"
 msgid "Album play"
 msgstr "אלבום"
 
-#: dynamic/biases/AlbumPlayBias.cpp:45
+#: dynamic/biases/AlbumPlayBias.cpp:44
 #, kde-format
 msgctxt "Description of the \"AlbumPlay\" bias"
 msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:107
+#: dynamic/biases/AlbumPlayBias.cpp:106
 #, fuzzy, kde-format
 #| msgid "Set custom artwork for this album"
 #| msgid_plural "Set custom artwork for these %1 albums"
@@ -9479,30 +9479,30 @@ msgctxt "AlbumPlay bias representation"
 msgid "The next track from the album"
 msgstr "קבע עטיפה מותאמת אישית לאלבום הזה"
 
-#: dynamic/biases/AlbumPlayBias.cpp:110
+#: dynamic/biases/AlbumPlayBias.cpp:109
 #, fuzzy, kde-format
 #| msgid "The number of undo levels in the playlist."
 msgctxt "AlbumPlay bias representation"
 msgid "Any later track from the album"
 msgstr "מספר רמות הביטול ברשימת־ההשמעה."
 
-#: dynamic/biases/AlbumPlayBias.cpp:113
+#: dynamic/biases/AlbumPlayBias.cpp:112
 #, kde-format
 msgctxt "AlbumPlay bias representation"
 msgid "Tracks from the same album"
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:123
+#: dynamic/biases/AlbumPlayBias.cpp:122
 #, kde-format
 msgid "Track directly follows previous track in album"
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:125
+#: dynamic/biases/AlbumPlayBias.cpp:124
 #, kde-format
 msgid "Track comes after previous track in album"
 msgstr ""
 
-#: dynamic/biases/AlbumPlayBias.cpp:127
+#: dynamic/biases/AlbumPlayBias.cpp:126
 #, kde-format
 msgid "Track is in the same album as previous track"
 msgstr ""
@@ -9669,14 +9669,14 @@ msgstr ""
 msgid "of the album name (Album quiz)"
 msgstr ""
 
-#: dynamic/biases/SearchQueryBias.cpp:42
+#: dynamic/biases/SearchQueryBias.cpp:40
 #, fuzzy, kde-format
 #| msgid "&Search"
 msgctxt "Name of the \"SearchQuery\" bias"
 msgid "Search"
 msgstr "&חפש"
 
-#: dynamic/biases/SearchQueryBias.cpp:51
+#: dynamic/biases/SearchQueryBias.cpp:49
 #, kde-format
 msgctxt "Description of the \"SearchQuery\" bias"
 msgid ""
@@ -9685,7 +9685,7 @@ msgid ""
 "query as the collection browser."
 msgstr ""
 
-#: dynamic/biases/SearchQueryBias.cpp:118
+#: dynamic/biases/SearchQueryBias.cpp:116
 #, fuzzy, kde-format
 #| msgid "&Search"
 msgctxt "SearchQuery bias representation"
@@ -9720,14 +9720,14 @@ msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "אלבום \"%1\""
 
-#: dynamic/BiasFactory.cpp:50
+#: dynamic/BiasFactory.cpp:49
 #, fuzzy, kde-format
 #| msgid "Random"
 msgctxt "Name of the random bias"
 msgid "Random"
 msgstr "אקראי"
 
-#: dynamic/BiasFactory.cpp:57
+#: dynamic/BiasFactory.cpp:56
 #, kde-format
 msgctxt "Description of the random bias"
 msgid ""
@@ -9735,14 +9735,14 @@ msgid ""
 "whole collection without any bias."
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:68
+#: dynamic/BiasFactory.cpp:67
 #, fuzzy, kde-format
 #| msgid "and"
 msgctxt "Name of the \"And\" bias"
 msgid "And"
 msgstr "וגם"
 
-#: dynamic/BiasFactory.cpp:75
+#: dynamic/BiasFactory.cpp:74
 #, kde-format
 msgctxt "Description of the \"And\" bias"
 msgid ""
@@ -9750,13 +9750,13 @@ msgid ""
 "of the sub biases."
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:86
+#: dynamic/BiasFactory.cpp:85
 #, kde-format
 msgctxt "Name of the \"Or\" bias"
 msgid "Or"
 msgstr ""
 
-#: dynamic/BiasFactory.cpp:93
+#: dynamic/BiasFactory.cpp:92
 #, kde-format
 msgctxt "Description of the \"Or\" bias"
 msgid ""
@@ -9765,42 +9765,42 @@ msgid ""
 msgstr ""
 
 # kde-il: don't translate
-#: dynamic/BiasFactory.cpp:182 dynamic/BiasFactory.cpp:188
+#: dynamic/BiasFactory.cpp:181 dynamic/BiasFactory.cpp:187
 #, fuzzy, kde-format
 #| msgid "%1 Settings"
 msgid "Replacement for bias %1"
 msgstr "%1 הגדרות"
 
-#: dynamic/DynamicModel.cpp:778
+#: dynamic/DynamicModel.cpp:777
 #, fuzzy, kde-format
 #| msgid "New playlist layout"
 msgctxt "Default name for new playlists"
 msgid "New playlist"
 msgstr "סידור רשימת־השמעה חדש"
 
-#: dynamic/DynamicModel.cpp:915
+#: dynamic/DynamicModel.cpp:914
 #, kde-format
 msgid "Rock and Pop"
 msgstr ""
 
-#: dynamic/DynamicModel.cpp:916 equalizer/EqualizerPresets.cpp:93
+#: dynamic/DynamicModel.cpp:915 equalizer/EqualizerPresets.cpp:93
 #, fuzzy, kde-format
 #| msgid "ok"
 msgid "Rock"
 msgstr "בסדר"
 
-#: dynamic/DynamicModel.cpp:920 equalizer/EqualizerPresets.cpp:91
+#: dynamic/DynamicModel.cpp:919 equalizer/EqualizerPresets.cpp:91
 #, kde-format
 msgid "Pop"
 msgstr ""
 
-#: dynamic/DynamicModel.cpp:926
+#: dynamic/DynamicModel.cpp:925
 #, fuzzy, kde-format
 #| msgid "album"
 msgid "Album play"
 msgstr "אלבום"
 
-#: dynamic/DynamicModel.cpp:936
+#: dynamic/DynamicModel.cpp:935
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgctxt "Name of a dynamic playlist"
@@ -10083,7 +10083,7 @@ msgstr "Rythmbox"
 msgid "Rhythmbox Statistics Importer"
 msgstr ""
 
-#: importers/SimpleImporterConfigWidget.cpp:49
+#: importers/SimpleImporterConfigWidget.cpp:48
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgctxt "Name of the synchronization target"
@@ -10106,7 +10106,7 @@ msgstr "אחזר אמנים דומים"
 msgid "Lyrics data could not be parsed"
 msgstr ""
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:689
 #, kde-format
 msgid "No information available for this track"
 msgstr "אין מידע זמין עבור רצועה זאת"
@@ -11048,59 +11048,59 @@ msgstr "Christie Harris"
 msgid "ZImin Stanislav"
 msgstr ""
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:258
 #, kde-format
 msgid "Local Music"
 msgstr ""
 
-#: MainWindow.cpp:262
+#: MainWindow.cpp:260
 #, kde-format
 msgid "Local sources of content"
 msgstr ""
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Internet"
 msgstr "אינטרנט"
 
-#: MainWindow.cpp:271
+#: MainWindow.cpp:269
 #, kde-format
 msgid "Online sources of content"
 msgstr ""
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:275
 #, kde-format
 msgid "Playlists"
 msgstr "רשימות־השמעה"
 
-#: MainWindow.cpp:279
+#: MainWindow.cpp:277
 #, kde-format
 msgid "Various types of playlists"
 msgstr "סוגים שונים של רשימות־השמעה"
 
-#: MainWindow.cpp:288
+#: MainWindow.cpp:286
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr ""
 
-#: MainWindow.cpp:331
+#: MainWindow.cpp:329
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&תצוגה"
 
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 #, kde-format
 msgid "Lock Layout"
 msgstr "נעל סידור"
 
-#: MainWindow.cpp:371 MainWindow.cpp:1301
+#: MainWindow.cpp:369 MainWindow.cpp:1299
 #, fuzzy, kde-format
 #| msgid "Default Layout"
 msgid "Reset Layout"
 msgstr "סידור ברירת־מחדל"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:426
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -11110,283 +11110,283 @@ msgstr ""
 "<qt> סגירת החלון הראשי תשאיר את Amarok פועל במגש המערכת. השתמש ב־ <B>יציאה</"
 "B> מתוך התפריט או בסמל של  Amarok במגש המערכת כדי לסגור את התכנה. </qt>"
 
-#: MainWindow.cpp:430
+#: MainWindow.cpp:428
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "ממזער למגש המערכת"
 
-#: MainWindow.cpp:530
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "נגן מדיה (קבצים או כתובות)"
 
-#: MainWindow.cpp:530
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "הוסף מדיה (קבצים או כתובות)"
 
-#: MainWindow.cpp:550
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Add Stream"
 msgstr "הוסף שידור־זורם"
 
-#: MainWindow.cpp:550
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "הכנס כתובת זורמת:"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:747
 #, kde-format
 msgid "&Add Media..."
 msgstr "&הוסף מדיה..."
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:752
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&נקה רשימת־השמעה"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:757
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "&הכנס רצועה לתור"
 
-#: MainWindow.cpp:764
+#: MainWindow.cpp:762
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "ה&סר כפילויות"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:769
 #, kde-format
 msgid "&Add Stream..."
 msgstr "ה&וסף שידור רדיו זורם..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:773
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&יצא רשימת־השמעה כ..."
 
-#: MainWindow.cpp:787
+#: MainWindow.cpp:785
 #, kde-format
 msgid "Equalizer"
 msgstr "אקולייזר"
 
-#: MainWindow.cpp:791 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:789 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "סימניית הגדרות רשימת־השמעה"
 
-#: MainWindow.cpp:795
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "צור סימניית יישומי קישורים"
 
-#: MainWindow.cpp:803
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Play Media..."
 msgstr "נגן מדיה..."
 
-#: MainWindow.cpp:808
+#: MainWindow.cpp:806
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr ""
 
-#: MainWindow.cpp:814 MainWindow.cpp:820 MainWindow.cpp:827
+#: MainWindow.cpp:812 MainWindow.cpp:818 MainWindow.cpp:825
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr ""
 
-#: MainWindow.cpp:834 MainWindow.cpp:840 MainWindow.cpp:847
+#: MainWindow.cpp:832 MainWindow.cpp:838 MainWindow.cpp:845
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr ""
 
-#: MainWindow.cpp:853
+#: MainWindow.cpp:851
 #, kde-format
 msgid "Update Collection"
 msgstr "עדכון האוסף"
 
-#: MainWindow.cpp:857
+#: MainWindow.cpp:855
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:865
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Previous Track"
 msgstr "הרצועה הקודמת"
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:870
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "דרג את הרצועה הנוכחית: 1"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:877
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgid "Shuffle Playlist"
 msgstr "רשימת־השמעה"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:883
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "מלא מחדש את רשימת־ההשמעה"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:889
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "רשימת־השמעה דינמית ברירת־מחדל"
 
-#: MainWindow.cpp:895
+#: MainWindow.cpp:893
 #, kde-format
 msgid "Next Track"
 msgstr "הרצועה הבאה"
 
-#: MainWindow.cpp:900
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Increase Volume"
 msgstr "הגבר עצמת־קול"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:904
 #, kde-format
 msgid "Decrease Volume"
 msgstr "הנמך עוצמת־קול"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:910
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "החלף לחלון הראשי"
 
-#: MainWindow.cpp:917
+#: MainWindow.cpp:915
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr ""
 
-#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:49
+#: MainWindow.cpp:920 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr ""
 
-#: MainWindow.cpp:932
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Show active track"
 msgstr "&הראה הרצועה פעילה"
 
-#: MainWindow.cpp:936
+#: MainWindow.cpp:934
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "הצג התרעות בחלונית קופצת"
 
-#: MainWindow.cpp:941
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Mute Volume"
 msgstr "השתק קול"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:944
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: אוהב רצועה נוכחית"
 
-#: MainWindow.cpp:951
+#: MainWindow.cpp:949
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: החרם רצועה נוכחית"
 
-#: MainWindow.cpp:956
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: דלג על הרצועה הנוכחית"
 
-#: MainWindow.cpp:961 playlist/view/PlaylistViewCommon.cpp:117
+#: MainWindow.cpp:959 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "הכנס רצועה לתור"
 
-#: MainWindow.cpp:966
+#: MainWindow.cpp:964
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:971
+#: MainWindow.cpp:969
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "דרג את הרצועה הנוכחית: 1"
 
-#: MainWindow.cpp:976
+#: MainWindow.cpp:974
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "דרג את הרצועה הנוכחית: 2"
 
-#: MainWindow.cpp:981
+#: MainWindow.cpp:979
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "דרג את הרצועה הנוכחית: 3"
 
-#: MainWindow.cpp:986
+#: MainWindow.cpp:984
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "דרג את הרצועה הנוכחית: 4"
 
-#: MainWindow.cpp:991
+#: MainWindow.cpp:989
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "דרג את הרצועה הנוכחית: 5"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:995
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1015
+#: MainWindow.cpp:1013
 #, kde-format
 msgid "&About Amarok"
 msgstr "&אודות Amarok"
 
-#: MainWindow.cpp:1019
+#: MainWindow.cpp:1017
 #, fuzzy, kde-format
 #| msgid "St&atistics"
 msgid "&Diagnostics"
 msgstr "ס&טטיסטיקה"
 
-#: MainWindow.cpp:1023
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1070
+#: MainWindow.cpp:1068
 #, kde-format
 msgid "&Music"
 msgstr "&מוזיקה"
 
-#: MainWindow.cpp:1072
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:60
+#: MainWindow.cpp:1094 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&רשימת־השמעה"
 
-#: MainWindow.cpp:1113
+#: MainWindow.cpp:1111
 #, kde-format
 msgid "&Tools"
 msgstr "&כלים"
 
-#: MainWindow.cpp:1128
+#: MainWindow.cpp:1126
 #, kde-format
 msgid "&Settings"
 msgstr "&הגדרות"
 
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1169
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11394,24 +11394,24 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1172
+#: MainWindow.cpp:1170
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "הסתר תפריט"
 
 # kde-il: don't translatep:67
-#: MainWindow.cpp:1214
+#: MainWindow.cpp:1212
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "מושהה  ::  %1"
 
-#: MainWindow.cpp:1227
+#: MainWindow.cpp:1225
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2 ::  %3"
 
-#: MainWindow.cpp:1301
+#: MainWindow.cpp:1299
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -11479,7 +11479,7 @@ msgid "Response"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:940
+#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:936
 #, kde-format
 msgid "Length"
 msgstr "אורך"
@@ -11537,98 +11537,98 @@ msgid ""
 "kHz"
 msgstr ""
 
-#: playlist/layouts/LayoutConfigAction.cpp:43
+#: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
 msgid "Playlist Layouts"
 msgstr "סידורי רשימת־השמעה"
 
-#: playlist/layouts/LayoutConfigAction.cpp:69
+#: playlist/layouts/LayoutConfigAction.cpp:66
 #, kde-format
 msgid "Configure Playlist Layouts..."
 msgstr "הגדר סידורי רשימת־השמעה..."
 
-#: playlist/layouts/LayoutEditDialog.cpp:75
+#: playlist/layouts/LayoutEditDialog.cpp:74
 #, kde-format
 msgid "Configuration for"
 msgstr "הגדרות עבור"
 
-#: playlist/layouts/LayoutEditDialog.cpp:81
+#: playlist/layouts/LayoutEditDialog.cpp:80
 #, kde-format
 msgctxt "placeholder for a prefix"
 msgid "[prefix]"
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:85
+#: playlist/layouts/LayoutEditDialog.cpp:84
 #, kde-format
 msgctxt "placeholder for a suffix"
 msgid "[suffix]"
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:98
+#: playlist/layouts/LayoutEditDialog.cpp:97
 #, kde-format
 msgid "Width: "
 msgstr "רוחב:"
 
-#: playlist/layouts/LayoutEditDialog.cpp:101
+#: playlist/layouts/LayoutEditDialog.cpp:100
 #, kde-format
 msgid "Custom"
 msgstr "מותאם אישית"
 
-#: playlist/layouts/LayoutEditDialog.cpp:102
+#: playlist/layouts/LayoutEditDialog.cpp:101
 #, kde-format
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:105
+#: playlist/layouts/LayoutEditDialog.cpp:104
 #, kde-format
 msgid "Fit content"
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:106
+#: playlist/layouts/LayoutEditDialog.cpp:105
 #, kde-format
 msgid "Fit the element text"
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:108
+#: playlist/layouts/LayoutEditDialog.cpp:107
 #, kde-format
 msgctxt "automatic width"
 msgid "Automatic"
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:109
+#: playlist/layouts/LayoutEditDialog.cpp:108
 #, kde-format
 msgid ""
 "Take homogeneous part of the space available to all elements with automatic "
 "width"
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:144
+#: playlist/layouts/LayoutEditDialog.cpp:143
 #, kde-format
 msgid "Alignment: "
 msgstr ""
 
-#: playlist/layouts/LayoutEditDialog.cpp:153
+#: playlist/layouts/LayoutEditDialog.cpp:152
 #, kde-format
 msgid "Font: "
 msgstr "גופן:"
 
-#: playlist/layouts/LayoutEditDialog.cpp:242
+#: playlist/layouts/LayoutEditDialog.cpp:241
 #, kde-format
 msgid "Configuration for '%1'"
 msgstr "הגדרות עבור '%1'"
 
-#: playlist/layouts/LayoutEditWidget.cpp:44
+#: playlist/layouts/LayoutEditWidget.cpp:43
 #, kde-format
 msgid "Show cover"
 msgstr "הצג עטיפה"
 
-#: playlist/layouts/LayoutEditWidget.cpp:84
+#: playlist/layouts/LayoutEditWidget.cpp:83
 #, kde-format
 msgid "Invalid playlist layout."
 msgstr "סידור רשימת־השמעה לא חוקי."
 
-#: playlist/layouts/LayoutEditWidget.cpp:85
+#: playlist/layouts/LayoutEditWidget.cpp:84
 #, kde-format
 msgid "Encountered an unknown element name while reading layout."
 msgstr ""
@@ -11815,7 +11815,7 @@ msgstr "הצג סימלוני &משוב"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
-#: services/ServiceBase.cpp:163
+#: services/ServiceBase.cpp:162
 #, kde-format
 msgid "Group By"
 msgstr "קבץ לפי"
@@ -11828,7 +11828,7 @@ msgid "Show tooltips"
 msgstr "הראה רק התאומות"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:503
 #, fuzzy, kde-format
 #| msgid "Preview Tracks"
 msgid "Preview"
@@ -11906,21 +11906,21 @@ msgstr ""
 msgid "Add a sorting level to the playlist."
 msgstr "הוספת שלב מיון לרשימת־ההשמעה."
 
-#: playlist/PlaylistController.cpp:130
+#: playlist/PlaylistController.cpp:122
 #, fuzzy, kde-format
 #| msgid "&Append to Playlist"
 msgctxt "name of the action in undo stack"
 msgid "Add tracks to playlist"
 msgstr "&הוסף לרשימת־השמעה"
 
-#: playlist/PlaylistController.cpp:132
+#: playlist/PlaylistController.cpp:124
 #, fuzzy, kde-format
 #| msgid "Queue Track"
 msgctxt "name of the action in undo stack"
 msgid "Queue tracks"
 msgstr "הכנס רצועה לתור"
 
-#: playlist/PlaylistController.cpp:134
+#: playlist/PlaylistController.cpp:126
 #, fuzzy, kde-format
 #| msgid "Repeat Playlist"
 msgctxt "name of the action in undo stack"
@@ -12022,19 +12022,19 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "שם הרצועה (עם מספר הרצועה)"
 
-#: playlist/PlaylistDock.cpp:107
+#: playlist/PlaylistDock.cpp:104
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:180
+#: playlist/PlaylistDock.cpp:177
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&שמור רשימת־השמעה נוכחית"
 
-#: playlist/PlaylistDock.cpp:271
+#: playlist/PlaylistDock.cpp:268
 #, kde-format
 msgid "&Save playlist to \"%1\""
 msgstr "&שמור רשימת־השמעה אל \"%1\""
@@ -12076,87 +12076,87 @@ msgstr ""
 msgid "Queue length: %1"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:271 playlist/PlaylistModel.cpp:383
+#: playlist/PlaylistModel.cpp:267 playlist/PlaylistModel.cpp:379
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:306
+#: playlist/PlaylistModel.cpp:302
 #, kde-format
 msgid "(...)"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:335
+#: playlist/PlaylistModel.cpp:331
 #, kde-format
 msgctxt "%1: bitrate"
 msgid "%1 kbps"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:338
+#: playlist/PlaylistModel.cpp:334
 #, kde-format
 msgid "No extra information available"
 msgstr "אין מידע נוסף"
 
-#: playlist/PlaylistModel.cpp:926
+#: playlist/PlaylistModel.cpp:922
 #, kde-format
 msgctxt "The name of the file this track is stored in"
 msgid "Filename"
 msgstr "שם קובץ"
 
-#: playlist/PlaylistModel.cpp:933
+#: playlist/PlaylistModel.cpp:929
 #, kde-format
 msgid "Disc Number"
 msgstr "מספר דיסק"
 
-#: playlist/PlaylistModel.cpp:934
+#: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgctxt "The Track number for this item"
 msgid "Track"
 msgstr "רצועה"
 
-#: playlist/PlaylistModel.cpp:935
+#: playlist/PlaylistModel.cpp:931
 #, kde-format
 msgid "BPM"
 msgstr "בתים לדקה"
 
-#: playlist/PlaylistModel.cpp:937
+#: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Comment"
 msgstr "הערה"
 
-#: playlist/PlaylistModel.cpp:938
+#: playlist/PlaylistModel.cpp:934
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
 msgstr "תיקייה"
 
-#: playlist/PlaylistModel.cpp:941
+#: playlist/PlaylistModel.cpp:937
 #, kde-format
 msgid "Bitrate"
 msgstr "קצב סיביות"
 
-#: playlist/PlaylistModel.cpp:942
+#: playlist/PlaylistModel.cpp:938
 #, kde-format
 msgid "Sample Rate"
 msgstr "קצב דגימה"
 
-#: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:109
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "דירוג"
 
-#: playlist/PlaylistModel.cpp:946
+#: playlist/PlaylistModel.cpp:942
 #, kde-format
 msgctxt "Column name"
 msgid "Last Played"
 msgstr "הושמע לאחרונה"
 
-#: playlist/PlaylistModel.cpp:947
+#: playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Mood"
 msgstr "אווירה"
 
-#: playlist/PlaylistModel.cpp:948
+#: playlist/PlaylistModel.cpp:944
 #, kde-format
 msgid "File Size"
 msgstr "גודל קובץ"
@@ -12190,7 +12190,7 @@ msgid "Move Down"
 msgstr "הורדת מדיה"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
-#: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:117
+#: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Dequeue Track"
 msgstr "הוצא רצועה מהתור"
@@ -12230,7 +12230,7 @@ msgstr "חיפוש %1"
 msgid "%1 layout"
 msgstr "סידור %1"
 
-#: playlist/PlaylistViewUrlRunner.cpp:90
+#: playlist/PlaylistViewUrlRunner.cpp:87
 #, kde-format
 msgctxt ""
 "A type of command that affects the sorting, layout and filtering int he "
@@ -12238,42 +12238,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "רשימת־השמעה"
 
-#: playlist/ProgressiveSearchWidget.cpp:53
+#: playlist/ProgressiveSearchWidget.cpp:51
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:74
+#: playlist/ProgressiveSearchWidget.cpp:72
 #, kde-format
 msgid "Tracks"
 msgstr "רצועות"
 
-#: playlist/ProgressiveSearchWidget.cpp:81
+#: playlist/ProgressiveSearchWidget.cpp:79
 #, kde-format
 msgid "Albums"
 msgstr "אלבומים"
 
-#: playlist/ProgressiveSearchWidget.cpp:88
+#: playlist/ProgressiveSearchWidget.cpp:86
 #, kde-format
 msgid "Artists"
 msgstr "אמנים"
 
-#: playlist/ProgressiveSearchWidget.cpp:102
+#: playlist/ProgressiveSearchWidget.cpp:100
 #, kde-format
 msgid "Composers"
 msgstr "מלחינים"
 
-#: playlist/ProgressiveSearchWidget.cpp:116
+#: playlist/ProgressiveSearchWidget.cpp:114
 #, kde-format
 msgid "Years"
 msgstr "שנים"
 
-#: playlist/ProgressiveSearchWidget.cpp:125
+#: playlist/ProgressiveSearchWidget.cpp:123
 #, kde-format
 msgid "Show only matches"
 msgstr "הראה רק התאומות"
 
-#: playlist/ProgressiveSearchWidget.cpp:137
+#: playlist/ProgressiveSearchWidget.cpp:135
 #, kde-format
 msgid "Search Preferences"
 msgstr ""
@@ -12294,13 +12294,13 @@ msgstr "רצועות נמחקו"
 msgid "Tracks moved"
 msgstr "רצועה הועברה"
 
-#: playlist/view/listview/PrettyListView.cpp:689
+#: playlist/view/listview/PrettyListView.cpp:688
 #, fuzzy, kde-format
 #| msgid "Warning: tracks have been hidden in the playlist"
 msgid "Tracks have been hidden due to the active search."
 msgstr "אזהרה: רצועות הוחבאו ברשימת־ההשמעה"
 
-#: playlist/view/listview/PrettyListView.cpp:691
+#: playlist/view/listview/PrettyListView.cpp:690
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
@@ -12317,17 +12317,17 @@ msgstr "המקורות הבאים זמינים עבור רצועה זו:"
 msgid "OK"
 msgstr "&בסדר"
 
-#: playlist/view/PlaylistViewCommon.cpp:157
+#: playlist/view/PlaylistViewCommon.cpp:158
 #, kde-format
 msgid "Stop Playing After This Track"
 msgstr "הפסק לנגן לאחר רצועה זו"
 
-#: playlist/view/PlaylistViewCommon.cpp:171
+#: playlist/view/PlaylistViewCommon.cpp:172
 #, kde-format
 msgid "Remove From Playlist"
 msgstr "הסר מתוך רשימת־ההשמעה "
 
-#: playlist/view/PlaylistViewCommon.cpp:245
+#: playlist/view/PlaylistViewCommon.cpp:246
 #, kde-format
 msgid "Select Source"
 msgstr "בחר מקור"
@@ -12766,7 +12766,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
-#: widgets/MetaQueryWidget.cpp:1018
+#: widgets/MetaQueryWidget.cpp:1016
 #, kde-format
 msgid "less than"
 msgstr "קטן מ־"
@@ -13043,7 +13043,7 @@ msgid "\"%1\""
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:341
-#: widgets/MetaQueryWidget.cpp:1020
+#: widgets/MetaQueryWidget.cpp:1018
 #, fuzzy, kde-format
 #| msgid "equal to"
 msgctxt "a numerical tag (like year or track number) equals a value"
@@ -13057,7 +13057,7 @@ msgstr "שווה ל־"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
-#: widgets/MetaQueryWidget.cpp:1022
+#: widgets/MetaQueryWidget.cpp:1020
 #, kde-format
 msgid "greater than"
 msgstr "גדול מ־"
@@ -13093,7 +13093,7 @@ msgid "within"
 msgstr "לפני"
 
 #: playlistgenerator/constraints/TagMatch.cpp:359
-#: widgets/MetaQueryWidget.cpp:1034
+#: widgets/MetaQueryWidget.cpp:1032
 #, fuzzy, kde-format
 #| msgid "equal to"
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
@@ -13116,7 +13116,7 @@ msgid "ends with"
 msgstr "מסתיים ב־"
 
 #: playlistgenerator/constraints/TagMatch.cpp:365
-#: widgets/MetaQueryWidget.cpp:1036
+#: widgets/MetaQueryWidget.cpp:1034
 #, fuzzy, kde-format
 #| msgid "contains"
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
@@ -13129,7 +13129,7 @@ msgid "regexp"
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:370
-#: widgets/MetaQueryWidget.cpp:1041
+#: widgets/MetaQueryWidget.cpp:1039
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "unknown comparison"
@@ -13538,24 +13538,24 @@ msgid ""
 "constraints to find more tracks."
 msgstr ""
 
-#: playlistgenerator/Preset.cpp:45 playlistgenerator/Preset.cpp:58
+#: playlistgenerator/Preset.cpp:44 playlistgenerator/Preset.cpp:57
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgid "New playlist preset"
 msgstr "שם רשימת־ההשמעה:"
 
-#: playlistgenerator/Preset.cpp:48 playlistgenerator/Preset.cpp:70
+#: playlistgenerator/Preset.cpp:47 playlistgenerator/Preset.cpp:69
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "Unnamed playlist preset"
 msgstr "&שמור רשימת־השמעה"
 
-#: playlistgenerator/Preset.cpp:132
+#: playlistgenerator/Preset.cpp:131
 #, kde-format
 msgid "Generating a new playlist"
 msgstr "יוצר רשימת־השמעה חדשה"
 
-#: playlistgenerator/Preset.cpp:150
+#: playlistgenerator/Preset.cpp:149
 #, kde-format
 msgid ""
 "The playlist generator created a playlist which does not meet all of your "
@@ -13599,87 +13599,87 @@ msgstr "%1 הגדרות"
 msgid "APG Preset Name"
 msgstr "הכנס שם של אפשרות קבועה:"
 
-#: playlistgenerator/PresetModel.cpp:154
+#: playlistgenerator/PresetModel.cpp:151
 #, fuzzy, kde-format
 #| msgid "Import Collection"
 msgid "Import preset"
 msgstr "ייבא אפשרויות קבועות"
 
-#: playlistgenerator/PresetModel.cpp:156
+#: playlistgenerator/PresetModel.cpp:153
 #, fuzzy, kde-format
 #| msgid "Presets:"
 msgid "Preset files"
 msgstr "אפשרויות קבועות:"
 
-#: playlistgenerator/PresetModel.cpp:216
+#: playlistgenerator/PresetModel.cpp:213
 #, kde-format
 msgid "Preset exported to %1"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:223
+#: playlistgenerator/PresetModel.cpp:220
 #, fuzzy, kde-format
 #| msgid "The cover could not be retrieved."
 msgid "Preset could not be exported to %1"
 msgstr "נכשל הייצוא של האפשרויות הקבועות ל־"
 
-#: playlistgenerator/PresetModel.cpp:241
+#: playlistgenerator/PresetModel.cpp:238
 #, fuzzy, kde-format
 #| msgid "could not execute %1"
 msgid "Presets could not be imported from %1"
 msgstr "אין אפשרות לייבא אפשרויות קבועות מ־%1"
 
-#: playlistgenerator/PresetModel.cpp:248
+#: playlistgenerator/PresetModel.cpp:245
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:250
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:251
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:255
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:256
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:257
+#: playlistgenerator/PresetModel.cpp:254
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:297
+#: playlistgenerator/PresetModel.cpp:294
 #, fuzzy, kde-format
 #| msgid "Import Collection"
 msgid "Export \"%1\" preset"
 msgstr "ייבא אפשרויות קבועות"
 
-#: playlistgenerator/PresetModel.cpp:299
+#: playlistgenerator/PresetModel.cpp:296
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr ""
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:98
+#: playlistmanager/file/PlaylistFileProvider.cpp:92
 #, kde-format
 msgid "Playlist Files on Disk"
 msgstr "קבצי רשימות־השמעה שעל הדיסק"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:289
+#: playlistmanager/file/PlaylistFileProvider.cpp:283
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
 msgstr "לא ניתן לטעון את קובץ רשימת־ההשמעה \"%1\"."
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:285
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:273
 #, kde-format
 msgid ""
 "Version %1 of playlist database schema encountered, however this Amarok "
@@ -13689,7 +13689,7 @@ msgid ""
 "older version of Amarok with a database written by newer version?"
 msgstr ""
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:292
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:280
 #, kde-format
 msgctxt ""
 "the user's 'database version' is newer and unsupported by this software "
@@ -13724,29 +13724,29 @@ msgstr ""
 msgid "Scanning music"
 msgstr "סורק מוזיקה"
 
-#: scanner/GenericScannerJob.cpp:118
+#: scanner/GenericScannerJob.cpp:119
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr ""
 
-#: scanner/GenericScannerJob.cpp:147
+#: scanner/GenericScannerJob.cpp:148
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr ""
 
-#: scanner/GenericScannerJob.cpp:208
+#: scanner/GenericScannerJob.cpp:209
 #, fuzzy, kde-format
 #| msgid "Amarok AFT Tagger"
 msgid "Could not find amarokcollectionscanner!"
 msgstr "מתייג AFT של Amarok"
 
-#: scanner/GenericScannerJob.cpp:269
+#: scanner/GenericScannerJob.cpp:270
 #, fuzzy, kde-format
 #| msgid "Amarok AFT Tagger"
 msgid "Unable to start Amarok collection scanner."
 msgstr "מתייג AFT של Amarok"
 
-#: scanner/GenericScannerJob.cpp:318
+#: scanner/GenericScannerJob.cpp:319
 #, kde-format
 msgid ""
 "The collection scan had to be aborted. Too many crashes (%1) were "
@@ -13755,7 +13755,7 @@ msgid ""
 "%2"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:67
+#: scripting/scriptconsole/ScriptConsole.cpp:64
 #, kde-format
 msgid ""
 "A KDE text-editor component could not be found.\n"
@@ -13763,108 +13763,108 @@ msgid ""
 msgstr ""
 
 # kde-il: don't translate
-#: scripting/scriptconsole/ScriptConsole.cpp:78
+#: scripting/scriptconsole/ScriptConsole.cpp:75
 #, fuzzy, kde-format
 #| msgid "PIN Code:"
 msgid "Code"
 msgstr "קוד PIN:"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
+#: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
 msgid "Console"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:80
+#: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Output"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:81
+#: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Error"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:104
+#: scripting/scriptconsole/ScriptConsole.cpp:101
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Execute Script"
 msgstr "מחפש תסריטים"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:108
+#: scripting/scriptconsole/ScriptConsole.cpp:105
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&New Script"
 msgstr "מחפש תסריטים"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:112
+#: scripting/scriptconsole/ScriptConsole.cpp:109
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "&Delete Script"
 msgstr "המחיקה נכשלה"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:115
+#: scripting/scriptconsole/ScriptConsole.cpp:112
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&Clear All Scripts"
 msgstr "מחפש תסריטים"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:118
+#: scripting/scriptconsole/ScriptConsole.cpp:115
 #, fuzzy, kde-format
 #| msgid "Previous Group"
 msgid "Previous Script"
 msgstr "הקבוצה הקודמת"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:122
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Next Script"
 msgstr "מחפש תסריטים"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:130
+#: scripting/scriptconsole/ScriptConsole.cpp:127
 #, fuzzy, kde-format
 #| msgctxt "@item:inmenu"
 #| msgid "&View"
 msgid "&View"
 msgstr "&תצוגה"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:215
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:230
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:420
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove script file from disk?"
 msgstr "&הסר מנוי"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:420
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "&הסר מנוי"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:453
+#: scripting/scriptconsole/ScriptConsole.cpp:450
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:93
+#: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
 msgid "Terminate"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:184
+#: scripting/scriptmanager/ScriptItem.cpp:183
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:340
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the name of the script author, "
@@ -13874,7 +13874,7 @@ msgid ""
 "author, %2 at %3, and ask him to upgrade it before the next Amarok release."
 msgstr ""
 
-#: scripting/scriptmanager/ScriptManager.cpp:290
+#: scripting/scriptmanager/ScriptManager.cpp:288
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13900,15 +13900,15 @@ msgid "Connection failure"
 msgstr "חיבור"
 
 # kde-il: don't translate
-#: services/ampache/AmpacheAccountLogin.cpp:162
+#: services/ampache/AmpacheAccountLogin.cpp:161
 #, fuzzy, kde-format
 #| msgid "Authenticating"
 msgid "Authentication failed."
 msgstr "וידוא זהות"
 
 # kde-il: don't translate
-#: services/ampache/AmpacheAccountLogin.cpp:163
-#: services/ampache/AmpacheAccountLogin.cpp:234
+#: services/ampache/AmpacheAccountLogin.cpp:162
+#: services/ampache/AmpacheAccountLogin.cpp:233
 #, kde-format
 msgid "Authentication Error"
 msgstr "שגיאת אימות"
@@ -14047,7 +14047,7 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:219
 #: services/gpodder/GpodderServiceSettings.cpp:248
 #: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "&ניסיון התחברות "
@@ -14093,13 +14093,13 @@ msgstr ""
 msgid "Subscribe"
 msgstr "הירשם"
 
-#: services/gpodder/GpodderServiceConfig.cpp:157
+#: services/gpodder/GpodderServiceConfig.cpp:156
 #, fuzzy, kde-format
 #| msgid "Last.fm Profile"
 msgid "gpodder.net credentials"
 msgstr "הפרופיל של Last.fm"
 
-#: services/gpodder/GpodderServiceConfig.cpp:158
+#: services/gpodder/GpodderServiceConfig.cpp:157
 #, kde-format
 msgid ""
 "No running KWallet found. Would you like Amarok to save your gpodder.net "
@@ -14107,7 +14107,7 @@ msgid ""
 msgstr ""
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:101
+#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr ""
@@ -14125,21 +14125,21 @@ msgstr "שם־המשתמש או הססמה שגויים. יש לתקן ולנס�
 #: services/gpodder/GpodderServiceSettings.cpp:180
 #: services/gpodder/GpodderServiceSettings.cpp:189
 #: services/gpodder/GpodderServiceSettings.cpp:204
-#: services/lastfm/LastFmServiceSettings.cpp:149
-#: services/lastfm/LastFmServiceSettings.cpp:172
+#: services/lastfm/LastFmServiceSettings.cpp:147
+#: services/lastfm/LastFmServiceSettings.cpp:170
 #, kde-format
 msgid "Failed"
 msgstr "נכשל"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:141
+#: services/lastfm/LastFmServiceSettings.cpp:139
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "הצלחה"
 
 #: services/gpodder/GpodderServiceSettings.cpp:179
-#: services/lastfm/LastFmServiceSettings.cpp:149
+#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14172,17 +14172,17 @@ msgstr "אין תיאור זמין..."
 msgid "From Jamendo.com"
 msgstr "מתוך Jamendo.com"
 
-#: services/jamendo/JamendoMeta.cpp:132
+#: services/jamendo/JamendoMeta.cpp:131
 #, kde-format
 msgid "A site where artists can freely share their music"
 msgstr "אתר בו אמנים יכולים לשתף בחופשיות את המוזיקה שלהם"
 
-#: services/jamendo/JamendoService.cpp:76
+#: services/jamendo/JamendoService.cpp:74
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
 msgstr ""
 
-#: services/jamendo/JamendoService.cpp:79
+#: services/jamendo/JamendoService.cpp:77
 #, kde-format
 msgid ""
 "Jamendo.com puts artists and music lovers in touch with each other. The site "
@@ -14192,7 +14192,7 @@ msgid ""
 msgstr ""
 
 # kde-il: don't translate
-#: services/jamendo/JamendoService.cpp:120
+#: services/jamendo/JamendoService.cpp:118
 #, kde-format
 msgctxt "Fetch new information from the website"
 msgid "Update"
@@ -14200,7 +14200,7 @@ msgstr "עדכן"
 
 # לא לתרגם, זהו השם של סוג החברות ולא מונח לתרגום
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: services/jamendo/JamendoService.cpp:126
+#: services/jamendo/JamendoService.cpp:124
 #: services/magnatune/MagnatuneConfigWidget.ui:121
 #, kde-format
 msgid "Download"
@@ -14214,25 +14214,25 @@ msgstr "Download"
 #.
 #. action = filterMenu->addAction( i18n( "Album" ) );
 #. connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
-#: services/jamendo/JamendoService.cpp:155
-#: services/magnatune/MagnatuneStore.cpp:223
+#: services/jamendo/JamendoService.cpp:153
+#: services/magnatune/MagnatuneStore.cpp:222
 #, kde-format
 msgid "Genre / Artist"
 msgstr "סגנון / אמן"
 
-#: services/jamendo/JamendoService.cpp:158
-#: services/magnatune/MagnatuneStore.cpp:226
+#: services/jamendo/JamendoService.cpp:156
+#: services/magnatune/MagnatuneStore.cpp:225
 #, kde-format
 msgid "Genre / Artist / Album"
 msgstr "סגנון / אמן / אלבום"
 
-#: services/jamendo/JamendoService.cpp:193
+#: services/jamendo/JamendoService.cpp:191
 #, fuzzy, kde-format
 #| msgid "Downloading Jamendo.com Database"
 msgid "Downloading Jamendo.com database..."
 msgstr "מוריד את בסיס־הנתונים של Jamendo.com"
 
-#: services/jamendo/JamendoService.cpp:215
+#: services/jamendo/JamendoService.cpp:213
 #, kde-format
 msgid "Updating the local Jamendo database."
 msgstr "מעדכן את בסיס־הנתונים המקומי של Jamendo"
@@ -14428,12 +14428,12 @@ msgid ""
 "will not be scrobbled</html>"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:98
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: מהפכת המוזיקה החברתית"
 
-#: services/lastfm/LastFmService.cpp:102
+#: services/lastfm/LastFmService.cpp:100
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -14444,23 +14444,23 @@ msgid ""
 "friends"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: אוהב"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:293
+#: services/lastfm/LastFmService.cpp:291
 #, kde-format
 msgctxt "Last.fm: errorMessage"
 msgid "Either the username was not recognized, or the password was incorrect."
 msgstr "שם המשתמש לא זוהה, או שהסיסמא לא נכונה."
 
-#: services/lastfm/LastFmService.cpp:298
+#: services/lastfm/LastFmService.cpp:296
 #, kde-format
 msgctxt "Last.fm: errorMessage"
 msgid ""
@@ -14468,46 +14468,46 @@ msgid ""
 "again later."
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:383
+#: services/lastfm/LastFmService.cpp:381
 #, kde-format
 msgid "Enter an artist name"
 msgstr "הכנס שם אמן"
 
-#: services/lastfm/LastFmService.cpp:386
+#: services/lastfm/LastFmService.cpp:384
 #, kde-format
 msgid "Enter a tag"
 msgstr "הכנס תגית"
 
-#: services/lastfm/LastFmService.cpp:389
+#: services/lastfm/LastFmService.cpp:387
 #, fuzzy, kde-format
 #| msgid "Enter a last.fm user name"
 msgid "Enter a Last.fm user name"
 msgstr "הכנס שם־משתמש ב־last.fm"
 
-#: services/lastfm/LastFmService.cpp:402
+#: services/lastfm/LastFmService.cpp:400
 #, fuzzy, kde-format
 #| msgid "Username: "
 msgid "Username: %1"
 msgstr "שם משתמש:"
 
-#: services/lastfm/LastFmService.cpp:407
+#: services/lastfm/LastFmService.cpp:405
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "מונה השמעות: השמעה אחת"
 msgstr[1] "מונה השמעות: %1 השמעות"
 
-#: services/lastfm/LastFmService.cpp:453
+#: services/lastfm/LastFmService.cpp:451
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "צור תחנת Last.fm מותאמת־אישית"
 
-#: services/lastfm/LastFmService.cpp:456
+#: services/lastfm/LastFmService.cpp:454
 #, kde-format
 msgid "Tag"
 msgstr "תגית"
 
-#: services/lastfm/LastFmService.cpp:456
+#: services/lastfm/LastFmService.cpp:454
 #, kde-format
 msgid "User"
 msgstr "משתמש"
@@ -14532,34 +14532,34 @@ msgstr "הרדיו האהוב על החברים"
 msgid "Friends' Personal Radio"
 msgstr "הרדיו האישי של החברים"
 
-#: services/lastfm/LastFmServiceConfig.cpp:218
+#: services/lastfm/LastFmServiceConfig.cpp:217
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:271
+#: services/lastfm/LastFmServiceConfig.cpp:270
 #, kde-format
 msgid "No running KWallet found."
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:272
+#: services/lastfm/LastFmServiceConfig.cpp:271
 #, kde-format
 msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:136
+#: services/lastfm/LastFmServiceSettings.cpp:134
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "נכשל"
 
-#: services/lastfm/LastFmServiceSettings.cpp:150
-#: services/lastfm/LastFmServiceSettings.cpp:173
+#: services/lastfm/LastFmServiceSettings.cpp:148
+#: services/lastfm/LastFmServiceSettings.cpp:171
 #, kde-format
 msgid "Test Login"
 msgstr "ניסיון התחברות"
 
-#: services/lastfm/LastFmServiceSettings.cpp:172
+#: services/lastfm/LastFmServiceSettings.cpp:170
 #, fuzzy, kde-format
 #| msgid "Unable to retrieve Wikipedia information: %1"
 msgid "Unable to connect to Last.fm service."
@@ -14801,12 +14801,12 @@ msgstr "פורש את ההורדה מ-Magnatune.com..."
 msgid "Adding album cover to collection"
 msgstr "מוסיף עטיפת אלבום לאוסף"
 
-#: services/magnatune/MagnatuneCollectionLocation.cpp:42
+#: services/magnatune/MagnatuneCollectionLocation.cpp:41
 #, kde-format
 msgid "Preview Tracks"
 msgstr "רצועות קודמות"
 
-#: services/magnatune/MagnatuneCollectionLocation.cpp:54
+#: services/magnatune/MagnatuneCollectionLocation.cpp:53
 #, kde-format
 msgid ""
 "The tracks you are about to copy are Magnatune.com preview streams. For "
@@ -15016,19 +15016,19 @@ msgstr "מידע אודות Magnatune"
 msgid "&Download"
 msgstr "&הורד"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:84
+#: services/magnatune/MagnatuneDownloadHandler.cpp:83
 #, kde-format
 msgid "Processing download"
 msgstr "מבצע הורדה"
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:149
+#: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid ""
 "There seems to be an error in the supplied membership information. Please "
 "correct this and try again."
 msgstr ""
 
-#: services/magnatune/MagnatuneDownloadHandler.cpp:149
+#: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid "Could not process download"
 msgstr "אין אפשרות לבצע את הליך ההורדה"
@@ -15097,7 +15097,7 @@ msgstr "טוען את דף המועדפים שלך מ-Magnatune.com..."
 msgid "Loading your personal Magnatune.com recommendations page..."
 msgstr "טוען את עמוד ההמלצות האישי שלך מ-Magnatune.com..."
 
-#: services/magnatune/MagnatuneMeta.cpp:215
+#: services/magnatune/MagnatuneMeta.cpp:214
 #, kde-format
 msgid "The non evil record label that is fair to artists and customers alike"
 msgstr "חברת ההקלטות הלא מרושעת שהוגנת כלפי האמנים והקונים גם יחד"
@@ -15159,7 +15159,7 @@ msgstr "&הורד מחדש"
 msgid "Artist - Album"
 msgstr "אמן - אלבום"
 
-#: services/magnatune/MagnatuneRedownloadHandler.cpp:149
+#: services/magnatune/MagnatuneRedownloadHandler.cpp:148
 #, kde-format
 msgid "Getting list of previous Magnatune.com purchases"
 msgstr ""
@@ -15225,12 +15225,12 @@ msgstr ""
 msgid "Close"
 msgstr "מלחין"
 
-#: services/magnatune/MagnatuneStore.cpp:103
+#: services/magnatune/MagnatuneStore.cpp:102
 #, kde-format
 msgid "\"Fair trade\" online music store"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:107
+#: services/magnatune/MagnatuneStore.cpp:106
 #, no-c-format, kde-format
 msgid ""
 "Magnatune.com is a different kind of record company with the motto \"We are "
@@ -15240,48 +15240,48 @@ msgid ""
 "lets you download as much of their music as you like."
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:217
+#: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist / Album"
 msgstr "אמן / אלבום"
 
-#: services/magnatune/MagnatuneStore.cpp:241
+#: services/magnatune/MagnatuneStore.cpp:240
 #, kde-format
 msgid "Re-download"
 msgstr "הורד מחדש"
 
-#: services/magnatune/MagnatuneStore.cpp:244
+#: services/magnatune/MagnatuneStore.cpp:243
 #, kde-format
 msgid "Update Database"
 msgstr "עדכן את בסיס־נתונים"
 
-#: services/magnatune/MagnatuneStore.cpp:247
+#: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Tools"
 msgstr "כלים"
 
-#: services/magnatune/MagnatuneStore.cpp:268
+#: services/magnatune/MagnatuneStore.cpp:267
 #, kde-format
 msgid "Download Album"
 msgstr "הורד אלבום"
 
-#: services/magnatune/MagnatuneStore.cpp:275
+#: services/magnatune/MagnatuneStore.cpp:274
 #, kde-format
 msgid "Signup"
 msgstr "הרשמה"
 
-#: services/magnatune/MagnatuneStore.cpp:326
+#: services/magnatune/MagnatuneStore.cpp:325
 #, fuzzy, kde-format
 #| msgid "Downloading Magnatune.com Database"
 msgid "Downloading Magnatune.com database..."
 msgstr "מוריד את בסיס־הנתונים של Magnatune.com"
 
-#: services/magnatune/MagnatuneStore.cpp:355
+#: services/magnatune/MagnatuneStore.cpp:354
 #, kde-format
 msgid "Updating the local Magnatune database."
 msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
 
-#: services/magnatune/MagnatuneStore.cpp:618
+#: services/magnatune/MagnatuneStore.cpp:617
 #, c-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
@@ -15291,27 +15291,27 @@ msgid ""
 "with %%20"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:629
+#: services/magnatune/MagnatuneStore.cpp:628
 #, kde-format
 msgid "ERROR: No arguments supplied"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:634
+#: services/magnatune/MagnatuneStore.cpp:633
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:644
+#: services/magnatune/MagnatuneStore.cpp:643
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:648
+#: services/magnatune/MagnatuneStore.cpp:647
 #, kde-format
 msgid "ok"
 msgstr "בסדר"
 
-#: services/magnatune/MagnatuneStore.cpp:651
+#: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
 msgid "ERROR: Unknown argument."
 msgstr ""
@@ -15684,12 +15684,12 @@ msgstr "הוספת שלב מיון לרשימת־ההשמעה."
 msgid "Loading info..."
 msgstr "טוען מידע..."
 
-#: services/ServiceBase.cpp:337
+#: services/ServiceBase.cpp:336
 #, kde-format
 msgid "This service does not accept any messages"
 msgstr "שירות זה לא מאפשר קבלת הודעות"
 
-#: services/ServiceBase.cpp:344
+#: services/ServiceBase.cpp:343
 #, kde-format
 msgid "ERROR: unknown message"
 msgstr "שגיאה: הודעה לא ידועה"
@@ -15699,8 +15699,8 @@ msgstr "שגיאה: הודעה לא ידועה"
 msgid "Neither playable nor downloadable url specified."
 msgstr ""
 
-#: services/ServicePluginManager.cpp:146 services/ServicePluginManager.cpp:163
-#: services/ServicePluginManager.cpp:180
+#: services/ServicePluginManager.cpp:144 services/ServicePluginManager.cpp:161
+#: services/ServicePluginManager.cpp:178
 #, kde-format
 msgid "No service named %1 is currently loaded"
 msgstr "אין שרות בשם %1 הרץ כרגע"
@@ -15886,19 +15886,19 @@ msgstr ""
 msgid "Select Fields to Synchronize"
 msgstr ""
 
-#: statsyncing/ui/ConfigureProviderDialog.cpp:39
+#: statsyncing/ui/ConfigureProviderDialog.cpp:35
 #, fuzzy, kde-format
 #| msgid "Configure Phonon"
 msgid "Configure Synchronization Target"
 msgstr "הגדר את Phonon"
 
-#: statsyncing/ui/CreateProviderDialog.cpp:38
+#: statsyncing/ui/CreateProviderDialog.cpp:37
 #, fuzzy, kde-format
 #| msgid "Configure Phonon"
 msgid "Add Synchronization Target"
 msgstr "הגדר את Phonon"
 
-#: statsyncing/ui/CreateProviderDialog.cpp:48
+#: statsyncing/ui/CreateProviderDialog.cpp:47
 #, kde-format
 msgid ""
 "<span style=\"color:red; font-weight:bold;\">Important:</span> before "
@@ -15906,13 +15906,13 @@ msgid ""
 "database file is not currently in use!"
 msgstr ""
 
-#: statsyncing/ui/CreateProviderDialog.cpp:61
+#: statsyncing/ui/CreateProviderDialog.cpp:60
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgid "Choose Target Type"
 msgstr "דירוג"
 
-#: statsyncing/ui/CreateProviderDialog.cpp:87
+#: statsyncing/ui/CreateProviderDialog.cpp:86
 #, fuzzy, kde-format
 #| msgid "Configure Services"
 msgid "Configure Target"
@@ -16104,19 +16104,19 @@ msgstr "רצועות מסומנות"
 msgid "Scrobbling"
 msgstr ""
 
-#: statusbar/CompoundProgressBar.cpp:66 statusbar/CompoundProgressBar.cpp:195
+#: statusbar/CompoundProgressBar.cpp:65 statusbar/CompoundProgressBar.cpp:194
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
 msgstr "בטל"
 
-#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
+#: statusbar/CompoundProgressBar.cpp:69 statusbar/CompoundProgressBar.cpp:206
 #, fuzzy, kde-format
 #| msgid "Multiple background tasks running"
 msgid "Multiple background tasks running (click to show)"
 msgstr "מספר פעולות רצות ברקע"
 
-#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
+#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Abort all background tasks"
 msgstr "בטל את כל פעולות הרקע"
@@ -16137,31 +16137,31 @@ msgid "Slim Toolbar"
 msgstr "סרגל־כלים רזה"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:200
+#: widgets/Osd.cpp:199
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "עצמת קול: 100% (מושתק)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
 msgstr "עצמת קול: %1%"
 
-#: transcoding/TranscodingAssistantDialog.cpp:47
+#: transcoding/TranscodingAssistantDialog.cpp:44
 #, fuzzy, kde-format
 #| msgid "Random Tracks"
 msgid "Transcode Tracks"
 msgstr "רצועות אקראיות"
 
-#: transcoding/TranscodingAssistantDialog.cpp:57
+#: transcoding/TranscodingAssistantDialog.cpp:54
 #, fuzzy, kde-format
 #| msgid "&Translucent"
 msgid "Transc&ode"
 msgstr "&שקיפות מדומה"
 
-#: transcoding/TranscodingAssistantDialog.cpp:68
+#: transcoding/TranscodingAssistantDialog.cpp:65
 #, kde-format
 msgid ""
 "While copying, you can choose to transcode your music files into another "
@@ -16170,17 +16170,17 @@ msgid ""
 "program."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:73
+#: transcoding/TranscodingAssistantDialog.cpp:70
 #, kde-format
 msgid "&Copy"
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:74
+#: transcoding/TranscodingAssistantDialog.cpp:71
 #, kde-format
 msgid "Just copy the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:78
+#: transcoding/TranscodingAssistantDialog.cpp:75
 #, kde-format
 msgid ""
 "While moving, you can choose to transcode your music files into another "
@@ -16190,24 +16190,24 @@ msgid ""
 "original location."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:84
+#: transcoding/TranscodingAssistantDialog.cpp:81
 #, kde-format
 msgid "&Move"
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:85
+#: transcoding/TranscodingAssistantDialog.cpp:82
 #, kde-format
 msgid "Just move the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:152
+#: transcoding/TranscodingAssistantDialog.cpp:149
 #, fuzzy, kde-format
 #| msgid "No description available..."
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr "אין תיאור זמין..."
 
-#: transcoding/TranscodingAssistantDialog.cpp:159
+#: transcoding/TranscodingAssistantDialog.cpp:156
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
@@ -16281,7 +16281,7 @@ msgstr ""
 msgid "Remember this choice for the next time"
 msgstr ""
 
-#: transcoding/TranscodingOptionsStackedWidget.cpp:56
+#: transcoding/TranscodingOptionsStackedWidget.cpp:55
 #, kde-format
 msgid ""
 "In order to configure the parameters of the transcoding operation, please "
@@ -16348,17 +16348,17 @@ msgstr "הושמע לאחרונה"
 msgid "Bookmark"
 msgstr "סימנייה"
 
-#: widgets/BreadcrumbItemButton.cpp:243
+#: widgets/BreadcrumbItemButton.cpp:242
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr ""
 
-#: widgets/BreadcrumbItemButton.cpp:261
+#: widgets/BreadcrumbItemButton.cpp:260
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "הסימניות של Amarok"
 
-#: widgets/BreadcrumbItemButton.cpp:280
+#: widgets/BreadcrumbItemButton.cpp:279
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr ""
@@ -16462,7 +16462,7 @@ msgid "Preset Name"
 msgstr "הכנס שם של אפשרות קבועה:"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
-#: widgets/MetaQueryWidget.cpp:132
+#: widgets/MetaQueryWidget.cpp:130
 #, fuzzy, kde-format
 #| msgid "Seconds"
 msgid "second"
@@ -16470,7 +16470,7 @@ msgid_plural "seconds"
 msgstr[0] "שניות"
 msgstr[1] "שניות"
 
-#: widgets/MetaQueryWidget.cpp:133
+#: widgets/MetaQueryWidget.cpp:131
 #, fuzzy, kde-format
 #| msgid "Minutes"
 msgid "minute"
@@ -16478,7 +16478,7 @@ msgid_plural "minutes"
 msgstr[0] "דקות"
 msgstr[1] "דקות"
 
-#: widgets/MetaQueryWidget.cpp:134
+#: widgets/MetaQueryWidget.cpp:132
 #, fuzzy, kde-format
 #| msgid "Hours"
 msgid "hour"
@@ -16486,7 +16486,7 @@ msgid_plural "hours"
 msgstr[0] "שעות"
 msgstr[1] "שעות"
 
-#: widgets/MetaQueryWidget.cpp:135
+#: widgets/MetaQueryWidget.cpp:133
 #, fuzzy, kde-format
 #| msgid "Days"
 msgid "day"
@@ -16494,7 +16494,7 @@ msgid_plural "days"
 msgstr[0] "ימים"
 msgstr[1] "ימים"
 
-#: widgets/MetaQueryWidget.cpp:136
+#: widgets/MetaQueryWidget.cpp:134
 #, fuzzy, kde-format
 #| msgid "is between"
 msgid "week"
@@ -16502,7 +16502,7 @@ msgid_plural "weeks"
 msgstr[0] "בין"
 msgstr[1] "בין"
 
-#: widgets/MetaQueryWidget.cpp:137
+#: widgets/MetaQueryWidget.cpp:135
 #, fuzzy, kde-format
 #| msgid "Months"
 msgid "month"
@@ -16510,7 +16510,7 @@ msgid_plural "months"
 msgstr[0] "חודשים"
 msgstr[1] "חודשים"
 
-#: widgets/MetaQueryWidget.cpp:138
+#: widgets/MetaQueryWidget.cpp:136
 #, fuzzy, kde-format
 #| msgid "year"
 msgid "year"
@@ -16518,95 +16518,95 @@ msgid_plural "years"
 msgstr[0] "שנה"
 msgstr[1] "שנה"
 
-#: widgets/MetaQueryWidget.cpp:320
+#: widgets/MetaQueryWidget.cpp:318
 #, kde-format
 msgid "Simple Search"
 msgstr "חיפוש פשוט"
 
-#: widgets/MetaQueryWidget.cpp:685
+#: widgets/MetaQueryWidget.cpp:683
 #, kde-format
 msgctxt "Unit for data rate kilo bit per seconds"
 msgid "kbps"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:687
+#: widgets/MetaQueryWidget.cpp:685
 #, kde-format
 msgctxt "Unit for sample rate"
 msgid "Hz"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:689
+#: widgets/MetaQueryWidget.cpp:687
 #, kde-format
 msgctxt "Unit for file size in mega byte"
 msgid "MiB"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:843
+#: widgets/MetaQueryWidget.cpp:841
 #, kde-format
 msgctxt "time format for specifying track length - hours, minutes, seconds"
 msgid "h:m:ss"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:998
+#: widgets/MetaQueryWidget.cpp:996
 #, fuzzy, kde-format
 #| msgid "is before"
 msgctxt "The date lies before the given fixed date"
 msgid "before"
 msgstr "לפני"
 
-#: widgets/MetaQueryWidget.cpp:1000
+#: widgets/MetaQueryWidget.cpp:998
 #, fuzzy, kde-format
 #| msgid "None"
 msgctxt "The date is the same as the given fixed date"
 msgid "on"
 msgstr "ללא"
 
-#: widgets/MetaQueryWidget.cpp:1002
+#: widgets/MetaQueryWidget.cpp:1000
 #, fuzzy, kde-format
 #| msgid "is after"
 msgctxt "The date is after the given fixed date"
 msgid "after"
 msgstr "אחרי"
 
-#: widgets/MetaQueryWidget.cpp:1004
+#: widgets/MetaQueryWidget.cpp:1002
 #, fuzzy, kde-format
 #| msgid "Between"
 msgctxt "The date is between the given fixed dates"
 msgid "between"
 msgstr "בין"
 
-#: widgets/MetaQueryWidget.cpp:1006
+#: widgets/MetaQueryWidget.cpp:1004
 #, fuzzy, kde-format
 #| msgid "Smaller Than"
 msgctxt "The date lies before the given time interval"
 msgid "older than"
 msgstr "קטן מ־"
 
-#: widgets/MetaQueryWidget.cpp:1008
+#: widgets/MetaQueryWidget.cpp:1006
 #, fuzzy, kde-format
 #| msgid "greater than"
 msgctxt "The date lies after the given time interval"
 msgid "newer than"
 msgstr "גדול מ־"
 
-#: widgets/MetaQueryWidget.cpp:1024
+#: widgets/MetaQueryWidget.cpp:1022
 #, fuzzy, kde-format
 #| msgid "Between"
 msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "בין"
 
-#: widgets/Osd.cpp:186
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "דירוג השתנה"
 
-#: widgets/Osd.cpp:261
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "עצמת קול: 100% (מושתק)"
 
-#: widgets/Osd.cpp:504
+#: widgets/Osd.cpp:503
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16615,14 +16615,14 @@ msgstr ""
 "תצוגה מקדימה של תצוגה־על־המסך\n"
 "גרור כדי לשנות את המיקום"
 
-#: widgets/Osd.cpp:756
+#: widgets/Osd.cpp:755
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "עצור"
 
 # kde-il: don't translatep:67
-#: widgets/Osd.cpp:765
+#: widgets/Osd.cpp:764
 #, kde-format
 msgid "Paused"
 msgstr "מושהה"
@@ -16639,7 +16639,7 @@ msgstr "נגן"
 msgid "Pause"
 msgstr "מושהה"
 
-#: widgets/PrettyTreeDelegate.cpp:219
+#: widgets/PrettyTreeDelegate.cpp:217
 #, kde-format
 msgctxt "Example: 3.5 GB free (unit is part of %1)"
 msgid "%1 free"
@@ -16663,52 +16663,52 @@ msgstr "הזמן שחלף מתחילת השיר הנוכחי"
 msgid "The amount of time remaining in current track"
 msgstr "הזמן הנותר לשיר הנוכחי"
 
-#: widgets/SearchWidget.cpp:51
+#: widgets/SearchWidget.cpp:50
 #, kde-format
 msgid "Enter space-separated terms to search."
 msgstr "הזן מונחים המופרדים ברווחים לחיפוש באלבומים"
 
-#: widgets/SearchWidget.cpp:73 widgets/SearchWidget.cpp:167
+#: widgets/SearchWidget.cpp:72 widgets/SearchWidget.cpp:166
 #, kde-format
 msgid "Edit filter"
 msgstr "ערוך מסנן"
 
-#: widgets/SliderWidget.cpp:243
+#: widgets/SliderWidget.cpp:241
 #, kde-format
 msgid "Volume"
 msgstr "עוצמת קול"
 
-#: widgets/SliderWidget.cpp:244
+#: widgets/SliderWidget.cpp:242
 #, kde-format
 msgid "100%"
 msgstr "100%"
 
-#: widgets/SliderWidget.cpp:245
+#: widgets/SliderWidget.cpp:243
 #, kde-format
 msgid "80%"
 msgstr "80%"
 
-#: widgets/SliderWidget.cpp:246
+#: widgets/SliderWidget.cpp:244
 #, kde-format
 msgid "60%"
 msgstr "60%"
 
-#: widgets/SliderWidget.cpp:247
+#: widgets/SliderWidget.cpp:245
 #, kde-format
 msgid "40%"
 msgstr "40%"
 
-#: widgets/SliderWidget.cpp:248
+#: widgets/SliderWidget.cpp:246
 #, kde-format
 msgid "20%"
 msgstr "20%"
 
-#: widgets/SliderWidget.cpp:249
+#: widgets/SliderWidget.cpp:247
 #, kde-format
 msgid "0%"
 msgstr "0%"
 
-#: widgets/SliderWidget.cpp:410
+#: widgets/SliderWidget.cpp:408
 #, kde-format
 msgctxt ""
 "Tooltip shown when the mouse is over the progress slider, representing the "
@@ -16722,42 +16722,42 @@ msgstr "קפוץ אל: %1"
 msgid "Drag in and out items from above."
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:232
+#: widgets/TokenWithLayout.cpp:229
 #, kde-format
 msgid "[prefix]"
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:243
+#: widgets/TokenWithLayout.cpp:240
 #, kde-format
 msgid "[suffix]"
 msgstr ""
 
-#: widgets/TrackSelectWidget.cpp:71
+#: widgets/TrackSelectWidget.cpp:68
 #, fuzzy, kde-format
 #| msgctxt "track from source"
 #| msgid "from <b>%1</b>"
 msgid "Checkpoint: <b>%1</b>"
 msgstr "מתוך <b>%1</b>"
 
-#: widgets/TrackSelectWidget.cpp:91
+#: widgets/TrackSelectWidget.cpp:88
 #, fuzzy, kde-format
 #| msgid "Trac&k:"
 msgid "Track: %1"
 msgstr "רצוע&ה:"
 
-#: widgets/TrackSelectWidget.cpp:93
+#: widgets/TrackSelectWidget.cpp:90
 #, fuzzy, kde-format
 #| msgid "Album \"%1\""
 msgid "Album: %1"
 msgstr "אלבום \"%1\""
 
-#: widgets/TrackSelectWidget.cpp:95
+#: widgets/TrackSelectWidget.cpp:92
 #, fuzzy, kde-format
 #| msgid "Artist \"%1\""
 msgid "Artist: %1"
 msgstr "אמן \"%1\""
 
-#: widgets/TrackSelectWidget.cpp:99
+#: widgets/TrackSelectWidget.cpp:96
 #, kde-format
 msgid "empty"
 msgstr ""
