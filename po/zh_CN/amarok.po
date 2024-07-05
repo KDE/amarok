@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-04 01:43+0000\n"
+"POT-Creation-Date: 2024-07-05 01:42+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -1462,7 +1462,7 @@ msgstr "未知"
 msgid "New Bookmark"
 msgstr "新建书签"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:781
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "书签管理器"
@@ -1557,10 +1557,10 @@ msgstr "新建歌曲时间点"
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:483
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:486 MainWindow.cpp:1225
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:493
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:494
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:495
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496 MainWindow.cpp:1247
 #, kde-format
 msgid "Unknown"
 msgstr "未知"
@@ -1611,7 +1611,7 @@ msgstr "%2 中的艺人“%1”"
 msgid "Artist \"%1\""
 msgstr "艺人“%1”"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:777
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "将媒体源视图加入书签"
@@ -1777,7 +1777,7 @@ msgid ""
 "audio players and CDs."
 msgstr "这里是您查找本地音乐、移动音频播放器音乐和 CD 音乐的地方。"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:925
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "搜索收藏集"
@@ -4338,7 +4338,7 @@ msgid "Don't change page automatically"
 msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:363
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:373
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4480,7 +4480,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "聚合收藏集"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:390
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:400
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -7328,7 +7328,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:110 MainWindow.cpp:797
+#: covermanager/CoverManager.cpp:110 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "专辑封面管理器"
@@ -9424,7 +9424,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "目标名称"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "正在播放"
@@ -10357,7 +10357,7 @@ msgstr "视图(&V)"
 msgid "Lock Layout"
 msgstr "锁定布局"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1299
+#: MainWindow.cpp:369 MainWindow.cpp:1321
 #, kde-format
 msgid "Reset Layout"
 msgstr "重置布局"
@@ -10397,251 +10397,251 @@ msgstr "添加流媒体"
 msgid "Enter Stream URL:"
 msgstr "输入流媒体 URL："
 
-#: MainWindow.cpp:747
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "添加媒体(&A)..."
 
-#: MainWindow.cpp:752
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "清空播放列表(&C)"
 
-#: MainWindow.cpp:757
+#: MainWindow.cpp:766
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "编辑排序队列(&Q)"
 
-#: MainWindow.cpp:762
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "删除重复项(&M)"
 
-#: MainWindow.cpp:769
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "添加流媒体(&A)..."
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "导出播放列表(&E)..."
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "均衡器"
 
-#: MainWindow.cpp:789 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "将播放列表布局加入书签"
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "将信息视图中的小程序加入书签"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "播放媒体..."
 
-#: MainWindow.cpp:806
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "编辑所选歌曲的详情"
 
-#: MainWindow.cpp:812 MainWindow.cpp:818 MainWindow.cpp:825
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "快进 %1 秒"
 
-#: MainWindow.cpp:832 MainWindow.cpp:838 MainWindow.cpp:845
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "快退 %1 秒"
 
-#: MainWindow.cpp:851
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "更新收藏集"
 
-#: MainWindow.cpp:855
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "同步统计数据..."
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "上一首"
 
-#: MainWindow.cpp:870
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Restart current track"
 msgstr "重新播放当前歌曲"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "随机播放列表"
 
-#: MainWindow.cpp:883
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "重新生成播放列表"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "禁用动态播放列表"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "下一首"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "增加音量"
 
-#: MainWindow.cpp:904
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "降低音量"
 
-#: MainWindow.cpp:910
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "显示或隐藏主窗口"
 
-#: MainWindow.cpp:915
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "全屏切换"
 
-#: MainWindow.cpp:920 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "搜索播放列表"
 
-#: MainWindow.cpp:930
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "显示当前歌曲"
 
-#: MainWindow.cpp:934
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "显示弹出通知"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "静音"
 
-#: MainWindow.cpp:944
+#: MainWindow.cpp:953
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm：喜欢当前曲目"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm：不喜欢当前歌曲"
 
-#: MainWindow.cpp:954
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm：跳过当前歌曲"
 
-#: MainWindow.cpp:959 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "加入排序队列"
 
-#: MainWindow.cpp:964
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "按“艺人 - 歌名”的格式，将当前歌曲信息复制到剪贴板"
 
-#: MainWindow.cpp:969
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "对当前歌曲评分：1"
 
-#: MainWindow.cpp:974
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "对当前歌曲评分：2"
 
-#: MainWindow.cpp:979
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "对当前歌曲评分：3"
 
-#: MainWindow.cpp:984
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "对当前歌曲评分：4"
 
-#: MainWindow.cpp:989
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "对当前歌曲评分：5"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "网络请求查看器"
 
-#: MainWindow.cpp:1013
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "关于 &Amarok"
 
-#: MainWindow.cpp:1017
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr "诊断(&D)"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "报告错误(&R)..."
 
-#: MainWindow.cpp:1068
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "音乐(&M)"
 
-#: MainWindow.cpp:1070
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1094 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "播放列表(&P)"
 
-#: MainWindow.cpp:1111
+#: MainWindow.cpp:1124
 #, kde-format
 msgid "&Tools"
 msgstr "工具(&T)"
 
-#: MainWindow.cpp:1126
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "&Settings"
 msgstr "设置(&S)"
 
-#: MainWindow.cpp:1169
+#: MainWindow.cpp:1191
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10652,22 +10652,22 @@ msgstr ""
 "\n"
 "请记住，您随时可以使用快捷键“%1”重新显示菜单栏。"
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1192
 #, kde-format
 msgid "Hide Menu"
 msgstr "隐藏菜单"
 
-#: MainWindow.cpp:1212
+#: MainWindow.cpp:1234
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "已暂停  ::  %1"
 
-#: MainWindow.cpp:1225
+#: MainWindow.cpp:1247
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1299
+#: MainWindow.cpp:1321
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "应用布局更改？"
@@ -15308,37 +15308,37 @@ msgstr " (推荐)"
 msgid "Ask before each transfer"
 msgstr "在每次传输前都询问"
 
-#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "已静音"
 
-#: TrayIcon.cpp:158
+#: TrayIcon.cpp:162
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:160
+#: TrayIcon.cpp:164
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>音量：%1</i>"
 
-#: TrayIcon.cpp:166
+#: TrayIcon.cpp:170
 #, kde-format
 msgid "Score: %1"
 msgstr "分数：%1"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:188
 #, kde-format
 msgid "Rating: %1"
 msgstr "评分：%1"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Play count: %1"
 msgstr "播放次数：%1"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:198
 #, kde-format
 msgid "Last played: %1"
 msgstr "上次播放：%1"

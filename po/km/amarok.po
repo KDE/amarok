@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-04 01:43+0000\n"
+"POT-Creation-Date: 2024-07-05 01:42+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -1522,7 +1522,7 @@ msgstr "មិន​ស្គាល់"
 msgid "New Bookmark"
 msgstr "ចំណាំ​ថ្មី"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:781
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​ចំណាំ"
@@ -1617,10 +1617,10 @@ msgstr "បទ​ដែលមានកូដ​ពេលវេលា​ថ្ម
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:483
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:486 MainWindow.cpp:1225
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:493
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:494
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:495
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496 MainWindow.cpp:1247
 #, kde-format
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
@@ -1671,7 +1671,7 @@ msgstr "សិល្បករ \"%1\" ពី %2"
 msgid "Artist \"%1\""
 msgstr "សិល្បករ \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:777
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "ចំណាំ​ទិដ្ឋភាព​ប្រភព​មេឌៀ"
@@ -1845,7 +1845,7 @@ msgid ""
 msgstr ""
 "នេះ​ជា​កន្លែង​ដែល​អ្នក​នឹង​រក​តន្ត្រី​​ក្នុង​មូលដ្ឋាន​របស់​អ្នក ព្រមទាំង​តន្ត្រី​ពី​កម្មវិធី​ចាក់​អូឌីយ៉ូ​ចល័ត និងស៊ីឌី ។"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:925
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "ស្វែងរក​សម្រាំង"
@@ -4483,7 +4483,7 @@ msgid "Don't change page automatically"
 msgstr "ធ្វើ​ឲ្យ​មូលដ្ឋាន​ទិន្នន័យ Magnatune មូលដ្ឋានទាន់សម័យ ។"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:363
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:373
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4628,7 +4628,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "ធ្វើ​ឲ្យ​សម្រាំង​ទាន់សម័យ"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:390
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:400
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -7604,7 +7604,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:110 MainWindow.cpp:797
+#: covermanager/CoverManager.cpp:110 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​គម្រប"
@@ -9737,7 +9737,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "ឈ្មោះ​បញ្ជី​ចាក់ ៖"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "ឥឡូវ​កំពុង​ចាក់"
@@ -10687,7 +10687,7 @@ msgstr "ទិដ្ឋភាព"
 msgid "Lock Layout"
 msgstr "ចាក់សោ​ប្លង់"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1299
+#: MainWindow.cpp:369 MainWindow.cpp:1321
 #, fuzzy, kde-format
 msgid "Reset Layout"
 msgstr "ប្លង់​បញ្ជី​ចាក់"
@@ -10727,99 +10727,99 @@ msgstr "បន្ថែម​ស្ទ្រីម​"
 msgid "Enter Stream URL:"
 msgstr "បញ្ចូល​ URL ស្ទ្រីម ៖"
 
-#: MainWindow.cpp:747
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "បន្ថែម​មេឌៀ..."
 
-#: MainWindow.cpp:752
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ជម្រះ​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:757
+#: MainWindow.cpp:766
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "ជួរ"
 
-#: MainWindow.cpp:762
+#: MainWindow.cpp:771
 #, fuzzy, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "យក​អាប់ភ្លេត​ចេញ"
 
-#: MainWindow.cpp:769
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "បន្ថែម​ស្ទ្រីម​..."
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "អេហ្គុយ"
 
-#: MainWindow.cpp:789 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "ចំណាំ​បង្កើត​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:802
 #, fuzzy, kde-format
 msgid "Bookmark Context Applets"
 msgstr "ចំណាំ​សិល្បករ​នេះ"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "ចាក់​មេឌៀ..."
 
-#: MainWindow.cpp:806
+#: MainWindow.cpp:815
 #, fuzzy, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "ការ​ផ្លាស់​ប្តូរ​រក្សា​ទុក​បាន​កំណត់​ជ្រើស​​ជា​ស្រេច​ពេល​បច្ចុប្បន្ន ។"
 
-#: MainWindow.cpp:812 MainWindow.cpp:818 MainWindow.cpp:825
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "ស្វែងរក​ទៅ​មុខ"
 
-#: MainWindow.cpp:832 MainWindow.cpp:838 MainWindow.cpp:845
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "ស្វែងរក​ថយ​ក្រោយ"
 
-#: MainWindow.cpp:851
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "ធ្វើ​ឲ្យ​សម្រាំង​ទាន់សម័យ"
 
-#: MainWindow.cpp:855
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "បទ​មុន"
 
-#: MainWindow.cpp:870
+#: MainWindow.cpp:879
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:886
 #, fuzzy, kde-format
 #| msgctxt "number of playlists from one source"
 #| msgid "One Playlist"
@@ -10827,159 +10827,159 @@ msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន �
 msgid "Shuffle Playlist"
 msgstr "បញ្ជី​ចាក់ %1"
 
-#: MainWindow.cpp:883
+#: MainWindow.cpp:892
 #, fuzzy, kde-format
 msgid "Repopulate Playlist"
 msgstr "ជំនួស​​បញ្ជីចាក់​"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:898
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "បញ្ជី​ចាក់​ថាមវន្ត​លំនាំដើម"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "បទ​បន្ទាប់"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "បង្កើន​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:904
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "បន្ថយ​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:910
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "បិទ/​បើក​បង្អួច​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:915
+#: MainWindow.cpp:924
 #, fuzzy, kde-format
 msgid "Toggle Full Screen"
 msgstr "បិទ/បើ​ពេញអែក្រង់ "
 
-#: MainWindow.cpp:920 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "ស្វែងរក​បញ្ជី​​ចាក់"
 
-#: MainWindow.cpp:930
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "បង្ហាញបទ​សកម្ម"
 
-#: MainWindow.cpp:934
+#: MainWindow.cpp:943
 #, fuzzy, kde-format
 msgid "Show Notification Popup"
 msgstr "ទីតាំង ៖"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "បិទ​សំឡេង"
 
-#: MainWindow.cpp:944
+#: MainWindow.cpp:953
 #, fuzzy, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:958
 #, fuzzy, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:954
+#: MainWindow.cpp:963
 #, fuzzy, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:959 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "រៀបបទ​ជា​ជួរ"
 
-#: MainWindow.cpp:964
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:969
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:974
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ២"
 
-#: MainWindow.cpp:979
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៣"
 
-#: MainWindow.cpp:984
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៤"
 
-#: MainWindow.cpp:989
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៥"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1013
+#: MainWindow.cpp:1022
 #, fuzzy, kde-format
 msgid "&About Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1017
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr ""
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1068
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "តន្ត្រី"
 
-#: MainWindow.cpp:1070
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1094 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "បញ្ជីចាក់"
 
-#: MainWindow.cpp:1111
+#: MainWindow.cpp:1124
 #, kde-format
 msgid "&Tools"
 msgstr "ឧបករណ៍"
 
-#: MainWindow.cpp:1126
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "&Settings"
 msgstr "ការ​កំណត់"
 
-#: MainWindow.cpp:1169
+#: MainWindow.cpp:1191
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10987,23 +10987,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1192
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "លាក់​ម៉ឺនុយ"
 
-#: MainWindow.cpp:1212
+#: MainWindow.cpp:1234
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "បាន​ផ្អាក  ::  %1"
 
-#: MainWindow.cpp:1225
+#: MainWindow.cpp:1247
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1299
+#: MainWindow.cpp:1321
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -15796,42 +15796,42 @@ msgstr "វិទ្យុ​ដែល​បានផ្ដល់​អនុស
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "ស្ងាត់"
 
-#: TrayIcon.cpp:158
+#: TrayIcon.cpp:162
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
 msgid "%1%"
 msgstr "%1 %2"
 
-#: TrayIcon.cpp:160
+#: TrayIcon.cpp:164
 #, fuzzy, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "កម្រិត​សំឡេង ៖ %1% %2"
 
-#: TrayIcon.cpp:166
+#: TrayIcon.cpp:170
 #, fuzzy, kde-format
 #| msgid "Score:"
 msgid "Score: %1"
 msgstr "ពិន្ទុ ៖"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:188
 #, fuzzy, kde-format
 #| msgid "Rating:"
 msgid "Rating: %1"
 msgstr "​អត្រា ៖"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:194
 #, fuzzy, kde-format
 #| msgid "Play count"
 msgid "Play count: %1"
 msgstr "ចំនួន​ចាក់"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:198
 #, fuzzy, kde-format
 #| msgid "Last played"
 msgid "Last played: %1"

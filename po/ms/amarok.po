@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-04 01:43+0000\n"
+"POT-Creation-Date: 2024-07-05 01:42+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -1463,7 +1463,7 @@ msgstr "Tidak diketahui"
 msgid "New Bookmark"
 msgstr "Tanda Laman"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:781
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, fuzzy, kde-format
 msgid "Bookmark Manager"
 msgstr "Pengurus Kulit Album"
@@ -1559,10 +1559,10 @@ msgstr "Ke Hadapan 5 trek"
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:483
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:486 MainWindow.cpp:1225
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:493
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:494
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:495
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496 MainWindow.cpp:1247
 #, kde-format
 msgid "Unknown"
 msgstr "Tidak diketahui"
@@ -1615,7 +1615,7 @@ msgstr ""
 msgid "Artist \"%1\""
 msgstr "Artis"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:777
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, fuzzy, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Tanda Laman"
@@ -1782,7 +1782,7 @@ msgid ""
 "audio players and CDs."
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:925
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, fuzzy, kde-format
 msgid "Search collection"
 msgstr "Koleksi Font Truetype"
@@ -4360,7 +4360,7 @@ msgid "Don't change page automatically"
 msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:363
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:373
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, fuzzy, kde-format
 msgid "Track"
@@ -4505,7 +4505,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Koleksi Font Truetype"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:390
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:400
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, fuzzy, kde-format
 msgid "Audio CD"
@@ -7356,7 +7356,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:110 MainWindow.cpp:797
+#: covermanager/CoverManager.cpp:110 MainWindow.cpp:806
 #, fuzzy, kde-format
 msgid "Cover Manager"
 msgstr "Pengurus Kulit Album"
@@ -9408,7 +9408,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Laman g&enap"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
 #, fuzzy, kde-format
 msgid "Now playing"
 msgstr "Kumpulan Baru"
@@ -10335,7 +10335,7 @@ msgstr "Paparkan"
 msgid "Lock Layout"
 msgstr "#1 socket() gagal."
 
-#: MainWindow.cpp:369 MainWindow.cpp:1299
+#: MainWindow.cpp:369 MainWindow.cpp:1321
 #, fuzzy, kde-format
 msgid "Reset Layout"
 msgstr "&Lajur Kiri"
@@ -10373,253 +10373,253 @@ msgstr ""
 msgid "Enter Stream URL:"
 msgstr ""
 
-#: MainWindow.cpp:747
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr ""
 
-#: MainWindow.cpp:752
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr ""
 
-#: MainWindow.cpp:757
+#: MainWindow.cpp:766
 #, fuzzy, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Teks selep&as:"
 
-#: MainWindow.cpp:762
+#: MainWindow.cpp:771
 #, fuzzy, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Buang Ciri-ciri daripada Gaya"
 
-#: MainWindow.cpp:769
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr ""
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr ""
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:794
 #, fuzzy, kde-format
 msgid "Equalizer"
 msgstr "Penyama"
 
-#: MainWindow.cpp:789 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Penjana Album-Web"
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:802
 #, fuzzy, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Terjemahan versi ini oleh:"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr ""
 
-#: MainWindow.cpp:806
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr ""
 
-#: MainWindow.cpp:812 MainWindow.cpp:818 MainWindow.cpp:825
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, fuzzy, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Cari Ke depan"
 
-#: MainWindow.cpp:832 MainWindow.cpp:838 MainWindow.cpp:845
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, fuzzy, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Cari Ke depan"
 
-#: MainWindow.cpp:851
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr ""
 
-#: MainWindow.cpp:855
+#: MainWindow.cpp:864
 #, fuzzy, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Koleksi Font Truetype"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr ""
 
-#: MainWindow.cpp:870
+#: MainWindow.cpp:879
 #, fuzzy, kde-format
 msgid "Restart current track"
 msgstr "Terap kepada Senarai Semasa"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:886
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgid "Shuffle Playlist"
 msgstr "Senarai main"
 
-#: MainWindow.cpp:883
+#: MainWindow.cpp:892
 #, fuzzy, kde-format
 msgid "Repopulate Playlist"
 msgstr "Buang Footer"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:898
 #, fuzzy, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Senarai main MP3 ShoutCast"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr ""
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:907
 #, fuzzy, kde-format
 msgid "Increase Volume"
 msgstr "Naikkan Volum"
 
-#: MainWindow.cpp:904
+#: MainWindow.cpp:913
 #, fuzzy, kde-format
 msgid "Decrease Volume"
 msgstr "Turunkan Volum"
 
-#: MainWindow.cpp:910
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr ""
 
-#: MainWindow.cpp:915
+#: MainWindow.cpp:924
 #, fuzzy, kde-format
 msgid "Toggle Full Screen"
 msgstr "tOGGLE hURUF"
 
-#: MainWindow.cpp:920 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr ""
 
-#: MainWindow.cpp:930
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr ""
 
-#: MainWindow.cpp:934
+#: MainWindow.cpp:943
 #, fuzzy, kde-format
 msgid "Show Notification Popup"
 msgstr "Pemberitahuan"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr ""
 
-#: MainWindow.cpp:944
+#: MainWindow.cpp:953
 #, fuzzy, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Buka pautan selepas halaman semasa"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:958
 #, fuzzy, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Buka pautan selepas halaman semasa"
 
-#: MainWindow.cpp:954
+#: MainWindow.cpp:963
 #, fuzzy, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Buka pautan selepas halaman semasa"
 
-#: MainWindow.cpp:959 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, fuzzy, kde-format
 msgid "Queue Track"
 msgstr "Trek Giliran"
 
-#: MainWindow.cpp:964
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:969
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr ""
 
-#: MainWindow.cpp:974
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr ""
 
-#: MainWindow.cpp:979
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr ""
 
-#: MainWindow.cpp:984
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr ""
 
-#: MainWindow.cpp:989
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr ""
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1013
+#: MainWindow.cpp:1022
 #, fuzzy, kde-format
 #| msgid "Amarok"
 msgid "&About Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1017
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr ""
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1068
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr ""
 
-#: MainWindow.cpp:1070
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr ""
 
-#: MainWindow.cpp:1094 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, fuzzy, kde-format
 msgid "&Playlist"
 msgstr "&Senarai siar"
 
-#: MainWindow.cpp:1111
+#: MainWindow.cpp:1124
 #, fuzzy, kde-format
 msgid "&Tools"
 msgstr "&Peralatan"
 
-#: MainWindow.cpp:1126
+#: MainWindow.cpp:1139
 #, fuzzy, kde-format
 msgid "&Settings"
 msgstr "&Tetapan"
 
-#: MainWindow.cpp:1169
+#: MainWindow.cpp:1191
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10627,23 +10627,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1192
 #, fuzzy, kde-format
 #| msgid "Menu"
 msgid "Hide Menu"
 msgstr "Menu"
 
-#: MainWindow.cpp:1212
+#: MainWindow.cpp:1234
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr ""
 
-#: MainWindow.cpp:1225
+#: MainWindow.cpp:1247
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr ""
 
-#: MainWindow.cpp:1299
+#: MainWindow.cpp:1321
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -15188,39 +15188,39 @@ msgstr ""
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Mute"
 msgid "Muted"
 msgstr "Bisu"
 
-#: TrayIcon.cpp:158
+#: TrayIcon.cpp:162
 #, fuzzy, kde-format
 #| msgid "%1:%2"
 msgid "%1%"
 msgstr "%1:%2"
 
-#: TrayIcon.cpp:160
+#: TrayIcon.cpp:164
 #, fuzzy, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "Volum: %1%"
 
-#: TrayIcon.cpp:166
+#: TrayIcon.cpp:170
 #, fuzzy, kde-format
 msgid "Score: %1"
 msgstr "Mata: %1"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:188
 #, fuzzy, kde-format
 msgid "Rating: %1"
 msgstr "Nilaian:"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:194
 #, fuzzy, kde-format
 msgid "Play count: %1"
 msgstr "&Lajur Kiri"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:198
 #, fuzzy, kde-format
 msgid "Last played: %1"
 msgstr "Disimpan terakhir:"

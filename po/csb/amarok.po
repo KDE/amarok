@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-04 01:43+0000\n"
+"POT-Creation-Date: 2024-07-05 01:42+0000\n"
 "PO-Revision-Date: 2009-12-21 00:36+0100\n"
 "Last-Translator: Mark Kwidzińśczi <mark@linuxcsb.org>\n"
 "Language-Team: Kaszëbsczi <i18n-csb@linuxcsb.org>\n"
@@ -1508,7 +1508,7 @@ msgstr "Nieznóny"
 msgid "New Bookmark"
 msgstr "Nowé załóżczi"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:781
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, fuzzy, kde-format
 #| msgid "Bookmark"
 msgid "Bookmark Manager"
@@ -1608,10 +1608,10 @@ msgstr ""
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:483
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:486 MainWindow.cpp:1225
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:493
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:494
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:495
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496 MainWindow.cpp:1247
 #, kde-format
 msgid "Unknown"
 msgstr "Nieznóny"
@@ -1666,7 +1666,7 @@ msgstr "Artista \"%1\" z %2"
 msgid "Artist \"%1\""
 msgstr "Artista \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:777
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, fuzzy, kde-format
 #| msgid "Bookmark"
 msgid "Bookmark Media Sources View"
@@ -1839,7 +1839,7 @@ msgid ""
 "audio players and CDs."
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:925
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "Szëkôj w kòlekcëji"
@@ -4611,7 +4611,7 @@ msgid "Don't change page automatically"
 msgstr "Zaktualnianié môlowi bazë pòdôwków Magnatune."
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:363
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:373
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4760,7 +4760,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Aktualizëjë kòlekcëjã"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:390
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:400
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, fuzzy, kde-format
 #| msgid "Play Audio CD"
@@ -7894,7 +7894,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:110 MainWindow.cpp:797
+#: covermanager/CoverManager.cpp:110 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr ""
@@ -10112,7 +10112,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Miono lëstë òdegraniô"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
 #, fuzzy, kde-format
 #| msgid "No track playing"
 msgid "Now playing"
@@ -11096,7 +11096,7 @@ msgstr "Òbezdrzë"
 msgid "Lock Layout"
 msgstr "Zablokùjë widok"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1299
+#: MainWindow.cpp:369 MainWindow.cpp:1321
 #, fuzzy, kde-format
 #| msgid "Playlist layouts"
 msgid "Reset Layout"
@@ -11135,269 +11135,269 @@ msgstr "Dodôj strëgã"
 msgid "Enter Stream URL:"
 msgstr "Wpiszë URL strëdżi:"
 
-#: MainWindow.cpp:747
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Dodôj media..."
 
-#: MainWindow.cpp:752
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "Wë&czëszczë lëstã graniô"
 
-#: MainWindow.cpp:757
+#: MainWindow.cpp:766
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "&Régùjë"
 
-#: MainWindow.cpp:762
+#: MainWindow.cpp:771
 #, fuzzy, kde-format
 #| msgid "Remove Applet"
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Rëmôj aplet"
 
-#: MainWindow.cpp:769
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Dodôj strëgã..."
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Ekspòrtëjë lëstã graniô jakno..."
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr ""
 
-#: MainWindow.cpp:789 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 #| msgid "Smart Playlist"
 msgid "Bookmark Playlist Setup"
 msgstr "Jinteligentnô lësta gróniô"
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:802
 #, fuzzy, kde-format
 #| msgid "Bookmark this Artist"
 msgid "Bookmark Context Applets"
 msgstr "Dodôj negò artistã do załóżków"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "Grôj media..."
 
-#: MainWindow.cpp:806
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr ""
 
-#: MainWindow.cpp:812 MainWindow.cpp:818 MainWindow.cpp:825
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "&Szëkôj w przódk"
 
-#: MainWindow.cpp:832 MainWindow.cpp:838 MainWindow.cpp:845
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "&Szëkôj dowslôdë"
 
-#: MainWindow.cpp:851
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "Aktualizëjë kòlekcëjã"
 
-#: MainWindow.cpp:855
+#: MainWindow.cpp:864
 #, fuzzy, kde-format
 #| msgid "Collection Statistics"
 msgid "Synchronize Statistics..."
 msgstr "Statisticzi kòlekcëji"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "Piprzédny sztëczk"
 
-#: MainWindow.cpp:870
+#: MainWindow.cpp:879
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "Òtaksëjë biéżny sztëczk: 1"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:886
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "Shuffle Playlist"
 msgstr "&Zapiszë lëstã graniô"
 
-#: MainWindow.cpp:883
+#: MainWindow.cpp:892
 #, fuzzy, kde-format
 #| msgctxt "Replace the currently loaded tracks with these"
 #| msgid "&Replace Playlist"
 msgid "Repopulate Playlist"
 msgstr "&Pòdmieni lëstã graniô"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:898
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "Domëslné dinamiczné lëstë graniô"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "Pòstãpny sztëczk"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "Zwikszë głosnosc"
 
-#: MainWindow.cpp:904
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Zminészë głosnosc"
 
-#: MainWindow.cpp:910
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Przełączë przédne òkno"
 
-#: MainWindow.cpp:915
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr ""
 
-#: MainWindow.cpp:920 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Przëszëkôj lësta gróniô"
 
-#: MainWindow.cpp:930
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "Pòkażë biéżné sztëcczi"
 
-#: MainWindow.cpp:934
+#: MainWindow.cpp:943
 #, fuzzy, kde-format
 #| msgid "Location:"
 msgid "Show Notification Popup"
 msgstr "Môl:"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "Wëcëszë głosnosc"
 
-#: MainWindow.cpp:944
+#: MainWindow.cpp:953
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Love Current Track"
 msgstr "Achtnij biéżny sztëczk"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:958
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Ban Current Track"
 msgstr "Achtnij biéżny sztëczk"
 
-#: MainWindow.cpp:954
+#: MainWindow.cpp:963
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Skip Current Track"
 msgstr "Achtnij biéżny sztëczk"
 
-#: MainWindow.cpp:959 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Régùjë sztëczk"
 
-#: MainWindow.cpp:964
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:969
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Òtaksëjë biéżny sztëczk: 1"
 
-#: MainWindow.cpp:974
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Òtaksëjë biéżny sztëczk: 2"
 
-#: MainWindow.cpp:979
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Òtaksëjë biéżny sztëczk: 3"
 
-#: MainWindow.cpp:984
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Òtaksëjë biéżny sztëczk: 4"
 
-#: MainWindow.cpp:989
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Òtaksëjë biéżny sztëczk: 5"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1013
+#: MainWindow.cpp:1022
 #, fuzzy, kde-format
 #| msgid "&Amarok"
 msgid "&About Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1017
+#: MainWindow.cpp:1026
 #, fuzzy, kde-format
 #| msgid "St&atistics"
 msgid "&Diagnostics"
 msgstr "&Statisticzi"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1068
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "&Mùzyka"
 
-#: MainWindow.cpp:1070
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1094 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Lësta graniô"
 
-#: MainWindow.cpp:1111
+#: MainWindow.cpp:1124
 #, kde-format
 msgid "&Tools"
 msgstr "&Nôrzãdza"
 
-#: MainWindow.cpp:1126
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "&Settings"
 msgstr "Ùs&towë"
 
-#: MainWindow.cpp:1169
+#: MainWindow.cpp:1191
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11405,23 +11405,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1192
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "Zatacë menu"
 
-#: MainWindow.cpp:1212
+#: MainWindow.cpp:1234
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Paùza :: %1"
 
-#: MainWindow.cpp:1225
+#: MainWindow.cpp:1247
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1299
+#: MainWindow.cpp:1321
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -16403,43 +16403,43 @@ msgstr "Pòlécóné przez %1"
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "Wëcëszony"
 
-#: TrayIcon.cpp:158
+#: TrayIcon.cpp:162
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
 msgid "%1%"
 msgstr "%1 %2"
 
-#: TrayIcon.cpp:160
+#: TrayIcon.cpp:164
 #, fuzzy, kde-format
 #| msgid "Volume: %1% %2"
 msgid "<i>Volume: %1</i>"
 msgstr "Głosnosc: %1% %2"
 
-#: TrayIcon.cpp:166
+#: TrayIcon.cpp:170
 #, fuzzy, kde-format
 #| msgid "Score:"
 msgid "Score: %1"
 msgstr "Pùnktacëjô:"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:188
 #, fuzzy, kde-format
 #| msgid "Rating:"
 msgid "Rating: %1"
 msgstr "Notowania:"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:194
 #, fuzzy, kde-format
 #| msgid "Play count"
 msgid "Play count: %1"
 msgstr "Rechòwnik òdegraniô"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:198
 #, fuzzy, kde-format
 #| msgid "Last played"
 msgid "Last played: %1"
