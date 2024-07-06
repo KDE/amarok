@@ -185,12 +185,19 @@ QString
 PlaylistFile::trackLocation( const Meta::TrackPtr &track ) const
 {
     QUrl path = track->playableUrl();
-    if( path.isEmpty() )
+    if( path.isEmpty() ) // track is metaproxy or something similar
+    {
+        QUrl uidPath = QUrl( track->uidUrl() );
+        if( !uidPath.isLocalFile() )
+            return uidPath.toString( QUrl::FullyEncoded );
         return track->uidUrl();
+    }
 
     if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
-        return path.toEncoded();
+    {
+        return path.toString( QUrl::FullyEncoded );
+    }
 
     QDir playlistDir( m_url.adjusted(QUrl::RemoveFilename).path() );
-    return QUrl::toPercentEncoding( playlistDir.relativeFilePath( path.path() ), "/" );
+    return playlistDir.relativeFilePath( path.path() );
 }
