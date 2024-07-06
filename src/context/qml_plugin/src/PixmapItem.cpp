@@ -21,8 +21,7 @@
 #include "PixmapItem.h"
 
 #include <QQuickWindow>
-
-#include <KDeclarative/KQuickAddons/ManagedTextureNode>
+#include <QSGSimpleTextureNode>
 
 
 PixmapItem::PixmapItem()
@@ -56,14 +55,15 @@ QSGNode* PixmapItem::updatePaintNode( QSGNode *oldNode, UpdatePaintNodeData *upd
         return nullptr;
     }
 
-    ManagedTextureNode *textureNode = dynamic_cast<ManagedTextureNode*>( oldNode );
+    QSGSimpleTextureNode *textureNode = dynamic_cast<QSGSimpleTextureNode*>( oldNode );
 
     if( !textureNode || m_pixmapChanged )
     {
         delete oldNode;
-        textureNode = new ManagedTextureNode;
+        textureNode = new QSGSimpleTextureNode;
         textureNode->setFiltering( QSGTexture::Linear );
-        textureNode->setTexture( QSharedPointer<QSGTexture>( window()->createTextureFromImage( m_source.toImage(), QQuickWindow::TextureCanUseAtlas ) ) );
+        m_texture = QSharedPointer<QSGTexture>( window()->createTextureFromImage( m_source.toImage(), QQuickWindow::TextureCanUseAtlas ) );
+        textureNode->setTexture( m_texture.data() );
         m_sizeChanged = true;
         m_pixmapChanged = false;
     }

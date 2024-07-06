@@ -21,9 +21,9 @@
 #ifndef PIXMAPITEM_H
 #define PIXMAPITEM_H
 
-#include <QQuickItem>
-
 #include <QPixmap>
+#include <QQuickItem>
+#include <QSGTexture>
 
 
 class PixmapItem : public QQuickItem
@@ -55,6 +55,7 @@ private:
     QPixmap m_source;
     bool m_pixmapChanged;
     bool m_sizeChanged;
+    QSharedPointer<QSGTexture> m_texture;
 };
 
 #endif // PIXMAPITEM_H
