@@ -472,7 +472,7 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
     ac->addAction( QStringLiteral("stop_after_current"), this );
     setText( i18n( "Stop after current Track" ) );
     setIcon( QIcon::fromTheme(QStringLiteral("media-playback-stop-amarok")) );
-    KGlobalAccel::setGlobalShortcut(this, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_V ) );
+    KGlobalAccel::setGlobalShortcut(this, QKeySequence( Qt::META | Qt::SHIFT | Qt::Key_V ) );
     connect( this, &StopPlayingAfterCurrentTrackAction::triggered, this, &StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack );
 }
 

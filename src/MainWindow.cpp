@@ -756,7 +756,7 @@ MainWindow::createActions()
     QAction *action = new QAction( QIcon::fromTheme( QStringLiteral("document-open") ), i18n("&Add Media..."), this );
     ac->addAction( QStringLiteral("playlist_add"), action );
     connect( action, &QAction::triggered, this, &MainWindow::slotAddLocation );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_A ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_A ) );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("edit-clear-list") ), i18nc( "clear playlist", "&Clear Playlist" ), this );
     connect( action, &QAction::triggered, pc, &Playlist::Controller::clear );
@@ -765,7 +765,7 @@ MainWindow::createActions()
     action = new QAction( QIcon::fromTheme( QStringLiteral("format-list-ordered") ),
                           i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
     //Qt::META+Qt::Key_Q is taken by Plasma as a global
-    action->setShortcut( QKeySequence( Qt::META + Qt::Key_U ) );
+    action->setShortcut( QKeySequence( Qt::META | Qt::Key_U ) );
     ac->addAction( QStringLiteral("playlist_edit_queue"), action );
 
     action = new QAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
@@ -827,7 +827,7 @@ MainWindow::createActions()
                           i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( QStringLiteral("seek_forward_medium"), action );
     action->setShortcut( Qt::Key_Right );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::SHIFT | Qt::Key_Plus ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardMedium );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
@@ -847,7 +847,7 @@ MainWindow::createActions()
                           i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( QStringLiteral("seek_backward_medium"), action );
     action->setShortcut( Qt::Key_Left );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::SHIFT | Qt::Key_Minus ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardMedium );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
@@ -906,13 +906,13 @@ MainWindow::createActions()
 
     action = new QAction( i18n( "Increase Volume" ), this );
     ac->addAction( QStringLiteral("increaseVolume"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_Plus ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_Plus ) );
     action->setShortcut( Qt::Key_Plus );
     connect( action, &QAction::triggered, ec, &EngineController::regularIncreaseVolume );
 
     action = new QAction( i18n( "Decrease Volume" ), this );
     ac->addAction( QStringLiteral("decreaseVolume"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_Minus ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_Minus ) );
     action->setShortcut( Qt::Key_Minus );
     connect( action, &QAction::triggered, ec, &EngineController::regularDecreaseVolume );
 
@@ -923,17 +923,17 @@ MainWindow::createActions()
 
     action = new QAction( i18n( "Toggle Full Screen" ), this );
     ac->addAction( QStringLiteral("toggleFullScreen"), action );
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::SHIFT | Qt::Key_F ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotFullScreen );
 
     action = new QAction( i18n( "Search playlist" ), this );
     ac->addAction( QStringLiteral("searchPlaylist"), action );
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_J ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_J ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotFocusPlaylistSearch );
 
     action = new QAction( i18n( "Search collection" ), this );
     ac->addAction( QStringLiteral("searchCollection"), action );
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_F ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotFocusCollectionSearch );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("music-amarok") ), i18n("Show active track"), this );
@@ -942,62 +942,62 @@ MainWindow::createActions()
 
     action = new QAction( i18n( "Show Notification Popup" ), this );
     ac->addAction( QStringLiteral("showNotificationPopup"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_O ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_O ) );
     connect( action, &QAction::triggered, this, &MainWindow::showNotificationPopup );
 
     action = new QAction( i18n( "Mute Volume" ), this );
     ac->addAction( QStringLiteral("mute"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_M ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_M ) );
     connect( action, &QAction::triggered, ec, &EngineController::toggleMute );
 
     action = new QAction( i18n( "Last.fm: Love Current Track" ), this );
     ac->addAction( QStringLiteral("loveTrack"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_L ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_L ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotLoveTrack );
 
     action = new QAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( QStringLiteral("banTrack"), action );
-    //KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_B ) );
+    //KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_B ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotBanTrack );
 
     action = new QAction( i18n( "Last.fm: Skip Current Track" ), this );
     ac->addAction( QStringLiteral("skipTrack"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_S ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_S ) );
     connect( action, &QAction::triggered, this, &MainWindow::skipTrack );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-track-queue-amarok") ), i18n( "Queue Track" ), this );
     ac->addAction( QStringLiteral("queueTrack"), action );
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_D ) );
     connect( action, &QAction::triggered, this, &MainWindow::switchQueueStateShortcut );
 
     action = new QAction( i18n( "Put Artist - Title of the current track to the clipboard" ), this  );
     ac->addAction( QStringLiteral("artistTitleClipboard"), action);
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_C ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_C ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotPutCurrentTrackToClipboard );
 
     action = new QAction( i18n( "Rate Current Track: 1" ), this );
     ac->addAction( QStringLiteral("rate1"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_1 ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_1 ) );
     connect( action, &QAction::triggered, this, &MainWindow::setRating1 );
 
     action = new QAction( i18n( "Rate Current Track: 2" ), this );
     ac->addAction( QStringLiteral("rate2"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_2 ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_2 ) );
     connect( action, &QAction::triggered, this, &MainWindow::setRating2 );
 
     action = new QAction( i18n( "Rate Current Track: 3" ), this );
     ac->addAction( QStringLiteral("rate3"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_3 ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_3 ) );
     connect( action, &QAction::triggered, this, &MainWindow::setRating3 );
 
     action = new QAction( i18n( "Rate Current Track: 4" ), this );
     ac->addAction( QStringLiteral("rate4"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_4 ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_4 ) );
     connect( action, &QAction::triggered, this, &MainWindow::setRating4 );
 
     action = new QAction( i18n( "Rate Current Track: 5" ), this );
     ac->addAction( QStringLiteral("rate5"), action );
-    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_5 ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::Key_5 ) );
     connect( action, &QAction::triggered, this, &MainWindow::setRating5 );
 
 #ifdef DEBUG_BUILD_TYPE
