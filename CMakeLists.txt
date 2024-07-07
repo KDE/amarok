@@ -83,6 +83,7 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
 
 if(BUILD_WITH_QT6)
   find_package(KF${KF_MAJOR_VERSION}ColorScheme ${KF_MIN_VERSION} REQUIRED)
+  find_package(KF${KF_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION} REQUIRED)
   find_package(KF${KF_MAJOR_VERSION}StatusNotifierItem ${KF_MIN_VERSION} REQUIRED)
   find_package(KF${KF_MAJOR_VERSION}Kirigami ${KF_MIN_VERSION})
   set_package_properties(KF${KF_MAJOR_VERSION}Kirigami PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")

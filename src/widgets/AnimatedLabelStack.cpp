@@ -87,7 +87,11 @@ AnimatedLabelStack::ensureAnimationStatus()
 }
 
 void
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 AnimatedLabelStack::enterEvent( QEvent * )
+#else
+AnimatedLabelStack::enterEvent( QEnterEvent * )
+#endif
 {
     // wait a short time, then pulse through entries
     m_explicit = false;

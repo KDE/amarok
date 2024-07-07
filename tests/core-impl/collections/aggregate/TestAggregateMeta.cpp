@@ -219,7 +219,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleTrack()
 {
     MyTrackMock *mock = new MyTrackMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
-    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    capabilities.insert( Capabilities::Capability::Buyable, nullptr );
     Capabilities::Capability *cap = new MyOrganiseCapability();
     capabilities.insert( Capabilities::Capability::Organisable, cap );
 
@@ -258,7 +258,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleAlbum()
 {
     MyAlbumMock *mock = new MyAlbumMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
-    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    capabilities.insert( Capabilities::Capability::Buyable, nullptr );
     Capabilities::Capability *cap = new MyOrganiseCapability();
     capabilities.insert( Capabilities::Capability::Organisable, cap );
 
@@ -297,7 +297,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleArtist()
 {
     MyArtistMock *mock = new MyArtistMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
-    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    capabilities.insert( Capabilities::Capability::Buyable, nullptr );
     Capabilities::Capability *cap = new MyOrganiseCapability();
     capabilities.insert( Capabilities::Capability::Organisable, cap );
 
@@ -336,7 +336,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleComposer()
 {
     MyComposerMock *mock = new MyComposerMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
-    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    capabilities.insert( Capabilities::Capability::Buyable, nullptr );
     Capabilities::Capability *cap = new MyOrganiseCapability();
     capabilities.insert( Capabilities::Capability::Organisable, cap );
 
@@ -375,7 +375,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleGenre()
 {
     MyGenreMock *mock = new MyGenreMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
-    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    capabilities.insert( Capabilities::Capability::Buyable, nullptr );
     Capabilities::Capability *cap = new MyOrganiseCapability();
     capabilities.insert( Capabilities::Capability::Organisable, cap );
 
@@ -414,7 +414,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleYear()
 {
     MyYearMock *mock = new MyYearMock();
     QMap<Capabilities::Capability::Type, Capabilities::Capability*>  capabilities;
-    capabilities.insert( Capabilities::Capability::Buyable, 0 );
+    capabilities.insert( Capabilities::Capability::Buyable, nullptr );
     Capabilities::Capability *cap = new MyOrganiseCapability();
     capabilities.insert( Capabilities::Capability::Organisable, cap );
 

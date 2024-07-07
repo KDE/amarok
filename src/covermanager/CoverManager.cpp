@@ -38,6 +38,7 @@
 #include "widgets/PixmapViewer.h"
 
 #include <QAction>
+#include <QActionGroup>
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QMenu>    //showCoverMenu()

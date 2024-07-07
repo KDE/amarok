@@ -276,7 +276,7 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
                         info.remove( Meta::Field::DISCNUMBER );
                 }
                 QVariantList trackInfoList = m_currentTrackInfo.value( id ).toList();
-                trackInfoList.append( info );
+                trackInfoList.append( info.values() );
                 m_currentTrackInfo.insert( id, trackInfoList );
             }
             else if( elementName == QStringLiteral("release-group") )

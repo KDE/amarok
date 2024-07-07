@@ -388,7 +388,11 @@ QUrl Dynamic::EchoNestBias::createUrl( const QString &method, QMultiMap< QString
 
     // take care of the ID possibility  manually
     // Qt setQueryItems doesn't encode a bunch of stuff, so we do it manually
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMapIterator<QString, QString> i( params );
+#else
+    QMultiMapIterator<QString, QString> i( params );
+#endif
     while ( i.hasNext() ) {
         i.next();
         QByteArray const key = QUrl::toPercentEncoding( i.key() );

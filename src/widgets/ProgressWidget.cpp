@@ -250,7 +250,7 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
                     {
                         int pos = url->args().value( QStringLiteral("pos") ).toDouble() * 1000;
                         debug() << "showing timecode: " << url->name() << " at " << pos ;
-                        addBookmark( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ));
+                        addBookmark( url->name(), pos, ( BookmarkName && *BookmarkName == url->name() ));
                     }
                 }
             }

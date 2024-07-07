@@ -1832,9 +1832,9 @@ QByteArray
 SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& file ) const
 {
     // FIXME: All existing image stores have been invalidated.
-    return QCryptographicHash::hash( artist.toLower().toUtf8() + QByteArray( "#" ) +
+    return QCryptographicHash::hash( QByteArray( artist.toLower().toUtf8() + QByteArray( "#" ) +
                                      album.toLower().toUtf8() + QByteArray( "?" ) +
-                                     file.toUtf8(),
+                                     file.toUtf8() ),
                                      QCryptographicHash::Md5
     ).toHex();
 }

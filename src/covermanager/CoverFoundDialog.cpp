@@ -30,6 +30,7 @@
 #include "widgets/AlbumBreadcrumbWidget.h"
 #include "widgets/PixmapViewer.h"
 
+#include <QActionGroup>
 #include <QCloseEvent>
 #include <QDir>
 #include <QFileDialog>

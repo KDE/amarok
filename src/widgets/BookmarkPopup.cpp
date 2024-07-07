@@ -161,7 +161,11 @@ void BookmarkPopup::mouseMoveEvent ( QMouseEvent * event )
     }
 }
 
-void BookmarkPopup::enterEvent ( QEvent* )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+void BookmarkPopup::enterEvent ( QEvent * )
+#else
+void BookmarkPopup::enterEvent ( QEnterEvent * )
+#endif
 {
     m_hasMouseOver = true;
 }

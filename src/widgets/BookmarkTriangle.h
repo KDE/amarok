@@ -45,7 +45,11 @@ public:
     void mousePressEvent ( QMouseEvent * event ) override;
     void mouseMoveEvent ( QMouseEvent * event ) override;
     void mouseReleaseEvent  (QMouseEvent *) override;
-    void enterEvent ( QEvent * event ) override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void enterEvent( QEvent * ) override;
+#else
+    void enterEvent( QEnterEvent * ) override;
+#endif
     void leaveEvent ( QEvent * event ) override;
     void paintEvent ( QPaintEvent* ) override;
 

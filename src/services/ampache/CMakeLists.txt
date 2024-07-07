@@ -77,10 +77,19 @@ ki18n_wrap_ui( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui NewS
 
 add_library(kcm_amarok_service_ampache MODULE ${kcm_amarok_service_ampache_PART_SRCSS} )
 
-target_link_libraries( kcm_amarok_service_ampache
+if(BUILD_WITH_QT6)
+target_link_libraries(kcm_amarok_service_ampache
+    ampache_account_login
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::KCMUtils
+)
+else()
+target_link_libraries(kcm_amarok_service_ampache
     ampache_account_login
     KF${KF_MAJOR_VERSION}::ConfigWidgets
 )
+endif()
+
 
 install(TARGETS kcm_amarok_service_ampache DESTINATION ${KDE_INSTALL_PLUGINDIR})
 

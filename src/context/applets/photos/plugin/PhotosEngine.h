@@ -102,7 +102,7 @@ private:
         QUrl urlphoto;      // url of the photos, for the download
         QUrl urlpage;       // Url for the browser ( http://www.flickr.com/photos/wanderlustg/322285063/ )
 
-        bool operator==( const PhotoInfo &other )
+        bool operator==( const PhotoInfo &other ) const
         {
             return title == other.title &&
                    urlphoto == other.urlphoto &&

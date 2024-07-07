@@ -48,7 +48,11 @@ Q_SIGNALS:
     void clicked( const QString &current );
 
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent( QEvent * ) override;
+#else
+    void enterEvent( QEnterEvent * ) override;
+#endif
     void hideEvent( QHideEvent * ) override;
     void leaveEvent( QEvent * ) override;
     void paintEvent( QPaintEvent * ) override;

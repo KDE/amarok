@@ -335,7 +335,11 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
         actions << provider->playlistActions( providerPlaylists );
 
         QMultiHash<PlaylistPtr, int> playlistTracks;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QHashIterator<PlaylistPtr, int> it( m_actionTracks );
+#else
+        QMultiHashIterator<PlaylistPtr, int> it( m_actionTracks );
+#endif
         while( it.hasNext() )
         {
             it.next();

@@ -19,7 +19,7 @@
 
 #include "MagnatuneConfig.h"
 
-#include <kcmodule.h>
+#include <KCModule>
 
 namespace Ui { class MagnatuneConfigWidget; }
 

@@ -77,6 +77,12 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
     }
 }
 
+static void
+safePlug( KActionCollection *ac, QString name, QWidget *w )
+{
+    safePlug( ac, name.toLocal8Bit().constData(), w );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // MenuAction && Menu

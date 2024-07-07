@@ -352,7 +352,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     const int align = Qt::AlignCenter;
 
     QPainter p( this );
-    p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
+    p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform );
     p.setClipRect( e->rect() );
 
     QColor windowBackground = QGuiApplication::palette().color( QPalette::Window );

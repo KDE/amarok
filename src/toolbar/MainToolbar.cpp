@@ -565,7 +565,7 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
                 {
                     int pos = url->args().value( QStringLiteral("pos") ).toDouble() * 1000;
                     debug() << "showing timecode: " << url->name() << " at " << pos ;
-                    m_slider->drawTriangle( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ) );
+                    m_slider->drawTriangle( url->name(), pos, ( BookmarkName && *BookmarkName == url->name() ) );
                 }
             }
             delete tcl;

@@ -66,7 +66,12 @@ void VolumeDial::paletteChanged( const QPalette &palette )
     renderIcons();
 }
 
-void VolumeDial::enterEvent( QEvent * )
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+void VolumeDial::enterEvent ( QEvent * )
+#else
+void VolumeDial::enterEvent ( QEnterEvent * )
+#endif
 {
     startFade();
 }

@@ -22,8 +22,10 @@
 #include <KAboutData>
 #include <KCrash>
 #include <KDBusService>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Kdelibs4ConfigMigrator>
 #include <Kdelibs4Migration>
+#endif
 
 #include <KLocalizedString>
 
@@ -56,6 +58,7 @@ int main( int argc, char *argv[] )
 
     KCrash::initialize();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Kdelibs4ConfigMigrator configMigrator(QStringLiteral("amarok"));
     configMigrator.setConfigFiles(QStringList()
                                   << QStringLiteral("amarokrc")
@@ -87,6 +90,7 @@ int main( int argc, char *argv[] )
             }
         }
     }
+#endif
 
     KAboutData aboutData( QStringLiteral("amarok"),
                           i18n( "Amarok" ),

@@ -35,6 +35,9 @@
 #include "support/AudioCdDeviceInfo.h"
 
 #include <KIO/Job>
+#include <KIO/ListJob>
+#include <KIO/StatJob>
+#include <KIO/StoredTransferJob>
 #include <KIO/UDSEntry>
 
 #include <solid/device.h>
@@ -555,7 +558,7 @@ void
 AudioCdCollection::readAudioCdSettings()
 {
     KSharedConfigPtr conf = KSharedConfig::openConfig( QStringLiteral("kcmaudiocdrc") );
-    KConfigGroup filenameConf = conf->group( "FileName" );
+    KConfigGroup filenameConf = conf->group( QStringLiteral("FileName") );
 
     m_fileNamePattern = filenameConf.readEntry( "file_name_template", "%{trackartist} - %{number} - %{title}" );
     m_albumNamePattern = filenameConf.readEntry( "album_name_template", "%{albumartist} - %{albumtitle}" );

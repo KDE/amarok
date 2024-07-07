@@ -38,7 +38,11 @@ public:
 
     void mouseReleaseEvent ( QMouseEvent * event ) override;
     void mouseMoveEvent ( QMouseEvent * event ) override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent ( QEvent* ) override;
+#else
+    void enterEvent ( QEnterEvent* ) override;
+#endif
     void leaveEvent ( QEvent* ) override;
 
     virtual void displayNeeded ( bool value );

@@ -29,7 +29,6 @@ include_directories(
   # ${AMAROK_SOURCE_TREE}/core-impl/logger
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_BINARY_DIR}/src/dynamic
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
 )

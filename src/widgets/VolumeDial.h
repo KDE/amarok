@@ -46,7 +46,11 @@ Q_SIGNALS:
     void muteToggled( bool mute );
 
 protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent( QEvent * ) override;
+#else
+    void enterEvent( QEnterEvent * ) override;
+#endif
     bool eventFilter( QObject *o, QEvent *e ) override;
     void leaveEvent( QEvent * ) override;
     void paintEvent( QPaintEvent * ) override;

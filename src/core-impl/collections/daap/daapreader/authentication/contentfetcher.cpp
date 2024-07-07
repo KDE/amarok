@@ -42,7 +42,7 @@ ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QS
     QByteArray pass = password.toUtf8();
     if( !password.isNull() )
     {
-        m_authorize = "Basic " + KCodecs::base64Encode( "none:" + pass );
+        m_authorize = "Basic " + KCodecs::base64Encode( QByteArray("none:" + pass) );
     }
 }
 

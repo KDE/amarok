@@ -54,7 +54,7 @@ void AmarokScriptXml::setReaderData(const QString& data)
 
 bool AmarokScriptXml::setDomObjectData(const QString& data)
 {
-    return m_domDocument->setContent( data );
+    return static_cast<bool>( m_domDocument->setContent( data ) );
 }
 
 QString AmarokScriptXml::readFirstStreamElementWithName(const QString& name)

@@ -131,7 +131,7 @@ void LyricsEngine::refetchLyrics() const
 
 qreal LyricsEngine::fontSize() const
 {
-    return Amarok::config( QStringLiteral("Context") ).group( "Lyrics" ).readEntry( "fontSize", 18 );
+    return Amarok::config( QStringLiteral("Context") ).group( QStringLiteral("Lyrics") ).readEntry( "fontSize", 18 );
 }
 
 void LyricsEngine::setFontSize(qreal fontSize)
@@ -141,13 +141,13 @@ void LyricsEngine::setFontSize(qreal fontSize)
     if( fontSize == this->fontSize() )
         return;
 
-    Amarok::config( QStringLiteral("Context") ).group( "Lyrics" ).writeEntry( "fontSize", fontSize );
+    Amarok::config( QStringLiteral("Context") ).group( QStringLiteral("Lyrics") ).writeEntry( "fontSize", fontSize );
     Q_EMIT fontSizeChanged();
 }
 
 int LyricsEngine::alignment() const
 {
-    return Amarok::config( QStringLiteral("Context") ).group( "Lyrics" ).readEntry( "alignment", 2 );
+    return Amarok::config( QStringLiteral("Context") ).group( QStringLiteral("Lyrics") ).readEntry( "alignment", 2 );
 }
 
 void LyricsEngine::setAlignment(int alignment)
@@ -157,13 +157,13 @@ void LyricsEngine::setAlignment(int alignment)
     if( alignment == this->alignment() )
         return;
 
-    Amarok::config( QStringLiteral("Context") ).group( "Lyrics" ).writeEntry( "alignment", alignment );
+    Amarok::config( QStringLiteral("Context") ).group( QStringLiteral("Lyrics") ).writeEntry( "alignment", alignment );
     Q_EMIT alignmentChanged();
 }
 
 QString LyricsEngine::font() const
 {
-    return Amarok::config( QStringLiteral("Context") ).group( "Lyrics" ).readEntry( "font", QFont().family() );
+    return Amarok::config( QStringLiteral("Context") ).group( QStringLiteral("Lyrics") ).readEntry( "font", QFont().family() );
 }
 
 void LyricsEngine::setFont(const QString& font)
@@ -173,7 +173,7 @@ void LyricsEngine::setFont(const QString& font)
     if( font == this->font() )
         return;
 
-    Amarok::config( QStringLiteral("Context") ).group( "Lyrics" ).writeEntry( "font", font );
+    Amarok::config( QStringLiteral("Context") ).group( QStringLiteral("Lyrics") ).writeEntry( "font", font );
     Q_EMIT fontChanged();
 }
 

@@ -19,7 +19,7 @@
 
 #include "AmpacheConfig.h"
 
-#include <KConfigWidgets/KCModule>
+#include <KCModule>
 
 namespace Ui { class AmpacheConfigWidget; }
 
