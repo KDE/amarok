@@ -15,12 +15,14 @@
  ****************************************************************************************/
 
 #include "AmarokDockWidget.h"
+#include <QHBoxLayout>
 
 AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
     , m_polished( false )
 {
     m_dummyTitleBarWidget = new QWidget( this );
+    m_dummyTitleBarWidget->setLayout( new QHBoxLayout ); // HACK avoid warnings in console output, QTBUG-42986
     connect( this, &AmarokDockWidget::visibilityChanged, this, &AmarokDockWidget::slotVisibilityChanged );
 }
 
