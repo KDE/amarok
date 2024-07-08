@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-05 01:42+0000\n"
-"PO-Revision-Date: 2023-02-08 07:05+0100\n"
+"PO-Revision-Date: 2024-07-07 06:39+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1107,8 +1107,7 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
 msgstr "დაკრული სიმღერების გადაცემა"
 
@@ -1791,12 +1790,10 @@ msgid "Added This Month"
 msgstr "ამ თვეში დამატებული"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "პირველად დაკვრის დრო"
+msgstr "არასდროს-დაკრული"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, kde-format
@@ -1833,11 +1830,10 @@ msgid "Show Track Numbers"
 msgstr "ტრეკის ნომრების ჩვენება"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "სხვადასხვა შემსრულებლები"
+msgstr "შემსრულებლის ჩვენება სხვადასხვა შემსრულებლისთვის"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -2218,8 +2214,7 @@ msgid "Duplicates"
 msgstr "დუბლიკატები"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
 msgstr "შედეგში დუბლირებული სიმღერების დაშვება"
@@ -2420,24 +2415,20 @@ msgstr[0] "ტრეკის %2-დან წაშლა"
 msgstr[1] "%1 ტრეკის წაშლა %2-დან"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "%1-დან დასაკრავი სიის წაშლა."
+msgstr "წავშალო დასაკრავი სია <i>%1</i> %2-დან?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "%1-დან დასაკრავი სიის წაშლა."
+msgstr "წავშალო %1 დასაკრავი სია %2-დან?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
@@ -4304,18 +4295,16 @@ msgid "Track"
 msgstr "აუდიობილიკი"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "გაცვლის ბუფერში კოპირება"
+msgstr "ბმულის ბმულის ბაფერში კოპირება"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "გაცვლის ბუფერში კოპირება"
+msgstr "გამოსახულების ბუფერში კოპირება"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4332,20 +4321,16 @@ msgid "No information found..."
 msgstr "ინფორმაცია ნაპოვნი არაა..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artist|band).*\\))"
+msgstr ".*\\(.*(artist|band).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(composer|musician).*\\))"
+msgstr ".*\\(.*(composer|musician).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
@@ -8433,7 +8418,7 @@ msgstr ""
 #: dialogs/TagGuesserDialog.cpp:224
 #, kde-format
 msgid "Guess Tags from Filename"
-msgstr ""
+msgstr "ჭდეების ფაილის სახელიდან მიხვედრა"
 
 #: dialogs/TagGuesserDialog.cpp:313
 #, kde-format
@@ -8964,7 +8949,7 @@ msgstr ""
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
-msgstr ""
+msgstr "<b>%1</b> ავტორი <b>%2</b> დრო <b>%3</b>"
 
 #: EngineController.cpp:1311
 #, kde-format
@@ -9027,7 +9012,7 @@ msgstr ""
 #: equalizer/EqualizerPresets.cpp:88
 #, kde-format
 msgid "Large Hall"
-msgstr ""
+msgstr "დიდი ოთახი"
 
 #: equalizer/EqualizerPresets.cpp:89
 #, kde-format
@@ -9715,7 +9700,7 @@ msgstr "Olivier Bédard"
 #: main.cpp:234
 #, kde-format
 msgid "Website hosting"
-msgstr ""
+msgstr "ვებგვერდის ჰოსტინგი"
 
 #: main.cpp:236
 #, kde-format
@@ -10161,7 +10146,7 @@ msgstr ""
 #: MainWindow.cpp:428
 #, kde-format
 msgid "Docking in System Tray"
-msgstr ""
+msgstr "სისტემურ საათთან მიმაგრება"
 
 #: MainWindow.cpp:528
 #, kde-format
@@ -10691,12 +10676,12 @@ msgstr ""
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr ""
+msgstr "განლაგებ '%1' ერთ-ერთ- ნაგულისხმევი განლაგებაა და მას ვერ წაშლით."
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "Cannot Delete Default Layouts"
-msgstr ""
+msgstr "ნაგულისხმევი განლაგებების წაშლა შეუძლებელია"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:81
 #, kde-format
@@ -14850,7 +14835,7 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.ui:89
 #, kde-format
 msgid "Transcode"
-msgstr ""
+msgstr "გადაყვანა"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)
