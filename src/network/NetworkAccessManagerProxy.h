@@ -21,7 +21,6 @@
 #include <config.h>
 #include "core/support/Debug.h"
 
-#include <KIO/AccessManager>
 
 #include <QNetworkReply>
 #include <QPointer>
@@ -35,12 +34,21 @@ class NetworkAccessManagerProxy;
 class NetworkAccessViewer;
 #endif // DEBUG_BUILD_TYPE
 
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <KIO/AccessManager>
+typedef KIO::Integration::AccessManager NetworkAccessManagerProxyBase;
+#else
+#include <QNetworkAccessManager>
+typedef QNetworkAccessManager NetworkAccessManagerProxyBase;
+#endif
+
 namespace The
 {
     AMAROK_EXPORT NetworkAccessManagerProxy *networkAccessManager();
 }
 
-class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::Integration::AccessManager
+class AMAROK_EXPORT NetworkAccessManagerProxy : public NetworkAccessManagerProxyBase
 {
     Q_OBJECT
 

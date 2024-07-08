@@ -26,7 +26,6 @@
 
 #include <KProtocolManager>
 
-
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = nullptr;
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::instance()
@@ -46,7 +45,7 @@ void NetworkAccessManagerProxy::destroy()
 }
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
-    : KIO::Integration::AccessManager( parent )
+    : NetworkAccessManagerProxyBase( parent )
     , m_userAgent( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) )
 #ifdef DEBUG_BUILD_TYPE
     , m_viewer( nullptr )
@@ -147,6 +146,7 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
     else
         request.setRawHeader( "User-Agent", m_userAgent.toLocal8Bit() );
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     KIO::CacheControl cc = KProtocolManager::cacheControl();
     switch (cc)
     {
@@ -168,8 +168,11 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
         request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
         break;
     }
+#else
+    //TODO Qt6 cache functionality
+#endif
 
-    QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, request, outgoingData );
+    QNetworkReply *reply = NetworkAccessManagerProxyBase::createRequest( op, request, outgoingData );
 
 #ifdef DEBUG_BUILD_TYPE
     if( m_viewer )
