@@ -72,7 +72,7 @@ LastFmTreeModel::slotAddFriends()
     lastfm::XmlQuery lfm;
     if( lfm.parse( reply->readAll() ) )
     {
-        QList<lastfm::XmlQuery> children = lfm[ QStringLiteral("friends") ].children( "user" );
+        QList<lastfm::XmlQuery> children = lfm[ QStringLiteral("friends") ].children( QStringLiteral("user") );
         int start = m_myFriends->childCount();
         QModelIndex parent = index( m_myFriends->row(), 0 );
         beginInsertRows( parent, start, start + children.size() );
@@ -152,7 +152,7 @@ LastFmTreeModel::slotAddTopArtists()
     lastfm::XmlQuery lfm;
     if( lfm.parse( reply->readAll() ) )
     {
-        for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("topartists") ].children( "artist" ) )
+        for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("topartists") ].children( QStringLiteral("artist") ) )
         {
             QString name = e[ QStringLiteral("name") ].text();
             int playcount = e[ QStringLiteral("playcount") ].text().toInt();
@@ -505,7 +505,7 @@ LastFmTreeModel::setupModelData( LastFmTreeItem *parent )
 QString
 LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
 {
-    QString const encoded_username = QUrl::toPercentEncoding( m_user.name() );
+    QString const encoded_username = QString::fromLatin1( QUrl::toPercentEncoding( m_user.name() ) );
     switch( type )
     {
     case MyRecommendations:
@@ -515,13 +515,13 @@ LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
     case MixRadio:
         return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/mix");
     case MyTagsChild:
-        return QStringLiteral("lastfm://usertags/") + encoded_username + QStringLiteral("/") + QUrl::toPercentEncoding( key );
+        return QStringLiteral("lastfm://usertags/") + encoded_username + QStringLiteral("/") + QLatin1String( QUrl::toPercentEncoding( key ) );
     case FriendsChild:
-        return QStringLiteral("lastfm://user/") + QUrl::toPercentEncoding( key ) + QStringLiteral("/personal");
+        return QStringLiteral("lastfm://user/") + QLatin1String( QUrl::toPercentEncoding( key ) ) + QStringLiteral("/personal");
     case ArtistsChild:
-        return QStringLiteral("lastfm://artist/") + QUrl::toPercentEncoding( key ) + QStringLiteral("/similarartists");
+        return QStringLiteral("lastfm://artist/") + QLatin1String( QUrl::toPercentEncoding( key ) ) + QStringLiteral("/similarartists");
     case UserChildPersonal:
-        return QStringLiteral("lastfm://user/") + QUrl::toPercentEncoding( key ) + QStringLiteral("/personal");
+        return QStringLiteral("lastfm://user/") + QLatin1String( QUrl::toPercentEncoding( key ) ) + QStringLiteral("/personal");
     default:
         return QStringLiteral("");
     }

@@ -130,7 +130,7 @@ void LastFmServiceCollection::slotAddFriendsLoved()
             lastfm::XmlQuery lfm;
             if( lfm.parse( m_jobs[ QStringLiteral("user.getFriends") ]->readAll() ) )
             {
-                for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("friends") ].children( "user" ) )
+                for( const lastfm::XmlQuery &e : lfm[ QStringLiteral("friends") ].children( QStringLiteral( "user" ) ) )
                 {
                     const QString name = e[ QStringLiteral("name") ].text();
                     LastFm::Track *track = new LastFm::Track( QStringLiteral("lastfm://user/") + name + QStringLiteral("/loved") );
@@ -156,7 +156,7 @@ void LastFmServiceCollection::slotAddFriendsLoved()
             break;
     }
 
-    m_jobs[ "user.getFriends" ]->deleteLater();
+    m_jobs[ QStringLiteral("user.getFriends") ]->deleteLater();
 }
 
 void LastFmServiceCollection::slotAddFriendsPersonal()

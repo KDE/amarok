@@ -100,13 +100,13 @@ Dynamic::LastFmBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::LastFmBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "match", nameForMatch( m_match ) );
+    writer->writeTextElement( QStringLiteral("match"), nameForMatch( m_match ) );
 }
 
 QString
 Dynamic::LastFmBias::sName()
 {
-    return "lastfm_similarartists";
+    return QStringLiteral("lastfm_similarartists");
 }
 
 QString
@@ -138,7 +138,7 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
     QLabel *imageLabel = new QLabel();
-    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/lastfm.png" ) ) );
+    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/lastfm.png") ) ) );
     QLabel *label = new QLabel( i18n( "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to" ) );
 
     QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
@@ -190,7 +190,7 @@ Dynamic::LastFmBias::matchingTracks( const Meta::TrackList& playlist,
         {
             if( m_currentTrack.isEmpty() )
                 return Dynamic::TrackSet( universe, true );
-            QString key = m_currentTrack + '|' + m_currentArtist;
+            QString key = m_currentTrack + QLatin1Char('|') + m_currentArtist;
             if( m_tracksMap.contains( key ) )
                 return m_tracksMap.value( key );
         }
@@ -283,7 +283,7 @@ Dynamic::LastFmBias::newQuery()
             if( m_similarArtistMap.contains( m_currentArtist ) )
             {
                 similarArtists = m_similarArtistMap.value( m_currentArtist );
-                debug() << "for"<<m_currentArtist<<"got similar artists:" << similarArtists.join(", ");
+                debug() << "for"<<m_currentArtist<<"got similar artists:" << similarArtists.join(QStringLiteral(", "));
             }
             else
             {
@@ -354,8 +354,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
     //   params[ "limit" ] = "70";
     if( m_match == SimilarArtist )
     {
-        params[ "method" ] = "artist.getSimilar";
-        params[ "artist" ] = m_currentArtist;
+        params[ QStringLiteral("method") ] = QStringLiteral("artist.getSimilar");
+        params[ QStringLiteral("artist") ] = m_currentArtist;
         QNetworkReply* request = lastfm::ws::get( params );
         connect( request, &QNetworkReply::finished,
                  this, &LastFmBias::similarArtistQueryDone );
@@ -364,9 +364,9 @@ void Dynamic::LastFmBias::newSimilarQuery()
     {
         // if( track->mb
         // TODO add mbid if the track has one
-        params[ "method" ] = "track.getSimilar";
-        params[ "artist" ] = m_currentArtist;
-        params[ "track" ] = m_currentTrack;
+        params[ QStringLiteral("method") ] = QStringLiteral("track.getSimilar");
+        params[ QStringLiteral("artist") ] = m_currentArtist;
+        params[ QStringLiteral("track") ] = m_currentTrack;
         QNetworkReply* request = lastfm::ws::get( params );
         connect( request, &QNetworkReply::finished,
                  this, &LastFmBias::similarTrackQueryDone );
@@ -397,13 +397,13 @@ Dynamic::LastFmBias::similarArtistQueryDone() // slot
         return;
     }
 
-    QDomNodeList nodes = d.elementsByTagName( "artist" );
+    QDomNodeList nodes = d.elementsByTagName( QStringLiteral("artist") );
     QStringList similarArtists;
     for( int i =0; i < nodes.size(); ++i )
     {
         QDomElement n = nodes.at( i ).toElement();
         //  n.firstChildElement( "match" ).text().toFloat() * 100,
-        similarArtists.append( n.firstChildElement( "name" ).text() );
+        similarArtists.append( n.firstChildElement( QStringLiteral("name") ).text() );
     }
 
     QMutexLocker locker( &m_mutex );
@@ -440,14 +440,14 @@ void Dynamic::LastFmBias::similarTrackQueryDone()
         return;
     }
 
-    QDomNodeList nodes = d.elementsByTagName( "track" );
+    QDomNodeList nodes = d.elementsByTagName( QStringLiteral("track") );
     QList<TitleArtistPair> similarTracks;
     for( int i =0; i < nodes.size(); ++i )
     {
         QDomElement n = nodes.at( i ).toElement();
         //  n.firstChildElement( "match" ).text().toFloat() * 100,
-        TitleArtistPair pair( n.firstChildElement( "name" ).text(),
-                              n.firstChildElement( "artist" ).firstChildElement( "name" ).text() );
+        TitleArtistPair pair( n.firstChildElement( QStringLiteral("name") ).text(),
+                              n.firstChildElement( QStringLiteral("artist") ).firstChildElement( QStringLiteral("name") ).text() );
         similarTracks.append( pair );
     }
 
@@ -477,7 +477,7 @@ Dynamic::LastFmBias::queryFailed( const char *message )
 void
 Dynamic::LastFmBias::saveDataToFile() const
 {
-    QFile file( Amarok::saveLocation() + "dynamic_lastfm_similar.xml" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_similar.xml") );
     if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
         return;
 
@@ -611,7 +611,7 @@ Dynamic::LastFmBias::loadDataFromFile()
     m_similarArtistMap.clear();
     m_similarTrackMap.clear();
 
-    QFile file( Amarok::saveLocation() + "dynamic_lastfm_similar.xml" );
+    QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_similar.xml") );
 
     if( !file.exists() ||
         !file.open( QIODevice::ReadOnly ) )
@@ -672,8 +672,8 @@ Dynamic::LastFmBias::nameForMatch( Dynamic::LastFmBias::MatchType match )
 {
     switch( match )
     {
-    case SimilarArtist: return "artist";
-    case SimilarTrack:  return "track";
+    case SimilarArtist: return QStringLiteral("artist");
+    case SimilarTrack:  return QStringLiteral("track");
     }
     return QString();
 }
@@ -681,8 +681,8 @@ Dynamic::LastFmBias::nameForMatch( Dynamic::LastFmBias::MatchType match )
 Dynamic::LastFmBias::MatchType
 Dynamic::LastFmBias::matchForName( const QString &name )
 {
-    if( name == "artist" )     return SimilarArtist;
-    else if( name == "track" ) return SimilarTrack;
+    if( name == QStringLiteral("artist") )     return SimilarArtist;
+    else if( name == QStringLiteral("track") ) return SimilarTrack;
     else return SimilarArtist;
 }
 

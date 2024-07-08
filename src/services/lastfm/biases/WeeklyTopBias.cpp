@@ -100,14 +100,14 @@ Dynamic::WeeklyTopBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::WeeklyTopBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "from", QString::number( m_range.from.toSecsSinceEpoch() ) );
-    writer->writeTextElement( "to",   QString::number( m_range.to.toSecsSinceEpoch() ) );
+    writer->writeTextElement( QStringLiteral("from"), QString::number( m_range.from.toSecsSinceEpoch() ) );
+    writer->writeTextElement( QStringLiteral("to"),   QString::number( m_range.to.toSecsSinceEpoch() ) );
 }
 
 QString
 Dynamic::WeeklyTopBias::sName()
 {
-    return "lastfm_weeklytop";
+    return QStringLiteral("lastfm_weeklytop");
 }
 
 QString
@@ -278,8 +278,8 @@ Dynamic::WeeklyTopBias::newWeeklyTimesQuery()
     DEBUG_BLOCK
 
     QMap< QString, QString > params;
-    params[ "method" ] = "user.getWeeklyChartList" ;
-    params[ "user" ] = lastfm::ws::Username;
+    params[ QStringLiteral("method") ] = QStringLiteral("user.getWeeklyChartList") ;
+    params[ QStringLiteral("user") ] = lastfm::ws::Username;
 
     m_weeklyTimesJob = lastfm::ws::get( params );
 
@@ -362,15 +362,15 @@ Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
     {
         // debug() << "got response:" << lfm;
         QStringList artists;
-        for( int i = 0; i < lfm[ QStringLiteral("weeklyartistchart") ].children( "artist" ).size(); i++ )
+        for( int i = 0; i < lfm[ QStringLiteral("weeklyartistchart") ].children( QStringLiteral("artist") ).size(); i++ )
         {
             if( i == 12 ) // only up to 12 artist.
                 break;
-            lastfm::XmlQuery artist = lfm[ QStringLiteral("weeklyartistchart") ].children( "artist" ).at( i );
+            lastfm::XmlQuery artist = lfm[ QStringLiteral("weeklyartistchart") ].children( QStringLiteral("artist") ).at( i );
             artists.append( artist[ QStringLiteral("name") ].text() );
         }
 
-        uint week = QDomElement( lfm[ QStringLiteral("weeklyartistchart") ] ).attribute( "from" ).toUInt();
+        uint week = QDomElement( lfm[ QStringLiteral("weeklyartistchart") ] ).attribute( QStringLiteral("from") ).toUInt();
         m_weeklyArtistMap.insert( week, artists );
         debug() << "got artists:" << artists << week;
 

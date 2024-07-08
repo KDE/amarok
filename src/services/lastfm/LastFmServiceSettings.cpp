@@ -104,13 +104,13 @@ LastFmServiceSettings::testLogin()
     if( lastfm::nam() != The::networkAccessManager() )
         lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
-    debug() << "username:" << QString( QUrl::toPercentEncoding( m_configDialog->kcfg_ScrobblerUsername->text().toUtf8() ) );
+    debug() << "username:" << QString::fromLatin1( QUrl::toPercentEncoding( m_configDialog->kcfg_ScrobblerUsername->text() ) );
 
     QMap<QString, QString> query;
 
     query[ QStringLiteral("method") ] = QStringLiteral("auth.getMobileSession");
-    query[ QStringLiteral("password") ] = m_configDialog->kcfg_ScrobblerPassword->text().toUtf8();
-    query[ QStringLiteral("username") ] = m_configDialog->kcfg_ScrobblerUsername->text().toUtf8();
+    query[ QStringLiteral("password") ] = m_configDialog->kcfg_ScrobblerPassword->text();
+    query[ QStringLiteral("username") ] = m_configDialog->kcfg_ScrobblerUsername->text();
     m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthenticated );
