@@ -17,14 +17,13 @@
 #ifndef SCRIPTSELECTOR_H
 #define SCRIPTSELECTOR_H
 
-#include <KPluginSelector>
-#include <KSharedConfig>
+#include <KPluginWidget>
 
 class KCategorizedView;
 class QLineEdit;
-class KPluginInfo;
+class KPluginMetaData;
 
-class ScriptSelector : public KPluginSelector
+class ScriptSelector : public KPluginWidget
 {
     Q_OBJECT
 
@@ -33,11 +32,8 @@ class ScriptSelector : public KPluginSelector
         ~ScriptSelector() override;
 
         QString currentItem() const;
-        void addScripts( QList<KPluginInfo> pluginInfoList,
-                         PluginLoadMethod pluginLoadMethod = ReadConfigFile,
-                         const QString &categoryName = QString(),
-                         const QString &categoryKey = QString(),
-                         const KSharedConfig::Ptr &config = KSharedConfig::Ptr() );
+        void addScripts( QVector<KPluginMetaData> pluginInfoList,
+                         const QString &categoryName = QString() );
         int verticalPosition();
         void setVerticalPosition( int position );
         QString filter();

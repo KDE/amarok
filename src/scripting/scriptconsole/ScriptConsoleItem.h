@@ -67,7 +67,7 @@ namespace ScriptConsoleNS
 
             void timerEvent(QTimerEvent* event) override;
             void initializeScriptEngine() override;
-            static KPluginInfo createSpecFile( const QString &name, const QString &category, const QString &path );
+            static KPluginMetaData createSpecFile( const QString &name, const QString &category, const QString &path );
             QString handleError( QJSValue *result ) override;
 
     };

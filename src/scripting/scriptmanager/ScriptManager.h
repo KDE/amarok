@@ -23,7 +23,6 @@
 #include "core/meta/forward_declarations.h"
 #include "ScriptItem.h"
 
-#include <KPluginInfo>
 #include <KPluginMetaData>
 #include <QUrl>
 
@@ -42,7 +41,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         static ScriptManager* instance();
         static void destroy();
         /** Reads plugin info from legacy .desktop format */
-        static KPluginMetaData createMetadaFromSpec( const QString &specPath );
+        static KPluginMetaData createMetadataFromSpec( const QString &specPath );
 
         /**
          * Runs the script with the given name.
@@ -61,7 +60,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
         void configChanged( bool changed );
 
-        KPluginInfo::List scripts( const QString &category ) const;
+        QVector<KPluginMetaData> scripts( const QString &category ) const;
 
         /** Returns a list of all currently running scripts. Used by the DCOP handler. */
         QStringList listRunningScripts() const;

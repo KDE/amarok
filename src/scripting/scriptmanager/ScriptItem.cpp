@@ -62,6 +62,7 @@
 #include <QJSValue>
 #include <QToolTip>
 
+#include <KAboutData>
 #include <KStandardGuiItem>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,7 +106,7 @@ ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
 ////////////////////////////////////////////////////////////////////////////////
 
 
-ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info )
+ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginMetaData &info )
 : QObject( parent )
 , m_name( name )
 , m_url( QUrl::fromLocalFile( path ) )
@@ -146,11 +147,11 @@ ScriptItem::pause()
     if( m_info.category() == QStringLiteral("Scriptable Service") )
         The::scriptableServiceManager()->removeRunningScript( m_name );
 
-    if( m_info.isPluginEnabled() )
+    if( m_info.isEnabled( Amarok::config( QStringLiteral("Plugins") ) ) )
     {
-        debug() << "Disabling script" << m_info.pluginName();
-        m_info.setPluginEnabled( false );
-        m_info.save();
+        debug() << "Disabling script" << m_info.pluginId();
+//        m_info.setPluginEnabled( false );
+  //      m_info.save(); //TODO
     }
 
     m_log << QStringLiteral( "%1 Script ended" ).arg( QTime::currentTime().toString() );
@@ -158,11 +159,11 @@ ScriptItem::pause()
 }
 
 QString
-ScriptItem::specPath() const
+ScriptItem::metadataPath() const
 {
     QFileInfo info( m_url.path() );
-    const QString specPath = QStringLiteral( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() );
-    return specPath;
+    const QString metadataPath = QStringLiteral( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() ); ///TODO json
+    return metadataPath;
 }
 
 void
@@ -335,10 +336,14 @@ ScriptItem::slotDeprecatedCall( const QString &call )
     if( !AmarokConfig::enableDeprecationWarnings() )
         return;
 
-    QString message = i18nc( "%1 is the name of the offending script, %2 the name of the script author, and %3 the author's email"
+    QStringList authors;
+    for( auto author : m_info.authors() )
+        authors << author.name() << QStringLiteral(" (") << author.emailAddress() << QStringLiteral(")");
+
+    QString message = i18nc( "%1 is the name of the offending script, %2 the script authors and their emails"
                             , "The script %1 uses deprecated scripting API calls. Please contact the script"
-                            " author, %2 at %3, and ask him to upgrade it before the next Amarok release."
-                            , m_info.name(), m_info.author(), m_info.email() );
+                            " authors, %2, and ask them to upgrade it before the next Amarok release."
+                            , m_info.name(), authors.join( QStringLiteral(", ") ) );
     Amarok::Logger::longMessage( message );
 }
 

@@ -31,9 +31,9 @@
 
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KPluginLoader>
 
 #include <QGuiApplication>
+#include <QPluginLoader>
 
 
 /** Defines the used plugin version number.
@@ -90,16 +90,14 @@ Plugins::PluginManager::init()
     checkPluginEnabledStates();
 }
 
-KPluginInfo::List
+QVector<KPluginMetaData>
 Plugins::PluginManager::plugins( Type type ) const
 {
-    KPluginInfo::List infos;
+    QVector<KPluginMetaData> infos;
 
     for( const auto &pluginInfo : m_pluginsByType.value( type ) )
     {
-        auto info = KPluginInfo( pluginInfo );
-        info.setConfig( Amarok::config( QStringLiteral("Plugins") ) );
-        infos << info;
+        infos << pluginInfo;
     }
 
     return infos;
@@ -257,11 +255,7 @@ Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
         }
     }
 
-    KPluginInfo info = KPluginInfo( plugin );
-    info.setConfig( Amarok::config( QStringLiteral("Plugins") ) );
-    info.load();
-
-    return info.isPluginEnabled();
+    return plugin.isEnabled( Amarok::config( QStringLiteral("Plugins") ) );
 }
 
 
@@ -300,7 +294,7 @@ Plugins::PluginManager::findPlugins()
 {
     QVector<KPluginMetaData> plugins;
     for( const auto &location : QCoreApplication::libraryPaths() )
-        plugins << KPluginLoader::findPlugins( location, [] ( const KPluginMetaData &metadata )
+        plugins << KPluginMetaData::findPlugins( location, [] ( const KPluginMetaData &metadata )
             { return metadata.serviceTypes().contains( QStringLiteral( "Amarok/Plugin" ) ); } );
 
     for( const auto &plugin : plugins )

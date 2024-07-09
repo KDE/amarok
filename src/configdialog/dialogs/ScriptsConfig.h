@@ -55,7 +55,7 @@ private Q_SLOTS:
     void restoreScrollBar();
 
 private:
-    const KArchiveFile *findSpecFile( const KArchiveDirectory *dir ) const;
+    const KArchiveFile *findScriptMetadataFile( const KArchiveDirectory *dir, const bool spec = false ) const;
 
     bool m_configChanged;
     ScriptSelector *m_selector;

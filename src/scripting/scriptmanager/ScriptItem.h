@@ -24,10 +24,11 @@
 #include "scripting/scriptengine/ScriptingDefines.h"
 #include "statusbar/PopupWidget.h"
 
-#include <KPluginInfo>
-#include <QUrl>
+#include <KPluginMetaData>
 
 #include <QJSValue>
+#include <QPointer>
+#include <QUrl>
 
 namespace AmarokScript {
     class AmarokScript;
@@ -49,16 +50,16 @@ class ScriptItem : public QObject
 {
     Q_OBJECT
 public:
-    ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
+    ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginMetaData &info );
     ~ScriptItem() override;
 
     QString name() const { return m_name; }
     AmarokScript::AmarokScriptEngine* engine() { return m_engine.data(); }
     AmarokScript::ScriptableServiceScript* service() { return m_service.data(); }
     QUrl url() const { return m_url; }
-    KPluginInfo info() const { return m_info; }
+    KPluginMetaData info() const { return m_info; }
     bool running() const { return m_running; }
-    QString specPath() const;
+    QString metadataPath() const;
     QString output() const { return m_output.join(QStringLiteral("\n")); }
     QJSValue engineResult() const { return m_engineResult; };
 
@@ -92,7 +93,7 @@ protected:
 private:
     QString                                             m_name;
     QUrl                                                m_url;
-    KPluginInfo                                         m_info;
+    KPluginMetaData                                     m_info;
     QPointer<AmarokScript::AmarokScriptEngine>          m_engine;
     QJSValue                                            m_engineResult;
     /** Currently activated in the Script Manager */

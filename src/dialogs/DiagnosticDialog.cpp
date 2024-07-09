@@ -18,19 +18,21 @@
 #include "DiagnosticDialog.h"
 
 #include "context/ContextView.h"
+#include "core/support/Amarok.h"
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
 #include <KAboutData>
 #include <KCoreAddons>
 #include <KLocalizedString>
-#include <KPluginInfo>
+#include <KPluginMetaData>
 
 #include <QApplication>
 #include <QClipboard>
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QPlainTextEdit>
+#include <QPluginLoader>
 #include <QPushButton>
 #include <QSettings>
 #include <QVBoxLayout>
@@ -99,7 +101,7 @@ const QString
 DiagnosticDialog::generateReport( const KAboutData *aboutData )
 {
     // Get scripts -- we have to assemble 3 lists into one
-    KPluginInfo::List aScripts;
+    QVector<KPluginMetaData> aScripts;
     const auto aScriptManager = ScriptManager::instance();
     aScripts.append( aScriptManager->scripts( QStringLiteral( "Generic" ) ) );
     aScripts.append( aScriptManager->scripts( QStringLiteral( "Lyrics" ) ) );
@@ -107,9 +109,9 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
     // Format the data to be readable
     QString aScriptString;
-    for( KPluginInfo aInfo : aScripts )
+    for( KPluginMetaData aInfo : aScripts )
     {
-        if( aInfo.isPluginEnabled() )
+        if( aInfo.isEnabled( Amarok::config( QStringLiteral("Plugins") ) ) )
             aScriptString += QStringLiteral("   ") + aInfo.name() + QStringLiteral(" (") + aInfo.version() + QStringLiteral(")\n");
     }
 

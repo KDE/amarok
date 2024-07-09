@@ -19,7 +19,7 @@
 
 #include "configdialog/ConfigDialogBase.h"
 
-class KPluginSelector;
+class KPluginWidget;
 
 /**
   * A widget that allows configuration of plugins
@@ -41,7 +41,7 @@ public Q_SLOTS:
 
 private:
     bool m_configChanged;
-    KPluginSelector *m_selector;
+    KPluginWidget *m_selector;
 };
 
 #endif // AMAROK_PLUGINSCONFIG_H

@@ -34,7 +34,6 @@
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "ScriptItem.h"
 
-#include <KPluginInfo>
 #include <KPluginMetaData>
 
 #include <QFileInfo>
@@ -115,7 +114,7 @@ ScriptManager::listRunningScripts() const
     for( const ScriptItem *item : m_scripts )
     {
         if( item->running() )
-            runningScripts << item->info().pluginName();
+            runningScripts << item->info().pluginId();
     }
     return runningScripts;
 }
@@ -125,13 +124,13 @@ ScriptManager::specForScript( const QString& name ) const
 {
     if( !m_scripts.contains( name ) )
         return QString();
-    return m_scripts[name]->specPath();
+    return m_scripts[name]->metadataPath();
 }
 
 KPluginMetaData
-ScriptManager::createMetadaFromSpec( const QString &specPath )
+ScriptManager::createMetadataFromSpec( const QString &specPath )
 {
-    // KPluginMetaData and KPluginInfo require file suffix to be .desktop. Thus create temporary file with suffix
+    // KPluginMetaData requires file suffix to be .desktop. Thus create temporary file with suffix
     QFile specFile( specPath );
     QTemporaryFile desktopFile( QDir::tempPath() + QStringLiteral("/XXXXXX.desktop") );
 
@@ -170,9 +169,6 @@ void
 ScriptManager::updateAllScripts() // SLOT
 {
     DEBUG_BLOCK
-    // Disable script updating for now. TODO review situation post 3.0
-    debug() << "Script updating hard disabled, not doing an update";
-    return;
 
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts;
@@ -198,9 +194,9 @@ ScriptManager::updateAllScripts() // SLOT
         const QString specPath = QStringLiteral( "%1/script.spec" ).arg( QFileInfo( item->url().path() ).path() );
         if( !QFile::exists( specPath ) )
         {
-            debug() << "Removing script " << item->info().pluginName();
+            debug() << "Removing script " << item->info().pluginId();
             item->uninstall();
-            m_scripts.remove( item->info().pluginName() );
+            m_scripts.remove( item->info().pluginId() );
         }
     }
 
@@ -217,8 +213,9 @@ ScriptManager::updateAllScripts() // SLOT
     #endif
 
     // last update was at least 7 days ago -> check now if auto update is enabled
-    if( autoUpdateScripts && (now - lastCheck > 7*24*60*60) )
+    if( false && autoUpdateScripts && (now - lastCheck > 7*24*60*60) )
     {
+        // Disable script updating for now. TODO review situation post 3.0
         debug() << "ScriptUpdater: Performing script update check now!";
         for( int i = 0; i < m_nScripts; ++i )
         {
@@ -238,7 +235,7 @@ ScriptManager::updateAllScripts() // SLOT
     // last update was pretty recent, don't check again
     else
     {
-        debug() << "ScriptUpdater: Skipping update check";
+        debug() << "ScriptUpdater: Skipping update check - hard disabled";
         for ( int i = 0; i < m_nScripts; i++ )
         {
             loadScript( foundScripts.at( i ) );
@@ -329,8 +326,8 @@ ScriptManager::slotConfigChanged()
 {
     for( ScriptItem *item : m_scripts )
     {
-        const QString name = item->info().pluginName();
-        bool enabledByDefault = item->info().isPluginEnabledByDefault();
+        const QString name = item->info().pluginId();
+        bool enabledByDefault = item->info().isEnabledByDefault();
         bool enabled = Amarok::config( QStringLiteral("Plugins") ).readEntry( name + QStringLiteral("Enabled"), enabledByDefault );
 
         if( !item->running() && enabled )
@@ -365,7 +362,7 @@ ScriptManager::loadScript( const QString& path )
     else if( QFile::exists( specPath ) )
     {
         warning() << "Reading legacy spec file: " << specPath;
-        pluginMetadata = createMetadaFromSpec( specPath );
+        pluginMetadata = createMetadataFromSpec( specPath );
     }
     else
     {
@@ -389,18 +386,16 @@ ScriptManager::loadScript( const QString& path )
         return false;
     }
 
-    KPluginInfo pluginInfo( pluginMetadata );
-
     ScriptItem *item;
     if( !m_scripts.contains( pluginName ) )
     {
-        item = new ScriptItem( this, pluginName, path, pluginInfo );
+        item = new ScriptItem( this, pluginName, path, pluginMetadata );
         m_scripts[ pluginName ] = item;
     }
-    else if( m_scripts[pluginName]->info().version() < pluginInfo.version() )
+    else if( m_scripts[pluginName]->info().version() < pluginMetadata.version() )
     {
         m_scripts[ pluginName ]->deleteLater();
-        item = new ScriptItem( this, pluginName, path, pluginInfo );
+        item = new ScriptItem( this, pluginName, path, pluginMetadata );
         m_scripts[ pluginName ] = item;
     }
     else
@@ -422,10 +417,10 @@ ScriptManager::loadScript( const QString& path )
     return true;
 }
 
-KPluginInfo::List
+QVector<KPluginMetaData>
 ScriptManager::scripts( const QString &category ) const
 {
-    KPluginInfo::List scripts;
+    QVector<KPluginMetaData> scripts;
     for( const ScriptItem *script : m_scripts )
     {
         if( script->info().category() == category )

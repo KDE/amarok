@@ -19,7 +19,6 @@
 
 #include "amarok_export.h"
 
-#include <KPluginInfo>
 #include <KPluginMetaData>
 
 #include <QVector>
@@ -36,7 +35,7 @@ class AMAROK_EXPORT PluginManager : public QObject
     public:
         /** Type of the plugin.
          *
-         *  Will be determined by the KPluginInfo::category
+         *  Will be determined by the KPluginMetaData::category
          */
         enum Type
         {
@@ -72,7 +71,7 @@ class AMAROK_EXPORT PluginManager : public QObject
          */
         QList<QSharedPointer<PluginFactory> > factories( Type type ) const;
 
-        KPluginInfo::List plugins( Type type ) const;
+        QVector<KPluginMetaData> plugins( Type type ) const;
 
         QVector<KPluginMetaData> enabledPlugins(Type type ) const;
 
@@ -99,7 +98,7 @@ class AMAROK_EXPORT PluginManager : public QObject
         /** Creates a factories for a plugin */
         QSharedPointer<PluginFactory> createFactory( const KPluginMetaData &pluginInfo );
 
-        /// contains the names of all KPluginInfos that have factories created
+        /// contains the names of all KPluginMetaDatas that have factories created
         QVector<KPluginMetaData> m_plugins;
         QHash<Type, QList<KPluginMetaData> > m_pluginsByType;
         QHash<Type, QList<QSharedPointer<PluginFactory> > > m_factoriesByType;

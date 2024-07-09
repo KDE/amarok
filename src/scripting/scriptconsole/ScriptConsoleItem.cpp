@@ -81,13 +81,13 @@ ScriptConsoleItem::~ScriptConsoleItem()
         m_error->deleteLater();
 }
 
-KPluginInfo
+KPluginMetaData
 ScriptConsoleItem::createSpecFile( const QString &name, const QString &category, const QString &path )
 {
     QString specs = QStringLiteral( "[Desktop Entry]"
                             "\nIcon=\"\""
                             "\nType=script"
-                            "\nServiceTypes=KPluginInfo"
+                            "\nServiceTypes=KPluginMetaData"
                             "\nName=%1"
                             "\nComment=Amarok console script"
                             "\nX-KDE-PluginInfo-Name=%1"
@@ -101,12 +101,12 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
     if( !file.open( QIODevice::WriteOnly ) )
     {
         debug() << "Couldn't write to " << path;
-        return KPluginInfo();
+        return KPluginMetaData();
     }
     QTextStream stream( &file );
     stream << specs;
     file.close();
-    return KPluginInfo( specPath );
+    return KPluginMetaData( specPath );
 }
 
 bool

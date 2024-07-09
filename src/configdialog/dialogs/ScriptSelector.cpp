@@ -16,11 +16,12 @@
  
 #include "ScriptSelector.h"
 
+#include <core/support/Amarok.h>
 #include "core/support/Debug.h"
 
 #include <KCategorizedView>
 #include <KLocalizedString>
-#include <KPluginInfo>
+#include <KPluginMetaData>
 
 #include <QLineEdit>
 #include <QScrollBar>
@@ -29,7 +30,7 @@
 
 // uber-hacky, this whole thing, make our own script selector?
 ScriptSelector::ScriptSelector( QWidget * parent )
-    : KPluginSelector( parent )
+    : KPluginWidget( parent )
     , m_scriptCount( 0 )
 {
     m_lineEdit = this->findChild<QLineEdit*>();
@@ -70,21 +71,19 @@ ScriptSelector::setFilter( const QString &filter )
 }
 
 void
-ScriptSelector::addScripts( QList<KPluginInfo> pluginInfoList,
-                            PluginLoadMethod pluginLoadMethod,
-                            const QString &categoryName,
-                            const QString &categoryKey,
-                            const KSharedConfig::Ptr &config )
+ScriptSelector::addScripts( QVector<KPluginMetaData> pluginInfoList,
+                            const QString &categoryName )
 {
     DEBUG_BLOCK
 
     std::sort( pluginInfoList.begin(), pluginInfoList.end()
-         , []( const KPluginInfo &left, const KPluginInfo &right ){ return left.name() < right.name(); } );
-    addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
-    for( const KPluginInfo &plugin : pluginInfoList )
+         , []( const KPluginMetaData &left, const KPluginMetaData &right ){ return left.name() < right.name(); } );
+    setConfig( Amarok::config( QStringLiteral("Scripts") ) );
+    KPluginWidget::addPlugins( pluginInfoList, categoryName );
+    for( const KPluginMetaData &plugin : pluginInfoList )
     {
         m_scriptCount++;
-        m_scripts[m_scriptCount] = plugin.pluginName();
+        m_scripts[m_scriptCount] = plugin.pluginId();
     }
 }
 

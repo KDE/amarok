@@ -28,7 +28,7 @@
 
 #include <KMessageBox>
 #include <KNS3/QtQuickDialogWrapper>
-#include <KPluginInfo>
+#include <KPluginMetaData>
 #include <KPluginSelector>
 #include <KTar>
 #include <KZip>
@@ -153,11 +153,19 @@ ScriptsConfig::installLocalScript()
         return;
     }
 
-    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QStringLiteral("amarok/scripts/") + fileName + QLatin1Char('/');
+    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QStringLiteral("/amarok/scripts/");
     const KArchiveDirectory* const archiveDir = archive->directory();
     const QDir dir( destination );
-    const KArchiveFile *specFile = findSpecFile( archiveDir );
-    if( !specFile )
+    bool json = true;
+    const KArchiveFile *metadataFile = findScriptMetadataFile( archiveDir, false );
+    if( !metadataFile ) // no json, trying spec
+    {
+        debug() << "No script JSON found, trying spec/desktop";
+        json = false;
+        metadataFile = findScriptMetadataFile( archiveDir, true );
+    }
+
+    if( !metadataFile )
     {
         KMessageBox::error( this, i18n( "Invalid Script File" ) );
         return;
@@ -165,31 +173,43 @@ ScriptsConfig::installLocalScript()
 
     QTemporaryFile tempFile;
     tempFile.open();
-    QIODevice *device = specFile->createDevice();
+    QIODevice *device = metadataFile->createDevice();
     tempFile.write( device->readAll() );
     delete device;
     tempFile.close();
 
-    KPluginInfo newScriptInfo( tempFile.fileName() );
+    KPluginMetaData newScriptInfo;
+    if( json )
+        newScriptInfo = KPluginMetaData( tempFile.fileName() );
+    else
+        newScriptInfo = ScriptManager::createMetadataFromSpec( tempFile.fileName() );
     if( !newScriptInfo.isValid() )
     {
+        debug() << "Invalid script: problem loading" << ( json ? "json" : "spec" );
         KMessageBox::error( this, i18n( "Invalid Script File" ) );
         return;
     }
 
-    if( ScriptManager::instance()->m_scripts.contains( newScriptInfo.pluginName() ) )
+    if( ScriptManager::instance()->m_scripts.contains( newScriptInfo.pluginId() ) )
     {
-        QString existingVersion = ScriptManager::instance()->m_scripts[ newScriptInfo.pluginName() ]->info().version();
+        QString existingVersion = ScriptManager::instance()->m_scripts[ newScriptInfo.pluginId() ]->info().version();
         QString message = i18n( "Another script with the name %1 already exists\nExisting Script's "
                                 "Version: %2\nSelected Script's Version: %3", newScriptInfo.name()
                                 , existingVersion, newScriptInfo.version() );
         KMessageBox::error( this, message );
         return;
     }
-
-    for( int i = 1; dir.exists( destination ); ++i )
-        destination += i;
+    bool archiveContainsDir = archiveDir->entries().length() && archiveDir->entry( archiveDir->entries().first() )->isDirectory();
+    if( !archiveContainsDir )
+        destination += fileName;
+    QString suffix = "";
+    while( dir.exists( destination + suffix ) && !archiveContainsDir )
+    {
+        suffix = QString::number( suffix.toInt() + 1 );
+    }
+    destination += suffix;
     dir.mkpath( destination );
+    debug() << "script being copied to" << destination;
     archiveDir->copyTo( destination );
     KMessageBox::information( this, i18n( "The script %1 was successfully installed", newScriptInfo.name() ) );
     m_timer->start();
@@ -203,15 +223,15 @@ ScriptsConfig::slotReloadScriptSelector()
     m_selector = new ScriptSelector( this );
     QString key = QStringLiteral( "Generic" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Generic"), key );
+                            i18n("Generic") );
 
     key = QStringLiteral( "Lyrics" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Lyrics"), key );
+                            i18n("Lyrics") );
 
     key = QStringLiteral( "Scriptable Service" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Scriptable Service"), key );
+                            i18n("Scriptable Service") );
     connect( m_selector, &ScriptSelector::changed, this, &ScriptsConfig::slotConfigChanged );
     connect( m_selector, &ScriptSelector::filtered, m_uninstallButton, &QPushButton::setDisabled );
     connect( m_selector, &ScriptSelector::changed,
@@ -255,20 +275,20 @@ ScriptsConfig::slotUninstallScript()
         return;
     */
 
-    QFileInfo specFile( item->specPath() );
-    qDebug() << "About to remove folder " << specFile.path();
-    QDir( specFile.path() ).removeRecursively();
+    QFileInfo metadataFile( item->metadataPath() );
+    qDebug() << "About to remove folder " << metadataFile.path();
+    QDir( metadataFile.path() ).removeRecursively();
     m_timer->start();
 }
 
 const KArchiveFile*
-ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
+ScriptsConfig::findScriptMetadataFile( const KArchiveDirectory *dir, const bool spec ) const
 {
     for( const QString &entry : dir->entries() )
     {
         if( dir->entry( entry )->isFile() )
         {
-            if( entry == QLatin1String("script.spec") )
+            if( (entry == QLatin1String("script.spec") && spec ) || ( entry == QLatin1String("script.json") && !spec ) )
                 return static_cast<const KArchiveFile*>( dir->entry( entry ) );
         }
         else
@@ -278,7 +298,7 @@ ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
                 const KArchiveDirectory *subDir = static_cast<const KArchiveDirectory*>( dir->entry( entry ) );
                 if( subDir )
                 {
-                    const KArchiveFile *file = findSpecFile( subDir );
+                    const KArchiveFile *file = findScriptMetadataFile( subDir, spec );
                     if( !file )
                         continue;
                     return file;

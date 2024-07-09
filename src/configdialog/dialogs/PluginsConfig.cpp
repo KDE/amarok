@@ -23,7 +23,7 @@
 #include "services/ServiceBase.h"
 #include "PluginManager.h"
 
-#include <KPluginSelector>
+#include <KPluginWidget>
 
 #include <QVBoxLayout>
 
@@ -32,7 +32,8 @@ PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
     , m_configChanged( false )
 {
     DEBUG_BLOCK
-    m_selector = new KPluginSelector( this );
+    m_selector = new KPluginWidget( this );
+    m_selector->setConfig( Amarok::config( QStringLiteral("Plugins") ) );
     m_selector->setSizePolicy( QSizePolicy:: Expanding, QSizePolicy::Expanding );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
@@ -40,16 +41,17 @@ PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
     layout->addWidget( m_selector );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Collection ),
-                            KPluginSelector::ReadConfigFile, i18n("Collections"), QStringLiteral("Collection") );
+                            i18n("Collections") );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Service ),
-                            KPluginSelector::ReadConfigFile, i18n("Internet Services"), QStringLiteral("Service") );
+                            i18n("Internet Services") );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Importer ),
-                            KPluginSelector::ReadConfigFile, i18n("Statistics importers"), QStringLiteral("Importer") );
+                            i18n("Statistics importers") );
 
-    connect( m_selector, &KPluginSelector::changed, this, &PluginsConfig::slotConfigChanged );
-    connect( m_selector, &KPluginSelector::changed, parent, &Amarok2ConfigDialog::updateButtons );
+
+    connect( m_selector, &KPluginWidget::changed, this, &PluginsConfig::slotConfigChanged );
+    connect( m_selector, &KPluginWidget::changed, parent, &Amarok2ConfigDialog::updateButtons );
 }
 
 PluginsConfig::~PluginsConfig()
