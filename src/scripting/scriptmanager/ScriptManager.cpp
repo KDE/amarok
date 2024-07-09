@@ -189,7 +189,8 @@ ScriptManager::updateAllScripts() // SLOT
     }
 
     // remove deleted scripts
-    for( ScriptItem *item : m_scripts )
+    const auto scripts = m_scripts;
+    for( ScriptItem *item : scripts )
     {
         const QString specPath = QStringLiteral( "%1/script.spec" ).arg( QFileInfo( item->url().path() ).path() );
         if( !QFile::exists( specPath ) )

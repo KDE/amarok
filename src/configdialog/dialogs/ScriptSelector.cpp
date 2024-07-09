@@ -25,6 +25,7 @@
 
 #include <QLineEdit>
 #include <QScrollBar>
+#include <QSortFilterProxyModel>
 
 #include <algorithm>
 
@@ -97,7 +98,7 @@ ScriptSelector::currentItem() const
 
     if( !selIndexes.isEmpty() )
     {
-        QModelIndex currentIndex = selIndexes[0];
+        QModelIndex currentIndex = dynamic_cast<QSortFilterProxyModel*>(m_listView->model())->mapToSource( selIndexes[0] );
         if( currentIndex.isValid() )
         {
             debug() << "row: " << currentIndex.row() + 1; //the index start from 1

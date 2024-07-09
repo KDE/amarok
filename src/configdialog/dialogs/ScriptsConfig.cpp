@@ -29,7 +29,6 @@
 #include <KMessageBox>
 #include <KNS3/QtQuickDialogWrapper>
 #include <KPluginMetaData>
-#include <KPluginSelector>
 #include <KTar>
 #include <KZip>
 
