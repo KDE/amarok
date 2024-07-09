@@ -179,10 +179,6 @@ void LyricsEngine::setFont(const QString& font)
 
 QStringList LyricsEngine::availableFonts() const
 {
-    QStringList list;
-
-    KFontChooser::getFontList( list, 0 );
-
-    return list;
+    return KFontChooser::createFontList( 0 );
 }
 

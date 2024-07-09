@@ -12,7 +12,7 @@ if(BUILD_WITH_QT6)
   set(QT_MAJOR_VERSION "6")
 else()
   message(STATUS "Building good old Qt5 version")
-  set(KF_MIN_VERSION "5.84.0")
+  set(KF_MIN_VERSION "5.89.0")
   set(KF_MAJOR_VERSION "5")
   set(QT_MIN_VERSION "5.15.0")
   set(QT_MAJOR_VERSION "5")
@@ -266,6 +266,13 @@ if( WITH_PLAYER )
             URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
             TYPE OPTIONAL
             PURPOSE "Synchronize podcast subscriptions with gpodder.net"
+        )
+    endif()
+
+    if( WITH_GPODDER OR WITH_LASTFM ) ## problems in their header files as of 07/2024, not compatible with strict flags
+        remove_definitions(
+            -DQT_NO_CAST_FROM_ASCII
+            -DQT_NO_KEYWORDS
         )
     endif()
 
