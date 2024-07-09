@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 01:42+0000\n"
+"POT-Creation-Date: 2024-07-09 01:41+0000\n"
 "PO-Revision-Date: 2020-04-24 16:21+0300\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -2130,7 +2130,7 @@ msgstr "Удалить дорожки"
 msgid "More..."
 msgstr "Дополнительно..."
 
-#: browsers/CollectionTreeView.cpp:1087 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2138,7 +2138,7 @@ msgstr "Дополнительно..."
 msgid "&Add to Playlist"
 msgstr "&Добавить в список воспроизведения"
 
-#: browsers/CollectionTreeView.cpp:1098 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2147,13 +2147,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Заменить список воспроизведения"
 
-#: browsers/CollectionTreeView.cpp:1147
+#: browsers/CollectionTreeView.cpp:1150
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Организация файлов"
 
-#: browsers/CollectionTreeView.cpp:1180 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Изменить информацию о дорожке"
@@ -2892,7 +2892,7 @@ msgid "Configure Plugins"
 msgstr "Настройка модулей"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:375
+#: scripting/scriptconsole/ScriptConsole.cpp:376
 #, kde-format
 msgid "Scripts"
 msgstr "Сценарии"
@@ -6129,59 +6129,59 @@ msgstr[3] " выпуск"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
 #, kde-format
 msgid "&Update All Channels"
 msgstr "Обновить &все подкасты"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Настроить основные параметры"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Экспорт подписок в файл OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
 #, kde-format
 msgid "&Configure"
 msgstr "&Настроить..."
 
 # Отказаться от подписки? --Nick
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Удалить подписку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
 #, kde-format
 msgid "&Update Channel"
 msgstr "Об&новить подкаст"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Загрузить выпуск"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Удалить загруженный выпуск"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "Записать сведения из ленты в файл"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, fuzzy, kde-format
 #| msgid "Replace downloaded label"
 msgid "&Keep downloaded file"
 msgstr "Заменять полученную из Интернета метку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6189,19 +6189,19 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Вы уже подписаны на %1."
 
 # BUGME: plural forms
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "через каждые "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6210,37 +6210,37 @@ msgstr[1] " минуты"
 msgstr[2] " минут"
 msgstr[3] " минуту"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Настройка локальных подкастов"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Перемещение подкастов"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Переместить все загруженные эпизоды в другое место?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Экспорт подписок в файл OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Отписаться от «%1»?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Удалить загруженный выпуск"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6249,23 +6249,23 @@ msgstr[1] "Сейчас загружаются %1 подкаста"
 msgstr[2] "Сейчас загружаются %1 подкастов"
 msgstr[3] "Сейчас загружается один подкаст"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Отменить загрузку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Невозможно сохранить файл выпуска подкаста %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Загрузка подкастов"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Загрузка подкаста «%1»"
@@ -13810,30 +13810,30 @@ msgstr "Сценарии"
 msgid "&View"
 msgstr "&Вид"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:215
+#: scripting/scriptconsole/ScriptConsole.cpp:216
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:228
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, fuzzy, kde-format
 #| msgid "Remove empty folders?"
 msgid "Remove script file from disk?"
 msgstr "Удаление пустых папок"
 
 # Отказаться от подписки? --Nick
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "&Удалить подписку"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:450
+#: scripting/scriptconsole/ScriptConsole.cpp:451
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -13997,11 +13997,11 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:182
-#: services/gpodder/GpodderServiceSettings.cpp:191
-#: services/gpodder/GpodderServiceSettings.cpp:201
-#: services/gpodder/GpodderServiceSettings.cpp:219
-#: services/gpodder/GpodderServiceSettings.cpp:248
+#: services/gpodder/GpodderServiceSettings.cpp:181
+#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:200
+#: services/gpodder/GpodderServiceSettings.cpp:218
+#: services/gpodder/GpodderServiceSettings.cpp:247
 #: services/lastfm/LastFmConfigWidget.ui:109
 #: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
@@ -14079,9 +14079,9 @@ msgstr ""
 "Имя пользователя или пароль введены неверно, исправьте и попробуйте снова."
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:180
-#: services/gpodder/GpodderServiceSettings.cpp:189
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #: services/lastfm/LastFmServiceSettings.cpp:170
 #, kde-format
@@ -14095,7 +14095,7 @@ msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Выполнено"
 
-#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:178
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
@@ -14104,13 +14104,13 @@ msgid ""
 msgstr ""
 "Имя пользователя или пароль введены неверно, исправьте и попробуйте снова."
 
-#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr ""
 "Не удалось подключиться к службе gpodder.net, либо произошла другая ошибка."
 
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "

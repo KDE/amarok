@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 01:42+0000\n"
+"POT-Creation-Date: 2024-07-09 01:41+0000\n"
 "PO-Revision-Date: 2024-06-19 11:41+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -2132,7 +2132,7 @@ msgstr "Parçaları Sil"
 msgid "More..."
 msgstr "Daha Fazla…"
 
-#: browsers/CollectionTreeView.cpp:1087 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2140,7 +2140,7 @@ msgstr "Daha Fazla…"
 msgid "&Add to Playlist"
 msgstr "&Çalma Listesine Ekle"
 
-#: browsers/CollectionTreeView.cpp:1098 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2149,13 +2149,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Çalma Listesini &Sil"
 
-#: browsers/CollectionTreeView.cpp:1147
+#: browsers/CollectionTreeView.cpp:1150
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Dosyaları Organize Et"
 
-#: browsers/CollectionTreeView.cpp:1180 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "Parça Ayrıntılarını Dü&zenle"
@@ -2869,7 +2869,7 @@ msgid "Configure Plugins"
 msgstr "Eklentileri Yapılandır"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:375
+#: scripting/scriptconsole/ScriptConsole.cpp:376
 #, kde-format
 msgid "Scripts"
 msgstr "Betikler"
@@ -5986,57 +5986,57 @@ msgstr[1] " Öge"
 msgid "Podcast"
 msgstr "Pod Yayını"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Tüm Kanalları Güncelle"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Genel Ayarları Yapılandır"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "Abonelikleri OPML dosyasına dışa &aktar"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
 #, kde-format
 msgid "&Configure"
 msgstr "&Yapılandır"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Aboneliği Kaldır"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Kanalı Güncelle"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
 #, kde-format
 msgid "&Download Episode"
 msgstr "Bölümü &İndir"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "İndirilen Bölümü &Sil"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Dosyaya Besleme Bilgisi Yaz"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "İndirilen dosyayı &tut"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6047,78 +6047,78 @@ msgstr ""
 "değiştirin. Bu durumdaki indirilen dosyalar, temizleme işlemini uygulasak "
 "bile silinmez."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "%1 aboneliği halihazırda var."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "her "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " dakika"
 msgstr[1] " dakika"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Yerel Pod Yayınlarını Yapılandır"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Pod Yayınlarını Taşı"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Tüm indirilen bölümleri yeni konuma taşımak istiyor musunuz?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "OPML Dışa Aktarımı için Dosya Seç"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "“%1” aboneliğinden çıkmayı gerçekten istiyor musunuz?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "İndirilen bölümleri sil"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "Hâlâ süren 1 pod yayını indirme işlemi var"
 msgstr[1] "Hâlâ süren %1 pod yayını indirme işlemi var"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "İndirmeyi İptal Et ve Çık"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Pod yayını dosyası, %1 konumuna kaydedilemiyor"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Pod Yayını Ortamı İndiriliyor"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "“%1” Pod Yayını İndiriliyor"
@@ -13407,27 +13407,27 @@ msgstr "Sonraki Betik"
 msgid "&View"
 msgstr "&Görünüm"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:215
+#: scripting/scriptconsole/ScriptConsole.cpp:216
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Bu, betiği durduracaktır! Sürdürülsün mü?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:228
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Betiklerinizi nereye kaydedeceğinizi seçin"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Betik diskten kaldırılsın mı?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, kde-format
 msgid "Remove Script"
 msgstr "Betiği Kaldır"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:450
+#: scripting/scriptconsole/ScriptConsole.cpp:451
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Kesin emin misiniz?"
@@ -13593,11 +13593,11 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:182
-#: services/gpodder/GpodderServiceSettings.cpp:191
-#: services/gpodder/GpodderServiceSettings.cpp:201
-#: services/gpodder/GpodderServiceSettings.cpp:219
-#: services/gpodder/GpodderServiceSettings.cpp:248
+#: services/gpodder/GpodderServiceSettings.cpp:181
+#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:200
+#: services/gpodder/GpodderServiceSettings.cpp:218
+#: services/gpodder/GpodderServiceSettings.cpp:247
 #: services/lastfm/LastFmConfigWidget.ui:109
 #: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
@@ -13674,9 +13674,9 @@ msgstr ""
 "düzeltin ve yeniden deneyin."
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:180
-#: services/gpodder/GpodderServiceSettings.cpp:189
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #: services/lastfm/LastFmServiceSettings.cpp:170
 #, kde-format
@@ -13690,7 +13690,7 @@ msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Başarılı"
 
-#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:178
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
@@ -13700,12 +13700,12 @@ msgstr ""
 "Kullanıcı adınızda veya parolanızda hata var gibi görünüyor; lütfen bu "
 "hatayı düzeltin ve yeniden deneyin."
 
-#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "gpodder.net hizmetine bağlanılamadı veya başka bir hata oluştu."
 
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "

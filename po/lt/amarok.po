@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 01:42+0000\n"
+"POT-Creation-Date: 2024-07-09 01:41+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -2127,7 +2127,7 @@ msgstr "Trinti dainas"
 msgid "More..."
 msgstr "Daugiau..."
 
-#: browsers/CollectionTreeView.cpp:1087 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2135,7 +2135,7 @@ msgstr "Daugiau..."
 msgid "&Add to Playlist"
 msgstr "&Pridėti į grojaraštį"
 
-#: browsers/CollectionTreeView.cpp:1098 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2144,13 +2144,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Pakeisti grojaraštį"
 
-#: browsers/CollectionTreeView.cpp:1147
+#: browsers/CollectionTreeView.cpp:1150
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Sudėlioti failus"
 
-#: browsers/CollectionTreeView.cpp:1180 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "K&eisti dainos informaciją"
@@ -2901,7 +2901,7 @@ msgid "Configure Plugins"
 msgstr "Konfigūruoti priedus"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:375
+#: scripting/scriptconsole/ScriptConsole.cpp:376
 #, kde-format
 msgid "Scripts"
 msgstr "Scenarijai"
@@ -6146,58 +6146,58 @@ msgstr[3] " objektą"
 msgid "Podcast"
 msgstr "Garso prenumerata"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Atnaujinti visus kanalus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Konfigūruoti bendrus nustatymus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Eksportuoti prenumeratas į OPML failą"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
 #, kde-format
 msgid "&Configure"
 msgstr "&Konfigūruoti"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Panaikinti prenumeratą"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Atnaujinti kanalą"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Atsiųsti epizodą"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Trinti atsiųstą epizodą"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Rašyti kanalo informaciją į failą"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, fuzzy, kde-format
 #| msgid "Replace downloaded label"
 msgid "&Keep downloaded file"
 msgstr "Pakeisti atsisiųstas etiketes"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6205,18 +6205,18 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "%1 jau užprenumeruotas."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "kas "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6225,37 +6225,37 @@ msgstr[1] " minutes"
 msgstr[2] " minučių"
 msgstr[3] " minutę"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfigūruoti vietines garso prenumeratas"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Perkelti garso prenumeratas"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Ar norite perkelti visus atsiųstus epizodus į naują vietą?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Pasirinkite OPML failą eksportui"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Ar tikrai norite nutraukti „%1“ prenumeratą?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Trinti atsisiųstus epizodus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6264,23 +6264,23 @@ msgstr[1] "%1 garso prenumeratos vis dar siunčiamos"
 msgstr[2] "%1 garso prenumeratų vis dar siunčiamos"
 msgstr[3] "%1 garso prenumerata vis dar siunčiama"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Atšaukti atsiuntimą ir išjungti."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Nepavyko įrašyti podcast epizodo failo į %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Atsiunčiami garso prenumeratos įrašai"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Atsiunčiama garso prenumerata „%1“"
@@ -13782,29 +13782,29 @@ msgstr "Scenarijai"
 msgid "&View"
 msgstr "&Rodymas"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:215
+#: scripting/scriptconsole/ScriptConsole.cpp:216
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:228
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, fuzzy, kde-format
 #| msgid "Remove empty folders?"
 msgid "Remove script file from disk?"
 msgstr "Pašalinti tuščius aplankus?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "&Panaikinti prenumeratą"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:450
+#: scripting/scriptconsole/ScriptConsole.cpp:451
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -13977,11 +13977,11 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:182
-#: services/gpodder/GpodderServiceSettings.cpp:191
-#: services/gpodder/GpodderServiceSettings.cpp:201
-#: services/gpodder/GpodderServiceSettings.cpp:219
-#: services/gpodder/GpodderServiceSettings.cpp:248
+#: services/gpodder/GpodderServiceSettings.cpp:181
+#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:200
+#: services/gpodder/GpodderServiceSettings.cpp:218
+#: services/gpodder/GpodderServiceSettings.cpp:247
 #: services/lastfm/LastFmConfigWidget.ui:109
 #: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
@@ -14064,9 +14064,9 @@ msgstr ""
 "kartą"
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:180
-#: services/gpodder/GpodderServiceSettings.cpp:189
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #: services/lastfm/LastFmServiceSettings.cpp:170
 #, kde-format
@@ -14080,7 +14080,7 @@ msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Sėkmingai"
 
-#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:178
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
@@ -14090,13 +14090,13 @@ msgstr ""
 "Neteisingas naudotojo vardas arba slaptažodis. Pataisykite ir bandykite dar "
 "kartą"
 
-#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:187
 #, fuzzy, kde-format
 #| msgid "Unable to connect to Last.fm service."
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "Nepavyko prisijungti prie Last.fm paslaugos."
 
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "

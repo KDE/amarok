@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-05 01:42+0000\n"
+"POT-Creation-Date: 2024-07-09 01:41+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -2070,7 +2070,7 @@ msgstr "&Дадаць у чаргу"
 msgid "More..."
 msgstr "Больш..."
 
-#: browsers/CollectionTreeView.cpp:1087 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2078,7 +2078,7 @@ msgstr "Больш..."
 msgid "&Add to Playlist"
 msgstr "Дадаць у спіс прайгравання"
 
-#: browsers/CollectionTreeView.cpp:1098 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2088,13 +2088,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Разумныя спісы прайгравання"
 
-#: browsers/CollectionTreeView.cpp:1147
+#: browsers/CollectionTreeView.cpp:1150
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr ""
 
-#: browsers/CollectionTreeView.cpp:1180 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
 #, fuzzy, kde-format
 #| msgid "Plugin Information"
 msgid "&Edit Track Details"
@@ -2865,7 +2865,7 @@ msgid "Configure Plugins"
 msgstr "Наставіць калекцыю"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:375
+#: scripting/scriptconsole/ScriptConsole.cpp:376
 #, fuzzy, kde-format
 msgid "Scripts"
 msgstr "Сцэнары"
@@ -6056,64 +6056,64 @@ msgstr[2] "%1 элемент"
 msgid "Podcast"
 msgstr "Мясцовыя подкасты"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:294
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
 #, fuzzy, kde-format
 #| msgid "Update"
 msgid "&Update All Channels"
 msgstr "Аб&навіць усе"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "&Configure General Settings"
 msgstr "Дадаць у чаргу"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:306
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:332
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
 #, fuzzy, kde-format
 #| msgid "&Configure..."
 msgid "&Configure"
 msgstr "На&стаўленне"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:345
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
 #, fuzzy, kde-format
 #| msgid "Description"
 msgid "&Remove Subscription"
 msgstr "Апісанне"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:354
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
 #, fuzzy, kde-format
 #| msgid "Update"
 msgid "&Update Channel"
 msgstr "Аб&навіць усе"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:390
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "&Download Episode"
 msgstr "&Сцягнуць"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:398
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:407
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "&Keep downloaded file"
 msgstr "&Сцягнуць"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6121,19 +6121,19 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:482
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
 #, fuzzy, kde-format
 #| msgid "Never"
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "Ніколі"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
 #, fuzzy, kde-format
 #| msgid "Minutes"
 msgid " minute"
@@ -6142,41 +6142,41 @@ msgstr[0] "хвіліны"
 msgstr[1] "хвіліны"
 msgstr[2] "хвіліны"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:616
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
 #, fuzzy, kde-format
 #| msgid "&Configure..."
 msgid "Configure Local Podcasts"
 msgstr "&Наладзіць..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, fuzzy, kde-format
 #| msgid "Local Podcasts"
 msgid "Move Podcasts"
 msgstr "Мясцовыя подкасты"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:638
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:705
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
 #, kde-format
 msgid "Select file for OPML export"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:852
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
 #, fuzzy, kde-format
 #| msgid "Do you really want to remove this %1?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Вы сапраўды хочаце выдаліць %1?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "Delete downloaded episodes"
 msgstr "&Сцягнуць"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:978
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6184,24 +6184,24 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1162
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, fuzzy, kde-format
 #| msgid "Downloading Playlist"
 msgid "Downloading Podcast Media"
 msgstr "Сцягванне спісу прайгравання"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, fuzzy, kde-format
 #| msgid "Downloading Playlist"
 msgid "Downloading Podcast \"%1\""
@@ -13607,29 +13607,29 @@ msgstr "Сцэнары"
 msgid "&View"
 msgstr "&Паказаць"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:215
+#: scripting/scriptconsole/ScriptConsole.cpp:216
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:228
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, fuzzy, kde-format
 #| msgid "Description"
 msgid "Remove script file from disk?"
 msgstr "Апісанне"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:420
+#: scripting/scriptconsole/ScriptConsole.cpp:421
 #, fuzzy, kde-format
 #| msgid "Description"
 msgid "Remove Script"
 msgstr "Апісанне"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:450
+#: scripting/scriptconsole/ScriptConsole.cpp:451
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -13786,11 +13786,11 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:182
-#: services/gpodder/GpodderServiceSettings.cpp:191
-#: services/gpodder/GpodderServiceSettings.cpp:201
-#: services/gpodder/GpodderServiceSettings.cpp:219
-#: services/gpodder/GpodderServiceSettings.cpp:248
+#: services/gpodder/GpodderServiceSettings.cpp:181
+#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:200
+#: services/gpodder/GpodderServiceSettings.cpp:218
+#: services/gpodder/GpodderServiceSettings.cpp:247
 #: services/lastfm/LastFmConfigWidget.ui:109
 #: services/lastfm/LastFmServiceSettings.cpp:221
 #, fuzzy, kde-format
@@ -13866,9 +13866,9 @@ msgid ""
 msgstr ""
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:180
-#: services/gpodder/GpodderServiceSettings.cpp:189
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #: services/lastfm/LastFmServiceSettings.cpp:170
 #, fuzzy, kde-format
@@ -13884,7 +13884,7 @@ msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Балы"
 
-#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:178
 #: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
@@ -13892,13 +13892,13 @@ msgid ""
 "again"
 msgstr ""
 
-#: services/gpodder/GpodderServiceSettings.cpp:188
+#: services/gpodder/GpodderServiceSettings.cpp:187
 #, fuzzy, kde-format
 #| msgid "Downloading Playlist"
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "Сцягванне спісу прайгравання"
 
-#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
