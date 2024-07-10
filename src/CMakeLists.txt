@@ -829,7 +829,6 @@ if(BUILD_WITH_QT6)
         KF${KF_MAJOR_VERSION}::KIOCore
         KF${KF_MAJOR_VERSION}::KIOFileWidgets
         KF${KF_MAJOR_VERSION}::KIOWidgets
-        KF${KF_MAJOR_VERSION}::NewStuffCore
         KF${KF_MAJOR_VERSION}::Notifications
         KF${KF_MAJOR_VERSION}::Package
         KF${KF_MAJOR_VERSION}::StatusNotifierItem
@@ -867,7 +866,6 @@ else()
         KF${KF_MAJOR_VERSION}::KIOCore
         KF${KF_MAJOR_VERSION}::KIOFileWidgets
         KF${KF_MAJOR_VERSION}::KIOWidgets
-        KF${KF_MAJOR_VERSION}::NewStuff
         KF${KF_MAJOR_VERSION}::Notifications
         KF${KF_MAJOR_VERSION}::Package
         KF${KF_MAJOR_VERSION}::TextEditor
@@ -971,7 +969,7 @@ endif()
 install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${KDE_INSTALL_DATADIR}/solid/actions)
 
-install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
+#install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
 
 # protocol handlers
 

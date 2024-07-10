@@ -71,7 +71,6 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     IconThemes
     KCMUtils
     KIO
-    NewStuff
     Notifications
     Package
     Solid
