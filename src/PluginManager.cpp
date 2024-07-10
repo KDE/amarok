@@ -33,6 +33,7 @@
 #include <KMessageBox>
 
 #include <QGuiApplication>
+#include <QJsonArray>
 #include <QPluginLoader>
 
 
@@ -295,7 +296,16 @@ Plugins::PluginManager::findPlugins()
     QVector<KPluginMetaData> plugins;
     for( const auto &location : QCoreApplication::libraryPaths() )
         plugins << KPluginMetaData::findPlugins( location, [] ( const KPluginMetaData &metadata )
-            { return metadata.serviceTypes().contains( QStringLiteral( "Amarok/Plugin" ) ); } );
+            { // deprecated/removed serviceTypes() functionality just replicated here, TODO convert the metadata to something more modern
+                if( !metadata.rawData().contains( QStringLiteral( "KPlugin" ) ) )
+                    return false;
+                auto obj = metadata.rawData().value( QStringLiteral( "KPlugin" ) ).toObject();
+                if( obj == QJsonObject() )
+                    return false;
+                if( obj.value( QStringLiteral( "ServiceTypes" ) ).toArray() == QJsonArray() )
+                    return false;
+                return obj.value( QStringLiteral( "ServiceTypes" ) ).toArray().contains( QStringLiteral("Amarok/Plugin" ) );
+            } );
 
     for( const auto &plugin : plugins )
     {
