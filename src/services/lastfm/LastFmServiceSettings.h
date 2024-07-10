@@ -43,7 +43,10 @@ public:
     void defaults() override;
 
 private Q_SLOTS:
-    void testLogin();
+    void disconnectAccount();
+    void initiateTokenAuth();
+    void onAuthTokenReady();
+    void getSessionToken( const QString &sessionToken );
     void onAuthenticated();
     void onError( QNetworkReply::NetworkError code );
     void onConfigUpdated();

@@ -74,7 +74,6 @@ private Q_SLOTS:
     void updateEditHint( int index );
 
     void slotReconfigure();
-    void onAuthenticated();
     void onGetUserInfo();
     void onAvatarDownloaded( const QString& username, QPixmap avatar );
 
@@ -106,7 +105,6 @@ private:
     QPixmap m_avatar;
     bool m_subscriber;
 
-    QNetworkReply *m_authenticateReply;
     LastFmServiceConfigPtr m_config;
 };
 

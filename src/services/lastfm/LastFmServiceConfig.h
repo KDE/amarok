@@ -59,9 +59,6 @@ public:
     QString username() const { return m_username; }
     void setUsername( const QString &username ) { m_username = username; }
 
-    QString password() const { return m_password; }
-    void setPassword( const QString &password ) { m_password = password; }
-
     QString sessionKey() const { return m_sessionKey; }
     void setSessionKey( const QString &sessionKey ) { m_sessionKey = sessionKey; }
 
@@ -101,19 +98,13 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void slotWalletOpenedToRead( bool success );
-    void slotWalletOpenedToWrite( bool success );
-
-    void slotStoreCredentialsInAscii();
 
 private:
     Q_DISABLE_COPY( LastFmServiceConfig )
     LastFmServiceConfig();
 
     void openWalletToRead();
-    void openWalletToWrite();
     void openWalletAsync();
-    void prepareOpenedWallet();
-    void askAboutMissingKWallet();
 
     // don't remove or reorder entries, would break saved config
     enum KWalletUsage {
@@ -122,8 +113,8 @@ private:
         PasswordInAscii
     };
 
+
     QString m_username;
-    QString m_password;
     QString m_sessionKey;
     bool m_scrobble;
     bool m_fetchSimilar;
@@ -132,10 +123,9 @@ private:
     bool m_announceCorrections;
     bool m_filterByLabel;
     QString m_filteredLabel;
-    KWalletUsage m_kWalletUsage;
 
-    QMessageBox* m_askDiag;
     KWallet::Wallet* m_wallet;
+
 
     static QWeakPointer<LastFmServiceConfig> s_instance;
 };

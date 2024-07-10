@@ -30,6 +30,8 @@
 #include <KMessageBox>
 #include <KPluginFactory>
 
+#include <QDesktopServices>
+
 #include <XmlQuery.h>
 
 K_PLUGIN_FACTORY_WITH_JSON( LastFmServiceSettingsFactory, "amarok_service_lastfm_config.json", registerPlugin<LastFmServiceSettings>(); )
@@ -43,8 +45,6 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
 
     connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmServiceSettings::onConfigUpdated );
 
-    connect( m_configDialog->kcfg_ScrobblerUsername, &QLineEdit::textChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_ScrobblerPassword, &QLineEdit::textChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_SubmitPlayedSongs, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_RetrieveSimilarArtists, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_ScrobbleComposer, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
@@ -52,7 +52,9 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     connect( m_configDialog->kcfg_AnnounceCorrections, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_FilterByLabel, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_FilteredLabel, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->testLogin, &QPushButton::clicked, this, &LastFmServiceSettings::testLogin );
+
+    connect( m_configDialog->connectToAccount, &QPushButton::clicked, this, &LastFmServiceSettings::initiateTokenAuth );
+    connect( m_configDialog->disconnectAccount, &QPushButton::clicked, this, &LastFmServiceSettings::disconnectAccount );
 
     using namespace Collections;
 
@@ -71,15 +73,6 @@ LastFmServiceSettings::~LastFmServiceSettings()
 void
 LastFmServiceSettings::save()
 {
-    QString dialogUser = m_configDialog->kcfg_ScrobblerUsername->text();
-    QString dialogPass = m_configDialog->kcfg_ScrobblerPassword->text();
-
-    // clear the session key if credentials changed
-    if( m_config->username() != dialogUser || m_config->password() != dialogPass )
-        m_config->setSessionKey( QString() );
-
-    m_config->setUsername( dialogUser );
-    m_config->setPassword( dialogPass );
     m_config->setScrobble( m_configDialog->kcfg_SubmitPlayedSongs->isChecked() );
     m_config->setFetchSimilar( m_configDialog->kcfg_RetrieveSimilarArtists->isChecked() );
     m_config->setScrobbleComposer( m_configDialog->kcfg_ScrobbleComposer->isChecked() );
@@ -93,10 +86,25 @@ LastFmServiceSettings::save()
 }
 
 void
-LastFmServiceSettings::testLogin()
+LastFmServiceSettings::disconnectAccount()
 {
-    m_configDialog->testLogin->setEnabled( false );
-    m_configDialog->testLogin->setText( i18n( "Testing..." ) );
+    debug() << "Disconnecting Last.fm account"<< m_config->username();
+    if( KMessageBox::warningYesNo( this, i18n( "Do you want to disconnect Amarok from Last.fm account %1?" ).arg( m_config->username() ),
+        i18n( "Disconnect Last.fm account?" ), KStandardGuiItem::yes(), KStandardGuiItem::cancel() ) == KMessageBox::Yes )
+    {
+        m_config->setSessionKey( QString() );
+        m_config->setUsername( QString() );
+        m_config->save();
+        Q_EMIT( settingsChanged() );
+        load();
+    }
+}
+
+void
+LastFmServiceSettings::initiateTokenAuth()
+{
+    m_configDialog->connectToAccount->setEnabled( false );
+    m_configDialog->connectToAccount->setText( i18n( "Connecting..." ) );
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
@@ -108,11 +116,62 @@ LastFmServiceSettings::testLogin()
 
     QMap<QString, QString> query;
 
-    query[ QStringLiteral("method") ] = QStringLiteral("auth.getMobileSession");
-    query[ QStringLiteral("password") ] = m_configDialog->kcfg_ScrobblerPassword->text();
-    query[ QStringLiteral("username") ] = m_configDialog->kcfg_ScrobblerUsername->text();
-    m_authQuery = lastfm::ws::post( query );
+    query[ QStringLiteral("method") ] = QStringLiteral("auth.getToken");
+    m_authQuery = lastfm::ws::get( query );
 
+    connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthTokenReady );
+    connect( m_authQuery, QOverload<QNetworkReply::NetworkError>::of( &QNetworkReply::errorOccurred ),
+             this, &LastFmServiceSettings::onError );
+}
+
+void
+LastFmServiceSettings::onAuthTokenReady()
+{
+    lastfm::XmlQuery lfm;
+    lfm.parse( m_authQuery->readAll() );
+
+    switch( m_authQuery->error() )
+    {
+        case QNetworkReply::NoError:
+             debug() << "NoError";
+             if( lfm.children( QStringLiteral("error") ).size() > 0 || lfm[ QStringLiteral("token") ].text().isEmpty() )
+             {
+                 debug() << "ERROR from last.fm:" << lfm.text();
+                 m_configDialog->connectToAccount->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
+                 m_configDialog->connectToAccount->setEnabled( true );
+
+             } else
+             {
+                 m_configDialog->connectToAccount->setText( i18nc( "Last.fm authentication process status", "Opening Last.fm web page" ) );
+                 m_configDialog->connectToAccount->setEnabled( false );
+             }
+             break;
+
+        default:
+            debug() << "Unhandled QNetworkReply state, probably not important";
+    }
+    m_authQuery->deleteLater();
+    if( QDesktopServices::openUrl( QUrl( QStringLiteral( "https://www.last.fm/api/auth/?api_key=%1&token=%2" )
+        .arg( QLatin1String( Amarok::lastfmApiKey() ), lfm[ QStringLiteral("token") ].text() ) ) ) )
+    {
+        QTimer::singleShot( 2000, [=] () // wait a moment for the browser to open, as connecting won't succeed before interaction in browser
+        {
+            disconnect( m_configDialog->connectToAccount, &QPushButton::clicked, this, &LastFmServiceSettings::initiateTokenAuth );
+            connect( m_configDialog->connectToAccount, &QPushButton::clicked, [=]() { this->getSessionToken( lfm[ QStringLiteral("token") ].text() ); } );
+            m_configDialog->connectToAccount->setEnabled( true );
+            m_configDialog->connectToAccount->setText( i18nc( "Pushbutton to complete Last.fm authentication process",
+                                                              "Finish connecting account" ) );
+        } );
+    }
+}
+
+void
+LastFmServiceSettings::getSessionToken(const QString &sessionToken)
+{
+    QMap<QString, QString> query;
+    query[ QStringLiteral("method") ] = QStringLiteral("auth.getSession");
+    query[ QStringLiteral("token") ] = sessionToken;
+    m_authQuery = lastfm::ws::get( query );
     connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthenticated );
     connect( m_authQuery, QOverload<QNetworkReply::NetworkError>::of( &QNetworkReply::errorOccurred ),
              this, &LastFmServiceSettings::onError );
@@ -124,29 +183,45 @@ LastFmServiceSettings::onAuthenticated()
     lastfm::XmlQuery lfm;
     lfm.parse( m_authQuery->readAll() );
 
+    QString sessionkey = lfm[ QStringLiteral("session") ][ QStringLiteral("key") ].text();
+    QString username = lfm[ QStringLiteral("session") ][ QStringLiteral("name") ].text();
+    QString tokenErrorMessage = i18n( "Last.fm account connection was not successful. Please make sure you have "
+            "authorized Amarok to connect to your Last.fm account on the Last.fm web page that was opened and try again." );
     switch( m_authQuery->error() )
     {
         case QNetworkReply::NoError:
-             debug() << "NoError";
-             if( lfm.children( QStringLiteral("error") ).size() > 0 )
-             {
-                 debug() << "ERROR from last.fm:" << lfm.text();
-                 m_configDialog->testLogin->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
-                 m_configDialog->testLogin->setEnabled( true );
-
-             } else
-             {
-                 m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
-                 m_configDialog->testLogin->setEnabled( false );
-                 m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
-             }
-             break;
+            debug() << "NoError";
+            if( lfm.children( QStringLiteral("error") ).size() > 0 )
+            {
+                debug() << "ERROR from last.fm:" << lfm.text();
+                m_configDialog->connectToAccount->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
+                m_configDialog->connectToAccount->setEnabled( true );
+                if( lfm[ QStringLiteral("error") ].attribute( QStringLiteral("code") ) == QStringLiteral("14") )
+                    KMessageBox::error( this, tokenErrorMessage, i18n( "Failed" ) );
+            }
+            else if( sessionkey.isEmpty() || username.isEmpty() )
+            {
+                debug() << "Problem getting last.fm sessionkey and username, response:" << lfm.text();
+                m_configDialog->connectToAccount->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
+                KMessageBox::error( this, tokenErrorMessage, i18n( "Failed" ) );
+            }
+            else
+            {
+                m_config->setSessionKey( sessionkey );
+                m_config->setUsername( username );
+                m_configDialog->kcfg_ScrobblerUsername->setText( username );
+                m_configDialog->connectToAccount->setText( i18nc( "The operation completed as expected", "Success" ) );
+                m_configDialog->connectToAccount->setEnabled( false );
+                m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
+                Q_EMIT( settingsChanged() );
+            }
+            break;
 
         case QNetworkReply::AuthenticationRequiredError:
             debug() << "AuthenticationFailed";
-            KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );
-            m_configDialog->testLogin->setText( i18n( "Test Login" ) );
-            m_configDialog->testLogin->setEnabled( true );
+            KMessageBox::error( this, tokenErrorMessage, i18n( "Failed" ) );
+            m_configDialog->connectToAccount->setText( i18n( "Connect to account" ) );
+            m_configDialog->connectToAccount->setEnabled( true );
             break;
 
         default:
@@ -168,8 +243,8 @@ LastFmServiceSettings::onError( QNetworkReply::NetworkError code )
     }
 
     KMessageBox::error( this, i18n( "Unable to connect to Last.fm service." ), i18n( "Failed" ) );
-    m_configDialog->testLogin->setText( i18n( "Test Login" ) );
-    m_configDialog->testLogin->setEnabled( true );
+    m_configDialog->connectToAccount->setText( i18n( "Connect to account" ) );
+    m_configDialog->connectToAccount->setEnabled( true );
 
     debug() << "Error occurred during network request: " << m_authQuery->errorString();
     m_authQuery->deleteLater();
@@ -184,8 +259,20 @@ LastFmServiceSettings::onConfigUpdated()
 void
 LastFmServiceSettings::load()
 {
-    m_configDialog->kcfg_ScrobblerUsername->setText( m_config->username() );
-    m_configDialog->kcfg_ScrobblerPassword->setText( m_config->password() );
+    if( !m_config->sessionKey().isEmpty() && !m_config->username().isEmpty() )
+    {
+        m_configDialog->connectToAccount->setVisible( false );
+        m_configDialog->kActiveLabel1->setVisible( false );
+        m_configDialog->disconnectAccount->setVisible( true );
+        m_configDialog->kcfg_ScrobblerUsername->setText( m_config->username() );
+    }
+    else
+    {
+        m_configDialog->connectToAccount->setVisible( true );
+        m_configDialog->kActiveLabel1->setVisible( true );
+        m_configDialog->disconnectAccount->setVisible( false );
+        m_configDialog->kcfg_ScrobblerUsername->setText( i18n( "Not connected" ) );
+    }
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config->scrobble() );
     m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config->fetchSimilar() );
     m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->scrobbleComposer() );
@@ -194,7 +281,7 @@ LastFmServiceSettings::load()
     m_configDialog->kcfg_FilterByLabel->setChecked( m_config->filterByLabel() );
     m_configDialog->kcfg_FilteredLabel->setCurrentIndex( filteredLabelComboIndex( m_config->filteredLabel() ) );
 
-    if( !m_config->username().isEmpty() && !m_config->password().isEmpty() )
+    if( !m_config->sessionKey().isEmpty() && !m_config->username().isEmpty() )
         m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
 
     KCModule::load();
@@ -215,12 +302,6 @@ LastFmServiceSettings::defaults()
 void
 LastFmServiceSettings::settingsChanged()
 {
-    //TODO: Make pretty validation for username and password
-    //with error reporting
-
-    m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
-    m_configDialog->testLogin->setEnabled( true );
-
     Q_EMIT changed( true );
 }
 

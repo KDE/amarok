@@ -91,7 +91,6 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     , m_profile( nullptr )
     , m_userinfo( nullptr )
     , m_subscriber( false )
-    , m_authenticateReply( nullptr )
     , m_config( LastFmServiceConfig::instance() )
 {
     DEBUG_BLOCK
@@ -183,35 +182,21 @@ LastFmService::slotReconfigure()
 
     setServiceReady( ready ); // emits ready(), which needs to be done *after* creating collection
 
-    // now authenticate w/ last.fm and get our session key if we don't have one
-    if( !m_config->sessionKey().isEmpty() )
+    // now check our session key and username status, which should be handled by serviceconfig in background
+    if( !m_config->sessionKey().isEmpty() && !m_config->username().isEmpty() )
     {
         debug() << __PRETTY_FUNCTION__ << "using saved session key for last.fm";
         continueReconfiguring();
     }
-    else if( !m_config->username().isEmpty() && !m_config->password().isEmpty() )
+    else if( !( m_config->sessionKey().isEmpty() && m_config->username().isEmpty() ) )
     {
-        debug() << __PRETTY_FUNCTION__ << "got no saved session key, authenticating with last.fm";
-
-        // discard any possible ongoing auth connections
-        if( m_authenticateReply )
-        {
-            disconnect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated );
-            m_authenticateReply->abort();
-            m_authenticateReply->deleteLater();
-            m_authenticateReply = nullptr;
-        }
-
-        QMap<QString, QString> query;
-        query[ QStringLiteral("method") ] = QStringLiteral("auth.getMobileSession");
-        query[ QStringLiteral("password") ] = m_config->password();
-        query[ QStringLiteral("username") ] = m_config->username();
-        m_authenticateReply = lastfm::ws::post( query );
-        connect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated ); // calls continueReconfiguring()
+        debug() << __PRETTY_FUNCTION__ << "got no saved last.fm" << (m_config->sessionKey().isEmpty() ? "session," : "username,") <<
+            "serviceconfig will notify user in case interaction is needed";
+        continueReconfiguring();
     }
     else
     {
-        debug() << __PRETTY_FUNCTION__ << "either last.fm username or password is empty";
+        debug() << __PRETTY_FUNCTION__ << "no last.fm login details found";
         continueReconfiguring();
     }
 }
@@ -223,8 +208,7 @@ LastFmService::continueReconfiguring()
     Q_ASSERT( controller );
 
     lastfm::ws::SessionKey = m_config->sessionKey();
-    // we also check username, KWallet may deliver it really late, but we need it
-    bool authenticated = serviceReady() && !m_config->sessionKey().isEmpty();
+    bool authenticated = serviceReady() && !m_config->sessionKey().isEmpty() && !m_config->username().isEmpty();
 
     if( m_scrobbler && (!authenticated || !m_config->scrobble()) )
     {
@@ -255,52 +239,6 @@ LastFmService::continueReconfiguring()
     // update possibly changed user info
     QNetworkReply *reply = lastfm::User::getInfo();
     connect( reply, &QNetworkReply::finished, this, &LastFmService::onGetUserInfo );
-}
-
-void
-LastFmService::onAuthenticated()
-{
-    if( !m_authenticateReply )
-        warning() << __PRETTY_FUNCTION__ << "null reply!";
-    else
-        m_authenticateReply->deleteLater();
-
-    /* temporarily disconnect form config updates to prevent calling
-     * slotReconfigure() for the second time. */
-    disconnect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmService::slotReconfigure );
-
-    switch( m_authenticateReply ? m_authenticateReply->error() : QNetworkReply::UnknownNetworkError )
-    {
-        case QNetworkReply::NoError:
-        {
-            lastfm::XmlQuery lfm;
-            if( !lfm.parse( m_authenticateReply->readAll() ) || lfm.children( QStringLiteral("error") ).size() > 0 )
-            {
-                debug() << "error from authenticating with last.fm service:" << lfm.text();
-                m_config->setSessionKey( QString() );
-                m_config->save();
-                break;
-            }
-            m_config->setSessionKey( lfm[ QStringLiteral("session") ][ QStringLiteral("key") ].text() );
-            m_config->save();
-
-            break;
-        }
-        case QNetworkReply::AuthenticationRequiredError:
-            Amarok::Logger::longMessage( i18nc("Last.fm: errorMessage",
-                    "Either the username was not recognized, or the password was incorrect." ) );
-            break;
-
-        default:
-            Amarok::Logger::longMessage( i18nc("Last.fm: errorMessage",
-                    "There was a problem communicating with the Last.fm services. Please try again later." ) );
-            break;
-    }
-    m_authenticateReply = nullptr;
-
-    // connect back to config updates
-    connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmService::slotReconfigure );
-    continueReconfiguring();
 }
 
 void
@@ -341,7 +279,7 @@ LastFmService::onGetUserInfo()
             break;
         }
         case QNetworkReply::AuthenticationRequiredError:
-            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or Amarok is not authorized to connect to the Last.fm account.";
             break;
         default:
             debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
