@@ -71,6 +71,7 @@
 #include "widgets/Osd.h"
 
 #include <QAction>          //m_actionCollection
+#include <QActionGroup>
 #include <QApplication>     //qApp
 #include <QCheckBox>
 #include <QClipboard>
@@ -103,8 +104,6 @@
 #include "mac/MacSystemNotify.h"
 #endif
 #endif
-
-#define AMAROK_CAPTION I18N_NOOP( "Amarok" )
 
 extern OcsData ocsData;
 
@@ -148,7 +147,7 @@ MainWindow::MainWindow()
     PERF_LOG( "Created actions" )
 
     The::paletteHandler()->setPalette( palette() );
-    setPlainCaption( i18n( AMAROK_CAPTION ) );
+    setPlainCaption( i18n( "Amarok" ) );
 
     init();  // We could as well move the code from init() here, but meh.. getting a tad long
 
@@ -809,18 +808,18 @@ MainWindow::createActions()
 
     action = new QAction( QIcon::fromTheme(QStringLiteral("document-open")), i18n("Play Media..."), this );
     ac->addAction( QStringLiteral("playlist_playmedia"), action );
-    action->setShortcut( Qt::CTRL + Qt::Key_O );
+    action->setShortcut( Qt::CTRL | Qt::Key_O );
     connect( action, &QAction::triggered, this, &MainWindow::slotPlayMedia );
 
     action = new QAction( QIcon::fromTheme(QStringLiteral("media-track-edit-amarok")), i18n("Edit Details of Currently Selected Track"), this );
     ac->addAction( QStringLiteral("trackdetails_edit"), action );
-    action->setShortcut( Qt::CTRL + Qt::Key_E );
+    action->setShortcut( Qt::CTRL | Qt::Key_E );
     connect( action, &QAction::triggered, this, &MainWindow::slotEditTrackInfo );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
                           i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( QStringLiteral("seek_forward_short"), action );
-    action->setShortcut( Qt::CTRL + Qt::Key_Right );
+    action->setShortcut( Qt::CTRL | Qt::Key_Right );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardShort );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
@@ -833,14 +832,14 @@ MainWindow::createActions()
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
                           i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( QStringLiteral("seek_forward_long"), action );
-    action->setShortcut( Qt::SHIFT + Qt::Key_Right );
+    action->setShortcut( Qt::SHIFT | Qt::Key_Right );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardLong );
 
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
                           i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( QStringLiteral("seek_backward_short"), action );
-    action->setShortcut( Qt::CTRL + Qt::Key_Left );
+    action->setShortcut( Qt::CTRL | Qt::Key_Left );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardShort );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
@@ -853,7 +852,7 @@ MainWindow::createActions()
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
                           i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( QStringLiteral("seek_backward_long"), action );
-    action->setShortcut( Qt::SHIFT + Qt::Key_Left );
+    action->setShortcut( Qt::SHIFT | Qt::Key_Left );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardLong );
 
     PERF_LOG( "MainWindow::createActions 6" )
@@ -884,7 +883,7 @@ MainWindow::createActions()
     ac->addAction( QStringLiteral("shuffle_playlist"), action );
     action->setIcon( QIcon::fromTheme(QStringLiteral("media-playlist-shuffle")) );
     action->setText( i18n( "Shuffle Playlist" ) );
-    action->setShortcut( Qt::CTRL + Qt::Key_H );
+    action->setShortcut( Qt::CTRL | Qt::Key_H );
     connect( action, &QAction::triggered, this, &MainWindow::slotShufflePlaylist );
 
     action = new QAction( this );
@@ -1225,13 +1224,13 @@ MainWindow::changeEvent( QEvent *event )
 void
 MainWindow::slotStopped()
 {
-    setPlainCaption( i18n( AMAROK_CAPTION ) );
+    setPlainCaption( i18n( "Amarok" ) );
 }
 
 void
 MainWindow::slotPaused()
 {
-    setPlainCaption( i18n( "Paused  ::  %1", i18n( AMAROK_CAPTION ) ) );
+    setPlainCaption( i18n( "Paused  ::  %1", i18n( "Amarok" ) ) );
 }
 
 void
@@ -1244,7 +1243,7 @@ void
 MainWindow::slotMetadataChanged( Meta::TrackPtr track )
 {
     if( track )
-        setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), i18n( AMAROK_CAPTION ) ) );
+        setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), i18n( "Amarok" ) ) );
 }
 
 CollectionWidget *

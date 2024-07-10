@@ -409,7 +409,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("remove-amarok") ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete_file") );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
-        m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
+        m_deleteAction->setShortcut( Qt::SHIFT | Qt::Key_Delete );
         connect( m_deleteAction, &QAction::triggered, this, &FileView::slotDelete );
     }
     if( type & OrganizeAction )

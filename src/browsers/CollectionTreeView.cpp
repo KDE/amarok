@@ -447,7 +447,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
             deleteAction->setProperty( "popupdropper_svg_id", QStringLiteral("delete") );
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
-            deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
+            deleteAction->setShortcut( Qt::SHIFT | Qt::Key_Delete );
             connect( deleteAction, &QAction::triggered, this, &CollectionTreeView::slotDeleteTracks );
             menu.addAction( deleteAction );
         }

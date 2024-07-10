@@ -23,11 +23,20 @@
 
 void AmarokContextPackageStructure::initPackage(KPackage::Package* package)
 {
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     package->addFileDefinition("mainscript", QStringLiteral("ui/main.qml"), i18n("Main Script File"));
     package->addFileDefinition("icon", QStringLiteral("images/icon.png"), i18n("Applet Icon File"));
     package->addFileDefinition("icon", QStringLiteral("images/icon.svg"), i18n("Applet Icon File"));
     package->setDefaultPackageRoot(QStringLiteral("kpackage/amarok"));
     package->addDirectoryDefinition("images", QStringLiteral("images"), i18n("Images"));
+#else
+    package->addFileDefinition("mainscript", QStringLiteral("ui/main.qml"));
+    package->addFileDefinition("icon", QStringLiteral("images/icon.png"));
+    package->addFileDefinition("icon", QStringLiteral("images/icon.svg"));
+    package->setDefaultPackageRoot(QStringLiteral("kpackage/amarok"));
+    package->addDirectoryDefinition("images", QStringLiteral("images"));
+#endif
     auto mimetypes = QStringList() << QStringLiteral("image/svg+xml");
     package->setMimeTypes("images", mimetypes);
 }

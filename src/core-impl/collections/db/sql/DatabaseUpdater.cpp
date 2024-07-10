@@ -700,7 +700,11 @@ DatabaseUpdater::upgradeVersion14to15()
     columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
     columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMapIterator<QString, vcpair> it( columns );
+#else
+    QMultiMapIterator<QString, vcpair> it( columns );
+#endif
     while( it.hasNext() )
     {
         it.next();

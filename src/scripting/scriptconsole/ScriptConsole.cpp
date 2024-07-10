@@ -99,11 +99,11 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     connect( action, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
     toolBar->addAction( action );
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-start") ), i18n("Execute Script"), this );
-    action->setShortcut( Qt::CTRL + Qt::Key_Enter );
+    action->setShortcut( Qt::CTRL | Qt::Key_Enter );
     connect( action, &QAction::triggered, this, &ScriptConsole::slotExecuteNewScript );
     toolBar->addAction( action );
     action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&New Script" ), this );
-    action->setShortcut( Qt::CTRL + Qt::Key_N );
+    action->setShortcut( Qt::CTRL | Qt::Key_N );
     toolBar->addAction( action );
     connect( action, &QAction::triggered, this, &ScriptConsole::slotNewScript );
     action = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ), i18n( "&Delete Script" ), this );

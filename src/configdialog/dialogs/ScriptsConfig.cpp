@@ -201,7 +201,7 @@ ScriptsConfig::installLocalScript()
     bool archiveContainsDir = archiveDir->entries().length() && archiveDir->entry( archiveDir->entries().first() )->isDirectory();
     if( !archiveContainsDir )
         destination += fileName;
-    QString suffix = "";
+    QString suffix = QStringLiteral("");
     while( dir.exists( destination + suffix ) && !archiveContainsDir )
     {
         suffix = QString::number( suffix.toInt() + 1 );
