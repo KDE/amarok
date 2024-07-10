@@ -59,11 +59,8 @@ void AppletLoader::findApplets()
 
     auto loader = KPackage::PackageLoader::self();
     auto structure = new AmarokContextPackageStructure;
-    loader->addKnownPackageStructure(QStringLiteral("Amarok/ContextApplet"), structure);
-    m_applets = loader->findPackages(QStringLiteral("Amarok/ContextApplet"),
-                                     QString(),
-                                     [] (const KPluginMetaData &data)
-                                     { return data.serviceTypes().contains(QStringLiteral("Amarok/ContextApplet")); });
+    loader->addKnownPackageStructure( QStringLiteral("Amarok/ContextApplet"), structure );
+    m_applets = loader->findPackages( QStringLiteral("Amarok/ContextApplet"), QString() );
     Q_EMIT finished(m_applets);
 
     for (const auto &applet : m_applets)
