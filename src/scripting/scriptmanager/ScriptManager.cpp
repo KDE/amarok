@@ -329,7 +329,7 @@ ScriptManager::slotConfigChanged()
     {
         const QString name = item->info().pluginId();
         bool enabledByDefault = item->info().isEnabledByDefault();
-        bool enabled = Amarok::config( QStringLiteral("Plugins") ).readEntry( name + QStringLiteral("Enabled"), enabledByDefault );
+        bool enabled = Amarok::config( QStringLiteral("Scripts") ).readEntry( name + QStringLiteral("Enabled"), enabledByDefault );
 
         if( !item->running() && enabled )
         {

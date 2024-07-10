@@ -116,7 +116,6 @@ ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &pat
 , m_runningTime( 0 )
 , m_timerId( 0 )
 {
-    initializeScriptEngine();
 }
 
 void
@@ -136,14 +135,11 @@ ScriptItem::pause()
         m_popupWidget->deleteLater();
     }
     //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
-    /* TODO- interrupted methos is available only from 5.14. Check minimum QT version.
     if( !m_engine->isInterrupted() )
     {
         m_engine->setInterrupted(true);
-        m_evaluating = false;
         return;
     }
-    */
     if( m_info.category() == QStringLiteral("Scriptable Service") )
         The::scriptableServiceManager()->removeRunningScript( m_name );
 
@@ -216,6 +212,7 @@ ScriptItem::start( bool silent )
 {
     DEBUG_BLOCK
     //load the wrapper classes
+    initializeScriptEngine();
     m_output.clear();
 
     QFile scriptFile( m_url.path() );
