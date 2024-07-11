@@ -98,7 +98,7 @@ int main( int argc, char *argv[] )
                           i18n( "The audio player by KDE" ),
                           KAboutLicense::GPL,
                           i18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2024, The Amarok Development Squad" ),
-                          ki18n( "IRC:\nirc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( QStringLiteral(__DATE__) ).toString(),
+                          ki18n( "IRC:\nirc.libera.chat - #amarok\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( QStringLiteral(__DATE__) ).toString(),
                           QStringLiteral( "http://amarok.kde.org" ) );
 
     //------------ About data ----------------------

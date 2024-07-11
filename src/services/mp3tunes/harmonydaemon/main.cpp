@@ -37,7 +37,7 @@ int main( int argc, char *argv[] )
                             KAboutLicense::GPL,
                             i18n( "(C) 2008, Casey Link" ),
                             i18n( "Handles AutoSync for the MP3tunes service in Amarok." ),
-                            i18n( "IRC:\nserver: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-fr\n\nFeedback:\namarok@kde.org" ),
+                            i18n( "IRC:\nserver: irc.libera.chat / channel: #amarok\n\nFeedback:\namarok@kde.org" ),
                             I18N_NOOP( "http://amarok.kde.org" ) );
     KAboutData::setApplicationData( about );
 
