@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-09 01:41+0000\n"
+"POT-Creation-Date: 2024-07-11 01:43+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -167,89 +167,89 @@ msgstr "แวะเยี่ยมหน้าเว็บของผู้ม
 msgid "Name"
 msgstr "ชื่อ"
 
-#: ActionClasses.cpp:89
+#: ActionClasses.cpp:95
 #, kde-format
 msgid "Amarok Menu"
 msgstr "เมนูของแอมอะร็อก"
 
-#: ActionClasses.cpp:180
+#: ActionClasses.cpp:186
 #, kde-format
 msgid "Play/Pause"
 msgstr "เล่น/หยุดชั่วคราว"
 
-#: ActionClasses.cpp:317
+#: ActionClasses.cpp:323
 #, kde-format
 msgid "Click to change"
 msgstr "คลิกเพื่อเปลี่ยน"
 
-#: ActionClasses.cpp:334
+#: ActionClasses.cpp:340
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr ""
 
-#: ActionClasses.cpp:336
+#: ActionClasses.cpp:342
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "&ปิด"
 
-#: ActionClasses.cpp:337
+#: ActionClasses.cpp:343
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "แ&ทร็กเสียง"
 
-#: ActionClasses.cpp:338
+#: ActionClasses.cpp:344
 #, kde-format
 msgid "&Album"
 msgstr "&อัลบั้ม"
 
-#: ActionClasses.cpp:358
+#: ActionClasses.cpp:364
 #, kde-format
 msgid "Burn"
 msgstr "เขียนลงแผ่น"
 
-#: ActionClasses.cpp:397
+#: ActionClasses.cpp:403
 #, kde-format
 msgid "Current Playlist"
 msgstr "รายการเล่นปัจจุบัน"
 
-#: ActionClasses.cpp:398
+#: ActionClasses.cpp:404
 #, kde-format
 msgid "Selected Tracks"
 msgstr "แทร็กที่เลือกไว้"
 
-#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:97
+#: ActionClasses.cpp:435 scripting/scriptconsole/ScriptConsole.cpp:97
 #, kde-format
 msgid "Stop"
 msgstr "หยุด"
 
-#: ActionClasses.cpp:473
+#: ActionClasses.cpp:479
 #, kde-format
 msgid "Stop after current Track"
 msgstr "หยุดหลังจบแทร็กปัจจุบัน"
 
-#: ActionClasses.cpp:490
+#: ActionClasses.cpp:496
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "หยุดหลังจบแทร็กปัจจุบัน: ไม่ได้เปิดใช้"
 
-#: ActionClasses.cpp:495
+#: ActionClasses.cpp:501
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "หยุดหลังจบแทร็กปัจจุบัน: เปิดใช้"
 
-#: ActionClasses.cpp:499
+#: ActionClasses.cpp:505
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
 #, kde-format
 msgid "No track playing"
 msgstr "ยังไม่มีการเล่นแทร็กเสียงใด ๆ"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:503
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
-#: main.cpp:92 MainWindow.cpp:107
+#: ActionClasses.cpp:509
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
+#: main.cpp:96 MainWindow.cpp:107
 #, kde-format
 msgid "Amarok"
 msgstr "แอมอะร็อก"
@@ -1656,10 +1656,10 @@ msgstr "แทร็กที่เลือกไว้"
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:493
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:494
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:495
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:496 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:497
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:498
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
 #, kde-format
 msgid "Unknown"
 msgstr "ไม่ทราบ"
@@ -2018,7 +2018,7 @@ msgstr "ไม่ทราบ"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -2557,7 +2557,7 @@ msgstr "&ลบ..."
 msgid "&Export As..."
 msgstr "&ส่งออกรายการเล่น..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, fuzzy, kde-format
 #| msgid "1 Track"
 #| msgid_plural "%1 Tracks"
@@ -2566,7 +2566,7 @@ msgid "a Track"
 msgid_plural "%1 Tracks"
 msgstr[0] "ข้อมูลของเพลงที่ %1"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, fuzzy, kde-format
 #| msgctxt "Remove a track from a saved playlist"
 #| msgid "Remove From \"%1\""
@@ -2574,7 +2574,7 @@ msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "เอาออกจาก \"%1\""
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2582,7 +2582,7 @@ msgid "1 Playlist"
 msgid_plural "%1 Playlists"
 msgstr[0] "รายการเล่น"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
 #, fuzzy, kde-format
 #| msgid "Removing Track from Device"
 #| msgid_plural "Removing Tracks from Device"
@@ -2591,7 +2591,7 @@ msgid "Remove a Track From %2"
 msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "กำลังลบแทร็กเสียงต่าง ๆ ออกจากอุปกรณ์"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2600,7 +2600,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "ลบการจัดวางรายการเล่น"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2609,19 +2609,19 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "ลบการจัดวางรายการเล่น"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, fuzzy, kde-format
 #| msgid "Configure Playlist Info Applet"
 msgid "Confirm Playlist Deletion"
 msgstr "ปรับแต่งแอพเพล็ตข้อมูลรายการเล่น"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ใช้พาธแบบสัมพัทธ์สำหรับใช้กับการ&บันทึก"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:382 MainWindow.cpp:462
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
 #, kde-format
 msgid "Save As"
 msgstr "บันทึกเป็น"
@@ -4625,7 +4625,7 @@ msgid "Don't change page automatically"
 msgstr "กำลังปรับปรุงฐานข้อมูล Magnatune ภายในระบบ"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:373
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:376
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4774,7 +4774,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "ปรับปรุงคลังสื่อ"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:400
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:403
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, fuzzy, kde-format
 #| msgid "Play Audio CD"
@@ -4960,7 +4960,7 @@ msgstr ""
 msgid "Errors During Collection Scan"
 msgstr "เกิดข้อผิดพลาดในการตรวจค้นคลังสื่อ"
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:211
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:214
 #, kde-format
 msgid ""
 "Duplicates found, the second file will be ignored:\n"
@@ -5038,7 +5038,7 @@ msgstr "ศิลปินที่ไม่รู้จัก"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1319
+#: EngineController.cpp:1292
 #, kde-format
 msgid "Unknown track"
 msgstr "แทร็กที่ไม่รู้จัก"
@@ -5252,7 +5252,7 @@ msgstr "เริ่มงานไอพ็อดหรือไม่?"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
-#: covermanager/CoverFoundDialog.cpp:742
+#: covermanager/CoverFoundDialog.cpp:743
 #, kde-format
 msgid "Information"
 msgstr "ข้อมูลรายละเอียด"
@@ -7546,7 +7546,7 @@ msgid_plural "Fetch artwork for %1 albums"
 msgstr[0] "ดึงข้อมูลหน้าปกอัลบั้ม %1 อัลบั้ม"
 
 #: covermanager/CoverFetchingActions.cpp:73
-#: covermanager/CoverFoundDialog.cpp:379
+#: covermanager/CoverFoundDialog.cpp:380
 #, kde-format
 msgid "Display Cover"
 msgstr "แสดงหน้าปก"
@@ -7591,18 +7591,18 @@ msgstr[0] "ตั้งหน้าปกสำหรับอัลบั้ม
 msgid "Select Cover Image File"
 msgstr "เลือกแฟ้มรูปภาพสำหรับหน้าปก"
 
-#: covermanager/CoverFoundDialog.cpp:87
+#: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
 msgid "Finding cover for"
 msgstr "ดึงข้อมูลหน้าปกของ %1..."
 
-#: covermanager/CoverFoundDialog.cpp:118
+#: covermanager/CoverFoundDialog.cpp:119
 #, kde-format
 msgid "Enter Custom Search"
 msgstr "ป้อนการค้นหาด้วยตัวเอง"
 
-#: covermanager/CoverFoundDialog.cpp:135
+#: covermanager/CoverFoundDialog.cpp:136
 #: services/lastfm/LastFmServiceCollection.cpp:115
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
@@ -7610,159 +7610,159 @@ msgstr "ป้อนการค้นหาด้วยตัวเอง"
 msgid "Last.fm"
 msgstr "Last.fm"
 
-#: covermanager/CoverFoundDialog.cpp:136
+#: covermanager/CoverFoundDialog.cpp:137
 #, kde-format
 msgid "Google"
 msgstr "Google"
 
-#: covermanager/CoverFoundDialog.cpp:137
+#: covermanager/CoverFoundDialog.cpp:138
 #, kde-format
 msgid "Discogs"
 msgstr "Discogs"
 
-#: covermanager/CoverFoundDialog.cpp:150
+#: covermanager/CoverFoundDialog.cpp:151
 #, kde-format
 msgid "Sort by size"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:404
+#: covermanager/CoverFoundDialog.cpp:405
 #, fuzzy, kde-format
 #| msgid "Save Location:"
 msgid "Cover Image Save Location"
 msgstr "บันทึกที่อยู่:"
 
-#: covermanager/CoverFoundDialog.cpp:433 covermanager/CoverFoundDialog.cpp:452
+#: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
 #, fuzzy, kde-format
 #| msgid "The cover could not be retrieved."
 msgid "Sorry, the cover could not be saved."
 msgstr "ไม่สามารถดึงข้อมูลหน้าปกมาได้"
 
-#: covermanager/CoverFoundDialog.cpp:517
+#: covermanager/CoverFoundDialog.cpp:518
 #, fuzzy, kde-format
 #| msgid "The cover could not be retrieved."
 msgid "Sorry, the cover image could not be retrieved."
 msgstr "ไม่สามารถดึงข้อมูลหน้าปกมาได้"
 
-#: covermanager/CoverFoundDialog.cpp:537
+#: covermanager/CoverFoundDialog.cpp:538
 #, kde-format
 msgid "Fetching Large Cover"
 msgstr "การรับข้อมูลหน้าปกขนาดใหญ่"
 
-#: covermanager/CoverFoundDialog.cpp:538
+#: covermanager/CoverFoundDialog.cpp:539
 #, fuzzy, kde-format
 #| msgid "Download to:"
 msgid "Download Progress"
 msgstr "ดาวน์โหลดไปไว้ยัง:"
 
-#: covermanager/CoverFoundDialog.cpp:540
+#: covermanager/CoverFoundDialog.cpp:541
 #, kde-format
 msgid "Cancel"
 msgstr "ยกเลิก"
 
-#: covermanager/CoverFoundDialog.cpp:701
+#: covermanager/CoverFoundDialog.cpp:702
 #, kde-format
 msgid "Search"
 msgstr "ค้นหา"
 
-#: covermanager/CoverFoundDialog.cpp:701
+#: covermanager/CoverFoundDialog.cpp:702
 #, kde-format
 msgid "Search For More Results"
 msgstr "ค้นหาผลลัพธ์ที่มากขึ้น"
 
-#: covermanager/CoverFoundDialog.cpp:717
+#: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
 msgid "No Images Found"
 msgstr "ไม่พบรูปภาพใด ๆ"
 
-#: covermanager/CoverFoundDialog.cpp:718
+#: covermanager/CoverFoundDialog.cpp:719
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
 msgstr[0] "พบรูปภาพ %1 ภาพ"
 
-#: covermanager/CoverFoundDialog.cpp:743
+#: covermanager/CoverFoundDialog.cpp:744
 #, kde-format
 msgid "Notes"
 msgstr "บันทึกย่อ"
 
-#: covermanager/CoverFoundDialog.cpp:815
+#: covermanager/CoverFoundDialog.cpp:816
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgctxt "@item::intable"
 msgid "Artist"
 msgstr "ศิลปิน"
 
-#: covermanager/CoverFoundDialog.cpp:816
+#: covermanager/CoverFoundDialog.cpp:817
 #, fuzzy, kde-format
 #| msgid "Counting"
 msgctxt "@item::intable"
 msgid "Country"
 msgstr "จำนวน"
 
-#: covermanager/CoverFoundDialog.cpp:817
+#: covermanager/CoverFoundDialog.cpp:818
 #, fuzzy, kde-format
 #| msgid "Database"
 msgctxt "@item::intable"
 msgid "Date"
 msgstr "ฐานข้อมูล"
 
-#: covermanager/CoverFoundDialog.cpp:818
+#: covermanager/CoverFoundDialog.cpp:819
 #, fuzzy, kde-format
 #| msgid "Format:"
 msgctxt "@item::intable File Format"
 msgid "Format"
 msgstr "รูปแบบ:"
 
-#: covermanager/CoverFoundDialog.cpp:819
+#: covermanager/CoverFoundDialog.cpp:820
 #, fuzzy, kde-format
 #| msgid "height"
 msgctxt "@item::intable Image Height"
 msgid "Height"
 msgstr "สูง"
 
-#: covermanager/CoverFoundDialog.cpp:820 covermanager/CoverFoundDialog.cpp:825
+#: covermanager/CoverFoundDialog.cpp:821 covermanager/CoverFoundDialog.cpp:826
 #, fuzzy, kde-format
 #| msgid "Title"
 msgctxt "@item::intable Album Title"
 msgid "Title"
 msgstr "ชื่อ"
 
-#: covermanager/CoverFoundDialog.cpp:821
+#: covermanager/CoverFoundDialog.cpp:822
 #, fuzzy, kde-format
 #| msgid "Type"
 msgctxt "@item::intable Release Type"
 msgid "Type"
 msgstr "ชนิด"
 
-#: covermanager/CoverFoundDialog.cpp:822
+#: covermanager/CoverFoundDialog.cpp:823
 #, fuzzy, kde-format
 #| msgid "Reload"
 msgctxt "@item::intable Release Date"
 msgid "Released"
 msgstr "โหลดใหม่อีกครั้ง"
 
-#: covermanager/CoverFoundDialog.cpp:823
+#: covermanager/CoverFoundDialog.cpp:824
 #, fuzzy, kde-format
 #| msgid "Size:"
 msgctxt "@item::intable File Size"
 msgid "Size"
 msgstr "ขนาด:"
 
-#: covermanager/CoverFoundDialog.cpp:824
+#: covermanager/CoverFoundDialog.cpp:825
 #, fuzzy, kde-format
 #| msgid "Source"
 msgctxt "@item::intable Cover Provider"
 msgid "Source"
 msgstr "แหล่งจัดเก็บ"
 
-#: covermanager/CoverFoundDialog.cpp:826
+#: covermanager/CoverFoundDialog.cpp:827
 #, fuzzy, kde-format
 #| msgid "Width"
 msgctxt "@item::intable Image Width"
 msgid "Width"
 msgstr "ความกว้าง"
 
-#: covermanager/CoverFoundDialog.cpp:860
+#: covermanager/CoverFoundDialog.cpp:861
 #, fuzzy, kde-format
 #| msgctxt "state, as in playing"
 #| msgid "Play"
@@ -7770,155 +7770,155 @@ msgctxt "@item::intable URL"
 msgid "link"
 msgstr "เล่น"
 
-#: covermanager/CoverFoundDialog.cpp:866
+#: covermanager/CoverFoundDialog.cpp:867
 #, fuzzy, kde-format
 #| msgid "URL"
 msgctxt "@item::intable"
 msgid "URL"
 msgstr "ที่อยู่ URL"
 
-#: covermanager/CoverManager.cpp:110 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "เครื่องมือจัดการหน้าปก"
 
-#: covermanager/CoverManager.cpp:123
+#: covermanager/CoverManager.cpp:124
 #, kde-format
 msgid "Albums By"
 msgstr "อัลบั้มโดย"
 
-#: covermanager/CoverManager.cpp:133
+#: covermanager/CoverManager.cpp:134
 #, kde-format
 msgid "All Artists"
 msgstr "ศิลปินทั้งหมด"
 
-#: covermanager/CoverManager.cpp:179 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "ป้อนคำค้นที่นี่"
 
-#: covermanager/CoverManager.cpp:192
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "All Albums"
 msgstr "อัลบั้มทั้งหมด"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:194
 #, kde-format
 msgid "Albums With Cover"
 msgstr "อัลบั้มมีหน้าปก"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:195
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "อัลบั้มไม่มีหน้าปก"
 
-#: covermanager/CoverManager.cpp:207
+#: covermanager/CoverManager.cpp:208
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "ดึงข้อมูลหน้าปกที่ยังไม่มี"
 
-#: covermanager/CoverManager.cpp:313
+#: covermanager/CoverManager.cpp:314
 #, kde-format
 msgid "Fetching"
 msgstr "ทำการรับค่า"
 
-#: covermanager/CoverManager.cpp:408
+#: covermanager/CoverManager.cpp:409
 #, kde-format
 msgid "Loading"
 msgstr "ทำการโหลด"
 
-#: covermanager/CoverManager.cpp:619
+#: covermanager/CoverManager.cpp:620
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "เสร็จสิ้น"
 
-#: covermanager/CoverManager.cpp:621
+#: covermanager/CoverManager.cpp:622
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " ไม่พบหน้าปก <b>%1</b> ปก"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:640
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "ดึงข้อมูลหน้าปกของ %1 - %2..."
 
-#: covermanager/CoverManager.cpp:645
+#: covermanager/CoverManager.cpp:646
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "ดึงข้อมูลหน้าปกของ %1..."
 
-#: covermanager/CoverManager.cpp:651
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "กำลังดึงข้อมูลหน้าปกของ <b>%1</b>"
 
-#: covermanager/CoverManager.cpp:653
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "ดึงข้อมูล %1 แล้ว"
 
-#: covermanager/CoverManager.cpp:657
+#: covermanager/CoverManager.cpp:658
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:659
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "ไม่พบ %1"
 
-#: covermanager/CoverManager.cpp:661
+#: covermanager/CoverManager.cpp:662
 #, kde-format
 msgid "Connecting..."
 msgstr "กำลังเชื่อมต่อ..."
 
-#: covermanager/CoverManager.cpp:684
+#: covermanager/CoverManager.cpp:685
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "ผลลัพธ์ %1 ตัวของ \"%2\" "
 
-#: covermanager/CoverManager.cpp:688
+#: covermanager/CoverManager.cpp:689
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "%1 อัลบั้ม"
 
-#: covermanager/CoverManager.cpp:700
+#: covermanager/CoverManager.cpp:701
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ""
 
-#: covermanager/CoverManager.cpp:700
+#: covermanager/CoverManager.cpp:701
 #, fuzzy, kde-format
 #| msgid "%1 (x%2)"
 msgid "%1 by %2"
 msgstr "%1 (x%2)"
 
-#: covermanager/CoverManager.cpp:705
+#: covermanager/CoverManager.cpp:706
 #, fuzzy, kde-format
 #| msgid " - ( <b>%1</b> without cover )"
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] " - ( <b>%1</b> ไม่มีหน้าปก)"
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:765
 #, kde-format
 msgid "Cover Image"
 msgstr "ภาพหน้าปก"
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:840
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:857
 #, kde-format
 msgid "No Artist"
 msgstr "ไม่มีศิลปิน"
@@ -9644,30 +9644,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "การจัดอันดับ"
 
-#: EngineController.cpp:1109
+#: EngineController.cpp:1082
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "มีข้อผิดพลาดต่าง ๆ เกิดขึ้นจำนวนมากในรายการเล่น หยุดทำการเล่นกลับแล้ว"
 
-#: EngineController.cpp:1309
+#: EngineController.cpp:1282
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> โดย <b>%2</b> ในอัลบั้ม <b>%3</b>"
 
-#: EngineController.cpp:1311
+#: EngineController.cpp:1284
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> โดย <b>%2</b>"
 
-#: EngineController.cpp:1314
+#: EngineController.cpp:1287
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> ในอัลบั้ม <b>%2</b>"
 
-#: EngineController.cpp:1326
+#: EngineController.cpp:1299
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -9950,13 +9950,13 @@ msgstr "ไม่สามารถวิเคราะห์คำของข
 msgid "No information available for this track"
 msgstr "ไม่มีข้อมูลของแทร็กเสียงนี้"
 
-#: main.cpp:94
+#: main.cpp:98
 #, fuzzy, kde-format
 #| msgid "The audio player for KDE"
 msgid "The audio player by KDE"
 msgstr "โปรแกรมเล่นสื่อเสียงสำหรับ KDE"
 
-#: main.cpp:96
+#: main.cpp:100
 #, fuzzy, kde-format
 #| msgid ""
 #| "(C) 2002-2003, Mark Kretschmann\n"
@@ -9968,7 +9968,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2010, The Amarok Development Squad"
 
-#: main.cpp:97
+#: main.cpp:101
 #, fuzzy, kde-format
 #| msgid ""
 #| "IRC:\n"
@@ -9995,856 +9995,856 @@ msgstr ""
 "\n"
 "(วันที่คอมไพล์: %1)"
 
-#: main.cpp:107
+#: main.cpp:111
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr ""
 
-#: main.cpp:108
+#: main.cpp:112
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
 
-#: main.cpp:114
+#: main.cpp:118
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'ไม้จิ้มฟันของฉันอยู่ไหนเนี่ย' Cerneels"
 
-#: main.cpp:115
+#: main.cpp:119
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "ผู้พัฒนา (Stecchino)"
 
-#: main.cpp:118
+#: main.cpp:122
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:119
+#: main.cpp:123
 #, fuzzy, kde-format
 #| msgid "Developer (eean)"
 msgid "Developer (dr_lepper)"
 msgstr "ผู้พัฒนา (eean)"
 
-#: main.cpp:122
+#: main.cpp:126
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr ""
 
-#: main.cpp:123
+#: main.cpp:127
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "ผู้ริเริ่มโครงการ (markey)"
 
-#: main.cpp:126
+#: main.cpp:130
 #, kde-format
 msgid "Matěj Laitl"
 msgstr ""
 
-#: main.cpp:127
+#: main.cpp:131
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr ""
 
-#: main.cpp:130
+#: main.cpp:134
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:130
+#: main.cpp:134
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr ""
 
-#: main.cpp:133
+#: main.cpp:137
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr ""
 
-#: main.cpp:134
+#: main.cpp:138
 #, fuzzy, kde-format
 #| msgid "Developer (nhn)"
 msgid "Developer (rengels)"
 msgstr "ผู้พัฒนา (nhn)"
 
-#: main.cpp:137
+#: main.cpp:141
 #, kde-format
 msgid "Patrick von Reth"
 msgstr ""
 
-#: main.cpp:137
+#: main.cpp:141
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr ""
 
-#: main.cpp:141
+#: main.cpp:145
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:142
+#: main.cpp:146
 #, fuzzy, kde-format
 #| msgid "Developer (sebr)"
 msgid "Developer (stuffcorpse)"
 msgstr "ผู้พัฒนา (sebr)"
 
-#: main.cpp:145
+#: main.cpp:149
 #, fuzzy, kde-format
 #| msgid "Sample Rate"
 msgid "Sam Lade"
 msgstr "อัตราสุ่มตัวอย่าง (Hz)"
 
-#: main.cpp:145
+#: main.cpp:149
 #, fuzzy, kde-format
 #| msgid "Developer (nhn)"
 msgid "Developer (Sentynel)"
 msgstr "ผู้พัฒนา (nhn)"
 
-#: main.cpp:149
+#: main.cpp:153
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:149
+#: main.cpp:153
 #, fuzzy, kde-format
 #| msgid "Developer (jefferai)"
 msgid "Rokymoter, Developer (sven423)"
 msgstr "ผู้พัฒนา (jefferai)"
 
-#: main.cpp:152
+#: main.cpp:156
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:153
+#: main.cpp:157
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "ผู้พัฒนา (Teo`)"
 
-#: main.cpp:156
+#: main.cpp:160
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr ""
 
-#: main.cpp:157
+#: main.cpp:161
 #, fuzzy, kde-format
 #| msgid "Rokymoter (ljubomir)"
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Rokymoter (ljubomir)"
 
-#: main.cpp:160
+#: main.cpp:164
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'พี่เครา' Monroe"
 
-#: main.cpp:160
+#: main.cpp:164
 #, kde-format
 msgid "Developer (eean)"
 msgstr "ผู้พัฒนา (eean)"
 
-#: main.cpp:163
+#: main.cpp:167
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROKSOHARD' Mitchell"
 
-#: main.cpp:163
+#: main.cpp:167
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "ผู้พัฒนา (jefferai)"
 
-#: main.cpp:166
+#: main.cpp:170
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: main.cpp:166
+#: main.cpp:170
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "ผู้พัฒนา (lfranchi)"
 
-#: main.cpp:169
+#: main.cpp:173
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'is wrong(TM)' Pintscher"
 
-#: main.cpp:169
+#: main.cpp:173
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Release Vixen (Nightrose)"
 
-#: main.cpp:172
+#: main.cpp:176
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:172
+#: main.cpp:176
 #, fuzzy, kde-format
 #| msgid "Developer (jefferai)"
 msgid "Developer, Vision"
 msgstr "ผู้พัฒนา (jefferai)"
 
-#: main.cpp:175
+#: main.cpp:179
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:175
+#: main.cpp:179
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "ผู้พัฒนา (maxx_k)"
 
-#: main.cpp:178
+#: main.cpp:182
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'ผู้เร่าร้อน' Nielsen"
 
-#: main.cpp:178
+#: main.cpp:182
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "ผู้พัฒนา (nhn)"
 
-#: main.cpp:181
+#: main.cpp:185
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
-#: main.cpp:181
+#: main.cpp:185
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "ผู้พัฒนา (sebr)"
 
-#: main.cpp:186
+#: main.cpp:190
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:186
+#: main.cpp:190
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "ผู้พัฒนา (xevix)"
 
-#: main.cpp:188
+#: main.cpp:192
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:188
+#: main.cpp:192
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "ผู้พัฒนา รองรับส่วนการวนเล่น"
 
-#: main.cpp:190
+#: main.cpp:194
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:190
+#: main.cpp:194
 #, fuzzy, kde-format
 #| msgid "Mp3tunes Login"
 msgid "MP3tunes integration"
 msgstr "ล็อกอิน Mp3tunes"
 
-#: main.cpp:192
+#: main.cpp:196
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:192
+#: main.cpp:196
 #, kde-format
 msgid "Windows porting"
 msgstr "พอร์ตไปยังระบบวินโดวส์"
 
-#: main.cpp:194
+#: main.cpp:198
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:194
+#: main.cpp:198
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr ""
 
-#: main.cpp:196
+#: main.cpp:200
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:196
+#: main.cpp:200
 #, kde-format
 msgid "Usability"
 msgstr "ปรับให้ใช้งานง่าย"
 
-#: main.cpp:198
+#: main.cpp:202
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'เฮ้ มันถูกคอมไพล์แล้ว...' Meltzer"
 
-#: main.cpp:198
+#: main.cpp:202
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "ผู้พัฒนา (hydrogen)"
 
-#: main.cpp:200
+#: main.cpp:204
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:200
+#: main.cpp:204
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "Biased playlists"
 msgstr "&บันทึกรายการเล่น"
 
-#: main.cpp:202
+#: main.cpp:206
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:202
+#: main.cpp:206
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr ""
 
-#: main.cpp:204
+#: main.cpp:208
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:204
+#: main.cpp:208
 #, fuzzy, kde-format
 #| msgid "Nepomuk Collection"
 msgid "Nepomuk integration"
 msgstr "คลังสื่อของ Nepomuk"
 
-#: main.cpp:206
+#: main.cpp:210
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:206 main.cpp:226
+#: main.cpp:210 main.cpp:230
 #, fuzzy, kde-format
 #| msgid "Directory"
 msgid "Podcast improvements"
 msgstr "ไดเรกทอรี"
 
-#: main.cpp:208
+#: main.cpp:212
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:208
+#: main.cpp:212
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr ""
 
-#: main.cpp:210
+#: main.cpp:214
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:210
+#: main.cpp:214
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr ""
 
-#: main.cpp:212
+#: main.cpp:216
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:212
+#: main.cpp:216
 #, kde-format
 msgid "Assorted patches"
 msgstr ""
 
-#: main.cpp:214
+#: main.cpp:218
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:214
+#: main.cpp:218
 #, kde-format
 msgid "Icons"
 msgstr "ภาพไอคอน"
 
-#: main.cpp:216
+#: main.cpp:220
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:216
+#: main.cpp:220
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr ""
 
-#: main.cpp:218
+#: main.cpp:222
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:218
+#: main.cpp:222
 #, kde-format
 msgid "Rokymoter"
 msgstr "Rokymoter"
 
-#: main.cpp:220
+#: main.cpp:224
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:220 main.cpp:232
+#: main.cpp:224 main.cpp:236
 #, kde-format
 msgid "Artwork"
 msgstr "งานอาร์ตเวิร์ก"
 
-#: main.cpp:222
+#: main.cpp:226
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:222
+#: main.cpp:226
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Rokymoter (ljubomir)"
 
-#: main.cpp:224
+#: main.cpp:228
 #, kde-format
 msgid "Lucas Gomes"
 msgstr ""
 
-#: main.cpp:224
+#: main.cpp:228
 #, fuzzy, kde-format
 #| msgid "Developer (sebr)"
 msgid "Developer (MaskMaster)"
 msgstr "ผู้พัฒนา (sebr)"
 
-#: main.cpp:226
+#: main.cpp:230
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:228
+#: main.cpp:232
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:228
+#: main.cpp:232
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr ""
 
-#: main.cpp:230
+#: main.cpp:234
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr ""
 
-#: main.cpp:230
+#: main.cpp:234
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr ""
 
-#: main.cpp:232
+#: main.cpp:236
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:234
+#: main.cpp:238
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:234
+#: main.cpp:238
 #, kde-format
 msgid "Website hosting"
 msgstr ""
 
-#: main.cpp:236
+#: main.cpp:240
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:236
+#: main.cpp:240
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Rokymoter (emunkki)"
 
-#: main.cpp:238
+#: main.cpp:242
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:238
+#: main.cpp:242
 #, fuzzy, kde-format
 #| msgid "Scripted Services"
 msgid "Scripting interface"
 msgstr "บริการสคริปต์"
 
-#: main.cpp:240
+#: main.cpp:244
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr ""
 
-#: main.cpp:240
+#: main.cpp:244
 #, fuzzy, kde-format
 #| msgid "Nepomuk Collection"
 msgid "Nepomuk Collection (phalgun)"
 msgstr "คลังสื่อของ Nepomuk"
 
-#: main.cpp:242
+#: main.cpp:246
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:242
+#: main.cpp:246
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr ""
 
-#: main.cpp:244
+#: main.cpp:248
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:244
+#: main.cpp:248
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr ""
 
-#: main.cpp:246
+#: main.cpp:250
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:246
+#: main.cpp:250
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr ""
 
-#: main.cpp:248
+#: main.cpp:252
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:248
+#: main.cpp:252
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr ""
 
-#: main.cpp:250
+#: main.cpp:254
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
-#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
-#: main.cpp:316
+#: main.cpp:254 main.cpp:256 main.cpp:270 main.cpp:280 main.cpp:286
+#: main.cpp:288 main.cpp:300 main.cpp:306 main.cpp:308 main.cpp:312
+#: main.cpp:320
 #, kde-format
 msgid "Developer"
 msgstr "ผู้พัฒนา"
 
-#: main.cpp:252
+#: main.cpp:256
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:254
+#: main.cpp:258
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:254
+#: main.cpp:258
 #, fuzzy, kde-format
 #| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen artist"
 msgstr "แส&ดงหน้าจอโลโกตอนเริ่มใช้งาน"
 
-#: main.cpp:256
+#: main.cpp:260
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:256
+#: main.cpp:260
 #, kde-format
 msgid "Context view"
 msgstr "มุมมองส่วนเกี่ยวพันกับสื่อ"
 
-#: main.cpp:260
+#: main.cpp:264
 #, kde-format
 msgid "Former contributors"
 msgstr "ผู้มีส่วนร่วมก่อนหน้านี้"
 
-#: main.cpp:260
+#: main.cpp:264
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr "รายชื่อด้านล่างนี้คือผู้ที่ช่วยกันสร้างช่วยกันทำแอมอะร็อกในอดีตที่ผ่านมา ขอขอบคุณอย่างแท้จริง"
 
-#: main.cpp:262
+#: main.cpp:266
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:262
+#: main.cpp:266
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr ""
 
-#: main.cpp:264
+#: main.cpp:268
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:264 main.cpp:272
+#: main.cpp:268 main.cpp:276
 #, kde-format
 msgid "Patches"
 msgstr "แพตช์ต่าง ๆ"
 
-#: main.cpp:266
+#: main.cpp:270
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:268
+#: main.cpp:272
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:268
+#: main.cpp:272
 #, kde-format
 msgid "MySQL support"
 msgstr "รองรับฐานข้อมูล MySQL"
 
-#: main.cpp:270
+#: main.cpp:274
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:270
+#: main.cpp:274
 #, kde-format
 msgid "Postgresql support"
 msgstr "รองรับฐานข้อมูล Postgresql"
 
-#: main.cpp:272
+#: main.cpp:276
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:274
+#: main.cpp:278
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:274
+#: main.cpp:278
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr ""
 
-#: main.cpp:276
+#: main.cpp:280
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:278
+#: main.cpp:282
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:278
+#: main.cpp:282
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr ""
 
-#: main.cpp:280
+#: main.cpp:284
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:280
+#: main.cpp:284
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr ""
 
-#: main.cpp:282
+#: main.cpp:286
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:284
+#: main.cpp:288
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:286
+#: main.cpp:290
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:286
+#: main.cpp:290
 #, kde-format
 msgid "Icons and image work"
 msgstr "ภาพไอคอนต่าง ๆ และงานอาร์ตเวิร์ก"
 
-#: main.cpp:288
+#: main.cpp:292
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:288
+#: main.cpp:292
 #, fuzzy, kde-format
 #| msgid "List of folders in the Collection"
 msgid "Dialog to filter the collection titles"
 msgstr "รายการของโฟลเดอร์ต่าง ๆ ในคลังสื่อ"
 
-#: main.cpp:290
+#: main.cpp:294
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:290
+#: main.cpp:294
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr ""
 
-#: main.cpp:292
+#: main.cpp:296
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:292
+#: main.cpp:296
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr ""
 
-#: main.cpp:294
+#: main.cpp:298
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:294
+#: main.cpp:298
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr ""
 
-#: main.cpp:296
+#: main.cpp:300
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:298
+#: main.cpp:302
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:298
+#: main.cpp:302
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr ""
 
-#: main.cpp:300
+#: main.cpp:304
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:300
+#: main.cpp:304
 #, kde-format
 msgid "K3b export code"
 msgstr ""
 
-#: main.cpp:302
+#: main.cpp:306
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:304
+#: main.cpp:308
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:306
+#: main.cpp:310
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:306
+#: main.cpp:310
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr ""
 
-#: main.cpp:308
+#: main.cpp:312
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:310
+#: main.cpp:314
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:310
+#: main.cpp:314
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr ""
 
-#: main.cpp:312
+#: main.cpp:316
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:312
+#: main.cpp:316
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr ""
 
-#: main.cpp:314
+#: main.cpp:318
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:314
+#: main.cpp:318
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr ""
 
-#: main.cpp:316
+#: main.cpp:320
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:318
+#: main.cpp:322
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:318
+#: main.cpp:322
 #, kde-format
 msgid "Loads of stuff"
 msgstr ""
 
-#: main.cpp:320
+#: main.cpp:324
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr ""
 
-#: main.cpp:320
+#: main.cpp:324
 #, fuzzy, kde-format
 #| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen"
 msgstr "แส&ดงหน้าจอโลโกตอนเริ่มใช้งาน"
 
-#: main.cpp:325
+#: main.cpp:329
 #, fuzzy, kde-format
 #| msgid "Andrew Turner"
 msgid "Andrew Browning"
 msgstr "Andrew Turner"
 
-#: main.cpp:326
+#: main.cpp:330
 #, fuzzy, kde-format
 #| msgid "Christie Harris"
 msgid "Chris Wales"
 msgstr "Christie Harris"
 
-#: main.cpp:327
+#: main.cpp:331
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr ""
@@ -15870,7 +15870,7 @@ msgid "Volume: %1% (muted)"
 msgstr "ระดับเสียง: 100% (ตัดเสียง)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
-#: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, fuzzy, kde-format
 #| msgid "Volume: %1%"
 msgid "Volume: %1%"
@@ -16032,7 +16032,7 @@ msgstr "ที่แนะนำโดย %1"
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, kde-format
 msgid "Muted"
 msgstr "ถูกตัดเสียง"
@@ -16349,14 +16349,14 @@ msgstr "หยุด"
 msgid "Paused"
 msgstr "หยุดชั่วคราว"
 
-#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:81
+#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:86
 #, fuzzy, kde-format
 #| msgctxt "state, as in playing"
 #| msgid "Play"
 msgid "Play"
 msgstr "เล่น"
 
-#: widgets/PlayPauseButton.cpp:81
+#: widgets/PlayPauseButton.cpp:86
 #, fuzzy, kde-format
 #| msgid "Paused"
 msgid "Pause"

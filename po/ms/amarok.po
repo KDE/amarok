@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-09 01:41+0000\n"
+"POT-Creation-Date: 2024-07-11 01:43+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -162,90 +162,90 @@ msgstr ""
 msgid "Name"
 msgstr "Nama"
 
-#: ActionClasses.cpp:89
+#: ActionClasses.cpp:95
 #, kde-format
 msgid "Amarok Menu"
 msgstr "Menu Amarok"
 
-#: ActionClasses.cpp:180
+#: ActionClasses.cpp:186
 #, fuzzy, kde-format
 msgid "Play/Pause"
 msgstr "Main/Jeda"
 
-#: ActionClasses.cpp:317
+#: ActionClasses.cpp:323
 #, kde-format
 msgid "Click to change"
 msgstr ""
 
-#: ActionClasses.cpp:334
+#: ActionClasses.cpp:340
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr ""
 
-#: ActionClasses.cpp:336
+#: ActionClasses.cpp:342
 #, fuzzy, kde-format
 #| msgid "&Off"
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "&Off"
 
-#: ActionClasses.cpp:337
+#: ActionClasses.cpp:343
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr ""
 
-#: ActionClasses.cpp:338
+#: ActionClasses.cpp:344
 #, kde-format
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:358
+#: ActionClasses.cpp:364
 #, fuzzy, kde-format
 msgid "Burn"
 msgstr "Burn"
 
-#: ActionClasses.cpp:397
+#: ActionClasses.cpp:403
 #, kde-format
 msgid "Current Playlist"
 msgstr ""
 
-#: ActionClasses.cpp:398
+#: ActionClasses.cpp:404
 #, kde-format
 msgid "Selected Tracks"
 msgstr ""
 
-#: ActionClasses.cpp:429 scripting/scriptconsole/ScriptConsole.cpp:97
+#: ActionClasses.cpp:435 scripting/scriptconsole/ScriptConsole.cpp:97
 #, fuzzy, kde-format
 msgid "Stop"
 msgstr "Henti"
 
-#: ActionClasses.cpp:473
+#: ActionClasses.cpp:479
 #, fuzzy, kde-format
 msgid "Stop after current Track"
 msgstr "Terap kepada Senarai Semasa"
 
-#: ActionClasses.cpp:490
+#: ActionClasses.cpp:496
 #, fuzzy, kde-format
 msgid "Stop after current track: Off"
 msgstr "Terap kepada Senarai Semasa"
 
-#: ActionClasses.cpp:495
+#: ActionClasses.cpp:501
 #, fuzzy, kde-format
 msgid "Stop after current track: On"
 msgstr "Terap kepada Senarai Semasa"
 
-#: ActionClasses.cpp:499
+#: ActionClasses.cpp:505
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
 #, kde-format
 msgid "No track playing"
 msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:503
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
-#: main.cpp:92 MainWindow.cpp:107
+#: ActionClasses.cpp:509
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
+#: main.cpp:96 MainWindow.cpp:107
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1559,10 +1559,10 @@ msgstr "Ke Hadapan 5 trek"
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:493
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:494
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:495
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:496 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:497
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:498
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
 #, kde-format
 msgid "Unknown"
 msgstr "Tidak diketahui"
@@ -1910,7 +1910,7 @@ msgstr "Tidak diketahui"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -2421,7 +2421,7 @@ msgstr "Pa&dam"
 msgid "&Export As..."
 msgstr "Tamat tempoh"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, fuzzy, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2429,13 +2429,13 @@ msgid_plural "%1 Tracks"
 msgstr[0] "Trek"
 msgstr[1] "Trek"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, fuzzy, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Buang Ciri-ciri daripada Gaya"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2444,7 +2444,7 @@ msgid_plural "%1 Playlists"
 msgstr[0] "Senarai main"
 msgstr[1] "Senarai main"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
 #, fuzzy, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2452,7 +2452,7 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "Tidak dapat mengkonfigurasikan peranti rangkaian %s"
 msgstr[1] "Tidak dapat mengkonfigurasikan peranti rangkaian %s"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
@@ -2460,7 +2460,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "Pilih &semakan"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, fuzzy, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
@@ -2468,18 +2468,18 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "Pilih &semakan"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, fuzzy, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "Selaras&kan"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:382 MainWindow.cpp:462
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
 #, fuzzy, kde-format
 msgid "Save As"
 msgstr "Simpan Sebagai"
@@ -4360,7 +4360,7 @@ msgid "Don't change page automatically"
 msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:373
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:376
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, fuzzy, kde-format
 msgid "Track"
@@ -4505,7 +4505,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Koleksi Font Truetype"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:400
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:403
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, fuzzy, kde-format
 msgid "Audio CD"
@@ -4653,7 +4653,7 @@ msgstr ""
 msgid "Errors During Collection Scan"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:211
+#: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:214
 #, kde-format
 msgid ""
 "Duplicates found, the second file will be ignored:\n"
@@ -4726,7 +4726,7 @@ msgstr "Artis Tidak Diketahui"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1319
+#: EngineController.cpp:1292
 #, kde-format
 msgid "Unknown track"
 msgstr ""
@@ -4936,7 +4936,7 @@ msgstr "Perisian iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
-#: covermanager/CoverFoundDialog.cpp:742
+#: covermanager/CoverFoundDialog.cpp:743
 #, fuzzy, kde-format
 msgid "Information"
 msgstr "Maklumat DMA"
@@ -7126,7 +7126,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: covermanager/CoverFetchingActions.cpp:73
-#: covermanager/CoverFoundDialog.cpp:379
+#: covermanager/CoverFoundDialog.cpp:380
 #, kde-format
 msgid "Display Cover"
 msgstr ""
@@ -7175,17 +7175,17 @@ msgstr[1] ""
 msgid "Select Cover Image File"
 msgstr "Pilih Fail Imej Kulit Album"
 
-#: covermanager/CoverFoundDialog.cpp:87
+#: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 msgid "Finding cover for"
 msgstr "&Lompat ke hiperlink"
 
-#: covermanager/CoverFoundDialog.cpp:118
+#: covermanager/CoverFoundDialog.cpp:119
 #, fuzzy, kde-format
 msgid "Enter Custom Search"
 msgstr "Benarkan Toolbar Tersendiri"
 
-#: covermanager/CoverFoundDialog.cpp:135
+#: covermanager/CoverFoundDialog.cpp:136
 #: services/lastfm/LastFmServiceCollection.cpp:115
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
@@ -7193,319 +7193,319 @@ msgstr "Benarkan Toolbar Tersendiri"
 msgid "Last.fm"
 msgstr "Footer berlainan pada halaman terakhir"
 
-#: covermanager/CoverFoundDialog.cpp:136
+#: covermanager/CoverFoundDialog.cpp:137
 #, fuzzy, kde-format
 msgid "Google"
 msgstr "Good"
 
-#: covermanager/CoverFoundDialog.cpp:137
+#: covermanager/CoverFoundDialog.cpp:138
 #, fuzzy, kde-format
 msgid "Discogs"
 msgstr "Dialog"
 
-#: covermanager/CoverFoundDialog.cpp:150
+#: covermanager/CoverFoundDialog.cpp:151
 #, fuzzy, kde-format
 msgid "Sort by size"
 msgstr "#1 socket() gagal."
 
-#: covermanager/CoverFoundDialog.cpp:404
+#: covermanager/CoverFoundDialog.cpp:405
 #, fuzzy, kde-format
 #| msgid "Location:"
 msgid "Cover Image Save Location"
 msgstr "Lokasi:"
 
-#: covermanager/CoverFoundDialog.cpp:433 covermanager/CoverFoundDialog.cpp:452
+#: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
 #, fuzzy, kde-format
 msgid "Sorry, the cover could not be saved."
 msgstr "Kumpulan %s tidak dapat dipadam: %s\n"
 
-#: covermanager/CoverFoundDialog.cpp:517
+#: covermanager/CoverFoundDialog.cpp:518
 #, kde-format
 msgid "Sorry, the cover image could not be retrieved."
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:537
+#: covermanager/CoverFoundDialog.cpp:538
 #, fuzzy, kde-format
 msgid "Fetching Large Cover"
 msgstr "Tiada plugin dipilih"
 
-#: covermanager/CoverFoundDialog.cpp:538
+#: covermanager/CoverFoundDialog.cpp:539
 #, fuzzy, kde-format
 msgid "Download Progress"
 msgstr "Muatturun"
 
-#: covermanager/CoverFoundDialog.cpp:540
+#: covermanager/CoverFoundDialog.cpp:541
 #, fuzzy, kde-format
 msgid "Cancel"
 msgstr "&Batal"
 
-#: covermanager/CoverFoundDialog.cpp:701
+#: covermanager/CoverFoundDialog.cpp:702
 #, fuzzy, kde-format
 #| msgid "S&earch:"
 msgid "Search"
 msgstr "&Cari:"
 
-#: covermanager/CoverFoundDialog.cpp:701
+#: covermanager/CoverFoundDialog.cpp:702
 #, fuzzy, kde-format
 msgid "Search For More Results"
 msgstr "Hasil carian"
 
-#: covermanager/CoverFoundDialog.cpp:717
+#: covermanager/CoverFoundDialog.cpp:718
 #, fuzzy, kde-format
 #| msgid "No results found"
 msgid "No Images Found"
 msgstr "Tiada keputusan didapati"
 
-#: covermanager/CoverFoundDialog.cpp:718
+#: covermanager/CoverFoundDialog.cpp:719
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverFoundDialog.cpp:743
+#: covermanager/CoverFoundDialog.cpp:744
 #, fuzzy, kde-format
 #| msgid "None"
 msgid "Notes"
 msgstr "Tiada"
 
-#: covermanager/CoverFoundDialog.cpp:815
+#: covermanager/CoverFoundDialog.cpp:816
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgctxt "@item::intable"
 msgid "Artist"
 msgstr "Artis"
 
-#: covermanager/CoverFoundDialog.cpp:816
+#: covermanager/CoverFoundDialog.cpp:817
 #, fuzzy, kde-format
 #| msgid "Connecting..."
 msgctxt "@item::intable"
 msgid "Country"
 msgstr "Menyambung..."
 
-#: covermanager/CoverFoundDialog.cpp:817
+#: covermanager/CoverFoundDialog.cpp:818
 #, fuzzy, kde-format
 #| msgid "Database:"
 msgctxt "@item::intable"
 msgid "Date"
 msgstr "Pangkalan Data:"
 
-#: covermanager/CoverFoundDialog.cpp:818
+#: covermanager/CoverFoundDialog.cpp:819
 #, fuzzy, kde-format
 #| msgid "Format"
 msgctxt "@item::intable File Format"
 msgid "Format"
 msgstr "Format"
 
-#: covermanager/CoverFoundDialog.cpp:819
+#: covermanager/CoverFoundDialog.cpp:820
 #, fuzzy, kde-format
 msgctxt "@item::intable Image Height"
 msgid "Height"
 msgstr "&Semak Ejaan"
 
-#: covermanager/CoverFoundDialog.cpp:820 covermanager/CoverFoundDialog.cpp:825
+#: covermanager/CoverFoundDialog.cpp:821 covermanager/CoverFoundDialog.cpp:826
 #, fuzzy, kde-format
 #| msgid "Title"
 msgctxt "@item::intable Album Title"
 msgid "Title"
 msgstr "Tajuk"
 
-#: covermanager/CoverFoundDialog.cpp:821
+#: covermanager/CoverFoundDialog.cpp:822
 #, fuzzy, kde-format
 #| msgid "Type"
 msgctxt "@item::intable Release Type"
 msgid "Type"
 msgstr "Jenis"
 
-#: covermanager/CoverFoundDialog.cpp:822
+#: covermanager/CoverFoundDialog.cpp:823
 #, fuzzy, kde-format
 msgctxt "@item::intable Release Date"
 msgid "Released"
 msgstr "Rekod"
 
-#: covermanager/CoverFoundDialog.cpp:823
+#: covermanager/CoverFoundDialog.cpp:824
 #, fuzzy, kde-format
 #| msgid "Size"
 msgctxt "@item::intable File Size"
 msgid "Size"
 msgstr "Saiz"
 
-#: covermanager/CoverFoundDialog.cpp:824
+#: covermanager/CoverFoundDialog.cpp:825
 #, fuzzy, kde-format
 msgctxt "@item::intable Cover Provider"
 msgid "Source"
 msgstr "Skor"
 
-#: covermanager/CoverFoundDialog.cpp:826
+#: covermanager/CoverFoundDialog.cpp:827
 #, fuzzy, kde-format
 msgctxt "@item::intable Image Width"
 msgid "Width"
 msgstr "Lebar"
 
-#: covermanager/CoverFoundDialog.cpp:860
+#: covermanager/CoverFoundDialog.cpp:861
 #, fuzzy, kde-format
 #| msgid "Play"
 msgctxt "@item::intable URL"
 msgid "link"
 msgstr "Main"
 
-#: covermanager/CoverFoundDialog.cpp:866
+#: covermanager/CoverFoundDialog.cpp:867
 #, fuzzy, kde-format
 #| msgid "URL"
 msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:110 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, fuzzy, kde-format
 msgid "Cover Manager"
 msgstr "Pengurus Kulit Album"
 
-#: covermanager/CoverManager.cpp:123
+#: covermanager/CoverManager.cpp:124
 #, kde-format
 msgid "Albums By"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:133
+#: covermanager/CoverManager.cpp:134
 #, kde-format
 msgid "All Artists"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:179 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:192
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "All Albums"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:194
 #, kde-format
 msgid "Albums With Cover"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:195
 #, kde-format
 msgid "Albums Without Cover"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:207
+#: covermanager/CoverManager.cpp:208
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:313
+#: covermanager/CoverManager.cpp:314
 #, fuzzy, kde-format
 msgid "Fetching"
 msgstr "Mendapatkan pengepala rpm"
 
-#: covermanager/CoverManager.cpp:408
+#: covermanager/CoverManager.cpp:409
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgid "Loading"
 msgstr "Kadaran"
 
-#: covermanager/CoverManager.cpp:619
+#: covermanager/CoverManager.cpp:620
 #, fuzzy, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Selesai."
 
-#: covermanager/CoverManager.cpp:621
+#: covermanager/CoverManager.cpp:622
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:640
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr ""
 
-#: covermanager/CoverManager.cpp:645
+#: covermanager/CoverManager.cpp:646
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr ""
 
-#: covermanager/CoverManager.cpp:651
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:653
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:657
+#: covermanager/CoverManager.cpp:658
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:659
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:661
+#: covermanager/CoverManager.cpp:662
 #, kde-format
 msgid "Connecting..."
 msgstr "Menyambung..."
 
-#: covermanager/CoverManager.cpp:684
+#: covermanager/CoverManager.cpp:685
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:688
+#: covermanager/CoverManager.cpp:689
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:700
+#: covermanager/CoverManager.cpp:701
 #, fuzzy, kde-format
 #| msgid ", "
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ", "
 
-#: covermanager/CoverManager.cpp:700
+#: covermanager/CoverManager.cpp:701
 #, fuzzy, kde-format
 #| msgid "%1 (%2)"
 msgid "%1 by %2"
 msgstr "%1 (%2)"
 
-#: covermanager/CoverManager.cpp:705
+#: covermanager/CoverManager.cpp:706
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:765
 #, kde-format
 msgid "Cover Image"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:840
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:857
 #, kde-format
 msgid "No Artist"
 msgstr ""
@@ -9133,30 +9133,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Kadaran"
 
-#: EngineController.cpp:1109
+#: EngineController.cpp:1082
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 
-#: EngineController.cpp:1309
+#: EngineController.cpp:1282
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr ""
 
-#: EngineController.cpp:1311
+#: EngineController.cpp:1284
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr ""
 
-#: EngineController.cpp:1314
+#: EngineController.cpp:1287
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr ""
 
-#: EngineController.cpp:1326
+#: EngineController.cpp:1299
 #, fuzzy, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -9428,19 +9428,19 @@ msgstr "Kumpulan %s tidak dapat dipadam: %s\n"
 msgid "No information available for this track"
 msgstr ""
 
-#: main.cpp:94
+#: main.cpp:98
 #, kde-format
 msgid "The audio player by KDE"
 msgstr ""
 
-#: main.cpp:96
+#: main.cpp:100
 #, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
 
-#: main.cpp:97
+#: main.cpp:101
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -9452,838 +9452,838 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 
-#: main.cpp:107
+#: main.cpp:111
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr ""
 
-#: main.cpp:108
+#: main.cpp:112
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
 
-#: main.cpp:114
+#: main.cpp:118
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr ""
 
-#: main.cpp:115
+#: main.cpp:119
 #, fuzzy, kde-format
 msgid "Developer (Stecchino)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:118
+#: main.cpp:122
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr ""
 
-#: main.cpp:119
+#: main.cpp:123
 #, fuzzy, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:122
+#: main.cpp:126
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr ""
 
-#: main.cpp:123
+#: main.cpp:127
 #, fuzzy, kde-format
 msgid "Project founder (markey)"
 msgstr "Fail Projek Kexi"
 
-#: main.cpp:126
+#: main.cpp:130
 #, kde-format
 msgid "Matěj Laitl"
 msgstr ""
 
-#: main.cpp:127
+#: main.cpp:131
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr ""
 
-#: main.cpp:130
+#: main.cpp:134
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr ""
 
-#: main.cpp:130
+#: main.cpp:134
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr ""
 
-#: main.cpp:133
+#: main.cpp:137
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr ""
 
-#: main.cpp:134
+#: main.cpp:138
 #, fuzzy, kde-format
 msgid "Developer (rengels)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:137
+#: main.cpp:141
 #, kde-format
 msgid "Patrick von Reth"
 msgstr ""
 
-#: main.cpp:137
+#: main.cpp:141
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr ""
 
-#: main.cpp:141
+#: main.cpp:145
 #, kde-format
 msgid "Rick W. Chen"
 msgstr ""
 
-#: main.cpp:142
+#: main.cpp:146
 #, fuzzy, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:145
+#: main.cpp:149
 #, fuzzy, kde-format
 msgid "Sam Lade"
 msgstr "Kadar Sampel"
 
-#: main.cpp:145
+#: main.cpp:149
 #, fuzzy, kde-format
 msgid "Developer (Sentynel)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:149
+#: main.cpp:153
 #, kde-format
 msgid "Sven Krohlas"
 msgstr ""
 
-#: main.cpp:149
+#: main.cpp:153
 #, fuzzy, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:152
+#: main.cpp:156
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr ""
 
-#: main.cpp:153
+#: main.cpp:157
 #, fuzzy, kde-format
 msgid "Developer (Teo`)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:156
+#: main.cpp:160
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr ""
 
-#: main.cpp:157
+#: main.cpp:161
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr ""
 
-#: main.cpp:160
+#: main.cpp:164
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr ""
 
-#: main.cpp:160
+#: main.cpp:164
 #, fuzzy, kde-format
 msgid "Developer (eean)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:163
+#: main.cpp:167
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr ""
 
-#: main.cpp:163
+#: main.cpp:167
 #, fuzzy, kde-format
 msgid "Developer (jefferai)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:166
+#: main.cpp:170
 #, kde-format
 msgid "Leo Franchi"
 msgstr ""
 
-#: main.cpp:166
+#: main.cpp:170
 #, fuzzy, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:169
+#: main.cpp:173
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr ""
 
-#: main.cpp:169
+#: main.cpp:173
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr ""
 
-#: main.cpp:172
+#: main.cpp:176
 #, kde-format
 msgid "Max Howell"
 msgstr ""
 
-#: main.cpp:172
+#: main.cpp:176
 #, fuzzy, kde-format
 msgid "Developer, Vision"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:175
+#: main.cpp:179
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr ""
 
-#: main.cpp:175
+#: main.cpp:179
 #, fuzzy, kde-format
 msgid "Developer (maxx_k)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:178
+#: main.cpp:182
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr ""
 
-#: main.cpp:178
+#: main.cpp:182
 #, fuzzy, kde-format
 msgid "Developer (nhn)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:181
+#: main.cpp:185
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr ""
 
-#: main.cpp:181
+#: main.cpp:185
 #, fuzzy, kde-format
 msgid "Developer (sebr)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:186
+#: main.cpp:190
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr ""
 
-#: main.cpp:186
+#: main.cpp:190
 #, fuzzy, kde-format
 msgid "Developer (xevix)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:188
+#: main.cpp:192
 #, kde-format
 msgid "Alex Merry"
 msgstr ""
 
-#: main.cpp:188
+#: main.cpp:192
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr ""
 
-#: main.cpp:190
+#: main.cpp:194
 #, kde-format
 msgid "Casey Link"
 msgstr ""
 
-#: main.cpp:190
+#: main.cpp:194
 #, kde-format
 msgid "MP3tunes integration"
 msgstr ""
 
-#: main.cpp:192
+#: main.cpp:196
 #, kde-format
 msgid "Casper van Donderen"
 msgstr ""
 
-#: main.cpp:192
+#: main.cpp:196
 #, fuzzy, kde-format
 msgid "Windows porting"
 msgstr "Pengecualian Berlaku"
 
-#: main.cpp:194
+#: main.cpp:198
 #, kde-format
 msgid "Christie Harris"
 msgstr ""
 
-#: main.cpp:194
+#: main.cpp:198
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr ""
 
-#: main.cpp:196
+#: main.cpp:200
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr ""
 
-#: main.cpp:196
+#: main.cpp:200
 #, kde-format
 msgid "Usability"
 msgstr ""
 
-#: main.cpp:198
+#: main.cpp:202
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr ""
 
-#: main.cpp:198
+#: main.cpp:202
 #, fuzzy, kde-format
 msgid "Developer (hydrogen)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:200
+#: main.cpp:204
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr ""
 
-#: main.cpp:200
+#: main.cpp:204
 #, fuzzy, kde-format
 msgid "Biased playlists"
 msgstr "Hidupkan p&etikan pintar"
 
-#: main.cpp:202
+#: main.cpp:206
 #, kde-format
 msgid "Daniel Dewald"
 msgstr ""
 
-#: main.cpp:202
+#: main.cpp:206
 #, fuzzy, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "Tag ID3:"
 
-#: main.cpp:204
+#: main.cpp:208
 #, kde-format
 msgid "Daniel Winter"
 msgstr ""
 
-#: main.cpp:204
+#: main.cpp:208
 #, kde-format
 msgid "Nepomuk integration"
 msgstr ""
 
-#: main.cpp:206
+#: main.cpp:210
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr ""
 
-#: main.cpp:206 main.cpp:226
+#: main.cpp:210 main.cpp:230
 #, fuzzy, kde-format
 msgid "Podcast improvements"
 msgstr "Arab, Halaman Kod Windows 1256"
 
-#: main.cpp:208
+#: main.cpp:212
 #, kde-format
 msgid "Greg Meyer"
 msgstr ""
 
-#: main.cpp:208
+#: main.cpp:212
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr ""
 
-#: main.cpp:210
+#: main.cpp:214
 #, kde-format
 msgid "Harald Sitter"
 msgstr ""
 
-#: main.cpp:210
+#: main.cpp:214
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr ""
 
-#: main.cpp:212
+#: main.cpp:216
 #, kde-format
 msgid "John Atkinson"
 msgstr ""
 
-#: main.cpp:212
+#: main.cpp:216
 #, kde-format
 msgid "Assorted patches"
 msgstr ""
 
-#: main.cpp:214
+#: main.cpp:218
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr ""
 
-#: main.cpp:214
+#: main.cpp:218
 #, kde-format
 msgid "Icons"
 msgstr "Ikon"
 
-#: main.cpp:216
+#: main.cpp:220
 #, kde-format
 msgid "Kevin Funk"
 msgstr ""
 
-#: main.cpp:216
+#: main.cpp:220
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr ""
 
-#: main.cpp:218
+#: main.cpp:222
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr ""
 
-#: main.cpp:218
+#: main.cpp:222
 #, kde-format
 msgid "Rokymoter"
 msgstr ""
 
-#: main.cpp:220
+#: main.cpp:224
 #, kde-format
 msgid "Lee Olson"
 msgstr ""
 
-#: main.cpp:220 main.cpp:232
+#: main.cpp:224 main.cpp:236
 #, fuzzy, kde-format
 msgid "Artwork"
 msgstr "Fedora Artwork"
 
-#: main.cpp:222
+#: main.cpp:226
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr ""
 
-#: main.cpp:222
+#: main.cpp:226
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr ""
 
-#: main.cpp:224
+#: main.cpp:228
 #, kde-format
 msgid "Lucas Gomes"
 msgstr ""
 
-#: main.cpp:224
+#: main.cpp:228
 #, fuzzy, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:226
+#: main.cpp:230
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr ""
 
-#: main.cpp:228
+#: main.cpp:232
 #, kde-format
 msgid "Mikko Caldara"
 msgstr ""
 
-#: main.cpp:228
+#: main.cpp:232
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr ""
 
-#: main.cpp:230
+#: main.cpp:234
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr ""
 
-#: main.cpp:230
+#: main.cpp:234
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr ""
 
-#: main.cpp:232
+#: main.cpp:236
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr ""
 
-#: main.cpp:234
+#: main.cpp:238
 #, kde-format
 msgid "Olivier Bédard"
 msgstr ""
 
-#: main.cpp:234
+#: main.cpp:238
 #, fuzzy, kde-format
 msgid "Website hosting"
 msgstr "Laman web _RHN..."
 
-#: main.cpp:236
+#: main.cpp:240
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr ""
 
-#: main.cpp:236
+#: main.cpp:240
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr ""
 
-#: main.cpp:238
+#: main.cpp:242
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr ""
 
-#: main.cpp:238
+#: main.cpp:242
 #, kde-format
 msgid "Scripting interface"
 msgstr ""
 
-#: main.cpp:240
+#: main.cpp:244
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr ""
 
-#: main.cpp:240
+#: main.cpp:244
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr ""
 
-#: main.cpp:242
+#: main.cpp:246
 #, kde-format
 msgid "Scott Wheeler"
 msgstr ""
 
-#: main.cpp:242
+#: main.cpp:246
 #, fuzzy, kde-format
 msgid "TagLib & ktrm code"
 msgstr "Arab, Halaman Kod Windows 1256"
 
-#: main.cpp:244
+#: main.cpp:248
 #, kde-format
 msgid "Shane King"
 msgstr ""
 
-#: main.cpp:244
+#: main.cpp:248
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr ""
 
-#: main.cpp:246
+#: main.cpp:250
 #, kde-format
 msgid "Simon Esneault"
 msgstr ""
 
-#: main.cpp:246
+#: main.cpp:250
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr ""
 
-#: main.cpp:248
+#: main.cpp:252
 #, kde-format
 msgid "Soren Harward"
 msgstr ""
 
-#: main.cpp:248
+#: main.cpp:252
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr ""
 
-#: main.cpp:250
+#: main.cpp:254
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
 
-#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
-#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
-#: main.cpp:316
+#: main.cpp:254 main.cpp:256 main.cpp:270 main.cpp:280 main.cpp:286
+#: main.cpp:288 main.cpp:300 main.cpp:306 main.cpp:308 main.cpp:312
+#: main.cpp:320
 #, fuzzy, kde-format
 msgid "Developer"
 msgstr "Program Bantuan Pembangun"
 
-#: main.cpp:252
+#: main.cpp:256
 #, kde-format
 msgid "Valentin Rouet"
 msgstr ""
 
-#: main.cpp:254
+#: main.cpp:258
 #, kde-format
 msgid "Wade Olson"
 msgstr ""
 
-#: main.cpp:254
+#: main.cpp:258
 #, fuzzy, kde-format
 #| msgid "Splash screen"
 msgid "Splash screen artist"
 msgstr "Skrin alu-aluan"
 
-#: main.cpp:256
+#: main.cpp:260
 #, kde-format
 msgid "William Viana Soares"
 msgstr ""
 
-#: main.cpp:256
+#: main.cpp:260
 #, fuzzy, kde-format
 msgid "Context view"
 msgstr "Konteks"
 
-#: main.cpp:260
+#: main.cpp:264
 #, kde-format
 msgid "Former contributors"
 msgstr ""
 
-#: main.cpp:260
+#: main.cpp:264
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
 
-#: main.cpp:262
+#: main.cpp:266
 #, kde-format
 msgid "Adam Pigg"
 msgstr ""
 
-#: main.cpp:262
+#: main.cpp:266
 #, fuzzy, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "Senarai main MP3 ShoutCast"
 
-#: main.cpp:264
+#: main.cpp:268
 #, kde-format
 msgid "Adeodato Simó"
 msgstr ""
 
-#: main.cpp:264 main.cpp:272
+#: main.cpp:268 main.cpp:276
 #, fuzzy, kde-format
 msgid "Patches"
 msgstr "Tompokan"
 
-#: main.cpp:266
+#: main.cpp:270
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr ""
 
-#: main.cpp:268
+#: main.cpp:272
 #, kde-format
 msgid "Andreas Mair"
 msgstr ""
 
-#: main.cpp:268
+#: main.cpp:272
 #, kde-format
 msgid "MySQL support"
 msgstr "Sokongan MySQL"
 
-#: main.cpp:270
+#: main.cpp:274
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr ""
 
-#: main.cpp:270
+#: main.cpp:274
 #, fuzzy, kde-format
 msgid "Postgresql support"
 msgstr "Sokongan Arab"
 
-#: main.cpp:272
+#: main.cpp:276
 #, kde-format
 msgid "Andrew Turner"
 msgstr ""
 
-#: main.cpp:274
+#: main.cpp:278
 #, kde-format
 msgid "Andy Kelk"
 msgstr ""
 
-#: main.cpp:274
+#: main.cpp:278
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr ""
 
-#: main.cpp:276
+#: main.cpp:280
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr ""
 
-#: main.cpp:278
+#: main.cpp:282
 #, kde-format
 msgid "Derek Nelson"
 msgstr ""
 
-#: main.cpp:278
+#: main.cpp:282
 #, fuzzy, kde-format
 msgid "Graphics, splash-screen"
 msgstr "Pengurus untuk Tema Splash Screen"
 
-#: main.cpp:280
+#: main.cpp:284
 #, kde-format
 msgid "Enrico Ros"
 msgstr ""
 
-#: main.cpp:280
+#: main.cpp:284
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr ""
 
-#: main.cpp:282
+#: main.cpp:286
 #, kde-format
 msgid "Frederik Holljen"
 msgstr ""
 
-#: main.cpp:284
+#: main.cpp:288
 #, kde-format
 msgid "Gábor Lehel"
 msgstr ""
 
-#: main.cpp:286
+#: main.cpp:290
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr ""
 
-#: main.cpp:286
+#: main.cpp:290
 #, fuzzy, kde-format
 msgid "Icons and image work"
 msgstr "supermount-ng dan lain-lain kerja kernel"
 
-#: main.cpp:288
+#: main.cpp:292
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr ""
 
-#: main.cpp:288
+#: main.cpp:292
 #, fuzzy, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "tiada yg ditulis dalam fail daftar \"%s\""
 
-#: main.cpp:290
+#: main.cpp:294
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr ""
 
-#: main.cpp:290
+#: main.cpp:294
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr ""
 
-#: main.cpp:292
+#: main.cpp:296
 #, kde-format
 msgid "Jocke Andersson"
 msgstr ""
 
-#: main.cpp:292
+#: main.cpp:296
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr ""
 
-#: main.cpp:294
+#: main.cpp:298
 #, kde-format
 msgid "Marco Gulino"
 msgstr ""
 
-#: main.cpp:294
+#: main.cpp:298
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr ""
 
-#: main.cpp:296
+#: main.cpp:300
 #, kde-format
 msgid "Martin Aumueller"
 msgstr ""
 
-#: main.cpp:298
+#: main.cpp:302
 #, kde-format
 msgid "Melchior Franz"
 msgstr ""
 
-#: main.cpp:298
+#: main.cpp:302
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr ""
 
-#: main.cpp:300
+#: main.cpp:304
 #, kde-format
 msgid "Michael Pyne"
 msgstr ""
 
-#: main.cpp:300
+#: main.cpp:304
 #, fuzzy, kde-format
 msgid "K3b export code"
 msgstr "Pilihan Export HTML"
 
-#: main.cpp:302
+#: main.cpp:306
 #, kde-format
 msgid "Mike Diehl"
 msgstr ""
 
-#: main.cpp:304
+#: main.cpp:308
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr ""
 
-#: main.cpp:306
+#: main.cpp:310
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr ""
 
-#: main.cpp:306
+#: main.cpp:310
 #, fuzzy, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "Sokongan Rangkaian Dailup"
 
-#: main.cpp:308
+#: main.cpp:312
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr ""
 
-#: main.cpp:310
+#: main.cpp:314
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr ""
 
-#: main.cpp:310
+#: main.cpp:314
 #, fuzzy, kde-format
 msgid "Wikipedia support, patches"
 msgstr "Sokongan Rangkaian Dailup"
 
-#: main.cpp:312
+#: main.cpp:316
 #, kde-format
 msgid "Roman Becker"
 msgstr ""
 
-#: main.cpp:312
+#: main.cpp:316
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr ""
 
-#: main.cpp:314
+#: main.cpp:318
 #, kde-format
 msgid "Sami Nieminen"
 msgstr ""
 
-#: main.cpp:314
+#: main.cpp:318
 #, fuzzy, kde-format
 msgid "Audioscrobbler support"
 msgstr "Sokongan Arab"
 
-#: main.cpp:316
+#: main.cpp:320
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr ""
 
-#: main.cpp:318
+#: main.cpp:322
 #, kde-format
 msgid "Stefan Bogner"
 msgstr ""
 
-#: main.cpp:318
+#: main.cpp:322
 #, fuzzy, kde-format
 msgid "Loads of stuff"
 msgstr "pemaju (lain-lain perkara)"
 
-#: main.cpp:320
+#: main.cpp:324
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr ""
 
-#: main.cpp:320
+#: main.cpp:324
 #, fuzzy, kde-format
 #| msgid "Splash screen"
 msgid "Splash screen"
 msgstr "Skrin alu-aluan"
 
-#: main.cpp:325
+#: main.cpp:329
 #, kde-format
 msgid "Andrew Browning"
 msgstr ""
 
-#: main.cpp:326
+#: main.cpp:330
 #, kde-format
 msgid "Chris Wales"
 msgstr ""
 
-#: main.cpp:327
+#: main.cpp:331
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr ""
@@ -15039,7 +15039,7 @@ msgid "Volume: %1% (muted)"
 msgstr "Volum: %1%"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
-#: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, fuzzy, kde-format
 msgid "Volume: %1%"
 msgstr "Volum: %1%"
@@ -15188,7 +15188,7 @@ msgstr ""
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, fuzzy, kde-format
 #| msgid "Mute"
 msgid "Muted"
@@ -15489,12 +15489,12 @@ msgstr "Henti"
 msgid "Paused"
 msgstr "Jeda"
 
-#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:81
+#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:86
 #, kde-format
 msgid "Play"
 msgstr "Main"
 
-#: widgets/PlayPauseButton.cpp:81
+#: widgets/PlayPauseButton.cpp:86
 #, fuzzy, kde-format
 msgid "Pause"
 msgstr "Jeda"
