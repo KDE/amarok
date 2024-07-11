@@ -17,6 +17,10 @@ include_directories(
 include_directories(SYSTEM
     ${GOOGLEMOCK_INCLUDE_DIR} )
 
+if( LIBLASTFM_FOUND ) # needed by Last.fm error handler in App.cpp
+    include_directories(SYSTEM ${LIBLASTFM_INCLUDE_DIR})
+endif()
+
 add_subdirectory( amarokurls )
 add_subdirectory( browsers )
 add_subdirectory( context )

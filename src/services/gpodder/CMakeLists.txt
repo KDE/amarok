@@ -11,6 +11,10 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
 )
 
+if( LIBLASTFM_FOUND ) # needed by Last.fm error handler in App.cpp
+    include_directories(SYSTEM ${LIBLASTFM_INCLUDE_DIR})
+endif()
+
 add_subdirectory( images )
 
 find_package( KF${KF_MAJOR_VERSION} COMPONENTS Wallet REQUIRED )

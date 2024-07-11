@@ -589,6 +589,26 @@ void App::slotTrashResult( KJob *job )
         job->uiDelegate()->showErrorMessage();
 }
 
+#ifdef HAVE_LIBLASTFM
+void App::onWsError( lastfm::ws::Error e )
+{
+    warning() << "last.fm error" << e;
+    // TokenNotAuthorised handled during authentication in LastFmServiceConfig.cpp.
+    // None of the other errors look important enough to justify handling here.
+    if( e == lastfm::ws::InvalidSessionKey )
+    {
+        static qint64 lastWarningTime = 0;
+        if( lastWarningTime < QDateTime::currentMSecsSinceEpoch() - 5000 )
+        {
+            lastWarningTime = QDateTime::currentMSecsSinceEpoch(); //avoid spamming error messages
+            KMessageBox::error( m_mainWindow, i18nc( "Error message box shown if there's a problem with Last.fm credentials",
+                                "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin Settings."),
+                                i18nc( "Error message box title", "Last.fm session key error" ) );
+        }
+    }
+}
+#endif
+
 void App::quit()
 {
     DEBUG_BLOCK

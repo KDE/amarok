@@ -17,12 +17,18 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
+#include <config.h> // for HAVE_LIBLASTFM
+
 #include "amarok_export.h"
 
 #include <KJob>
 
 #include <QApplication>
 #include <QPointer>
+
+#ifdef HAVE_LIBLASTFM
+#include <ws.h>
+#endif
 
 namespace Amarok {
     class TrayIcon;
@@ -78,6 +84,9 @@ class AMAROK_EXPORT App : public QApplication
 
     private Q_SLOTS:
         void slotTrashResult( KJob *job );
+#ifdef HAVE_LIBLASTFM
+        void onWsError( lastfm::ws::Error e );
+#endif
 
     private:
         void handleFirstRun();

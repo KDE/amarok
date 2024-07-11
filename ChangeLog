@@ -4,7 +4,8 @@ Amarok ChangeLog
 
 VERSION 3.0.81
   FEATURES:
-   * Last.fm plugin updated to use token-based authentication method (BR 414826)
+   * Last.fm plugin updated to use token-based authentication method and to notify
+     user of session key errors (BR 414826, BR 327547)
 
   CHANGES:
    * Amarok now depends on KDE Frameworks 5.84.
