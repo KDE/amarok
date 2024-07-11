@@ -119,14 +119,6 @@ ScriptManager::listRunningScripts() const
     return runningScripts;
 }
 
-QString
-ScriptManager::specForScript( const QString& name ) const
-{
-    if( !m_scripts.contains( name ) )
-        return QString();
-    return m_scripts[name]->metadataPath();
-}
-
 KPluginMetaData
 ScriptManager::createMetadataFromSpec( const QString &specPath )
 {

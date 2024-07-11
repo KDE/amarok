@@ -56,7 +56,6 @@
 #include "scripting/scriptengine/ScriptingDefines.h"
 #include "ScriptManager.h"
 
-#include <QFileInfo>
 #include <QLabel>
 #include <QPushButton>
 #include <QJSValue>
@@ -124,7 +123,7 @@ ScriptItem::pause()
     DEBUG_BLOCK
     if( !m_engine )
     {
-        warning() << "Script has no engine attached:" << m_name;
+        debug() << "Script has no engine attached so was probably paused without being started:" << m_name;
         return;
     }
 
@@ -136,19 +135,10 @@ ScriptItem::pause()
     }
     //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
     if( !m_engine->isInterrupted() )
-    {
         m_engine->setInterrupted(true);
-        return;
-    }
+
     if( m_info.category() == QStringLiteral("Scriptable Service") )
         The::scriptableServiceManager()->removeRunningScript( m_name );
-
-    if( m_info.isEnabled( Amarok::config( QStringLiteral("Plugins") ) ) )
-    {
-        debug() << "Disabling script" << m_info.pluginId();
-//        m_info.setPluginEnabled( false );
-  //      m_info.save(); //TODO
-    }
 
     m_log << QStringLiteral( "%1 Script ended" ).arg( QTime::currentTime().toString() );
     m_running = false;
@@ -157,9 +147,10 @@ ScriptItem::pause()
 QString
 ScriptItem::metadataPath() const
 {
-    QFileInfo info( m_url.path() );
-    const QString metadataPath = QStringLiteral( "%1/%2.spec" ).arg( info.path(), info.completeBaseName() ); ///TODO json
-    return metadataPath;
+    const QString jsonPath = QStringLiteral( "%1/script.json" ).arg( m_url.path() );
+    if( QFile::exists( jsonPath ) )
+        return jsonPath;
+    return QStringLiteral( "%1/script.spec" ).arg( m_url.path() );
 }
 
 void
@@ -203,6 +194,12 @@ ScriptItem::handleError( QJSValue *result )
     error() << errorString;
     //engine->clearExceptions();
     stop();
+
+    if( m_info.isEnabled( Amarok::config( QStringLiteral("Scripts") ) ) )
+    {
+        debug() << "Disabling script due to error:" << m_info.pluginId();
+        Amarok::config( QStringLiteral("Scripts") ).writeEntry( m_info.pluginId() + QStringLiteral("Enabled"), false );
+    }
     return errorString;
 }
 

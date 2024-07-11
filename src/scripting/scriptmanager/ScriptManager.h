@@ -65,9 +65,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /** Returns a list of all currently running scripts. Used by the DCOP handler. */
         QStringList listRunningScripts() const;
 
-        /** Returns the path of the spec file of the given script */
-        QString specForScript( const QString& name ) const;
-
         /** Returns whether or not there is a lyrics script running */
         bool lyricsScriptRunning() const;
 

@@ -111,7 +111,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     QString aScriptString;
     for( KPluginMetaData aInfo : aScripts )
     {
-        if( aInfo.isEnabled( Amarok::config( QStringLiteral("Plugins") ) ) )
+        if( aInfo.isEnabled( Amarok::config( QStringLiteral("Scripts") ) ) )
             aScriptString += QStringLiteral("   ") + aInfo.name() + QStringLiteral(" (") + aInfo.version() + QStringLiteral(")\n");
     }
 
