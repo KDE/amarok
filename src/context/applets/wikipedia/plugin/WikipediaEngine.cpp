@@ -79,7 +79,7 @@ WikipediaEngine::_wikiResult( const QUrl &url, const QByteArray &result, const N
     }
 
     debug() << "Received page from wikipedia:" << url;
-    QString wiki = QLatin1String( result );
+    QString wiki = QString::fromUtf8( result );
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
