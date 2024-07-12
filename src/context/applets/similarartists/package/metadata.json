@@ -1,0 +1,24 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "tuomas@norsumanageri.org",
+                "Name": "Tuomas Nurmi"
+            }
+        ],
+        "Category": "Multimedia",
+        "Dependencies": [],
+        "Description": "Last.fm similar artists applet for Amarok",
+        "EnabledByDefault": true,
+        "Icon": "similarartists-amarok",
+        "Id": "org.kde.amarok.similarartists",
+        "License": "GPL",
+        "Name": "Similar Artists",
+        "ServiceTypes": [
+            "KPackage/Generic",
+            "Amarok/ContextApplet"
+        ],
+        "Version": "1.0",
+        "Website": "https://amarok.kde.org/"
+    }
+}

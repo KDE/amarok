@@ -17,17 +17,14 @@
 #ifndef SIMILAR_ARTIST_H
 #define SIMILAR_ARTIST_H
 
-//Kde
-#include <KSharedPtr>
-#include <QUrl>
+#include "AmarokSharedPointer.h"
 
-//Qt
 #include <QSharedData>
-#include <QString>
+#include <QUrl>
 #include <QXmlStreamReader>
 
 class SimilarArtist;
-typedef KSharedPtr<SimilarArtist> SimilarArtistPtr;
+typedef AmarokSharedPointer<SimilarArtist> SimilarArtistPtr;
 
 /**
  * Represents a similar artist to another

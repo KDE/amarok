@@ -19,22 +19,19 @@
 #ifndef SIMILARARTISTSENGINE_H
 #define SIMILARARTISTSENGINE_H
 
-#include "NetworkAccessManagerProxy.h"
-#include "context/DataEngine.h"
-#include "context/applets/similarartists/SimilarArtist.h"
 #include "core/meta/forward_declarations.h"
-
-using namespace Context;
+#include "network/NetworkAccessManagerProxy.h"
 
 /**
  *  This class provide SimilarArtists data for use in the SimilarArtists context applet.
  *  It gets its information from the API lastfm.
  */
-class SimilarArtistsEngine : public DataEngine
+class SimilarArtistsEngine : public QObject
 {
     Q_OBJECT
     Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists )
     Q_PROPERTY( QString artist READ artist WRITE setArtist )
+    Q_PROPERTY( QStringList similarArtists READ similarArtists NOTIFY similarArtistsChanged )
 
 public:
 
@@ -43,14 +40,12 @@ public:
      * @param parent The object parent to this engine
      * @param args The list of arguments
      */
-    SimilarArtistsEngine( QObject *parent, const QList<QVariant> &args );
-
-    virtual void init();
+    explicit SimilarArtistsEngine( QObject* parent = nullptr );
 
     /**
      * Destroy the dataEngine
      */
-    virtual ~SimilarArtistsEngine();
+    ~SimilarArtistsEngine() override;
 
     /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
@@ -74,8 +69,11 @@ public:
     QString artist() const;
     void setArtist( const QString &name );
 
-protected:
-    bool sourceRequestEvent( const QString &name );
+
+    QStringList similarArtists() const { return m_similarArtists;}
+
+Q_SIGNALS:
+    void similarArtistsChanged();
 
 private:
     /**
@@ -88,6 +86,8 @@ private:
      */
     QString m_artist;
 
+    QStringList m_similarArtists;
+
 private Q_SLOTS:
     /**
      * Update similar artists for the current playing track.
@@ -95,8 +95,6 @@ private Q_SLOTS:
      * @param force force update to take place.
      */
     bool update( bool force = false );
-
-    bool update( const QString &name );
 
     /**
      * Parse the xml fetched on the lastFM API.

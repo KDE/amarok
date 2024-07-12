@@ -12,6 +12,6 @@ if( Qt5WebEngine_FOUND )
 endif()
 
 if( LIBLASTFM_FOUND )
-#    add_subdirectory( similarartists )
+    add_subdirectory( similarartists )
 endif()
 

@@ -19,52 +19,28 @@
 #define DEBUG_PREFIX "SimilarArtistsEngine"
 
 #include "SimilarArtistsEngine.h"
+#include "SimilarArtist.h"
 
 #include "EngineController.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <QTimer>
+#include <QUrlQuery>
 #include <QXmlStreamReader>
 
-AMAROK_EXPORT_DATAENGINE( similarArtists, SimilarArtistsEngine )
 
-using namespace Context;
-
-SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
-    : DataEngine( parent )
+SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent )
+    : QObject( parent )
     , m_maxArtists( 5 )
 {
+    EngineController *engine = The::engineController();
+    connect( engine, &EngineController::trackChanged, this, &SimilarArtistsEngine::update );
+    connect( engine, &EngineController::trackMetadataChanged, this, &SimilarArtistsEngine::update );
 }
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
-}
-
-void
-SimilarArtistsEngine::init()
-{
-    EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(update()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(update()) );
-}
-
-bool
-SimilarArtistsEngine::sourceRequestEvent( const QString &name )
-{
-    if( !name.startsWith( "similarArtists" ) )
-        return false;
-
-    bool force( false );
-    QStringList tokens = name.split( QLatin1Char(':'), Qt::SkipEmptyParts );
-    if( tokens.contains( QLatin1String("forceUpdate") ) )
-        force = true;
-
-    if( tokens.contains( QLatin1String("artist") ) )
-        return update( m_artist );
-    else
-        return update( force );
 }
 
 bool
@@ -82,7 +58,8 @@ SimilarArtistsEngine::update( bool force )
     if( newArtist.isEmpty() )
     {
         m_artist.clear();
-        removeAllData( "similarArtists" );
+        m_similarArtists.clear();
+        Q_EMIT similarArtistsChanged();
         return false;
     }
     else   //valid artist
@@ -99,42 +76,34 @@ SimilarArtistsEngine::update( bool force )
     return false;
 }
 
-bool
-SimilarArtistsEngine::update( const QString &name )
-{
-    if( name.isEmpty() )
-        return false;
-
-    m_artist = name;
-    similarArtistsRequest( m_artist );
-    return true;
-}
-
 void
 SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
     // we generate the url for the demand on the lastFM Api
     QUrl url;
-    url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "artist.getSimilar" );
-    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "artist", artistName );
-    url.addQueryItem( "limit",  QString::number( m_maxArtists ) );
+    url.setScheme( QStringLiteral("https") );
+    url.setHost( QStringLiteral("ws.audioscrobbler.com") );
+    url.setPath( QStringLiteral("/2.0/") );
 
-    The::networkAccessManager()->getData( url, this,
-         SLOT(parseSimilarArtists(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    QUrlQuery query;
+    query.addQueryItem( QStringLiteral("method"), QStringLiteral("artist.getSimilar") );
+    query.addQueryItem( QStringLiteral("api_key"), QLatin1String(Amarok::lastfmApiKey()) );
+    query.addQueryItem( QStringLiteral("artist"), artistName );
+    query.addQueryItem( QStringLiteral("limit"),  QString::number( m_maxArtists ) );
+    url.setQuery( query );
+
+    The::networkAccessManager()->getData( url, this, &SimilarArtistsEngine::parseSimilarArtists );
 }
 
 void
-SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, consr QByteArray &data,
+SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, const QByteArray &data,
                                            NetworkAccessManagerProxy::Error e )
 {
     if( e.code != QNetworkReply::NoError )
     {
-        removeAllData( "similarArtists" );
+        m_similarArtists.clear();
         warning() << "Failed to parse similar artists xml:" << url << e.description;
+        Q_EMIT similarArtistsChanged();
         return;
     }
 
@@ -144,10 +113,11 @@ SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, consr QByteArray &da
     QXmlStreamReader xml( data );
     SimilarArtist::List saList = SimilarArtist::listFromXml( xml );
     debug() << "Found" << saList.size() << "similar artists to" << m_artist;
-    Plasma::DataEngine::Data eData;
-    eData[ "artist"  ] = m_artist;
-    eData[ "similar" ] = QVariant::fromValue( saList );
-    setData( "similarArtists", eData );
+    for( const auto &a : saList )
+    {
+        m_similarArtists << a->name();
+    }
+    Q_EMIT similarArtistsChanged();
 }
 
 int
@@ -172,6 +142,5 @@ void
 SimilarArtistsEngine::setArtist( const QString &name )
 {
     m_artist = name;
+    update();
 }
-
-#include "SimilarArtistsEngine.moc"

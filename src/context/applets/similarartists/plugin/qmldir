@@ -1,0 +1,2 @@
+module org.kde.amarok.similarartists
+plugin amarok_context_applet_similarartists
