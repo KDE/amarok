@@ -205,7 +205,7 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_viewMenu, &QMenu::triggered, this, &CoverManager::slotAlbumFilterTriggered );
 
     //fetch missing covers button
-    m_fetchButton = new QPushButton( QIcon( QStringLiteral("get-hot-new-stuff-amarok") ), i18n("Fetch Missing Covers"), hbox );
+    m_fetchButton = new QPushButton( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ), i18n("Fetch Missing Covers"), hbox );
     connect( m_fetchButton, &QAbstractButton::clicked, this, &CoverManager::fetchMissingCovers );
 
     m_selectAllAlbums->setChecked( true );
