@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-11 01:43+0000\n"
+"POT-Creation-Date: 2024-07-12 01:43+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -262,7 +262,8 @@ msgstr "Nekas netiek atskaņots"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:509
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:107
+#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1560,7 +1561,7 @@ msgstr "Nezināms"
 msgid "New Bookmark"
 msgstr "Jauna grāmatzīme"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Grāmatzīmju pārvaldnieks"
@@ -1658,7 +1659,7 @@ msgstr "Jauns laikakoda celiņš"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "Nezināms"
@@ -1679,7 +1680,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Konteksts"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
 #, kde-format
 msgid "Files"
 msgstr "Faili"
@@ -1709,7 +1710,7 @@ msgstr "Izpildītājs \"%1\" no %2"
 msgid "Artist \"%1\""
 msgstr "Izpildītājs \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Pielikt grāmatzīmi pie audio/video skata"
@@ -1845,7 +1846,21 @@ msgstr ""
 msgid "Moving files to trash"
 msgstr "Pārvieto failus uz miskasti"
 
-#: App.cpp:647
+#: App.cpp:605
+#, kde-format
+msgctxt "Error message box shown if there's a problem with Last.fm credentials"
+msgid ""
+"Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
+"Settings."
+msgstr ""
+
+#: App.cpp:606
+#, kde-format
+msgctxt "Error message box title"
+msgid "Last.fm session key error"
+msgstr ""
+
+#: App.cpp:667
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1883,7 +1898,7 @@ msgstr ""
 "Šeit var atrast lokālo mūziku, kā arī mūziku pārnēsāmajās ierīcēs un CD "
 "diskos."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "Meklēt kolekciju"
@@ -2591,13 +2606,13 @@ msgstr "&Dzēst repertuāru"
 msgid "Confirm Playlist Deletion"
 msgstr "Apstiprināt repertuāra dzēšanu"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Izmantot relatīvu ceļu &saglabāšanai"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
 #, kde-format
 msgid "Save As"
 msgstr "Saglabāt kā"
@@ -3026,7 +3041,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label_User)
 #: configdialog/dialogs/DatabaseConfig.ui:101
 #: services/gpodder/GpodderConfigWidget.ui:32
-#: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "&Username:"
 msgstr "&Lietotājvārds:"
@@ -3041,7 +3055,6 @@ msgstr "Ievadiet paroli noklusētajam lietotājam.\n"
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
 #: configdialog/dialogs/DatabaseConfig.ui:134
 #: services/gpodder/GpodderConfigWidget.ui:45
-#: services/lastfm/LastFmConfigWidget.ui:67
 #, kde-format
 msgid "&Password:"
 msgstr "&Parole:"
@@ -3723,46 +3736,46 @@ msgstr ""
 msgid "&Pause playback on suspend"
 msgstr "Iemiegot &pauzēt atskaņošanu"
 
-#: configdialog/dialogs/PluginsConfig.cpp:43
+#: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
 msgstr "Kolekcijas"
 
-#: configdialog/dialogs/PluginsConfig.cpp:46
+#: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
 msgstr "Interneta pakalpojumi"
 
-#: configdialog/dialogs/PluginsConfig.cpp:49
+#: configdialog/dialogs/PluginsConfig.cpp:50
 #, fuzzy, kde-format
 #| msgid "Statistics"
 msgid "Statistics importers"
 msgstr "Statistika"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:131
+#: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:137
+#: configdialog/dialogs/ScriptsConfig.cpp:136
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Select Archived Script"
 msgstr "Meklēt skriptus"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:152
+#: configdialog/dialogs/ScriptsConfig.cpp:151
 #, fuzzy, kde-format
 #| msgid "Invalid"
 msgid "Invalid Archive"
 msgstr "Nederīgs"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:162
-#: configdialog/dialogs/ScriptsConfig.cpp:176
+#: configdialog/dialogs/ScriptsConfig.cpp:169
+#: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:183
+#: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3770,23 +3783,23 @@ msgid ""
 "Selected Script's Version: %3"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:194
+#: configdialog/dialogs/ScriptsConfig.cpp:213
 #, fuzzy, kde-format
 #| msgid "Successfully installed %1"
 msgid "The script %1 was successfully installed"
 msgstr "Veiksmīgi instalēts %1"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:206
+#: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
 msgstr "Pamata"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "Teksti"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:214
+#: configdialog/dialogs/ScriptsConfig.cpp:233
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Skriptējams serviss"
@@ -3827,25 +3840,25 @@ msgstr ""
 msgid "Enable Script Console"
 msgstr "Pārvaldīt skriptus"
 
-#: configdialog/dialogs/ScriptSelector.cpp:38
+#: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
 msgid "Search Scripts"
 msgstr "Meklēt skriptus"
 
-#: context/AmarokContextPackageStructure.cpp:26
+#: context/AmarokContextPackageStructure.cpp:28
 #, fuzzy, kde-format
 #| msgid "Manage Scripts"
 msgid "Main Script File"
 msgstr "Pārvaldīt skriptus"
 
-#: context/AmarokContextPackageStructure.cpp:27
-#: context/AmarokContextPackageStructure.cpp:28
+#: context/AmarokContextPackageStructure.cpp:29
+#: context/AmarokContextPackageStructure.cpp:30
 #, fuzzy, kde-format
 #| msgid "Apple Lossless"
 msgid "Applet Icon File"
 msgstr "Apple Lossless"
 
-#: context/AmarokContextPackageStructure.cpp:30
+#: context/AmarokContextPackageStructure.cpp:32
 #, kde-format
 msgid "Images"
 msgstr ""
@@ -4451,7 +4464,7 @@ msgstr "Pārlādēt tabulatūras ar sekojošo nosaukumu un izpildītāju"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
@@ -7797,7 +7810,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "Vāciņu pārvaldnieks"
@@ -7901,6 +7914,7 @@ msgstr[1] "%1 nav atrasti"
 msgstr[2] "%1 nav atrasti"
 
 #: covermanager/CoverManager.cpp:662
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "Pieslēdzas..."
@@ -8149,30 +8163,30 @@ msgstr ""
 "Priekš <b><font color='red'>%1</font></b> tika atrastas vairākas divdomīgas "
 "sakritības, kas tika izmestas."
 
-#: dialogs/DiagnosticDialog.cpp:84
+#: dialogs/DiagnosticDialog.cpp:86
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "Kopēt uz starpliktuvi"
 
-#: dialogs/DiagnosticDialog.cpp:88
+#: dialogs/DiagnosticDialog.cpp:90
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "%1 diagnostika"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Jā"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "Nē"
 
-#: dialogs/DiagnosticDialog.cpp:146
+#: dialogs/DiagnosticDialog.cpp:148
 #, fuzzy, kde-format
 #| msgid ""
 #| "%1 Diagnostics\n"
@@ -8206,7 +8220,7 @@ msgstr ""
 "PulseAudio: %8\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:163
+#: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -10043,7 +10057,7 @@ msgstr ""
 #| "(Build Date: %1)"
 msgid ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10895,58 +10909,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:257
 #, kde-format
 msgid "Local Music"
 msgstr "Lokālā mūzika"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:259
 #, kde-format
 msgid "Local sources of content"
 msgstr "Lokālie mūzikas avoti"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:266
 #, kde-format
 msgid "Internet"
 msgstr "Internets"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:268
 #, kde-format
 msgid "Online sources of content"
 msgstr "Tiešsaistes mūzikas avoti"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Playlists"
 msgstr "Repertuāri"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Dažādi repertuāri"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:285
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Pārlūkot lokālo disku saturu"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:328
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Skats"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:331
 #, kde-format
 msgid "Lock Layout"
 msgstr "Slēgt izkārtojumu"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1321
+#: MainWindow.cpp:368 MainWindow.cpp:1320
 #, kde-format
 msgid "Reset Layout"
 msgstr "Atstatīt izkārtojumu"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:425
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10956,278 +10970,278 @@ msgstr ""
 "<qt>Galvenā loga aizvēršana paturēs Amarok strādājošu sistēmas ikonā. Lai "
 "izietu, izmantojiet <B>Iziet</B> izvēlnē, vai Amarok sistēmas ikonā.</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:427
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Pārslēdzas uz sistēmas ikonu"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Atskaņot (Faili vai URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Pievienot (Faili vai URL)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Add Stream"
 msgstr "Pievienot straumi"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Ievadiet straumes URL:"
 
-#: MainWindow.cpp:756
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Pievienot..."
 
-#: MainWindow.cpp:761
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Tīrīt repertuāru"
 
-#: MainWindow.cpp:766
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "&Rediģēt rindu"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "I&zņemt dublikātus"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Pievienot straumi..."
 
-#: MainWindow.cpp:782
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Eksportēt repertuāru kā..."
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "Izlīdzinātājs"
 
-#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Pielikt grāmatzīmi pie repertuāra konfigurācijas"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Pielikt grāmatzīmi pie konteksta sīklietotnēm"
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "Atskaņot failu..."
 
-#: MainWindow.cpp:815
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Rediģēt izvēlētā celiņa detaļas"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, fuzzy, kde-format
 #| msgid "Seek Forward by %1"
 msgid "Seek Forward by %1 seconds"
 msgstr "Pārlekt uz priekšu par %1"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, fuzzy, kde-format
 #| msgid "Seek Backward by %1"
 msgid "Seek Backward by %1 seconds"
 msgstr "Pārlekt atpakaļ par %1"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "Atjaunināt kolekciju"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Sinhronizēt statistiku..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "Iepriekšējais celiņš"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "Pārstartēt pašreizējo celiņu"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Sajaukt repertuāru"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Aizpildīt repertuāru no jauna"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Atslēgt dinamisko repertuāru"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "Nākamais celiņš"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "Palielināt skaļumu"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Samazināt skaļumu"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Pārslēgt galveno logu"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Pārslēgt pilnekrānu"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Meklēt repertuārā"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "Rādīt aktīvo celiņu"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Rādīt izlecošo paziņojuma logu"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "Apklusināt"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: patīk atskaņotā dziesma"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: aizliegt atskaņoto dziesmu"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: izlaist atskaņoto dziesmu"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Ierindot celiņu"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Ievietot pašreizējā celiņa izpildītāju - nosaukumu starpliktuvē"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Novērtēt atskaņoto dziesmu: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Novērtēt atskaņoto dziesmu: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Novērtēt atskaņoto dziesmu: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Novērtēt atskaņoto dziesmu: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Novērtēt atskaņoto dziesmu: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Tīkla pieprasījumu skatītājs"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "&Par Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnostika"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Ziņot pa&r kļūdu..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "&Mūzika"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Repertuārs"
 
-#: MainWindow.cpp:1124
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "&Rīki"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "Ie&statījumi"
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11239,22 +11253,22 @@ msgstr ""
 "Lūdzu, atcerieties, ka vienmēr varat izmantot saīsni \"%1\", lai to atkal "
 "parādītu."
 
-#: MainWindow.cpp:1192
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "Slēpt izvēlni"
 
-#: MainWindow.cpp:1234
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pauzēts  ::  %1"
 
-#: MainWindow.cpp:1247
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1321
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Pielietot šo izkārtojuma izmaiņu?"
@@ -13502,7 +13516,7 @@ msgstr "Lokālie repertuāri, kas glabājas datubāzē"
 msgid "<Empty>"
 msgstr "<Tukšs>"
 
-#: PluginManager.cpp:144
+#: PluginManager.cpp:143
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
@@ -13649,22 +13663,22 @@ msgstr ""
 msgid "Terminate"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:183
+#: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:338
 #, kde-format
 msgctxt ""
-"%1 is the name of the offending script, %2 the name of the script author, "
-"and %3 the author's email"
+"%1 is the name of the offending script, %2 the script authors and their "
+"emails"
 msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
-"author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+"authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 
-#: scripting/scriptmanager/ScriptManager.cpp:288
+#: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13807,8 +13821,6 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:200
 #: services/gpodder/GpodderServiceSettings.cpp:218
 #: services/gpodder/GpodderServiceSettings.cpp:247
-#: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "&Pārbaudīt pieteikšanos"
@@ -13870,7 +13882,6 @@ msgstr ""
 "paroli atklātā tekstā?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "Testē..."
@@ -13886,21 +13897,22 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:147
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:200
+#: services/lastfm/LastFmServiceSettings.cpp:206
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Failed"
 msgstr "Nesekmīgi"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:213
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Sekmīgi"
 
 #: services/gpodder/GpodderServiceSettings.cpp:178
-#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14116,39 +14128,73 @@ msgstr "līdz:"
 msgid "Last.fm Profile"
 msgstr "Last.fm profils"
 
+#. i18n: ectx: property (text), widget (QLabel, labelUsername)
+#: services/lastfm/LastFmConfigWidget.ui:54
+#, fuzzy, kde-format
+#| msgctxt "Username for logins to Magnatune"
+#| msgid "Username:"
+msgid "Username:"
+msgstr "Lietotājvārds:"
+
+#. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
+#: services/lastfm/LastFmConfigWidget.ui:64
+#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#, fuzzy, kde-format
+#| msgid "Connection failure"
+msgid "Connect to account"
+msgstr "Savienojuma kļūda"
+
+#. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
+#: services/lastfm/LastFmConfigWidget.ui:71
+#: services/lastfm/LastFmServiceSettings.cpp:274
+#, fuzzy, kde-format
+#| msgctxt "In a dialog: Some file: Not needed"
+#| msgid "Not needed"
+msgid "Not connected"
+msgstr "Nav nepieciešams"
+
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: services/lastfm/LastFmConfigWidget.ui:96
-#, kde-format
-msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#: services/lastfm/LastFmConfigWidget.ui:84
+#, fuzzy, kde-format
+#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr ""
 "<a href=\"http://www.last.fm:80/signup.php\">Izveidot Last.fm kontu</a>"
 
+#. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
+#: services/lastfm/LastFmConfigWidget.ui:97
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgid "Disconnect account"
+msgstr "&Atvienot ierīci"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: services/lastfm/LastFmConfigWidget.ui:119
+#: services/lastfm/LastFmConfigWidget.ui:107
 #, kde-format
 msgid "Last.fm Services"
 msgstr "Last.fm pakalpojumi"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: services/lastfm/LastFmConfigWidget.ui:128
+#: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
 msgstr "&Sūtīt celiņus"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:138
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Retrieve similar artists"
 msgstr "&Ielādēt līdzīgus izpildītājus"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:148
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr "Last.fm servisā komponista dat&us, ja pieejami, lietot kā izpildītāju"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:158
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -14158,13 +14204,13 @@ msgstr ""
 "jūsu Amarok vērtējumus statistikas sinhronizācijas laikā"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:161
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Lietot greznos tagus, lai reprezentētu vērtējumus"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:156
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -14177,13 +14223,13 @@ msgstr ""
 "veikts</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:159
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Paziņot par labojumu ieteikumiem celiņu tagiem"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:180
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -14193,13 +14239,13 @@ msgstr ""
 "atjaunināti servisā Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:183
+#: services/lastfm/LastFmConfigWidget.ui:171
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "Nesūtīt atskaņojumus celiņiem ar etiķeti:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:190
+#: services/lastfm/LastFmConfigWidget.ui:178
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -14208,12 +14254,12 @@ msgstr ""
 "<html>Izvēlieties vēlamo etiķeti (vai uzrakstiet jaunu). Atskaņojumi "
 "celiņiem ar šo etiķeti netiks nosūtīti</html>"
 
-#: services/lastfm/LastFmService.cpp:98
+#: services/lastfm/LastFmService.cpp:97
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: sociālā mūzikas revolūcija."
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:99
 #, fuzzy, kde-format
 #| msgid ""
 #| "Last.fm is a popular online service that provides personal radio stations "
@@ -14238,52 +14284,37 @@ msgstr ""
 "norādījis kā savus dragus, vai kurus Last.fm uzskata par jūsu mūzikas gaumes "
 "\"kaimiņiem\""
 
-#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Patīk"
 
-#: services/lastfm/LastFmService.cpp:129
+#: services/lastfm/LastFmService.cpp:128
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:291
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Vai nu lietotājvārds nav atpazīts vai parole ir nepareiza."
-
-#: services/lastfm/LastFmService.cpp:296
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Gadījās problēma sazinoties ar Last.fm pakalpojumu. Lūdzu mēģinēt vēlāk."
-
-#: services/lastfm/LastFmService.cpp:381
+#: services/lastfm/LastFmService.cpp:319
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Ievadiet izpildītāja vārdu"
 
-#: services/lastfm/LastFmService.cpp:384
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter a tag"
 msgstr "Ievadiet tagu"
 
-#: services/lastfm/LastFmService.cpp:387
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "Ievadiet Last.fm lietotājvārdu"
 
-#: services/lastfm/LastFmService.cpp:400
+#: services/lastfm/LastFmService.cpp:338
 #, kde-format
 msgid "Username: %1"
 msgstr "Lietotājvārds: %1"
 
-#: services/lastfm/LastFmService.cpp:405
+#: services/lastfm/LastFmService.cpp:343
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
@@ -14291,17 +14322,17 @@ msgstr[0] "Atskaņošanu skaits: %1 reize"
 msgstr[1] "Atskaņošanu skaits: %1 reizes"
 msgstr[2] "Atskaņošanu skaits: %1 reizes"
 
-#: services/lastfm/LastFmService.cpp:451
+#: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Izveidot pielāgotu Last.fm staciju"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Tag"
 msgstr "Tags"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "User"
 msgstr "Lietotājvārds"
@@ -14326,39 +14357,58 @@ msgstr "Draugu iemīļotais radio"
 msgid "Friends' Personal Radio"
 msgstr "Draugu personīgais radio"
 
-#: services/lastfm/LastFmServiceConfig.cpp:217
+#: services/lastfm/LastFmServiceConfig.cpp:140
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr "Neizdevās atvērt KDE maku, lai nolasītu Last.fm pieteikšanās datus"
 
-#: services/lastfm/LastFmServiceConfig.cpp:270
+#: services/lastfm/LastFmServiceConfig.cpp:157
 #, kde-format
-msgid "No running KWallet found."
+msgid ""
+"Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
+"account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:271
-#, fuzzy, kde-format
-#| msgid ""
-#| "No running KWallet found. Would you like Amarok to save your Last.fm "
-#| "credentials in plaintext?"
-msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#: services/lastfm/LastFmServiceSettings.cpp:92
+#, kde-format
+msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
-"Nav atrasts strādājošs KWallet. Vai vēlaties lai Amarok saglabā Last.fm "
-"paroli atklātā tekstā?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:134
+#: services/lastfm/LastFmServiceSettings.cpp:93
+#, kde-format
+msgid "Disconnect Last.fm account?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:205
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Nesekmīgi"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:171
-#, kde-format
-msgid "Test Login"
-msgstr "Testēt pieteikšanos"
+#: services/lastfm/LastFmServiceSettings.cpp:145
+#, fuzzy, kde-format
+#| msgid "Open Last.fm webpage for this event"
+msgctxt "Last.fm authentication process status"
+msgid "Opening Last.fm web page"
+msgstr "Atvērt šī notikuma Last.fm tīmekļa vietni"
 
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:163
+#, kde-format
+msgctxt "Pushbutton to complete Last.fm authentication process"
+msgid "Finish connecting account"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:188
+#, kde-format
+msgid ""
+"Last.fm account connection was not successful. Please make sure you have "
+"authorized Amarok to connect to your Last.fm account on the Last.fm web page "
+"that was opened and try again."
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Neizdevās pieslēgties Last.fm servisam."
@@ -15234,8 +15284,7 @@ msgstr "Veic MP3tunes automātiskās sinhronizēšanas darbu priekš Amarok."
 #| "amarok@kde.org"
 msgid ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -16583,6 +16632,30 @@ msgstr "Izpildītājs: %1"
 msgid "empty"
 msgstr "tukšs"
 
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "Either the username was not recognized, or the password was incorrect."
+#~ msgstr "Vai nu lietotājvārds nav atpazīts vai parole ir nepareiza."
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "There was a problem communicating with the Last.fm services. Please try "
+#~ "again later."
+#~ msgstr ""
+#~ "Gadījās problēma sazinoties ar Last.fm pakalpojumu. Lūdzu mēģinēt vēlāk."
+
+#, fuzzy
+#~| msgid ""
+#~| "No running KWallet found. Would you like Amarok to save your Last.fm "
+#~| "credentials in plaintext?"
+#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#~ msgstr ""
+#~ "Nav atrasts strādājošs KWallet. Vai vēlaties lai Amarok saglabā Last.fm "
+#~ "paroli atklātā tekstā?"
+
+#~ msgid "Test Login"
+#~ msgstr "Testēt pieteikšanos"
+
 #~ msgid "<b>1</b> file selected."
 #~ msgid_plural "<b>%1</b> files selected."
 #~ msgstr[0] "Izvēlēts <b>%1</b> fails."
@@ -17012,9 +17085,6 @@ msgstr "tukšs"
 
 #~ msgid "View map"
 #~ msgstr "Skatīt karti"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Atvērt šī notikuma Last.fm tīmekļa vietni"
 
 #, fuzzy
 #~| msgctxt "@label:textbox Supporing acts for an event"

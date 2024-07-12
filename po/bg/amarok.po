@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-11 01:43+0000\n"
+"POT-Creation-Date: 2024-07-12 01:43+0000\n"
 "PO-Revision-Date: 2024-06-27 19:16+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
@@ -244,7 +244,8 @@ msgstr "Не се изпълнява запис"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:509
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:107
+#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1572,7 +1573,7 @@ msgstr "Неизвестно"
 msgid "New Bookmark"
 msgstr "Нова отметка"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Управление на отметките"
@@ -1670,7 +1671,7 @@ msgstr "Нов времеви код"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -1691,7 +1692,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Контекст"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
 #, kde-format
 msgid "Files"
 msgstr "Файлове"
@@ -1721,7 +1722,7 @@ msgstr "Изпълнител \"%1\" от %2"
 msgid "Artist \"%1\""
 msgstr "Изпълнител \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Преглед на медийните източници с отметки"
@@ -1854,7 +1855,21 @@ msgstr ""
 msgid "Moving files to trash"
 msgstr "Преместване на файловете в кошчето"
 
-#: App.cpp:647
+#: App.cpp:605
+#, kde-format
+msgctxt "Error message box shown if there's a problem with Last.fm credentials"
+msgid ""
+"Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
+"Settings."
+msgstr ""
+
+#: App.cpp:606
+#, kde-format
+msgctxt "Error message box title"
+msgid "Last.fm session key error"
+msgstr ""
+
+#: App.cpp:667
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1892,7 +1907,7 @@ msgstr ""
 "Това е мястото, където ще намерите локалната си музика, както и музика от "
 "мобилни аудио плейъри и компактдискове."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "Търсене в колекцията"
@@ -2580,13 +2595,13 @@ msgstr "Да се изтрие ли списъкът за възпроизвеж
 msgid "Confirm Playlist Deletion"
 msgstr "Потвърждаване на изтриването на списъка за възпроизвеждане"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Относителен път за &запис"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
 #, kde-format
 msgid "Save As"
 msgstr "Запис като"
@@ -3014,7 +3029,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label_User)
 #: configdialog/dialogs/DatabaseConfig.ui:101
 #: services/gpodder/GpodderConfigWidget.ui:32
-#: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "&Username:"
 msgstr "Потре&бителско име:"
@@ -3029,7 +3043,6 @@ msgstr "Въведете паролата за потребителя по по�
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
 #: configdialog/dialogs/DatabaseConfig.ui:134
 #: services/gpodder/GpodderConfigWidget.ui:45
-#: services/lastfm/LastFmConfigWidget.ui:67
 #, kde-format
 msgid "&Password:"
 msgstr "&Парола:"
@@ -3716,45 +3729,45 @@ msgstr ""
 msgid "&Pause playback on suspend"
 msgstr "&Пауза на възпроизвеждането при заспиване"
 
-#: configdialog/dialogs/PluginsConfig.cpp:43
+#: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
 msgstr "Колекции"
 
-#: configdialog/dialogs/PluginsConfig.cpp:46
+#: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
 msgstr "Интернет услуги"
 
-#: configdialog/dialogs/PluginsConfig.cpp:49
+#: configdialog/dialogs/PluginsConfig.cpp:50
 #, kde-format
 msgid "Statistics importers"
 msgstr "Вносители на статистически данни"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:131
+#: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 "Ръчно инсталираните скриптове не могат да бъдат обновени автоматично. "
 "Продължаване?"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:137
+#: configdialog/dialogs/ScriptsConfig.cpp:136
 #, kde-format
 msgid "Select Archived Script"
 msgstr "Избор на архивиран скрипт"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:152
+#: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
 msgid "Invalid Archive"
 msgstr "Невалиден архив"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:162
-#: configdialog/dialogs/ScriptsConfig.cpp:176
+#: configdialog/dialogs/ScriptsConfig.cpp:169
+#: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
 msgstr "Невалиден скрипт"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:183
+#: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3765,22 +3778,22 @@ msgstr ""
 "Версия на съществуващия скрипт: %2\n"
 "Версия на избрания скрипт: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:194
+#: configdialog/dialogs/ScriptsConfig.cpp:213
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "Скриптът %1 е инсталиран успешно"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:206
+#: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
 msgstr "Общи"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "Текст"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:214
+#: configdialog/dialogs/ScriptsConfig.cpp:233
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Скриптова услуга"
@@ -3818,23 +3831,23 @@ msgstr "Включване на конзолата за скриптове."
 msgid "Enable Script Console"
 msgstr "Включване на конзолата за скриптове"
 
-#: configdialog/dialogs/ScriptSelector.cpp:38
+#: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
 msgid "Search Scripts"
 msgstr "Търсене (скриптове)"
 
-#: context/AmarokContextPackageStructure.cpp:26
+#: context/AmarokContextPackageStructure.cpp:28
 #, kde-format
 msgid "Main Script File"
 msgstr "Основен скриптов файл"
 
-#: context/AmarokContextPackageStructure.cpp:27
-#: context/AmarokContextPackageStructure.cpp:28
+#: context/AmarokContextPackageStructure.cpp:29
+#: context/AmarokContextPackageStructure.cpp:30
 #, kde-format
 msgid "Applet Icon File"
 msgstr "Файл с икона за аплет"
 
-#: context/AmarokContextPackageStructure.cpp:30
+#: context/AmarokContextPackageStructure.cpp:32
 #, kde-format
 msgid "Images"
 msgstr "Изображения"
@@ -4420,7 +4433,7 @@ msgstr "Презареждане на раздели, съдържащи сле�
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
@@ -7667,7 +7680,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL-адрес"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "Управление на обложките"
@@ -7767,6 +7780,7 @@ msgstr[0] "1 ненамерена"
 msgstr[1] "%1 ненамерени"
 
 #: covermanager/CoverManager.cpp:662
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "Свързване..."
@@ -8000,30 +8014,30 @@ msgstr ""
 "За <b><font color='red'>%1</font></b> са открити множество разнозначни "
 "съвпадения и песента беше отхвърлена."
 
-#: dialogs/DiagnosticDialog.cpp:84
+#: dialogs/DiagnosticDialog.cpp:86
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "Копиране в клипборда"
 
-#: dialogs/DiagnosticDialog.cpp:88
+#: dialogs/DiagnosticDialog.cpp:90
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "%1 Диагностика"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Да"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "Не"
 
-#: dialogs/DiagnosticDialog.cpp:146
+#: dialogs/DiagnosticDialog.cpp:148
 #, kde-format
 msgid ""
 "%1 Diagnostics\n"
@@ -8047,7 +8061,7 @@ msgstr ""
 "   Phonon Backend: %6 (%7, %8)\n"
 "   PulseAudio: %9\n"
 
-#: dialogs/DiagnosticDialog.cpp:163
+#: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9869,10 +9883,18 @@ msgstr ""
 "(C) 2003-2024, екипът на Amarok"
 
 #: main.cpp:101
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "IRC:\n"
+#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+#| "\n"
+#| "Feedback:\n"
+#| "amarok@kde.org\n"
+#| "\n"
+#| "(Build Date: %1)"
 msgid ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10724,58 +10746,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:257
 #, kde-format
 msgid "Local Music"
 msgstr "Локална музика"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:259
 #, kde-format
 msgid "Local sources of content"
 msgstr "Локални източници"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:266
 #, kde-format
 msgid "Internet"
 msgstr "Интернет"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:268
 #, kde-format
 msgid "Online sources of content"
 msgstr "Източници в Интернет"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Playlists"
 msgstr "Списъци за възпроизвеждане"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Разни списъци за възпроизвеждане"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:285
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Разглеждане съдържанието на твърдия диск"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:328
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Изглед"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:331
 #, kde-format
 msgid "Lock Layout"
 msgstr "Заключване на изглед"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1321
+#: MainWindow.cpp:368 MainWindow.cpp:1320
 #, kde-format
 msgid "Reset Layout"
 msgstr "Стандартен изглед"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:425
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10786,276 +10808,276 @@ msgstr ""
 "системния панел. За да спрете програмата, използвайте <B>\"Изход\"</B> от "
 "менюто или иконата в системния панел.</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:427
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Вграждане в системния панел"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Изпълнение на записи (файлове или адреси)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Добавяне на запис (файлове или адреси)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Add Stream"
 msgstr "Добавяне на поток"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Въведете адреса на потока:"
 
-#: MainWindow.cpp:756
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Добавяне на запис..."
 
-#: MainWindow.cpp:761
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Изчистване на списъка за възпроизвеждане"
 
-#: MainWindow.cpp:766
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "&Редактиране на опашката"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Премахване на &дубликатите"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Добавяне на поток..."
 
-#: MainWindow.cpp:782
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Изнасяне на списъка за възпроизвеждане като..."
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "Еквалайзер"
 
-#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Настройки за отмятането на списък за възпроизвеждане"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Отмятане на контекстните аплети"
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "Изпълнение на запис..."
 
-#: MainWindow.cpp:815
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Редактиране на подробностите за текущо избраната песен"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Превъртане напред с %1 секунди"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Превъртане назад с %1 секунди"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "Обновяване на колекцията"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Синхронизиране на статистики..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "Предишен запис"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "Рестартиране на текущата песен"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Разбъркване на списъка за възпроизвеждане"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Презареждане на списъка за възпроизвеждане"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Деактивиране на динамичния списък за възпроизвеждане"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "Следващ запис"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "Увеличаване силата на звука"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Намаляване силата на звука"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Превключване прозореца на списъка"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Превключване на пълен екран"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Търсене в списъка за възпроизвеждане"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "Показване на активния запис"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Показване на изскачащ прозорец с известия"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "Заглушаване на звука"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Обичам този запис"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Забраняване на записа"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Пропускане на записа"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Поставяне на опашката"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Поставяне на изпълнителя - Заглавие на текущата песен в клипборда"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Класиране на текущия запис: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Класиране на текущия запис: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Класиране на текущия запис: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Класиране на текущия запис: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Класиране на текущия запис: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Програма за преглед на мрежови заявки"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "Относно &Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Диагностика"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Съобщаване за &грешка..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "&Музика"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Списък за възпроизвеждане"
 
-#: MainWindow.cpp:1124
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "&Инструменти"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "&Настройване"
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11067,22 +11089,22 @@ msgstr ""
 "Моля, не забравяйте, че винаги можете да използвате прекия път \"%1\", за да "
 "я върнете."
 
-#: MainWindow.cpp:1192
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "Скриване на менюто"
 
-#: MainWindow.cpp:1234
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Пауза  ::  %1"
 
-#: MainWindow.cpp:1247
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1321
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Прилагане на промяната в оформлението?"
@@ -13325,7 +13347,7 @@ msgstr "Локалните списъци за възпроизвеждане в
 msgid "<Empty>"
 msgstr "<Празно>"
 
-#: PluginManager.cpp:144
+#: PluginManager.cpp:143
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
@@ -13466,25 +13488,32 @@ msgstr "Напълно сигурни ли сте?"
 msgid "Terminate"
 msgstr "Прекратяване"
 
-#: scripting/scriptmanager/ScriptItem.cpp:183
+#: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Скриптът %1 се оценява вече повече от 5 секунди - да се прекрати ли?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
-#, kde-format
+#: scripting/scriptmanager/ScriptItem.cpp:338
+#, fuzzy, kde-format
+#| msgctxt ""
+#| "%1 is the name of the offending script, %2 the name of the script author, "
+#| "and %3 the author's email"
+#| msgid ""
+#| "The script %1 uses deprecated scripting API calls. Please contact the "
+#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
+#| "release."
 msgctxt ""
-"%1 is the name of the offending script, %2 the name of the script author, "
-"and %3 the author's email"
+"%1 is the name of the offending script, %2 the script authors and their "
+"emails"
 msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
-"author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+"authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "Скриптът %1 използва остарели призиви на API за писане на скриптове. Моля, "
 "свържете се с автора на скрипта, %2 на адрес %3, и го помолете да го обнови "
 "преди следващото издание на Amarok."
 
-#: scripting/scriptmanager/ScriptManager.cpp:288
+#: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13626,8 +13655,6 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:200
 #: services/gpodder/GpodderServiceSettings.cpp:218
 #: services/gpodder/GpodderServiceSettings.cpp:247
-#: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "Вход (&тест)"
@@ -13688,7 +13715,6 @@ msgstr ""
 "записана като обикновен текст?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "Тестване..."
@@ -13705,21 +13731,22 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:147
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:200
+#: services/lastfm/LastFmServiceSettings.cpp:206
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Failed"
 msgstr "Неуспех"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:213
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Успех"
 
 #: services/gpodder/GpodderServiceSettings.cpp:178
-#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -13931,33 +13958,67 @@ msgstr "до:"
 msgid "Last.fm Profile"
 msgstr "Профил в last.fm"
 
+#. i18n: ectx: property (text), widget (QLabel, labelUsername)
+#: services/lastfm/LastFmConfigWidget.ui:54
+#, fuzzy, kde-format
+#| msgctxt "Username for logins to Magnatune"
+#| msgid "Username:"
+msgid "Username:"
+msgstr "Потребител:"
+
+#. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
+#: services/lastfm/LastFmConfigWidget.ui:64
+#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#, fuzzy, kde-format
+#| msgid "Connection failure"
+msgid "Connect to account"
+msgstr "Неуспешно свързване"
+
+#. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
+#: services/lastfm/LastFmConfigWidget.ui:71
+#: services/lastfm/LastFmServiceSettings.cpp:274
+#, fuzzy, kde-format
+#| msgctxt "In a dialog: Some file: Not needed"
+#| msgid "Not needed"
+msgid "Not connected"
+msgstr "Ненужно"
+
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: services/lastfm/LastFmConfigWidget.ui:96
-#, kde-format
-msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#: services/lastfm/LastFmConfigWidget.ui:84
+#, fuzzy, kde-format
+#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr ""
 "<a href=\"http://www.last.fm:80/signup.php\">Станете член на last.fm</a>"
 
+#. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
+#: services/lastfm/LastFmConfigWidget.ui:97
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgid "Disconnect account"
+msgstr "&Разкачване на устройството"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: services/lastfm/LastFmConfigWidget.ui:119
+#: services/lastfm/LastFmConfigWidget.ui:107
 #, kde-format
 msgid "Last.fm Services"
 msgstr "Услуги на last.fm"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: services/lastfm/LastFmConfigWidget.ui:128
+#: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
 msgstr "&Изпращане на записи"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:138
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Retrieve similar artists"
 msgstr "Търсене на по&добни изпълнители"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:148
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
@@ -13965,7 +14026,7 @@ msgstr ""
 "изпълнител"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:158
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13975,13 +14036,13 @@ msgstr ""
 "представите оценките си в Amarok по време на синхронизирането на статистиката"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:161
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Използване на ефектни етикети за представяне на рейтинги"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:156
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -13994,13 +14055,13 @@ msgstr ""
 "когато това се случи и каква е била автокорекцията/html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:159
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Обявяване на предложения за корекции за етикети на песни"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:180
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -14011,13 +14072,13 @@ msgstr ""
 "fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:183
+#: services/lastfm/LastFmConfigWidget.ui:171
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "Песни със следния етикет да не бъдат добавяни в музикални колекции:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:190
+#: services/lastfm/LastFmConfigWidget.ui:178
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -14026,12 +14087,12 @@ msgstr ""
 "<html>Изберете предпочитан етикет (или напишете нов). Песните с този етикет "
 "няма да бъдат претърсени</html>"
 
-#: services/lastfm/LastFmService.cpp:98
+#: services/lastfm/LastFmService.cpp:97
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: социалната революция в музиката"
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:99
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -14047,69 +14108,54 @@ msgstr ""
 "пускате станции с музика, която е подобна на определен изпълнител, както и "
 "да слушате потоци от хора, които сте добавили като приятели"
 
-#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Любимо"
 
-#: services/lastfm/LastFmService.cpp:129
+#: services/lastfm/LastFmService.cpp:128
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:291
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Има грешка в потребителското име или паролата."
-
-#: services/lastfm/LastFmService.cpp:296
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Възникна проблем в комуникацията с Last.fm. Моля, опитайте отново по-късно."
-
-#: services/lastfm/LastFmService.cpp:381
+#: services/lastfm/LastFmService.cpp:319
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Въведете името на изпълнителя"
 
-#: services/lastfm/LastFmService.cpp:384
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter a tag"
 msgstr "Въведете етикет"
 
-#: services/lastfm/LastFmService.cpp:387
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "Въведете потребителското име от last.fm"
 
-#: services/lastfm/LastFmService.cpp:400
+#: services/lastfm/LastFmService.cpp:338
 #, kde-format
 msgid "Username: %1"
 msgstr "Потребител: %1"
 
-#: services/lastfm/LastFmService.cpp:405
+#: services/lastfm/LastFmService.cpp:343
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "Брояч: %1 изпълнение"
 msgstr[1] "Брояч: %1 изпълнения"
 
-#: services/lastfm/LastFmService.cpp:451
+#: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Създайте потребителска станция в Last.fm"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Tag"
 msgstr "Етикет"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "User"
 msgstr "Потребител"
@@ -14134,36 +14180,58 @@ msgstr "Любимо радио на приятели"
 msgid "Friends' Personal Radio"
 msgstr "Лично радио на приятели"
 
-#: services/lastfm/LastFmServiceConfig.cpp:217
+#: services/lastfm/LastFmServiceConfig.cpp:140
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr "Неуспешно отваряне на KDE Wallet за четене на данните на Last.fm"
 
-#: services/lastfm/LastFmServiceConfig.cpp:270
+#: services/lastfm/LastFmServiceConfig.cpp:157
 #, kde-format
-msgid "No running KWallet found."
-msgstr "Не е открит работещ KWallet."
-
-#: services/lastfm/LastFmServiceConfig.cpp:271
-#, kde-format
-msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+msgid ""
+"Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
+"account in Plugin Settings."
 msgstr ""
-"Искате ли Amarok да запазва вашите идентификационни данни за Last.fm в "
-"обикновен текст?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:134
+#: services/lastfm/LastFmServiceSettings.cpp:92
+#, kde-format
+msgid "Do you want to disconnect Amarok from Last.fm account %1?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:93
+#, kde-format
+msgid "Disconnect Last.fm account?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:205
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Неуспех"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:171
-#, kde-format
-msgid "Test Login"
-msgstr "Вход (тест)"
+#: services/lastfm/LastFmServiceSettings.cpp:145
+#, fuzzy, kde-format
+#| msgid "Open Last.fm webpage for this event"
+msgctxt "Last.fm authentication process status"
+msgid "Opening Last.fm web page"
+msgstr "Отворете уебстраницата на Last.fm за това събитие"
 
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:163
+#, kde-format
+msgctxt "Pushbutton to complete Last.fm authentication process"
+msgid "Finish connecting account"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:188
+#, kde-format
+msgid ""
+"Last.fm account connection was not successful. Please make sure you have "
+"authorized Amarok to connect to your Last.fm account on the Last.fm web page "
+"that was opened and try again."
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Невъзможност за свързване с услугата Last.fm."
@@ -15026,11 +15094,17 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "AutoSync за MP3Tunes в Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "IRC:\n"
+#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
+#| "#amarok-fr\n"
+#| "\n"
+#| "Feedback:\n"
+#| "amarok@kde.org"
 msgid ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -16362,6 +16436,30 @@ msgstr "Изпълнител: %1"
 msgid "empty"
 msgstr "празно"
 
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "Either the username was not recognized, or the password was incorrect."
+#~ msgstr "Има грешка в потребителското име или паролата."
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "There was a problem communicating with the Last.fm services. Please try "
+#~ "again later."
+#~ msgstr ""
+#~ "Възникна проблем в комуникацията с Last.fm. Моля, опитайте отново по-"
+#~ "късно."
+
+#~ msgid "No running KWallet found."
+#~ msgstr "Не е открит работещ KWallet."
+
+#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#~ msgstr ""
+#~ "Искате ли Amarok да запазва вашите идентификационни данни за Last.fm в "
+#~ "обикновен текст?"
+
+#~ msgid "Test Login"
+#~ msgstr "Вход (тест)"
+
 #~ msgid "<b>1</b> file selected."
 #~ msgid_plural "<b>%1</b> files selected."
 #~ msgstr[0] "Маркиран е <b>1</b> файл."
@@ -16787,9 +16885,6 @@ msgstr "празно"
 
 #~ msgid "View map"
 #~ msgstr "Преглед на карта"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Отворете уебстраницата на Last.fm за това събитие"
 
 #~ msgctxt "@label:textbox Supporting acts for an event"
 #~ msgid "Supporting:"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-11 01:43+0000\n"
+"POT-Creation-Date: 2024-07-12 01:43+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -242,7 +242,8 @@ msgstr "没有正在播放的歌曲"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:509
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:107
+#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1462,7 +1463,7 @@ msgstr "未知"
 msgid "New Bookmark"
 msgstr "新建书签"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "书签管理器"
@@ -1560,7 +1561,7 @@ msgstr "新建歌曲时间点"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "未知"
@@ -1581,7 +1582,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "信息视图"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
 #, kde-format
 msgid "Files"
 msgstr "文件"
@@ -1611,7 +1612,7 @@ msgstr "%2 中的艺人“%1”"
 msgid "Artist \"%1\""
 msgstr "艺人“%1”"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "将媒体源视图加入书签"
@@ -1741,7 +1742,21 @@ msgstr ""
 msgid "Moving files to trash"
 msgstr "将文件移到回收站"
 
-#: App.cpp:647
+#: App.cpp:605
+#, kde-format
+msgctxt "Error message box shown if there's a problem with Last.fm credentials"
+msgid ""
+"Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
+"Settings."
+msgstr ""
+
+#: App.cpp:606
+#, kde-format
+msgctxt "Error message box title"
+msgid "Last.fm session key error"
+msgstr ""
+
+#: App.cpp:667
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1777,7 +1792,7 @@ msgid ""
 "audio players and CDs."
 msgstr "这里是您查找本地音乐、移动音频播放器音乐和 CD 音乐的地方。"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "搜索收藏集"
@@ -2449,13 +2464,13 @@ msgstr ""
 msgid "Confirm Playlist Deletion"
 msgstr "播放列表删除确认"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "使用相对路径保存(&S)"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
 #, kde-format
 msgid "Save As"
 msgstr "另存为"
@@ -2872,7 +2887,6 @@ msgstr "输入访问服务器时使用的端口号。默认端口是 3306。\n"
 #. i18n: ectx: property (text), widget (QLabel, label_User)
 #: configdialog/dialogs/DatabaseConfig.ui:101
 #: services/gpodder/GpodderConfigWidget.ui:32
-#: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "&Username:"
 msgstr "用户名(&U)："
@@ -2887,7 +2901,6 @@ msgstr "输入默认用户的密码。\n"
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
 #: configdialog/dialogs/DatabaseConfig.ui:134
 #: services/gpodder/GpodderConfigWidget.ui:45
-#: services/lastfm/LastFmConfigWidget.ui:67
 #, kde-format
 msgid "&Password:"
 msgstr "密码(&P)："
@@ -3535,43 +3548,43 @@ msgstr "启用后，Amarok 会在挂起时自动暂停正在播放的歌曲"
 msgid "&Pause playback on suspend"
 msgstr "挂起时暂停播放(&P)"
 
-#: configdialog/dialogs/PluginsConfig.cpp:43
+#: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
 msgstr "收藏集"
 
-#: configdialog/dialogs/PluginsConfig.cpp:46
+#: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
 msgstr "互联网服务"
 
-#: configdialog/dialogs/PluginsConfig.cpp:49
+#: configdialog/dialogs/PluginsConfig.cpp:50
 #, kde-format
 msgid "Statistics importers"
 msgstr "统计数据导入工具"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:131
+#: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr "手动安装的脚本无法进行自动更新，仍要继续吗？"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:137
+#: configdialog/dialogs/ScriptsConfig.cpp:136
 #, kde-format
 msgid "Select Archived Script"
 msgstr "选择压缩的脚本"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:152
+#: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
 msgid "Invalid Archive"
 msgstr "无效的压缩文件"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:162
-#: configdialog/dialogs/ScriptsConfig.cpp:176
+#: configdialog/dialogs/ScriptsConfig.cpp:169
+#: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
 msgstr "无效的脚本文件"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:183
+#: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3582,22 +3595,22 @@ msgstr ""
 "已存在脚本的版本号：%2\n"
 "所选脚本的版本号：%3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:194
+#: configdialog/dialogs/ScriptsConfig.cpp:213
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "已成功安装脚本 %1"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:206
+#: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
 msgstr "通用"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "歌词"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:214
+#: configdialog/dialogs/ScriptsConfig.cpp:233
 #, kde-format
 msgid "Scriptable Service"
 msgstr "脚本服务"
@@ -3635,23 +3648,23 @@ msgstr "启用脚本控制台。"
 msgid "Enable Script Console"
 msgstr "启用脚本控制台"
 
-#: configdialog/dialogs/ScriptSelector.cpp:38
+#: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
 msgid "Search Scripts"
 msgstr "搜索脚本"
 
-#: context/AmarokContextPackageStructure.cpp:26
+#: context/AmarokContextPackageStructure.cpp:28
 #, kde-format
 msgid "Main Script File"
 msgstr "主脚本文件"
 
-#: context/AmarokContextPackageStructure.cpp:27
-#: context/AmarokContextPackageStructure.cpp:28
+#: context/AmarokContextPackageStructure.cpp:29
+#: context/AmarokContextPackageStructure.cpp:30
 #, kde-format
 msgid "Applet Icon File"
 msgstr "小程序图标文件"
 
-#: context/AmarokContextPackageStructure.cpp:30
+#: context/AmarokContextPackageStructure.cpp:32
 #, kde-format
 msgid "Images"
 msgstr "图片"
@@ -4232,7 +4245,7 @@ msgstr "按以下歌名和艺人重新加载指法谱"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
@@ -7328,7 +7341,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "专辑封面管理器"
@@ -7424,6 +7437,7 @@ msgid_plural "%1 not found"
 msgstr[0] "有 %1 个未找到任何结果"
 
 #: covermanager/CoverManager.cpp:662
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "正在连接..."
@@ -7647,30 +7661,30 @@ msgid ""
 "been discarded."
 msgstr "<b><font color='red'>%1</font></b> 内的多个模糊匹配歌曲已被取消导入。"
 
-#: dialogs/DiagnosticDialog.cpp:84
+#: dialogs/DiagnosticDialog.cpp:86
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "复制到剪贴板"
 
-#: dialogs/DiagnosticDialog.cpp:88
+#: dialogs/DiagnosticDialog.cpp:90
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "%1 的诊断信息"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "有"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "无"
 
-#: dialogs/DiagnosticDialog.cpp:146
+#: dialogs/DiagnosticDialog.cpp:148
 #, kde-format
 msgid ""
 "%1 Diagnostics\n"
@@ -7695,7 +7709,7 @@ msgstr ""
 "   PulseAudio：%9\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:163
+#: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9457,10 +9471,18 @@ msgid ""
 msgstr ""
 
 #: main.cpp:101
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "IRC:\n"
+#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+#| "\n"
+#| "Feedback:\n"
+#| "amarok@kde.org\n"
+#| "\n"
+#| "(Build Date: %1)"
 msgid ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10311,58 +10333,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:257
 #, kde-format
 msgid "Local Music"
 msgstr "本地音乐"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:259
 #, kde-format
 msgid "Local sources of content"
 msgstr "本地资源内容"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:266
 #, kde-format
 msgid "Internet"
 msgstr "互联网"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:268
 #, kde-format
 msgid "Online sources of content"
 msgstr "在线资源内容"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Playlists"
 msgstr "播放列表"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Various types of playlists"
 msgstr "多种播放列表"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:285
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "浏览本地硬盘上的内容"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:328
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "视图(&V)"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:331
 #, kde-format
 msgid "Lock Layout"
 msgstr "锁定布局"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1321
+#: MainWindow.cpp:368 MainWindow.cpp:1320
 #, kde-format
 msgid "Reset Layout"
 msgstr "重置布局"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:425
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10372,276 +10394,276 @@ msgstr ""
 "<qt>关闭主窗口后，Amarok 仍会在系统托盘上保持运行。请使用菜单中的<B>退出</B>"
 "按钮，或 Amarok 托盘按钮来退出程序。</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:427
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "在系统托盘中显示图标"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "播放媒体 (文件或 URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "添加媒体 (文件或 URL)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Add Stream"
 msgstr "添加流媒体"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "输入流媒体 URL："
 
-#: MainWindow.cpp:756
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "添加媒体(&A)..."
 
-#: MainWindow.cpp:761
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "清空播放列表(&C)"
 
-#: MainWindow.cpp:766
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "编辑排序队列(&Q)"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "删除重复项(&M)"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "添加流媒体(&A)..."
 
-#: MainWindow.cpp:782
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "导出播放列表(&E)..."
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "均衡器"
 
-#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "将播放列表布局加入书签"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "将信息视图中的小程序加入书签"
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "播放媒体..."
 
-#: MainWindow.cpp:815
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "编辑所选歌曲的详情"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "快进 %1 秒"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "快退 %1 秒"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "更新收藏集"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "同步统计数据..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "上一首"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "重新播放当前歌曲"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "随机播放列表"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "重新生成播放列表"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "禁用动态播放列表"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "下一首"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "增加音量"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "降低音量"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "显示或隐藏主窗口"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "全屏切换"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "搜索播放列表"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "显示当前歌曲"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "显示弹出通知"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "静音"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm：喜欢当前曲目"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm：不喜欢当前歌曲"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm：跳过当前歌曲"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "加入排序队列"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "按“艺人 - 歌名”的格式，将当前歌曲信息复制到剪贴板"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "对当前歌曲评分：1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "对当前歌曲评分：2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "对当前歌曲评分：3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "对当前歌曲评分：4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "对当前歌曲评分：5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "网络请求查看器"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "关于 &Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "诊断(&D)"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "报告错误(&R)..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "音乐(&M)"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "播放列表(&P)"
 
-#: MainWindow.cpp:1124
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "工具(&T)"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "设置(&S)"
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10652,22 +10674,22 @@ msgstr ""
 "\n"
 "请记住，您随时可以使用快捷键“%1”重新显示菜单栏。"
 
-#: MainWindow.cpp:1192
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "隐藏菜单"
 
-#: MainWindow.cpp:1234
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "已暂停  ::  %1"
 
-#: MainWindow.cpp:1247
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1321
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "应用布局更改？"
@@ -12821,7 +12843,7 @@ msgstr "保存在数据库中的本地播放列表"
 msgid "<Empty>"
 msgstr "<空>"
 
-#: PluginManager.cpp:144
+#: PluginManager.cpp:143
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
@@ -12958,24 +12980,31 @@ msgstr "您完全确定吗？"
 msgid "Terminate"
 msgstr "终止"
 
-#: scripting/scriptmanager/ScriptItem.cpp:183
+#: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "脚本 %1 的运行时间已超过了 5 秒，要停止运行吗？"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
-#, kde-format
+#: scripting/scriptmanager/ScriptItem.cpp:338
+#, fuzzy, kde-format
+#| msgctxt ""
+#| "%1 is the name of the offending script, %2 the name of the script author, "
+#| "and %3 the author's email"
+#| msgid ""
+#| "The script %1 uses deprecated scripting API calls. Please contact the "
+#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
+#| "release."
 msgctxt ""
-"%1 is the name of the offending script, %2 the name of the script author, "
-"and %3 the author's email"
+"%1 is the name of the offending script, %2 the script authors and their "
+"emails"
 msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
-"author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+"authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "脚本 %1 调用了已废弃的脚本 API。请联系脚本作者 %2 的邮箱 %3，并请他在新版 "
 "Amarok 发布前更新脚本。"
 
-#: scripting/scriptmanager/ScriptManager.cpp:288
+#: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13116,8 +13145,6 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:200
 #: services/gpodder/GpodderServiceSettings.cpp:218
 #: services/gpodder/GpodderServiceSettings.cpp:247
-#: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "登录测试(&T)"
@@ -13174,7 +13201,6 @@ msgid ""
 msgstr "KWallet 未运行，您要将 gpodder.net 登录信息以纯文本的方式保存吗？"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "正在测试..."
@@ -13189,21 +13215,22 @@ msgstr "用户名或密码为空，请修改后重试。"
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:147
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:200
+#: services/lastfm/LastFmServiceSettings.cpp:206
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Failed"
 msgstr "失败"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:213
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "成功"
 
 #: services/gpodder/GpodderServiceSettings.cpp:178
-#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -13402,38 +13429,72 @@ msgstr "至："
 msgid "Last.fm Profile"
 msgstr "Last.fm 配置文件"
 
+#. i18n: ectx: property (text), widget (QLabel, labelUsername)
+#: services/lastfm/LastFmConfigWidget.ui:54
+#, fuzzy, kde-format
+#| msgctxt "Username for logins to Magnatune"
+#| msgid "Username:"
+msgid "Username:"
+msgstr "用户名："
+
+#. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
+#: services/lastfm/LastFmConfigWidget.ui:64
+#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#, fuzzy, kde-format
+#| msgid "Connection failure"
+msgid "Connect to account"
+msgstr "连接失败"
+
+#. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
+#: services/lastfm/LastFmConfigWidget.ui:71
+#: services/lastfm/LastFmServiceSettings.cpp:274
+#, fuzzy, kde-format
+#| msgctxt "In a dialog: Some file: Not needed"
+#| msgid "Not needed"
+msgid "Not connected"
+msgstr "不需要"
+
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: services/lastfm/LastFmConfigWidget.ui:96
-#, kde-format
-msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#: services/lastfm/LastFmConfigWidget.ui:84
+#, fuzzy, kde-format
+#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr "<a href=\"http://www.last.fm:80/signup.php\">注册 Last.fm</a>"
 
+#. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
+#: services/lastfm/LastFmConfigWidget.ui:97
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgid "Disconnect account"
+msgstr "断开与此设备的连接(&D)"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: services/lastfm/LastFmConfigWidget.ui:119
+#: services/lastfm/LastFmConfigWidget.ui:107
 #, kde-format
 msgid "Last.fm Services"
 msgstr "Last.fm 服务"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: services/lastfm/LastFmConfigWidget.ui:128
+#: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
 msgstr "提交歌曲(&S)"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:138
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Retrieve similar artists"
 msgstr "获取相似艺人(&R)"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:148
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr "如果 Last.fm 上有作曲家数据，则将其用作为歌曲的艺人信息(&U)"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:158
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13442,13 +13503,13 @@ msgstr ""
 "同步统计数据时，使用 <b>7/10 星</b>的 Last.fm 标签来表示 Amarok 中的评分"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:161
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "使用精致的标签来表示评分"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:156
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -13460,13 +13521,13 @@ msgstr ""
 "内容。</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:159
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "歌曲标签被纠正时发出提醒"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:180
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -13474,13 +13535,13 @@ msgid ""
 msgstr "<html>选择不想被记录或更新到 Last.fm 正在播放的特定歌曲。</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:183
+#: services/lastfm/LastFmConfigWidget.ui:171
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "不要记录带有如下标签的歌曲："
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:190
+#: services/lastfm/LastFmConfigWidget.ui:178
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -13488,12 +13549,12 @@ msgid ""
 msgstr ""
 "<html>选择想要的标签 (或写一个新标签)。带有这些标签的歌曲将不会被记录</html>"
 
-#: services/lastfm/LastFmService.cpp:98
+#: services/lastfm/LastFmService.cpp:97
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm：社会音乐的革命"
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:99
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -13507,67 +13568,53 @@ msgstr ""
 "听歌喜好定制，并向您推荐新音乐。您也可在此收听相似艺人歌曲的电台，或是收听好"
 "友的媒体流"
 
-#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm：喜欢此曲"
 
-#: services/lastfm/LastFmService.cpp:129
+#: services/lastfm/LastFmService.cpp:128
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:291
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "无法识别您输入的用户名，或您输入的密码有误。"
-
-#: services/lastfm/LastFmService.cpp:296
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr "与 Last.fm 服务通讯时发生问题，请稍后重试。"
-
-#: services/lastfm/LastFmService.cpp:381
+#: services/lastfm/LastFmService.cpp:319
 #, kde-format
 msgid "Enter an artist name"
 msgstr "输入艺人名字"
 
-#: services/lastfm/LastFmService.cpp:384
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter a tag"
 msgstr "输入标签"
 
-#: services/lastfm/LastFmService.cpp:387
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "输入 Last.fm 用户名"
 
-#: services/lastfm/LastFmService.cpp:400
+#: services/lastfm/LastFmService.cpp:338
 #, kde-format
 msgid "Username: %1"
 msgstr "用户名：%1"
 
-#: services/lastfm/LastFmService.cpp:405
+#: services/lastfm/LastFmService.cpp:343
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "播放次数：%1 次播放"
 
-#: services/lastfm/LastFmService.cpp:451
+#: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "创建自定义 Last.fm 电台"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Tag"
 msgstr "标签"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "User"
 msgstr "用户"
@@ -13592,34 +13639,58 @@ msgstr "朋友最爱的电台"
 msgid "Friends' Personal Radio"
 msgstr "朋友的个人电台"
 
-#: services/lastfm/LastFmServiceConfig.cpp:217
+#: services/lastfm/LastFmServiceConfig.cpp:140
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr "无法打开 KDE 密码库以读取 Last.fm 登录信息"
 
-#: services/lastfm/LastFmServiceConfig.cpp:270
+#: services/lastfm/LastFmServiceConfig.cpp:157
 #, kde-format
-msgid "No running KWallet found."
-msgstr "KWallet 未运行。"
+msgid ""
+"Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
+"account in Plugin Settings."
+msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:271
+#: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
-msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-msgstr "您要将 gpodder.net 登录信息以纯文本的方式保存吗？"
+msgid "Do you want to disconnect Amarok from Last.fm account %1?"
+msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:134
+#: services/lastfm/LastFmServiceSettings.cpp:93
+#, kde-format
+msgid "Disconnect Last.fm account?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:205
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "失败"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:171
-#, kde-format
-msgid "Test Login"
-msgstr "登录测试"
+#: services/lastfm/LastFmServiceSettings.cpp:145
+#, fuzzy, kde-format
+#| msgid "Open Last.fm webpage for this artist"
+msgctxt "Last.fm authentication process status"
+msgid "Opening Last.fm web page"
+msgstr "打开此艺人的 Last.fm 页面"
 
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:163
+#, kde-format
+msgctxt "Pushbutton to complete Last.fm authentication process"
+msgid "Finish connecting account"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:188
+#, kde-format
+msgid ""
+"Last.fm account connection was not successful. Please make sure you have "
+"authorized Amarok to connect to your Last.fm account on the Last.fm web page "
+"that was opened and try again."
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "无法连接到 Last.fm 服务。"
@@ -14453,11 +14524,17 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "处理 Amarok 内 MP3tunes 服务的自动同步。"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "IRC:\n"
+#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
+#| "#amarok-fr\n"
+#| "\n"
+#| "Feedback:\n"
+#| "amarok@kde.org"
 msgid ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -15715,3 +15792,23 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "Either the username was not recognized, or the password was incorrect."
+#~ msgstr "无法识别您输入的用户名，或您输入的密码有误。"
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "There was a problem communicating with the Last.fm services. Please try "
+#~ "again later."
+#~ msgstr "与 Last.fm 服务通讯时发生问题，请稍后重试。"
+
+#~ msgid "No running KWallet found."
+#~ msgstr "KWallet 未运行。"
+
+#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#~ msgstr "您要将 gpodder.net 登录信息以纯文本的方式保存吗？"
+
+#~ msgid "Test Login"
+#~ msgstr "登录测试"

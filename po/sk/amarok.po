@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-11 01:43+0000\n"
+"POT-Creation-Date: 2024-07-12 01:43+0000\n"
 "PO-Revision-Date: 2023-02-13 17:55+0100\n"
 "Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
 "Language-Team: Slovak <opensuse-translation@opensuse.org>\n"
@@ -256,7 +256,8 @@ msgstr "Nie je prehrávaná žiadna skladba"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:509
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:107
+#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1561,7 +1562,7 @@ msgstr "Neznáme"
 msgid "New Bookmark"
 msgstr "Nová záložka"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Správca záložiek"
@@ -1659,7 +1660,7 @@ msgstr "Nová skladba s časovým kódom"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "Neznáme"
@@ -1680,7 +1681,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Kontext"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
 #, kde-format
 msgid "Files"
 msgstr "Súbory"
@@ -1710,7 +1711,7 @@ msgstr "Umelec \"%1\" z %2"
 msgid "Artist \"%1\""
 msgstr "Umelec \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Pridať záložky pohľadu zdrojov médií"
@@ -1841,7 +1842,21 @@ msgstr ""
 msgid "Moving files to trash"
 msgstr "Presúvam súbory do koša"
 
-#: App.cpp:647
+#: App.cpp:605
+#, kde-format
+msgctxt "Error message box shown if there's a problem with Last.fm credentials"
+msgid ""
+"Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
+"Settings."
+msgstr ""
+
+#: App.cpp:606
+#, kde-format
+msgctxt "Error message box title"
+msgid "Last.fm session key error"
+msgstr ""
+
+#: App.cpp:667
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1879,7 +1894,7 @@ msgstr ""
 "Toto je miesto, kde nájdete vašu lokálnu hudbu, ako aj hudbu z mobilných "
 "zvukových prehrávačov a nosičov CD."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "Prehľadať kolekciu"
@@ -2580,13 +2595,13 @@ msgstr "Odstrániť zoznam skladieb z %1."
 msgid "Confirm Playlist Deletion"
 msgstr "Potvrdiť Vymazanie zoznamu skladieb"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Pre &uloženie použiť relatívnu cestu"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
 #, kde-format
 msgid "Save As"
 msgstr "Uložiť ako"
@@ -3014,7 +3029,6 @@ msgstr "Zadať číslo portu pre prístup k serveru. Predvolený port je 3306.\n
 #. i18n: ectx: property (text), widget (QLabel, label_User)
 #: configdialog/dialogs/DatabaseConfig.ui:101
 #: services/gpodder/GpodderConfigWidget.ui:32
-#: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "&Username:"
 msgstr "&Užívateľské meno:"
@@ -3029,7 +3043,6 @@ msgstr "Zadať heslo pre predvoleného používateľa.\n"
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
 #: configdialog/dialogs/DatabaseConfig.ui:134
 #: services/gpodder/GpodderConfigWidget.ui:45
-#: services/lastfm/LastFmConfigWidget.ui:67
 #, kde-format
 msgid "&Password:"
 msgstr "&Heslo:"
@@ -3704,44 +3717,44 @@ msgstr ""
 msgid "&Pause playback on suspend"
 msgstr "&Pozastaviť prehrávanie pri uspaní"
 
-#: configdialog/dialogs/PluginsConfig.cpp:43
+#: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
 msgstr "Kolekcie"
 
-#: configdialog/dialogs/PluginsConfig.cpp:46
+#: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
 msgstr "Internetové služby"
 
-#: configdialog/dialogs/PluginsConfig.cpp:49
+#: configdialog/dialogs/PluginsConfig.cpp:50
 #, kde-format
 msgid "Statistics importers"
 msgstr "Štatistický importéri"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:131
+#: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 "Ručne inštalované skripty nemôžu byť automaticky aktualizované, pokračovať?"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:137
+#: configdialog/dialogs/ScriptsConfig.cpp:136
 #, kde-format
 msgid "Select Archived Script"
 msgstr "Vybrať archivovaný skript"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:152
+#: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
 msgid "Invalid Archive"
 msgstr "Neplatný archív"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:162
-#: configdialog/dialogs/ScriptsConfig.cpp:176
+#: configdialog/dialogs/ScriptsConfig.cpp:169
+#: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
 msgstr "Neplatný súbor skriptu"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:183
+#: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3752,22 +3765,22 @@ msgstr ""
 "Verzia existujúceho skriptu: %2\n"
 "Verzia vybraného skriptu: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:194
+#: configdialog/dialogs/ScriptsConfig.cpp:213
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "Skript %1 bol úspešne nainštalovaný"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:206
+#: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
 msgstr "Všeobecné"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "Text piesne"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:214
+#: configdialog/dialogs/ScriptsConfig.cpp:233
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Skriptovacia služba"
@@ -3805,23 +3818,23 @@ msgstr "Povoliť konzolu skriptov"
 msgid "Enable Script Console"
 msgstr "Povoliť konzolu skriptov"
 
-#: configdialog/dialogs/ScriptSelector.cpp:38
+#: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
 msgid "Search Scripts"
 msgstr "Hľadať skripty"
 
-#: context/AmarokContextPackageStructure.cpp:26
+#: context/AmarokContextPackageStructure.cpp:28
 #, kde-format
 msgid "Main Script File"
 msgstr "Hlavný súbor skriptu"
 
-#: context/AmarokContextPackageStructure.cpp:27
-#: context/AmarokContextPackageStructure.cpp:28
+#: context/AmarokContextPackageStructure.cpp:29
+#: context/AmarokContextPackageStructure.cpp:30
 #, kde-format
 msgid "Applet Icon File"
 msgstr "Súbor ikony apletu"
 
-#: context/AmarokContextPackageStructure.cpp:30
+#: context/AmarokContextPackageStructure.cpp:32
 #, kde-format
 msgid "Images"
 msgstr "Obrázky"
@@ -4409,7 +4422,7 @@ msgstr "Znovu načítať karty s nasledujúcim názvom a umelcom"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
@@ -7714,7 +7727,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "Správca obalov"
@@ -7818,6 +7831,7 @@ msgstr[1] "%1 nenájdené"
 msgstr[2] "%1 nenájdených"
 
 #: covermanager/CoverManager.cpp:662
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "Pripájam sa..."
@@ -8062,30 +8076,30 @@ msgstr ""
 "Viacero nejednoznačných výsledkov nájdených pre <b><font color='red'>%1</"
 "font></b> bolo zamietnutých."
 
-#: dialogs/DiagnosticDialog.cpp:84
+#: dialogs/DiagnosticDialog.cpp:86
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "Kopírovať do schránky"
 
-#: dialogs/DiagnosticDialog.cpp:88
+#: dialogs/DiagnosticDialog.cpp:90
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "Diagnostika %1"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Áno"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "Nie"
 
-#: dialogs/DiagnosticDialog.cpp:146
+#: dialogs/DiagnosticDialog.cpp:148
 #, kde-format
 msgid ""
 "%1 Diagnostics\n"
@@ -8110,7 +8124,7 @@ msgstr ""
 "   PulseAudio: %9\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:163
+#: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9926,10 +9940,18 @@ msgstr ""
 "(C) 2003-2013, Skupina vývojárov aplikácie Amarok"
 
 #: main.cpp:101
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "IRC:\n"
+#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+#| "\n"
+#| "Feedback:\n"
+#| "amarok@kde.org\n"
+#| "\n"
+#| "(Build Date: %1)"
 msgid ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10781,58 +10803,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:257
 #, kde-format
 msgid "Local Music"
 msgstr "Miestna hudba"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:259
 #, kde-format
 msgid "Local sources of content"
 msgstr "Miestne zdroje obsahu"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:266
 #, kde-format
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:268
 #, kde-format
 msgid "Online sources of content"
 msgstr "Internetové zdroje obsahu"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Playlists"
 msgstr "Zoznamy skladieb"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Rôzne typy zoznamov skladieb"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:285
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Prehliadať miestny disk kvôli obsahu"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:328
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Pohľad"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:331
 #, kde-format
 msgid "Lock Layout"
 msgstr "Zamknúť rozloženie"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1321
+#: MainWindow.cpp:368 MainWindow.cpp:1320
 #, kde-format
 msgid "Reset Layout"
 msgstr "Vynulovať rozloženie"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:425
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10843,276 +10865,276 @@ msgstr ""
 "systémovej lište. Použite <B>Koniec</B> z ponuky alebo ikonu aplikácie "
 "Amarok v lište pre ukončenie celej aplikácie.</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:427
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Pohltenie v systémovej lište."
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Prehrať médium (súbory alebo URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Pridať médium (súbory alebo adresy URL)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Add Stream"
 msgstr "Pridať stream"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Zadajte URL pre stream:"
 
-#: MainWindow.cpp:756
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "Prid&ať média..."
 
-#: MainWindow.cpp:761
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Vymazať zoznam skladieb"
 
-#: MainWindow.cpp:766
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Upraviť frontu"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "&Odstrániť duplikáty"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Pridať stream..."
 
-#: MainWindow.cpp:782
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Exportovať zoznam skladieb ako..."
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "Ekvalizér"
 
-#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Založenie nastavenia zoznamu skladieb"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Pridať záložky kontextovým appletom"
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "Prehrať média..."
 
-#: MainWindow.cpp:815
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Upraviť podrobnosti aktuálne vybranej skladby"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Hľadať dopredu o %1 sekúnd"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Hľadať dozadu o %1 sekúnd"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "Aktualizovať kolekciu"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Synchronizovať štatistiky..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "Predchádzajúca skladba"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "Znovu spustiť aktuálnu skladbu"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Zamiešať zoznam skladieb"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Znova naplniť zoznam skladieb"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Zakázať dynamický zoznam skladieb"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "Nasledujúca skladba"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "Zvýšiť hlasitosť"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Znížiť hlasitosť"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Prepnúť hlavné okno"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Prepnúť na celú obrazovku"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Prehľadať zoznam skladieb"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "Zobraziť aktívnu skladbu"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Ukazovať vyskakovacie upozornenia"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "Stlmiť hlasitosť"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Túto skladbu milujem"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Zablokovať aktuálnu skladbu"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Preskočiť aktuálnu skladbu"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Zaradiť skladbu do poradia"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Dať Umelca - Názov aktuálnej skladby do schránky"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Ohodnotiť aktuálnu skladbu: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Ohodnotiť aktuálnu skladbu: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Ohodnotiť aktuálnu skladbu: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Ohodnotiť aktuálnu skladbu: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Ohodnotiť aktuálnu skladbu: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Prehliadač sieťovej požiadavky"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "O aplikácii &Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "Diagnostika"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Nahlásiť chybu..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "&Hudba"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Zoznam skladieb"
 
-#: MainWindow.cpp:1124
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "&Nástroje"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "&Nastavenia"
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11123,22 +11145,22 @@ msgstr ""
 "\n"
 "Prosím, nezabudnite, že môžete vždy použiť skratku \"%1\", aby ho obnovili."
 
-#: MainWindow.cpp:1192
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "Skryť ponuku"
 
-#: MainWindow.cpp:1234
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pozastavené  ::  %1"
 
-#: MainWindow.cpp:1247
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1321
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Použiť túto zmenu rozloženia?"
@@ -13389,7 +13411,7 @@ msgstr "Miestne zoznamy skladieb uložené v databáze"
 msgid "<Empty>"
 msgstr "<Prázdne>"
 
-#: PluginManager.cpp:144
+#: PluginManager.cpp:143
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
@@ -13529,25 +13551,32 @@ msgstr "Ste si absolútne istí?"
 msgid "Terminate"
 msgstr "Ukončiť"
 
-#: scripting/scriptmanager/ScriptItem.cpp:183
+#: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Script %1 je už teraz vyhodnocovaný viac ako 5 sekúnd, ukončiť?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
-#, kde-format
+#: scripting/scriptmanager/ScriptItem.cpp:338
+#, fuzzy, kde-format
+#| msgctxt ""
+#| "%1 is the name of the offending script, %2 the name of the script author, "
+#| "and %3 the author's email"
+#| msgid ""
+#| "The script %1 uses deprecated scripting API calls. Please contact the "
+#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
+#| "release."
 msgctxt ""
-"%1 is the name of the offending script, %2 the name of the script author, "
-"and %3 the author's email"
+"%1 is the name of the offending script, %2 the script authors and their "
+"emails"
 msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
-"author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+"authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "Skript %1 používa zastarané volanie skriptovacieho API. Prosím, obráťte sa "
 "na autora skriptu, %2 v %3, a požiadajte ho, aby ho inovoval pred ďalším "
 "vydaním Amarok."
 
-#: scripting/scriptmanager/ScriptManager.cpp:288
+#: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13689,8 +13718,6 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:200
 #: services/gpodder/GpodderServiceSettings.cpp:218
 #: services/gpodder/GpodderServiceSettings.cpp:247
-#: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "O&testovať prihlásenie"
@@ -13751,7 +13778,6 @@ msgstr ""
 "uložila vaše gpodder.net prihlasovacie údaje ako čistý text?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "Testujem..."
@@ -13768,21 +13794,22 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:147
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:200
+#: services/lastfm/LastFmServiceSettings.cpp:206
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Failed"
 msgstr "Zlyhalo"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:213
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Úspech"
 
 #: services/gpodder/GpodderServiceSettings.cpp:178
-#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14000,39 +14027,73 @@ msgstr "do:"
 msgid "Last.fm Profile"
 msgstr "Profil Last.fm"
 
+#. i18n: ectx: property (text), widget (QLabel, labelUsername)
+#: services/lastfm/LastFmConfigWidget.ui:54
+#, fuzzy, kde-format
+#| msgctxt "Username for logins to Magnatune"
+#| msgid "Username:"
+msgid "Username:"
+msgstr "Používateľské meno:"
+
+#. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
+#: services/lastfm/LastFmConfigWidget.ui:64
+#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#, fuzzy, kde-format
+#| msgid "Connection failure"
+msgid "Connect to account"
+msgstr "Pripojenie zlyhalo"
+
+#. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
+#: services/lastfm/LastFmConfigWidget.ui:71
+#: services/lastfm/LastFmServiceSettings.cpp:274
+#, fuzzy, kde-format
+#| msgctxt "In a dialog: Some file: Not needed"
+#| msgid "Not needed"
+msgid "Not connected"
+msgstr "Nepotrebné"
+
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: services/lastfm/LastFmConfigWidget.ui:96
-#, kde-format
-msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#: services/lastfm/LastFmConfigWidget.ui:84
+#, fuzzy, kde-format
+#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr ""
 "<a href=\"http://www.last.fm:80/signup.php\">Zaregistrovať sa na Last.fm</a>"
 
+#. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
+#: services/lastfm/LastFmConfigWidget.ui:97
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgid "Disconnect account"
+msgstr "&Odpojiť zariadenie"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: services/lastfm/LastFmConfigWidget.ui:119
+#: services/lastfm/LastFmConfigWidget.ui:107
 #, kde-format
 msgid "Last.fm Services"
 msgstr "Služby Last.fm"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: services/lastfm/LastFmConfigWidget.ui:128
+#: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
 msgstr "Odoslať informácie o &skladbách"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:138
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Retrieve similar artists"
 msgstr "Zí&skať podobných umelcov"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:148
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr "Po&užiť údaje skladateľa v Last.fm ako umelca, ak sú k dispozícii"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:158
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -14042,13 +14103,13 @@ msgstr ""
 "hodnotenia počas štatistickej synchronizácie"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:161
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Použite ozdobné značky na znázornenie hodnotenia"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:156
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -14060,13 +14121,13 @@ msgstr ""
 "obdržanie  upozornenia, keď sa to a čo bolo automaticky opravené</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:159
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Oznámiť návrhy korekcie pre značky skladby"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:180
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -14076,13 +14137,13 @@ msgstr ""
 "neboli ani aktualizované na teraz hrajúce Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:183
+#: services/lastfm/LastFmConfigWidget.ui:171
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "Nerobiť scrobble skladieb s popisom:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:190
+#: services/lastfm/LastFmConfigWidget.ui:178
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -14091,12 +14152,12 @@ msgstr ""
 "<html>Vybrať uprednostňovaný popis (alebo napísať nový). Na skladbách s "
 "týmto popisom sa nebude robiť scrobbling.</html>"
 
-#: services/lastfm/LastFmService.cpp:98
+#: services/lastfm/LastFmService.cpp:97
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: Sociálna hudobná revolúcia"
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:99
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -14113,53 +14174,37 @@ msgstr ""
 "rovnako tiež počúvať stream položky od ľudí, ktorých ste si pridali ako "
 "priateľov."
 
-#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Obľúbené"
 
-#: services/lastfm/LastFmService.cpp:129
+#: services/lastfm/LastFmService.cpp:128
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:291
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Buď nie je v poriadku užívateľské meno, alebo je chybné heslo."
-
-#: services/lastfm/LastFmService.cpp:296
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Počas komunikácie so službami Last.fm nastal problém. Prosím, skúste to "
-"neskôr znovu."
-
-#: services/lastfm/LastFmService.cpp:381
+#: services/lastfm/LastFmService.cpp:319
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Zadajte meno umelca"
 
-#: services/lastfm/LastFmService.cpp:384
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter a tag"
 msgstr "Zadajte značku"
 
-#: services/lastfm/LastFmService.cpp:387
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "Zadať používateľské meno pre Last.fm"
 
-#: services/lastfm/LastFmService.cpp:400
+#: services/lastfm/LastFmService.cpp:338
 #, kde-format
 msgid "Username: %1"
 msgstr "Používateľ: %1"
 
-#: services/lastfm/LastFmService.cpp:405
+#: services/lastfm/LastFmService.cpp:343
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
@@ -14167,17 +14212,17 @@ msgstr[0] "Počet prehraní: %1"
 msgstr[1] "Počet prehraní: %1"
 msgstr[2] "Počet prehraní: %1"
 
-#: services/lastfm/LastFmService.cpp:451
+#: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Vytvoriť vlastnú stanicu Last.fm"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Tag"
 msgstr "Značka"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "User"
 msgstr "Používateľ"
@@ -14202,36 +14247,58 @@ msgstr "Rádio obľúbené priateľmi"
 msgid "Friends' Personal Radio"
 msgstr "Osobné rádio priateľov"
 
-#: services/lastfm/LastFmServiceConfig.cpp:217
+#: services/lastfm/LastFmServiceConfig.cpp:140
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr "Zlyhalo otvorenie KDE Wallet pre čítanie prihlasovacích údajov Last.fm"
 
-#: services/lastfm/LastFmServiceConfig.cpp:270
+#: services/lastfm/LastFmServiceConfig.cpp:157
 #, kde-format
-msgid "No running KWallet found."
-msgstr "KWallet nebol nájdený."
-
-#: services/lastfm/LastFmServiceConfig.cpp:271
-#, kde-format
-msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+msgid ""
+"Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
+"account in Plugin Settings."
 msgstr ""
-"Chcete, aby aplikácia Amarok uložila vaše prihlasovacie údaje služby Last.fm "
-"ako čistý text?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:134
+#: services/lastfm/LastFmServiceSettings.cpp:92
+#, kde-format
+msgid "Do you want to disconnect Amarok from Last.fm account %1?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:93
+#, kde-format
+msgid "Disconnect Last.fm account?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:205
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Zlyhalo"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:171
-#, kde-format
-msgid "Test Login"
-msgstr "Vyskúšať prihlásenie"
+#: services/lastfm/LastFmServiceSettings.cpp:145
+#, fuzzy, kde-format
+#| msgid "Open Last.fm webpage for this event"
+msgctxt "Last.fm authentication process status"
+msgid "Opening Last.fm web page"
+msgstr "Otvoriť webovú stránku Last.fm pre túto udalosť"
 
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:163
+#, kde-format
+msgctxt "Pushbutton to complete Last.fm authentication process"
+msgid "Finish connecting account"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:188
+#, kde-format
+msgid ""
+"Last.fm account connection was not successful. Please make sure you have "
+"authorized Amarok to connect to your Last.fm account on the Last.fm web page "
+"that was opened and try again."
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Nedá sa pripojiť k službe Last.fm."
@@ -15101,11 +15168,17 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Riadi automatickú synchronizáciu služby MP3tunes v aplikácii Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "IRC:\n"
+#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
+#| "#amarok-fr\n"
+#| "\n"
+#| "Feedback:\n"
+#| "amarok@kde.org"
 msgid ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -16445,6 +16518,30 @@ msgstr "Umelec: %1"
 msgid "empty"
 msgstr "prázdne"
 
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "Either the username was not recognized, or the password was incorrect."
+#~ msgstr "Buď nie je v poriadku užívateľské meno, alebo je chybné heslo."
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "There was a problem communicating with the Last.fm services. Please try "
+#~ "again later."
+#~ msgstr ""
+#~ "Počas komunikácie so službami Last.fm nastal problém. Prosím, skúste to "
+#~ "neskôr znovu."
+
+#~ msgid "No running KWallet found."
+#~ msgstr "KWallet nebol nájdený."
+
+#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#~ msgstr ""
+#~ "Chcete, aby aplikácia Amarok uložila vaše prihlasovacie údaje služby Last."
+#~ "fm ako čistý text?"
+
+#~ msgid "Test Login"
+#~ msgstr "Vyskúšať prihlásenie"
+
 #~ msgid "<b>1</b> file selected."
 #~ msgid_plural "<b>%1</b> files selected."
 #~ msgstr[0] "<b>1</b> vybraný súbor."
@@ -16871,9 +16968,6 @@ msgstr "prázdne"
 
 #~ msgid "View map"
 #~ msgstr "Pozrieť mapu"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Otvoriť webovú stránku Last.fm pre túto udalosť"
 
 #~ msgctxt "@label:textbox Supporting acts for an event"
 #~ msgid "Supporting:"

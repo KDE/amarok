@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-11 01:43+0000\n"
+"POT-Creation-Date: 2024-07-12 01:43+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -255,7 +255,8 @@ msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទ
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:509
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:107
+#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1522,7 +1523,7 @@ msgstr "មិន​ស្គាល់"
 msgid "New Bookmark"
 msgstr "ចំណាំ​ថ្មី"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​ចំណាំ"
@@ -1620,7 +1621,7 @@ msgstr "បទ​ដែលមានកូដ​ពេលវេលា​ថ្ម
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
@@ -1641,7 +1642,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "បរិបទ"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
 #, kde-format
 msgid "Files"
 msgstr "ឯកសារ"
@@ -1671,7 +1672,7 @@ msgstr "សិល្បករ \"%1\" ពី %2"
 msgid "Artist \"%1\""
 msgstr "សិល្បករ \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "ចំណាំ​ទិដ្ឋភាព​ប្រភព​មេឌៀ"
@@ -1807,7 +1808,21 @@ msgstr ""
 msgid "Moving files to trash"
 msgstr "កំពុង​ផ្លាស់ទី​ឯកសារ​ទៅ​ធុងសំរាម"
 
-#: App.cpp:647
+#: App.cpp:605
+#, kde-format
+msgctxt "Error message box shown if there's a problem with Last.fm credentials"
+msgid ""
+"Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
+"Settings."
+msgstr ""
+
+#: App.cpp:606
+#, kde-format
+msgctxt "Error message box title"
+msgid "Last.fm session key error"
+msgstr ""
+
+#: App.cpp:667
 #, fuzzy, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1845,7 +1860,7 @@ msgid ""
 msgstr ""
 "នេះ​ជា​កន្លែង​ដែល​អ្នក​នឹង​រក​តន្ត្រី​​ក្នុង​មូលដ្ឋាន​របស់​អ្នក ព្រមទាំង​តន្ត្រី​ពី​កម្មវិធី​ចាក់​អូឌីយ៉ូ​ចល័ត និងស៊ីឌី ។"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "ស្វែងរក​សម្រាំង"
@@ -2542,13 +2557,13 @@ msgstr "លុប​បញ្ជី​ចាក់"
 msgid "Confirm Playlist Deletion"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ​អាប់ភ្លេត​ព័ត៌មាន​របស់​បញ្ជី​ចាក់"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ប្រើ​ផ្លូវ​ទំនាក់ទំនង​​សម្រាប់​រក្សាទុក"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
 #, kde-format
 msgid "Save As"
 msgstr "រក្សាទុក​ជា"
@@ -2968,7 +2983,6 @@ msgstr "បញ្ចូល​លេខ​​ច្រក​ ដើម្បី�
 #. i18n: ectx: property (text), widget (QLabel, label_User)
 #: configdialog/dialogs/DatabaseConfig.ui:101
 #: services/gpodder/GpodderConfigWidget.ui:32
-#: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "&Username:"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ ៖"
@@ -2983,7 +2997,6 @@ msgstr "ពាក្យ​សម្ងាត់​សម្រាប់​អ្
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
 #: configdialog/dialogs/DatabaseConfig.ui:134
 #: services/gpodder/GpodderConfigWidget.ui:45
-#: services/lastfm/LastFmConfigWidget.ui:67
 #, kde-format
 msgid "&Password:"
 msgstr "ពាក្យ​សម្ងាត់ ៖"
@@ -3641,46 +3654,46 @@ msgstr "រៀប URL ជា​ជួរ​បន្ទាប់​ពី​ច�
 msgid "&Pause playback on suspend"
 msgstr "ផ្អាក​ចាក់​សារ​ថ្មី"
 
-#: configdialog/dialogs/PluginsConfig.cpp:43
+#: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
 msgstr "សម្រាំង"
 
-#: configdialog/dialogs/PluginsConfig.cpp:46
+#: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
 msgstr "សេវា​អ៊ីនធឺណិត"
 
-#: configdialog/dialogs/PluginsConfig.cpp:49
+#: configdialog/dialogs/PluginsConfig.cpp:50
 #, fuzzy, kde-format
 #| msgid "Statistics"
 msgid "Statistics importers"
 msgstr "ស្ថិតិ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:131
+#: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:137
+#: configdialog/dialogs/ScriptsConfig.cpp:136
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Select Archived Script"
 msgstr "ស្វែងរក​​ស្គ្រីប"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:152
+#: configdialog/dialogs/ScriptsConfig.cpp:151
 #, fuzzy, kde-format
 #| msgid "Invalid encoder"
 msgid "Invalid Archive"
 msgstr "អ៊ិនកូឌ័រ​មិន​ត្រឹមត្រូវ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:162
-#: configdialog/dialogs/ScriptsConfig.cpp:176
+#: configdialog/dialogs/ScriptsConfig.cpp:169
+#: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:183
+#: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3688,23 +3701,23 @@ msgid ""
 "Selected Script's Version: %3"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:194
+#: configdialog/dialogs/ScriptsConfig.cpp:213
 #, fuzzy, kde-format
 #| msgid "Successfully installed %1"
 msgid "The script %1 was successfully installed"
 msgstr "បាន​ដំឡើង %1 ដោយ​ជោគជ័យ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:206
+#: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
 msgstr "​ទូទៅ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "Lyrics"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:214
+#: configdialog/dialogs/ScriptsConfig.cpp:233
 #, kde-format
 msgid "Scriptable Service"
 msgstr "សេវាកម្ម​ដែល​អាច​ជា​ស្គ្រីប"
@@ -3746,25 +3759,25 @@ msgstr ""
 msgid "Enable Script Console"
 msgstr "គ្រប់គ្រង​ស្គ្រីប​"
 
-#: configdialog/dialogs/ScriptSelector.cpp:38
+#: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
 msgid "Search Scripts"
 msgstr "ស្វែងរក​​ស្គ្រីប"
 
-#: context/AmarokContextPackageStructure.cpp:26
+#: context/AmarokContextPackageStructure.cpp:28
 #, fuzzy, kde-format
 #| msgid "Manage Scripts"
 msgid "Main Script File"
 msgstr "គ្រប់គ្រង​ស្គ្រីប​"
 
-#: context/AmarokContextPackageStructure.cpp:27
-#: context/AmarokContextPackageStructure.cpp:28
+#: context/AmarokContextPackageStructure.cpp:29
+#: context/AmarokContextPackageStructure.cpp:30
 #, fuzzy, kde-format
 #| msgid "Apple Lossless"
 msgid "Applet Icon File"
 msgstr "Apple Lossless"
 
-#: context/AmarokContextPackageStructure.cpp:30
+#: context/AmarokContextPackageStructure.cpp:32
 #, kde-format
 msgid "Images"
 msgstr ""
@@ -4369,7 +4382,7 @@ msgstr "រាយការណ៍​កំហុស​..."
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
@@ -7604,7 +7617,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​គម្រប"
@@ -7700,6 +7713,7 @@ msgid_plural "%1 not found"
 msgstr[0] "រក​មិនឃើញ %1"
 
 #: covermanager/CoverManager.cpp:662
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "កំពុង​តភ្ជាប់..."
@@ -7927,33 +7941,33 @@ msgid ""
 "been discarded."
 msgstr "<b><font color='red'>កំហុស ៖</font></b> %1"
 
-#: dialogs/DiagnosticDialog.cpp:84
+#: dialogs/DiagnosticDialog.cpp:86
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
 msgid "Copy to Clipboard"
 msgstr "ចម្លង​ទៅ​សម្រាំង"
 
-#: dialogs/DiagnosticDialog.cpp:88
+#: dialogs/DiagnosticDialog.cpp:90
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr ""
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, fuzzy, kde-format
 #| msgid "Years"
 msgctxt "Usage"
 msgid "Yes"
 msgstr "ឆ្នាំ"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, fuzzy, kde-format
 #| msgid "None"
 msgctxt "Usage"
 msgid "No"
 msgstr "គ្មាន"
 
-#: dialogs/DiagnosticDialog.cpp:146
+#: dialogs/DiagnosticDialog.cpp:148
 #, kde-format
 msgid ""
 "%1 Diagnostics\n"
@@ -7968,7 +7982,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: dialogs/DiagnosticDialog.cpp:163
+#: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9787,7 +9801,7 @@ msgstr ""
 #| "(Build Date: %1)"
 msgid ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10641,58 +10655,58 @@ msgstr "Christie Harris"
 msgid "ZImin Stanislav"
 msgstr ""
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:257
 #, fuzzy, kde-format
 msgid "Local Music"
 msgstr " ​តន្ត្រី​មូល​ដ្ឋាន"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:259
 #, fuzzy, kde-format
 msgid "Local sources of content"
 msgstr "ប្រភព​មាតិកា​លើ​បណ្ដាញ"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:266
 #, kde-format
 msgid "Internet"
 msgstr "អ៊ីនធឺណិត"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:268
 #, fuzzy, kde-format
 msgid "Online sources of content"
 msgstr "ប្រភព​មាតិកា​លើ​បណ្ដាញ"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Playlists"
 msgstr "បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:276
 #, fuzzy, kde-format
 msgid "Various types of playlists"
 msgstr "ប្រ​ភេទ​ផ្សេង​គ្នា​នៃ​បញ្ជីចាក់"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:285
 #, fuzzy, kde-format
 msgid "Browse local hard drive for content"
 msgstr " រកមើលដ្រាយថាស​រឹងជា​មូលដ្ឋានក្នុង​តារាងមាតាកា​"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:328
 #, fuzzy, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "ទិដ្ឋភាព"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:331
 #, fuzzy, kde-format
 msgid "Lock Layout"
 msgstr "ចាក់សោ​ប្លង់"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1321
+#: MainWindow.cpp:368 MainWindow.cpp:1320
 #, fuzzy, kde-format
 msgid "Reset Layout"
 msgstr "ប្លង់​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:425
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10702,124 +10716,124 @@ msgstr ""
 "<qt>បិទ​បង្អួច​មេ​នឹង​​ទុក​ឲ្យ Amarok រត់​នៅ​ក្នុង​ថាស​ប្រព័ន្ធ ។ ប្រើ<B>ចេញ</B> ពី​ម៉ឺនុយ ឬ​រូបតំណាង​ថាស "
 "Amarok ដើម្បី​ចាកចេញ​ពី​កម្មវិធី ។</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:427
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "ចត​ក្នុង​ថាស​ប្រព័ន្ធ"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "ចាក់​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "បន្ថែម​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Add Stream"
 msgstr "បន្ថែម​ស្ទ្រីម​"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "បញ្ចូល​ URL ស្ទ្រីម ៖"
 
-#: MainWindow.cpp:756
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "បន្ថែម​មេឌៀ..."
 
-#: MainWindow.cpp:761
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ជម្រះ​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:766
+#: MainWindow.cpp:765
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "ជួរ"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:770
 #, fuzzy, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "យក​អាប់ភ្លេត​ចេញ"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "បន្ថែម​ស្ទ្រីម​..."
 
-#: MainWindow.cpp:782
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "អេហ្គុយ"
 
-#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "ចំណាំ​បង្កើត​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:801
 #, fuzzy, kde-format
 msgid "Bookmark Context Applets"
 msgstr "ចំណាំ​សិល្បករ​នេះ"
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "ចាក់​មេឌៀ..."
 
-#: MainWindow.cpp:815
+#: MainWindow.cpp:814
 #, fuzzy, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "ការ​ផ្លាស់​ប្តូរ​រក្សា​ទុក​បាន​កំណត់​ជ្រើស​​ជា​ស្រេច​ពេល​បច្ចុប្បន្ន ។"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "ស្វែងរក​ទៅ​មុខ"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "ស្វែងរក​ថយ​ក្រោយ"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "ធ្វើ​ឲ្យ​សម្រាំង​ទាន់សម័យ"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "បទ​មុន"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:878
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:885
 #, fuzzy, kde-format
 #| msgctxt "number of playlists from one source"
 #| msgid "One Playlist"
@@ -10827,159 +10841,159 @@ msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន �
 msgid "Shuffle Playlist"
 msgstr "បញ្ជី​ចាក់ %1"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:891
 #, fuzzy, kde-format
 msgid "Repopulate Playlist"
 msgstr "ជំនួស​​បញ្ជីចាក់​"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:897
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "បញ្ជី​ចាក់​ថាមវន្ត​លំនាំដើម"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "បទ​បន្ទាប់"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "បង្កើន​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "បន្ថយ​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "បិទ/​បើក​បង្អួច​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:923
 #, fuzzy, kde-format
 msgid "Toggle Full Screen"
 msgstr "បិទ/បើ​ពេញអែក្រង់ "
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "ស្វែងរក​បញ្ជី​​ចាក់"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "បង្ហាញបទ​សកម្ម"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:942
 #, fuzzy, kde-format
 msgid "Show Notification Popup"
 msgstr "ទីតាំង ៖"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "បិទ​សំឡេង"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:952
 #, fuzzy, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:957
 #, fuzzy, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:962
 #, fuzzy, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "រៀបបទ​ជា​ជួរ"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ២"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៣"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៤"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៥"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1021
 #, fuzzy, kde-format
 msgid "&About Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr ""
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "តន្ត្រី"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "បញ្ជីចាក់"
 
-#: MainWindow.cpp:1124
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "ឧបករណ៍"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "ការ​កំណត់"
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10987,23 +11001,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1192
+#: MainWindow.cpp:1191
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "លាក់​ម៉ឺនុយ"
 
-#: MainWindow.cpp:1234
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "បាន​ផ្អាក  ::  %1"
 
-#: MainWindow.cpp:1247
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1321
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -13211,7 +13225,7 @@ msgstr "ផ្ទុក​បញ្ជី​ចាក់​ដែល​បាន
 msgid "<Empty>"
 msgstr "<សម្អាត>"
 
-#: PluginManager.cpp:144
+#: PluginManager.cpp:143
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
@@ -13355,22 +13369,22 @@ msgstr ""
 msgid "Terminate"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:183
+#: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:338
 #, kde-format
 msgctxt ""
-"%1 is the name of the offending script, %2 the name of the script author, "
-"and %3 the author's email"
+"%1 is the name of the offending script, %2 the script authors and their "
+"emails"
 msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
-"author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+"authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 
-#: scripting/scriptmanager/ScriptManager.cpp:288
+#: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13520,8 +13534,6 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:200
 #: services/gpodder/GpodderServiceSettings.cpp:218
 #: services/gpodder/GpodderServiceSettings.cpp:247
-#: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "ការ​ចូល​ចុងក្រោយ"
@@ -13582,7 +13594,6 @@ msgstr ""
 "អត្ថបទធម្មតាឬ ?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "កំពុង​សាកល្បង..."
@@ -13600,21 +13611,22 @@ msgstr "ឈ្មោះ​អ្នក​ប្រើ ឬ​ពាក្យ​�
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:147
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:200
+#: services/lastfm/LastFmServiceSettings.cpp:206
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Failed"
 msgstr "បាន​​​បរាជ័យ"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:213
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "ជោគជ័យ"
 
 #: services/gpodder/GpodderServiceSettings.cpp:178
-#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -13817,39 +13829,72 @@ msgstr ""
 msgid "Last.fm Profile"
 msgstr "ទម្រង់ last.fm"
 
+#. i18n: ectx: property (text), widget (QLabel, labelUsername)
+#: services/lastfm/LastFmConfigWidget.ui:54
+#, fuzzy, kde-format
+#| msgctxt "Username for logins to Magnatune"
+#| msgid "Username:"
+msgid "Username:"
+msgstr "ឈ្មោះ​អ្នក​ប្រើ ៖"
+
+#. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
+#: services/lastfm/LastFmConfigWidget.ui:64
+#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#, fuzzy, kde-format
+#| msgid "Connection"
+msgid "Connect to account"
+msgstr "ការ​តភ្ជាប់"
+
+#. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
+#: services/lastfm/LastFmConfigWidget.ui:71
+#: services/lastfm/LastFmServiceSettings.cpp:274
+#, fuzzy, kde-format
+#| msgctxt "In a dialog: Some file: Not needed"
+#| msgid "Not needed"
+msgid "Not connected"
+msgstr "មិន​ចាំបាច់"
+
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: services/lastfm/LastFmConfigWidget.ui:96
+#: services/lastfm/LastFmConfigWidget.ui:84
 #, fuzzy, kde-format
 #| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to last.fm</a>"
-msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr "<a href=\"http://www.last.fm:80/signup.php\">ចុះឈ្មោះ to last.fm</a>"
 
+#. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
+#: services/lastfm/LastFmConfigWidget.ui:97
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgid "Disconnect account"
+msgstr "ផ្ដាច់​ឧបករណ៍"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: services/lastfm/LastFmConfigWidget.ui:119
+#: services/lastfm/LastFmConfigWidget.ui:107
 #, kde-format
 msgid "Last.fm Services"
 msgstr "សេវា Last.fm"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: services/lastfm/LastFmConfigWidget.ui:128
+#: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
 msgstr "ដាក់​ស្នើ​បទ"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:138
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Retrieve similar artists"
 msgstr "ទៅ​យក​សិល្បករ​ស្រដៀង​គ្នា"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:148
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:158
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13857,13 +13902,13 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:161
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:156
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -13872,13 +13917,13 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:159
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:180
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -13886,26 +13931,26 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:183
+#: services/lastfm/LastFmConfigWidget.ui:171
 #, fuzzy, kde-format
 #| msgid "Don't show the following labels"
 msgid "Do not scrobble tracks with label:"
 msgstr "អ្នក​អាច​ប្រើ​ថូខឹន​ដូច​ខាង​ក្រោម ៖"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:190
+#: services/lastfm/LastFmConfigWidget.ui:178
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
 "will not be scrobbled</html>"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:98
+#: services/lastfm/LastFmService.cpp:97
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm ៖ បដិវត្តន៍​តន្ត្រី​សង្គម ។"
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:99
 #, fuzzy, kde-format
 #| msgid ""
 #| "Last.fm is a popular online service that provides personal radio stations "
@@ -13927,69 +13972,55 @@ msgstr ""
 "អាច​ចាក់​ស្ថានីយ​ជា​មួយ​នឹង​តន្ត្រី​ដេល​ស្រដៀង​គ្នា​នឹង​សិល្បករ​ពិសេស ព្រមទាំង​ស្ដាប់​ស្ទ្រីម​ពី​មនុស្សដែលអ្នក​បានបន្ថែម​"
 "ជា​មិត្តភក្ដិ ឬ​ last.fm ពិចារណា​តន្ត្រី​របស់​អ្នក \"ជិត​ខាង\""
 
-#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm ៖ ស្រឡាញ់"
 
-#: services/lastfm/LastFmService.cpp:129
+#: services/lastfm/LastFmService.cpp:128
 #, kde-format
 msgid "Ctrl+L"
 msgstr "បញ្ជា(Ctrl)+L"
 
-#: services/lastfm/LastFmService.cpp:291
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "​មិន​ស្គាល់​ឈ្មោះ​អ្នកប្រើ​មិន​ត្រូវ​បានស្គាល់ ឬ​ពាក្យ​សម្ងាត់​មិន​ត្រឹមត្រូវ ។"
-
-#: services/lastfm/LastFmService.cpp:296
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr "មាន​បញ្ហា​ក្នុងការ​ទំនាក់ទំនង​ជា​មួយ​នឹង​សេវា Last.fm ។ សូម​ព្យាយាម​ម្ដង​ទៀត​ពេលក្រោយ ។"
-
-#: services/lastfm/LastFmService.cpp:381
+#: services/lastfm/LastFmService.cpp:319
 #, kde-format
 msgid "Enter an artist name"
 msgstr "បញ្ចូល​ឈ្មោះ​សិល្បៈករ"
 
-#: services/lastfm/LastFmService.cpp:384
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter a tag"
 msgstr "បញ្ចូល​ស្លាក"
 
-#: services/lastfm/LastFmService.cpp:387
+#: services/lastfm/LastFmService.cpp:325
 #, fuzzy, kde-format
 #| msgid "Enter a last.fm user name"
 msgid "Enter a Last.fm user name"
 msgstr "បញ្ចូល​ឈ្មោះ​អ្នកប្រើ last.fm"
 
-#: services/lastfm/LastFmService.cpp:400
+#: services/lastfm/LastFmService.cpp:338
 #, fuzzy, kde-format
 #| msgid "Username: "
 msgid "Username: %1"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ ៖"
 
-#: services/lastfm/LastFmService.cpp:405
+#: services/lastfm/LastFmService.cpp:343
 #, fuzzy, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "ចំនួន​ចាក់ ៖ "
 
-#: services/lastfm/LastFmService.cpp:451
+#: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "បង្កើត​ស្ថានីយ​ Last.fm ផ្ទាល់​មួយ"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Tag"
 msgstr "ស្លាក"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "User"
 msgstr "អ្នក​ប្រើ"
@@ -14014,36 +14045,58 @@ msgstr "វិទ្យុ​របស់​មិត្តភក្ដិ"
 msgid "Friends' Personal Radio"
 msgstr "វិទ្យុ​ផ្ទាល់ខ្លួន​របស់​មិត្តភក្ដិ"
 
-#: services/lastfm/LastFmServiceConfig.cpp:217
+#: services/lastfm/LastFmServiceConfig.cpp:140
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:270
+#: services/lastfm/LastFmServiceConfig.cpp:157
 #, kde-format
-msgid "No running KWallet found."
+msgid ""
+"Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
+"account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:271
-#, fuzzy, kde-format
-msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#: services/lastfm/LastFmServiceSettings.cpp:92
+#, kde-format
+msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
-"គ្មាន​កា​ររត់​ស្វែង​រក​ KWallet  ។ តើ​អ្នក​ចង់​ឲ្យ Amarok រក្សាទុក Last.fm របស់អ្នក​ជាសម្ងាត់​ក្នុង​​"
-"អត្ថបទធម្មតាឬ ?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:134
+#: services/lastfm/LastFmServiceSettings.cpp:93
+#, kde-format
+msgid "Disconnect Last.fm account?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:205
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "បាន​​​បរាជ័យ"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:171
-#, kde-format
-msgid "Test Login"
-msgstr "ការ​ចូលចុងក្រោយ"
+#: services/lastfm/LastFmServiceSettings.cpp:145
+#, fuzzy, kde-format
+#| msgid "Open Last.fm webpage for this event"
+msgctxt "Last.fm authentication process status"
+msgid "Opening Last.fm web page"
+msgstr "បើក​ទំព័រ​បណ្ដាញ Last.fm សម្រាប់​ព្រឹត្តិការណ៍​នេះ"
 
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:163
+#, kde-format
+msgctxt "Pushbutton to complete Last.fm authentication process"
+msgid "Finish connecting account"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:188
+#, kde-format
+msgid ""
+"Last.fm account connection was not successful. Please make sure you have "
+"authorized Amarok to connect to your Last.fm account on the Last.fm web page "
+"that was opened and try again."
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, fuzzy, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "មិនអាច​ទៅ​យក​ព័ត៌មាន Wikipedia ៖ %1"
@@ -14918,8 +14971,7 @@ msgstr "គ្រប់គ្រង​ការ​ធ្វើ​សមកាល
 #| "amarok@kde.org"
 msgid ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -16229,6 +16281,26 @@ msgstr "សិល្បករ \"%1\""
 msgid "empty"
 msgstr "សម្អាត"
 
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "Either the username was not recognized, or the password was incorrect."
+#~ msgstr "​មិន​ស្គាល់​ឈ្មោះ​អ្នកប្រើ​មិន​ត្រូវ​បានស្គាល់ ឬ​ពាក្យ​សម្ងាត់​មិន​ត្រឹមត្រូវ ។"
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "There was a problem communicating with the Last.fm services. Please try "
+#~ "again later."
+#~ msgstr "មាន​បញ្ហា​ក្នុងការ​ទំនាក់ទំនង​ជា​មួយ​នឹង​សេវា Last.fm ។ សូម​ព្យាយាម​ម្ដង​ទៀត​ពេលក្រោយ ។"
+
+#, fuzzy
+#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#~ msgstr ""
+#~ "គ្មាន​កា​ររត់​ស្វែង​រក​ KWallet  ។ តើ​អ្នក​ចង់​ឲ្យ Amarok រក្សាទុក Last.fm របស់អ្នក​ជាសម្ងាត់​"
+#~ "ក្នុង​​អត្ថបទធម្មតាឬ ?"
+
+#~ msgid "Test Login"
+#~ msgstr "ការ​ចូលចុងក្រោយ"
+
 #~ msgid "<b>1</b> file selected."
 #~ msgid_plural "<b>%1</b> files selected."
 #~ msgstr[0] "បាន​ជ្រើស​ឯកសារ <b>%1</b> ។"
@@ -16650,9 +16722,6 @@ msgstr "សម្អាត"
 
 #~ msgid "View map"
 #~ msgstr "ទិដ្ឋភាព​ផែនទី"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "បើក​ទំព័រ​បណ្ដាញ Last.fm សម្រាប់​ព្រឹត្តិការណ៍​នេះ"
 
 #, fuzzy
 #~| msgctxt "@label:textbox Supporing acts for an event"

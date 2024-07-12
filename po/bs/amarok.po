@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-11 01:43+0000\n"
+"POT-Creation-Date: 2024-07-12 01:43+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -259,7 +259,8 @@ msgstr "Ništa nije pušteno"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:509
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:107
+#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1571,7 +1572,7 @@ msgstr "Nepoznato"
 msgid "New Bookmark"
 msgstr "Nova zabilješka"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Menadžer zabilješko"
@@ -1672,7 +1673,7 @@ msgstr "Novi vremenski kôd numere"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1247
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "Nepoznat"
@@ -1695,7 +1696,7 @@ msgid "Context"
 msgstr "Kontekst"
 
 # >> @title
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
 #, kde-format
 msgid "Files"
 msgstr "Datoteke"
@@ -1726,7 +1727,7 @@ msgstr "Izvođač „%1“ od %2"
 msgid "Artist \"%1\""
 msgstr "Izvođač „%1“"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Obilježi prikaz medijskih izvora"
@@ -1862,7 +1863,21 @@ msgstr ""
 msgid "Moving files to trash"
 msgstr "Premještam datoteke u smeće"
 
-#: App.cpp:647
+#: App.cpp:605
+#, kde-format
+msgctxt "Error message box shown if there's a problem with Last.fm credentials"
+msgid ""
+"Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
+"Settings."
+msgstr ""
+
+#: App.cpp:606
+#, kde-format
+msgctxt "Error message box title"
+msgid "Last.fm session key error"
+msgstr ""
+
+#: App.cpp:667
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1900,7 +1915,7 @@ msgstr ""
 "Ovdje ćete pronaći lokalnu muziku, kao i muziku sa prijenosnih audio plejera "
 "i CD‑ova."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "Pretraži zbirku"
@@ -2604,13 +2619,13 @@ msgstr "&Obriši listu numera"
 msgid "Confirm Playlist Deletion"
 msgstr "Potvrdite brisanje liste numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Relativna putanja pri &upisivanju"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
 #, kde-format
 msgid "Save As"
 msgstr "Snimi kao"
@@ -3042,7 +3057,6 @@ msgstr "Unesite ime porta za pristup serveru. Podrazumijeva se port 3306.\n"
 #. i18n: ectx: property (text), widget (QLabel, label_User)
 #: configdialog/dialogs/DatabaseConfig.ui:101
 #: services/gpodder/GpodderConfigWidget.ui:32
-#: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "&Username:"
 msgstr "Korisničko &ime:"
@@ -3057,7 +3071,6 @@ msgstr "Unesite lozinku podrazumijevanog korisnika.\n"
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
 #: configdialog/dialogs/DatabaseConfig.ui:134
 #: services/gpodder/GpodderConfigWidget.ui:45
-#: services/lastfm/LastFmConfigWidget.ui:67
 #, kde-format
 msgid "&Password:"
 msgstr "&Lozinka:"
@@ -3734,44 +3747,44 @@ msgstr ""
 msgid "&Pause playback on suspend"
 msgstr "Staviti snimljenu numeru na odgodu"
 
-#: configdialog/dialogs/PluginsConfig.cpp:43
+#: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
 msgstr "Kolekcije"
 
-#: configdialog/dialogs/PluginsConfig.cpp:46
+#: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
 msgstr "Internet servisi"
 
-#: configdialog/dialogs/PluginsConfig.cpp:49
+#: configdialog/dialogs/PluginsConfig.cpp:50
 #, kde-format
 msgid "Statistics importers"
 msgstr "Statistički uvoznici"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:131
+#: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 "Ručno instalirane skripte ne mogu biti ažurirane automatski, nastaviti?"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:137
+#: configdialog/dialogs/ScriptsConfig.cpp:136
 #, kde-format
 msgid "Select Archived Script"
 msgstr "Izaberi arhivisanu skriptu"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:152
+#: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
 msgid "Invalid Archive"
 msgstr "Pogrešna arhiva"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:162
-#: configdialog/dialogs/ScriptsConfig.cpp:176
+#: configdialog/dialogs/ScriptsConfig.cpp:169
+#: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
 msgstr "Pogrešna skriptna datoteka"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:183
+#: configdialog/dialogs/ScriptsConfig.cpp:195
 #, fuzzy, kde-format
 #| msgid ""
 #| "Another script with the name %1 already exists\n"
@@ -3786,22 +3799,22 @@ msgstr ""
 "Verzija postojeće skripte: %1\n"
 "Verzija izabrane skripte: %2"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:194
+#: configdialog/dialogs/ScriptsConfig.cpp:213
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "Skripta %1 je uspješno instalirana"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:206
+#: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
 msgstr "Opšte"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:210 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
 #, kde-format
 msgid "Lyrics"
 msgstr "Tekst"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:214
+#: configdialog/dialogs/ScriptsConfig.cpp:233
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Skriptovani servis"
@@ -3839,25 +3852,25 @@ msgstr "Osposobi konzolu skripte."
 msgid "Enable Script Console"
 msgstr "Osposobi skriptnu konzolu."
 
-#: configdialog/dialogs/ScriptSelector.cpp:38
+#: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
 msgid "Search Scripts"
 msgstr "Pretraži skripte"
 
-#: context/AmarokContextPackageStructure.cpp:26
+#: context/AmarokContextPackageStructure.cpp:28
 #, fuzzy, kde-format
 #| msgid "Invalid Script File"
 msgid "Main Script File"
 msgstr "Pogrešna skriptna datoteka"
 
-#: context/AmarokContextPackageStructure.cpp:27
-#: context/AmarokContextPackageStructure.cpp:28
+#: context/AmarokContextPackageStructure.cpp:29
+#: context/AmarokContextPackageStructure.cpp:30
 #, fuzzy, kde-format
 #| msgid "Apple Lossless"
 msgid "Applet Icon File"
 msgstr "Apple bez gubitaka"
 
-#: context/AmarokContextPackageStructure.cpp:30
+#: context/AmarokContextPackageStructure.cpp:32
 #, kde-format
 msgid "Images"
 msgstr ""
@@ -4461,7 +4474,7 @@ msgstr "Ponovo učitaj tablature sa sljedećim naslovom i izvođačem"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #: services/magnatune/MagnatuneStore.cpp:213
 #, kde-format
 msgid "Artist"
@@ -7783,7 +7796,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "Menadžer omota"
@@ -7887,6 +7900,7 @@ msgstr[1] "%1 nisu nađena"
 msgstr[2] "%1 nije nađeno"
 
 #: covermanager/CoverManager.cpp:662
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "Povezujem se..."
@@ -8126,30 +8140,30 @@ msgid ""
 "been discarded."
 msgstr "Dvosmislena odbačena: <b><font color='red'>%1</font></b>."
 
-#: dialogs/DiagnosticDialog.cpp:84
+#: dialogs/DiagnosticDialog.cpp:86
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "Kopiraj u clipboard"
 
-#: dialogs/DiagnosticDialog.cpp:88
+#: dialogs/DiagnosticDialog.cpp:90
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "%1 Dijagnostika"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Da"
 
-#: dialogs/DiagnosticDialog.cpp:143
+#: dialogs/DiagnosticDialog.cpp:145
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "Ne"
 
-#: dialogs/DiagnosticDialog.cpp:146
+#: dialogs/DiagnosticDialog.cpp:148
 #, fuzzy, kde-format
 #| msgid ""
 #| "%1 Diagnostics\n"
@@ -8185,7 +8199,7 @@ msgstr ""
 "   PulseAudio: %8\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:163
+#: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9966,7 +9980,7 @@ msgstr ""
 #| "(Build Date: %1)"
 msgid ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10822,61 +10836,61 @@ msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
 # >> @title
-#: MainWindow.cpp:258
+#: MainWindow.cpp:257
 #, kde-format
 msgid "Local Music"
 msgstr "Lokalna muzika"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:259
 #, kde-format
 msgid "Local sources of content"
 msgstr "Lokalni izvori sadržaja"
 
 # >> @title
-#: MainWindow.cpp:267
+#: MainWindow.cpp:266
 #, kde-format
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:268
 #, kde-format
 msgid "Online sources of content"
 msgstr "Izvori sadržaja na vezi"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Playlists"
 msgstr "Playliste"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Razne vrste listi numera"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:285
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Pregledajte sadržaj lokalnog diska"
 
 # >! Wrong context marker.
 # >> @title:mijenu
-#: MainWindow.cpp:329
+#: MainWindow.cpp:328
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Prikaz"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:331
 #, kde-format
 msgid "Lock Layout"
 msgstr "Zaključaj raspored"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1321
+#: MainWindow.cpp:368 MainWindow.cpp:1320
 #, kde-format
 msgid "Reset Layout"
 msgstr "Resetiraj izgled"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:425
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10887,278 +10901,278 @@ msgstr ""
 "kaseti. Koristite <interface>Napusti</interface> iz menija ili Amarokovu "
 "ikonu u sistemskoj kaseti da biste izašli iz programa.</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:427
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Pristajem u sistemsku kasetu"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Pusti medij (datoteke ili URL-ovi)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:527
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Dodaj medij (datoteke ili URL-ovi)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Add Stream"
 msgstr "Dodaj tok"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:547
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Unesite URL toka:"
 
-#: MainWindow.cpp:756
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Dodaj medij..."
 
-#: MainWindow.cpp:761
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Očisti listu numera"
 
-#: MainWindow.cpp:766
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Uredi &Red čekanja"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Ukloni &duplikate"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Dodaj tok..."
 
-#: MainWindow.cpp:782
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "Izvezi listu numera &kao..."
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "Ekvilajzer"
 
-#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Postavka zabilješki liste numera"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Apleti koji se odnose na zabilješke"
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "Pusti medij..."
 
-#: MainWindow.cpp:815
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Uredi detalje trenutno izabrane numere"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, fuzzy, kde-format
 #| msgid "Seek Forward by %1"
 msgid "Seek Forward by %1 seconds"
 msgstr "Tražite naprijed %1"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, fuzzy, kde-format
 #| msgid "Seek Backward by %1"
 msgid "Seek Backward by %1 seconds"
 msgstr "Tražite nazad %1"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "Ažuriraj zbirku"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Uskladi statistiku..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "Prethodna numera"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "Ponovo pokreni tekuću numeru"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Nasumična reprodukcija"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Ponovo popuni listu numera"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Onemogući dinamičku listu izvođenja"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "Sljedeća numera"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "Povećaj jačinu"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Smanji jačinu"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Uključi/isključi glavni prozor"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Preko cijelog ekrana"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Pretraži listu numera"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "Prikaži puštenu numeru"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Prikazuj iskačuća obavještenja"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "Utišaj zvuk"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "LastFM: voli tekuću numeru"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "LastFM: zabrani tekuću numeru"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "LastFM: preskoči tekuću numeru"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Stavi u red"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Stavi naslov umjetnika trenutne numere u klipbord"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Ocijenite tekuću numeru: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Ocijenite tekuću numeru: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Ocijenite tekuću numeru: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Ocijenite tekuću numeru: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Ocijenite tekuću numeru: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Prikazivač mrežnih zahtjeva"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "&O Amaroku"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Dijagnostika"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "P&rijavi grešku..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "&Muzika"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1107 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Lista numera"
 
-#: MainWindow.cpp:1124
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "Ala&tke"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "&Podešavanje"
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11169,22 +11183,22 @@ msgstr ""
 "\n"
 "Ne zaboravite da uvijek možete koristiti kraticu \"%1\" da ga vratite."
 
-#: MainWindow.cpp:1192
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "Sakeij meni"
 
-#: MainWindow.cpp:1234
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pauzirano  ::  %1"
 
-#: MainWindow.cpp:1247
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 — %2 ::  %3"
 
-#: MainWindow.cpp:1321
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Primijenite ovu promjenu izgleda?"
@@ -13444,7 +13458,7 @@ msgstr "Lokalne liste numere skladištenje u bazi"
 msgid "<Empty>"
 msgstr "<prazno>"
 
-#: PluginManager.cpp:144
+#: PluginManager.cpp:143
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
@@ -13584,25 +13598,32 @@ msgstr "Da li ste apsolutno sigurni?"
 msgid "Terminate"
 msgstr "Prekini"
 
-#: scripting/scriptmanager/ScriptItem.cpp:183
+#: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Skripta %1 je analizirana više od 5 sekundi, prekinuti?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
-#, kde-format
+#: scripting/scriptmanager/ScriptItem.cpp:338
+#, fuzzy, kde-format
+#| msgctxt ""
+#| "%1 is the name of the offending script, %2 the name of the script author, "
+#| "and %3 the author's email"
+#| msgid ""
+#| "The script %1 uses deprecated scripting API calls. Please contact the "
+#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
+#| "release."
 msgctxt ""
-"%1 is the name of the offending script, %2 the name of the script author, "
-"and %3 the author's email"
+"%1 is the name of the offending script, %2 the script authors and their "
+"emails"
 msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
-"author, %2 at %3, and ask him to upgrade it before the next Amarok release."
+"authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "Skripta %1 koristi zastarjele API pozive skriptovanja. Molimo kontaktirajte "
 "pisca skripte, %2 u %3, i zamolite ga da ju unaprijedi prije sljedeće "
 "distribucije Amarok-a."
 
-#: scripting/scriptmanager/ScriptManager.cpp:288
+#: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -13744,8 +13765,6 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:200
 #: services/gpodder/GpodderServiceSettings.cpp:218
 #: services/gpodder/GpodderServiceSettings.cpp:247
-#: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:221
 #, kde-format
 msgid "&Test Login"
 msgstr "&Probna prijava"
@@ -13806,7 +13825,6 @@ msgstr ""
 "akreditive u otvorenom tekstu?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
-#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Testing..."
 msgstr "Isprobavam..."
@@ -13823,21 +13841,22 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:147
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:200
+#: services/lastfm/LastFmServiceSettings.cpp:206
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Failed"
 msgstr "Nije uspelo"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:213
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Uspjeh"
 
 #: services/gpodder/GpodderServiceSettings.cpp:178
-#: services/lastfm/LastFmServiceSettings.cpp:147
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14050,38 +14069,72 @@ msgstr "do:"
 msgid "Last.fm Profile"
 msgstr "Profil na LastFM‑u"
 
+#. i18n: ectx: property (text), widget (QLabel, labelUsername)
+#: services/lastfm/LastFmConfigWidget.ui:54
+#, fuzzy, kde-format
+#| msgctxt "Username for logins to Magnatune"
+#| msgid "Username:"
+msgid "Username:"
+msgstr "Korisničko ime:"
+
+#. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
+#: services/lastfm/LastFmConfigWidget.ui:64
+#: services/lastfm/LastFmServiceSettings.cpp:223
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#, fuzzy, kde-format
+#| msgid "Connection failure"
+msgid "Connect to account"
+msgstr "Greška veze"
+
+#. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
+#: services/lastfm/LastFmConfigWidget.ui:71
+#: services/lastfm/LastFmServiceSettings.cpp:274
+#, fuzzy, kde-format
+#| msgctxt "In a dialog: Some file: Not needed"
+#| msgid "Not needed"
+msgid "Not connected"
+msgstr "Nepotreban"
+
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: services/lastfm/LastFmConfigWidget.ui:96
-#, kde-format
-msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#: services/lastfm/LastFmConfigWidget.ui:84
+#, fuzzy, kde-format
+#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr "<a href=\"http://www.last.fm:80/signup.php\">Učlanite se na LastFM</a>"
 
+#. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
+#: services/lastfm/LastFmConfigWidget.ui:97
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgid "Disconnect account"
+msgstr "Prekini vezu sa &uređajem"
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: services/lastfm/LastFmConfigWidget.ui:119
+#: services/lastfm/LastFmConfigWidget.ui:107
 #, kde-format
 msgid "Last.fm Services"
 msgstr "Servisi LastFM‑a"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: services/lastfm/LastFmConfigWidget.ui:128
+#: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
 msgstr "&Predaj numeru"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:138
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Retrieve similar artists"
 msgstr "&Dobavi slične izvođače"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:148
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr "&Uzmi podatke o kompozitoru na LastFM‑u za izvođača"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:158
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -14091,13 +14144,13 @@ msgstr ""
 "Amarok ocjene tokom statističke sinhronizacije"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:161
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Koristite ukrasne oznake za predstavljanje ocjena"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:156
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -14110,13 +14163,13 @@ msgstr ""
 "automatska korekcija bila</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:159
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Najavite prijedloge korekcije za oznake numera"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:180
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -14126,13 +14179,13 @@ msgstr ""
 "ažurirana na Last.fm kao ona koja trenutno svira</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:183
+#: services/lastfm/LastFmConfigWidget.ui:171
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "Nemoj dijeliti numere sa etiketom:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:190
+#: services/lastfm/LastFmConfigWidget.ui:178
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -14141,12 +14194,12 @@ msgstr ""
 "<html>Odaberite željenu etiketu (ili napišite novu). Numere sa ovom etiketom "
 "neće biti dijeljene</html>"
 
-#: services/lastfm/LastFmService.cpp:98
+#: services/lastfm/LastFmService.cpp:97
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "LastFM: društvena muzička revolucija"
 
-#: services/lastfm/LastFmService.cpp:100
+#: services/lastfm/LastFmService.cpp:99
 #, fuzzy, kde-format
 #| msgid ""
 #| "Last.fm is a popular online service that provides personal radio stations "
@@ -14169,52 +14222,37 @@ msgstr ""
 "muzikom sličnom određenom izvođaču, kao i preslušavati tokove osoba koje ste "
 "naveli kao prijatelje ili koje LastFM smatra vašim muzičkim „komšijama“."
 
-#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "LastFM: voljeno"
 
-#: services/lastfm/LastFmService.cpp:129
+#: services/lastfm/LastFmService.cpp:128
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:291
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Ili korisničko ime nije prepoznato, ili lozinka nije ispravna."
-
-#: services/lastfm/LastFmService.cpp:296
-#, kde-format
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Problem u komunikaciji sa LastFM‑ovim servisom. Pokušajte malo kasnije."
-
-#: services/lastfm/LastFmService.cpp:381
+#: services/lastfm/LastFmService.cpp:319
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Unesite ime izvođača"
 
-#: services/lastfm/LastFmService.cpp:384
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter a tag"
 msgstr "Unesite oznaku"
 
-#: services/lastfm/LastFmService.cpp:387
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "Unesite korisničko ime na LastFM‑u"
 
-#: services/lastfm/LastFmService.cpp:400
+#: services/lastfm/LastFmService.cpp:338
 #, kde-format
 msgid "Username: %1"
 msgstr "Korisničko ime: %1"
 
-#: services/lastfm/LastFmService.cpp:405
+#: services/lastfm/LastFmService.cpp:343
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
@@ -14222,18 +14260,18 @@ msgstr[0] "Broj puštanja: %1"
 msgstr[1] "Broj puštanja: %1"
 msgstr[2] "Broj puštanja: %1"
 
-#: services/lastfm/LastFmService.cpp:451
+#: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Napravi posebnu LastFM‑ovu stanicu"
 
 # >> @item:inlistbox
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Tag"
 msgstr "Oznaka"
 
-#: services/lastfm/LastFmService.cpp:454
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "User"
 msgstr "Korisnik"
@@ -14258,39 +14296,58 @@ msgstr "Prijateljev voljeni radio"
 msgid "Friends' Personal Radio"
 msgstr "Prijateljev lični radio"
 
-#: services/lastfm/LastFmServiceConfig.cpp:217
+#: services/lastfm/LastFmServiceConfig.cpp:140
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr "Nisam uspio otvoriti KDE Wallet kako bi čitato Last.fm akreditive"
 
-#: services/lastfm/LastFmServiceConfig.cpp:270
+#: services/lastfm/LastFmServiceConfig.cpp:157
 #, kde-format
-msgid "No running KWallet found."
+msgid ""
+"Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
+"account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceConfig.cpp:271
-#, fuzzy, kde-format
-#| msgid ""
-#| "No running KWallet found. Would you like Amarok to save your Last.fm "
-#| "credentials in plaintext?"
-msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#: services/lastfm/LastFmServiceSettings.cpp:92
+#, kde-format
+msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
-"Nema K‑novčanika u pogonu. Želite li da Amarok sačuva vaše akreditive na "
-"LastFM‑u u običnom tekstu?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:134
+#: services/lastfm/LastFmServiceSettings.cpp:93
+#, kde-format
+msgid "Disconnect Last.fm account?"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:205
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Neuspjeh"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:171
-#, kde-format
-msgid "Test Login"
-msgstr "Proba prijave"
+#: services/lastfm/LastFmServiceSettings.cpp:145
+#, fuzzy, kde-format
+#| msgid "Open Last.fm webpage for this event"
+msgctxt "Last.fm authentication process status"
+msgid "Opening Last.fm web page"
+msgstr "Otvori Last.fm web stranicu za ovaj događaj"
 
-#: services/lastfm/LastFmServiceSettings.cpp:170
+#: services/lastfm/LastFmServiceSettings.cpp:163
+#, kde-format
+msgctxt "Pushbutton to complete Last.fm authentication process"
+msgid "Finish connecting account"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:188
+#, kde-format
+msgid ""
+"Last.fm account connection was not successful. Please make sure you have "
+"authorized Amarok to connect to your Last.fm account on the Last.fm web page "
+"that was opened and try again."
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Ne mogu se povezati na Last.fm servis."
@@ -15143,8 +15200,7 @@ msgstr "Kontroliše autosinhronizaciju sa MP3‑tjunsovim servisom u Amaroku."
 #| "amarok@kde.org"
 msgid ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -16488,6 +16544,30 @@ msgstr "Izvođač: %1"
 msgid "empty"
 msgstr "prazno"
 
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "Either the username was not recognized, or the password was incorrect."
+#~ msgstr "Ili korisničko ime nije prepoznato, ili lozinka nije ispravna."
+
+#~ msgctxt "Last.fm: errorMessage"
+#~ msgid ""
+#~ "There was a problem communicating with the Last.fm services. Please try "
+#~ "again later."
+#~ msgstr ""
+#~ "Problem u komunikaciji sa LastFM‑ovim servisom. Pokušajte malo kasnije."
+
+#, fuzzy
+#~| msgid ""
+#~| "No running KWallet found. Would you like Amarok to save your Last.fm "
+#~| "credentials in plaintext?"
+#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
+#~ msgstr ""
+#~ "Nema K‑novčanika u pogonu. Želite li da Amarok sačuva vaše akreditive na "
+#~ "LastFM‑u u običnom tekstu?"
+
+#~ msgid "Test Login"
+#~ msgstr "Proba prijave"
+
 #~ msgid "<b>1</b> file selected."
 #~ msgid_plural "<b>%1</b> files selected."
 #~ msgstr[0] "Izabrana <b>%1</b> datoteka."
@@ -16916,9 +16996,6 @@ msgstr "prazno"
 
 #~ msgid "View map"
 #~ msgstr "Vidi mapu"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Otvori Last.fm web stranicu za ovaj događaj"
 
 #, fuzzy
 #~| msgctxt "@label:textbox Supporing acts for an event"
