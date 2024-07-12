@@ -2,6 +2,7 @@
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
 * Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
+* Copyright (c) 2024 Tuomas Nurmi <tuomas@norsumanageri.org>                           *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,8 +20,15 @@
 #ifndef SIMILARARTISTSENGINE_H
 #define SIMILARARTISTSENGINE_H
 
+#include "SimilarArtistModel.h"
+
 #include "core/meta/forward_declarations.h"
 #include "network/NetworkAccessManagerProxy.h"
+
+namespace Collections
+{
+    class QueryMaker;
+}
 
 /**
  *  This class provide SimilarArtists data for use in the SimilarArtists context applet.
@@ -29,9 +37,9 @@
 class SimilarArtistsEngine : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists )
-    Q_PROPERTY( QString artist READ artist WRITE setArtist )
-    Q_PROPERTY( QStringList similarArtists READ similarArtists NOTIFY similarArtistsChanged )
+    Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists NOTIFY maxArtistsChanged )
+    Q_PROPERTY( SimilarArtistModel* model READ model CONSTANT )
+    Q_PROPERTY( QString currentTarget READ currentTarget NOTIFY targetChanged )
 
 public:
 
@@ -47,12 +55,20 @@ public:
      */
     ~SimilarArtistsEngine() override;
 
+    SimilarArtistModel *model() const { return m_model; }
+
     /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
      * Store this in the similar artist list of this class
      * @param artistName the name of the artist
      */
     void similarArtistsRequest( const QString &artistName );
+
+    void artistInfoRequest( const QString &artistName );
+
+    void searchLocalCollection( const QString &artistName );
+
+    Q_INVOKABLE void navigateToArtist( const QString &artist );
 
     /**
      * The maximum number of similar artists
@@ -66,14 +82,11 @@ public:
      */
     void setMaximumArtists( int number );
 
-    QString artist() const;
-    void setArtist( const QString &name );
-
-
-    QStringList similarArtists() const { return m_similarArtists;}
+    QString currentTarget() const;
 
 Q_SIGNALS:
-    void similarArtistsChanged();
+    void maxArtistsChanged();
+    void targetChanged();
 
 private:
     /**
@@ -81,12 +94,12 @@ private:
      */
     int m_maxArtists;
 
-    /**
-     * The artist, whose research is similar artists.
-     */
-    QString m_artist;
+    SimilarArtistModel *m_model;
 
-    QStringList m_similarArtists;
+    Collections::QueryMaker *m_lastQueryMaker;
+    QString m_queriedArtist;
+
+    bool m_artistInfoQueryInProcess;
 
 private Q_SLOTS:
     /**
@@ -96,11 +109,15 @@ private Q_SLOTS:
      */
     bool update( bool force = false );
 
+    void resultReady( const Meta::AlbumList &albums );
+
     /**
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
      */
     void parseSimilarArtists( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
+
+    void parseArtistInfo( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif // SIMILARARTISTSENGINE_H

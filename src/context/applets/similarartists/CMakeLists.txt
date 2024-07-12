@@ -1,6 +1,6 @@
 set(similarartists_SRCS
+    plugin/SimilarArtistModel.cpp
     plugin/SimilarArtistsPlugin.cpp
-    plugin/SimilarArtist.cpp
     plugin/SimilarArtistsEngine.cpp
 )
 
@@ -8,6 +8,7 @@ add_library(amarok_context_applet_similarartists SHARED ${similarartists_SRCS})
 
 
 target_link_libraries(amarok_context_applet_similarartists
+    amarok_service_lastfm_config
     amarokcore
     amaroklib
     Qt::Qml
