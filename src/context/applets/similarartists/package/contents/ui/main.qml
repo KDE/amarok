@@ -42,13 +42,12 @@ AmarokQml.Applet {
             ListView {
                 id: similarArtistsList
                 model: SimilarArtistsEngine.model
+                visible: SimilarArtistsEngine.currentTarget
                 Layout.fillHeight: true
-                anchors.top: artistLabel.bottom
-                anchors.bottom: parent.bottom
                 interactive: false
                 contentHeight: height
                 boundsBehavior: Flickable.StopAtBounds
-                width: applet.height
+                width: Math.max(applet.height, 300)
                 delegate: Rectangle {
                     height: ( applet.height - artistLabel.height - Kirigami.Units.smallSpacing ) / ( SimilarArtistsEngine.maximumArtists + 1 )
                     anchors.left: parent.left
@@ -79,7 +78,7 @@ AmarokQml.Applet {
                                 let str = i18nc( "Artist's listener and playcount from Last.fm", "%1 listeners<br>%2 plays", listeners, plays )
                                 if( parseInt( ownplays ) > 0 )
                                     str += i18nc( "Number of user's own scrobbles of an artist on Last.fm, appended to previous string if not 0", "<br>%1 plays by you", ownplays )
-                                return str
+                                return "<i>" + str + "</i>"
                             });
                             // unfortunately disabled in last.fm api since 2019 or so
                             // currentlyHighlighted.image = image;
@@ -98,7 +97,9 @@ AmarokQml.Applet {
                         Label {
                             id: nameLabel
                             text: name
+                            elide: Text.ElideRight
                             anchors.left: matchBar.right
+                            anchors.right: currentlyHighlighted.visible ? parent.right : undefined
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -124,7 +125,6 @@ AmarokQml.Applet {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 font.weight: Font.Bold
-                width: parent.width / 3
             }
             RoundButton {
                 id: lastfmLink
@@ -132,8 +132,9 @@ AmarokQml.Applet {
                 property string url
                 anchors.left: parent.left
                 anchors.top: headerLabel.bottom
-                //icon.name: "lastfm"
-                icon.source: "images/lastfm.png" //FIXME
+                width: height * 2
+                icon.width: height * 1.75
+                icon.source: applet.imageUrl("lastfm.png")
                 radius: Kirigami.Units.smallSpacing
                 onClicked: if(url) { Qt.openUrlExternally(url) }
             }
@@ -142,22 +143,38 @@ AmarokQml.Applet {
                 anchors.top: lastfmLink.bottom
                 anchors.left: parent.left
             }
-            Image {
-                id: albumCover
+
+            Rectangle {
+                id: coverRect
+
+                visible: albumCover.status == Image.Ready
                 anchors.top: countLabel.bottom
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
-                fillMode: Image.PreserveAspectFit
+                width: albumCover.width + Kirigami.Units.smallSpacing
+                color: "white"
+                radius: Kirigami.Units.smallSpacing / 2
+                border.width: albumCoverMouse.containsMouse ? 3 : 1
+                border.color: albumCoverMouse.containsMouse ? Kirigami.Theme.highlightColor : applet.palette.light
+
+                Image {
+                    id: albumCover
+                    anchors.margins: parent.radius
+                    anchors.centerIn: parent
+                    height: parent.height - Kirigami.Units.smallSpacing
+                    fillMode: Image.PreserveAspectFit
+                }
                 MouseArea {
                     id: albumCoverMouse
                     anchors.fill: parent
+                    hoverEnabled: true
                     onClicked: SimilarArtistsEngine.navigateToArtist( headerLabel.text )
                 }
             }
 
             Flickable {
                 clip: true
-                anchors.left: albumCover.status == Image.Ready ? albumCover.right : headerLabel.right
+                width: parent.width - Math.max( coverRect.width, headerLabel.width, countLabel.width ) - Kirigami.Units.smallSpacing
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
