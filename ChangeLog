@@ -9,7 +9,7 @@ VERSION 3.0.81
    * Remember the previous destination provider when saving playlist (BR 216528)
 
   CHANGES:
-   * Amarok now depends on KDE Frameworks 5.84.
+   * Amarok now depends on KDE Frameworks 5.89.
    * Cleanup of unused code and various changes that improve Qt6 compatibility
      but shouldn't affect functionality.
    * Remove old derelict openDesktop.org integrations from about dialog. This also
