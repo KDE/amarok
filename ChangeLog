@@ -27,6 +27,7 @@ VERSION 3.0.81
    * Miscellaneous fixes to saving and loading various playlist file formats,
      resulting also in improved compatibility with other software
      (including BR 435779, BR 333745)
+   * Don't show false reordering visual hints on a sorted playlist (BR 254821)
 
 
 VERSION 3.0.1

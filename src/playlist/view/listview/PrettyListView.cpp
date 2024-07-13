@@ -468,24 +468,28 @@ Playlist::PrettyListView::dragEnterEvent( QDragEnterEvent *event )
         mime->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) ||
         mime->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
     {
-        event->acceptProposedAction();
+        if( !(ModelStack::instance()->sortProxy()->isSorted() && qobject_cast<PrettyListView*>( event->source() ) == this) )
+            event->acceptProposedAction();
     }
 }
 
 void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
-    QModelIndex index = indexAt( event->pos() );
-    if ( index.isValid() )
+    if( !(ModelStack::instance()->sortProxy()->isSorted() && qobject_cast<PrettyListView*>( event->source() ) == this) )
     {
-        m_dropIndicator = visualRect( index );
-    }
-    else
-    {
-        // draw it on the bottom of the last item
-        index = model()->index( model()->rowCount() - 1, 0, QModelIndex() );
-        m_dropIndicator = visualRect( index );
-        m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
+        QModelIndex index = indexAt( event->pos() );
+        if ( index.isValid() )
+        {
+            m_dropIndicator = visualRect( index );
+        }
+        else
+        {
+            // draw it on the bottom of the last item
+            index = model()->index( model()->rowCount() - 1, 0, QModelIndex() );
+            m_dropIndicator = visualRect( index );
+            m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
+        }
     }
     QListView::dragMoveEvent( event );
 }
