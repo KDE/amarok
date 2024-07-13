@@ -29,6 +29,8 @@ VERSION 3.0.81
      resulting also in improved compatibility with other software
      (including BR 435779, BR 333745)
    * Don't show false reordering visual hints on a sorted playlist (BR 254821)
+   * Fix multiple instances of web services appearing in Internet menu after saving
+     plugin config.
 
 
 VERSION 3.0.1

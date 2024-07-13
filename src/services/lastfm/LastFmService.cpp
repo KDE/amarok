@@ -59,6 +59,9 @@ LastFmServiceFactory::LastFmServiceFactory()
 void
 LastFmServiceFactory::init()
 {
+    if( m_initialized )
+        return;
+
     ServiceBase *service = new LastFmService( this, QStringLiteral("Last.fm") );
     m_initialized = true;
     Q_EMIT newService( service );

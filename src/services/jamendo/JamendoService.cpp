@@ -49,6 +49,9 @@ JamendoServiceFactory::JamendoServiceFactory()
 
 void JamendoServiceFactory::init()
 {
+    if( m_initialized )
+        return;
+
     ServiceBase* service = new JamendoService( this, "Jamendo.com" );
     m_initialized = true;
     emit newService( service );

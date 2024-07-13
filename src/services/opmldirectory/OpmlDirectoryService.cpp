@@ -47,6 +47,9 @@ OpmlDirectoryServiceFactory::~OpmlDirectoryServiceFactory()
 
 void OpmlDirectoryServiceFactory::init()
 {
+    if( m_initialized )
+        return;
+
     ServiceBase* service = new OpmlDirectoryService( this, QStringLiteral("OpmlDirectory"), i18n( "Podcast Directory" ) );
     m_initialized = true;
     Q_EMIT newService( service );

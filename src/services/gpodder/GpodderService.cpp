@@ -47,6 +47,9 @@ GpodderServiceFactory::~GpodderServiceFactory()
 void
 GpodderServiceFactory::init()
 {
+    if( m_initialized )
+        return;
+
     ServiceBase *service = createGpodderService();
     if( service )
     {

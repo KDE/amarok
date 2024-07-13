@@ -76,6 +76,7 @@ ServiceFactory::trackForUrl( const QUrl &url )
 void ServiceFactory::clearActiveServices()
 {
     m_activeServices.clear();
+    m_initialized = false;
 }
 
 void ServiceFactory::slotServiceReady()

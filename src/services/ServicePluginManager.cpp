@@ -81,6 +81,9 @@ ServicePluginManager::setFactories( const QList<QSharedPointer<Plugins::PluginFa
         for( ServiceBase * service : factory->activeServices() )
             ServiceBrowser::instance()->removeCategory( service );
         factory->clearActiveServices();
+
+        disconnect( factory.data(), &ServiceFactory::newService, this, &ServicePluginManager::slotNewService );
+        disconnect( factory.data(), &ServiceFactory::removeService, this, &ServicePluginManager::slotRemoveService );
     }
 
     // create new factories

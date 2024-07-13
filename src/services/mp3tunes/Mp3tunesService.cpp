@@ -41,6 +41,9 @@ Mp3tunesServiceFactory::Mp3tunesServiceFactory()
 void Mp3tunesServiceFactory::init()
 {
     DEBUG_BLOCK
+    if( m_initialized )
+        return;
+
     ServiceBase *service = createService();
     if( service )
     {
