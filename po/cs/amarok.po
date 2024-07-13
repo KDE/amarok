@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Lukáš Tinkl <ltinkl@redhat.com>, 2010, 2011.
-# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023 Vít Pelčák <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024 Vít Pelčák <vit@pelcak.org>
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012, 2013.
 # SPDX-FileCopyrightText: 2021, 2022, 2023, 2024 Vit Pelcak <vit@pelcak.org>
 #
@@ -12,15 +12,15 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-12 01:43+0000\n"
-"PO-Revision-Date: 2024-06-19 15:48+0200\n"
-"Last-Translator: Vit Pelcak <vpelcak@suse.cz>\n"
+"PO-Revision-Date: 2024-07-12 11:40+0200\n"
+"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 24.05.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1853,7 +1853,7 @@ msgstr ""
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Chyba klíče relace Last.fm"
 
 #: App.cpp:667
 #, kde-format
@@ -9898,15 +9898,7 @@ msgstr ""
 "(C) 2003-2024, skupina vývojářů Amaroku"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9917,7 +9909,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Zpětná vazba:\n"
 "amarok@kde.org\n"
@@ -13499,14 +13491,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Skript %1 již běží přes 5 sekund. Ukončit jej?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13514,8 +13499,8 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"Skript %1 používá zastaralá volání API. Prosím, kontaktujte autora skriptu, "
-"%2 na %3, a požádejte ho o aktualizaci před dalším vydáním Amaroku."
+"Skript %1 používá zastaralá volání API. Prosím, kontaktujte autory skriptu, "
+"%2, a požádejte je o aktualizaci před dalším vydáním Amaroku."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13969,9 +13954,7 @@ msgstr "Profil last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Uživatelské jméno:"
 
@@ -13979,34 +13962,28 @@ msgstr "Uživatelské jméno:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Selhání spojení"
+msgstr "Připojte svůj účet"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "Není třeba"
+msgstr "Nepřipojen"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
-"<a href=\"http://www.last.fm:80/signup.php\">Přihlásit se na Last.fm</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Přihlásit se na Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "O&dpojit zařízení"
+msgstr "Odpojit účet"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14202,12 +14179,12 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Chcete Amarok odpojit od účtu Last.fm '%1'?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:93
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Odpojit od účtu Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14218,17 +14195,16 @@ msgid "Failed"
 msgstr "Selhalo"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this artist"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Otevřít webové stránky Last.fm pro tohoto umělce"
+msgstr "Otevírám webovou stránku Last.fm"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Dokončit připojování účtu"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -15103,14 +15079,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Řídí automatickou synchronizaci služby MP3tunes v Amaroku."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15119,8 +15088,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"server: irc.libera.chat / kanály: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / kanál: #amarok\n"
 "\n"
 "Zpětná vazba:\n"
 "amarok@kde.org"
@@ -16455,27 +16423,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Either the username was not recognized, or the password was incorrect."
-#~ msgstr "Buď není v pořádku uživatelské jméno nebo je chybné heslo."
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "There was a problem communicating with the Last.fm services. Please try "
-#~ "again later."
-#~ msgstr ""
-#~ "Během komunikace se službami Last.fm nastal problém. Prosím, zkuste to "
-#~ "později znovu."
-
-#~ msgid "No running KWallet found."
-#~ msgstr "Nenalezen spuštěný KWallet."
-
-#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-#~ msgstr ""
-#~ "Přejete si, aby Amarok uložil vaše poslední přihlašovací údaje Last.fm "
-#~ "jako obyčejný text?"
-
-#~ msgid "Test Login"
-#~ msgstr "Vyzkoušet přihlášení"

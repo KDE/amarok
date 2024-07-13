@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-12 01:43+0000\n"
-"PO-Revision-Date: 2024-06-19 16:57+0200\n"
+"PO-Revision-Date: 2024-07-12 21:09+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
@@ -1835,12 +1835,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Ogiltig Last.fm sessionsnyckel. Anslut igen till Last.fm kontot i "
+"insticksprogrammets inställningar."
 
 #: App.cpp:606
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Felaktig Last.fm sessionsnyckel"
 
 #: App.cpp:667
 #, kde-format
@@ -5376,7 +5378,7 @@ msgstr[1] "Tar bort spår från enhet"
 #: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, kde-format
 msgid "&Disconnect Device"
-msgstr "&Koppla ner enhet"
+msgstr "&Koppla bort enhet"
 
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:41
 #, kde-format
@@ -9810,15 +9812,7 @@ msgstr ""
 "© 2003-2024, Amarok-utvecklingspatrullen"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9829,9 +9823,9 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
-"Återmatning:\n"
+"Återkoppling:\n"
 "amarok@kde.org \n"
 "\n"
 "(Byggdatum: %1)"
@@ -13413,14 +13407,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Skriptet %1 har kört mer än 5 sekunder nu. Avsluta det?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13429,8 +13416,8 @@ msgid ""
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "Skriptet %1 använder programmeringsgränssnitt som avråds från. Kontakta "
-"gärna skriptets upphovsman. %2 på %3, och be honom uppgradera det innan "
-"nästa utgåva av Amarok."
+"gärna skriptets upphovsmän. %2, och be dem uppgradera det innan nästa utgåva "
+"av Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13878,9 +13865,7 @@ msgstr "Profil hos Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Användarnamn:"
 
@@ -13888,34 +13873,28 @@ msgstr "Användarnamn:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Anslutning misslyckades"
+msgstr "Anslut till konto"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "Behövs inte"
+msgstr "Inte ansluten"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
-"<a href=\"http://www.last.fm:80/signup.php\">Anmäl dig till Last.fm</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Anmäl dig till Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Koppla ner enhet"
+msgstr "Koppla bort konto"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14108,16 +14087,18 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Fel vid konvertering av Last.fm användarnamn från plånboken. Anslut Last.fm "
+"kontot igen i insticksprogrammets inställningar."
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Vill du koppla bort Amarok från Last.fm kontot %1?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:93
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Koppla bort Last.fm konto?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14128,17 +14109,16 @@ msgid "Failed"
 msgstr "Misslyckades"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Öppna webbsida på Last.fm för evenemanget"
+msgstr "Öppnar webbsida på Last.fm"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Slutför anslutning till konto"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14147,6 +14127,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Anslutning till Last.fm konto misslyckades. Säkerställ att Amarok har "
+"behörighet att ansluta till Last.fm kontot på Last.fm webbsida som öppnades "
+"och försök igen."
 
 #: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
@@ -15012,14 +14995,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Hanterar automatisk synkronisering för MP3Tunes-tjänsten i Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15028,10 +15004,9 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"server: irc.libera.chat / kanaler: #amarok #amarok.de #amarok.es, #amarok."
-"fr\n"
+"server: irc.libera.chat / kanal: #amarok.fr\n"
 "\n"
-"Åsikter:\n"
+"Återkoppling:\n"
 "amarok@kde.org"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:41
@@ -15178,7 +15153,7 @@ msgstr "MP3Tunes behörighetskontroll misslyckades."
 #: services/mp3tunes/Mp3tunesService.cpp:296
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
-msgstr "MP3Tunes Harmony: Nerkopplad"
+msgstr "MP3Tunes Harmony: Bortkopplad"
 
 #: services/mp3tunes/Mp3tunesService.cpp:303
 #: services/mp3tunes/Mp3tunesService.cpp:316

@@ -9471,15 +9471,7 @@ msgid ""
 msgstr ""
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9489,13 +9481,6 @@ msgid ""
 "\n"
 "(Build Date: %1)"
 msgstr ""
-"IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-"\n"
-"反馈:\n"
-"amarok@kde.org\n"
-"\n"
-"(构建日期：%1)"
 
 #: main.cpp:111
 #, kde-format
@@ -12986,14 +12971,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "脚本 %1 的运行时间已超过了 5 秒，要停止运行吗？"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13001,8 +12979,6 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"脚本 %1 调用了已废弃的脚本 API。请联系脚本作者 %2 的邮箱 %3，并请他在新版 "
-"Amarok 发布前更新脚本。"
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13431,43 +13407,36 @@ msgstr "Last.fm 配置文件"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
-msgstr "用户名："
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "连接失败"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "不需要"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">注册 Last.fm</a>"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "断开与此设备的连接(&D)"
+msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13670,11 +13639,10 @@ msgid "Failed"
 msgstr "失败"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this artist"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "打开此艺人的 Last.fm 页面"
+msgstr ""
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
@@ -14524,14 +14492,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "处理 Amarok 内 MP3tunes 服务的自动同步。"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -14539,11 +14500,6 @@ msgid ""
 "Feedback:\n"
 "amarok@kde.org"
 msgstr ""
-"IRC:\n"
-"服务器：irc.libera.chat，频道：#amarok、#amarok-de、#amarok-es、#amarok-fr\n"
-"\n"
-"反馈：\n"
-"amarok@kde.org"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:41
 #, kde-format
@@ -15792,23 +15748,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Either the username was not recognized, or the password was incorrect."
-#~ msgstr "无法识别您输入的用户名，或您输入的密码有误。"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "There was a problem communicating with the Last.fm services. Please try "
-#~ "again later."
-#~ msgstr "与 Last.fm 服务通讯时发生问题，请稍后重试。"
-
-#~ msgid "No running KWallet found."
-#~ msgstr "KWallet 未运行。"
-
-#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-#~ msgstr "您要将 gpodder.net 登录信息以纯文本的方式保存吗？"
-
-#~ msgid "Test Login"
-#~ msgstr "登录测试"

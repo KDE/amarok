@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-12 01:43+0000\n"
-"PO-Revision-Date: 2024-07-10 00:41+0300\n"
+"PO-Revision-Date: 2024-07-12 13:04+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -1876,12 +1876,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Geçersiz Last.fm oturum anahtarı. Eklenti Ayarları bölümünden Last.fm "
+"hesabınızı yeniden bağlayın."
 
 #: App.cpp:606
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Last.fm Oturum Anahtarı Hatası"
 
 #: App.cpp:667
 #, kde-format
@@ -9861,15 +9863,7 @@ msgstr ""
 "(C) 2003–2024, Amarok Geliştirme Takımı"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9880,7 +9874,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat — #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat — #amarok\n"
 "\n"
 "Geri bildirim:\n"
 "amarok@kde.org\n"
@@ -13466,14 +13460,7 @@ msgstr ""
 "%1 betiği, 5 saniyeden fazladır çalışıyor, sonlandırmak istiyor musunuz?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13481,9 +13468,9 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"%1 betiği, kullanımdan kaldırılmış betik yazımı API çağrılarını kullanıyor. "
-"Lütfen %2, %3 adresindeki betik yazarıyla iletişime geçin ve bir sonraki "
-"Amarok sürümünden önce onu yükseltmesini isteyin."
+"%1 betiği, kullanımdan kaldırılmış betik API’si çağrılarını kullanıyor. "
+"Lütfen betik yazarları (%2) ile iletişime geçin ve bir sonraki Amarok "
+"sürümünden önce güncellemelerini isteyin."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13930,9 +13917,7 @@ msgstr "Last.fm Profili"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
@@ -13940,33 +13925,28 @@ msgstr "Kullanıcı adı:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Bağlantı hatası"
+msgstr "Hesaba Bağlan"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "Gerekmiyor"
+msgstr "Bağlı değil"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">Last.fm’e Kaydol</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Last.fm’e Kaydol</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "Aygıtın Bağlantısını &Kes"
+msgstr "Hesap Bağlantısını Kes"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14158,16 +14138,18 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"K Cüzdan’dan Last.fm kullanıcı adı aktarılamadı. Eklenti Ayarları bölümünden "
+"Last.fm hesabınızı yeniden bağlayın."
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Amarok’u %1 Last.fm hesabınızdan çıkarmak istiyor musunuz?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:93
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Last.fm Hesabını Kaldır?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14178,17 +14160,16 @@ msgid "Failed"
 msgstr "Başarısız"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Bu etkinlik için olan Last.fm web sayfasını aç"
+msgstr "Last.fm web sayfası açılıyor…"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Hesabı Bağlamayı Bitir"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14197,6 +14178,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Last.fm hesap bağlantısı yapılamadı. Açılan Last.fm web sayfasında Amarok’un "
+"Last.fm hesabınıza bağlanmasına izin verdiğinizden emin olun ve yeniden "
+"deneyin."
 
 #: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
@@ -15059,14 +15043,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Amarok’taki MP3tunes hizmeti için AutoSync’i idare eder."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15075,8 +15052,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"Sunucu: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"Sunucu: irc.libera.chat, kanal: #amarok\n"
 "\n"
 "Geri bildirim:\n"
 "amarok@kde.org"
