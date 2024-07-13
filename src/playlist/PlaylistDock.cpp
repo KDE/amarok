@@ -298,16 +298,36 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     if( action == nullptr )
         return;
 
+    KConfigGroup config = Amarok::config( QStringLiteral("Playlist Saving") );
+
     QPointer<Playlists::UserPlaylistProvider> pointer =
         action->data().value< QPointer<Playlists::UserPlaylistProvider> >();
-    if ( !pointer ) // Probably default save was called, so pick the first saveAction (database)
-        pointer = m_saveActions->actions().first()->data()
-            .value< QPointer<Playlists::UserPlaylistProvider> >();
+    if ( !pointer )
+    {
+        // Probably default save was called, so pick the previously used,
+        // or if none known, first saveAction (database)
+        QString lastSaved = config.readEntry( "LastDestinationProvider", QString() );
+        if( lastSaved != QString() )
+        {
+            for( const auto &p : m_saveActions->actions() )
+            {
+                if( p->data().value< QPointer<Playlists::UserPlaylistProvider> >()->prettyName() == lastSaved )
+                {
+                    pointer = p->data().value< QPointer<Playlists::UserPlaylistProvider> >();
+                    break;
+                }
+            }
+        }
+        if( !pointer )
+            pointer = m_saveActions->actions().first()->data()
+                .value< QPointer<Playlists::UserPlaylistProvider> >();
+    }
     if ( pointer ) {
         Playlists::UserPlaylistProvider* provider = pointer.data();
 
         const Meta::TrackList tracks = The::playlist()->tracks();
         The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );
+        config.writeEntry( "LastDestinationProvider", provider->prettyName() );
     }
 }
 
