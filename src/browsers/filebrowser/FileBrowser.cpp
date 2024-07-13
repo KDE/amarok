@@ -442,7 +442,9 @@ FileBrowser::setupAddItems()
         callback = placesIndex.data( KFilePlacesModel::UrlRole ).toString();
 
         QUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
-        currPlaceUrl.setPath( QDir::toNativeSeparators(currPlaceUrl.path() + QLatin1Char('/')) );
+        // if path is root (/), it already ends with a /, adding an extra slash causes miscellaneous off-by-one bugs in UI
+        if( currPlaceUrl.path().length() && currPlaceUrl.path()[ currPlaceUrl.path().length() - 1 ] != QLatin1Char('/') )
+            currPlaceUrl.setPath( QDir::toNativeSeparators(currPlaceUrl.path() + QLatin1Char('/')) );
         currentPosition = currPlaceUrl.toString().length();
     }
     else
