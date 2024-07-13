@@ -34,9 +34,9 @@ ConfigureProviderDialog::ConfigureProviderDialog( const QString &providerId,
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     setWindowTitle( i18n( "Configure Synchronization Target" ) );
     setModal( true );
-    buttonBox()->button(QDialogButtonBox::Help)->setVisible(false);
 
     mainWidget = configWidget;
+    addPage(mainWidget, i18n("Settings") );
 
     connect( this, &ConfigureProviderDialog::accepted, this, &ConfigureProviderDialog::slotAccepted );
 }
