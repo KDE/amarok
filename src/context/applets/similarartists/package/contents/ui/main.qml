@@ -33,6 +33,7 @@ AmarokQml.Applet {
 
         ColumnLayout {
             Layout.margins: applet.spacing
+            Layout.maximumWidth: Math.min(parent.width / 2, 300)
 
             Label {
                 id: artistLabel
@@ -47,11 +48,10 @@ AmarokQml.Applet {
                 interactive: false
                 contentHeight: height
                 boundsBehavior: Flickable.StopAtBounds
-                width: Math.max(applet.height, 300)
+                width: parent.width
                 delegate: Rectangle {
                     height: ( applet.height - artistLabel.height - Kirigami.Units.smallSpacing ) / ( SimilarArtistsEngine.maximumArtists + 1 )
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    width: applet.width - Kirigami.Units.smallSpacing * 4 - ( currentlyHighlighted && currentlyHighlighted.visible ? currentlyHighlighted.width : 0 )
                     color: palette.window
                     MouseArea {
                         height: parent.height
@@ -68,6 +68,11 @@ AmarokQml.Applet {
 
                         onClicked:
                         {
+                            if( currentlyHighlighted.header == name )
+                            {
+                                currentlyHighlighted.header = ""
+                                return
+                            }
                             currentlyHighlighted.header = name;
                             currentlyHighlighted.lastfmLink = link;
                             currentlyHighlighted.cover = Qt.binding(function() { return albumcover });
@@ -144,7 +149,7 @@ AmarokQml.Applet {
                 anchors.left: parent.left
             }
 
-            Rectangle {
+            Item {
                 id: coverRect
 
                 visible: albumCover.status == Image.Ready
@@ -152,23 +157,29 @@ AmarokQml.Applet {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 width: albumCover.width + Kirigami.Units.smallSpacing
-                color: "white"
-                radius: Kirigami.Units.smallSpacing / 2
-                border.width: albumCoverMouse.containsMouse ? 3 : 1
-                border.color: albumCoverMouse.containsMouse ? Kirigami.Theme.highlightColor : applet.palette.light
 
+                Rectangle {
+                    id: albumCoverBg
+                    width: parent.width
+                    height: albumCover.paintedHeight + Kirigami.Units.smallSpacing
+                    anchors.centerIn: parent
+                    color: "white"
+                    radius: Kirigami.Units.smallSpacing / 2
+                    border.width: albumCoverMouse.containsMouse ? 3 : 1
+                    border.color: albumCoverMouse.containsMouse ? Kirigami.Theme.highlightColor : applet.palette.light
+                    MouseArea {
+                        id: albumCoverMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: SimilarArtistsEngine.navigateToArtist( headerLabel.text )
+                    }
+                }
                 Image {
                     id: albumCover
-                    anchors.margins: parent.radius
+                    anchors.margins: albumCoverBg.radius
                     anchors.centerIn: parent
                     height: parent.height - Kirigami.Units.smallSpacing
                     fillMode: Image.PreserveAspectFit
-                }
-                MouseArea {
-                    id: albumCoverMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: SimilarArtistsEngine.navigateToArtist( headerLabel.text )
                 }
             }
 
@@ -182,8 +193,7 @@ AmarokQml.Applet {
                 contentHeight: bioText.height
                 Label {
                     id: bioText
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    width: parent.width
                     wrapMode: Text.Wrap
                     onLinkActivated: Qt.openUrlExternally(link)
                 }
