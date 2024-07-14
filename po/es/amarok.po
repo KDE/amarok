@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-12 01:43+0000\n"
-"PO-Revision-Date: 2024-06-19 16:42+0200\n"
+"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"PO-Revision-Date: 2024-07-13 03:44+0200\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 24.05.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1879,12 +1879,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Clave de sesión de Last.fm no válida. Vuelva a conectar su cuenta de Last.fm "
+"en las preferencias del complemento."
 
 #: App.cpp:606
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Error de clave de sesión de Last.fm"
 
 #: App.cpp:667
 #, kde-format
@@ -2011,8 +2013,8 @@ msgid "Merged View"
 msgstr "Vista mezclada"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:275
-#: services/jamendo/JamendoService.cpp:159
-#: services/magnatune/MagnatuneStore.cpp:228
+#: services/jamendo/JamendoService.cpp:162
+#: services/magnatune/MagnatuneStore.cpp:231
 #, kde-format
 msgid "Sort Options"
 msgstr "Opciones de ordenación"
@@ -2062,7 +2064,7 @@ msgstr "Varios artistas"
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
 #: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
-#: services/magnatune/MagnatuneStore.cpp:219
+#: services/magnatune/MagnatuneStore.cpp:222
 #, kde-format
 msgid "Album"
 msgstr "Álbum"
@@ -4006,6 +4008,7 @@ msgstr "Volver a cargar"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
 msgstr "Preferencias"
@@ -4451,8 +4454,8 @@ msgstr "Volver a cargar tablaturas con el siguiente título y artista"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:392
-#: services/magnatune/MagnatuneStore.cpp:213
+#: services/lastfm/LastFmService.cpp:395
+#: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
 msgstr "Artista"
@@ -9915,15 +9918,7 @@ msgstr ""
 "© 2003-2024, la brigada de desarrollo de Amarok"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9934,12 +9929,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Comentarios y sugerencias:\n"
 "amarok@kde.org\n"
 "\n"
-"(Fecha de generación: %1)"
+"(Fecha de compilación: %1)"
 
 #: main.cpp:111
 #, kde-format
@@ -11543,7 +11538,7 @@ msgstr "Mostrar controles de reproducción en línea"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
-#: services/ServiceBase.cpp:162
+#: services/ServiceBase.cpp:163
 #, kde-format
 msgid "Group By"
 msgstr "Agrupar por"
@@ -12007,12 +12002,12 @@ msgstr "Pistas eliminadas"
 msgid "Tracks moved"
 msgstr "Pistas movidas"
 
-#: playlist/view/listview/PrettyListView.cpp:688
+#: playlist/view/listview/PrettyListView.cpp:692
 #, kde-format
 msgid "Tracks have been hidden due to the active search."
 msgstr "Algunas pistas se han escondido debido a la búsqueda activa."
 
-#: playlist/view/listview/PrettyListView.cpp:690
+#: playlist/view/listview/PrettyListView.cpp:694
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
@@ -13535,14 +13530,7 @@ msgstr ""
 "El guion %1 ha estado calculando durante más de 5 segundos, ¿finalizar?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13550,9 +13538,9 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"El guion %1 usa llamadas de API obsoletas. Póngase en contacto con el autor "
-"del guion, %2 en %3, y pídale que lo actualice antes de la próxima versión "
-"de Amarok."
+"El guion %1 usa llamadas de API obsoletas. Póngase en contacto con los "
+"autores del guion, %2, y pídales que lo actualicen antes de la próxima "
+"versión de Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13609,12 +13597,12 @@ msgstr "Eliminar servidor"
 msgid "Server Address"
 msgstr "Dirección del servidor"
 
-#: services/ampache/AmpacheService.cpp:91
+#: services/ampache/AmpacheService.cpp:94
 #, kde-format
 msgid "Amarok frontend for your Ampache server"
 msgstr "Interfaz de Amarok para el servidor Ampache"
 
-#: services/ampache/AmpacheService.cpp:93
+#: services/ampache/AmpacheService.cpp:96
 #, kde-format
 msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
@@ -13725,19 +13713,19 @@ msgstr ""
 "El servicio GPodder falló al obtener datos del servidor. Lo reintentará en "
 "10 segundos..."
 
-#: services/gpodder/GpodderService.cpp:113
+#: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
 msgstr "gpodder.net: servicio de directorio de podcast"
 
-#: services/gpodder/GpodderService.cpp:116
+#: services/gpodder/GpodderService.cpp:119
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr ""
 "gpodder.net: servicio de directorio y sincronización de podcast en línea."
 
-#: services/gpodder/GpodderService.cpp:222
-#: services/opmldirectory/OpmlDirectoryService.cpp:127
+#: services/gpodder/GpodderService.cpp:225
+#: services/opmldirectory/OpmlDirectoryService.cpp:130
 #, kde-format
 msgid "Subscribe"
 msgstr "Suscribir"
@@ -13830,12 +13818,12 @@ msgstr "De Jamendo.com"
 msgid "A site where artists can freely share their music"
 msgstr "Un sitio donde los artistas pueden compartir su música libremente"
 
-#: services/jamendo/JamendoService.cpp:74
+#: services/jamendo/JamendoService.cpp:77
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
 msgstr "Un archivo de música con licencia libre Creative Commons"
 
-#: services/jamendo/JamendoService.cpp:77
+#: services/jamendo/JamendoService.cpp:80
 #, kde-format
 msgid ""
 "Jamendo.com puts artists and music lovers in touch with each other. The site "
@@ -13848,14 +13836,14 @@ msgstr ""
 "mundo y a los usuarios descargarlos gratuitamente. Escuche y descargue los "
 "contenidos de Jamendo.com desde Amarok."
 
-#: services/jamendo/JamendoService.cpp:118
+#: services/jamendo/JamendoService.cpp:121
 #, kde-format
 msgctxt "Fetch new information from the website"
 msgid "Update"
 msgstr "Actualizar"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: services/jamendo/JamendoService.cpp:124
+#: services/jamendo/JamendoService.cpp:127
 #: services/magnatune/MagnatuneConfigWidget.ui:121
 #, kde-format
 msgid "Download"
@@ -13869,24 +13857,24 @@ msgstr "Descargar"
 #.
 #. action = filterMenu->addAction( i18n( "Album" ) );
 #. connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
-#: services/jamendo/JamendoService.cpp:153
-#: services/magnatune/MagnatuneStore.cpp:222
+#: services/jamendo/JamendoService.cpp:156
+#: services/magnatune/MagnatuneStore.cpp:225
 #, kde-format
 msgid "Genre / Artist"
 msgstr "Género / Artista"
 
-#: services/jamendo/JamendoService.cpp:156
-#: services/magnatune/MagnatuneStore.cpp:225
+#: services/jamendo/JamendoService.cpp:159
+#: services/magnatune/MagnatuneStore.cpp:228
 #, kde-format
 msgid "Genre / Artist / Album"
 msgstr "Género / Artista / Álbum"
 
-#: services/jamendo/JamendoService.cpp:191
+#: services/jamendo/JamendoService.cpp:194
 #, kde-format
 msgid "Downloading Jamendo.com database..."
 msgstr "Descargando base de datos de Jamendo.com..."
 
-#: services/jamendo/JamendoService.cpp:213
+#: services/jamendo/JamendoService.cpp:216
 #, kde-format
 msgid "Updating the local Jamendo database."
 msgstr "Actualizando la base de datos local de Jamendo."
@@ -14007,9 +13995,7 @@ msgstr "Perfil de Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Usuario:"
 
@@ -14017,34 +14003,28 @@ msgstr "Usuario:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Fallo de conexión"
+msgstr "Conectarse a la cuenta"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "No necesitado"
+msgstr "No conectado"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
-"<a href=\"http://www.last.fm:80/signup.php\">Inscribirse en Last.fm</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Registrarse en Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Desconectar dispositivo"
+msgstr "Desconectar cuenta"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14131,12 +14111,12 @@ msgstr ""
 "<html>Seleccionar una etiqueta preferida (o escribir una nueva). Las pistas "
 "con esta etiqueta no se emparejarán</html>"
 
-#: services/lastfm/LastFmService.cpp:97
+#: services/lastfm/LastFmService.cpp:100
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: La revolución de la música social"
 
-#: services/lastfm/LastFmService.cpp:99
+#: services/lastfm/LastFmService.cpp:102
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -14153,54 +14133,54 @@ msgstr ""
 "artista determinado, así como escuchar flujos de gente a la que ha añadido "
 "como amigo."
 
-#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Encantar"
 
-#: services/lastfm/LastFmService.cpp:128
+#: services/lastfm/LastFmService.cpp:131
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:319
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Introduzca el nombre de un artista"
 
-#: services/lastfm/LastFmService.cpp:322
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a tag"
 msgstr "Introduzca una etiqueta"
 
-#: services/lastfm/LastFmService.cpp:325
+#: services/lastfm/LastFmService.cpp:328
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "Introduzca un usuario de Last.fm"
 
-#: services/lastfm/LastFmService.cpp:338
+#: services/lastfm/LastFmService.cpp:341
 #, kde-format
 msgid "Username: %1"
 msgstr "Usuario: %1"
 
-#: services/lastfm/LastFmService.cpp:343
+#: services/lastfm/LastFmService.cpp:346
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "Número de reproducciones: %1 reproducción"
 msgstr[1] "Número de reproducciones: %1 reproducciones"
 
-#: services/lastfm/LastFmService.cpp:389
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Crear una estación personalizada de Last.fm"
 
-#: services/lastfm/LastFmService.cpp:392
+#: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: services/lastfm/LastFmService.cpp:392
+#: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "User"
 msgstr "Usuario"
@@ -14236,16 +14216,18 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Ha ocurrido un error al migrar el usuario de Last.fm de KWallet. Vuelva a "
+"conectar su cuenta de Last.fm en las preferencias del complemento."
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "¿Desea desconectar Amarok de la cuenta %1 de Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:93
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "¿Desconectar cuenta de Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14253,20 +14235,19 @@ msgstr ""
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
-msgstr "Falló"
+msgstr "Ha fallado"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Abrir la página web de Last.fm para este evento"
+msgstr "Abriendo la página web de Last.fm"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Terminando conexión a la cuenta"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14275,6 +14256,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"La conexión con la cuenta de Last.fm no ha tenido éxito. Asegúrese de que ha "
+"autorizado a Amarok para conectarse a su cuenta de Last.fm en la página web "
+"de Last.fm que estaba abierta y vuelva a probar."
 
 #: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
@@ -14983,12 +14967,12 @@ msgstr ""
 msgid "Close"
 msgstr "Cerrar"
 
-#: services/magnatune/MagnatuneStore.cpp:102
+#: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
 msgid "\"Fair trade\" online music store"
 msgstr "Tienda de música en línea «Juego limpio»"
 
-#: services/magnatune/MagnatuneStore.cpp:106
+#: services/magnatune/MagnatuneStore.cpp:109
 #, no-c-format, kde-format
 msgid ""
 "Magnatune.com is a different kind of record company with the motto \"We are "
@@ -15003,47 +14987,47 @@ msgstr ""
 "com también proporciona el tipo de miembro «todo lo que pueda comer» que le "
 "permite descargar toda la música que quiera."
 
-#: services/magnatune/MagnatuneStore.cpp:216
+#: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
 msgid "Artist / Album"
 msgstr "Artista / Álbum"
 
-#: services/magnatune/MagnatuneStore.cpp:240
+#: services/magnatune/MagnatuneStore.cpp:243
 #, kde-format
 msgid "Re-download"
 msgstr "Volver a descargar"
 
-#: services/magnatune/MagnatuneStore.cpp:243
+#: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Update Database"
 msgstr "Actualizar base de datos"
 
-#: services/magnatune/MagnatuneStore.cpp:246
+#: services/magnatune/MagnatuneStore.cpp:249
 #, kde-format
 msgid "Tools"
 msgstr "Herramientas"
 
-#: services/magnatune/MagnatuneStore.cpp:267
+#: services/magnatune/MagnatuneStore.cpp:270
 #, kde-format
 msgid "Download Album"
 msgstr "Descargar álbum"
 
-#: services/magnatune/MagnatuneStore.cpp:274
+#: services/magnatune/MagnatuneStore.cpp:277
 #, kde-format
 msgid "Signup"
 msgstr "Registro"
 
-#: services/magnatune/MagnatuneStore.cpp:325
+#: services/magnatune/MagnatuneStore.cpp:328
 #, kde-format
 msgid "Downloading Magnatune.com database..."
 msgstr "Descargando base de datos de Magnatune.com..."
 
-#: services/magnatune/MagnatuneStore.cpp:354
+#: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
 msgid "Updating the local Magnatune database."
 msgstr "Actualizando la base de datos local de Magnatune."
 
-#: services/magnatune/MagnatuneStore.cpp:617
+#: services/magnatune/MagnatuneStore.cpp:620
 #, c-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
@@ -15058,27 +15042,27 @@ msgstr ""
 "estado de ánimo especificado a la lista de reproducción. El argumento ánimo "
 "debe tener los espacios separados por %%20"
 
-#: services/magnatune/MagnatuneStore.cpp:628
+#: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
 msgid "ERROR: No arguments supplied"
 msgstr "ERROR: No se suministraron argumentos"
 
-#: services/magnatune/MagnatuneStore.cpp:633
+#: services/magnatune/MagnatuneStore.cpp:636
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
 msgstr "ERROR: Número de argumentos para addMoodyTracks incorrectos"
 
-#: services/magnatune/MagnatuneStore.cpp:643
+#: services/magnatune/MagnatuneStore.cpp:646
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
 msgstr "ERROR: Error de análisis en el argumento 2 ( cantidad )"
 
-#: services/magnatune/MagnatuneStore.cpp:647
+#: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
 msgid "ok"
 msgstr "aceptar"
 
-#: services/magnatune/MagnatuneStore.cpp:650
+#: services/magnatune/MagnatuneStore.cpp:653
 #, kde-format
 msgid "ERROR: Unknown argument."
 msgstr "ERROR: Argumento desconocido."
@@ -15142,14 +15126,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Manipula la auto sincronización para el servicio MP3tunes en Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15158,8 +15135,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"servidor: irc.libera.chat / canales: #amarok, #amarok-de, #amarok-es, "
-"#amarok-fr\n"
+"servidor: irc.libera.chat / canal: #amarok\n"
 "\n"
 "Comentarios y sugerencias:\n"
 "amarok@kde.org"
@@ -15279,48 +15255,48 @@ msgid ""
 msgstr ""
 "Casillero de música en línea donde puede almacenar y acceder a su música"
 
-#: services/mp3tunes/Mp3tunesService.cpp:105
+#: services/mp3tunes/Mp3tunesService.cpp:108
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "MP3tunes Locker: ¡Su música en cualquier lugar!"
 
-#: services/mp3tunes/Mp3tunesService.cpp:218
+#: services/mp3tunes/Mp3tunesService.cpp:221
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "Autosincronización de MP3tunes activada"
 
-#: services/mp3tunes/Mp3tunesService.cpp:234
+#: services/mp3tunes/Mp3tunesService.cpp:237
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "Autosincronización de MP3tunes desactivada"
 
-#: services/mp3tunes/Mp3tunesService.cpp:254
+#: services/mp3tunes/Mp3tunesService.cpp:257
 #, kde-format
 msgid "Authenticating"
 msgstr "Autenticando"
 
-#: services/mp3tunes/Mp3tunesService.cpp:266
+#: services/mp3tunes/Mp3tunesService.cpp:269
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
 msgstr "MP3tunes falló al autenticarse."
 
-#: services/mp3tunes/Mp3tunesService.cpp:296
+#: services/mp3tunes/Mp3tunesService.cpp:299
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "Harmony de MP3tunes desconectado"
 
-#: services/mp3tunes/Mp3tunesService.cpp:303
-#: services/mp3tunes/Mp3tunesService.cpp:316
+#: services/mp3tunes/Mp3tunesService.cpp:306
+#: services/mp3tunes/Mp3tunesService.cpp:319
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "Harmony de MP3tunes: esperando entrada del código de acceso"
 
-#: services/mp3tunes/Mp3tunesService.cpp:328
+#: services/mp3tunes/Mp3tunesService.cpp:331
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "Harmony de MP3tunes: Conectado correctamente"
 
-#: services/mp3tunes/Mp3tunesService.cpp:343
+#: services/mp3tunes/Mp3tunesService.cpp:346
 #, kde-format
 msgid ""
 "MP3tunes Harmony Error\n"
@@ -15377,7 +15353,7 @@ msgid "Fetching Podcast Info"
 msgstr "Obteniendo información del podcast"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
-#: services/opmldirectory/OpmlDirectoryService.cpp:136
+#: services/opmldirectory/OpmlDirectoryService.cpp:139
 #, kde-format
 msgid "Add OPML"
 msgstr "Añadir OPML"
@@ -15393,17 +15369,17 @@ msgstr "Añadir OPML"
 msgid "New Folder"
 msgstr "Nueva carpeta"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:50
+#: services/opmldirectory/OpmlDirectoryService.cpp:53
 #, kde-format
 msgid "Podcast Directory"
 msgstr "Directorio de podcast"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:70
+#: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
 msgid "A large listing of podcasts"
 msgstr "Un gran listado de podcast"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:73
+#: services/opmldirectory/OpmlDirectoryService.cpp:76
 #, kde-format
 msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
@@ -15412,7 +15388,7 @@ msgstr ""
 "Una lista completa de búsqueda de podcast a la que puede suscribirse "
 "directamente desde Amarok."
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:160
+#: services/opmldirectory/OpmlDirectoryService.cpp:163
 #, kde-format
 msgid "Add an OPML file to the list."
 msgstr "Añadir un archivo OPML a la lista."
@@ -15425,12 +15401,12 @@ msgstr "Añadir un archivo OPML a la lista."
 msgid "Loading info..."
 msgstr "Cargando información..."
 
-#: services/ServiceBase.cpp:336
+#: services/ServiceBase.cpp:337
 #, kde-format
 msgid "This service does not accept any messages"
 msgstr "Este servicio no acepta mensajes"
 
-#: services/ServiceBase.cpp:343
+#: services/ServiceBase.cpp:344
 #, kde-format
 msgid "ERROR: unknown message"
 msgstr "ERROR: mensaje desconocido"
@@ -15440,8 +15416,8 @@ msgstr "ERROR: mensaje desconocido"
 msgid "Neither playable nor downloadable url specified."
 msgstr "No se especificó un url reproducible o descargable."
 
-#: services/ServicePluginManager.cpp:144 services/ServicePluginManager.cpp:161
-#: services/ServicePluginManager.cpp:178
+#: services/ServicePluginManager.cpp:147 services/ServicePluginManager.cpp:164
+#: services/ServicePluginManager.cpp:181
 #, kde-format
 msgid "No service named %1 is currently loaded"
 msgstr "El servicio %1 no está cargado en la actualidad"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-12 01:43+0000\n"
+"POT-Creation-Date: 2024-07-14 01:42+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -1994,8 +1994,8 @@ msgid "Merged View"
 msgstr "ผนวกมุมมอง"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:275
-#: services/jamendo/JamendoService.cpp:159
-#: services/magnatune/MagnatuneStore.cpp:228
+#: services/jamendo/JamendoService.cpp:162
+#: services/magnatune/MagnatuneStore.cpp:231
 #, kde-format
 msgid "Sort Options"
 msgstr "ตัวเลือกการเรียงลำดับ"
@@ -2046,7 +2046,7 @@ msgstr "หลากหลายศิลปิน"
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
 #: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
-#: services/magnatune/MagnatuneStore.cpp:219
+#: services/magnatune/MagnatuneStore.cpp:222
 #, kde-format
 msgid "Album"
 msgstr "อัลบั้ม"
@@ -4034,6 +4034,7 @@ msgstr "โหลดใหม่อีกครั้ง"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
 msgstr "ตั้งค่าต่าง ๆ"
@@ -4519,8 +4520,8 @@ msgstr ""
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:392
-#: services/magnatune/MagnatuneStore.cpp:213
+#: services/lastfm/LastFmService.cpp:395
+#: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
 msgstr "ศิลปิน"
@@ -11679,7 +11680,7 @@ msgstr "แสดงส่วนควบคุมการเล่นไว้
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
-#: services/ServiceBase.cpp:162
+#: services/ServiceBase.cpp:163
 #, kde-format
 msgid "Group By"
 msgstr "จัดกลุ่มตาม"
@@ -12159,13 +12160,13 @@ msgstr "แทร็กเสียงถูกเอาออก"
 msgid "Tracks moved"
 msgstr "แทร็กเสียงถูกย้าย"
 
-#: playlist/view/listview/PrettyListView.cpp:688
+#: playlist/view/listview/PrettyListView.cpp:692
 #, fuzzy, kde-format
 #| msgid "Warning: tracks have been hidden in the playlist"
 msgid "Tracks have been hidden due to the active search."
 msgstr "แจ้งเตือน: แทร็กต่าง ๆ ได้ถูกซ่อนไว้ในรายการเล่น"
 
-#: playlist/view/listview/PrettyListView.cpp:690
+#: playlist/view/listview/PrettyListView.cpp:694
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
@@ -13755,13 +13756,13 @@ msgstr "เอาแอพเพล็ตออก"
 msgid "Server Address"
 msgstr "รหัสผ่านของแม่ข่าย"
 
-#: services/ampache/AmpacheService.cpp:91
+#: services/ampache/AmpacheService.cpp:94
 #, fuzzy, kde-format
 #| msgid "Amarok frontend for your Ampache server."
 msgid "Amarok frontend for your Ampache server"
 msgstr "แอมอะร็อก เครื่องเล่นสื่อของบริการ Ampache ของคุณ"
 
-#: services/ampache/AmpacheService.cpp:93
+#: services/ampache/AmpacheService.cpp:96
 #, kde-format
 msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
@@ -13863,19 +13864,19 @@ msgid ""
 "seconds..."
 msgstr ""
 
-#: services/gpodder/GpodderService.cpp:113
+#: services/gpodder/GpodderService.cpp:116
 #, fuzzy, kde-format
 #| msgid "Podcast Directory"
 msgid "gpodder.net: Podcast Directory Service"
 msgstr "ไดเรกทอรีพ็อดแคสท์"
 
-#: services/gpodder/GpodderService.cpp:116
+#: services/gpodder/GpodderService.cpp:119
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr ""
 
-#: services/gpodder/GpodderService.cpp:222
-#: services/opmldirectory/OpmlDirectoryService.cpp:127
+#: services/gpodder/GpodderService.cpp:225
+#: services/opmldirectory/OpmlDirectoryService.cpp:130
 #, kde-format
 msgid "Subscribe"
 msgstr "บอกรับ"
@@ -13964,12 +13965,12 @@ msgstr "จาก Jamendo.com"
 msgid "A site where artists can freely share their music"
 msgstr "เว็บไซต์ที่เหล่าศิลปินสามารถจะร่วมแบ่งปันผลงานของพวกเขา"
 
-#: services/jamendo/JamendoService.cpp:74
+#: services/jamendo/JamendoService.cpp:77
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
 msgstr ""
 
-#: services/jamendo/JamendoService.cpp:77
+#: services/jamendo/JamendoService.cpp:80
 #, kde-format
 msgid ""
 "Jamendo.com puts artists and music lovers in touch with each other. The site "
@@ -13978,14 +13979,14 @@ msgid ""
 "com contents from within Amarok."
 msgstr ""
 
-#: services/jamendo/JamendoService.cpp:118
+#: services/jamendo/JamendoService.cpp:121
 #, kde-format
 msgctxt "Fetch new information from the website"
 msgid "Update"
 msgstr "ปรับปรุง"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: services/jamendo/JamendoService.cpp:124
+#: services/jamendo/JamendoService.cpp:127
 #: services/magnatune/MagnatuneConfigWidget.ui:121
 #, kde-format
 msgid "Download"
@@ -13999,25 +14000,25 @@ msgstr "ดาวน์โหลด"
 #.
 #. action = filterMenu->addAction( i18n( "Album" ) );
 #. connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
-#: services/jamendo/JamendoService.cpp:153
-#: services/magnatune/MagnatuneStore.cpp:222
+#: services/jamendo/JamendoService.cpp:156
+#: services/magnatune/MagnatuneStore.cpp:225
 #, kde-format
 msgid "Genre / Artist"
 msgstr "ประเภท / ศิลปิน"
 
-#: services/jamendo/JamendoService.cpp:156
-#: services/magnatune/MagnatuneStore.cpp:225
+#: services/jamendo/JamendoService.cpp:159
+#: services/magnatune/MagnatuneStore.cpp:228
 #, kde-format
 msgid "Genre / Artist / Album"
 msgstr "ประเภท / ศิลปิน / อัลบั้ม"
 
-#: services/jamendo/JamendoService.cpp:191
+#: services/jamendo/JamendoService.cpp:194
 #, fuzzy, kde-format
 #| msgid "Downloading Jamendo.com Database"
 msgid "Downloading Jamendo.com database..."
 msgstr "กำลังดาวน์โหลดฐานข้อมูล Jamendo.com"
 
-#: services/jamendo/JamendoService.cpp:213
+#: services/jamendo/JamendoService.cpp:216
 #, kde-format
 msgid "Updating the local Jamendo database."
 msgstr "กำลังปรับปรุงฐานข้อมูล Jamendo ภายใน"
@@ -14243,12 +14244,12 @@ msgid ""
 "will not be scrobbled</html>"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:97
+#: services/lastfm/LastFmService.cpp:100
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: ปฏิวัติการฟังเพลงของสังคม"
 
-#: services/lastfm/LastFmService.cpp:99
+#: services/lastfm/LastFmService.cpp:102
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -14259,55 +14260,55 @@ msgid ""
 "friends"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: รัก"
 
-#: services/lastfm/LastFmService.cpp:128
+#: services/lastfm/LastFmService.cpp:131
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:319
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter an artist name"
 msgstr "ป้อนชื่อของศิลปิน"
 
-#: services/lastfm/LastFmService.cpp:322
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a tag"
 msgstr "ป้อนป้ายกำกับ"
 
-#: services/lastfm/LastFmService.cpp:325
+#: services/lastfm/LastFmService.cpp:328
 #, fuzzy, kde-format
 #| msgid "Enter a last.fm user name"
 msgid "Enter a Last.fm user name"
 msgstr "ป้อนชื่อผู้ใช้ของบริการ last.fm"
 
-#: services/lastfm/LastFmService.cpp:338
+#: services/lastfm/LastFmService.cpp:341
 #, fuzzy, kde-format
 #| msgid "Username: "
 msgid "Username: %1"
 msgstr "ชื่อผู้ใช้:"
 
-#: services/lastfm/LastFmService.cpp:343
+#: services/lastfm/LastFmService.cpp:346
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "จำนวนครั้งที่เล่น: %1 ครั้ง"
 
-#: services/lastfm/LastFmService.cpp:389
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "สร้างสถานี Last.fm ที่ปรับแต่งเอง"
 
-#: services/lastfm/LastFmService.cpp:392
+#: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "Tag"
 msgstr "ป้ายกำกับ"
 
-#: services/lastfm/LastFmService.cpp:392
+#: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "User"
 msgstr "ผู้ใช้"
@@ -15031,12 +15032,12 @@ msgstr ""
 msgid "Close"
 msgstr "ปิด"
 
-#: services/magnatune/MagnatuneStore.cpp:102
+#: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
 msgid "\"Fair trade\" online music store"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:106
+#: services/magnatune/MagnatuneStore.cpp:109
 #, no-c-format, kde-format
 msgid ""
 "Magnatune.com is a different kind of record company with the motto \"We are "
@@ -15046,50 +15047,50 @@ msgid ""
 "lets you download as much of their music as you like."
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:216
+#: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
 msgid "Artist / Album"
 msgstr "ศิลปิน / อัลบั้ม"
 
-#: services/magnatune/MagnatuneStore.cpp:240
+#: services/magnatune/MagnatuneStore.cpp:243
 #, fuzzy, kde-format
 #| msgid "Redownload"
 msgid "Re-download"
 msgstr "ดาวน์โหลดใหม่อีกครั้ง"
 
-#: services/magnatune/MagnatuneStore.cpp:243
+#: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Update Database"
 msgstr "ปรับปรุงฐานข้อมูล"
 
-#: services/magnatune/MagnatuneStore.cpp:246
+#: services/magnatune/MagnatuneStore.cpp:249
 #, kde-format
 msgid "Tools"
 msgstr "เครื่องมือ"
 
-#: services/magnatune/MagnatuneStore.cpp:267
+#: services/magnatune/MagnatuneStore.cpp:270
 #, kde-format
 msgid "Download Album"
 msgstr "ดาวน์โหลดอัลบั้ม"
 
-#: services/magnatune/MagnatuneStore.cpp:274
+#: services/magnatune/MagnatuneStore.cpp:277
 #, fuzzy, kde-format
 #| msgid "Skip"
 msgid "Signup"
 msgstr "ข้าม"
 
-#: services/magnatune/MagnatuneStore.cpp:325
+#: services/magnatune/MagnatuneStore.cpp:328
 #, fuzzy, kde-format
 #| msgid "Downloading Magnatune.com Database"
 msgid "Downloading Magnatune.com database..."
 msgstr "กำลังดาวน์โหลดฐานข้อมูล Magnatune.com"
 
-#: services/magnatune/MagnatuneStore.cpp:354
+#: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
 msgid "Updating the local Magnatune database."
 msgstr "กำลังปรับปรุงฐานข้อมูล Magnatune ภายในระบบ"
 
-#: services/magnatune/MagnatuneStore.cpp:617
+#: services/magnatune/MagnatuneStore.cpp:620
 #, c-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
@@ -15099,27 +15100,27 @@ msgid ""
 "with %%20"
 msgstr ""
 
-#: services/magnatune/MagnatuneStore.cpp:628
+#: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
 msgid "ERROR: No arguments supplied"
 msgstr "ผิดพลาด: ไม่มีการกำหนดอาร์กิวเมนต์มาให้ด้วย"
 
-#: services/magnatune/MagnatuneStore.cpp:633
+#: services/magnatune/MagnatuneStore.cpp:636
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
 msgstr "ผิดพลาด: จำนวนอาร์กิวเมนต์สำหรับ addMoodyTracks ไม่ถูกต้อง"
 
-#: services/magnatune/MagnatuneStore.cpp:643
+#: services/magnatune/MagnatuneStore.cpp:646
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
 msgstr "ผิดพลาด: การวิเคราะห์อาร์กิวเมนต์ 2 ผิดพลาด ( จำนวน )"
 
-#: services/magnatune/MagnatuneStore.cpp:647
+#: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
 msgid "ok"
 msgstr "ใช้ได้"
 
-#: services/magnatune/MagnatuneStore.cpp:650
+#: services/magnatune/MagnatuneStore.cpp:653
 #, kde-format
 msgid "ERROR: Unknown argument."
 msgstr "ผิดพลาด: มีอาร์กิวเมนต์ที่ไม่รู้จัก"
@@ -15316,49 +15317,49 @@ msgstr ""
 "ตู้เก็บดนตรีออนไลน์ที่คุณสามารถจะจัดเก็บและเข้าใช้ดนตรีของคุณได้อย่างปลอดภัย: http://mp3tunes."
 "com"
 
-#: services/mp3tunes/Mp3tunesService.cpp:105
+#: services/mp3tunes/Mp3tunesService.cpp:108
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "ตู้ส่วนตัวบน MP3tunes: ดนตรีของคุณทุกที่ ทุกเวลา !"
 
-#: services/mp3tunes/Mp3tunesService.cpp:218
+#: services/mp3tunes/Mp3tunesService.cpp:221
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "เปิดการปรับเทียบข้อมูลอัตโนมัติกับ MP3Tunes"
 
-#: services/mp3tunes/Mp3tunesService.cpp:234
+#: services/mp3tunes/Mp3tunesService.cpp:237
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "ปิดการปรับเทียบข้อมูลอัตโนมัติกับ MP3Tunes"
 
-#: services/mp3tunes/Mp3tunesService.cpp:254
+#: services/mp3tunes/Mp3tunesService.cpp:257
 #, kde-format
 msgid "Authenticating"
 msgstr "กำลังตรวจสอบสิทธิ์"
 
-#: services/mp3tunes/Mp3tunesService.cpp:266
+#: services/mp3tunes/Mp3tunesService.cpp:269
 #, fuzzy, kde-format
 #| msgid "Mp3tunes failed to Authenticate."
 msgid "MP3tunes failed to Authenticate."
 msgstr "ล้มเหลวในการตรวจสอบสิทธิ์กับ Mp3tunes"
 
-#: services/mp3tunes/Mp3tunesService.cpp:296
+#: services/mp3tunes/Mp3tunesService.cpp:299
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "MP3Tunes Harmony: ยุติการเชื่อมต่อ"
 
-#: services/mp3tunes/Mp3tunesService.cpp:303
-#: services/mp3tunes/Mp3tunesService.cpp:316
+#: services/mp3tunes/Mp3tunesService.cpp:306
+#: services/mp3tunes/Mp3tunesService.cpp:319
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "MP3Tunes Harmony: รอการป้อนรหัสพิน"
 
-#: services/mp3tunes/Mp3tunesService.cpp:328
+#: services/mp3tunes/Mp3tunesService.cpp:331
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "MP3tunes Harmony: เชื่อมต่อสำเร็จแล้ว"
 
-#: services/mp3tunes/Mp3tunesService.cpp:343
+#: services/mp3tunes/Mp3tunesService.cpp:346
 #, fuzzy, kde-format
 #| msgid ""
 #| "Mp3tunes Harmony Error\n"
@@ -15420,7 +15421,7 @@ msgid "Fetching Podcast Info"
 msgstr "กำลังดึงข้อมูลพ็อดแคสท์"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
-#: services/opmldirectory/OpmlDirectoryService.cpp:136
+#: services/opmldirectory/OpmlDirectoryService.cpp:139
 #, kde-format
 msgid "Add OPML"
 msgstr ""
@@ -15438,24 +15439,24 @@ msgstr ""
 msgid "New Folder"
 msgstr "โฟลเดอร์ใหม่ (%1)"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:50
+#: services/opmldirectory/OpmlDirectoryService.cpp:53
 #, kde-format
 msgid "Podcast Directory"
 msgstr "ไดเรกทอรีพ็อดแคสท์"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:70
+#: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
 msgid "A large listing of podcasts"
 msgstr "รายการเล่นจำนวนมากของพ็อดแคสต์"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:73
+#: services/opmldirectory/OpmlDirectoryService.cpp:76
 #, kde-format
 msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:160
+#: services/opmldirectory/OpmlDirectoryService.cpp:163
 #, fuzzy, kde-format
 #| msgid "The number of undo levels in the playlist."
 msgid "Add an OPML file to the list."
@@ -15470,12 +15471,12 @@ msgstr "จำนวนของระดับการเลิกทำใน
 msgid "Loading info..."
 msgstr "กำลังโหลดภาพตัวอย่าง..."
 
-#: services/ServiceBase.cpp:336
+#: services/ServiceBase.cpp:337
 #, kde-format
 msgid "This service does not accept any messages"
 msgstr "บริการนี้ไม่ยอมรับข้อความใด ๆ ทั้งสิ้น"
 
-#: services/ServiceBase.cpp:343
+#: services/ServiceBase.cpp:344
 #, kde-format
 msgid "ERROR: unknown message"
 msgstr "ผิดพลาด: มีข้อความที่ไม่รู้จัก"
@@ -15485,8 +15486,8 @@ msgstr "ผิดพลาด: มีข้อความที่ไม่ร�
 msgid "Neither playable nor downloadable url specified."
 msgstr ""
 
-#: services/ServicePluginManager.cpp:144 services/ServicePluginManager.cpp:161
-#: services/ServicePluginManager.cpp:178
+#: services/ServicePluginManager.cpp:147 services/ServicePluginManager.cpp:164
+#: services/ServicePluginManager.cpp:181
 #, fuzzy, kde-format
 #| msgid "No service named %1 is curretly loaded"
 msgid "No service named %1 is currently loaded"

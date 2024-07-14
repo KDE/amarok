@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-12 01:43+0000\n"
+"POT-Creation-Date: 2024-07-14 01:42+0000\n"
 "PO-Revision-Date: 2024-07-12 13:04+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -2010,8 +2010,8 @@ msgid "Merged View"
 msgstr "Birleştirilmiş görünüm"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:275
-#: services/jamendo/JamendoService.cpp:159
-#: services/magnatune/MagnatuneStore.cpp:228
+#: services/jamendo/JamendoService.cpp:162
+#: services/magnatune/MagnatuneStore.cpp:231
 #, kde-format
 msgid "Sort Options"
 msgstr "Sıralama seçenekleri"
@@ -2061,7 +2061,7 @@ msgstr "Çeşitli Sanatçılar"
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
 #: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
-#: services/magnatune/MagnatuneStore.cpp:219
+#: services/magnatune/MagnatuneStore.cpp:222
 #, kde-format
 msgid "Album"
 msgstr "Albüm"
@@ -3993,6 +3993,7 @@ msgstr "Yeniden Yükle"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
 msgstr "Ayarlar"
@@ -4435,8 +4436,8 @@ msgstr "Aşağıdaki başlığa ve sanatçıya sahip sekmeleri yeniden yükle"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:392
-#: services/magnatune/MagnatuneStore.cpp:213
+#: services/lastfm/LastFmService.cpp:395
+#: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
 msgstr "Sanatçı"
@@ -11484,7 +11485,7 @@ msgstr "Satır içi çalma denetimlerini göster"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
-#: services/ServiceBase.cpp:162
+#: services/ServiceBase.cpp:163
 #, kde-format
 msgid "Group By"
 msgstr "Şuna göre grupla"
@@ -11947,12 +11948,12 @@ msgstr "Parçalar Kaldırıldı"
 msgid "Tracks moved"
 msgstr "Parçalar Taşındı"
 
-#: playlist/view/listview/PrettyListView.cpp:688
+#: playlist/view/listview/PrettyListView.cpp:692
 #, kde-format
 msgid "Tracks have been hidden due to the active search."
 msgstr "Etkin arama nedeniyle parçalar gizlendi."
 
-#: playlist/view/listview/PrettyListView.cpp:690
+#: playlist/view/listview/PrettyListView.cpp:694
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
@@ -13527,12 +13528,12 @@ msgstr "Sunucuyu Kaldır"
 msgid "Server Address"
 msgstr "Sunucu Adresi"
 
-#: services/ampache/AmpacheService.cpp:91
+#: services/ampache/AmpacheService.cpp:94
 #, kde-format
 msgid "Amarok frontend for your Ampache server"
 msgstr "Ampache sunucunuz için Amarok ön ucu"
 
-#: services/ampache/AmpacheService.cpp:93
+#: services/ampache/AmpacheService.cpp:96
 #, kde-format
 msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
@@ -13642,19 +13643,19 @@ msgid ""
 msgstr ""
 "gpodder hizmeti sunucudan veri alamadı. 10 saniye sonra yeniden denenecek…"
 
-#: services/gpodder/GpodderService.cpp:113
+#: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
 msgstr "gpodder.net: Pod Yayını Dizini Hizmeti"
 
-#: services/gpodder/GpodderService.cpp:116
+#: services/gpodder/GpodderService.cpp:119
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr ""
 "gpodder.net, çevrimiçi bir pod yayını dizini ve eşzamanlama hizmetidir."
 
-#: services/gpodder/GpodderService.cpp:222
-#: services/opmldirectory/OpmlDirectoryService.cpp:127
+#: services/gpodder/GpodderService.cpp:225
+#: services/opmldirectory/OpmlDirectoryService.cpp:130
 #, kde-format
 msgid "Subscribe"
 msgstr "Abone Ol"
@@ -13746,12 +13747,12 @@ msgstr "Jamendo.com’dan"
 msgid "A site where artists can freely share their music"
 msgstr "Sanatçıların kendi müziklerini özgürce paylaştığı bir web sitesi"
 
-#: services/jamendo/JamendoService.cpp:74
+#: services/jamendo/JamendoService.cpp:77
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
 msgstr "Ücretsiz, Creative Commons lisanslı bir müzik arşivi"
 
-#: services/jamendo/JamendoService.cpp:77
+#: services/jamendo/JamendoService.cpp:80
 #, kde-format
 msgid ""
 "Jamendo.com puts artists and music lovers in touch with each other. The site "
@@ -13764,14 +13765,14 @@ msgstr ""
 "tümünü ücretsiz olarak indirmelerine olanak tanıyor. Tüm Jamendo.com "
 "içeriğini Amarok üzerinden dinleyin ve indirin."
 
-#: services/jamendo/JamendoService.cpp:118
+#: services/jamendo/JamendoService.cpp:121
 #, kde-format
 msgctxt "Fetch new information from the website"
 msgid "Update"
 msgstr "Güncelle"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: services/jamendo/JamendoService.cpp:124
+#: services/jamendo/JamendoService.cpp:127
 #: services/magnatune/MagnatuneConfigWidget.ui:121
 #, kde-format
 msgid "Download"
@@ -13785,24 +13786,24 @@ msgstr "İndir"
 #.
 #. action = filterMenu->addAction( i18n( "Album" ) );
 #. connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
-#: services/jamendo/JamendoService.cpp:153
-#: services/magnatune/MagnatuneStore.cpp:222
+#: services/jamendo/JamendoService.cpp:156
+#: services/magnatune/MagnatuneStore.cpp:225
 #, kde-format
 msgid "Genre / Artist"
 msgstr "Tür/Sanatçı"
 
-#: services/jamendo/JamendoService.cpp:156
-#: services/magnatune/MagnatuneStore.cpp:225
+#: services/jamendo/JamendoService.cpp:159
+#: services/magnatune/MagnatuneStore.cpp:228
 #, kde-format
 msgid "Genre / Artist / Album"
 msgstr "Tür/Sanatçı/Albüm"
 
-#: services/jamendo/JamendoService.cpp:191
+#: services/jamendo/JamendoService.cpp:194
 #, kde-format
 msgid "Downloading Jamendo.com database..."
 msgstr "Jamendo.com veritabanı indiriliyor…"
 
-#: services/jamendo/JamendoService.cpp:213
+#: services/jamendo/JamendoService.cpp:216
 #, kde-format
 msgid "Updating the local Jamendo database."
 msgstr "Yerel Jamendo veritabanı güncelleniyor…"
@@ -14034,12 +14035,12 @@ msgstr ""
 "<html>Tercih edilen etiketi seçin (veya yeni bir etiket yaz). Bu etikete "
 "sahip parçalar skroplanmayacak</html>"
 
-#: services/lastfm/LastFmService.cpp:97
+#: services/lastfm/LastFmService.cpp:100
 #, kde-format
 msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: Sosyal müzik devrimi"
 
-#: services/lastfm/LastFmService.cpp:99
+#: services/lastfm/LastFmService.cpp:102
 #, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
@@ -14055,54 +14056,54 @@ msgstr ""
 "benzer müzik içeren istasyonları çalmanın yanı sıra, arkadaş olarak "
 "eklediğiniz akışları dinlemeniz de olanaklıdır"
 
-#: services/lastfm/LastFmService.cpp:126 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Sev"
 
-#: services/lastfm/LastFmService.cpp:128
+#: services/lastfm/LastFmService.cpp:131
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Kontrol+I"
 
-#: services/lastfm/LastFmService.cpp:319
+#: services/lastfm/LastFmService.cpp:322
 #, kde-format
 msgid "Enter an artist name"
 msgstr "Bir sanatçı adı girin"
 
-#: services/lastfm/LastFmService.cpp:322
+#: services/lastfm/LastFmService.cpp:325
 #, kde-format
 msgid "Enter a tag"
 msgstr "Bir künye girin"
 
-#: services/lastfm/LastFmService.cpp:325
+#: services/lastfm/LastFmService.cpp:328
 #, kde-format
 msgid "Enter a Last.fm user name"
 msgstr "Bir Last.fm kullanıcı adı girin"
 
-#: services/lastfm/LastFmService.cpp:338
+#: services/lastfm/LastFmService.cpp:341
 #, kde-format
 msgid "Username: %1"
 msgstr "Kullanıcı adı: %1"
 
-#: services/lastfm/LastFmService.cpp:343
+#: services/lastfm/LastFmService.cpp:346
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "Çalma sayısı: %1 çalma"
 msgstr[1] "Çalma sayısı: %1 çalma"
 
-#: services/lastfm/LastFmService.cpp:389
+#: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Create a Custom Last.fm Station"
 msgstr "Özel Bir Last.fm İstasyonu Oluştur"
 
-#: services/lastfm/LastFmService.cpp:392
+#: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "Tag"
 msgstr "Künye"
 
-#: services/lastfm/LastFmService.cpp:392
+#: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "User"
 msgstr "Kullanıcı"
@@ -14888,12 +14889,12 @@ msgstr ""
 msgid "Close"
 msgstr "Kapat"
 
-#: services/magnatune/MagnatuneStore.cpp:102
+#: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
 msgid "\"Fair trade\" online music store"
 msgstr "“Adil Ticaret” çevrimiçi müzik marketi"
 
-#: services/magnatune/MagnatuneStore.cpp:106
+#: services/magnatune/MagnatuneStore.cpp:109
 #, no-c-format, kde-format
 msgid ""
 "Magnatune.com is a different kind of record company with the motto \"We are "
@@ -14908,47 +14909,47 @@ msgstr ""
 "Magnatune.com ayrıca, müziklerinin istediğiniz kadarını indirmenize olanak "
 "tanıyan “yiyebildiğiniz kadar” üyeliklerini de sunuyor."
 
-#: services/magnatune/MagnatuneStore.cpp:216
+#: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
 msgid "Artist / Album"
 msgstr "Sanatçı/Albüm"
 
-#: services/magnatune/MagnatuneStore.cpp:240
+#: services/magnatune/MagnatuneStore.cpp:243
 #, kde-format
 msgid "Re-download"
 msgstr "Yeniden İndir"
 
-#: services/magnatune/MagnatuneStore.cpp:243
+#: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Update Database"
 msgstr "Veritabanını Güncelle"
 
-#: services/magnatune/MagnatuneStore.cpp:246
+#: services/magnatune/MagnatuneStore.cpp:249
 #, kde-format
 msgid "Tools"
 msgstr "Araçlar"
 
-#: services/magnatune/MagnatuneStore.cpp:267
+#: services/magnatune/MagnatuneStore.cpp:270
 #, kde-format
 msgid "Download Album"
 msgstr "Albüm İndir"
 
-#: services/magnatune/MagnatuneStore.cpp:274
+#: services/magnatune/MagnatuneStore.cpp:277
 #, kde-format
 msgid "Signup"
 msgstr "Kaydol"
 
-#: services/magnatune/MagnatuneStore.cpp:325
+#: services/magnatune/MagnatuneStore.cpp:328
 #, kde-format
 msgid "Downloading Magnatune.com database..."
 msgstr "Magnatune.com veritabanı indiriliyor…"
 
-#: services/magnatune/MagnatuneStore.cpp:354
+#: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
 msgid "Updating the local Magnatune database."
 msgstr "Magnatune veritabanı güncelleniyor…"
 
-#: services/magnatune/MagnatuneStore.cpp:617
+#: services/magnatune/MagnatuneStore.cpp:620
 #, c-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
@@ -14963,27 +14964,27 @@ msgstr ""
 "rastgele parçayı çalma listesine ekler. Ruh hali argümanında %%20 ile "
 "kaçırılan boşluklar bulunmalıdır"
 
-#: services/magnatune/MagnatuneStore.cpp:628
+#: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
 msgid "ERROR: No arguments supplied"
 msgstr "HATA: Verilen argüman yok"
 
-#: services/magnatune/MagnatuneStore.cpp:633
+#: services/magnatune/MagnatuneStore.cpp:636
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
 msgstr "HATA: addMoodyTracks için yanlış argüman sayısı"
 
-#: services/magnatune/MagnatuneStore.cpp:643
+#: services/magnatune/MagnatuneStore.cpp:646
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
 msgstr "HATA: 2. argüman için ayrıştırma hatası (sayı)"
 
-#: services/magnatune/MagnatuneStore.cpp:647
+#: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
 msgid "ok"
 msgstr "Tamam"
 
-#: services/magnatune/MagnatuneStore.cpp:650
+#: services/magnatune/MagnatuneStore.cpp:653
 #, kde-format
 msgid "ERROR: Unknown argument."
 msgstr "HATA: Bilinmeyen argüman."
@@ -15173,48 +15174,48 @@ msgstr ""
 "Müziğinizi güvenle saklayabileceğiniz ve erişebileceğiniz çevrimiçi müzik "
 "dolabı: http://mp3tunes.com"
 
-#: services/mp3tunes/Mp3tunesService.cpp:105
+#: services/mp3tunes/Mp3tunesService.cpp:108
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "MP3tunes Dolabı: Müziğiniz Her Yerde!"
 
-#: services/mp3tunes/Mp3tunesService.cpp:218
+#: services/mp3tunes/Mp3tunesService.cpp:221
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "MP3Tunes Kendiliğinden Eşzamanlaması Etkinleştirildi"
 
-#: services/mp3tunes/Mp3tunesService.cpp:234
+#: services/mp3tunes/Mp3tunesService.cpp:237
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "MP3Tunes Kendiliğinden Eşzamanlaması Devre Dışı Bırakıldı"
 
-#: services/mp3tunes/Mp3tunesService.cpp:254
+#: services/mp3tunes/Mp3tunesService.cpp:257
 #, kde-format
 msgid "Authenticating"
 msgstr "Kimlik doğrulaması yapılıyor…"
 
-#: services/mp3tunes/Mp3tunesService.cpp:266
+#: services/mp3tunes/Mp3tunesService.cpp:269
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
 msgstr "MP3tunes kimlik doğrulaması başarısız oldu."
 
-#: services/mp3tunes/Mp3tunesService.cpp:296
+#: services/mp3tunes/Mp3tunesService.cpp:299
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "MP3Tunes Harmony: Bağlantı kesildi"
 
-#: services/mp3tunes/Mp3tunesService.cpp:303
-#: services/mp3tunes/Mp3tunesService.cpp:316
+#: services/mp3tunes/Mp3tunesService.cpp:306
+#: services/mp3tunes/Mp3tunesService.cpp:319
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "MP3Tunes Harmony: PIN kodunun girilmesi bekleniyor…"
 
-#: services/mp3tunes/Mp3tunesService.cpp:328
+#: services/mp3tunes/Mp3tunesService.cpp:331
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "MP3Tunes Harmony: Başarıyla bağlanıldı"
 
-#: services/mp3tunes/Mp3tunesService.cpp:343
+#: services/mp3tunes/Mp3tunesService.cpp:346
 #, kde-format
 msgid ""
 "MP3tunes Harmony Error\n"
@@ -15271,7 +15272,7 @@ msgid "Fetching Podcast Info"
 msgstr "Pod yayını bilgisi alınıyor…"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
-#: services/opmldirectory/OpmlDirectoryService.cpp:136
+#: services/opmldirectory/OpmlDirectoryService.cpp:139
 #, kde-format
 msgid "Add OPML"
 msgstr "OPML Ekle"
@@ -15287,17 +15288,17 @@ msgstr "OPML Ekle"
 msgid "New Folder"
 msgstr "Yeni Klasör"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:50
+#: services/opmldirectory/OpmlDirectoryService.cpp:53
 #, kde-format
 msgid "Podcast Directory"
 msgstr "Pod Yayını Dizini"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:70
+#: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
 msgid "A large listing of podcasts"
 msgstr "Pod yayınlarının geniş bir listesi"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:73
+#: services/opmldirectory/OpmlDirectoryService.cpp:76
 #, kde-format
 msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
@@ -15306,7 +15307,7 @@ msgstr ""
 "Doğrudan Amarok’tan abone olabileceğiniz aranabilir pod yayınlarının "
 "kapsamlı bir listesi."
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:160
+#: services/opmldirectory/OpmlDirectoryService.cpp:163
 #, kde-format
 msgid "Add an OPML file to the list."
 msgstr "Listeye bir OPML dosyası ekleyin."
@@ -15319,12 +15320,12 @@ msgstr "Listeye bir OPML dosyası ekleyin."
 msgid "Loading info..."
 msgstr "Bilgi yükleniyor…"
 
-#: services/ServiceBase.cpp:336
+#: services/ServiceBase.cpp:337
 #, kde-format
 msgid "This service does not accept any messages"
 msgstr "Bu hizmet, hiçbir iletiyi kabul etmiyor"
 
-#: services/ServiceBase.cpp:343
+#: services/ServiceBase.cpp:344
 #, kde-format
 msgid "ERROR: unknown message"
 msgstr "HATA: Bilinmeyen ileti"
@@ -15334,8 +15335,8 @@ msgstr "HATA: Bilinmeyen ileti"
 msgid "Neither playable nor downloadable url specified."
 msgstr "Çalınabilir veya indirilebilir bir URL belirtilmedi."
 
-#: services/ServicePluginManager.cpp:144 services/ServicePluginManager.cpp:161
-#: services/ServicePluginManager.cpp:178
+#: services/ServicePluginManager.cpp:147 services/ServicePluginManager.cpp:164
+#: services/ServicePluginManager.cpp:181
 #, kde-format
 msgid "No service named %1 is currently loaded"
 msgstr "Şu anda %1 adlı bir hizmet yüklü değil"
