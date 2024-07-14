@@ -22,7 +22,10 @@
 #include <KColorScheme>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+//Separate header introduced in KF 5.94, TODO remove ifdef after dependency bumped to that
 #include <KStatefulBrush>
+#endif
 
 #include <QAction>
 #include <QKeyEvent>
