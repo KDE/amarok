@@ -617,7 +617,8 @@ SqlScanResultProcessor::deletedDirectories() const
             QMutableHashIterator<int, DirectoryEntry> it( idToDirEntryMap );
             while( it.hasNext() )
             {
-                const DirectoryEntry &e = it.next().value();
+                it.next();
+                const DirectoryEntry &e = it.value();
                 if( e.deviceId == existingDeviceId && e.dir.startsWith( existingPath ) )
                     it.remove();
             }
