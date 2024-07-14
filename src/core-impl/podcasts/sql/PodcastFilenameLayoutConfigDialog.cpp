@@ -37,16 +37,14 @@ PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( const Podc
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
 //    showButtonSeparator( true ); TODO KF5: Replace with a Qt5 equivalent (if any equivalent exists)
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &PodcastFilenameLayoutConfigDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &PodcastFilenameLayoutConfigDialog::reject);
 
-    mainLayout->addWidget(main);
-    mainLayout->addWidget(buttonBox);
+    addPage(main, i18n("Settings") );
+    setButtonBox(buttonBox);
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
     init();
