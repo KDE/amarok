@@ -592,7 +592,7 @@ void
 SqlPodcastProvider::configureProvider()
 {
     m_providerSettingsDialog = new QDialog( The::mainWindow() );
-    QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
+    QWidget *settingsWidget = new QWidget();
     m_providerSettingsDialog->setObjectName( QStringLiteral("SqlPodcastProviderSettings") );
     Ui::SqlPodcastProviderSettingsWidget settings;
     m_providerSettingsWidget = &settings;
@@ -606,7 +606,14 @@ SqlPodcastProvider::configureProvider()
             i18nc( "prefix to 'x minutes'", "every " ) );
     settings.m_autoUpdateInterval->setSuffix( i18np( " minute", " minutes", settings.m_autoUpdateInterval->value() ) );
 
-    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, m_providerSettingsDialog );
+    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply );
+
+    m_providerSettingsDialog->setLayout( new QVBoxLayout );
+    m_providerSettingsDialog->layout()->addWidget( settingsWidget );
+    m_providerSettingsDialog->layout()->addWidget( buttonBox );
+
+    connect( buttonBox, &QDialogButtonBox::accepted, m_providerSettingsDialog, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, m_providerSettingsDialog, &QDialog::reject );
 
     connect( settings.m_baseDirUrl, &KUrlRequester::textChanged, this, &SqlPodcastProvider::slotConfigChanged );
     connect( settings.m_autoUpdateInterval, QOverload<int>::of(&QSpinBox::valueChanged),

@@ -31,6 +31,7 @@ VERSION 3.0.81
    * Don't show false reordering visual hints on a sorted playlist (BR 254821)
    * Fix multiple instances of web services appearing in Internet menu after saving
      plugin config.
+   * Show podcast provider actions for non-empty podcast categories, too (BR 371192)
 
 
 VERSION 3.0.1

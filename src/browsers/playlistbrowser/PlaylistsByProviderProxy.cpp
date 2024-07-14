@@ -239,10 +239,11 @@ PlaylistsByProviderProxy::slotProviderAdded( Playlists::PlaylistProvider *provid
     if( category != m_playlistCategory )
         return;
 
-    if( provider->playlistCount() > 0
-        || ( provider->playlistCount() < 0 /* not counted */
-             && !provider->playlists().isEmpty() ) )
-            return; // non-empty providers are handled by PlaylistBrowserModel
+    if( provider->category() != Playlists::PodcastChannelPlaylist &&
+        ( provider->playlistCount() > 0 ||
+            ( provider->playlistCount() < 0 /* not counted */
+              && !provider->playlists().isEmpty() ) ) )
+            return; // non-empty providers are handled by PlaylistBrowserModel, except podcasts
 
     ItemData itemData;
     itemData.insert( Qt::DisplayRole, provider->prettyName() );
