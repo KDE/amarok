@@ -125,7 +125,6 @@ class CoverManager : public QDialog, public Meta::Observer
         //status bar widgets
         CompoundProgressBar *m_progress;
         KSqueezedTextLabel *m_statusLabel;
-        QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
         QList<CoverViewItem*> m_coverItems; //used for filtering

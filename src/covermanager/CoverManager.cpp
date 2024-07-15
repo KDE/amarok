@@ -709,7 +709,7 @@ CoverManager::updateStatusBar()
         m_fetchButton->setEnabled( missingCounter );
     }
 
-    m_statusLabel->setText( text );
+    QTimer::singleShot( 0, this, [=]() { setStatusText( text ); } );
 }
 
 void
@@ -724,7 +724,6 @@ CoverManager::delayedDestruct()
 void
 CoverManager::setStatusText( const QString &text )
 {
-    m_oldStatusText = m_statusLabel->text();
     m_statusLabel->setText( text );
 }
 
