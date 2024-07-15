@@ -14,6 +14,10 @@
         "Id": "org.kde.amarok.similarartists",
         "License": "GPL",
         "Name": "Similar Artists",
+        "Name[sr@ijekavian]": "Слични извођачи",
+        "Name[sr@ijekavianlatin]": "Slični izvođači",
+        "Name[sr@latin]": "Slični izvođači",
+        "Name[sr]": "Слични извођачи",
         "ServiceTypes": [
             "KPackage/Generic",
             "Amarok/ContextApplet"
