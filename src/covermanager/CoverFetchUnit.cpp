@@ -629,7 +629,9 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             if( !xml.isStartElement() )
                 continue;
 
-            if( n == QStringLiteral("name") )
+            if( n == QStringLiteral("tags") || n == QStringLiteral("tracks") )
+                xml.skipCurrentElement(); // don't get confused by these, they contain names and urls
+            else if( n == QStringLiteral("name") )
             {
                 metadata[ QStringLiteral("name") ] = xml.readElementText();
             }
