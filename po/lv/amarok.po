@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -1627,7 +1627,6 @@ msgid "New Group"
 msgstr "Jauna grupa"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "nav"
@@ -2070,7 +2069,7 @@ msgid "Composer"
 msgstr "Komponists"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "Žanrs"
@@ -3979,7 +3978,6 @@ msgid "Remove label"
 msgstr "Noņemt etiķeti"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -4005,9 +4003,9 @@ msgstr "Ielādēt vēlreiz"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4308,111 +4306,27 @@ msgstr "Konfigurēt repertuāra informācijas sīkrīku"
 msgid "Width"
 msgstr "Platums"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
-#, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "Pievienot repertuāram Last.fm izpildītāja staciju"
+#: context/applets/similarartists/package/contents/ui/main.qml:40
+#, fuzzy, kde-format
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "no <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Add top track to the Playlist"
-msgstr "Pievienot augšējo celiņu repertuāram"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
+msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:150
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Show Similar Artists to %1"
-msgstr "Rādīt Izpildītājus, kas līdzīgi %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
-#, kde-format
-msgid "Open Last.fm webpage for this artist"
-msgstr "Atvērt šī izpildītāja Last.fm tīmekļa vietni"
-
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, kde-format
-msgid "Match: %1%"
-msgstr "Atbilst: %1%"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "Neizdevās saņemt attēlu: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "Rādīt biogrāfiju"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "Apraksts nav piejams."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "Tagi: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr "Augšējais celiņš nav atrasts"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
-msgstr "Augšējais celiņš: %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "Līdzīgi izpildītāji"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "Atpakaļ"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "Uz priekšu"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Rādīt līdzīgus izpildītājus pašreiz atskaņotajam celiņam"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "Līdzīgu izpildītāju iestatījumi"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, kde-format
-msgid "Similar Artists to %1"
-msgstr "Izpildītāji, kas līdzīgi %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "Līdzīgi izpildītāji: nav atrasti"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "Publicēts: %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, kde-format
-msgid "Maximum number of artists to show:"
-msgstr "Maksimālais rādāmo izpildītāju skaits:"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5935,19 +5849,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "Podraižu faila nosaukuma izvietojuma konfigurācija"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr "Norāda podraides kanāls"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr "pielāgots"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6181,37 +6095,37 @@ msgstr[0] " minūtes"
 msgstr[1] " minūtēm"
 msgstr[2] " minūtēm"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfigurēt lokālās podraides"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Pārvietot podraides"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Vai vēlaties pārvietot visas lejupielādētās epizodes uz jaunu vietu?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Izvēlieties failu OPML eksportēšanai"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Vai tiešām vēlaties atrakstīties no \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Dzēst lejupielādēto sēriju"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6219,23 +6133,23 @@ msgstr[0] "Vēl notiek %1 podraides lejupielāde"
 msgstr[1] "Vēl notiek %1 podraižu lejupielādes"
 msgstr[2] "Vēl notiek %1 podraižu lejupielādes"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Atcelt lejupielādi un iziet."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Neizdevās saglabāt podraides epizodi failā %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Lejupielādē podraides failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Ielādē podraidi \"%1\""
@@ -9123,13 +9037,13 @@ msgid "Location:"
 msgstr "Vieta:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&Iepriekšējais"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&Nākamais"
@@ -11126,7 +11040,7 @@ msgstr "Pārslēgt galveno logu"
 msgid "Toggle Full Screen"
 msgstr "Pārslēgt pilnekrānu"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Meklēt repertuārā"
@@ -11991,7 +11905,7 @@ msgstr "Bitātrums"
 msgid "Sample Rate"
 msgstr "Paraugu ātrums"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "Vērtējums"
@@ -12081,42 +11995,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Repertuārs"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Sāciet rakstīt, lai meklētu repertuārā"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "Celiņi"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "Albumi"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "Izpildītāji"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "Komponisti"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "gadiem"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "Rādīt tikai atbilstošos"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "Meklēšanas preferences"
@@ -15175,13 +15089,19 @@ msgid "Updating the local Magnatune database."
 msgstr "Atjauno lokālo Magnatune datubāzi."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Magnatune.com service accepts the following messages: \n"
+#| "\n"
+#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
+#| "specified mood to the playlist. The mood argument must have spaces "
+#| "escaped with %%20"
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 "Magnatune.com pakalpojums pieņem šādus ziņojumus: \n"
 "\n"
@@ -15827,6 +15747,11 @@ msgstr "Izvēlieties valodu"
 #| msgid "Configure Scripts"
 msgid "Configure Target"
 msgstr "Konfigurēt skriptus"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "Atpakaļ"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16632,6 +16557,66 @@ msgstr "Izpildītājs: %1"
 #, kde-format
 msgid "empty"
 msgstr "tukšs"
+
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "Pievienot repertuāram Last.fm izpildītāja staciju"
+
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "Pievienot augšējo celiņu repertuāram"
+
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "Rādīt Izpildītājus, kas līdzīgi %1"
+
+#~ msgid "Open Last.fm webpage for this artist"
+#~ msgstr "Atvērt šī izpildītāja Last.fm tīmekļa vietni"
+
+#~ msgid "Match: %1%"
+#~ msgstr "Atbilst: %1%"
+
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "Neizdevās saņemt attēlu: %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "Rādīt biogrāfiju"
+
+#~ msgid "No description available."
+#~ msgstr "Apraksts nav piejams."
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "Tagi: %1"
+
+#~ msgid "Top track not found"
+#~ msgstr "Augšējais celiņš nav atrasts"
+
+#~ msgid "Top track: %1"
+#~ msgstr "Augšējais celiņš: %1"
+
+#~ msgid "Similar Artists"
+#~ msgstr "Līdzīgi izpildītāji"
+
+#~ msgid "Forward"
+#~ msgstr "Uz priekšu"
+
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Rādīt līdzīgus izpildītājus pašreiz atskaņotajam celiņam"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "Līdzīgu izpildītāju iestatījumi"
+
+#~ msgid "Similar Artists to %1"
+#~ msgstr "Izpildītāji, kas līdzīgi %1"
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "Līdzīgi izpildītāji: nav atrasti"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "Publicēts: %1"
+
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "Maksimālais rādāmo izpildītāju skaits:"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""

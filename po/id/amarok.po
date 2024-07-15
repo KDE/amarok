@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4 Applications\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2022-09-27 18:12+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -1623,7 +1623,6 @@ msgid "New Group"
 msgstr "Kelompok Baru"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "tidak ada"
@@ -2060,7 +2059,7 @@ msgid "Composer"
 msgstr "Pencipta"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
@@ -3938,7 +3937,6 @@ msgid "Remove label"
 msgstr "Buang label"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -3964,9 +3962,9 @@ msgstr "Muat ulang"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4258,111 +4256,27 @@ msgstr "Konfigurasikan Applet Info Playlist"
 msgid "Width"
 msgstr "Lebar"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
-#, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "Tambahkan stasiun artis Last.fm ke Playlist"
+#: context/applets/similarartists/package/contents/ui/main.qml:40
+#, fuzzy, kde-format
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "dari <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Add top track to the Playlist"
-msgstr "Tambahkan trek teratas ke Playlist"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
+msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:150
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Show Similar Artists to %1"
-msgstr "Tampilkan Artis Serupa untuk %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
-#, kde-format
-msgid "Open Last.fm webpage for this artist"
-msgstr "Buka halaman-web Last.fm untuk artis ini"
-
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, kde-format
-msgid "Match: %1%"
-msgstr "Sesuai: %1%"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "Tidak bisa menarik gambar: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "Tampilkan Biografi"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "Tidak ada keterangan yang tersedia."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "Tag: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr "Track teratas tidak ditemukan"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
-msgstr "Track teratas: %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "Artis-artis Serupa"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "Kembali"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "Depan"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Tampilkan Artis Serupa untuk Trek Yang Memutar Saat Ini"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "Pengaturan Artis-artis Serupa"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, kde-format
-msgid "Similar Artists to %1"
-msgstr "Artis-artis Serupa untuk %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "Artis Serupa: Tidak Ditemukan"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "Diterbitkan: %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, kde-format
-msgid "Maximum number of artists to show:"
-msgstr "Jumlah terbanyak artis yang ditampilkan:"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5825,19 +5739,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "Setelan Tata-letak Nama-file Siniar"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr "Menetapkan menurut channel siniar"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr "suaian"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6069,61 +5983,61 @@ msgid_plural " minutes"
 msgstr[0] " menit"
 msgstr[1] " menit"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfigurasikan Siniar Lokal"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Pindah Siniar"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 "Apakah kamu ingin memindahkan semua episode yang diunduh ke lokasi baru?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Pilih file untuk OPML export"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Apakah kamu benar-benar ingin berhenti berlangganan dari \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Hapus episode yang diunduh"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "Di sini tempat unduhan sebuah siniar yang sedang berlangsung"
 msgstr[1] "Di sini tempat unduhan %1 siniar yang sedang berlangsung"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Batal Unduh dan Berhenti."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Tak mampu menyimpan file siniar episode ke %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Media Mengunduh Siniar"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Mengunduh Siniar \"%1\""
@@ -8946,13 +8860,13 @@ msgid "Location:"
 msgstr "Lokasi:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&Sebelumnya"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&Selanjutnya"
@@ -10935,7 +10849,7 @@ msgstr "Pelat Jendela Uama"
 msgid "Toggle Full Screen"
 msgstr "Beralih Layar Penuh"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Pencarian playlist"
@@ -11807,7 +11721,7 @@ msgstr "Bitrate"
 msgid "Sample Rate"
 msgstr "Contoh Laju"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "Peringkat"
@@ -11897,42 +11811,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Playlist"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Ketiklah untuk pencarian bertahap-tahap melalui playlist"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "Trek"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "Album"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "Artis"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "Pencipta"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "Tahun"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "Tampilkan hanya yang sesuai"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "Pencarian Preferensi"
@@ -14967,19 +14881,25 @@ msgid "Updating the local Magnatune database."
 msgstr "Memperbarui database lokal Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Magnatune.com service accepts the following messages: \n"
+#| "\n"
+#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
+#| "specified mood to the playlist. The mood argument must have spaces "
+#| "escaped with %%20"
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 "Layanan Magnatune.com menerima pesan berikut:\n"
 "\n"
 "\taddMoodyTreks mood count: Menambahkan jumlah trek-trek acak dengan mood "
-"yang ditetapkan ke playlist. Argumen mood harus memiliki luang gerak antara "
-"%%20"
+"yang ditetapkan ke playlist. Argumen mood harus memiliki luang gerak antara %"
+"%20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15594,6 +15514,11 @@ msgstr "Menentukan Jenis Sasaran"
 #, kde-format
 msgid "Configure Target"
 msgstr "Konfigurasikan Sasaran"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "Kembali"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16391,6 +16316,66 @@ msgstr "Artis: %1"
 #, kde-format
 msgid "empty"
 msgstr "kosong"
+
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "Tambahkan stasiun artis Last.fm ke Playlist"
+
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "Tambahkan trek teratas ke Playlist"
+
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "Tampilkan Artis Serupa untuk %1"
+
+#~ msgid "Open Last.fm webpage for this artist"
+#~ msgstr "Buka halaman-web Last.fm untuk artis ini"
+
+#~ msgid "Match: %1%"
+#~ msgstr "Sesuai: %1%"
+
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "Tidak bisa menarik gambar: %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "Tampilkan Biografi"
+
+#~ msgid "No description available."
+#~ msgstr "Tidak ada keterangan yang tersedia."
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "Tag: %1"
+
+#~ msgid "Top track not found"
+#~ msgstr "Track teratas tidak ditemukan"
+
+#~ msgid "Top track: %1"
+#~ msgstr "Track teratas: %1"
+
+#~ msgid "Similar Artists"
+#~ msgstr "Artis-artis Serupa"
+
+#~ msgid "Forward"
+#~ msgstr "Depan"
+
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Tampilkan Artis Serupa untuk Trek Yang Memutar Saat Ini"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "Pengaturan Artis-artis Serupa"
+
+#~ msgid "Similar Artists to %1"
+#~ msgstr "Artis-artis Serupa untuk %1"
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "Artis Serupa: Tidak Ditemukan"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "Diterbitkan: %1"
+
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "Jumlah terbanyak artis yang ditampilkan:"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""

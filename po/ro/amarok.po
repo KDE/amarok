@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2023-04-10 19:07+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
@@ -1613,7 +1613,6 @@ msgid "New Group"
 msgstr "Grup nou"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "niciunul"
@@ -2049,7 +2048,7 @@ msgid "Composer"
 msgstr "Compozitor"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "Gen"
@@ -3925,7 +3924,6 @@ msgid "Remove label"
 msgstr "Elimină eticheta"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -3951,9 +3949,9 @@ msgstr "Reîncarcă"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4239,119 +4237,27 @@ msgstr "Configurează miniaplicația Informații listă"
 msgid "Width"
 msgstr "Lățime"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
+#: context/applets/similarartists/package/contents/ui/main.qml:40
 #, fuzzy, kde-format
-#| msgid "Add a sorting level to the playlist."
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "Adaugă un nivel de sortare la listă."
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "de pe <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
-#, fuzzy, kde-format
-#| msgid "Add a sorting level to the playlist."
-msgid "Add top track to the Playlist"
-msgstr "Adaugă un nivel de sortare la listă."
-
-#: context/applets/similarartists/ArtistWidget.cpp:150
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Show Similar Artists to %1"
-msgstr "Interpreți asemănători cu „%1”"
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Open Last.fm webpage for this artist"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
 msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:182
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Match: %1%"
-msgstr "Potrivire: %1%"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, fuzzy, kde-format
-#| msgid "Unable to load the widget"
-msgid "Unable to fetch the picture: %1"
-msgstr "Imposibil de încărcat controlul"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "Arată biografia"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "Nicio descriere disponibilă."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "Marcaje: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, fuzzy, kde-format
-#| msgid " Cover not found"
-#| msgid_plural " <b>%1</b> covers not found"
-msgid "Top track not found"
-msgstr " Coperta nu a fost găsită"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
 msgstr ""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "Interpreți asemănători"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "Înapoi"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "Înainte"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, fuzzy, kde-format
-#| msgid "Amarok - No track playing"
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Amarok - Nicio piesă în redare"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "Configurare interpreți asemănători"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, kde-format
-msgid "Similar Artists to %1"
-msgstr "Interpreți asemănători cu „%1”"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "Interpreți asemănători: nu au fost găsiți"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "Publicat: %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, fuzzy, kde-format
-#| msgid "The maximum number of podcast items to store"
-msgid "Maximum number of artists to show:"
-msgstr "Numărul maxim de elemente podcast de stocat"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5808,19 +5714,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "Configurare podcast"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr "Specificat de canalul podcastului"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr "personalizat"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6046,37 +5952,37 @@ msgstr[0] " minut"
 msgstr[1] " minute"
 msgstr[2] " de minute"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Configurare podcasturi locale"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Mută podcasturi"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Doriți să mutați toate episoadele descărcate la noua amplasare?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Alegeți fișierul pentru export OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Sigur doriți să vă dezabonați de la „%1”?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Șterge episoadele descărcate"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6084,23 +5990,23 @@ msgstr[0] "Mai este o descărcare de podcast în curs"
 msgstr[1] "Mai sînt %1 descărcări de podcasturi în curs"
 msgstr[2] "Mai sînt %1 de descărcări de podcasturi în curs"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Anulează descărcarea și ieși."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Descărcare media podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Descărcare podcast „%1”"
@@ -8883,13 +8789,13 @@ msgid "Location:"
 msgstr "Amplasare:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&Precedent"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&Următor"
@@ -10862,7 +10768,7 @@ msgstr "Comută fereastra principală"
 msgid "Toggle Full Screen"
 msgstr "Comutare ecran complet"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Caută în lista de redare"
@@ -11731,7 +11637,7 @@ msgstr "Rată de biți"
 msgid "Sample Rate"
 msgstr "Rată de eșantionare"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "Evaluare"
@@ -11821,42 +11727,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Listă de redare"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Începeți să tastați pentru a căuta progresiv în listă"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "Piese"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "Albume"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "Interpreți"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "Compozitori"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "Ani"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "Arată doar potriviri"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "Preferințe căutare"
@@ -14901,13 +14807,13 @@ msgid "Updating the local Magnatune database."
 msgstr "Actualizare BD Magnatune.com locală."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 
 #: services/magnatune/MagnatuneStore.cpp:631
@@ -15507,6 +15413,11 @@ msgstr "Evaluare"
 #| msgid "Configure Scripts"
 msgid "Configure Target"
 msgstr "Configurează scripturi"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "Înapoi"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16312,6 +16223,75 @@ msgstr "Interpret: %1"
 #, kde-format
 msgid "empty"
 msgstr "gol"
+
+#, fuzzy
+#~| msgid "Add a sorting level to the playlist."
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "Adaugă un nivel de sortare la listă."
+
+#, fuzzy
+#~| msgid "Add a sorting level to the playlist."
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "Adaugă un nivel de sortare la listă."
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "Interpreți asemănători cu „%1”"
+
+#~ msgid "Match: %1%"
+#~ msgstr "Potrivire: %1%"
+
+#, fuzzy
+#~| msgid "Unable to load the widget"
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "Imposibil de încărcat controlul"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "Arată biografia"
+
+#~ msgid "No description available."
+#~ msgstr "Nicio descriere disponibilă."
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "Marcaje: %1"
+
+#, fuzzy
+#~| msgid " Cover not found"
+#~| msgid_plural " <b>%1</b> covers not found"
+#~ msgid "Top track not found"
+#~ msgstr " Coperta nu a fost găsită"
+
+#~ msgid "Similar Artists"
+#~ msgstr "Interpreți asemănători"
+
+#~ msgid "Forward"
+#~ msgstr "Înainte"
+
+#, fuzzy
+#~| msgid "Amarok - No track playing"
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Amarok - Nicio piesă în redare"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "Configurare interpreți asemănători"
+
+#~ msgid "Similar Artists to %1"
+#~ msgstr "Interpreți asemănători cu „%1”"
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "Interpreți asemănători: nu au fost găsiți"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "Publicat: %1"
+
+#, fuzzy
+#~| msgid "The maximum number of podcast items to store"
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "Numărul maxim de elemente podcast de stocat"
 
 #~ msgid "Test Login"
 #~ msgstr "Testează autentificarea"

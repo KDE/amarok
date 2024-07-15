@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -1636,7 +1636,6 @@ msgid "New Group"
 msgstr "Nauja grupė"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "nieko"
@@ -2084,7 +2083,7 @@ msgid "Composer"
 msgstr "Kompozitorius"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "Žanras"
@@ -4022,7 +4021,6 @@ msgid "Remove label"
 msgstr "Panaikinti etiketę"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -4048,9 +4046,9 @@ msgstr "Įkelti iš naujo"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4351,112 +4349,27 @@ msgstr "Derinti grojaraščio informacijos įskiepį"
 msgid "Width"
 msgstr "Plotis"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
-#, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "Pridėti Last.fm atlikėjų stotį į grojaraštį"
-
-#: context/applets/similarartists/ArtistWidget.cpp:143
-#, kde-format
-msgid "Add top track to the Playlist"
-msgstr "Pridėti geriausią kūrinį į grojaraštį"
-
-#: context/applets/similarartists/ArtistWidget.cpp:150
+#: context/applets/similarartists/package/contents/ui/main.qml:40
 #, fuzzy, kde-format
-#| msgid "Show Similar Artists of %1"
-msgid "Show Similar Artists to %1"
-msgstr "Rodyti į %1 panašius atlikėjus"
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "nuo <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:165
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Open Last.fm webpage for this artist"
-msgstr "Atverti šio atlikėjo Last.fm puslapį"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
+msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:182
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Match: %1%"
-msgstr "Atitikmuo: %1%"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "Nepavyko atsiųsti piešinuko: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "Rodyti biografiją"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "Aprašymo nerasta."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "Žymės: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr "Nerastas geriausias kūrinys"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
-msgstr "Geriausias kūrinys: %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "Panašūs atlikėjai"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "Atgal"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "Pirmyn"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Dabar grojančiai dainai rodyti panašius atlikėjus"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "Panašių atlikėjų nuostatos"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, kde-format
-msgid "Similar Artists to %1"
-msgstr "Į %1 panašūs atlikėjai"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "Panašūs atlikėjai: nerasta"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "Paskelbta: %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, kde-format
-msgid "Maximum number of artists to show:"
-msgstr "Maksimalus rodomų atlikėjų skaičius:"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5994,19 +5907,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "Garso prenumeratos failo pavadinimo išdėstymo konfigūravimas"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr "Nurodyta garso prenumeratos kanale"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr "adaptuotas"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6239,37 +6152,37 @@ msgstr[1] " minutes"
 msgstr[2] " minučių"
 msgstr[3] " minutę"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfigūruoti vietines garso prenumeratas"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Perkelti garso prenumeratas"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Ar norite perkelti visus atsiųstus epizodus į naują vietą?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Pasirinkite OPML failą eksportui"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Ar tikrai norite nutraukti „%1“ prenumeratą?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Trinti atsisiųstus epizodus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6278,23 +6191,23 @@ msgstr[1] "%1 garso prenumeratos vis dar siunčiamos"
 msgstr[2] "%1 garso prenumeratų vis dar siunčiamos"
 msgstr[3] "%1 garso prenumerata vis dar siunčiama"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Atšaukti atsiuntimą ir išjungti."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Nepavyko įrašyti podcast epizodo failo į %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Atsiunčiami garso prenumeratos įrašai"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Atsiunčiama garso prenumerata „%1“"
@@ -9232,13 +9145,13 @@ msgid "Location:"
 msgstr "Vieta:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&Ankstesnė"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&Kita"
@@ -11236,7 +11149,7 @@ msgstr "Įj./išj. pagrindinį langą"
 msgid "Toggle Full Screen"
 msgstr "Perjungti visą ekraną"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Ieškoti grojaraštyje"
@@ -12117,7 +12030,7 @@ msgstr "Bitų dažnis"
 msgid "Sample Rate"
 msgstr "Kadrų dažnis"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "Įvertinimas"
@@ -12208,42 +12121,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Grojaraštis"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Pradėkite rašyti, kad palaipsniui ieškotumėte grojaraštyje"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "Dainos"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "Albumai"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "Atlikėjai"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "Kompozitoriai"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "Metai"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "Rodyti tik atitinkančias"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "Paieškos nuostatos"
@@ -15326,13 +15239,13 @@ msgid "Updating the local Magnatune database."
 msgstr "Atnaujinama vietinė Magnatune duombazė."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, c-format
+#, fuzzy, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr "dainos su su"
 
 #: services/magnatune/MagnatuneStore.cpp:631
@@ -15958,6 +15871,11 @@ msgstr "Pasirinkite kalbą"
 #| msgid "Configure Scripts"
 msgid "Configure Target"
 msgstr "Konfigūruoti scenarijus"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "Atgal"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16802,6 +16720,68 @@ msgstr "Atlikėjas: %1"
 #, kde-format
 msgid "empty"
 msgstr "tuščia"
+
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "Pridėti Last.fm atlikėjų stotį į grojaraštį"
+
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "Pridėti geriausią kūrinį į grojaraštį"
+
+#, fuzzy
+#~| msgid "Show Similar Artists of %1"
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "Rodyti į %1 panašius atlikėjus"
+
+#~ msgid "Open Last.fm webpage for this artist"
+#~ msgstr "Atverti šio atlikėjo Last.fm puslapį"
+
+#~ msgid "Match: %1%"
+#~ msgstr "Atitikmuo: %1%"
+
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "Nepavyko atsiųsti piešinuko: %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "Rodyti biografiją"
+
+#~ msgid "No description available."
+#~ msgstr "Aprašymo nerasta."
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "Žymės: %1"
+
+#~ msgid "Top track not found"
+#~ msgstr "Nerastas geriausias kūrinys"
+
+#~ msgid "Top track: %1"
+#~ msgstr "Geriausias kūrinys: %1"
+
+#~ msgid "Similar Artists"
+#~ msgstr "Panašūs atlikėjai"
+
+#~ msgid "Forward"
+#~ msgstr "Pirmyn"
+
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Dabar grojančiai dainai rodyti panašius atlikėjus"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "Panašių atlikėjų nuostatos"
+
+#~ msgid "Similar Artists to %1"
+#~ msgstr "Į %1 panašūs atlikėjai"
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "Panašūs atlikėjai: nerasta"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "Paskelbta: %1"
+
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "Maksimalus rodomų atlikėjų skaičius:"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""

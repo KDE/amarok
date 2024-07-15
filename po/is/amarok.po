@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2024-05-25 10:53+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
@@ -1628,7 +1628,6 @@ msgid "New Group"
 msgstr "Nýr hópur"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "ekkert"
@@ -2079,7 +2078,7 @@ msgid "Composer"
 msgstr "Tónskáld"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "Tegund"
@@ -3971,7 +3970,6 @@ msgid "Remove label"
 msgstr "Fja&rlægja %1"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
@@ -3999,9 +3997,9 @@ msgstr "Endurnýja"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4316,121 +4314,26 @@ msgstr "Stilla spilunarlistaforritlinginn"
 msgid "Width"
 msgstr "Breidd"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
+#: context/applets/similarartists/package/contents/ui/main.qml:40
 #, fuzzy, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "Fjöldinn af mögulegum afturköllunum í lagalista."
+#| msgid " by <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "Frá:"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
-#, fuzzy, kde-format
-msgid "Add top track to the Playlist"
-msgstr "Fjöldinn af mögulegum afturköllunum í lagalista."
-
-#: context/applets/similarartists/ArtistWidget.cpp:150
-#, fuzzy, kde-format
-msgid "Show Similar Artists to %1"
-msgstr "Flytjendur sem líkjast \"%1\""
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Open Last.fm webpage for this artist"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
 msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, fuzzy, kde-format
-#| msgid "Match:"
-msgid "Match: %1%"
-msgstr "Samsvörun:"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, fuzzy, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "Gat ekki fundið neinar upplýsingar á Wikipediu: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "Sýna æviágrip"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, fuzzy, kde-format
-#| msgid "No description available..."
-msgid "No description available."
-msgstr "Lýsing ekki tiltæk"
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, fuzzy, kde-format
-#| msgid "Tags"
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "Merki"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, fuzzy, kde-format
-#| msgid " Cover not found"
-#| msgid_plural " <b>%1</b> covers not found"
-msgid "Top track not found"
-msgstr " Umslag fannst ekki"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, fuzzy, kde-format
-#| msgid "tracks"
-msgid "Top track: %1"
-msgstr "lög"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, fuzzy, kde-format
-msgid "Similar Artists"
-msgstr "Flytjendur sem líkjast \"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, fuzzy, kde-format
-#| msgid "Track"
-msgid "Back"
-msgstr "Til baka"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, fuzzy, kde-format
-#| msgid "&Seek Forward"
-msgid "Forward"
-msgstr "áfram"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, fuzzy, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Flytjendur sem líkjast \"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, fuzzy, kde-format
-msgid "Similar Artists Settings"
-msgstr "Flytjendur sem líkjast \"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, fuzzy, kde-format
-msgid "Similar Artists to %1"
-msgstr "Flytjendur sem líkjast \"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, fuzzy, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "Flytjendur sem líkjast \"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, fuzzy, kde-format
-#| msgid "Paused  ::  %1"
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "Í bið  ::  %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, fuzzy, kde-format
-#| msgid "The maximum number of podcast items to store"
-msgid "Maximum number of artists to show:"
-msgstr "Hámarksfjöldi podcast hluta sem á að geyma"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, fuzzy, kde-format
@@ -5906,21 +5809,21 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "Podcast stillingar"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, fuzzy, kde-format
 #| msgid "Updating podcast channel"
 msgid "Specified by podcast channel"
 msgstr "Uppfæri hlaðvarpsrás (podcast channel)"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, fuzzy, kde-format
 #| msgid "custom"
 msgid "custom"
 msgstr "Sérsniðið"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6152,63 +6055,63 @@ msgid_plural " minutes"
 msgstr[0] "Mínútur"
 msgstr[1] "Mínútur"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, fuzzy, kde-format
 #| msgid "Configure Podcasts..."
 msgid "Configure Local Podcasts"
 msgstr "Stilla Podcasta..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "Hlaðvörp (podcasts)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
 msgstr "&Eyða sóttum þætti"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Gat ekki vistað hlaðvarpsþátt (podcast episode file) sem %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Næ í hlaðvarpsmiðil (podcast media)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Næ í hlaðvarp (podcast) \"%1\""
@@ -9063,13 +8966,13 @@ msgid "Location:"
 msgstr "Staðsetning:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&Fyrra"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&Næsta"
@@ -11094,7 +10997,7 @@ msgstr "Víxla aðalglugga"
 msgid "Toggle Full Screen"
 msgstr "Víxla skjáfylli af/á"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Leit í lagalistum"
@@ -12029,7 +11932,7 @@ msgstr "Bitahraði"
 msgid "Sample Rate"
 msgstr "Söfnunartíðni"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "Einkunn"
@@ -12123,44 +12026,44 @@ msgctxt ""
 msgid "Playlist"
 msgstr "&Lagalisti"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr ""
 "Byrjaðu að slá inn texta til að leita í lagalista, svörun verður nákvæmari "
 "eftir því sem stöfum fjölgar"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "Lög"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "Plötur"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "Flytjendur"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "Tónskáld"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "Ár"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "Sýna aðeins það sem hefur samsvörun"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "Leitarstillingar"
@@ -15230,13 +15133,19 @@ msgid "Updating the local Magnatune database."
 msgstr "Uppfæri Magnatune.com gagnagrunn"
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Magnatune.com service accepts the following messages: \n"
+#| "\n"
+#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
+#| "specified mood to the playlist. The mood argument must have spaces "
+#| "escaped with %%20"
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 "Þjónusta Magnatune.com samþykkir eftirfarandi fyrirspurnir: \n"
 "\n"
@@ -15879,6 +15788,12 @@ msgstr "Tungumál"
 #| msgid "Configure Services"
 msgid "Configure Target"
 msgstr "Stilla þjónustur"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, fuzzy, kde-format
+#| msgid "Track"
+msgid "Back"
+msgstr "Til baka"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16705,6 +16620,89 @@ msgstr "Listamaður"
 #, fuzzy, kde-format
 msgid "empty"
 msgstr "Tómt"
+
+#, fuzzy
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "Fjöldinn af mögulegum afturköllunum í lagalista."
+
+#, fuzzy
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "Fjöldinn af mögulegum afturköllunum í lagalista."
+
+#, fuzzy
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "Flytjendur sem líkjast \"%1\""
+
+#, fuzzy
+#~| msgid "Match:"
+#~ msgid "Match: %1%"
+#~ msgstr "Samsvörun:"
+
+#, fuzzy
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "Gat ekki fundið neinar upplýsingar á Wikipediu: %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "Sýna æviágrip"
+
+#, fuzzy
+#~| msgid "No description available..."
+#~ msgid "No description available."
+#~ msgstr "Lýsing ekki tiltæk"
+
+#, fuzzy
+#~| msgid "Tags"
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "Merki"
+
+#, fuzzy
+#~| msgid " Cover not found"
+#~| msgid_plural " <b>%1</b> covers not found"
+#~ msgid "Top track not found"
+#~ msgstr " Umslag fannst ekki"
+
+#, fuzzy
+#~| msgid "tracks"
+#~ msgid "Top track: %1"
+#~ msgstr "lög"
+
+#, fuzzy
+#~ msgid "Similar Artists"
+#~ msgstr "Flytjendur sem líkjast \"%1\""
+
+#, fuzzy
+#~| msgid "&Seek Forward"
+#~ msgid "Forward"
+#~ msgstr "áfram"
+
+#, fuzzy
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Flytjendur sem líkjast \"%1\""
+
+#, fuzzy
+#~ msgid "Similar Artists Settings"
+#~ msgstr "Flytjendur sem líkjast \"%1\""
+
+#, fuzzy
+#~ msgid "Similar Artists to %1"
+#~ msgstr "Flytjendur sem líkjast \"%1\""
+
+#, fuzzy
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "Flytjendur sem líkjast \"%1\""
+
+#, fuzzy
+#~| msgid "Paused  ::  %1"
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "Í bið  ::  %1"
+
+#, fuzzy
+#~| msgid "The maximum number of podcast items to store"
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "Hámarksfjöldi podcast hluta sem á að geyma"
 
 #, fuzzy
 #~| msgid ""

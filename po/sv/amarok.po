@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2024-07-12 21:09+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -1615,7 +1615,6 @@ msgid "New Group"
 msgstr "Ny grupp"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "ingen"
@@ -2050,7 +2049,7 @@ msgid "Composer"
 msgstr "Tonsättare"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
@@ -3915,7 +3914,6 @@ msgid "Remove label"
 msgstr "Ta bort beteckning"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -3941,9 +3939,9 @@ msgstr "Uppdatera"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4233,111 +4231,27 @@ msgstr "Anpassa miniprogram med information om spellista"
 msgid "Width"
 msgstr "Bredd"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
-#, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "Lägg till artiststation från Last.fm i spellistan"
+#: context/applets/similarartists/package/contents/ui/main.qml:40
+#, fuzzy, kde-format
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "från <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Add top track to the Playlist"
-msgstr "Lägg till toppspår i spellistan"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
+msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:150
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Show Similar Artists to %1"
-msgstr "Visa artister som liknar %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
-#, kde-format
-msgid "Open Last.fm webpage for this artist"
-msgstr "Öppna webbsida från Last.fm för artisten"
-
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, kde-format
-msgid "Match: %1%"
-msgstr "Matchar: %1 %"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "Kan inte hämta bilden: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "Visa biografi"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "Ingen beskrivning tillgänglig."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "Taggar: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr "Första spåret hittades inte"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
-msgstr "Första spåret: %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "Liknande artister"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "Tillbaka"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "Framåt"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Visa liknande artister för spåret som för närvarande spelas"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "Inställning av liknande artister"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, kde-format
-msgid "Similar Artists to %1"
-msgstr "Artister som liknar %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "Liknande artist: Hittades inte"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "Publicerad:  %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, kde-format
-msgid "Maximum number of artists to show:"
-msgstr "Maximalt antal artister att visa:"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5789,19 +5703,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "Anpassning av filnamnsmönster i podsändningar"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr "Anges av podsändningskanal"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr "eget"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6033,60 +5947,60 @@ msgid_plural " minutes"
 msgstr[0] " minut"
 msgstr[1] " minuter"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Anpassa lokala podsändningar"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Flytta podsändningar"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Vill du flytta alla nerladdade avsnitt till den nya platsen?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Välj fil för OPML-export"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Vill du verkligen säga upp prenumerationen för \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Ta bort nerladdade avsnitt"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "En nerladdning av en podsändning pågår fortfarande"
 msgstr[1] "Nerladdningar av %1 podsändningar pågår fortfarande"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Avbryt nerladdning och avsluta"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Kunde inte podsändningens avsnittsfil i%1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Laddar ner podsändningsmedia"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Laddar ner podsändning \"%1\""
@@ -8908,13 +8822,13 @@ msgid "Location:"
 msgstr "Plats:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&Föregående"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&Nästa"
@@ -10883,7 +10797,7 @@ msgstr "Växla huvudfönster"
 msgid "Toggle Full Screen"
 msgstr "Växla fullskärmsläge"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Sök spellista"
@@ -11747,7 +11661,7 @@ msgstr "Bithastighet"
 msgid "Sample Rate"
 msgstr "Samplingsfrekvens"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "Betyg"
@@ -11837,42 +11751,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Spellista"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Börja skriva för att söka progressivt i spellistan"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "Spår"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "Album"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "Artister"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "Tonsättare"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "år"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "Visa bara träffar"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "Sökinställningar"
@@ -14898,13 +14812,19 @@ msgid "Updating the local Magnatune database."
 msgstr "Uppdaterar den lokala Magnatune-databasen."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Magnatune.com service accepts the following messages: \n"
+#| "\n"
+#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
+#| "specified mood to the playlist. The mood argument must have spaces "
+#| "escaped with %%20"
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 "Tjänsten Magnatune.com accepterar följande meddelanden: \n"
 "\n"
@@ -15510,6 +15430,11 @@ msgstr "Välj måltyp"
 #, kde-format
 msgid "Configure Target"
 msgstr "Anpassa mål"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "Tillbaka"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16301,6 +16226,66 @@ msgstr "Artist: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
+
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "Lägg till artiststation från Last.fm i spellistan"
+
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "Lägg till toppspår i spellistan"
+
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "Visa artister som liknar %1"
+
+#~ msgid "Open Last.fm webpage for this artist"
+#~ msgstr "Öppna webbsida från Last.fm för artisten"
+
+#~ msgid "Match: %1%"
+#~ msgstr "Matchar: %1 %"
+
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "Kan inte hämta bilden: %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "Visa biografi"
+
+#~ msgid "No description available."
+#~ msgstr "Ingen beskrivning tillgänglig."
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "Taggar: %1"
+
+#~ msgid "Top track not found"
+#~ msgstr "Första spåret hittades inte"
+
+#~ msgid "Top track: %1"
+#~ msgstr "Första spåret: %1"
+
+#~ msgid "Similar Artists"
+#~ msgstr "Liknande artister"
+
+#~ msgid "Forward"
+#~ msgstr "Framåt"
+
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Visa liknande artister för spåret som för närvarande spelas"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "Inställning av liknande artister"
+
+#~ msgid "Similar Artists to %1"
+#~ msgstr "Artister som liknar %1"
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "Liknande artist: Hittades inte"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "Publicerad:  %1"
+
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "Maximalt antal artister att visa:"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2012-11-20 23:54+0200\n"
 "Last-Translator: Diego Iastrubni <elcuco@kde.org>\n"
 "Language-Team: Hebrew <kde-i18n-doc@kde.org>\n"
@@ -1634,7 +1634,6 @@ msgid "New Group"
 msgstr "קבוצה חדשה"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, fuzzy, kde-format
 #| msgid "None"
 msgid "none"
@@ -2091,7 +2090,7 @@ msgid "Composer"
 msgstr "מלחין"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "סגנון"
@@ -4037,7 +4036,6 @@ msgid "Remove label"
 msgstr "הסר"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
@@ -4066,9 +4064,9 @@ msgstr "הורד מחדש"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, fuzzy, kde-format
@@ -4383,132 +4381,27 @@ msgstr ""
 msgid "Width"
 msgstr "רוחב"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
+#: context/applets/similarartists/package/contents/ui/main.qml:40
 #, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "מתוך <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
-msgid "Add top track to the Playlist"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
-
-#: context/applets/similarartists/ArtistWidget.cpp:150
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Show Similar Artists to %1"
-msgstr "אמנים דומים ל־\"%1\""
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Open Last.fm webpage for this artist"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
 msgstr ""
 
-# kde-il: Developer's personal comment -  translate only when make sence.
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, fuzzy, kde-format
-#| msgid "Match:"
-msgid "Match: %1%"
-msgstr "התאמה:"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
-msgid "Unable to fetch the picture: %1"
-msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
 msgstr ""
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, fuzzy, kde-format
-#| msgid "No description available..."
-msgid "No description available."
-msgstr "אין תיאור זמין..."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, fuzzy, kde-format
-#| msgid "Tags"
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "תגיות"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, fuzzy, kde-format
-#| msgid " Cover not found"
-#| msgid_plural " <b>%1</b> covers not found"
-msgid "Top track not found"
-msgstr " עטיפה לא נמצאה"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, fuzzy, kde-format
-#| msgid "tracks"
-msgid "Top track: %1"
-msgstr "רצועות"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Similar Artists"
-msgstr "אמנים דומים ל־\"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, fuzzy, kde-format
-#| msgid "Track"
-msgid "Back"
-msgstr "רצועה"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, fuzzy, kde-format
-#| msgid "Soren Harward"
-msgid "Forward"
-msgstr "Soren Harward"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "אמנים דומים ל־\"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Similar Artists Settings"
-msgstr "אמנים דומים ל־\"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Similar Artists to %1"
-msgstr "אמנים דומים ל־\"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Similar Artists: Not Found"
-msgstr "אמנים דומים ל־\"%1\""
-
-# kde-il: don't translatep:67
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, fuzzy, kde-format
-#| msgid "Paused  ::  %1"
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "מושהה  ::  %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, fuzzy, kde-format
-#| msgid "The maximum number of podcast items to store"
-msgid "Maximum number of artists to show:"
-msgstr "המספר המרבי של פוד־קסטים לשמירה"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, fuzzy, kde-format
@@ -6005,20 +5898,20 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "הגדרות פוד־קסט"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, fuzzy, kde-format
 #| msgid "Custom"
 msgid "custom"
 msgstr "מותאם אישית"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6250,64 +6143,64 @@ msgid_plural " minutes"
 msgstr[0] "דקות"
 msgstr[1] "דקות"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, fuzzy, kde-format
 #| msgid "Configure Podcasts..."
 msgid "Configure Local Podcasts"
 msgstr "הגדרת פוד־קסטים..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "פוד־קסטים"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, fuzzy, kde-format
 #| msgid "Do you really want to remove this %1?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "האם הנך בטוח שברצונך למחוק את %1?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
 msgstr "&מחק את הפרק שהורד"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "אין אפשרות לשמור קובץ של פרק פוד־קסט ל־%1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "מוריד מדיית פוד־קסט"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "מוריד כעת פוד־קסט \"%1\""
@@ -9212,13 +9105,13 @@ msgid "Location:"
 msgstr "מיקום:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "&הקודם"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "&הבא"
@@ -11282,7 +11175,7 @@ msgstr "החלף לחלון הראשי"
 msgid "Toggle Full Screen"
 msgstr ""
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr ""
@@ -12155,7 +12048,7 @@ msgstr "קצב סיביות"
 msgid "Sample Rate"
 msgstr "קצב דגימה"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "דירוג"
@@ -12253,42 +12146,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "רשימת־השמעה"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "רצועות"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "אלבומים"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "אמנים"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "מלחינים"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "שנים"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "הראה רק התאומות"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr ""
@@ -15337,13 +15230,13 @@ msgid "Updating the local Magnatune database."
 msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 
 #: services/magnatune/MagnatuneStore.cpp:631
@@ -15971,6 +15864,12 @@ msgstr "דירוג"
 #| msgid "Configure Services"
 msgid "Configure Target"
 msgstr "הגדר שירותים"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, fuzzy, kde-format
+#| msgid "Track"
+msgid "Back"
+msgstr "רצועה"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16815,6 +16714,96 @@ msgstr "אמן \"%1\""
 #, kde-format
 msgid "empty"
 msgstr ""
+
+#, fuzzy
+#~| msgid "The number of undo levels in the playlist."
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+
+#, fuzzy
+#~| msgid "The number of undo levels in the playlist."
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "אמנים דומים ל־\"%1\""
+
+# kde-il: Developer's personal comment -  translate only when make sence.
+#, fuzzy
+#~| msgid "Match:"
+#~ msgid "Match: %1%"
+#~ msgstr "התאמה:"
+
+#, fuzzy
+#~| msgid "Unable to retrieve Wikipedia information: %1"
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
+
+#, fuzzy
+#~| msgid "No description available..."
+#~ msgid "No description available."
+#~ msgstr "אין תיאור זמין..."
+
+#, fuzzy
+#~| msgid "Tags"
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "תגיות"
+
+#, fuzzy
+#~| msgid " Cover not found"
+#~| msgid_plural " <b>%1</b> covers not found"
+#~ msgid "Top track not found"
+#~ msgstr " עטיפה לא נמצאה"
+
+#, fuzzy
+#~| msgid "tracks"
+#~ msgid "Top track: %1"
+#~ msgstr "רצועות"
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Similar Artists"
+#~ msgstr "אמנים דומים ל־\"%1\""
+
+#, fuzzy
+#~| msgid "Soren Harward"
+#~ msgid "Forward"
+#~ msgstr "Soren Harward"
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "אמנים דומים ל־\"%1\""
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Similar Artists Settings"
+#~ msgstr "אמנים דומים ל־\"%1\""
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Similar Artists to %1"
+#~ msgstr "אמנים דומים ל־\"%1\""
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "אמנים דומים ל־\"%1\""
+
+# kde-il: don't translatep:67
+#, fuzzy
+#~| msgid "Paused  ::  %1"
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "מושהה  ::  %1"
+
+#, fuzzy
+#~| msgid "The maximum number of podcast items to store"
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "המספר המרבי של פוד־קסטים לשמירה"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""

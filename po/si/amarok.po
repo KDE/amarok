@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2009-02-20 12:07+0530\n"
 "Last-Translator: Danishka Navin <danishka@gmail.com>\n"
 "Language-Team: Sinhalese <danishka@gmail.com>\n"
@@ -1538,7 +1538,6 @@ msgid "New Group"
 msgstr "නව සමූහය"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, fuzzy, kde-format
 #| msgid "None"
 msgid "none"
@@ -1983,7 +1982,7 @@ msgid "Composer"
 msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr ""
@@ -3873,7 +3872,6 @@ msgid "Remove label"
 msgstr "සේවා තොරතුරු (සක්‍රීය සේවා නැත)"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, fuzzy, kde-format
 #| msgid "Select Format:"
@@ -3902,9 +3900,9 @@ msgstr "ආදේශය"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, fuzzy, kde-format
@@ -4211,124 +4209,26 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
+#: context/applets/similarartists/package/contents/ui/main.qml:40
 #, fuzzy, kde-format
-#| msgid "Search playlist"
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "වාදන ලැයිස්තුව සෙවුම"
+#| msgid "<b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "<b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
-#, fuzzy, kde-format
-#| msgid "Search playlist"
-msgid "Add top track to the Playlist"
-msgstr "වාදන ලැයිස්තුව සෙවුම"
-
-#: context/applets/similarartists/ArtistWidget.cpp:150
-#, fuzzy, kde-format
-#| msgid "All Artists"
-msgid "Show Similar Artists to %1"
-msgstr "සියලු කලාකරුවන්"
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Open Last.fm webpage for this artist"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
 msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, fuzzy, kde-format
-#| msgid "Podcasts"
-msgid "Match: %1%"
-msgstr "පොඩ්කාස්ට්"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Unable to fetch the picture: %1"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
 msgstr ""
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr ""
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr ""
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, fuzzy, kde-format
-#| msgid "Tags"
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "ටැග්"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr ""
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, fuzzy, kde-format
-#| msgid "Title"
-msgid "Top track: %1"
-msgstr "සිරස්තලය"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, fuzzy, kde-format
-#| msgid "All Artists"
-msgid "Similar Artists"
-msgstr "සියලු කලාකරුවන්"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr ""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr ""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, fuzzy, kde-format
-#| msgid "Amarok - No track playing."
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Amarok - වාදනය නොවේ."
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, fuzzy, kde-format
-#| msgid "Wikipedia"
-msgid "Similar Artists Settings"
-msgstr "විකිපිඩීයාව"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, fuzzy, kde-format
-#| msgid "All Artists"
-msgid "Similar Artists to %1"
-msgstr "සියලු කලාකරුවන්"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, fuzzy, kde-format
-#| msgid "All Artists"
-msgid "Similar Artists: Not Found"
-msgstr "සියලු කලාකරුවන්"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, fuzzy, kde-format
-#| msgid "Paused  ::  %1"
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "විරාමගන්වා ::  %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, fuzzy, kde-format
-#| msgid "Album Artist"
-msgid "Maximum number of artists to show:"
-msgstr "ඇලබම කලාකරු"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, fuzzy, kde-format
@@ -5761,19 +5661,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "පොඩ්කාස්ට් සැකසීම"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6002,62 +5902,62 @@ msgid_plural " minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, fuzzy, kde-format
 #| msgid "Local Podcasts"
 msgid "Configure Local Podcasts"
 msgstr "ප්‍රාදේශි පොඩ්කාස්ට්"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "පොඩ්කාස්ට්"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr ""
@@ -8798,13 +8698,13 @@ msgid "Location:"
 msgstr "පිහිටුම:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "මීට පෙර (&P)"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "මීළඟ (&N)"
@@ -10793,7 +10693,7 @@ msgstr ""
 msgid "Toggle Full Screen"
 msgstr ""
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "වාදන ලැයිස්තුව සෙවුම"
@@ -11678,7 +11578,7 @@ msgstr ""
 msgid "Sample Rate"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr ""
@@ -11772,42 +11672,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "වාදන ලැයිස්තුව"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "ඇල්බම"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr ""
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "ක්‍රියා"
@@ -14702,13 +14602,13 @@ msgid "Updating the local Magnatune database."
 msgstr ""
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 
 #: services/magnatune/MagnatuneStore.cpp:631
@@ -15272,6 +15172,11 @@ msgstr "කවර කළමණාකරු"
 #| msgid "International"
 msgid "Configure Target"
 msgstr "ජාත්‍යන්තර"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16089,6 +15994,73 @@ msgstr "සියලු කලාකරුවන්"
 #, kde-format
 msgid "empty"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Search playlist"
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "වාදන ලැයිස්තුව සෙවුම"
+
+#, fuzzy
+#~| msgid "Search playlist"
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "වාදන ලැයිස්තුව සෙවුම"
+
+#, fuzzy
+#~| msgid "All Artists"
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "සියලු කලාකරුවන්"
+
+#, fuzzy
+#~| msgid "Podcasts"
+#~ msgid "Match: %1%"
+#~ msgstr "පොඩ්කාස්ට්"
+
+#, fuzzy
+#~| msgid "Tags"
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "ටැග්"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "Top track: %1"
+#~ msgstr "සිරස්තලය"
+
+#, fuzzy
+#~| msgid "All Artists"
+#~ msgid "Similar Artists"
+#~ msgstr "සියලු කලාකරුවන්"
+
+#, fuzzy
+#~| msgid "Amarok - No track playing."
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "Amarok - වාදනය නොවේ."
+
+#, fuzzy
+#~| msgid "Wikipedia"
+#~ msgid "Similar Artists Settings"
+#~ msgstr "විකිපිඩීයාව"
+
+#, fuzzy
+#~| msgid "All Artists"
+#~ msgid "Similar Artists to %1"
+#~ msgstr "සියලු කලාකරුවන්"
+
+#, fuzzy
+#~| msgid "All Artists"
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "සියලු කලාකරුවන්"
+
+#, fuzzy
+#~| msgid "Paused  ::  %1"
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "විරාමගන්වා ::  %1"
+
+#, fuzzy
+#~| msgid "Album Artist"
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "ඇලබම කලාකරු"
 
 #~ msgid "Test Login"
 #~ msgstr "පරීක්‍ෂණ පිවිසුම"

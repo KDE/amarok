@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -1583,7 +1583,6 @@ msgid "New Group"
 msgstr "새 그룹"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "없음"
@@ -2017,7 +2016,7 @@ msgid "Composer"
 msgstr "작곡가"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "장르"
@@ -3864,7 +3863,6 @@ msgid "Remove label"
 msgstr "레이블 삭제"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -3890,9 +3888,9 @@ msgstr "새로 고침"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4182,111 +4180,27 @@ msgstr "재생 목록 정보 애플릿 설정"
 msgid "Width"
 msgstr "너비"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
-#, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "재생 목록에 Last.fm 아티스트 스테이션 추가"
+#: context/applets/similarartists/package/contents/ui/main.qml:40
+#, fuzzy, kde-format
+#| msgctxt "track from source"
+#| msgid "from <b>%1</b>"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr "<b>%1</b>에서"
 
-#: context/applets/similarartists/ArtistWidget.cpp:143
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Add top track to the Playlist"
-msgstr "재생 목록에 최고 곡 추가"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
+msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:150
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Show Similar Artists to %1"
-msgstr "%1와(과) 비슷한 아티스트 표시|/|%1$[와과 %1] 비슷한 아티스트 표시"
-
-#: context/applets/similarartists/ArtistWidget.cpp:165
-#, kde-format
-msgid "Open Last.fm webpage for this artist"
-msgstr "이 아티스트의 Last.fm 웹 페이지 열기"
-
-#: context/applets/similarartists/ArtistWidget.cpp:182
-#, kde-format
-msgid "Match: %1%"
-msgstr "일치: %1%"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "사진을 가져올 수 없음: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "소개 표시"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "설명이 없습니다."
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "태그: %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr "상위 곡을 찾을 수 없음"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
-msgstr "인기 곡: %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "비슷한 아티스트"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "뒤로"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "앞으로"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "현재 재생 중인 곡과 비슷한 아티스트 표시"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "비슷한 아티스트 설정"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, kde-format
-msgid "Similar Artists to %1"
-msgstr "%1와(과) 비슷한 아티스트|/|%1$[와과 %1] 비슷한 아티스트"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "비슷한 아티스트: 찾을 수 없음"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "작성: %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, kde-format
-msgid "Maximum number of artists to show:"
-msgstr "표시할 최대 아티스트 수:"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5686,19 +5600,19 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "팟캐스트 파일 이름 레이아웃 설정"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
 msgstr "팟캐스트 채널에서 지정한 대로"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, kde-format
 msgid "custom"
 msgstr "사용자 정의"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -5927,59 +5841,59 @@ msgid " minute"
 msgid_plural " minutes"
 msgstr[0] "분"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "로컬 팟캐스트 설정"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "팟캐스트 이동"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "다운로드한 모든 에피소드를 새 위치로 이동하시겠습니까?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "OPML로 내보낼 파일 선택"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "\"%1\" 구독을 취소하시겠습니까?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "다운로드한 에피소드 삭제"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "팟캐스트 %1개 다운로드 진행 중"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "다운로드를 취소하고 끝냅니다."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "팟캐스드 에피소드 파일을 %1에 저장할 수 없음"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "팟캐스트 미디어 다운로드 중"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "팟캐스트 \"%1\" 다운로드 중"
@@ -8738,13 +8652,13 @@ msgid "Location:"
 msgstr "위치:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "이전(&P)"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "다음(&N)"
@@ -10715,7 +10629,7 @@ msgstr "주 창 표시/숨기기"
 msgid "Toggle Full Screen"
 msgstr "전체 화면 전환"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "재생 목록 검색"
@@ -11573,7 +11487,7 @@ msgstr "비트 전송률"
 msgid "Sample Rate"
 msgstr "샘플링 레이트"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "별점"
@@ -11663,42 +11577,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "재생 목록"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "입력하여 재생 목록을 증분 검색할 수 있습니다"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "곡"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "앨범"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "아티스트"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "작곡가"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "연도"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "일치하는 항목만 표시"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "검색 설정"
@@ -14670,13 +14584,19 @@ msgid "Updating the local Magnatune database."
 msgstr "로컬 Magnatune 데이터베이스를 업데이트하는 중."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Magnatune.com service accepts the following messages: \n"
+#| "\n"
+#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
+#| "specified mood to the playlist. The mood argument must have spaces "
+#| "escaped with %%20"
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 "Magnatune.com 서비스는 다음 메시지를 수락합니다.\n"
 "\n"
@@ -15271,6 +15191,11 @@ msgstr "대상 형식 선택"
 #, kde-format
 msgid "Configure Target"
 msgstr "대상 설정"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "뒤로"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16050,6 +15975,66 @@ msgstr "아티스트: %1"
 #, kde-format
 msgid "empty"
 msgstr "비어 있음"
+
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "재생 목록에 Last.fm 아티스트 스테이션 추가"
+
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "재생 목록에 최고 곡 추가"
+
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "%1와(과) 비슷한 아티스트 표시|/|%1$[와과 %1] 비슷한 아티스트 표시"
+
+#~ msgid "Open Last.fm webpage for this artist"
+#~ msgstr "이 아티스트의 Last.fm 웹 페이지 열기"
+
+#~ msgid "Match: %1%"
+#~ msgstr "일치: %1%"
+
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "사진을 가져올 수 없음: %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "소개 표시"
+
+#~ msgid "No description available."
+#~ msgstr "설명이 없습니다."
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "태그: %1"
+
+#~ msgid "Top track not found"
+#~ msgstr "상위 곡을 찾을 수 없음"
+
+#~ msgid "Top track: %1"
+#~ msgstr "인기 곡: %1"
+
+#~ msgid "Similar Artists"
+#~ msgstr "비슷한 아티스트"
+
+#~ msgid "Forward"
+#~ msgstr "앞으로"
+
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "현재 재생 중인 곡과 비슷한 아티스트 표시"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "비슷한 아티스트 설정"
+
+#~ msgid "Similar Artists to %1"
+#~ msgstr "%1와(과) 비슷한 아티스트|/|%1$[와과 %1] 비슷한 아티스트"
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "비슷한 아티스트: 찾을 수 없음"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "작성: %1"
+
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "표시할 최대 아티스트 수:"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""

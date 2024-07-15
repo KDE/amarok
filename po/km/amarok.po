@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-14 01:42+0000\n"
+"POT-Creation-Date: 2024-07-15 01:45+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -1589,7 +1589,6 @@ msgid "New Group"
 msgstr "ក្រុម​ថ្មី"
 
 #: amarokurls/BookmarkModel.cpp:536
-#: context/applets/similarartists/ArtistWidget.cpp:443
 #, kde-format
 msgid "none"
 msgstr "គ្មាន"
@@ -2030,7 +2029,7 @@ msgid "Composer"
 msgstr "កម្មវិធី​តែង"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:93
+#: playlist/ProgressiveSearchWidget.cpp:96
 #, kde-format
 msgid "Genre"
 msgstr "ចង្វាក់"
@@ -3899,7 +3898,6 @@ msgid "Remove label"
 msgstr "យក​ស្លាក​ចេញ"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
-#: context/applets/similarartists/ArtistWidget.cpp:131
 #: playlist/view/PlaylistViewCommon.cpp:203
 #, kde-format
 msgid "Show in Media Sources"
@@ -3925,9 +3923,9 @@ msgstr "ផ្ទុក​ឡើងវិញ"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4225,113 +4223,25 @@ msgstr "កំណត់​រចនា​សម្ព័ន្ធ​អាប់
 msgid "Width"
 msgstr "ទទឹង​"
 
-#: context/applets/similarartists/ArtistWidget.cpp:137
-#, kde-format
-msgid "Add Last.fm artist station to the Playlist"
-msgstr "បន្ថែម​ស្ថានីយ​សិល្បករ Last.fm ទៅកាន់​បញ្ជី​ចាក់"
-
-#: context/applets/similarartists/ArtistWidget.cpp:143
-#, kde-format
-msgid "Add top track to the Playlist"
-msgstr "បន្ថែម​បទ​លើ​គេ​ទៅកាន់​បញ្ជី​ចាក់ ។"
-
-#: context/applets/similarartists/ArtistWidget.cpp:150
+#: context/applets/similarartists/package/contents/ui/main.qml:40
 #, fuzzy, kde-format
-#| msgid "Show Similar Artists of %1"
-msgid "Show Similar Artists to %1"
-msgstr "សិល្បករ​​ស្រដៀង​គ្នា​របស់ %1"
+msgctxt "%1 is the artist for which similars are currently shown"
+msgid "Similar to <b>%1</b>"
+msgstr " ដោយ <b>%1</b>"
 
-#: context/applets/similarartists/ArtistWidget.cpp:165
+#: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
-msgid "Open Last.fm webpage for this artist"
-msgstr "បើក​ទំព័រ​បណ្ដាញ Last.fm សម្រាប់​សិល្បករ​នេះ"
+msgctxt "Artist's listener and playcount from Last.fm"
+msgid "%1 listeners<br>%2 plays"
+msgstr ""
 
-#: context/applets/similarartists/ArtistWidget.cpp:182
+#: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
-msgid "Match: %1%"
-msgstr "ផ្គូផ្គង ៖ %1%"
-
-#: context/applets/similarartists/ArtistWidget.cpp:278
-#, kde-format
-msgid "Unable to fetch the picture: %1"
-msgstr "មិន​អាច​ទៅ​យក​រូភាព ៖ %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:287
-#, kde-format
-msgctxt "@info:tooltip Artist biography"
-msgid "Show Biography"
-msgstr "បង្ហាញ​ជវប្រវត្តិ"
-
-#: context/applets/similarartists/ArtistWidget.cpp:428
-#, kde-format
-msgid "No description available."
-msgstr "មិន​មាន​សេចក្ដី​ពិពណ៌នា​ទេ"
-
-#: context/applets/similarartists/ArtistWidget.cpp:444
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags: %1"
-msgstr "ស្លាក ៖ %1"
-
-#: context/applets/similarartists/ArtistWidget.cpp:453
-#, kde-format
-msgid "Top track not found"
-msgstr " រក​មិន​ឃើញ​បទ​ដែល​នៅ​លើ​គេ​ទេ"
-
-#: context/applets/similarartists/ArtistWidget.cpp:459
-#, kde-format
-msgid "Top track: %1"
-msgstr "បទ​ដែល​នៅ​លើ​គេ ៖ %1"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:72
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:156
-#, kde-format
-msgid "Similar Artists"
-msgstr "សិល្បករ​​ដែល​ស្រដៀង​គ្នា"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: statsyncing/ui/MatchedTracksPage.cpp:138
-#, kde-format
-msgid "Back"
-msgstr "ថយក្រោយ"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#, kde-format
-msgid "Forward"
-msgstr "ទៅមុខ"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:91
-#, kde-format
-msgid "Show Similar Artists for Currently Playing Track"
-msgstr "បង្ហាញ​សិល្បករ​​​ស្រដៀង​គ្នា​សម្រាប់​បទ​ដែល​កំពុង​ចាក់​បច្ចុប្បន្ន"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:191
-#, kde-format
-msgid "Similar Artists Settings"
-msgstr "ការ​កំណត់​សិល្បករ​​ស្រដៀង​គ្នា"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:215
-#, fuzzy, kde-format
-#| msgid "Similar Artists to \"%1\""
-msgid "Similar Artists to %1"
-msgstr "សិល្បករ​​ស្រដៀង​នឹង \"%1\""
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:222
-#, kde-format
-msgid "Similar Artists: Not Found"
-msgstr "សិល្បករ​​ស្រដៀង​គ្នា ៖ រក​មិន​ឃើញ"
-
-#: context/applets/similarartists/SimilarArtistsApplet.cpp:262
-#, kde-format
-msgctxt "@item:intext Artist biography published date"
-msgid "Published: %1"
-msgstr "បាន​បោះពុម្ពផ្សាយ ៖ %1"
-
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/similarartists/similarArtistsSettings.ui:19
-#, fuzzy, kde-format
-msgid "Maximum number of artists to show:"
-msgstr "សិល្បករស្រដៀងគ្នា​អតិបរមា​ត្រូវ​បាន​បង្ហាញ​"
+msgctxt ""
+"Number of user's own scrobbles of an artist on Last.fm, appended to previous "
+"string if not 0"
+msgid "<br>%1 plays by you"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5769,20 +5679,20 @@ msgid "Podcast Filename Layout Configuration"
 msgstr "ការ​កំណត់​រចនាសម្ព័ន្ធ​ផតខាស់"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, fuzzy, kde-format
 #| msgid "Updating podcast channel"
 msgid "Specified by podcast channel"
 msgstr "ធ្វើ​ឲ្យ​ឆានែល​ផតខាស់​ទាន់សម័យ"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
 #, fuzzy, kde-format
 msgid "custom"
 msgstr "ផ្ទាល់​ខ្លួន"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:110
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
 #, no-c-format, kde-format
 msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
@@ -6003,59 +5913,59 @@ msgid " minute"
 msgid_plural " minutes"
 msgstr[0] "នាទី"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:615
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ Podcasts មូលដ្ឋាន"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
 #, kde-format
 msgid "Move Podcasts"
 msgstr "ផ្លាស់ទី Podcasts"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:637
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "តើ​អ្នក​ចង់​ផ្លាស់ទី​ឧបកថា​ដែល​បាន​ទាញ​យក​ទាំងអស់​ទៅកាន់​ទីតាំង​ថ្មី​ដែរ​ឬទេ ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:704
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "ជ្រើស​ឯកសារ​សម្រាប់​ការ​នាំចេញ OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:851
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "តើ​អ្នក​ពិតជា​ចង់​ឈប់​ជាវ​ប្រចាំ​ពី \"%1\" មែន​ឬ ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "លុប​ឧបកថា​ដែល​បាន​ទាញ​យក"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:977
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "នៅ​មាន​ការ​ទាញ​យក podcast ចំនួន %1 ដែល​កពុង​ដំណើរការ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:980
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "បោះបង់​ការ​ទាញ​យក រួច​បិទ ។"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "មិន​អាច​រក្សាទុក​ឯកសារ podcast episode ទៅ​កាន់ %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "ទាញយក​យក​មេឌៀ​ផតខាស់"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "ទាញយក​ផតខាស់ \"%1\""
@@ -8882,13 +8792,13 @@ msgid "Location:"
 msgstr "ទីតាំង ៖"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
 #, kde-format
 msgid "&Previous"
 msgstr "មុន"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Next"
 msgstr "បន្ទាប់"
@@ -10878,7 +10788,7 @@ msgstr "បិទ/​បើក​បង្អួច​បញ្ជី​ចា�
 msgid "Toggle Full Screen"
 msgstr "បិទ/បើ​ពេញអែក្រង់ "
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "ស្វែងរក​បញ្ជី​​ចាក់"
@@ -11742,7 +11652,7 @@ msgstr "អត្រា​ប៊ីត"
 msgid "Sample Rate"
 msgstr "អត្រាគំរូ"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
 #, kde-format
 msgid "Rating"
 msgstr "កម្រិត​គុណភាព​"
@@ -11836,42 +11746,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "បញ្ជីចាក់"
 
-#: playlist/ProgressiveSearchWidget.cpp:51
+#: playlist/ProgressiveSearchWidget.cpp:54
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "ចាប់ផ្ដើម​វាយ​ដើម្បី​ស្វែងរក​តាមរយៈ​បញ្ជី​ចាក់"
 
-#: playlist/ProgressiveSearchWidget.cpp:72
+#: playlist/ProgressiveSearchWidget.cpp:75
 #, kde-format
 msgid "Tracks"
 msgstr "បទ"
 
-#: playlist/ProgressiveSearchWidget.cpp:79
+#: playlist/ProgressiveSearchWidget.cpp:82
 #, kde-format
 msgid "Albums"
 msgstr "អាល់ប៊ុម"
 
-#: playlist/ProgressiveSearchWidget.cpp:86
+#: playlist/ProgressiveSearchWidget.cpp:89
 #, kde-format
 msgid "Artists"
 msgstr "សិល្បករ"
 
-#: playlist/ProgressiveSearchWidget.cpp:100
+#: playlist/ProgressiveSearchWidget.cpp:103
 #, kde-format
 msgid "Composers"
 msgstr "កម្មវិធី​តែង"
 
-#: playlist/ProgressiveSearchWidget.cpp:114
+#: playlist/ProgressiveSearchWidget.cpp:117
 #, kde-format
 msgid "Years"
 msgstr "ឆ្នាំ"
 
-#: playlist/ProgressiveSearchWidget.cpp:123
+#: playlist/ProgressiveSearchWidget.cpp:126
 #, kde-format
 msgid "Show only matches"
 msgstr "បង្ហាញ​តែ​ការ​ផ្គូផ្គង​ប៉ុណ្ណោះ"
 
-#: playlist/ProgressiveSearchWidget.cpp:135
+#: playlist/ProgressiveSearchWidget.cpp:138
 #, kde-format
 msgid "Search Preferences"
 msgstr "ចំណូល​ចិត្ត​ស្វែងរក"
@@ -14857,13 +14767,19 @@ msgid "Updating the local Magnatune database."
 msgstr "ធ្វើ​ឲ្យ​មូលដ្ឋាន​ទិន្នន័យ Magnatune មូលដ្ឋានទាន់សម័យ ។"
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, c-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Magnatune.com service accepts the following messages: \n"
+#| "\n"
+#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
+#| "specified mood to the playlist. The mood argument must have spaces "
+#| "escaped with %%20"
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
 "\taddMoodyTracks mood count: Adds a number of random tracks with the "
 "specified mood to the playlist. The mood argument must have spaces escaped "
-"with %%20"
+"with &#37;20"
 msgstr ""
 "សេវា Magnatune.com ព្រមទទួល​សារ​ដូចខាងក្រោម ៖ \n"
 "\n"
@@ -15472,6 +15388,11 @@ msgstr "ជ្រើស​ភាសា"
 #| msgid "Configure Scripts"
 msgid "Configure Target"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ​ស្គ្រីប"
+
+#: statsyncing/ui/MatchedTracksPage.cpp:138
+#, kde-format
+msgid "Back"
+msgstr "ថយក្រោយ"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, fuzzy, kde-format
@@ -16281,6 +16202,71 @@ msgstr "សិល្បករ \"%1\""
 #, kde-format
 msgid "empty"
 msgstr "សម្អាត"
+
+#~ msgid "Add Last.fm artist station to the Playlist"
+#~ msgstr "បន្ថែម​ស្ថានីយ​សិល្បករ Last.fm ទៅកាន់​បញ្ជី​ចាក់"
+
+#~ msgid "Add top track to the Playlist"
+#~ msgstr "បន្ថែម​បទ​លើ​គេ​ទៅកាន់​បញ្ជី​ចាក់ ។"
+
+#, fuzzy
+#~| msgid "Show Similar Artists of %1"
+#~ msgid "Show Similar Artists to %1"
+#~ msgstr "សិល្បករ​​ស្រដៀង​គ្នា​របស់ %1"
+
+#~ msgid "Open Last.fm webpage for this artist"
+#~ msgstr "បើក​ទំព័រ​បណ្ដាញ Last.fm សម្រាប់​សិល្បករ​នេះ"
+
+#~ msgid "Match: %1%"
+#~ msgstr "ផ្គូផ្គង ៖ %1%"
+
+#~ msgid "Unable to fetch the picture: %1"
+#~ msgstr "មិន​អាច​ទៅ​យក​រូភាព ៖ %1"
+
+#~ msgctxt "@info:tooltip Artist biography"
+#~ msgid "Show Biography"
+#~ msgstr "បង្ហាញ​ជវប្រវត្តិ"
+
+#~ msgid "No description available."
+#~ msgstr "មិន​មាន​សេចក្ដី​ពិពណ៌នា​ទេ"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags: %1"
+#~ msgstr "ស្លាក ៖ %1"
+
+#~ msgid "Top track not found"
+#~ msgstr " រក​មិន​ឃើញ​បទ​ដែល​នៅ​លើ​គេ​ទេ"
+
+#~ msgid "Top track: %1"
+#~ msgstr "បទ​ដែល​នៅ​លើ​គេ ៖ %1"
+
+#~ msgid "Similar Artists"
+#~ msgstr "សិល្បករ​​ដែល​ស្រដៀង​គ្នា"
+
+#~ msgid "Forward"
+#~ msgstr "ទៅមុខ"
+
+#~ msgid "Show Similar Artists for Currently Playing Track"
+#~ msgstr "បង្ហាញ​សិល្បករ​​​ស្រដៀង​គ្នា​សម្រាប់​បទ​ដែល​កំពុង​ចាក់​បច្ចុប្បន្ន"
+
+#~ msgid "Similar Artists Settings"
+#~ msgstr "ការ​កំណត់​សិល្បករ​​ស្រដៀង​គ្នា"
+
+#, fuzzy
+#~| msgid "Similar Artists to \"%1\""
+#~ msgid "Similar Artists to %1"
+#~ msgstr "សិល្បករ​​ស្រដៀង​នឹង \"%1\""
+
+#~ msgid "Similar Artists: Not Found"
+#~ msgstr "សិល្បករ​​ស្រដៀង​គ្នា ៖ រក​មិន​ឃើញ"
+
+#~ msgctxt "@item:intext Artist biography published date"
+#~ msgid "Published: %1"
+#~ msgstr "បាន​បោះពុម្ពផ្សាយ ៖ %1"
+
+#, fuzzy
+#~ msgid "Maximum number of artists to show:"
+#~ msgstr "សិល្បករស្រដៀងគ្នា​អតិបរមា​ត្រូវ​បាន​បង្ហាញ​"
 
 #~ msgctxt "Last.fm: errorMessage"
 #~ msgid ""
