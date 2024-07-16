@@ -1,25 +1,25 @@
 # Translation of amarok.po to Catalan (Valencian)
 # Copyright (C) 2005-2024 This_file_is_part_of_KDE
 #
-# SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Antoni Bella Pérez <antonibella5@yahoo.com>
+# SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Antoni Bella Pérez <antonibella5@yahoo.com>
 # Pau Capdevila Pujol <pau.capdevila@estudiant.upc.edu>, 2005.
 # Pau Rul·lan Ferragut <paurullan@bulma.net>, 2005.
 # Pau Tallada Crespí <pau_tallada@telefonica.net>, 2006, 2007.
-# Josep M. Ferrer <txemaq@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024.
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Josep M. Ferrer <txemaq@gmail.com>
 # Joan Maspons <joanmaspons@gmail.com>, 2009, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-15 01:45+0000\n"
-"PO-Revision-Date: 2024-07-05 19:05+0200\n"
-"Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
+"POT-Creation-Date: 2024-07-16 01:41+0000\n"
+"PO-Revision-Date: 2024-07-15 13:07+0200\n"
+"Last-Translator: Antoni Bella Pérez <antonibella5@yahoo.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.08.5\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 
@@ -1880,12 +1880,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Clau no vàlida de sessió de Last.fm. Torneu a connectar amb el vostre compte "
+"de Last.fm en la configuració dels connectors."
 
 #: App.cpp:606
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "S'ha produït un error de clau de sessió de Last.fm"
 
 #: App.cpp:667
 #, kde-format
@@ -2050,7 +2052,7 @@ msgstr "Desconegut"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -4294,18 +4296,16 @@ msgid "Width"
 msgstr "Amplària"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "des de <b>%1</b>"
+msgstr "Semblants a <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 oients<br>%2 reproduccions"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4313,7 +4313,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 reproduccions vostres"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -7768,17 +7768,17 @@ msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] "%2 - ( <b>1</b> sense caràtula )"
 msgstr[1] "%2 - ( <b>%1</b> sense caràtula )"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "Caràtula"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "Cap artista"
@@ -9841,15 +9841,7 @@ msgstr ""
 "(C) 2003-2024, l'escamot de desenvolupament d'Amarok"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9860,12 +9852,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"iirc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"iirc.libera.chat - #amarok\n"
 "\n"
 "Comentaris:\n"
 "amarok@kde.org\n"
 "\n"
-"(Data de compilació: %1)"
+"(Data de construcció: %1)"
 
 #: main.cpp:111
 #, kde-format
@@ -9949,7 +9941,7 @@ msgstr "Patrick von Reth"
 #: main.cpp:141
 #, kde-format
 msgid "Windows build (TheOneRing)"
-msgstr "Compilació a Windows (TheOneRing)"
+msgstr "Construcció per a Windows (TheOneRing)"
 
 #: main.cpp:145
 #, kde-format
@@ -13458,14 +13450,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "L'script %1 ha estat calculant durant 5 segons. Voleu finalitzar?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13474,8 +13459,8 @@ msgid ""
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "L'script %1 utilitza crides a una API obsoleta per a crear scripts. "
-"Contacteu amb l'autor de l'script, %2 a %3, i demaneu-li que l'actualitze "
-"abans de la propera publicació d'Amarok."
+"Contacteu amb l'autor de l'script, %2, i demaneu-li que l'actualitze abans "
+"de la propera publicació d'Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13930,9 +13915,7 @@ msgstr "Perfil de Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
@@ -13940,34 +13923,28 @@ msgstr "Nom d'usuari:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Falla en la connexió"
+msgstr "Connecta amb el compte"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "No cal"
+msgstr "No connectat"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
-"<a href=\"http://www.last.fm:80/signup.php\">Registreu-vos a Last.fm</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Registreu-vos a Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Desconnecta el dispositiu"
+msgstr "Desconnecta el compte"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14163,16 +14140,19 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"S'ha produït un error en migarar el nom d'usuari de Last.fm des de KWallet. "
+"Torneu a connectar amb el vostre compte de Last.fm en la configuració dels "
+"connectors."
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Voleu desconnectar Amarok del compte %1 de Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:93
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Desconnecte el compte de Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14183,17 +14163,16 @@ msgid "Failed"
 msgstr "No s'ha pogut"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this artist"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Obri la pàgina web de Last.fm d'este artista"
+msgstr "S'està obrint la pàgina web de Last.fm"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Finalitza la connexió del compte"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14202,6 +14181,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"La connexió amb el compte Last.fm no ha sigut correcta. Assegureu-vos que "
+"heu autoritzat Amarok per a connectar-vos al vostre compte de Last.fm a la "
+"pàgina web de Last.fm que s'ha obert i torneu-ho a provar."
 
 #: services/lastfm/LastFmServiceSettings.cpp:245
 #, kde-format
@@ -14974,13 +14956,7 @@ msgid "Updating the local Magnatune database."
 msgstr "S'està actualitzant la base de dades local de Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14992,7 +14968,7 @@ msgstr ""
 "\n"
 "\taddMoodyTracks humor quantitat: afig un nombre aleatori de peces a la "
 "llista de reproducció amb l'humor indicat. L'argument «humor» ha de tindre "
-"els espais escapats amb %%20"
+"els espais escapats amb &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15078,14 +15054,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Maneja la sincronització automàtica per al servei MP3tunes en Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15094,8 +15063,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"servidor: irc.libera.chat / canals: #amarok #amarok-de #amarok-es, #amarok-"
-"fr\n"
+"servidor: irc.libera.chat / canal: #amarok\n"
 "\n"
 "Comentaris:\n"
 "amarok@kde.org"
@@ -16425,86 +16393,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "Add Last.fm artist station to the Playlist"
-#~ msgstr "Afig una estació d'artista de Last.fm a la llista de reproducció"
-
-#~ msgid "Add top track to the Playlist"
-#~ msgstr "Afig una peça a dalt de la llista de reproducció"
-
-#~ msgid "Show Similar Artists to %1"
-#~ msgstr "Mostra artistes semblants a %1"
-
-#~ msgid "Open Last.fm webpage for this artist"
-#~ msgstr "Obri la pàgina web de Last.fm d'este artista"
-
-#~ msgid "Match: %1%"
-#~ msgstr "Coincidència: %1%"
-
-#~ msgid "Unable to fetch the picture: %1"
-#~ msgstr "No s'ha pogut recuperar la imatge: %1"
-
-#~ msgctxt "@info:tooltip Artist biography"
-#~ msgid "Show Biography"
-#~ msgstr "Mostra la biografia"
-
-#~ msgid "No description available."
-#~ msgstr "No hi ha disponible cap descripció."
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags: %1"
-#~ msgstr "Etiquetes: %1"
-
-#~ msgid "Top track not found"
-#~ msgstr "No s'ha trobat la peça principal"
-
-#~ msgid "Top track: %1"
-#~ msgstr "Peça principal: %1"
-
-#~ msgid "Similar Artists"
-#~ msgstr "Artistes semblants"
-
-#~ msgid "Forward"
-#~ msgstr "Avant"
-
-#~ msgid "Show Similar Artists for Currently Playing Track"
-#~ msgstr "Mostra artistes semblants a la peça que s'està reproduint"
-
-#~ msgid "Similar Artists Settings"
-#~ msgstr "Configureu els artistes semblants"
-
-#~ msgid "Similar Artists to %1"
-#~ msgstr "Artistes semblants a %1"
-
-#~ msgid "Similar Artists: Not Found"
-#~ msgstr "Artistes semblants: No s'ha trobat"
-
-#~ msgctxt "@item:intext Artist biography published date"
-#~ msgid "Published: %1"
-#~ msgstr "Publicació: %1"
-
-#~ msgid "Maximum number of artists to show:"
-#~ msgstr "Nombre màxim d'artistes semblants que es mostraran:"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Either the username was not recognized, or the password was incorrect."
-#~ msgstr "No es reconeix el nom d'usuari o la contrasenya és incorrecte."
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "There was a problem communicating with the Last.fm services. Please try "
-#~ "again later."
-#~ msgstr ""
-#~ "S'ha produït un problema comunicant amb els serveis de Last.fm. Intenteu-"
-#~ "ho més tard."
-
-#~ msgid "No running KWallet found."
-#~ msgstr "No s'ha trobat cap KWallet executant-se."
-
-#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-#~ msgstr ""
-#~ "Voleu que Amarok guarde les vostres credencials de Last.fm en text normal?"
-
-#~ msgid "Test Login"
-#~ msgstr "Prova la identificació"

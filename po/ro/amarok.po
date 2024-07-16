@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-15 01:45+0000\n"
+"POT-Creation-Date: 2024-07-16 01:41+0000\n"
 "PO-Revision-Date: 2023-04-10 19:07+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
@@ -2005,7 +2005,7 @@ msgstr "Necunoscută"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -7631,17 +7631,17 @@ msgstr[0] " - ( <b>%1</b> fără copertă )"
 msgstr[1] " - ( <b>%1</b> fără copertă )"
 msgstr[2] " - ( <b>%1</b> fără copertă )"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "Imagine copertă"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "Fără interpret"

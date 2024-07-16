@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-15 01:45+0000\n"
+"POT-Creation-Date: 2024-07-16 01:41+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -1976,7 +1976,7 @@ msgstr "Невядомы"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -7847,17 +7847,17 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgid "No Artist"

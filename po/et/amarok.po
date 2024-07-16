@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-15 01:45+0000\n"
+"POT-Creation-Date: 2024-07-16 01:41+0000\n"
 "PO-Revision-Date: 2020-06-05 19:27+0300\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -2000,7 +2000,7 @@ msgstr "Tundmatu"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -7657,17 +7657,17 @@ msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] "%2 - ( <b>%1</b> ilma kaanepildita )"
 msgstr[1] "%2 - ( <b>%1</b> ilma kaanepildita )"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "Kaanepilt"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - \"%2\""
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "Esitaja puudub"

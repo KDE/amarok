@@ -1,7 +1,7 @@
 # Translation of amarok.po to Catalan
 # Copyright (C) 2005-2024 This_file_is_part_of_KDE
 #
-# SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Antoni Bella Pérez <antonibella5@yahoo.com>
+# SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Antoni Bella Pérez <antonibella5@yahoo.com>
 # Pau Capdevila Pujol <pau.capdevila@estudiant.upc.edu>, 2005.
 # Pau Rul·lan Ferragut <paurullan@bulma.net>, 2005.
 # Pau Tallada Crespí <pau_tallada@telefonica.net>, 2006, 2007.
@@ -11,15 +11,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-15 01:45+0000\n"
-"PO-Revision-Date: 2024-07-12 08:58+0200\n"
-"Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
+"POT-Creation-Date: 2024-07-16 01:41+0000\n"
+"PO-Revision-Date: 2024-07-15 13:07+0200\n"
+"Last-Translator: Antoni Bella Pérez <antonibella5@yahoo.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.05.2\n"
+"X-Generator: Lokalize 23.08.5\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 
@@ -2045,7 +2045,7 @@ msgstr "Desconegut"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -4291,18 +4291,16 @@ msgid "Width"
 msgstr "Amplada"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "des de <b>%1</b>"
+msgstr "Semblants a <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 oients<br>%2 reproduccions"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4310,7 +4308,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 reproduccions vostres"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -7768,17 +7766,17 @@ msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] "%2 - ( <b>1</b> sense caràtula )"
 msgstr[1] "%2 - ( <b>%1</b> sense caràtula )"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "Caràtula"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "Cap artista"
@@ -14162,7 +14160,7 @@ msgstr "Ha fallat"
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "S'està pbrint la pàgina web de Last.fm"
+msgstr "S'està obrint la pàgina web de Last.fm"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
@@ -14952,13 +14950,7 @@ msgid "Updating the local Magnatune database."
 msgstr "S'està actualitzant la base de dades local del Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14970,7 +14962,7 @@ msgstr ""
 "\n"
 "\taddMoodyTracks humor quantitat: afegeix un nombre aleatori de peces a la "
 "llista de reproducció amb l'humor indicat. L'argument «humor» ha de tenir "
-"els espais escapats amb %%20"
+"els espais escapats amb &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format

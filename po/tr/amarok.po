@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-15 01:45+0000\n"
-"PO-Revision-Date: 2024-07-12 13:04+0300\n"
+"POT-Creation-Date: 2024-07-16 01:41+0000\n"
+"PO-Revision-Date: 2024-07-15 12:59+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -2047,7 +2047,7 @@ msgstr "Bilinmeyen"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -4280,18 +4280,16 @@ msgid "Width"
 msgstr "Genişlik"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "<b>%1</b> konumundan"
+msgstr "<b>%1</b> benzerleri"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 dinleyici<br>%2 çalma"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4299,7 +4297,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>sizden %1 çalma"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -7723,17 +7721,17 @@ msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] "%2 — (<b>1</b> kapaksız)"
 msgstr[1] "%2 — (<b>%1</b> kapaksız)"
 
-#: covermanager/CoverManager.cpp:765
+#: covermanager/CoverManager.cpp:764
 #, kde-format
 msgid "Cover Image"
 msgstr "Kapak Görseli"
 
-#: covermanager/CoverManager.cpp:840
+#: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 — %2"
 
-#: covermanager/CoverManager.cpp:857
+#: covermanager/CoverManager.cpp:856
 #, kde-format
 msgid "No Artist"
 msgstr "Sanatçı Yok"
@@ -14864,13 +14862,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Magnatune veritabanı güncelleniyor…"
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14878,10 +14870,10 @@ msgid ""
 "specified mood to the playlist. The mood argument must have spaces escaped "
 "with &#37;20"
 msgstr ""
-"Magnatune.com hizmeti aşağıdaki iletileri kabul eder: \n"
+"Magnatune.com hizmeti aşağıdaki iletileri kabul eder:\n"
 "\n"
 "\taddMoodyTracks ruh hali sayısı: Belirtilen ruh haline sahip bir dizi "
-"rastgele parçayı çalma listesine ekler. Ruh hali argümanında %%20 ile "
+"rastgele parçayı çalma listesine ekler. Ruh hali argümanında &#37;20 ile "
 "kaçırılan boşluklar bulunmalıdır"
 
 #: services/magnatune/MagnatuneStore.cpp:631
@@ -16274,567 +16266,3 @@ msgstr "Sanatçı: %1"
 #, kde-format
 msgid "empty"
 msgstr "boş"
-
-#~ msgid "Add Last.fm artist station to the Playlist"
-#~ msgstr "Çalma listesine Last.fm sanatçı istasyonu ekle"
-
-#~ msgid "Add top track to the Playlist"
-#~ msgstr "Çalma listesine üst parçayı ekle"
-
-#~ msgid "Show Similar Artists to %1"
-#~ msgstr "“%1” sanatçısına benzer sanatçıları göster"
-
-#~ msgid "Open Last.fm webpage for this artist"
-#~ msgstr "Bu sanatçı için olan Last.fm web sayfasını aç"
-
-#~ msgid "Match: %1%"
-#~ msgstr "Eşleşme: %​%1"
-
-#~ msgid "Unable to fetch the picture: %1"
-#~ msgstr "Resim getirilemedi: %1"
-
-#~ msgctxt "@info:tooltip Artist biography"
-#~ msgid "Show Biography"
-#~ msgstr "Biyografiyi Göster"
-
-#~ msgid "No description available."
-#~ msgstr "Kullanılabilir açıklama yok."
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags: %1"
-#~ msgstr "Künyeler: %1"
-
-#~ msgid "Top track not found"
-#~ msgstr "Üst parça bulunamadı"
-
-#~ msgid "Top track: %1"
-#~ msgstr "Üst parça: %1"
-
-#~ msgid "Similar Artists"
-#~ msgstr "Benzer Sanatçılar"
-
-#~ msgid "Forward"
-#~ msgstr "İleri"
-
-#~ msgid "Show Similar Artists for Currently Playing Track"
-#~ msgstr "Şu Anda Çalınan Parça için Benzer Sanatçıları Göster"
-
-#~ msgid "Similar Artists Settings"
-#~ msgstr "Benzer Sanatçı Ayarları"
-
-#~ msgid "Similar Artists to %1"
-#~ msgstr "“%1” Sanatçısına Benzeyen"
-
-#~ msgid "Similar Artists: Not Found"
-#~ msgstr "Benzer sanatçılar: Bulunamadı"
-
-#~ msgctxt "@item:intext Artist biography published date"
-#~ msgid "Published: %1"
-#~ msgstr "Yayım tarihi: %1"
-
-#~ msgid "Maximum number of artists to show:"
-#~ msgstr "Gösterilecek en çok sanatçı sayısı:"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Either the username was not recognized, or the password was incorrect."
-#~ msgstr "Ya kullanıcı adınız tanınamadı ya da parolanız yanlış."
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "There was a problem communicating with the Last.fm services. Please try "
-#~ "again later."
-#~ msgstr ""
-#~ "Last.fm hizmetleri ile iletişimde bir sorun oluştu. Lütfen daha sonra "
-#~ "yeniden deneyin."
-
-#~ msgid "No running KWallet found."
-#~ msgstr "Çalışan K Cüzdan bulunamadı."
-
-#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-#~ msgstr ""
-#~ "Amarok’un Last.fm kimlik bilgilerinizi düz metin olarak kaydetmesini "
-#~ "ister misiniz?"
-
-#~ msgid "Test Login"
-#~ msgstr "Sınama Oturumu"
-
-#~ msgid "<b>1</b> file selected."
-#~ msgid_plural "<b>%1</b> files selected."
-#~ msgstr[0] "<b>%1</b> dosya seçildi."
-#~ msgstr[1] "<b>%1</b> dosya seçildi."
-
-#~ msgid ""
-#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
-#~ "qt>"
-#~ msgstr ""
-#~ "<qt>Bu ögeler sabit diskinizden <b>kalıcı olarak silinecek</b>.</qt>"
-
-#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-#~ msgstr "<qt>Bu ögeler çöp kutusuna taşınacak.</qt>"
-
-#~ msgid "&Send to Trash"
-#~ msgstr "&Çöp Kutusuna At"
-
-#~ msgid "About to delete selected files"
-#~ msgstr "Seçili dosyalar silinmek üzere"
-
-#~ msgid "Deleting files"
-#~ msgstr "Dosyalar siliniyor"
-
-#~ msgid "Icon Placeholder, not in GUI"
-#~ msgstr "Simge yer tutucusu, arayüzde değil"
-
-#~ msgid "Deletion method placeholder, never shown to user."
-#~ msgstr "Silme yöntemi yer tutucusu, kullanıcıya gösterilmez"
-
-#~ msgid "List of files that are about to be deleted."
-#~ msgstr "Silinmek üzere olan dosyaların listesi."
-
-#~ msgid "This is the list of items that are about to be deleted."
-#~ msgstr "Bu, silinecek olan dosyaların listesidir."
-
-#~ msgid "Placeholder for number of files, not in GUI"
-#~ msgstr "Dosya sayısı yer tutucusu, arayüzde değil"
-
-#~ msgid "&Delete files instead of moving them to the trash"
-#~ msgstr "&Dosyaları çöp kutusuna taşımak yerine sil"
-
-#~ msgid ""
-#~ "If checked, files will be permanently removed instead of being placed in "
-#~ "the Trash Bin"
-#~ msgstr ""
-#~ "İşaretlenirse dosyalar Çöp Kutusu’na atılmak yerine kalıcı olarak "
-#~ "kaldırılır"
-
-#~ msgid ""
-#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-#~ "instead of being placed in the Trash Bin.</p>\n"
-#~ "\n"
-#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
-#~ "reliably undelete deleted files.</p></qt>"
-#~ msgstr ""
-#~ "<qt><p>Bu kutu işaretlenirse dosyalar Çöp Kutusu’na atılmak yerine "
-#~ "<b>kalıcı olarak kaldırılır</b>.</p>\n"
-#~ "\n"
-#~ "<p><em>Bu seçeneği dikkatli kullanın</em>: Çoğu dosya sistemi, silinen "
-#~ "dosyaları güvenilir bir şekilde geri getiremez.</p></qt>"
-
-#~ msgid "Select Plugin for %1"
-#~ msgstr "%1 için Eklenti Seç"
-
-#~ msgid "Configure Media Device"
-#~ msgstr "Ortam Aygıtını Yapılandır"
-
-#~ msgid "Pre-&connect command:"
-#~ msgstr "&Bağlama öncesi komutu:"
-
-#~ msgid "Example: mount %d"
-#~ msgstr "Örnek: mount %d"
-
-#~ msgid ""
-#~ "Set a command to be run before connecting to your device (e.g. a mount "
-#~ "command) here.\n"
-#~ "%d is replaced by the device node, %m by the mount point.\n"
-#~ "Empty commands are not executed."
-#~ msgstr ""
-#~ "Aygıtınıza bağlanmadan önce çalıştırılacak bir komutu (örn. bağlama "
-#~ "komutu) buradan ayarlayın.\n"
-#~ "%d, aygıt düğümüyle, %m ise bağlama noktasıyla değiştirilir.\n"
-#~ "Boş komutlar yürütülmez."
-
-#~ msgid "Post-&disconnect command:"
-#~ msgstr "Bağlantı kesimi sonrası komu&t:"
-
-#~ msgid "Example: eject %d"
-#~ msgstr "Örnek: eject %d"
-
-#~ msgid ""
-#~ "Set a command to be run after disconnecting from your device (e.g. an "
-#~ "eject command) here.\n"
-#~ "%d is replaced by the device node, %m by the mount point.\n"
-#~ "Empty commands are not executed."
-#~ msgstr ""
-#~ "Aygıt bağlantısı kesilmeden önce çalıştırılacak bir komutu (örn. çıkar "
-#~ "komutu) buradan ayarlayın.\n"
-#~ "%d, aygıt düğümüyle, %m ise bağlama noktasıyla değiştirilir.\n"
-#~ "Boş komutlar yürütülmez."
-
-#~ msgid "&Transcode before transferring to device"
-#~ msgstr "&Aygıta aktarmadan önce arakodla"
-
-#~ msgid "Transcode to preferred format (%1) for device"
-#~ msgstr "Aygıt için yeğlenen biçime (%1) arakodla"
-
-#~ msgid "Whenever possible"
-#~ msgstr "Olabildiğince"
-
-#~ msgid "When necessary"
-#~ msgstr "Gerekli olduğunda"
-
-#~ msgid "Remove transcoded files after transfer"
-#~ msgstr "Arakodlanan dosyaları aktarma sonrası kaldır"
-
-#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
-#~ msgstr "Bu özellik için “Transcode” gibi bir betik çalışıyor olmalıdır"
-
-#~ msgid "Transfer Queue to Device"
-#~ msgstr "Kuyruğu Aygıta Aktar"
-
-#~ msgid "Music Location"
-#~ msgstr "Müzik Konumu"
-
-#~ msgid ""
-#~ "Your music will be transferred to:\n"
-#~ "%1"
-#~ msgstr ""
-#~ "Müzikleriniz şuraya aktarılacak:\n"
-#~ "%1"
-
-#~ msgid ""
-#~ "You can have your music automatically grouped in\n"
-#~ "a variety of ways. Each grouping will create\n"
-#~ "directories based upon the specified criteria.\n"
-#~ msgstr ""
-#~ "Müziğinizin çeşitli biçimlerde kendiliğinden\n"
-#~ "gruplandırılmasını sağlayabilirsiniz. Her gruplama,\n"
-#~ "belirtilen kriterlere göre dizinler oluşturacaktır.\n"
-
-#~ msgid "Groupings"
-#~ msgstr "Gruplamalar"
-
-#~ msgid "Select first grouping:\n"
-#~ msgstr "Birinci gruplamayı seç:\n"
-
-#~ msgid "Select second grouping:\n"
-#~ msgstr "İkinci gruplamayı seç:\n"
-
-#~ msgid "Select third grouping:\n"
-#~ msgstr "Üçüncü gruplamayı seç:\n"
-
-#~ msgid "Convert spaces to underscores"
-#~ msgstr "Boşlukları alt çizgilere dönüştür"
-
-#~ msgid "Click for more analyzers"
-#~ msgstr "Daha fazla çözümleyici için tıkla"
-
-#~ msgid "&Visualizations"
-#~ msgstr "&Görselleştirmeler"
-
-#~ msgid "Get data from openDesktop.org to learn more about the team"
-#~ msgstr ""
-#~ "Takım hakkında daha fazla bilgi edinmek için openDesktop.org adresini "
-#~ "ziyaret edin"
-
-#~ msgid "Get data from openDesktop.org to learn more about contributors"
-#~ msgstr ""
-#~ "Katkıcılar hakkında daha fazla bilgi edinmek için openDesktop.org "
-#~ "adresini ziyaret edin"
-
-#~ msgid ""
-#~ "Get data from openDesktop.org to learn more about our generous donors"
-#~ msgstr ""
-#~ "Cömert bağışçılarımız hakkında daha fazla bilgi edinmek için openDesktop."
-#~ "org adresini ziyaret edin"
-
-#~ msgid "Internet connection not available"
-#~ msgstr "İnternet bağlantısı kullanılamıyor"
-
-#~ msgid "Network error"
-#~ msgstr "Ağ hatası"
-
-#~ msgctxt "A person's location: City, Country"
-#~ msgid "%1, %2"
-#~ msgstr "%1, %2"
-
-#~ msgid "IRC channels: "
-#~ msgstr "IRC kanalları: "
-
-#~ msgid "Favorite music: "
-#~ msgstr "Favori müzik: "
-
-#~ msgid "Visit %1's openDesktop.org profile"
-#~ msgstr "%1 kişisinin openDesktop.org profilini ziyaret et"
-
-#~ msgid "Visit %1's profile on openDesktop.org"
-#~ msgstr "openDesktop.org üzerinde %1 kişisinin profilini ziyaret et"
-
-#~ msgid "Visit contributor's blog"
-#~ msgstr "Katkıcının blog’unu ziyaret et"
-
-#~ msgid "Visit contributor's del.icio.us profile"
-#~ msgstr "Katkıcının del.icio.us profilini ziyaret et"
-
-#~ msgid "Visit contributor's Digg profile"
-#~ msgstr "Katkıcının Digg profilini ziyaret et"
-
-#~ msgid "Visit contributor's Facebook profile"
-#~ msgstr "Katkıcının Facebook profilini ziyaret et"
-
-#~ msgid "Visit contributor's Last.fm profile"
-#~ msgstr "Katkıcının Last.fm profilini ziyaret et"
-
-#~ msgid "Visit contributor's LinkedIn profile"
-#~ msgstr "Katkıcının LinkedIn profilini ziyaret et"
-
-#~ msgid "Visit contributor's MySpace homepage"
-#~ msgstr "Katkıcının MySpace profilini ziyaret et"
-
-#~ msgid "Visit contributor's Reddit profile"
-#~ msgstr "Katkıcının Reddit profilini ziyaret et"
-
-#~ msgid "Visit contributor's YouTube profile"
-#~ msgstr "Katkıcının YouTube profilini ziyaret et"
-
-#~ msgid "Visit contributor's Twitter feed"
-#~ msgstr "Katkıcının X profilini ziyaret et"
-
-#~ msgid "Visit contributor's Wikipedia profile"
-#~ msgstr "Katkıcının Vikipedi profilini ziyaret et"
-
-#~ msgid "Visit contributor's Xing profile"
-#~ msgstr "Katkıcının Xing profilini ziyaret et"
-
-#~ msgid "Visit contributor's identi.ca feed"
-#~ msgstr "Katkıcının identi.ca beslemesini ziyaret et"
-
-#~ msgid "Visit contributor's libre.fm profile"
-#~ msgstr "Katkıcının libre.fm profilini ziyaret et"
-
-#~ msgid "Visit contributor's StackOverflow profile"
-#~ msgstr "Katkıcının StackOverflow profilini ziyaret et"
-
-#~ msgid "Amarok Applet Manager"
-#~ msgstr "Amarok Uygulamacık Yöneticisi"
-
-#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#~ msgid "Aaron Seigo"
-#~ msgstr "Aaron Seigo"
-
-#~ msgid "Original author"
-#~ msgstr "Özgün yazar"
-
-#~ msgid "For install or remove, operates on applets installed for all users."
-#~ msgstr ""
-#~ "Kurmak veya kaldırmak için tüm kullanıcılar için kurulan uygulamacıklar "
-#~ "üzerinde çalışır."
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Install the applet at <path>"
-#~ msgstr "Uygulamacığı <path> konumuna kur"
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Upgrade the applet at <path>"
-#~ msgstr "<path> konumundaki uygulamacığı güncelle"
-
-#~ msgid "Most installed applets"
-#~ msgstr "En çok kurulan uygulamacıklar"
-
-#~ msgctxt "Do not translate <name>"
-#~ msgid "Remove the applet named <name>"
-#~ msgstr "<name> uygulamacığını kaldır"
-
-#~ msgid ""
-#~ "Absolute path to the package root. If not supplied, then the standard "
-#~ "data directories for this KDE session will be searched instead."
-#~ msgstr ""
-#~ "Paket köküne giden mutlak yol. Sağlanmazsa bunun yerine bu KDE oturumu "
-#~ "için olan standart veri dizinleri aranacaktır."
-
-#~ msgid "Successfully removed %1"
-#~ msgstr "%1 başarıyla kaldırıldı."
-
-#~ msgid "Removal of %1 failed."
-#~ msgstr "%1 kaldırılamadı."
-
-#~ msgid "Plugin %1 is not installed."
-#~ msgstr "%1 eklentisi kurulu değil."
-
-#~ msgid "Successfully installed %1"
-#~ msgstr "%1 başarıyla kuruldu."
-
-#~ msgid "Installation of %1 failed."
-#~ msgstr "%1 kurulamadı."
-
-#~ msgctxt ""
-#~ "No option was given, this is the error message telling the user he needs "
-#~ "at least one, do not translate install, remove, upgrade nor list"
-#~ msgid "One of install, remove, upgrade or list is required."
-#~ msgstr "Listeleme, kaldırma veya kurma eylemlerinden biri gerekiyor."
-
-#~ msgid "Upcoming Events"
-#~ msgstr "Yaklaşan Etkinlikler"
-
-#~ msgid "View Events Calendar"
-#~ msgstr "Etkinlikler takvimini göster"
-
-#~ msgctxt "@title:group"
-#~ msgid "No track is currently playing"
-#~ msgstr "Çalınan Parça Yok"
-
-#~ msgid "Favorite Venues"
-#~ msgstr "Favori Mekanlar"
-
-#~ msgid "No upcoming events"
-#~ msgstr "Yaklaşan etkinlik yok"
-
-#~ msgid "%1: No upcoming events"
-#~ msgstr "%1: Yaklaşan etkinlik yok"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "1 event"
-#~ msgid_plural "%1 events"
-#~ msgstr[0] "1 etkinlik"
-#~ msgstr[1] "%1 etkinlik"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "%1: 1 event"
-#~ msgid_plural "%1: %2 events"
-#~ msgstr[0] "%1: 1 etkinlik"
-#~ msgstr[1] "%1: %2 etkinlik"
-
-#~ msgid "Upcoming Events Settings"
-#~ msgstr "Yaklaşan Etkinlik Ayarları"
-
-#~ msgctxt "@label:textbox Url label"
-#~ msgid "link"
-#~ msgstr "bağlantı"
-
-#~ msgid "Map View"
-#~ msgstr "Harita Görünümü"
-
-#~ msgid "Events Calendar"
-#~ msgstr "Etkinlik Takvimi"
-
-#~ msgid "This week"
-#~ msgstr "Bu hafta"
-
-#~ msgid "This month"
-#~ msgstr "Bu ay"
-
-#~ msgid "This year"
-#~ msgstr "Bu yıl"
-
-#~ msgctxt "@title:group"
-#~ msgid "Favorite Venues"
-#~ msgstr "Favori Mekanlar"
-
-#~ msgctxt "@info:tooltip Calendar action"
-#~ msgid "Jump to Today"
-#~ msgstr "Bugüne atla"
-
-#~ msgid "Filter events by date:"
-#~ msgstr "Etkinlikleri tarihe göre süz:"
-
-#~ msgid "All events"
-#~ msgstr "Tüm etkinlikler"
-
-#~ msgid "&Group venue events"
-#~ msgstr "&Grup mekan etkinlikleri"
-
-#~ msgctxt "@label:textbox Title for a canceled upcoming event"
-#~ msgid "<s>%1</s> (Canceled)"
-#~ msgstr "<s>%1</s> (İptal edildi)"
-
-#~ msgid "Show places as links"
-#~ msgstr "Yerleri bağlantı olarak göster"
-
-#~ msgid "Maximize"
-#~ msgstr "Büyüt"
-
-#~ msgid "Expand this widget"
-#~ msgstr "Bu araç takımını genişlet"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "Bu araç takımını daralt"
-
-#~ msgid "Search Venue"
-#~ msgstr "Mekan Ara"
-
-#~ msgid "Restrict venues to a specific country"
-#~ msgstr "Mekanları belirli bir ülkeyle sınırla"
-
-#~ msgid "Any Country"
-#~ msgstr "Herhangi bir ülke"
-
-#~ msgid "Search Results:"
-#~ msgstr "Arama sonuçları:"
-
-#~ msgid "Selected Venues:"
-#~ msgstr "Seçili mekanlar:"
-
-#~ msgid "Photo"
-#~ msgstr "Fotoğraf"
-
-#~ msgid "City:"
-#~ msgstr "Şehir:"
-
-#~ msgid "Website:"
-#~ msgstr "Web sitesi:"
-
-#~ msgid "Country:"
-#~ msgstr "Ülke:"
-
-#~ msgid "Street:"
-#~ msgstr "Cadde:"
-
-#~ msgid "Loading picture..."
-#~ msgstr "Resim yükleniyor…"
-
-#~ msgid "View map"
-#~ msgstr "Haritayı görüntüle"
-
-#~ msgctxt "@label:textbox Supporting acts for an event"
-#~ msgid "Supporting:"
-#~ msgstr "Konuk sanatçılar:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Venue:"
-#~ msgstr "Mekan:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Location:"
-#~ msgstr "Konum:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Date:"
-#~ msgstr "Tarih:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Attending:"
-#~ msgstr "Katılanlar:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags:"
-#~ msgstr "Künyeler:"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Tags:</strong><nl/>%1"
-#~ msgstr "<strong>Künyeler:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Supporting artists for an event"
-#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
-#~ msgstr "<strong>Konuk sanatçılar:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Number of days till an event"
-#~ msgid "Tomorrow"
-#~ msgid_plural "In <strong>%1</strong> days"
-#~ msgstr[0] "Yarın"
-#~ msgstr[1] "<strong>%1</strong> gün içinde"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Location:</strong><nl/>%1"
-#~ msgstr "<strong>Konum:</strong><nl/>%1"
-
-#~ msgid ""
-#~ "<p>Each year in October the Amarok team organizes a funding drive called "
-#~ "<b>Roktober</b>.</p><p>If you want your name mentioned on this list <a "
-#~ "href=\"http://amarok.kde.org/donations\"> donate during Roktober</a> and "
-#~ "opt-in.</p>"
-#~ msgstr ""
-#~ "<p>Amarok takımı her yıl Ekim ayında <b>Roktober</b> adında bir fon "
-#~ "kampanyası düzenler.</p><p>Bu listede adınızın geçmesini istiyorsanız <a "
-#~ "href=\"http://amarok.kde.org/donations\">Roktober sırasında bağış yapın</"
-#~ "a> ve adınızı yazdırın.</p>"
