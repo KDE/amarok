@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-16 01:41+0000\n"
-"PO-Revision-Date: 2024-07-12 11:40+0200\n"
+"PO-Revision-Date: 2024-07-15 15:33+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -4258,12 +4258,10 @@ msgid "Width"
 msgstr "Šířka"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "od <b>%1</b>"
+msgstr "Podobné <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
@@ -14893,13 +14891,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Aktualizuje se místní databáze Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14912,7 +14904,7 @@ msgstr ""
 "\taddMoodyTracks mood count (přidat skladby podle nálady nálada počet): "
 "Přidá do seznamu skladeb určitý počet náhodných skladeb se stanovenou "
 "náladou. Nezávisle proměnná nálady, její argument, musí mít mezery mezi "
-"slovy s %%20"
+"slovy s &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -16349,63 +16341,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "Add Last.fm artist station to the Playlist"
-#~ msgstr "Přidat umělce z Last.fm do seznamu skladeb."
-
-#~ msgid "Add top track to the Playlist"
-#~ msgstr "Přidat nejlepší skladbu do seznamu skladeb"
-
-#~ msgid "Show Similar Artists to %1"
-#~ msgstr "Zobrazit umělce podobné %1"
-
-#~ msgid "Open Last.fm webpage for this artist"
-#~ msgstr "Otevřít webové stránky Last.fm pro tohoto umělce"
-
-#~ msgid "Match: %1%"
-#~ msgstr "Odpovídá: %1%"
-
-#~ msgid "Unable to fetch the picture: %1"
-#~ msgstr "Nelze načíst obrázek: %1"
-
-#~ msgctxt "@info:tooltip Artist biography"
-#~ msgid "Show Biography"
-#~ msgstr "Zobrazit životopis"
-
-#~ msgid "No description available."
-#~ msgstr "Popis není dostupný."
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags: %1"
-#~ msgstr "Značky: %1"
-
-#~ msgid "Top track not found"
-#~ msgstr "Hlavní skladba nenalezena"
-
-#~ msgid "Top track: %1"
-#~ msgstr "Hlavní skladba: %1"
-
-#~ msgid "Similar Artists"
-#~ msgstr "Podobní umělci"
-
-#~ msgid "Forward"
-#~ msgstr "Vpřed"
-
-#~ msgid "Show Similar Artists for Currently Playing Track"
-#~ msgstr "Zobrazit umělce podobné umělci právě přehrávané skladby"
-
-#~ msgid "Similar Artists Settings"
-#~ msgstr "Nastavení podobných umělců"
-
-#~ msgid "Similar Artists to %1"
-#~ msgstr "Umělci podobní %1"
-
-#~ msgid "Similar Artists: Not Found"
-#~ msgstr "Podobní umělci: nenalezeno"
-
-#~ msgctxt "@item:intext Artist biography published date"
-#~ msgid "Published: %1"
-#~ msgstr "Publikováno: %1"
-
-#~ msgid "Maximum number of artists to show:"
-#~ msgstr "Ukázat maximální počet podobných umělců:"

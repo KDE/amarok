@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-16 01:41+0000\n"
-"PO-Revision-Date: 2024-06-28 21:02+0200\n"
+"PO-Revision-Date: 2024-07-16 21:47+0200\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -4212,18 +4212,16 @@ msgid "Width"
 msgstr "Larĝo"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "de <b>%1</b>"
+msgstr "Simila al <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 aŭskultantoj<br>%2 ludigoj"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4231,7 +4229,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 ludigoj de vi"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -9696,15 +9694,7 @@ msgstr ""
 "(C) 2003-2024, La Amarok Evoluig-Taĉmento"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9715,12 +9705,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
-"Resago:\n"
+"Komentoj:\n"
 "amarok@kde.org\n"
 "\n"
-"(Konstrua dato: %1)"
+"(Konstrudato: %1)"
 
 #: main.cpp:111
 #, kde-format
@@ -13286,14 +13276,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Skripto %1 estas taksata dum pli ol 5 sekundoj nun, ĉu ĉesigi?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13302,8 +13285,8 @@ msgid ""
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "La skripto %1 uzas malrekomenditajn scriptajn API-alvokojn. Bonvolu kontakti "
-"la skriptaŭtoron, %2 ĉe %3, kaj peti lin ĝisdatigi ĝin antaŭ la venonta "
-"Amarok-eldono."
+"la skriptaŭtorojn, %2, kaj peti ilin ĝisdatigi ĝin antaŭ la venonta Amarok-"
+"eldono."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13752,9 +13735,7 @@ msgstr "Last.fm Profilo"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Uzantnomo:"
 
@@ -13762,33 +13743,28 @@ msgstr "Uzantnomo:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:223
 #: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Fiasko de konekto"
+msgstr "Konekti al konto"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "Ne necesa"
+msgstr "Ne konetktita"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">Registriĝi al Last.fm</a>"
+msgstr "<a href=\"http://www.last.fm/join\">Registriĝi al Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Malkonekti Aparaton"
+msgstr "Malkonekti konton"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13982,12 +13958,12 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Ĉu vi volas malkonekti Amarok de Last.fm-konto %1?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:93
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Ĉu malkonekti Last.fm-konton?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -13998,17 +13974,16 @@ msgid "Failed"
 msgstr "Malsukcesis"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this artist"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Malfermi Last.fm-retpaĝon por ĉi tiu artisto"
+msgstr "Malfermante Last.fm-retpaĝon"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Fini konekti konton"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14779,13 +14754,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Ĝisdatigante la lokan datumbazon Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14796,8 +14765,8 @@ msgstr ""
 "La Magnatune.com-servo akceptas la jenajn mesaĝojn: \n"
 "\n"
 "\taddMoodyTracks humorkalkulo: Aldonas kelkajn hazardajn trakojn kun la "
-"specifita humoro al la ludlisto. La humorargumento devas havi spacojn "
-"eskapitajn kun %%20"
+"specifita humoro al la ludlisto. La humorargumento devas havi spacetojn "
+"eskapitajn per &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -14883,14 +14852,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Pritraktas AutoSync por la MP3tunes-servo en Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -14899,8 +14861,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"servilo: irc.libera.chat / kanaloj: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"servilo: irc.libera.chat / kanalo: #amarok\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org"
@@ -16207,384 +16168,3 @@ msgstr "Artisto: %1"
 #, kde-format
 msgid "empty"
 msgstr "malplena"
-
-#~ msgid "Add Last.fm artist station to the Playlist"
-#~ msgstr "Aldoni Last.fm-artistostacion al la Ludlisto"
-
-#~ msgid "Add top track to the Playlist"
-#~ msgstr "Aldoni pintan trakon al la Ludlisto"
-
-#~ msgid "Show Similar Artists to %1"
-#~ msgstr "Montri Similajn Artistojn al %1"
-
-#~ msgid "Open Last.fm webpage for this artist"
-#~ msgstr "Malfermi Last.fm-retpaĝon por ĉi tiu artisto"
-
-#~ msgid "Match: %1%"
-#~ msgstr "Kongruo: %1%"
-
-#~ msgid "Unable to fetch the picture: %1"
-#~ msgstr "Ne eblas preni la bildon: %1"
-
-#~ msgctxt "@info:tooltip Artist biography"
-#~ msgid "Show Biography"
-#~ msgstr "Montri Biografion"
-
-#~ msgid "No description available."
-#~ msgstr "Nenia priskribo disponebla."
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags: %1"
-#~ msgstr "Etikedoj: %1"
-
-#~ msgid "Top track not found"
-#~ msgstr "Ĉefa trako ne trovita"
-
-#~ msgid "Top track: %1"
-#~ msgstr "Ĉefa trako: %1"
-
-#~ msgid "Similar Artists"
-#~ msgstr "Similaj Artistoj"
-
-#~ msgid "Forward"
-#~ msgstr "Antaŭen"
-
-#~ msgid "Show Similar Artists for Currently Playing Track"
-#~ msgstr "Montri Similajn Artistojn por Nuntempe Ludanta Trako"
-
-#~ msgid "Similar Artists Settings"
-#~ msgstr "Similaj Artistoj Agordoj"
-
-#~ msgid "Similar Artists to %1"
-#~ msgstr "Similaj artistoj al %1"
-
-#~ msgid "Similar Artists: Not Found"
-#~ msgstr "Similaj Artistoj: Ne Trovita"
-
-#~ msgctxt "@item:intext Artist biography published date"
-#~ msgid "Published: %1"
-#~ msgstr "Eldonita: %1"
-
-#~ msgid "Maximum number of artists to show:"
-#~ msgstr "Maksimuma nombro da artistoj por montri:"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Either the username was not recognized, or the password was incorrect."
-#~ msgstr "Aŭ la uzantnomo ne estis rekonita, aŭ la pasvorto estis malĝusta."
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "There was a problem communicating with the Last.fm services. Please try "
-#~ "again later."
-#~ msgstr ""
-#~ "Estis problemo komuniki kun la Last.fm-servoj. Bonvolu reprovi poste."
-
-#~ msgid "No running KWallet found."
-#~ msgstr "Trovis neniun funkciantan KWallet."
-
-#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-#~ msgstr ""
-#~ "Ĉu vi ŝatus ke Amarok konservu viajn Last.fm-akreditaĵojn en klarteksto?"
-
-#~ msgid "Test Login"
-#~ msgstr "Prova ensaluto"
-
-#~ msgid "<b>1</b> file selected."
-#~ msgid_plural "<b>%1</b> files selected."
-#~ msgstr[0] "<b>1</b> dosiero elektita."
-#~ msgstr[1] "<b>%1</b> dosieroj elektitaj."
-
-#~ msgid ""
-#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
-#~ "qt>"
-#~ msgstr "<qt>Tiuj eroj estas <b>ĉiame forigotaj</b> el via disko.</qt>"
-
-#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-#~ msgstr "<qt>Tiuj eroj estas metotaj en la rubujo.</qt>"
-
-#~ msgid "&Send to Trash"
-#~ msgstr "Meti en la rubu&jo"
-
-#~ msgid "About to delete selected files"
-#~ msgstr "Forigonte la elektitajn dosierojn"
-
-#~ msgid "Deleting files"
-#~ msgstr "Foriganta la dosierojn"
-
-#~ msgid "Icon Placeholder, not in GUI"
-#~ msgstr "Piktogram-Lokokupilo, ne en GUI"
-
-#~ msgid "Deletion method placeholder, never shown to user."
-#~ msgstr "Forigmetoda lokokupilo, neniam montrita al uzanto."
-
-#~ msgid "List of files that are about to be deleted."
-#~ msgstr "Listo de dosieroj kiuj estas forigotaj."
-
-#~ msgid "This is the list of items that are about to be deleted."
-#~ msgstr "Ĉi tio estas la listo de aĵoj kiuj estas forigotaj."
-
-#~ msgid "Placeholder for number of files, not in GUI"
-#~ msgstr "Lokokupilo por nombro da dosieroj, ne en GUI"
-
-#~ msgid "&Delete files instead of moving them to the trash"
-#~ msgstr "Forigi la &dosierojn anstataŭ meti ilin en la rubujo"
-
-#~ msgid ""
-#~ "If checked, files will be permanently removed instead of being placed in "
-#~ "the Trash Bin"
-#~ msgstr ""
-#~ "Se markite, dosieroj estos konstante forigitaj anstataŭ esti metitaj en "
-#~ "la Rubujon"
-
-#~ msgid ""
-#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-#~ "instead of being placed in the Trash Bin.</p>\n"
-#~ "\n"
-#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
-#~ "reliably undelete deleted files.</p></qt>"
-#~ msgstr ""
-#~ "<qt><p>Se ĉi tiu skatolo estas markita, dosieroj estos <b>konstante "
-#~ "forigitaj</b> anstataŭ esti metitaj en la Rubujon.</p>\n"
-#~ "\n"
-#~ "<p><em>Uzu ĉi tiun elekteblon kun singardo</em>: Plej multaj "
-#~ "dosiersistemoj ne kapablas fidinde malforviŝi dosierojn.</p></qt>"
-
-#~ msgid "Select Plugin for %1"
-#~ msgstr "Elekti kromaĵon por %1"
-
-#~ msgid "Configure Media Device"
-#~ msgstr "Agordi mediodisponaĵon"
-
-#~ msgid "Pre-&connect command:"
-#~ msgstr "Antaŭ&kroĉada komando:"
-
-#~ msgid "Example: mount %d"
-#~ msgstr "Ekzemple: mount %d"
-
-#~ msgid ""
-#~ "Set a command to be run before connecting to your device (e.g. a mount "
-#~ "command) here.\n"
-#~ "%d is replaced by the device node, %m by the mount point.\n"
-#~ "Empty commands are not executed."
-#~ msgstr ""
-#~ "Agordu komandon por ruliĝi antaŭ ol konekti al via aparato (ekz. munta "
-#~ "komando) ĉi tie.\n"
-#~ "%d estas anstataŭigita per la aparata nodo, %m per la munta punkto.\n"
-#~ "Malplenaj komandoj ne estas plenumitaj."
-
-#~ msgid "Post-&disconnect command:"
-#~ msgstr "Post&malkroĉada komando:"
-
-#~ msgid "Example: eject %d"
-#~ msgstr "Ekzemple: eject %d"
-
-#~ msgid ""
-#~ "Set a command to be run after disconnecting from your device (e.g. an "
-#~ "eject command) here.\n"
-#~ "%d is replaced by the device node, %m by the mount point.\n"
-#~ "Empty commands are not executed."
-#~ msgstr ""
-#~ "Agordu komandon por ruliĝi post malkonekto de via aparato (ekz. forĵeta "
-#~ "komando) ĉi tie.\n"
-#~ "%d estas anstataŭigita per la aparata nodo, %m per la munta punkto.\n"
-#~ "Malplenaj komandoj ne estas plenumitaj."
-
-#~ msgid "&Transcode before transferring to device"
-#~ msgstr "&Transkodigi antaŭ transmeti al la aparato"
-
-#~ msgid "Transcode to preferred format (%1) for device"
-#~ msgstr "Transkodigi al la preferata formato (%1) de la aparato."
-
-#~ msgid "Whenever possible"
-#~ msgstr "Tuj kiam eblas"
-
-#~ msgid "When necessary"
-#~ msgstr "Kiam bezonatas"
-
-#~ msgid "Remove transcoded files after transfer"
-#~ msgstr "Forigi la transkodatajn dosierojn post la transmetado"
-
-#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
-#~ msgstr "Por ĉi tiu funkcio, skripto de tipo \"Transcode\" devas ruliĝi"
-
-#~ msgid "Transfer Queue to Device"
-#~ msgstr "Transloki Vicon al Aparato"
-
-#~ msgid "Music Location"
-#~ msgstr "Muzika Loko"
-
-#~ msgid ""
-#~ "Your music will be transferred to:\n"
-#~ "%1"
-#~ msgstr ""
-#~ "Via muziko estos transdonita al:\n"
-#~ "%1"
-
-#~ msgid ""
-#~ "You can have your music automatically grouped in\n"
-#~ "a variety of ways. Each grouping will create\n"
-#~ "directories based upon the specified criteria.\n"
-#~ msgstr ""
-#~ "Vi povas aŭtomate grupigi vian muzikon laŭ diversaj manieroj. Ĉiu grupiĝo "
-#~ "kreos\n"
-#~ "dosierujojn surbaze de la specifitaj kriterioj.\n"
-
-#~ msgid "Groupings"
-#~ msgstr "Grupaĵoj"
-
-#~ msgid "Select first grouping:\n"
-#~ msgstr "Elektu la unuan grupaĵon:\n"
-
-#~ msgid "Select second grouping:\n"
-#~ msgstr "Elektu la duan grupaĵon:\n"
-
-#~ msgid "Select third grouping:\n"
-#~ msgstr "Elektu la trian grupaĵon:\n"
-
-#~ msgid "Convert spaces to underscores"
-#~ msgstr "Konverti la spacsignojn al substrekoj"
-
-#~ msgid "Click for more analyzers"
-#~ msgstr "Klaku por pliaj analiziloj"
-
-#~ msgid "&Visualizations"
-#~ msgstr "&Vidigoj"
-
-#~ msgid "Get data from openDesktop.org to learn more about the team"
-#~ msgstr "Akiru datumojn de openDesktop.org por lerni pli pri la teamo"
-
-#~ msgid "Get data from openDesktop.org to learn more about contributors"
-#~ msgstr "Akiru datumojn de openDesktop.org por lerni pli pri kontribuantoj"
-
-#~ msgid ""
-#~ "Get data from openDesktop.org to learn more about our generous donors"
-#~ msgstr ""
-#~ "Akiru datumojn de openDesktop.org por lerni pli pri niaj malavaraj "
-#~ "donacantoj"
-
-#~ msgid "Internet connection not available"
-#~ msgstr "Interreta konekto ne havebla"
-
-#~ msgid "Network error"
-#~ msgstr "Reta eraro"
-
-#~ msgctxt "A person's location: City, Country"
-#~ msgid "%1, %2"
-#~ msgstr "%1, %2"
-
-#~ msgid "IRC channels: "
-#~ msgstr "IRC-kanaloj:"
-
-#~ msgid "Favorite music: "
-#~ msgstr "Plej ŝatata muziko:"
-
-#~ msgid "Visit %1's openDesktop.org profile"
-#~ msgstr "Viziti la openDesktop.org-profilon de %1"
-
-#~ msgid "Visit %1's profile on openDesktop.org"
-#~ msgstr "Viziti la profilon de %1 ĉe openDesktop.org"
-
-#~ msgid "Visit contributor's blog"
-#~ msgstr "Viziti la blogon de kontribuanto"
-
-#~ msgid "Visit contributor's del.icio.us profile"
-#~ msgstr "Viziti la profilon del.icio.us de kontribuanto"
-
-#~ msgid "Visit contributor's Digg profile"
-#~ msgstr "Viziti la Digg-profilon de kontribuanto"
-
-#~ msgid "Visit contributor's Facebook profile"
-#~ msgstr "Viziti la Facebook-profilon de kontribuanto"
-
-#~ msgid "Visit contributor's Last.fm profile"
-#~ msgstr "Viziti la profilon Last.fm de kontribuanto"
-
-#~ msgid "Visit contributor's LinkedIn profile"
-#~ msgstr "Viziti la LinkedIn-profilon de kontribuanto"
-
-#~ msgid "Visit contributor's MySpace homepage"
-#~ msgstr "Viziti la hejmpaĝon de MySpace de kontribuanto"
-
-#~ msgid "Visit contributor's Reddit profile"
-#~ msgstr "Viziti la Reddit-profilon de kontribuanto"
-
-#~ msgid "Visit contributor's YouTube profile"
-#~ msgstr "Viziti la YouTube-profilon de kontribuanto"
-
-#~ msgid "Visit contributor's Twitter feed"
-#~ msgstr "Viziti la Twitter-fluon de kontribuanto"
-
-#~ msgid "Visit contributor's Wikipedia profile"
-#~ msgstr "Viziti la Vikipedian profilon de kontribuanto"
-
-#~ msgid "Visit contributor's Xing profile"
-#~ msgstr "Viziti la Xing-profilon de kontribuanto"
-
-#~ msgid "Visit contributor's identi.ca feed"
-#~ msgstr "Viziti identi.ca-fluon de kontribuanto"
-
-#~ msgid "Visit contributor's libre.fm profile"
-#~ msgstr "Viziti la profilon libre.fm de kontribuanto"
-
-#~ msgid "Visit contributor's StackOverflow profile"
-#~ msgstr "Viziti la profilon StackOverflow de kontribuanto"
-
-#~ msgid "Amarok Applet Manager"
-#~ msgstr "Amarok Applet Manager"
-
-#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-#~ msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-
-#~ msgid "Aaron Seigo"
-#~ msgstr "Aaron Seigo"
-
-#~ msgid "Original author"
-#~ msgstr "Origina aŭtoro"
-
-#~ msgid "For install or remove, operates on applets installed for all users."
-#~ msgstr ""
-#~ "Por instali aŭ forigi, funkcias per apletoj instalitaj por ĉiuj uzantoj."
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Install the applet at <path>"
-#~ msgstr "Instali la apleton ĉe <path>"
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Upgrade the applet at <path>"
-#~ msgstr "Ĝisdatigi la apleton ĉe <path>"
-
-#~ msgid "Most installed applets"
-#~ msgstr "Plej instalitaj apletoj"
-
-#~ msgctxt "Do not translate <name>"
-#~ msgid "Remove the applet named <name>"
-#~ msgstr "Forigi la apleton nomitan <nomo>"
-
-#~ msgid ""
-#~ "Absolute path to the package root. If not supplied, then the standard "
-#~ "data directories for this KDE session will be searched instead."
-#~ msgstr ""
-#~ "Plena vojo al pakaĵradiko. Se ne donita, la standardaj datumdosierujoj "
-#~ "por tiu ĉi KDE-seanco estos serĉata anstataŭe."
-
-#~ msgid "Successfully removed %1"
-#~ msgstr "Sukcese forigis pakaĵon %1"
-
-#~ msgid "Removal of %1 failed."
-#~ msgstr "Forigo de %1 malsukcesis."
-
-#~ msgid "Plugin %1 is not installed."
-#~ msgstr "Kromprogramo %1 ne estas instalita."
-
-#~ msgid "Successfully installed %1"
-#~ msgstr "Sukcese instalis pakaĵon %1"
-
-#~ msgid "Installation of %1 failed."
-#~ msgstr "Instalado de %1 malsukcesis."
-
-#~ msgctxt ""
-#~ "No option was given, this is the error message telling the user he needs "
-#~ "at least one, do not translate install, remove, upgrade nor list"
-#~ msgid "One of install, remove, upgrade or list is required."
-#~ msgstr "Bezonas unu el: instali, forigi aŭ listi"
