@@ -104,7 +104,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=77
+X-KDE-Amarok-framework-version=78
 X-KDE-Amarok-name=mysql-collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1

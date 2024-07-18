@@ -96,7 +96,7 @@ Optional
         * wmav2
 
     * CD support requires:
-      * audiocd-kio - https://www.kde.org/ (part of KDE multimedia)
+      * audiocd-kio - https://www.kde.org/ (part of KDE multimedia; NOTE: KF5 version)
 
     * Building tests require:
       * gmock 1.10 (or newer) - https://github.com/google/googletest

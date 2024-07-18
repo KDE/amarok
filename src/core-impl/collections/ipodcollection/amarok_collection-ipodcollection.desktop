@@ -99,7 +99,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Matěj Laitl
 X-KDE-Amarok-email=matej@laitl.cz
-X-KDE-Amarok-framework-version=77
+X-KDE-Amarok-framework-version=78
 X-KDE-Amarok-name=ipod-collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
