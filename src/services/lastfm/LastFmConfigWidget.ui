@@ -121,16 +121,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="kcfg_RetrieveSimilarArtists">
-        <property name="text">
-         <string>&amp;Retrieve similar artists</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QCheckBox" name="kcfg_ScrobbleComposer">
         <property name="text">
          <string>&amp;Use composer data if available in Last.fm as artist</string>

@@ -56,7 +56,6 @@ LastFmServiceConfig::LastFmServiceConfig()
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_username = config.readEntry( "username", QString() );
     m_scrobble = config.readEntry( "scrobble", defaultScrobble() );
-    m_fetchSimilar = config.readEntry( "fetchSimilar", defaultFetchSimilar() );
     m_scrobbleComposer = config.readEntry( "scrobbleComposer", defaultScrobbleComposer() );
     m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", defaultUseFancyRatingTags() );
     m_announceCorrections = config.readEntry( "announceCorrections", defaultAnnounceCorrections() );
@@ -86,7 +85,6 @@ void LastFmServiceConfig::save()
     config.writeEntry( "username", m_username );
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
-    config.writeEntry( "fetchSimilar", m_fetchSimilar );
     config.writeEntry( "scrobbleComposer", m_scrobbleComposer );
     config.writeEntry( "useFancyRatingTags", m_useFancyRatingTags );
     config.writeEntry( "announceCorrections", m_announceCorrections );

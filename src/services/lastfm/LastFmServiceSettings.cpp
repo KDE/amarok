@@ -46,7 +46,6 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmServiceSettings::onConfigUpdated );
 
     connect( m_configDialog->kcfg_SubmitPlayedSongs, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_RetrieveSimilarArtists, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_ScrobbleComposer, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_UseFancyRatingTags, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_AnnounceCorrections, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
@@ -74,7 +73,6 @@ void
 LastFmServiceSettings::save()
 {
     m_config->setScrobble( m_configDialog->kcfg_SubmitPlayedSongs->isChecked() );
-    m_config->setFetchSimilar( m_configDialog->kcfg_RetrieveSimilarArtists->isChecked() );
     m_config->setScrobbleComposer( m_configDialog->kcfg_ScrobbleComposer->isChecked() );
     m_config->setUseFancyRatingTags( m_configDialog->kcfg_UseFancyRatingTags->isChecked() );
     m_config->setAnnounceCorrections( m_configDialog->kcfg_AnnounceCorrections->isChecked() );
@@ -274,7 +272,6 @@ LastFmServiceSettings::load()
         m_configDialog->kcfg_ScrobblerUsername->setText( i18n( "Not connected" ) );
     }
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config->scrobble() );
-    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config->fetchSimilar() );
     m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->scrobbleComposer() );
     m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config->useFancyRatingTags() );
     m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config->announceCorrections() );
@@ -291,7 +288,6 @@ void
 LastFmServiceSettings::defaults()
 {
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config->defaultScrobble() );
-    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config->defaultFetchSimilar() );
     m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config->defaultScrobbleComposer() );
     m_configDialog->kcfg_UseFancyRatingTags->setChecked( m_config->defaultUseFancyRatingTags() );
     m_configDialog->kcfg_AnnounceCorrections->setChecked( m_config->defaultAnnounceCorrections() );

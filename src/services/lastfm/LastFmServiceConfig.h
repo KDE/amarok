@@ -66,10 +66,6 @@ public:
     static bool defaultScrobble() { return true; }
     void setScrobble( bool scrobble ) { m_scrobble = scrobble; }
 
-    bool fetchSimilar() const { return m_fetchSimilar; }
-    static bool defaultFetchSimilar() { return true; }
-    void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
-
     bool scrobbleComposer() const { return m_scrobbleComposer; }
     static bool defaultScrobbleComposer() { return false; }
     void setScrobbleComposer( bool scrobbleComposer ) { m_scrobbleComposer = scrobbleComposer; }
@@ -117,7 +113,6 @@ private:
     QString m_username;
     QString m_sessionKey;
     bool m_scrobble;
-    bool m_fetchSimilar;
     bool m_scrobbleComposer;
     bool m_useFancyRatingTags;
     bool m_announceCorrections;
