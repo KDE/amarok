@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-16 01:41+0000\n"
+"POT-Creation-Date: 2024-07-23 01:49+0000\n"
 "PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -7480,7 +7480,7 @@ msgid_plural "%1 not found"
 msgstr[0] "%1개 찾을 수 없음"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:107
+#: services/lastfm/LastFmServiceSettings.cpp:105
 #, kde-format
 msgid "Connecting..."
 msgstr "연결 중..."
@@ -13341,16 +13341,16 @@ msgstr "사용자 이름이나 암호가 비어 있습니다. 다시 시도하�
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:200
-#: services/lastfm/LastFmServiceSettings.cpp:206
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:198
+#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:220
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Failed"
 msgstr "실패"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:211
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
@@ -13569,8 +13569,8 @@ msgstr "사용자 이름:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:223
-#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:221
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -13578,7 +13578,7 @@ msgstr "연결 실패"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:274
+#: services/lastfm/LastFmServiceSettings.cpp:272
 #, fuzzy, kde-format
 #| msgctxt "In a dialog: Some file: Not needed"
 #| msgid "Not needed"
@@ -13611,20 +13611,14 @@ msgstr "Last.fm 서비스"
 msgid "&Submit tracks"
 msgstr "곡 제출하기(&S)"
 
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:126
-#, kde-format
-msgid "&Retrieve similar artists"
-msgstr "유사한 아티스트 정보 검색(&R)"
-
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:136
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr "Last.fm에 아티스트로 등록되어 있을 때 작곡가 데이터 사용(&U)"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:146
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13634,13 +13628,13 @@ msgstr ""
 "fm 태그 사용"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:149
+#: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "별점을 나타낼 때 고급 태그 사용"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:156
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -13652,13 +13646,13 @@ msgstr ""
 "동 수정 내용을 알려 줍니다.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:159
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "곡 태그 수정 제안 알림"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:158
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -13668,13 +13662,13 @@ msgstr ""
 "중 정보를 업데이트하지 않습니다</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:161
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "다음 레이블이 있는 곡 정보 제출 안 함:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:178
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -13774,50 +13768,50 @@ msgstr "친구들의 애청 라디오"
 msgid "Friends' Personal Radio"
 msgstr "친구들의 개인 라디오"
 
-#: services/lastfm/LastFmServiceConfig.cpp:140
+#: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr "KDE 지갑에서 Last.fm 인증 정보를 읽을 수 없음"
 
-#: services/lastfm/LastFmServiceConfig.cpp:157
+#: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
 msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:92
+#: services/lastfm/LastFmServiceSettings.cpp:90
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:93
+#: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:140
-#: services/lastfm/LastFmServiceSettings.cpp:197
-#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:138
+#: services/lastfm/LastFmServiceSettings.cpp:195
+#: services/lastfm/LastFmServiceSettings.cpp:203
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "실패"
 
-#: services/lastfm/LastFmServiceSettings.cpp:145
+#: services/lastfm/LastFmServiceSettings.cpp:143
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "이 이벤트의 Last.fm 웹 페이지 열기"
 
-#: services/lastfm/LastFmServiceSettings.cpp:163
+#: services/lastfm/LastFmServiceSettings.cpp:161
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:188
+#: services/lastfm/LastFmServiceSettings.cpp:186
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -13825,7 +13819,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Last.fm 서비스에 연결할 수 없습니다."
@@ -15975,6 +15969,9 @@ msgstr "아티스트: %1"
 #, kde-format
 msgid "empty"
 msgstr "비어 있음"
+
+#~ msgid "&Retrieve similar artists"
+#~ msgstr "유사한 아티스트 정보 검색(&R)"
 
 #~ msgid "Add Last.fm artist station to the Playlist"
 #~ msgstr "재생 목록에 Last.fm 아티스트 스테이션 추가"

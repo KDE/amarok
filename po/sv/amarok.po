@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-16 01:41+0000\n"
+"POT-Creation-Date: 2024-07-23 01:49+0000\n"
 "PO-Revision-Date: 2024-07-15 16:33+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -7633,7 +7633,7 @@ msgstr[0] "1 inte hittat"
 msgstr[1] "%1 inte hittade"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:107
+#: services/lastfm/LastFmServiceSettings.cpp:105
 #, kde-format
 msgid "Connecting..."
 msgstr "Ansluter..."
@@ -13549,16 +13549,16 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:200
-#: services/lastfm/LastFmServiceSettings.cpp:206
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:198
+#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:220
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Failed"
 msgstr "Misslyckades"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:211
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
@@ -13784,15 +13784,15 @@ msgstr "Användarnamn:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:223
-#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:221
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
 msgid "Connect to account"
 msgstr "Anslut till konto"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:274
+#: services/lastfm/LastFmServiceSettings.cpp:272
 #, kde-format
 msgid "Not connected"
 msgstr "Inte ansluten"
@@ -13821,20 +13821,14 @@ msgstr "Tjänster hos last.fm"
 msgid "&Submit tracks"
 msgstr "&Skicka in spår"
 
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:126
-#, kde-format
-msgid "&Retrieve similar artists"
-msgstr "&Hämta liknande artister"
-
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:136
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr "An&vänd information om tonsättare om tillgänglig i Last.fm som artist"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:146
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13844,13 +13838,13 @@ msgstr ""
 "betygen i Amarok vid statistiksynkronisering"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:149
+#: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Använd snygga taggar för att representera betyg"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:156
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -13862,13 +13856,13 @@ msgstr ""
 "underrättad när det sker och vad den automatiska rättningen var.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:159
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Meddela rättningsförslag för spårens taggar"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:158
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -13878,13 +13872,13 @@ msgstr ""
 "uppdatera spelar nu på Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:161
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "Skicka inte in spår med beteckning:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:178
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -13987,14 +13981,14 @@ msgstr "Vänners gillade radio"
 msgid "Friends' Personal Radio"
 msgstr "Vänners personliga radio"
 
-#: services/lastfm/LastFmServiceConfig.cpp:140
+#: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
 "Misslyckades öppna KDE:s plånbok för att läsa behörighetsinformation för "
 "Last.fm."
 
-#: services/lastfm/LastFmServiceConfig.cpp:157
+#: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
 msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
@@ -14003,37 +13997,37 @@ msgstr ""
 "Fel vid konvertering av Last.fm användarnamn från plånboken. Anslut Last.fm "
 "kontot igen i insticksprogrammets inställningar."
 
-#: services/lastfm/LastFmServiceSettings.cpp:92
+#: services/lastfm/LastFmServiceSettings.cpp:90
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr "Vill du koppla bort Amarok från Last.fm kontot %1?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:93
+#: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr "Koppla bort Last.fm konto?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:140
-#: services/lastfm/LastFmServiceSettings.cpp:197
-#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:138
+#: services/lastfm/LastFmServiceSettings.cpp:195
+#: services/lastfm/LastFmServiceSettings.cpp:203
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Misslyckades"
 
-#: services/lastfm/LastFmServiceSettings.cpp:145
+#: services/lastfm/LastFmServiceSettings.cpp:143
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "Öppnar webbsida på Last.fm"
 
-#: services/lastfm/LastFmServiceSettings.cpp:163
+#: services/lastfm/LastFmServiceSettings.cpp:161
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr "Slutför anslutning till konto"
 
-#: services/lastfm/LastFmServiceSettings.cpp:188
+#: services/lastfm/LastFmServiceSettings.cpp:186
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -14044,7 +14038,7 @@ msgstr ""
 "behörighet att ansluta till Last.fm kontot på Last.fm webbsida som öppnades "
 "och försök igen."
 
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Kan inte ansluta till Last.fm server."
@@ -16218,6 +16212,9 @@ msgstr "Artist: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
+
+#~ msgid "&Retrieve similar artists"
+#~ msgstr "&Hämta liknande artister"
 
 #~ msgid "Add Last.fm artist station to the Playlist"
 #~ msgstr "Lägg till artiststation från Last.fm i spellistan"

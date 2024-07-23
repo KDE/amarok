@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-16 01:41+0000\n"
-"PO-Revision-Date: 2024-06-19 20:39+0200\n"
+"POT-Creation-Date: 2024-07-23 01:49+0000\n"
+"PO-Revision-Date: 2024-07-16 03:20+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 24.05.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1866,12 +1866,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Chiave di sessione Last.fm non valida. Ricollega il tuo account Last.fm "
+"nelle Impostazioni estensioni."
 
 #: App.cpp:606
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Errore della chiave di sessione di Last.fm"
 
 #: App.cpp:667
 #, kde-format
@@ -4277,18 +4279,16 @@ msgid "Width"
 msgstr "Larghezza"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "di <b>%1</b>"
+msgstr "Simile a <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 ascoltatori<br>%2 riproduzioni"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4296,7 +4296,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 tue riproduzioni"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -7713,7 +7713,7 @@ msgstr[0] "1 non trovata"
 msgstr[1] "%1 non trovate"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:107
+#: services/lastfm/LastFmServiceSettings.cpp:105
 #, kde-format
 msgid "Connecting..."
 msgstr "Connessione..."
@@ -9821,15 +9821,7 @@ msgstr ""
 "(C) 2003-2024, La squadra di sviluppo di Amarok"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9840,7 +9832,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Segnalazioni:\n"
 "amarok@kde.org\n"
@@ -13437,14 +13429,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Lo script %1 è stato esaminato per oltre 5 secondi, vuoi terminarlo?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13453,8 +13438,8 @@ msgid ""
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "Lo script %1 usa chiamate delle API di creazione script obsolete. Contatta "
-"l'autore dello script, %2 su %3, e chiedigli di aggiornarlo prima della "
-"prossima versione di Amarok."
+"gli autori dello script, %2, e chiedigli di aggiornarlo prima della prossima "
+"versione di Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13674,16 +13659,16 @@ msgstr "Il nome utente o la password sono vuoti, correggili e prova ancora."
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:200
-#: services/lastfm/LastFmServiceSettings.cpp:206
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:198
+#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:220
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Failed"
 msgstr "Non riuscito"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:211
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
@@ -13909,43 +13894,36 @@ msgstr "Profilo Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Nome utente:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:223
-#: services/lastfm/LastFmServiceSettings.cpp:246
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#: services/lastfm/LastFmServiceSettings.cpp:221
+#: services/lastfm/LastFmServiceSettings.cpp:244
+#, kde-format
 msgid "Connect to account"
-msgstr "Connessione non riuscita"
+msgstr "Connetti account"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:274
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#: services/lastfm/LastFmServiceSettings.cpp:272
+#, kde-format
 msgid "Not connected"
-msgstr "Non necessari"
+msgstr "Non connesso"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">Registrati a Last.fm</a>."
+msgstr "<a href=\"https://www.last.fm/join\">Iscriviti a Last.fm</a>."
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Disconnetti dispositivo"
+msgstr "Disconnetti account"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13959,21 +13937,15 @@ msgstr "Servizi Last.fm"
 msgid "&Submit tracks"
 msgstr "In&via tracce"
 
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:126
-#, kde-format
-msgid "&Retrieve similar artists"
-msgstr "&Ricerca artisti simili"
-
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:136
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
 "&Utilizza i dati del compositore se disponibili in Last.fm come artista"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:146
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13983,13 +13955,13 @@ msgstr ""
 "valutazioni di Amarok durante la sincronizzazione delle statistiche"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:149
+#: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Utilizza contrassegni eleganti per indicare le valutazioni"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:156
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -14002,13 +13974,13 @@ msgstr ""
 "quando ciò accade e cosa è stato corretto</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:159
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Annuncia i suggerimenti di correzione per i tag delle tracce"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:158
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -14018,13 +13990,13 @@ msgstr ""
 "sulle informazioni di riproduzione di Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:161
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "Non inviare le tracce con le etichette:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:178
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -14127,60 +14099,64 @@ msgstr "Radio preferita dei miei amici"
 msgid "Friends' Personal Radio"
 msgstr "Radio personale dei miei amici"
 
-#: services/lastfm/LastFmServiceConfig.cpp:140
+#: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
 "Apertura del portafogli di KDE per leggere le credenziali di Last.fm non "
 "riuscita"
 
-#: services/lastfm/LastFmServiceConfig.cpp:157
+#: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
 msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Errore durante la migrazione del nome utente Last.fm da KWallet. Ricollega "
+"il tuo account Last.fm nelle Impostazioni estensioni."
 
-#: services/lastfm/LastFmServiceSettings.cpp:92
+#: services/lastfm/LastFmServiceSettings.cpp:90
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Vuoi disconnettere Amarok dall'account Last.fm %1?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:93
+#: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Vuoi disconnettere l'account Last.fm?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:140
-#: services/lastfm/LastFmServiceSettings.cpp:197
-#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:138
+#: services/lastfm/LastFmServiceSettings.cpp:195
+#: services/lastfm/LastFmServiceSettings.cpp:203
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Non riuscito"
 
-#: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#: services/lastfm/LastFmServiceSettings.cpp:143
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Apri la pagina web di Last.fm per questo evento"
+msgstr "Apertura della pagina web di Last.fm"
 
-#: services/lastfm/LastFmServiceSettings.cpp:163
+#: services/lastfm/LastFmServiceSettings.cpp:161
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Completa la connessione dell'account"
 
-#: services/lastfm/LastFmServiceSettings.cpp:188
+#: services/lastfm/LastFmServiceSettings.cpp:186
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"La connessione all'account Last.fm non è riuscita. Assicurati di aver "
+"autorizzato Amarok a connettersi al tuo account Last.fm sulla pagina web "
+"Last.fm che è stata aperta e riprova."
 
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Impossibile connettersi al servizio Last.fm."
@@ -14952,13 +14928,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Aggiornamento della banca dati locale di Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14969,8 +14939,8 @@ msgstr ""
 "Il servizio Magnatune.com accetta i seguenti messaggi: \n"
 "\n"
 "\taddMoodyTracks mood count: Aggiunge alcune tracce casuali alla scaletta "
-"con l'atmosfera specificata. L'argomento di atmosfera deve sostituire gli "
-"spazi con %%20"
+"con l'atmosfera specificata. Nell'argomento dell'atmosfera gli spazi devono "
+"essere sostituiti con &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15056,14 +15026,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Gestisce AutoSync per il servizio MP3tunes di Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15072,8 +15035,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"server: irc.libera.chat / channel: #amarok\n"
 "\n"
 "Segnalazioni:\n"
 "amarok@kde.org"
@@ -16391,6 +16353,9 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "vuota"
+
+#~ msgid "&Retrieve similar artists"
+#~ msgstr "&Ricerca artisti simili"
 
 #~ msgid "Add Last.fm artist station to the Playlist"
 #~ msgstr "Aggiungi la stazione Last.fm dell'artista alla scaletta"

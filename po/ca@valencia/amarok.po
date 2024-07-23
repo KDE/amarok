@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-16 01:41+0000\n"
+"POT-Creation-Date: 2024-07-23 01:49+0000\n"
 "PO-Revision-Date: 2024-07-15 13:07+0200\n"
 "Last-Translator: Antoni Bella Pérez <antonibella5@yahoo.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -7731,7 +7731,7 @@ msgstr[0] "1 no trobada"
 msgstr[1] "%1 no trobades"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:107
+#: services/lastfm/LastFmServiceSettings.cpp:105
 #, kde-format
 msgid "Connecting..."
 msgstr "S'està connectant…"
@@ -13680,16 +13680,16 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:200
-#: services/lastfm/LastFmServiceSettings.cpp:206
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:198
+#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:220
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Failed"
 msgstr "No s'ha pogut"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:211
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
@@ -13921,15 +13921,15 @@ msgstr "Nom d'usuari:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:223
-#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:221
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
 msgid "Connect to account"
 msgstr "Connecta amb el compte"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:274
+#: services/lastfm/LastFmServiceSettings.cpp:272
 #, kde-format
 msgid "Not connected"
 msgstr "No connectat"
@@ -13958,14 +13958,8 @@ msgstr "Serveis de Last.fm"
 msgid "&Submit tracks"
 msgstr "&Envia les peces"
 
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: services/lastfm/LastFmConfigWidget.ui:126
-#, kde-format
-msgid "&Retrieve similar artists"
-msgstr "&Recupera els artistes semblants"
-
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
-#: services/lastfm/LastFmConfigWidget.ui:136
+#: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
@@ -13973,7 +13967,7 @@ msgstr ""
 "artista"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:146
+#: services/lastfm/LastFmConfigWidget.ui:136
 #, kde-format
 msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
@@ -13984,13 +13978,13 @@ msgstr ""
 "estadístiques"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
-#: services/lastfm/LastFmConfigWidget.ui:149
+#: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
 msgstr "Utilitza etiquetes sofisticades per a representar les valoracions"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:156
+#: services/lastfm/LastFmConfigWidget.ui:146
 #, kde-format
 msgid ""
 "<html>When scrobbling tracks to Last.fm, it autocorrects common errors in "
@@ -14003,13 +13997,13 @@ msgstr ""
 "automàtica i què ha sigut</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
-#: services/lastfm/LastFmConfigWidget.ui:159
+#: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
 msgstr "Anuncia els suggeriments de correcció de les etiquetes de peça"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:168
+#: services/lastfm/LastFmConfigWidget.ui:158
 #, kde-format
 msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
@@ -14019,13 +14013,13 @@ msgstr ""
 "que s'actualitzen en «ara s'està reproduint» de Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
-#: services/lastfm/LastFmConfigWidget.ui:171
+#: services/lastfm/LastFmConfigWidget.ui:161
 #, kde-format
 msgid "Do not scrobble tracks with label:"
 msgstr "No analitzes musicalment les peces amb l'etiqueta:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
-#: services/lastfm/LastFmConfigWidget.ui:178
+#: services/lastfm/LastFmConfigWidget.ui:168
 #, kde-format
 msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
@@ -14128,13 +14122,13 @@ msgstr "Ràdio amb les preferides dels amics"
 msgid "Friends' Personal Radio"
 msgstr "Ràdio personal dels amics"
 
-#: services/lastfm/LastFmServiceConfig.cpp:140
+#: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
 "No s'ha pogut obrir la cartera de KDE per a llegir les credencials de Last.fm"
 
-#: services/lastfm/LastFmServiceConfig.cpp:157
+#: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
 msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
@@ -14144,37 +14138,37 @@ msgstr ""
 "Torneu a connectar amb el vostre compte de Last.fm en la configuració dels "
 "connectors."
 
-#: services/lastfm/LastFmServiceSettings.cpp:92
+#: services/lastfm/LastFmServiceSettings.cpp:90
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr "Voleu desconnectar Amarok del compte %1 de Last.fm?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:93
+#: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr "Desconnecte el compte de Last.fm?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:140
-#: services/lastfm/LastFmServiceSettings.cpp:197
-#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:138
+#: services/lastfm/LastFmServiceSettings.cpp:195
+#: services/lastfm/LastFmServiceSettings.cpp:203
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "No s'ha pogut"
 
-#: services/lastfm/LastFmServiceSettings.cpp:145
+#: services/lastfm/LastFmServiceSettings.cpp:143
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "S'està obrint la pàgina web de Last.fm"
 
-#: services/lastfm/LastFmServiceSettings.cpp:163
+#: services/lastfm/LastFmServiceSettings.cpp:161
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr "Finalitza la connexió del compte"
 
-#: services/lastfm/LastFmServiceSettings.cpp:188
+#: services/lastfm/LastFmServiceSettings.cpp:186
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -14185,7 +14179,7 @@ msgstr ""
 "heu autoritzat Amarok per a connectar-vos al vostre compte de Last.fm a la "
 "pàgina web de Last.fm que s'ha obert i torneu-ho a provar."
 
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:243
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "No s'ha pogut connectar amb el servei Last.fm."
@@ -16393,3 +16387,6 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
+
+#~ msgid "&Retrieve similar artists"
+#~ msgstr "&Recupera els artistes semblants"
