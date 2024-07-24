@@ -38,7 +38,7 @@ ScrollView {
         delegate: Rectangle {
             readonly property bool appletEnabled: AppletProxyModel.enabledApplets.indexOf(appletId) != -1
 
-            height: root.height - 3 * Kirigami.Units.smallSpacing
+            height: root.height - 6 * Kirigami.Units.smallSpacing
             width: height
             radius: Kirigami.Units.smallSpacing
             color: delegateMouseArea.pressed ? palette.highlight : appletEnabled ? palette.highlight : "transparent"
