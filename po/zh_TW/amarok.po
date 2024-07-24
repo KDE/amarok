@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-23 01:49+0000\n"
-"PO-Revision-Date: 2024-06-26 06:49+0900\n"
+"PO-Revision-Date: 2024-07-23 21:46+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -11069,17 +11069,17 @@ msgstr "只在佇列"
 #: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
-msgstr "重覆播放曲目"
+msgstr "重複播放曲目"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
-msgstr "重覆播放專輯"
+msgstr "重複播放專輯"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
-msgstr "重覆播放清單"
+msgstr "重複播放清單"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
