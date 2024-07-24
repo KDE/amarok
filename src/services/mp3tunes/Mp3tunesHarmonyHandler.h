@@ -18,7 +18,8 @@
 #define MP3TUNESHARMONYHANDLER_H
 
 #include "harmonydaemon/Mp3tunesHarmonyDownload.h"
-#include "AmarokProcess.h"
+
+#include <KProcess>
 
 #include <QObject>
 #include <QString>
@@ -66,7 +67,7 @@ class Mp3tunesHarmonyHandler : public QObject {
         void slotError( QProcess::ProcessError error );
 
     private:
-        AmarokProcess *m_daemon;
+        KProcess *m_daemon;
 
         QString m_identifier;
         QString m_email;

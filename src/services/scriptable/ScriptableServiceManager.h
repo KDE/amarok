@@ -17,7 +17,6 @@
 #ifndef AMAROKSCRIPTABLESERVICEMANAGER_H
 #define AMAROKSCRIPTABLESERVICEMANAGER_H
 
-#include "AmarokProcess.h"
 #include "../ServiceBase.h"
 #include "ScriptableService.h"
 

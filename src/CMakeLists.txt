@@ -643,7 +643,6 @@ set(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonListWidget.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
-    AmarokProcess.cpp
     App.cpp
     EngineController.cpp
     KNotificationBackend.cpp

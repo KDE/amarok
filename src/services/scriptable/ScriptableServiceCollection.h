@@ -18,7 +18,6 @@
 #define DYNAMICSCRIPTABLESERVICECOLLECTION_H
 
 #include "../ServiceCollection.h"
-#include "AmarokProcess.h"
 
 namespace Collections {
 

@@ -74,7 +74,6 @@ protected:
     void handleResult( const Meta::TrackList &tracks );
 
     ScriptableServiceCollection * m_collection;
-    AmarokProcIO * m_script;
 
     struct Private;
     Private * const d;

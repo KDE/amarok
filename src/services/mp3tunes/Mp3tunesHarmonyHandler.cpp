@@ -47,14 +47,14 @@ Mp3tunesHarmonyHandler::~Mp3tunesHarmonyHandler()
 
 bool Mp3tunesHarmonyHandler::startDaemon()
 {
-    m_daemon = new AmarokProcess( this );
+    m_daemon = new KProcess( this );
     if( m_email.isEmpty() && m_pin.isEmpty() )
         *m_daemon << "amarokmp3tunesharmonydaemon" << m_identifier;
     else if( !m_email.isEmpty() && !m_pin.isEmpty() )
         *m_daemon << "amarokmp3tunesharmonydaemon" << m_identifier << m_email << m_pin;
     m_daemon->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_daemon, QOverload<int>::of( &QProcess::finished ), this, &Mp3tunesHarmonyHandler::slotFinished );
-    connect( m_daemon, QOverload<QProcess::ProcessError>::of( &AmarokProcess::error ), this, &Mp3tunesHarmonyHandler::slotError );
+    connect( m_daemon, QOverload<QProcess::ProcessError>::of( &KProcess::error ), this, &Mp3tunesHarmonyHandler::slotError );
     m_daemon->start();
     sleep(3); // sleep for 3 seconds to allow the process to start and register.
     return m_daemon->waitForStarted( -1 );

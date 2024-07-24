@@ -22,6 +22,10 @@ include_directories(SYSTEM
     ${LOUDMOUTH_INCLUDE_DIRS}
 )
 
+if( LIBLASTFM_FOUND ) # needed by Last.fm error handler in App.cpp
+    include_directories(SYSTEM ${LIBLASTFM_INCLUDE_DIR})
+endif()
+
 if(LIBGCRYPT_FOUND)
     add_definitions(-DHAVE_LIBGCRYPT)
 else()
