@@ -16335,6 +16335,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "&Retrieve similar artists"
-#~ msgstr "Na&jít podobné umělce"
