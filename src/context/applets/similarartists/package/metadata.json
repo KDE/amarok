@@ -10,6 +10,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Last.fm similar artists applet for Amarok",
+        "Description[bg]": "Последният подобен аплет на изпълнител в Last.fm за Amarok",
         "Description[ca@valencia]": "Miniaplicació d'artistes semblants per a Amarok",
         "Description[ca]": "Miniaplicació d'artistes semblants per a l'Amarok",
         "Description[cs]": "Applet pro podobné umělce Last.fm pro Amarok",
