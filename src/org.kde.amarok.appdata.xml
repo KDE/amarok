@@ -448,40 +448,8 @@
       <image>https://cdn.kde.org/screenshots/amarok/amarok30.png</image>
     </screenshot>
     <screenshot>
-      <caption>Playing music in Amarok</caption>
-      <caption xml:lang="bg">Възпроизвеждане на музика в Amarok</caption>
-      <caption xml:lang="ca">Reproduint música en l'Amarok</caption>
-      <caption xml:lang="ca-valencia">Reproduint música en Amarok</caption>
-      <caption xml:lang="cs">Přehrávání hudby v Amaroku</caption>
-      <caption xml:lang="da">Afspiller musik i Amarok</caption>
-      <caption xml:lang="de">Musik-Wiedergabe in Amarok</caption>
-      <caption xml:lang="el">Αναπαραγωγή μοθσικής στο Amarok</caption>
-      <caption xml:lang="en-GB">Playing music in Amarok</caption>
-      <caption xml:lang="eo">Ludante muzikon en Amarok</caption>
-      <caption xml:lang="es">Reproduciendo música en Amarok</caption>
-      <caption xml:lang="et">Muusika esitamine Amarokis</caption>
-      <caption xml:lang="eu">Amaroken musika jotzea</caption>
-      <caption xml:lang="fi">Musiikin toistaminen Amarokissa</caption>
-      <caption xml:lang="fr">Lecture de musique dans Amarok</caption>
-      <caption xml:lang="gl">Reproducindo música en Amarok.</caption>
-      <caption xml:lang="hu">Zenelejátszás Amarokkal</caption>
-      <caption xml:lang="id">Memutar musik di Amarok</caption>
-      <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
-      <caption xml:lang="ka">მუსიკის დაკვრა Amarok-ში</caption>
-      <caption xml:lang="ko">Amarok으로 음악 재생</caption>
-      <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
-      <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
-      <caption xml:lang="pt">A tocar música no Amarok</caption>
-      <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok</caption>
-      <caption xml:lang="sk">Prehrávanie hudby cez Amarok</caption>
-      <caption xml:lang="sl">Predvajanje glasbe v Amaroku</caption>
-      <caption xml:lang="sv">Spela musik i Amarok</caption>
-      <caption xml:lang="tr">Amarok’ta müzik çalma</caption>
-      <caption xml:lang="uk">Відтворення музики в Amarok</caption>
-      <caption xml:lang="x-test">xxPlaying music in Amarokxx</caption>
-      <caption xml:lang="zh-CN">Amarok 正在播放音乐</caption>
-      <caption xml:lang="zh-TW">Amarok 播放音樂時的畫面</caption>
-      <image>https://cdn.kde.org/screenshots/amarok/amarok.png</image>
+      <caption>Amarok 3.1 player window with a customized layout</caption>
+      <image>https://cdn.kde.org/screenshots/amarok/amarok31.png</image>
     </screenshot>
     <screenshot>
       <caption>Amarok windows</caption>
