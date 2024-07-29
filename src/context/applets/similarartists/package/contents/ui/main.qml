@@ -138,7 +138,7 @@ AmarokQml.Applet {
                 anchors.left: parent.left
                 anchors.top: headerLabel.bottom
                 width: height * 2
-                icon.width: height * 1.75
+                icon.width: width * 0.8
                 icon.source: applet.imageUrl("lastfm.png")
                 radius: Kirigami.Units.smallSpacing
                 onClicked: if(url) { Qt.openUrlExternally(url) }
