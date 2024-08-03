@@ -2,6 +2,13 @@ Amarok ChangeLog
 ================
 (C) 2002-2024 the Amarok authors.
 
+VERSION 3.1.1
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
 VERSION 3.1.0
   FEATURES:
   CHANGES:
@@ -18,7 +25,7 @@ VERSION 3.0.81
   CHANGES:
    * Amarok now depends on KDE Frameworks 5.89.
    * Cleanup of unused code and various changes that improve Qt6 compatibility
-     but shouldn't affect functionality.
+     but shouldn't affect functionality. (n.b. Qt6 build won't succeed yet)
    * Remove old derelict openDesktop.org integrations from about dialog. This also
      removes the dependency to Attica framework.
    * Disable gapless playback if ReplayGain is active and the following track is
