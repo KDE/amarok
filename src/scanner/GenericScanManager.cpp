@@ -48,7 +48,7 @@ bool
 GenericScanManager::isRunning()
 {
     QMutexLocker locker( &m_mutex );
-    return m_scannerJob;
+    return bool(m_scannerJob);
 }
 
 QString

@@ -33,10 +33,6 @@
 #include <QStandardPaths>
 #include <QtGlobal>
 
-#ifdef WITH_QT_WEBENGINE
-#include <QtWebEngine>
-#endif
-
 #include <csignal>
 
 #ifdef Q_OS_WIN

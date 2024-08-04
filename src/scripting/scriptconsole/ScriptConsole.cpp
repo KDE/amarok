@@ -34,6 +34,7 @@
 #include <QToolBar>
 
 #include <KMessageBox>
+#include <KTextEditor/Document>
 #include <KTextEditor/Editor>
 #include <KTextEditor/View>
 #include <KLocalizedString>

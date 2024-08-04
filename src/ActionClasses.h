@@ -96,7 +96,11 @@ namespace Amarok
             QString currentIcon() const;
 
         protected Q_SLOTS:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             void actionTriggered( QAction *a ) override;
+#else
+            void slotActionTriggered( QAction *a ) override;
+#endif
 
         private:
             void ( *m_function ) ( int );

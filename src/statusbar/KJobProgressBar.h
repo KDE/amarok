@@ -34,7 +34,11 @@ class KJobProgressBar : public ProgressBar
 
     private Q_SLOTS:
         void updateJobStatus( KJob*, unsigned long );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         void infoMessage( KJob*, const QString &plain, const QString &rich );
+#else
+        void infoMessage( KJob*, const QString &plain );
+#endif
 };
 
 #endif

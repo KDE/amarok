@@ -66,8 +66,8 @@ class MusicBrainzXmlParser : public QObject, public ThreadWeaver::Job
 
         QMultiMap<QString, QVariant> parseMediumList( const QDomElement &e );
         QMultiMap<QString, QVariant> parseMedium( const QDomElement &e );
-        QVariantMap parseTrackList( const QDomElement &e );
-        QVariantMap parseTrack( const QDomElement &e );
+        QMultiMap<QString, QVariant> parseTrackList( const QDomElement &e );
+        QMultiMap<QString, QVariant> parseTrack( const QDomElement &e );
 
         QString parseReleaseGroup( const QDomElement &e );
 

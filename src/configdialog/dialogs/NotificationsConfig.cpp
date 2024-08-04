@@ -22,6 +22,9 @@
 #include "core/support/Debug.h"
 #include "KNotificationBackend.h"
 
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#include <KX11Extras>
+#endif
 #include <KWindowSystem>
 
 NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
@@ -50,8 +53,11 @@ NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
 
     // Enable/disable the translucency option depending on availability of desktop compositing
     // As opacity functionality is not available on Wayland at least with current implementation, don't enable option there
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     kcfg_OsdUseTranslucency->setEnabled( !KWindowSystem::isPlatformWayland() && KWindowSystem::compositingActive() );
-
+#else
+    kcfg_OsdUseTranslucency->setEnabled( !KWindowSystem::isPlatformWayland() && KX11Extras::compositingActive() );
+#endif
     // Also disable other functionalities not (yet?) available on Wayland
     kcfg_OsdScreen->setEnabled( !KWindowSystem::isPlatformWayland() );
 

@@ -58,11 +58,6 @@ bool TextStream::autoDetectUnicode() const
     return QTextStream::autoDetectUnicode();
 }
 
-QTextCodec *TextStream::codec() const
-{
-    return QTextStream::codec();
-}
-
 QIODevice *TextStream::device() const
 {
     return QTextStream::device();
@@ -163,16 +158,6 @@ void TextStream::setAutoDetectUnicode(bool enabled)
     QTextStream::setAutoDetectUnicode(enabled);
 }
 
-void TextStream::setCodec(const char *codecName)
-{
-    QTextStream::setCodec(codecName);
-}
-
-void TextStream::setCodec(QTextCodec *codec)
-{
-    QTextStream::setCodec(codec);
-}
-
 void TextStream::setDevice(QIODevice *device)
 {
     QTextStream::setDevice(device);
@@ -252,7 +237,6 @@ TextStream &TextStream::operator=(const TextStream &other)
 {
     if (this != &other) {
         this->setAutoDetectUnicode( other.autoDetectUnicode() );
-        this->setCodec( other.codec() );
         this->setDevice( other.device() );
         this->setFieldAlignment( other.fieldAlignment() );
         this->setFieldWidth( other.fieldWidth() );

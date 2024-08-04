@@ -43,11 +43,12 @@
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
 #include "TagGuesserDialog.h"
 
+#include <KIO/JobUiDelegate>
+#include <KIO/OpenUrlJob>
+
 #include <QLineEdit>
 #include <QMenu>
 #include <QTimer>
-
-#include <KRun>
 
 #include <thread>
 
@@ -372,7 +373,9 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( QUrl::fromLocalFile(m_path), this );
+    auto *job = new KIO::OpenUrlJob( QUrl::fromLocalFile( m_path ) );
+    job->setUiDelegate( new KIO::JobUiDelegate( KJobUiDelegate::AutoHandlingEnabled, this ) );
+    job->start();
 }
 
 

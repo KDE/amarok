@@ -23,11 +23,10 @@
 #include <QMetaType>
 #include <QObject>
 #include <QPalette>
-#include <QString>
 #include <QPointer>
+#include <QString>
+#include <QMainWindow>
 
-class QMenu;
-class QMainWindow;
 class QMenu;
 
 namespace AmarokScript

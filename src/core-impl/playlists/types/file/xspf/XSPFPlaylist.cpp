@@ -60,7 +60,9 @@ XSPFPlaylist::savePlaylist(QFile &file)
     setTrackList( tracks(), false );
 
     QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     stream.setCodec( "UTF-8" );
+#endif
     QDomDocument::save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
 }
 

@@ -25,7 +25,6 @@
 #include <QObject>
 #include <QTextStream>
 
-class QTextCodec;
 
 namespace QtBindings
 {
@@ -46,7 +45,6 @@ namespace QtBindings
         public Q_SLOTS:
             bool atEnd() const;
             bool autoDetectUnicode() const;
-            QTextCodec *codec() const;
             QIODevice *device() const;
             FieldAlignment fieldAlignment() const;
             int fieldWidth() const;
@@ -67,8 +65,6 @@ namespace QtBindings
             void resetStatus();
             bool seek(qint64 pos);
             void setAutoDetectUnicode(bool enabled);
-            void setCodec(const char *codecName);
-            void setCodec(QTextCodec *codec);
             void setDevice(QIODevice *device);
             void setFieldAlignment(FieldAlignment alignment);
             void setFieldWidth(int width);

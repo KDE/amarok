@@ -284,13 +284,21 @@ void SelectAction::setCurrentItem( int n )
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) Q_EMIT indexTriggered( n );
 }
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void SelectAction::actionTriggered( QAction *a )
 {
     m_function( currentItem() );
     AmarokConfig::self()->save();
     KSelectAction::actionTriggered( a );
 }
+#else
+void SelectAction::slotActionTriggered( QAction *a )
+{
+    m_function( currentItem() );
+    AmarokConfig::self()->save();
+    KSelectAction::slotActionTriggered( a );
+}
+#endif
 
 void SelectAction::setEnabled( bool b )
 {

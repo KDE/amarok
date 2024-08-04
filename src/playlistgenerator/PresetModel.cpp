@@ -206,7 +206,9 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
     QFile file( filename );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
         QTextStream out( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         out.setCodec( "UTF-8" );
+#endif
         xmldoc.save( out, 2, QDomNode::EncodingFromTextStream );
         if( !filename.contains( QLatin1String("playlistgenerator.xml") ) )
         {

@@ -123,6 +123,8 @@ private:
 } //namespace PlaylistBrowserNS
 
 //for saving it in a QVariant
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 Q_DECLARE_METATYPE( const Playlists::PlaylistProvider * )
+#endif
 
 #endif // PLAYLISTBROWSERCATEGORY_H

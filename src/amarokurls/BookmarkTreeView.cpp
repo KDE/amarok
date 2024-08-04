@@ -228,7 +228,13 @@ bool BookmarkTreeView::viewportEvent( QEvent *event )
        if( idx.isValid() )
        {
            QRect vr  = visualRect( idx );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
            QSize shr = itemDelegate( idx )->sizeHint( viewOptions(), idx );
+#else
+           QStyleOptionViewItem o;
+           initViewItemOption( &o )
+           QSize shr = itemDelegate( idx )->sizeHint( o, idx );
+#endif
 
            if( shr.width() > vr.width() )
                QToolTip::showText( he->globalPos(), idx.data( Qt::DisplayRole ).toString() );

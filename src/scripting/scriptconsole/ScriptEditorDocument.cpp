@@ -19,11 +19,14 @@
 #include "CompletionModel.h"
 #include "ScriptConsole.h"
 
-#include <KTextEditor/Attribute>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <KTextEditor/CodeCompletionInterface>
 #include <KTextEditor/ConfigInterface>
-#include <KTextEditor/Document>
 #include <KTextEditor/MovingInterface>
+#endif
+
+#include <KTextEditor/Attribute>
+#include <KTextEditor/Document>
 #include <KTextEditor/MovingRange>
 #include <KTextEditor/View>
 

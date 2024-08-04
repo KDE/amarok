@@ -71,7 +71,11 @@ namespace QtBindings
             int numRowsAffected() const;
             bool prepare(const QString& query);
             bool previous();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             QMap<QString, QVariant> boundValues() const;
+#else
+            QList<QVariant> boundValues() const;
+#endif
             QSqlRecord record() const;
             const QSqlResult* result() const;
             bool seek(int i, bool relative = false);

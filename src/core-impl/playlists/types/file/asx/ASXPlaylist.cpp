@@ -38,7 +38,9 @@ void
 ASXPlaylist::savePlaylist( QFile &file )
 {
     QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     stream.setCodec( "UTF-8" );
+#endif
     clear();
     writeTrackList();
     documentElement().save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );

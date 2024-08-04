@@ -193,7 +193,11 @@ bool SqlQuery::previous()
     return QSqlQuery::previous();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QMap<QString, QVariant> SqlQuery::boundValues() const
+#else
+QList<QVariant> SqlQuery::boundValues() const
+#endif
 {
     return QSqlQuery::boundValues();
 }

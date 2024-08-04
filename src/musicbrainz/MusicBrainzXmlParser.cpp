@@ -348,12 +348,12 @@ MusicBrainzXmlParser::parseMedium( const QDomElement &e )
     return info;
 }
 
-QVariantMap
+QMultiMap<QString, QVariant>
 MusicBrainzXmlParser::parseTrackList( const QDomElement &e )
 {
     QDomNode dNode = e.firstChild();
     QDomElement dElement;
-    QVariantMap info;
+    QMultiMap<QString, QVariant> info;
 
     while( !dNode.isNull() )
     {
@@ -369,13 +369,13 @@ MusicBrainzXmlParser::parseTrackList( const QDomElement &e )
     return info;
 }
 
-QVariantMap
+QMultiMap<QString, QVariant>
 MusicBrainzXmlParser::parseTrack( const QDomElement &e )
 {
     QDomNode dNode = e.firstChild();
     QDomElement dElement;
     QString elementName;
-    QVariantMap info;
+    QMultiMap<QString, QVariant> info;
 
     while( !dNode.isNull() )
     {

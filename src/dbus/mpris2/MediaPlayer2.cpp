@@ -33,6 +33,10 @@
 #include <KAboutData>
 #include <KWindowSystem>
 
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#include <KX11Extras>
+#endif
+
 using namespace Amarok;
 
 MediaPlayer2::MediaPlayer2(QObject* parent)
@@ -58,7 +62,11 @@ void MediaPlayer2::Raise() const
         return;
     }
     window->show();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     KWindowSystem::forceActiveWindow( window->winId() );
+#else
+    KX11Extras::forceActiveWindow( window->winId() );
+#endif
 }
 
 bool MediaPlayer2::CanQuit() const

@@ -36,10 +36,13 @@ void KJobProgressBar::updateJobStatus( KJob * job, unsigned long value )
     Q_EMIT( percentageChanged( percentage() ) );
 }
 
-void KJobProgressBar::infoMessage(KJob* job, const QString &plain, const QString &rich )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+void KJobProgressBar::infoMessage(KJob* job, const QString &plain, const QString & )
+#else
+void KJobProgressBar::infoMessage(KJob* job, const QString &plain )
+#endif
 {
     Q_UNUSED( job );
-    Q_UNUSED( rich );
     setDescription( plain );
 }
 
