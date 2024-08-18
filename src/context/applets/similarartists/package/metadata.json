@@ -28,6 +28,7 @@
         "Description[tr]": "Amarok için Last.fm benzer sanatçılar uygulamacığı",
         "Description[uk]": "Аплет подібних виконавців Last.fm для Amarok",
         "Description[x-test]": "xxLast.fm similar artists applet for Amarokxx",
+        "Description[zh_TW]": "Amarok 的 Last.fm 相似演出者小程式",
         "EnabledByDefault": true,
         "Icon": "similarartists-amarok",
         "Id": "org.kde.amarok.similarartists",
