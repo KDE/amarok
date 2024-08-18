@@ -53,7 +53,7 @@ FileBrowser::Private::Private( FileBrowser *parent )
     : placesModel( nullptr )
     , q( parent )
 {
-    BoxWidget *topHBox = new BoxWidget( q );
+    BoxWidget *topHBox = new BoxWidget( true, q );
 
     KToolBar *navigationToolbar = new KToolBar( topHBox );
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
