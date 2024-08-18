@@ -14,10 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 2.1
-import QtQuick.Dialogs 1.2 as Dialogs
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Dialogs 1.3 as Dialogs
+import QtQuick.Layouts 1.15
 import org.kde.amarok.lyrics 1.0
 
 

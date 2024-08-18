@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
+import QtQuick 2.15
 import QtQuick.Controls 1.4
-import QtQml.Models 2.2
+import QtQml.Models 2.15
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.albums 1.0
 

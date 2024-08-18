@@ -14,11 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 1.4
-import QtQml.Models 2.1
-import QtQuick.Layouts 1.3
-import org.kde.kirigami 2.0 as Kirigami
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQml.Models 2.15
+import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.14 as Kirigami
 
 
 Rectangle {
@@ -125,9 +125,12 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.margins: (parent.height - height) / 2
-        iconName: "configure"
+        icon.name: "configure"
         checkable: true
-        tooltip: i18n( "Configure Applets..." )
+        ToolTip.text: i18n( "Configure Applets..." )
+        ToolTip.visible: hovered
+        ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+        hoverEnabled: true
     }
 
     SystemPalette {

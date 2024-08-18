@@ -14,73 +14,90 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.3
-import org.kde.kirigami 2.0 as Kirigami
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.14 as Kirigami
 
 
-ScrollView {
+ListView {
     id: root
 
-    verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-    frameVisible: true
+    Rectangle {
+        z: -1
+        anchors.fill: parent
+        color: palette.window
+        radius: Kirigami.Units.smallSpacing
+        opacity: 0.9
+    }
+    Rectangle {
+        z: 1
+        color: "#00000000"
+        anchors.fill: parent
+        border.color: palette.windowText
+        border.width: 1
+        radius: Kirigami.Units.smallSpacing
+        opacity: 0.9
+    }
 
-    ListView {
-        id: listView
+    orientation: ListView.Horizontal
+    leftMargin: Kirigami.Units.smallSpacing
+    rightMargin: Kirigami.Units.smallSpacing
+    spacing: Kirigami.Units.smallSpacing
 
-        anchors.margins: Kirigami.Units.smallSpacing
-        orientation: ListView.Horizontal
-        spacing: Kirigami.Units.smallSpacing
+    model: AppletModel
 
-        model: AppletModel
+    ScrollBar.horizontal: ScrollBar { id: scrollBar }
 
-        delegate: Rectangle {
-            readonly property bool appletEnabled: AppletProxyModel.enabledApplets.indexOf(appletId) != -1
+    delegate: Rectangle {
+        readonly property bool appletEnabled: AppletProxyModel.enabledApplets.indexOf(appletId) != -1
 
-            height: root.height - 6 * Kirigami.Units.smallSpacing
-            width: height
-            radius: Kirigami.Units.smallSpacing
-            color: delegateMouseArea.pressed ? palette.highlight : appletEnabled ? palette.highlight : "transparent"
-            border.color: delegateMouseArea.containsMouse ? palette.highlight : "transparent"
-            border.width: 2
+        anchors {
+            verticalCenter: parent.verticalCenter
+        }
+        height: root.height - 6 * Kirigami.Units.smallSpacing
+        width: height
+        radius: Kirigami.Units.smallSpacing
+        color: delegateMouseArea.pressed ? palette.highlight : appletEnabled ? palette.highlight : "transparent"
+        border.color: delegateMouseArea.containsMouse ? palette.highlight : "transparent"
+        border.width: 2
 
-            ColumnLayout {
-                anchors.fill: parent
+        ColumnLayout {
+            anchors.fill: parent
 
-                Image {
-                    source: icon
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignTop
-                    Layout.margins: Kirigami.Units.smallSpacing
-                    sourceSize.width: width
-                    sourceSize.height: height
-                    fillMode: Image.PreserveAspectFit
-                }
-                Label {
-                    Layout.alignment: Qt.AlignBottom
-                    Layout.margins: Kirigami.Units.smallSpacing
-                    Layout.fillWidth: true
-                    text: name
-                    wrapMode: Text.Wrap
-                    horizontalAlignment: Text.AlignHCenter
-                }
+            Image {
+                source: icon
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignTop
+                Layout.margins: Kirigami.Units.smallSpacing
+                sourceSize.width: 256
+                sourceSize.height: 256
+                fillMode: Image.PreserveAspectFit
             }
-
-            MouseArea {
-                id: delegateMouseArea
-
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.LeftButton
-
-                onClicked: AppletProxyModel.setAppletEnabled(appletId, !appletEnabled);
+            Label {
+                Layout.alignment: Qt.AlignBottom
+                Layout.margins: Kirigami.Units.smallSpacing
+                Layout.fillWidth: true
+                color: Kirigami.Theme.textColor
+                text: name
+                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignHCenter
             }
         }
 
-        SystemPalette {
-            id: palette
+        MouseArea {
+            id: delegateMouseArea
+
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton
+
+            onClicked: AppletProxyModel.setAppletEnabled(appletId, !appletEnabled);
         }
+    }
+
+    SystemPalette {
+        id: palette
     }
 }

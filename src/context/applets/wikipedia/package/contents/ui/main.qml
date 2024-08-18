@@ -16,7 +16,7 @@
 
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.3
+import QtQuick.Layouts 1.15
 import QtWebEngine 1.10
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.wikipedia 1.0

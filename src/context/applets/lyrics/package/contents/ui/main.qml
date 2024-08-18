@@ -14,11 +14,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.lyrics 1.0
+import org.kde.kirigami 2.14 as Kirigami
 
 AmarokQml.Applet {
     id: applet
@@ -41,64 +42,78 @@ AmarokQml.Applet {
         }
     }
 
+    RowLayout {
+        id: buttonRow
+
+        y: applet.spacing
+        x: LyricsEngine.alignment === TextEdit.AlignRight ? applet.spacing : parent.width - width - applet.spacing - Kirigami.Units.largeSpacing * 2
+
+        Button {
+            Layout.alignment: Qt.AlignRight
+            checkable: true
+            checked: applet.autoScroll
+            icon.name: "arrow-down"
+
+            ToolTip.text: i18n("Toggle auto scroll")
+            ToolTip.visible: hovered
+            ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+            hoverEnabled: true
+
+            onClicked: applet.autoScroll = !applet.autoScroll
+        }
+        Button {
+            Layout.alignment: Qt.AlignRight
+            icon.name: "view-refresh"
+            ToolTip.text: i18n("Reload lyrics")
+            ToolTip.visible: hovered
+            ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+            hoverEnabled: true
+
+            onClicked: LyricsEngine.refetchLyrics()
+        }
+    }
+
     Component {
         id: textComponent
 
-        TextArea {
-            id: textArea
+        ScrollView {
+            id: textView
+            anchors.fill: parent
 
-            text: LyricsEngine.text
-            font.pointSize: LyricsEngine.fontSize
-            font.family: LyricsEngine.font
-            wrapMode: TextEdit.Wrap
-            horizontalAlignment: LyricsEngine.alignment
-            verticalAlignment: TextEdit.AlignTop
-            textFormat: TextEdit.AutoText
-            readOnly: true
+            TextArea {
+                id: textArea
 
-            Connections {
-                target: LyricsEngine
-                onPositionChanged: {
-                    if (applet.autoScroll) {
-                        var middle = textArea.contentHeight * LyricsEngine.position;
-                        var top = middle - textArea.height / 2;
-                        var maxTop = textArea.contentHeight - textArea.height;
-                        var boundTop = Math.min(maxTop, Math.max(0, top));
-                        textArea.flickableItem.contentY = boundTop;
-                    }
-                }
-            }
-
-            RowLayout {
-                id: buttonRow
-
-                y: applet.spacing
-                x: parent.effectiveHorizontalAlignment === TextEdit.AlignRight ? applet.spacing : parent.viewport.width - width - applet.spacing
-
-                Button {
-                    Layout.alignment: Qt.AlignRight
-                    checkable: true
-                    checked: applet.autoScroll
-                    iconName: "arrow-down"
-                    tooltip: i18n("Toggle auto scroll")
-
-                    onClicked: applet.autoScroll = !applet.autoScroll
-                }
-                Button {
-                    Layout.alignment: Qt.AlignRight
-                    iconName: "view-refresh"
-                    tooltip: i18n("Reload lyrics")
-
-                    onClicked: LyricsEngine.refetchLyrics()
-                }
-            }
-
-            Label {
-                anchors.centerIn: parent
-                text: i18n("No lyrics found")
-                visible: !textArea.text
+                text: LyricsEngine.text
                 font.pointSize: LyricsEngine.fontSize
                 font.family: LyricsEngine.font
+                wrapMode: TextEdit.Wrap
+                horizontalAlignment: LyricsEngine.alignment
+                verticalAlignment: TextEdit.AlignTop
+                textFormat: TextEdit.AutoText
+                readOnly: true
+
+                Connections {
+                    target: LyricsEngine
+                    onPositionChanged: {
+                        if (applet.autoScroll) {
+                            var middle = textArea.contentHeight * LyricsEngine.position;
+                            var top = middle - textView.height / 2;
+                            var maxTop = textArea.contentHeight - textView.height + Kirigami.Units.largeSpacing;
+                            var boundTop = Math.min(maxTop, Math.max(0, top));
+                            textView.contentItem.contentY = boundTop;
+                        }
+                    }
+                }
+
+
+                Label {
+                    anchors.centerIn: parent
+                    text: i18n("No lyrics found")
+                    color: Kirigami.Theme.textColor
+                    visible: !textArea.text
+                    font.pointSize: LyricsEngine.fontSize
+                    font.family: LyricsEngine.font
+                }
             }
         }
     }

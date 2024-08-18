@@ -1,6 +1,6 @@
 module org.kde.amarok.qml
 plugin qml_plugin
 Applet 1.0 Applet.qml
-depends QtQuick 2.6
-depends QtQuick.Controls 1.4
-depends QtQuick.Layouts 1.3
+depends QtQuick 2.15
+depends QtQuick.Controls 2.15
+depends QtQuick.Layouts 1.15
