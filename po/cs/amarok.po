@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-23 01:49+0000\n"
-"PO-Revision-Date: 2024-07-15 15:33+0200\n"
+"PO-Revision-Date: 2024-08-20 15:32+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -4267,7 +4267,7 @@ msgstr "Podobné <b>%1</b>"
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 posluchačů<br>%2 přehrání"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4275,7 +4275,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 vašich přehrání"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -5753,7 +5753,7 @@ msgstr "Nastavení jmen souborů dílů podcastu"
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
 #, kde-format
 msgid "Podcast Filename Layout Configuration"
-msgstr "Nastavení rozložení názvu podcastu"
+msgstr "Nastavení rozvržení názvu podcastu"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
@@ -11277,7 +11277,7 @@ msgstr ""
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "Cannot Delete Default Layouts"
-msgstr "Nelze smazat výchozí grafickou úpravu"
+msgstr "Nelze smazat výchozí rozvržení"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:81
 #, kde-format
