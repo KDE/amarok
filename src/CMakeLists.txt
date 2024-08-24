@@ -857,7 +857,6 @@ else()
         Phonon::phonon4qt${QT_MAJOR_VERSION}
         KF${KF_MAJOR_VERSION}::Archive
         KF${KF_MAJOR_VERSION}::CoreAddons
-        KF${KF_MAJOR_VERSION}::Declarative
         KF${KF_MAJOR_VERSION}::GlobalAccel
         KF${KF_MAJOR_VERSION}::GuiAddons
         KF${KF_MAJOR_VERSION}::I18n

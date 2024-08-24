@@ -48,7 +48,6 @@ else()
     target_link_libraries(qml_plugin
         amarokcore
         Qt::Quick
-        KF${KF_MAJOR_VERSION}::QuickAddons
         KF${KF_MAJOR_VERSION}::WidgetsAddons
     )
 endif()

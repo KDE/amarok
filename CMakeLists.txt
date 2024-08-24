@@ -62,7 +62,6 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     CoreAddons
     Crash
     DBusAddons
-    Declarative
     DNSSD
     DocTools
     GlobalAccel
