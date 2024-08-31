@@ -12,14 +12,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-23 01:49+0000\n"
-"PO-Revision-Date: 2024-07-15 13:07+0200\n"
-"Last-Translator: Antoni Bella Pérez <antonibella5@yahoo.com>\n"
+"PO-Revision-Date: 2024-08-30 11:03+0200\n"
+"Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.08.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 
@@ -370,7 +370,7 @@ msgstr ""
 #: amarokconfig.kcfg:63
 #, kde-format
 msgid "Upcoming tracks count."
-msgstr "Comptador de properes peces."
+msgstr "Comptador de peces següents."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:64
@@ -532,7 +532,7 @@ msgstr ""
 #, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr ""
-"Si en organitzar els fitxers, es mourà al final el «The» dels noms dels "
+"Si en organitzar els fitxers, es mourà al final «The» dels noms dels "
 "artistes."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
@@ -542,7 +542,7 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Si està marcada, en organitzar els fitxers es mourà el «The» del nom dels "
+"Si està marcada, en organitzar els fitxers es mourà «The» del nom dels "
 "artistes al final com en «Beatles, The»."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -2367,12 +2367,12 @@ msgstr ""
 #: browsers/playlistbrowser/DynamicCategory.cpp:73
 #, kde-format
 msgid "Upcoming:"
-msgstr "Properes:"
+msgstr "Pròximes:"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:79
 #, kde-format
 msgid "Number of upcoming tracks to add to the playlist."
-msgstr "El nombre de properes peces que s'afegiran a la llista de reproducció."
+msgstr "El nombre de peces següents que s'afegiran a la llista de reproducció."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:101
 #, kde-format
@@ -2436,7 +2436,7 @@ msgstr "Repobla"
 #: browsers/playlistbrowser/DynamicCategory.cpp:136
 #, kde-format
 msgid "Replace the upcoming tracks with fresh ones."
-msgstr "Substituïx les properes peces amb altres de noves."
+msgstr "Substituïx les peces següents amb altres de noves."
 
 #: browsers/playlistbrowser/DynamicView.cpp:219
 #, kde-format
@@ -13460,7 +13460,7 @@ msgid ""
 msgstr ""
 "L'script %1 utilitza crides a una API obsoleta per a crear scripts. "
 "Contacteu amb l'autor de l'script, %2, i demaneu-li que l'actualitze abans "
-"de la propera publicació d'Amarok."
+"de la pròxima publicació d'Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -15942,14 +15942,14 @@ msgstr ""
 "<b>Nota:</b> No hi ha cap codificador disponible. Si voleu transcodificar "
 "peces, instal·leu els paquets <i>ffmpeg</i> o <i>libav</i> (amb un embolcall "
 "de <i>ffmpeg</i>) amb els codificadors apropiats. Altrament, podeu marcar "
-"l'opció <i>Recorda esta elecció per a la propera vegada</i> per tal d'ometre "
+"l'opció <i>Recorda esta elecció per a la pròxima vegada</i> per tal d'ometre "
 "este diàleg per a les transferències futures."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
 #, kde-format
 msgid "Remember this choice for the next time"
-msgstr "Recorda esta elecció per a la propera vegada"
+msgstr "Recorda esta elecció per a la pròxima vegada"
 
 #: transcoding/TranscodingOptionsStackedWidget.cpp:55
 #, kde-format
@@ -16387,6 +16387,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "&Retrieve similar artists"
-#~ msgstr "&Recupera els artistes semblants"
