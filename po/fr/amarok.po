@@ -29,7 +29,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-23 01:49+0000\n"
-"PO-Revision-Date: 2024-07-16 11:47+0200\n"
+"PO-Revision-Date: 2024-08-31 18:59+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -196,7 +196,7 @@ msgstr "Nom"
 #: ActionClasses.cpp:95
 #, kde-format
 msgid "Amarok Menu"
-msgstr "Menu d'Amarok"
+msgstr "Menu de Amarok"
 
 #: ActionClasses.cpp:186
 #, kde-format
@@ -409,7 +409,7 @@ msgstr "Afficher une icône dans la boîte à miniatures"
 #: amarokconfig.kcfg:69
 #, kde-format
 msgid "Enable/Disable tray icon for Amarok."
-msgstr "Activer / désactiver l'icône de la boîte à miniatures d'Amarok."
+msgstr "Activer / désactiver l'icône de la boîte à miniatures de Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
@@ -421,7 +421,7 @@ msgstr "Masquer le volet de contexte."
 #: amarokconfig.kcfg:74
 #, kde-format
 msgid "Enable/Disable context view in Amarok."
-msgstr "Activer / désactiver le volet de contexte d'Amarok."
+msgstr "Activer / désactiver le volet de contexte de Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:78
@@ -751,7 +751,7 @@ msgstr "Volume principal"
 #: amarokconfig.kcfg:198
 #, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
-msgstr "Le volume principal d'Amarok, une valeur entre 0 et 100."
+msgstr "Le volume principal de Amarok, une valeur entre 0 et 100."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:204
@@ -977,7 +977,7 @@ msgstr "Activer / désactiver la translucidité"
 #: amarokconfig.kcfg:321
 #, kde-format
 msgid "Make the background of the OSD translucent."
-msgstr "Rendre l'arrière-plan de l'OSD translucide."
+msgstr "Rendre l'arrière-plan de l'incrustation vidéo (OSD) translucide."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:325
@@ -990,14 +990,14 @@ msgstr "Utiliser des couleurs personnalisées pour l'affichage à l'écran OSD."
 #, kde-format
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr ""
-"Vous pouvez utiliser des couleurs personnalisées pour l'OSD si vous activez "
-"cette option."
+"Vous pouvez utiliser des couleurs personnalisées pour l'incrustation vidéo "
+"(OSD) si vous activez cette option."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:330
 #, kde-format
 msgid "Font color for OSD"
-msgstr "Couleur de la police de l'OSD"
+msgstr "Couleur de la police de l'incrustation vidéo (OSD)"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:331
@@ -1006,14 +1006,15 @@ msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
 msgstr ""
-"Couleur du texte de l'OSD. La couleur est spécifiée en RVB, une virgule "
-"sépare la liste contenant trois entiers compris entre 0 et 255."
+"Couleur du texte de l'incrustation vidéo (OSD). La couleur est spécifiée en "
+"RVB, une virgule sépare la liste contenant trois entiers compris entre 0 et "
+"255."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:335
 #, kde-format
 msgid "Font scaling for OSD"
-msgstr "Niveau d'agrandissement de la police de l'OSD"
+msgstr "Niveau d'agrandissement de la police de l'incrustation vidéo (OSD)"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:336
@@ -1022,8 +1023,8 @@ msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
 "normal size&#8221;."
 msgstr ""
-"Le facteur d'agrandissement de la police de l'OSD, en pour cent. 100 "
-"correspond à la « taille normale »."
+"Le facteur d'agrandissement de la police de l'incrustation vidéo (OSD), en "
+"pourcentage. La valeur 100 correspond à la « taille normale »."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:342
@@ -1038,8 +1039,9 @@ msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
 "default value is 5000 ms."
 msgstr ""
-"La durée, en millisecondes, d'affichage de l'OSD. La valeur 0 signifie qu'il "
-"ne sera jamais caché. La valeur par défaut est 5000 millisecondes."
+"La durée, en millisecondes, d'affichage de l'incrustation vidéo (OSD). La "
+"valeur 0 signifie qu'elle ne sera jamais masquée. La valeur par défaut est "
+"5000 millisecondes."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:348
@@ -1057,17 +1059,18 @@ msgid ""
 "offset is the space between the bottom part of the OSD and the bottom of the "
 "screen."
 msgstr ""
-"La position verticale (Y) de l'OSD est relative à l'écran choisi ainsi qu'à "
-"l'alignement de l'OSD. Si un alignement haut est choisi, la valeur de Y "
-"correspond à l'espace entre la partie la plus haute de l'OSD et le haut de "
-"l'écran. Si un alignement bas est choisi, la valeur de Y correspond à "
-"l'espace entre la partie la plus basse de l'OSD et le bas de l'écran."
+"La position verticale (Y) de l'incrustation vidéo (OSD) est relative à "
+"l'écran choisi ainsi qu'à l'alignement de l'incrustation vidéo (OSD). Si un "
+"alignement haut est choisi, la valeur de Y correspond à l'espace entre la "
+"partie la plus haute de l'incrustation vidéo (OSD) et le haut de l'écran. Si "
+"un alignement bas est choisi, la valeur de Y correspond à l'espace entre la "
+"partie la plus basse de l'incrustation vidéo (OSD) et le bas de l'écran."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:355
 #, kde-format
 msgid "OSD screen"
-msgstr "Écran de l'OSD"
+msgstr "Écran de l'incrustation vidéo (OSD)"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:356
@@ -1076,14 +1079,14 @@ msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr ""
-"L'écran sur lequel l'OSD doit être affiché. Pour les environnements ne "
-"comprenant qu'un seul écran, cette valeur doit valoir 0."
+"L'écran sur lequel l'incrustation vidéo (OSD) doit être affichée. Pour les "
+"environnements ne comprenant qu'un seul écran, cette valeur doit valoir 0."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:360
 #, kde-format
 msgid "Align OSD to"
-msgstr "Aligne l'OSD avec"
+msgstr "Aligne l'incrustation vidéo (OSD) sur"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:361
@@ -1092,8 +1095,8 @@ msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
 "and Center."
 msgstr ""
-"La position relative de l'OSD. Les choix possibles sont « Gauche », "
-"« Milieu », « Droite » et « Centre »."
+"La position relative de l'incrustation vidéo (OSD). Les choix possibles sont "
+"« Gauche », « Milieu », « Droite » et « Centre »."
 
 #. i18n: ectx: label, entry, group (OSD)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
@@ -1124,7 +1127,7 @@ msgstr "Reprendre la lecture de la dernière piste écoutée au démarrage"
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr ""
-"Cochez cette case pour qu'Amarok reprenne la lecture de la dernière piste "
+"Cochez cette case pour que Amarok reprenne la lecture de la dernière piste "
 "écoutée au démarrage."
 
 #. i18n: ectx: label, entry, group (Session)
@@ -1393,7 +1396,7 @@ msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
-"Synchroniser les statistiques d'Amarok avec le compteur d'écoute / note sur "
+"Synchroniser les statistiques de Amarok avec le compteur d'écoute / note sur "
 "un périphérique et envoyer les pistes écoutées sur last.fm."
 
 #. i18n: ectx: label, entry, group (Daap)
@@ -1491,7 +1494,7 @@ msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
 "access permissions."
 msgstr ""
-"Le nom de la base de données qu'Amarok utilisera. L'utilisateur doit avoir "
+"Le nom de la base de données que Amarok utilisera. L'utilisateur doit avoir "
 "des droits d'accès suffisants."
 
 #. i18n: ectx: label, entry, group (MySQL)
@@ -1518,13 +1521,13 @@ msgstr ""
 #: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
-msgstr "Active le module de script d'Amarok."
+msgstr "Active le module de script de Amarok."
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:588
 #, kde-format
 msgid "Enable/Disable Amarok's scripting module."
-msgstr "Activer / désactiver le module de scripts d'Amarok."
+msgstr "Activer / désactiver le module de scripts de Amarok."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:592
@@ -1697,12 +1700,12 @@ msgstr "&Supprimer"
 #: amarokurls/BookmarkTreeView.cpp:121
 #, kde-format
 msgid "&Create timecode track"
-msgstr "&Créer une piste de timecode"
+msgstr "&Créer une piste de code temporel"
 
 #: amarokurls/BookmarkTreeView.cpp:368
 #, kde-format
 msgid "New Timecode Track"
-msgstr "Nouveau timecode de la piste"
+msgstr "Nouveau code temporel de la piste"
 
 #: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
 #: amarokurls/BookmarkTreeView.cpp:371
@@ -1862,7 +1865,7 @@ msgstr "Désactiver la coloration sur la sortie de débogage."
 #: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
-msgstr "Autorise le lancement de plusieurs instances d'Amarok"
+msgstr "Autorise le lancement de plusieurs instances de Amarok"
 
 #: App.cpp:377
 #, kde-format
@@ -1882,9 +1885,9 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
-"La base de données d'Amarok a signalé les erreurs suivantes :\n"
+"La base de données de Amarok a signalé les erreurs suivantes :\n"
 "%1\n"
-"Dans la plupart des cas, vous devrez résoudre ces erreurs avant qu'Amarok "
+"Dans la plupart des cas, vous devrez résoudre ces erreurs avant que Amarok "
 "puisse fonctionner correctement."
 
 #: App.cpp:581
@@ -2990,9 +2993,9 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
-"La base de données d'Amarok a signalé les erreurs suivantes :\n"
+"La base de données de Amarok a signalé les erreurs suivantes :\n"
 "%1\n"
-"Dans la plupart des cas, vous devrez résoudre ces erreurs avant qu'Amarok "
+"Dans la plupart des cas, vous devrez résoudre ces erreurs avant que Amarok "
 "puisse fonctionner correctement."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:135
@@ -3002,7 +3005,7 @@ msgid ""
 "effect after Amarok is restarted."
 msgstr ""
 "Les changements de configuration de la base de données\n"
-"ne prendra effet qu'après un re-lancement d'Amarok."
+"ne prendra effet qu'après un re-lancement de Amarok."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:136
 #, kde-format
@@ -3179,7 +3182,7 @@ msgstr "Options générales"
 #, kde-format
 msgid "Check to enable the Amarok system tray icon."
 msgstr ""
-"Cochez cette case pour afficher une icône d'Amarok dans la boîte à "
+"Cochez cette case pour afficher une icône de Amarok dans la boîte à "
 "miniatures."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowTrayIcon)
@@ -3466,7 +3469,7 @@ msgid ""
 "Character Set Detector to attempt to automatically guess the\n"
 "character sets used in ID3 tags."
 msgstr ""
-"Cochez cette case pour qu'Amarok utilise la reconnaissance de jeu de "
+"Cochez cette case pour que Amarok utilise la reconnaissance de jeu de "
 "caractères de Mozilla et essaie de déterminer les caractères utilisés dans "
 "les balises ID3."
 
@@ -3490,8 +3493,8 @@ msgid ""
 "of tracks played on iPods if you have Last.fm plugin configured"
 msgstr ""
 "<b>Vérifie les collections pour les conserver synchronisées.</b> Cela inclut "
-"le tremblement des pistes écoutées sur l'iPod si vous avez configuré le "
-"module externe « Last.fm »"
+"le tremblement des pistes écoutées sur le lecteur iPod si vous avez "
+"configuré le module externe « Last.fm »"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_forgetTargetsButton)
 #: configdialog/dialogs/MetadataConfig.ui:128
@@ -3560,8 +3563,8 @@ msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
-"Durée d'affichage de l'OSD. La valeur doit être comprise entre 500 et 10 000 "
-"millisecondes"
+"Durée d'affichage de l'incrustation vidéo (OSD). La valeur doit être "
+"comprise entre 500 et 10 000 millisecondes"
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
 #: configdialog/dialogs/NotificationsConfig.ui:71
@@ -3589,7 +3592,7 @@ msgstr "É&cran : "
 #: configdialog/dialogs/NotificationsConfig.ui:115
 #, kde-format
 msgid "The screen that should display the OSD."
-msgstr "Écran sur lequel sera affiché l'OSD."
+msgstr "Écran sur lequel sera affiché l'incrustation vidéo (OSD)."
 
 #. i18n: ectx: property (toolTip), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, kcfg_OsdUseCustomColors)
@@ -3597,7 +3600,9 @@ msgstr "Écran sur lequel sera affiché l'OSD."
 #: configdialog/dialogs/NotificationsConfig.ui:136
 #, kde-format
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr "Cochez cette case pour personnaliser les couleurs de l'OSD."
+msgstr ""
+"Cochez cette case pour personnaliser les couleurs de l'incrustation vidéo "
+"(OSD)."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #: configdialog/dialogs/NotificationsConfig.ui:139
@@ -3611,7 +3616,7 @@ msgstr "Utiliser des &couleurs personnalisées"
 #: configdialog/dialogs/NotificationsConfig.ui:191
 #, kde-format
 msgid "The color of the OSD text."
-msgstr "Couleur du texte de l'OSD."
+msgstr "Couleur du texte de l'incrustation vidéo (OSD)."
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: configdialog/dialogs/NotificationsConfig.ui:166
@@ -3623,7 +3628,8 @@ msgstr "Couleur du texte : "
 #: configdialog/dialogs/NotificationsConfig.ui:188
 #, kde-format
 msgid "Click to select the color of the OSD text."
-msgstr "Cliquez pour sélectionner la couleur du texte de l'OSD."
+msgstr ""
+"Cliquez pour sélectionner la couleur du texte de l'incrustation vidéo (OSD)."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseTranslucency)
 #: configdialog/dialogs/NotificationsConfig.ui:211
@@ -3677,8 +3683,9 @@ msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
 msgstr ""
-"Cochez cette case pour <br>qu'Amarok reprenne la lecture à l'endroit où vous "
-"l'aviez arrêtée lors de la précédente session, comme un lecteur de cassettes."
+"Cochez cette case pour <br>que Amarok reprenne la lecture à l'endroit où "
+"vous l'aviez arrêtée lors de la précédente session, comme un lecteur de "
+"cassettes."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
 #: configdialog/dialogs/PlaybackConfig.ui:29
@@ -3749,7 +3756,7 @@ msgid ""
 "If enabled, Amarok will prevent the system from automatically suspending if "
 "it is playing a track"
 msgstr ""
-"Cochez cette case pour qu'Amarok empêche le système de se mettre en veille "
+"Cochez cette case pour que Amarok empêche le système de se mettre en veille "
 "automatiquement si une piste est en cours de lecture."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_InhibitSuspend)
@@ -3765,7 +3772,7 @@ msgstr "Empêche la mise en veille automatique en cours de lecture"
 #, kde-format
 msgid "If enabled, Amarok will pause the currently playing track on suspend"
 msgstr ""
-"Cochez cette case pour qu'Amarok mette en pause la piste actuellement en "
+"Cochez cette case pour que Amarok mette en pause la piste actuellement en "
 "cours de lecture"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_PauseOnSuspend)
@@ -4552,7 +4559,7 @@ msgstr ".*\\(.*(compositeur|musicien).*\\))"
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
-msgstr ".*\\(.*(album|score|bo).*\\)"
+msgstr ".*\\(.*(album|score|bande originale).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
@@ -4763,13 +4770,13 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
-"Mise à jour de la base de données d'Amarok. Veuillez ne pas quitter Amarok "
+"Mise à jour de la base de données de Amarok. Veuillez ne pas quitter Amarok "
 "maintenant sous risque de corrompre la base de données."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:243
 #, kde-format
 msgid "Updating Amarok database schema"
-msgstr "Mise à jour de la base de données d'Amarok"
+msgstr "Mise à jour de la base de données de Amarok"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:530
 #, kde-format
@@ -4808,7 +4815,7 @@ msgstr ""
 "<ul><li>%1</li></ul>Dans la plupart des cas, cela signifie que toutes vos "
 "pistes n'ont pas été importées.<br>Reportez-vous au <a href='http://userbase."
 "kde.org/Amarok/Manual/Various/"
-"TroubleshootingAndCommonProblems#Duplicate_Tracks'>Manuel d'Amarok</a> pour "
+"TroubleshootingAndCommonProblems#Duplicate_Tracks'>Manuel de Amarok</a> pour "
 "plus d'informations à propos des pistes doublons."
 
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:88
@@ -4912,10 +4919,10 @@ msgid_plural ""
 "debugging log)"
 msgstr[0] ""
 "Le processus a échoué pour une piste. (plus d'informations dans le fichier "
-"de débogage d'Amarok)"
+"de débogage de Amarok)"
 msgstr[1] ""
 "Le processus a échoué pour %1 pistes. (plus d'informations dans le fichier "
-"de débogage d'Amarok)"
+"de débogage de Amarok)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -4927,10 +4934,10 @@ msgid ""
 "database entries, %2 stale database entries removed, %3 orphaned tracks "
 "added back to the iTunes database. %4"
 msgstr ""
-"Analyse des fichiers de l'iPod terminée. %1 pistes orphelines correspondent "
-"aux entrées fantômes de la base de données d'iTunes, %2 entrées fantômes de "
-"la base de données ont été supprimées, %3 pistes orphelines ont été ajoutées "
-"à la base de données d'iTunes. %4"
+"Analyse des fichiers du lecteur iPod terminée. %1 pistes orphelines "
+"correspondent aux entrées fantômes de la base de données pour iTunes, %2 "
+"entrées fantômes de la base de données ont été supprimées, %3 pistes "
+"orphelines ont été ajoutées à la base de données pour iTunes. %4"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:224
 #, kde-format
@@ -4994,19 +5001,19 @@ msgid ""
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
-"Une piste n'a pas été transférée puisque la capacité maximale de stockage de "
-"l'iPod aurait été dépassée.<br>"
+"Une piste n'a pas été transférée puisque la capacité maximale de stockage du "
+"lecteur iPod aurait été dépassée.<br>"
 msgstr[1] ""
 "%1 pistes n'ont pas été transférées puisque la capacité maximale de stockage "
-"de l'iPod aurait été dépassée.<br>"
+"du lecteur iPod aurait été dépassée.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
-"<i>Amarok réserve %1 sur l'iPod pour l'écriture de la base de données "
-"d'iTunes.</i><br>"
+"<i>Amarok réserve %1 sur le lecteur iPod pour l'écriture de la base de "
+"données pour iTunes.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
 #, kde-format
@@ -5045,15 +5052,15 @@ msgstr[1] ""
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr ""
-"<i>Vous pouvez trouver des informations dans la sortie de débogage d'Amarok."
+"<i>Vous pouvez trouver des informations dans la sortie de débogage de Amarok."
 "</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr ""
-"Les pistes restantes n'ont pas été transférées car la collection de l'iPod a "
-"disparu.<br>"
+"Les pistes restantes n'ont pas été transférées car la collection du lecteur "
+"iPod a disparu.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
 #, kde-format
@@ -5065,14 +5072,14 @@ msgstr "Causes de l'erreur : %1<br>"
 #, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "Suppression d'une piste de l'iPod"
-msgstr[1] "Suppression de %1 pistes de l'iPod"
+msgstr[0] "Suppression d'une piste du lecteur iPod"
+msgstr[1] "Suppression de %1 pistes de du lecteur iPod"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, kde-format
 msgctxt "operation when iPod is connected"
 msgid "Reading iPod tracks"
-msgstr "Lecture des pistes de l'iPod"
+msgstr "Lecture des pistes du lecteur iPod"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:118
 #, kde-format
@@ -5210,7 +5217,7 @@ msgstr "iPod"
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:214
 #, kde-format
 msgid "iPod model was not recognized."
-msgstr "Le modèle de l'iPod n'a pas été reconnu : "
+msgstr "Le modèle de lecteur iPod n'a pas été reconnu : "
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:226
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:238
@@ -5236,10 +5243,11 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
-"La série %1 utilise probablement hash-AB pour générer une somme de contrôle "
-"correcte pour la base de données. libgpod (dans sa version 0.8.2) ne sait "
-"pas comment faire, mais essaye de charger dynamiquement la bibliothèque "
-"externe libhashab.so pour générer la somme de contrôle."
+"La série %1 utilise probablement « hash-AB » pour générer une somme de "
+"contrôle correcte pour la base de données. la bibliothèque « libgpod » (Dans "
+"sa version 0.8.2) ne sait pas comment faire, mais essaye de charger "
+"dynamiquement la bibliothèque externe libhashab.so pour générer la somme de "
+"contrôle."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:262
 #, kde-format
@@ -5315,11 +5323,11 @@ msgid ""
 "tracks will become orphaned."
 msgstr ""
 "<b>%1</b><br><br>Le problème évoqué empêche Amarok d'utiliser votre iPod. "
-"Vous pouvez essayer de recréer les fichiers et dossiers importants de l'iPod "
-"(incluant la base de données iTunes) en utilisant le bouton <b>%2</b> ci-"
-"dessous.<br><br> Initialiser l'iPod <b>détruit la base de données concernant "
-"les pistes et les photos de l'iPod</b>, cependant cela ne supprimera aucune "
-"piste. Elles deviendront orphelines."
+"Vous pouvez essayer de recréer les fichiers et dossiers importants du "
+"lecteur iPod (incluant la base de données iTunes) en utilisant le bouton <b>"
+"%2</b> ci-dessous.<br><br> Initialiser le lecteur iPod <b>détruit la base de "
+"données concernant les pistes et les photos du lecteur iPod</b>, cependant "
+"cela ne supprimera aucune piste. Elles deviendront orphelines."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
 #, kde-format
@@ -5337,7 +5345,8 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr "Impossible d'initialiser l'iPod à cause d'une erreur non signalée."
+msgstr ""
+"Impossible d'initialiser le lecteur iPod à cause d'une erreur non signalée."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
@@ -5770,7 +5779,7 @@ msgid ""
 "this track on the filesystem or in any of your collections anymore. You may "
 "try plugging in the device this track might be on."
 msgstr ""
-"Lors de la dernière fermeture d'Amarok, cette piste était à %1, mais Amarok "
+"Lors de la dernière fermeture de Amarok, cette piste était à %1, mais Amarok "
 "ne parvient pas à trouver cette piste dans le système de fichiers ou "
 "ailleurs dans vos collections. Vous pouvez essayer de connecter le "
 "périphérique sur lequel la piste peut se situer."
@@ -5880,7 +5889,7 @@ msgstr "Emplacement de l'enregistrement : "
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Cochez cette case pour qu'Amarok analyse automatiquement les podcasts afin "
+"Cochez cette case pour que Amarok analyse automatiquement les podcasts afin "
 "de les mettre à jour"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
@@ -5934,7 +5943,7 @@ msgstr "&Flux ou téléchargement sur demande"
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
 msgstr ""
-"Cochez cette case pour qu'Amarok efface tous les anciens épisodes du podcast"
+"Cochez cette case pour que Amarok efface tous les anciens épisodes du podcast"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -7041,8 +7050,8 @@ msgstr ""
 "et obtiendra probablement des résultats moins bons que le débit constant "
 "(CBR).<br> Pour cette raison, le débit indiqué par le curseur est une "
 "estimation du débit moyen d'une piste encodée.<br>L'encodeur est transparent "
-"à 128 kb/s pour la plupart des extraits testés, les artefacts n'apparaissent "
-"que dans certains cas extrêmes."
+"à 128 Kb / s pour la plupart des extraits testés, les artefacts "
+"n'apparaissent que dans certains cas extrêmes."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:59
@@ -7191,9 +7200,9 @@ msgstr ""
 "un débit constant, cette approche permet d'obtenir une qualité supérieure et "
 "un fichier de taille inférieure.<br>Pour cette raison, le débit indiqué par "
 "le curseur est une estimation du débit moyen d'une piste encodée.<br><b>160 "
-"kb/s</b> est un bon choix pour écouter de la musique sur un baladeur.<br/>Un "
-"débit inférieur à <b>120 kb/s</b> risque d'être insatisfaisant et un débit "
-"supérieur à <b>200 kb/s</b> est probablement exagéré."
+"Kb / s</b> est un bon choix pour écouter de la musique sur un baladeur.<br/"
+">Un débit inférieur à <b>120 Kb / s</b> risque d'être insatisfaisant et un "
+"débit supérieur à <b>200 Kb / s</b> est probablement exagéré."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:55
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:64
@@ -7243,9 +7252,9 @@ msgstr ""
 "un débit constant, cette approche permet d'obtenir une qualité supérieure et "
 "un fichier de taille inférieure.<br>Pour cette raison, le débit indiqué par "
 "le curseur est une estimation du débit moyen de la piste encodée.<br><b>128 "
-"kb/s</b> est un bon choix pour écouter de la musique sur un baladeur.<br/>Un "
-"débit inférieur à <b>100 kb/s</b> risque d'être insatisfaisant et un débit "
-"supérieur à <b>256 kb/s</b> est probablement exagéré."
+"Kb / s</b> est un bon choix pour écouter de la musique sur un baladeur.<br/"
+">Un débit inférieur à <b>100 Kb / s</b> risque d'être insatisfaisant et un "
+"débit supérieur à <b>256 Kb / s</b> est probablement exagéré."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
 #, kde-format
@@ -7339,12 +7348,12 @@ msgstr ""
 "Le débit est une mesure de la quantité de données utiliser pour représenter "
 "une seconde de la piste audio. À cause des limites imposées par le brevet du "
 "format <b>WMA</b> et de la difficulté à inverser un codec propriétaire, "
-"l'encodeur WMA d'Amarok utilise un <a href=http://fr.wikipedia.org/wiki/"
+"l'encodeur WMA de Amarok utilise un <a href=http://fr.wikipedia.org/wiki/"
 "Windows_Media_Audio> débit constant</a>.<br>Pour cette raison, le débit "
 "indiqué par le curseur est une estimation plutôt correcte du débit d'une "
-"piste encodée.<br><b>136 kb/s</b> est un bon choix pour écouter de la "
-"musique sur un baladeur.<br/>Un débit inférieur à <b>112 kb/s</b> risque "
-"d'être insatisfaisant et un débit supérieur à <b>282 kb/s</b> est "
+"piste encodée.<br><b>136 Kb / s</b> est un bon choix pour écouter de la "
+"musique sur un baladeur.<br/>Un débit inférieur à <b>112 Kb / s</b> risque "
+"d'être insatisfaisant et un débit supérieur à <b>282 Kb / s</b> est "
 "probablement exagéré."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:67
@@ -7365,8 +7374,8 @@ msgid ""
 msgstr ""
 "<a href=http://fr.wikipedia.org/wiki/Windows_Media_Audio> Windows Media "
 "Audio</a> (WMA) est un codec de compression audio avec perte, propriétaire, "
-"développé par Microsoft.<br> Il n'est recommandé que pour les lecteurs qui "
-"ne prennent pas l'Ogg Vorbis en charge."
+"développé par Microsoft.<br> Il n'est recommandé que pour les lecteurs ne "
+"prenant pas en charge le codec « Ogg Vorbis »."
 
 #: core/transcoding/TranscodingConfiguration.cpp:110
 #, kde-format
@@ -7873,7 +7882,7 @@ msgstr "Importer un fichier batch..."
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr ""
 "Importer la collection depuis le fichier produit par l'analyseur de "
-"collection d'Amarok (amarokcollectionscanner)."
+"collection de Amarok (amarokcollectionscanner)."
 
 #: dialogs/CollectionSetup.cpp:80
 #, kde-format
@@ -7890,7 +7899,7 @@ msgstr "&Surveiller les modifications sur ces dossiers"
 #: dialogs/CollectionSetup.cpp:90
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
-msgstr "Cochez cette case pour qu'Amarok analyse tous les sous-dossiers."
+msgstr "Cochez cette case pour que Amarok analyse tous les sous-dossiers."
 
 #: dialogs/CollectionSetup.cpp:91
 #, kde-format
@@ -9329,7 +9338,7 @@ msgstr "un des artistes de la liste de lecture actuelle"
 #, kde-format
 msgctxt "Name of the \"IfElse\" bias"
 msgid "If Else"
-msgstr "If Else"
+msgstr "IfElse"
 
 #: dynamic/biases/IfElseBias.cpp:44
 #, kde-format
@@ -9796,7 +9805,7 @@ msgstr "Amarok 2.x"
 #: importers/amarok/AmarokManager.cpp:45
 #, kde-format
 msgid "Amarok 2.x Statistics Importer"
-msgstr "Importateur de statistiques d'Amarok 2.x"
+msgstr "Importateur de statistiques de Amarok 2.x"
 
 #: importers/banshee/BansheeManager.cpp:27
 #, kde-format
@@ -9832,7 +9841,7 @@ msgstr "Amarok 1.4 (FastForward)"
 #: importers/fastforward/FastForwardManager.cpp:26
 #, kde-format
 msgid "Amarok 1.4 Statistics Importer"
-msgstr "Importateur de statistiques d'Amarok 1.4"
+msgstr "Importateur de statistiques de Amarok 1.4"
 
 #: importers/itunes/ITunesManager.cpp:27
 #, kde-format
@@ -9892,7 +9901,7 @@ msgid ""
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, L'équipe de développement d'Amarok "
+"(C) 2003-2024, L'équipe de développement de Amarok "
 
 #: main.cpp:101
 #, kde-format
@@ -10532,7 +10541,7 @@ msgstr "Andrew de Quincey"
 #: main.cpp:274
 #, kde-format
 msgid "Postgresql support"
-msgstr "Prise en charge de Postgresql"
+msgstr "Prise en charge de PostgreSQL"
 
 #: main.cpp:276
 #, kde-format
@@ -10703,7 +10712,7 @@ msgstr "Roman Becker"
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr ""
-"Précédents logo d'Amarok, précédent écran de démarrage, précédents icônes"
+"Précédents logo de Amarok, précédent écran de démarrage, précédents icônes"
 
 #: main.cpp:318
 #, kde-format
@@ -10713,7 +10722,7 @@ msgstr "Sami Nieminen"
 #: main.cpp:318
 #, kde-format
 msgid "Audioscrobbler support"
-msgstr "Prise en charge d'Audioscrobbler"
+msgstr "Prise en charge de Audioscrobbler"
 
 #: main.cpp:320
 #, kde-format
@@ -10814,7 +10823,7 @@ msgid ""
 "qt>"
 msgstr ""
 "<qt>Fermer la fenêtre principale laissera Amarok fonctionner dans la boîte à "
-"miniatures. Utilisez <B>Quitter</B> à partir du menu ou de l'icône d'Amarok "
+"miniatures. Utilisez <B>Quitter</B> à partir du menu ou de l'icône de Amarok "
 "dans la boîte à miniatures pour fermer l'application.</qt>"
 
 #: MainWindow.cpp:427
@@ -11048,7 +11057,7 @@ msgstr "Visionneuse de requêtes réseau"
 #: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
-msgstr "&À propos d'Amarok"
+msgstr "&À propos de Amarok"
 
 #: MainWindow.cpp:1025
 #, kde-format
@@ -12869,7 +12878,7 @@ msgstr ""
 "L'utilisateur peut spécifier une caractéristique et le GALL remplira la "
 "liste de lecture avec des pistes satisfaisant à cette caractéristique. Cette "
 "fonction est similaire à l'attribut de correspondance des listes de lecture "
-"intelligentes d'Amarok 1.4."
+"intelligentes de Amarok 1.4."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:21
@@ -13367,7 +13376,7 @@ msgstr "Prochaine version de la base de données des listes de lecture ?"
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 #, kde-format
 msgid "Amarok Database"
-msgstr "Base de données d'Amarok"
+msgstr "Base de données de Amarok"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 #, kde-format
@@ -13406,13 +13415,13 @@ msgstr "Annulation de l'analyse avec l'erreur : %1"
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
 msgstr ""
-"Impossible de trouver l'analyseur de collection d'Amarok "
+"Impossible de trouver l'analyseur de collection de Amarok "
 "(amarokcollectionscanner) !"
 
 #: scanner/GenericScannerJob.cpp:270
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
-msgstr "Impossible de démarrer l'analyseur de collection d'Amarok."
+msgstr "Impossible de démarrer l'analyseur de collection de Amarok."
 
 #: scanner/GenericScannerJob.cpp:319
 #, kde-format
@@ -13743,7 +13752,7 @@ msgid ""
 "credentials in plaintext?"
 msgstr ""
 "Aucun portefeuille KWallet en cours d'exécution n'a été trouvé. Voulez-vous "
-"qu'Amarok enregistre vos identifiants gpodder.net au format texte brut ?"
+"que Amarok enregistre vos identifiants gpodder.net au format texte brut ?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
 #, kde-format
@@ -14560,7 +14569,7 @@ msgid ""
 "Enter your e-mail here to be able to redownload any previous purchase from "
 "Magnatune directly from within Amarok."
 msgstr ""
-"Saisissez votre adresse email ici pour avoir accès à vos commandes "
+"Saisissez votre adresse de courriel ici pour avoir accès à vos commandes "
 "précédentes sur Magnatune directement depuis Amarok."
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
@@ -14948,9 +14957,9 @@ msgstr ""
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">L'équipe d'Amarok reçoit "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">L'équipe de Amarok reçoit "
 "10 % de votre cotisation initiale. Donc, en devenant membre, vous soutenez "
-"le développement d'Amarok.</p>\n"
+"le développement de Amarok.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
@@ -15140,7 +15149,7 @@ msgstr "(C) 2008, Casey Link"
 #: services/mp3tunes/harmonydaemon/main.cpp:39
 #, kde-format
 msgid "Handles AutoSync for the MP3tunes service in Amarok."
-msgstr "Prend en charge AutoSync pour le service MP3Tunes d'Amarok"
+msgstr "Prend en charge AutoSync pour le service MP3Tunes de Amarok"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
 #, kde-format
@@ -15170,7 +15179,7 @@ msgstr "L'identifiant que le démon devrait utiliser."
 #: services/mp3tunes/harmonydaemon/main.cpp:49
 #, kde-format
 msgid "The email to be used for authentication."
-msgstr "L'adresse de messagerie qui sera utilisée pour l'authentification."
+msgstr "L'adresse de courriel à utiliser pour l'authentification."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:50
 #, kde-format
@@ -15460,7 +15469,7 @@ msgstr ""
 "nombre d'écoutes ou les notes avec d'autres collections. Voulez-vous "
 "conserver %1 synchronisée ?\n"
 "\n"
-"Vous pouvez toujours modifier cette décision dans la configuration d'Amarok."
+"Vous pouvez toujours modifier cette décision dans la configuration de Amarok."
 
 #: statsyncing/Controller.cpp:378
 #, kde-format
@@ -16116,7 +16125,7 @@ msgstr "Créez, listez ou lancez les préférés."
 #: widgets/BreadcrumbItemButton.cpp:260
 #, kde-format
 msgid "Amarok Bookmarks"
-msgstr "Préférés d'Amarok"
+msgstr "Signets de Amarok"
 
 #: widgets/BreadcrumbItemButton.cpp:279
 #, kde-format
@@ -16268,7 +16277,7 @@ msgstr "Recherche simple"
 #, kde-format
 msgctxt "Unit for data rate kilo bit per seconds"
 msgid "kbps"
-msgstr "kbps"
+msgstr "Kbps"
 
 #: widgets/MetaQueryWidget.cpp:685
 #, kde-format
