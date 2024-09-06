@@ -55,7 +55,7 @@ ListView {
         anchors {
             verticalCenter: parent.verticalCenter
         }
-        height: root.height - 6 * Kirigami.Units.smallSpacing
+        height: root.height - 2 * Kirigami.Units.smallSpacing
         width: height
         radius: Kirigami.Units.smallSpacing
         color: delegateMouseArea.pressed ? palette.highlight : appletEnabled ? palette.highlight : "transparent"
