@@ -208,12 +208,12 @@
     <entry key="FadeoutOnStop" type="Bool">
         <label>Whether to fade out tracks when pressing stop.</label>
         <whatsthis>Enable/Disable fadeout.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="FadeoutOnPause" type="Bool">
         <label>Whether to fade out tracks when pressing pause.</label>
         <whatsthis>Enable/Disable fadeout.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Fadeout Length" type="Int">
         <label>Length of fadeout, in milliseconds</label>
