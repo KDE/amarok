@@ -650,19 +650,19 @@ TagDialog::startDataQueries()
 {
     startDataQuery( Collections::QueryMaker::Artist,
                     QMetaMethod::fromSignal(&Collections::QueryMaker::newArtistsReady),
-                    QMetaMethod::fromSignal(&TagDialog::artistsReady) );
+                    metaObject()->method( metaObject()->indexOfMethod( "artistsReady(Meta::ArtistList)" ) ) );
     startDataQuery( Collections::QueryMaker::Album,
                     QMetaMethod::fromSignal(&Collections::QueryMaker::newAlbumsReady),
-                    QMetaMethod::fromSignal(&TagDialog::albumsReady) );
+                    metaObject()->method( metaObject()->indexOfMethod( "albumsReady(Meta::AlbumList)" ) ) );
     startDataQuery( Collections::QueryMaker::Composer,
                     QMetaMethod::fromSignal(&Collections::QueryMaker::newComposersReady),
-                    QMetaMethod::fromSignal(&TagDialog::composersReady) );
+                    metaObject()->method( metaObject()->indexOfMethod( "composersReady(Meta::ComposerList)" ) ) );
     startDataQuery( Collections::QueryMaker::Genre,
                     QMetaMethod::fromSignal(&Collections::QueryMaker::newGenresReady),
-                    QMetaMethod::fromSignal(&TagDialog::genresReady) );
+                    metaObject()->method( metaObject()->indexOfMethod( "genresReady(Meta::GenreList)" ) ) );
     startDataQuery( Collections::QueryMaker::Label,
                     QMetaMethod::fromSignal(&Collections::QueryMaker::newLabelsReady),
-                    QMetaMethod::fromSignal(&TagDialog::labelsReady) );
+                    metaObject()->method( metaObject()->indexOfMethod( "labelsReady(Meta::LabelList)" ) ) );
 }
 
 
