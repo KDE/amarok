@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-23 01:49+0000\n"
+"POT-Creation-Date: 2024-09-07 01:45+0000\n"
 "PO-Revision-Date: 2024-07-15 06:57+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -182,80 +182,80 @@ msgstr "Amarok-ov meni"
 msgid "Play/Pause"
 msgstr "Predvajaj/premor"
 
-#: ActionClasses.cpp:323
+#: ActionClasses.cpp:331
 #, kde-format
 msgid "Click to change"
 msgstr "Kliknite, da spremenite"
 
-#: ActionClasses.cpp:340
+#: ActionClasses.cpp:348
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "Način jakosti predvajanja"
 
-#: ActionClasses.cpp:342
+#: ActionClasses.cpp:350
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "Izključeno"
 
-#: ActionClasses.cpp:343
+#: ActionClasses.cpp:351
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "Skladba"
 
-#: ActionClasses.cpp:344
+#: ActionClasses.cpp:352
 #, kde-format
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:364
+#: ActionClasses.cpp:372
 #, kde-format
 msgid "Burn"
 msgstr "Zapiši"
 
-#: ActionClasses.cpp:403
+#: ActionClasses.cpp:411
 #, kde-format
 msgid "Current Playlist"
 msgstr "Trenutni seznam predvajanja"
 
-#: ActionClasses.cpp:404
+#: ActionClasses.cpp:412
 #, kde-format
 msgid "Selected Tracks"
 msgstr "Izbrane skladbe"
 
-#: ActionClasses.cpp:435 scripting/scriptconsole/ScriptConsole.cpp:97
+#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Zaustavi"
 
-#: ActionClasses.cpp:479
+#: ActionClasses.cpp:487
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Zaustavi po trenutni skladbi"
 
-#: ActionClasses.cpp:496
+#: ActionClasses.cpp:504
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Zaustavi po trenutni skladbi: izključeno"
 
-#: ActionClasses.cpp:501
+#: ActionClasses.cpp:509
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Zaustavi po trenutni skladbi: vključeno"
 
-#: ActionClasses.cpp:505
+#: ActionClasses.cpp:513
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:673
 #, kde-format
 msgid "No track playing"
 msgstr "Ne predvaja se nobena skladba"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:509
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
-#: MainWindow.cpp:1246
+#: ActionClasses.cpp:517
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
+#: main.cpp:92 MainWindow.cpp:153 MainWindow.cpp:1256 MainWindow.cpp:1262
+#: MainWindow.cpp:1275
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -915,7 +915,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "Omogoči ali onemogoči zaslonski prikaz."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:44
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:47
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "Za obvestila uporabi Growl"
@@ -1559,7 +1559,7 @@ msgstr "Neznana"
 msgid "New Bookmark"
 msgstr "Nov zaznamek"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:818
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Upravljalnik zaznamkov"
@@ -1645,18 +1645,18 @@ msgstr "Izbriši"
 msgid "&Create timecode track"
 msgstr "Ustvari časovno kodo skladbe"
 
-#: amarokurls/BookmarkTreeView.cpp:368
+#: amarokurls/BookmarkTreeView.cpp:374
 #, kde-format
 msgid "New Timecode Track"
 msgstr "Nova časovna koda skladbe"
 
-#: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
-#: amarokurls/BookmarkTreeView.cpp:371
+#: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
+#: amarokurls/BookmarkTreeView.cpp:377
 #: context/applets/albums/plugin/AlbumItem.cpp:99
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1275
 #, kde-format
 msgid "Unknown"
 msgstr "Neznano"
@@ -1677,7 +1677,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Kontekst"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:290
 #, kde-format
 msgid "Files"
 msgstr "Datoteke"
@@ -1707,7 +1707,7 @@ msgstr "Izvajalec \"%1\" iz %2"
 msgid "Artist \"%1\""
 msgstr "Izvajalec \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:814
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Zaznamuj prikaz predstavnostnih virov"
@@ -1892,7 +1892,7 @@ msgstr ""
 "Tu najdete svojo krajevno glasbo kot tudi glasbo s prenosnih glasbenih "
 "predvajalnikov in CD-jev."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:962
 #, kde-format
 msgid "Search collection"
 msgstr "Preišči zbirko"
@@ -2592,13 +2592,13 @@ msgstr "Naj izbrišem %1 sezname predvajanja iz %2?"
 msgid "Confirm Playlist Deletion"
 msgstr "Potrdite brisanje seznama predvajanja"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:456
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Za &shranjevanje uporabi relativne poti"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:469
 #, kde-format
 msgid "Save As"
 msgstr "Shrani kot"
@@ -2751,7 +2751,7 @@ msgstr[3] "%1 kanalov"
 msgid "Title"
 msgstr "Naslov"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:515
 #, kde-format
 msgid "Summary"
 msgstr "Povzetek"
@@ -2872,7 +2872,7 @@ msgid "Configure Plugins"
 msgstr "Nastavi vstavke"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:376
+#: scripting/scriptconsole/ScriptConsole.cpp:377
 #, kde-format
 msgid "Scripts"
 msgstr "Skripti"
@@ -3772,7 +3772,7 @@ msgstr "Skript %1 je bil uspešno nameščen"
 msgid "Generic"
 msgstr "Splošno"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:517
 #, kde-format
 msgid "Lyrics"
 msgstr "Besedilo"
@@ -3796,7 +3796,7 @@ msgstr "Namesti krajevni skript"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
-#: scripting/scriptconsole/ScriptConsole.cpp:71
+#: scripting/scriptconsole/ScriptConsole.cpp:72
 #, kde-format
 msgid "Script Console"
 msgstr "Skriptna konzola"
@@ -3959,7 +3959,7 @@ msgstr "Dodaj na črni seznam"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedLabelsButton)
 #: context/applets/labels/LabelsApplet.cpp:94
-#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:515
+#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:518
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
@@ -4219,36 +4219,36 @@ msgstr "Sredinsko poravnano"
 msgid "Font:"
 msgstr "Pisava:"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:83
+#: context/applets/lyrics/package/contents/ui/main.qml:57
 #, kde-format
 msgid "Toggle auto scroll"
 msgstr "Preklopi samodejno drsenje"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:90
+#: context/applets/lyrics/package/contents/ui/main.qml:67
 #, kde-format
 msgid "Reload lyrics"
 msgstr "Znova naloži besedilo"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:98
+#: context/applets/lyrics/package/contents/ui/main.qml:111
 #, kde-format
 msgid "No lyrics found"
 msgstr "Ni mogoče najti besedila"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:113
+#: context/applets/lyrics/package/contents/ui/main.qml:128
 #, kde-format
 msgid "Suggestions: "
 msgstr "Predlogi: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
-#: context/applets/lyrics/package/contents/ui/main.qml:122
+#: context/applets/lyrics/package/contents/ui/main.qml:137
 #: dialogs/TagGuessOptions.ui:101 services/opmldirectory/AddOpmlWidget.ui:78
 #, kde-format
 msgid "Title:"
 msgstr "Naslov:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_22)
-#: context/applets/lyrics/package/contents/ui/main.qml:125
+#: context/applets/lyrics/package/contents/ui/main.qml:140
 #: dialogs/TagGuessOptions.ui:127
 #, kde-format
 msgid "Artist:"
@@ -7680,7 +7680,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "Naslov URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:834
 #, kde-format
 msgid "Cover Manager"
 msgstr "Upravljalnik ovitkov"
@@ -8306,7 +8306,7 @@ msgid "Expand All"
 msgstr "Razširi vse"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1399
+#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1402
 #, kde-format
 msgid "MusicBrainz Tagger"
 msgstr "Označevalnik MusicBrainz"
@@ -8706,23 +8706,23 @@ msgstr "Regularni izraz"
 msgid "Character string"
 msgstr "Niz znakov"
 
-#: dialogs/TagDialog.cpp:513
+#: dialogs/TagDialog.cpp:516
 #, kde-format
 msgid "Tags"
 msgstr "Oznake"
 
-#: dialogs/TagDialog.cpp:670 dialogs/TagDialog.cpp:678
+#: dialogs/TagDialog.cpp:673 dialogs/TagDialog.cpp:681
 #, kde-format
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "Neznano"
 
-#: dialogs/TagDialog.cpp:715
+#: dialogs/TagDialog.cpp:718
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "Podrobnosti skladbe: %1 od %2"
 
-#: dialogs/TagDialog.cpp:721
+#: dialogs/TagDialog.cpp:724
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -8732,22 +8732,22 @@ msgstr[1] "Podatki za %1 skladbi"
 msgstr[2] "Podatki za %1 skladbe"
 msgstr[3] "Podatki za %1 skladb"
 
-#: dialogs/TagDialog.cpp:750 dialogs/TagDialog.cpp:760
+#: dialogs/TagDialog.cpp:753 dialogs/TagDialog.cpp:763
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> od <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:752 dialogs/TagDialog.cpp:762
+#: dialogs/TagDialog.cpp:755 dialogs/TagDialog.cpp:765
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:758
+#: dialogs/TagDialog.cpp:761
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> od <b>%2</b> na <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:768
+#: dialogs/TagDialog.cpp:771
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
@@ -8756,13 +8756,13 @@ msgstr[1] "Urejanje %1 datotek"
 msgstr[2] "Urejanje %1 datotek"
 msgstr[3] "Urejanje %1 datotek"
 
-#: dialogs/TagDialog.cpp:806
+#: dialogs/TagDialog.cpp:809
 #, kde-format
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Nobena"
 
-#: dialogs/TagDialog.cpp:974
+#: dialogs/TagDialog.cpp:977
 #, kde-format
 msgid "The track is not playable. %1"
 msgstr "Te skladbe ni mogoče predvajati. %1"
@@ -9859,7 +9859,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Ime cilja"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:130 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "Trenutno se predvaja"
@@ -9874,17 +9874,17 @@ msgstr "Pridobljeno besedilo je prazno"
 msgid "Lyrics data could not be parsed"
 msgstr "Ni bilo mogoče razčleniti podatkov besedila"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:689
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:700
 #, kde-format
 msgid "No information available for this track"
 msgstr "Za to skladbo ni na voljo nobenega podatka"
 
-#: main.cpp:98
+#: main.cpp:94
 #, kde-format
 msgid "The audio player by KDE"
 msgstr "KDE glasbeni predvajalnik"
 
-#: main.cpp:100
+#: main.cpp:96
 #, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
@@ -9893,7 +9893,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, razvojna ekipa Amaroka"
 
-#: main.cpp:101
+#: main.cpp:97
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -9912,12 +9912,12 @@ msgstr ""
 "\n"
 "(datum izgradnje: %1)"
 
-#: main.cpp:111
+#: main.cpp:107
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr "<i>Nedejavni avtorji</i>"
 
-#: main.cpp:112
+#: main.cpp:108
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
@@ -9927,883 +9927,883 @@ msgstr ""
 "na druge stvari, bi jim radi še naprej izkazovali spoštovanje, zato bodo "
 "navedeni tukaj:"
 
-#: main.cpp:118
+#: main.cpp:114
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Kje so moji zobotrebci' Cerneels"
 
-#: main.cpp:119
+#: main.cpp:115
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "Razvijalec (Stecchino)"
 
-#: main.cpp:122
+#: main.cpp:118
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward »Hades« Toroshchin"
 
-#: main.cpp:123
+#: main.cpp:119
 #, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "Razvijalec (dr_lepper)"
 
-#: main.cpp:126
+#: main.cpp:122
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr "Mark Kretschmann"
 
-#: main.cpp:127
+#: main.cpp:123
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "Ustanovitelj projekta (markey)"
 
-#: main.cpp:130
+#: main.cpp:126
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:131
+#: main.cpp:127
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr "Znova napisana koda za zbirke iPod in več (strohel)"
 
-#: main.cpp:134
+#: main.cpp:130
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:134
+#: main.cpp:130
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "Rokymoter, triaža napak (Mamarok)"
 
-#: main.cpp:137
+#: main.cpp:133
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf 'Mojster salse' Engels"
 
-#: main.cpp:138
+#: main.cpp:134
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "Razvijalec (rengels)"
 
-#: main.cpp:141
+#: main.cpp:137
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:141
+#: main.cpp:137
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "Izgradnja za Windows (TheOneRing)"
 
-#: main.cpp:145
+#: main.cpp:141
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:146
+#: main.cpp:142
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "Razvijalec (stuffcorpse)"
 
-#: main.cpp:149
+#: main.cpp:145
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:149
+#: main.cpp:145
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "Razvijalec (Sentynel)"
 
-#: main.cpp:153
+#: main.cpp:149
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:153
+#: main.cpp:149
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "Rokymotor, razvijalec (sven423)"
 
-#: main.cpp:156
+#: main.cpp:152
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:157
+#: main.cpp:153
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "Razvijalec (Teo`)"
 
-#: main.cpp:160
+#: main.cpp:156
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:161
+#: main.cpp:157
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Rokymotor, priročnik (valorie)"
 
-#: main.cpp:164
+#: main.cpp:160
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'Brada' Monroe"
 
-#: main.cpp:164
+#: main.cpp:160
 #, kde-format
 msgid "Developer (eean)"
 msgstr "Razvijalec (eean)"
 
-#: main.cpp:167
+#: main.cpp:163
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff »IROKSOHARD« Mitchell"
 
-#: main.cpp:167
+#: main.cpp:163
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "Razvijalec (jefferai)"
 
-#: main.cpp:170
+#: main.cpp:166
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: main.cpp:170
+#: main.cpp:166
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Razvijalec (lfranchi)"
 
-#: main.cpp:173
+#: main.cpp:169
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'je narobe(TM)' Pintscher"
 
-#: main.cpp:173
+#: main.cpp:169
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Lisička za izdajanje različic (Nightrose)"
 
-#: main.cpp:176
+#: main.cpp:172
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:176
+#: main.cpp:172
 #, kde-format
 msgid "Developer, Vision"
 msgstr "Razvijalec, vizija"
 
-#: main.cpp:179
+#: main.cpp:175
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:179
+#: main.cpp:175
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "Razvijalec (maxx_k)"
 
-#: main.cpp:182
+#: main.cpp:178
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'tudi zelo vroč' Nielsen"
 
-#: main.cpp:182
+#: main.cpp:178
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "Razvijalec (nhn)"
 
-#: main.cpp:185
+#: main.cpp:181
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb »Surfer iz dežele tam spodaj« Ruiz"
 
-#: main.cpp:185
+#: main.cpp:181
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "Razvijalec (sebr)"
 
-#: main.cpp:190
+#: main.cpp:186
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:190
+#: main.cpp:186
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "Razvijalec (xevix)"
 
-#: main.cpp:192
+#: main.cpp:188
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:192
+#: main.cpp:188
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "Razvijalec, podpora za jakost predvajanja"
 
-#: main.cpp:194
+#: main.cpp:190
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:194
+#: main.cpp:190
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "Podpora za MP3tunes"
 
-#: main.cpp:196
+#: main.cpp:192
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:196
+#: main.cpp:192
 #, kde-format
 msgid "Windows porting"
 msgstr "Predelava za Windows"
 
-#: main.cpp:198
+#: main.cpp:194
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:198
+#: main.cpp:194
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "Rokymotor (dangle)"
 
-#: main.cpp:200
+#: main.cpp:196
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:200
+#: main.cpp:196
 #, kde-format
 msgid "Usability"
 msgstr "Uporabnost"
 
-#: main.cpp:202
+#: main.cpp:198
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'O, prevedlo se je ...' Meltzer"
 
-#: main.cpp:202
+#: main.cpp:198
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "Razvijalec (hydrogen)"
 
-#: main.cpp:204
+#: main.cpp:200
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:204
+#: main.cpp:200
 #, kde-format
 msgid "Biased playlists"
 msgstr "Seznami predvajanja s pogoji"
 
-#: main.cpp:206
+#: main.cpp:202
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:206
+#: main.cpp:202
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "Program za ugibanje oznak, oznake, spektralni preučevalnik"
 
-#: main.cpp:208
+#: main.cpp:204
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:208
+#: main.cpp:204
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "Podpora za Nepomuk"
 
-#: main.cpp:210
+#: main.cpp:206
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:210 main.cpp:230
+#: main.cpp:206 main.cpp:226
 #, kde-format
 msgid "Podcast improvements"
 msgstr "Izboljšave za podcaste"
 
-#: main.cpp:212
+#: main.cpp:208
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:212
+#: main.cpp:208
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "Živi CD, odpravljanje napak (oggb4mp3)"
 
-#: main.cpp:214
+#: main.cpp:210
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:214
+#: main.cpp:210
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr "Phonon, Lord-President predstavnosti za KDE (apachelogger)"
 
-#: main.cpp:216
+#: main.cpp:212
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:216
+#: main.cpp:212
 #, kde-format
 msgid "Assorted patches"
 msgstr "Raznoliki popravki"
 
-#: main.cpp:218
+#: main.cpp:214
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:218
+#: main.cpp:214
 #, kde-format
 msgid "Icons"
 msgstr "Ikone"
 
-#: main.cpp:220
+#: main.cpp:216
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:220
+#: main.cpp:216
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "Razvijalec, tema za spletno stran (KRF)"
 
-#: main.cpp:222
+#: main.cpp:218
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:222
+#: main.cpp:218
 #, kde-format
 msgid "Rokymoter"
 msgstr "Rokymotor"
 
-#: main.cpp:224
+#: main.cpp:220
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:224 main.cpp:236
+#: main.cpp:220 main.cpp:232
 #, kde-format
 msgid "Artwork"
 msgstr "Grafična podoba"
 
-#: main.cpp:226
+#: main.cpp:222
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:226
+#: main.cpp:222
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Rokymotor (ljubomir)"
 
-#: main.cpp:228
+#: main.cpp:224
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:228
+#: main.cpp:224
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "Razvijalec (MaskMaster)"
 
-#: main.cpp:230
+#: main.cpp:226
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:232
+#: main.cpp:228
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:232
+#: main.cpp:228
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "Triaža in čiščenje napak"
 
-#: main.cpp:234
+#: main.cpp:230
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:234
+#: main.cpp:230
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "Podpora za UPnP in popravki (nsm)"
 
-#: main.cpp:236
+#: main.cpp:232
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:238
+#: main.cpp:234
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:238
+#: main.cpp:234
 #, kde-format
 msgid "Website hosting"
 msgstr "Gostovanje spletne strani"
 
-#: main.cpp:240
+#: main.cpp:236
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:240
+#: main.cpp:236
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Rokymotor (emunkki)"
 
-#: main.cpp:242
+#: main.cpp:238
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:242
+#: main.cpp:238
 #, kde-format
 msgid "Scripting interface"
 msgstr "Vmesnik za skriptno izvajanje"
 
-#: main.cpp:244
+#: main.cpp:240
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr "Phalgun Guduthur"
 
-#: main.cpp:244
+#: main.cpp:240
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr "Zbirka Nepomuk (phalgun)"
 
-#: main.cpp:246
+#: main.cpp:242
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:246
+#: main.cpp:242
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "Koda za TagLib in ktrm"
 
-#: main.cpp:248
+#: main.cpp:244
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:248
+#: main.cpp:244
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "Popravki in predelava na Windows (shakes)"
 
-#: main.cpp:250
+#: main.cpp:246
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:250
+#: main.cpp:246
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "Apleti za fotografije in video posnetke, prikaz konteksta"
 
-#: main.cpp:252
+#: main.cpp:248
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:252
+#: main.cpp:248
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "Razvijalec, samodejni ustvarjalnik seznamov predvajanja"
 
-#: main.cpp:254
+#: main.cpp:250
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:254 main.cpp:256 main.cpp:270 main.cpp:280 main.cpp:286
-#: main.cpp:288 main.cpp:300 main.cpp:306 main.cpp:308 main.cpp:312
-#: main.cpp:320
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
 #, kde-format
 msgid "Developer"
 msgstr "Razvijalec"
 
-#: main.cpp:256
+#: main.cpp:252
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:258
+#: main.cpp:254
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:258
+#: main.cpp:254
 #, kde-format
 msgid "Splash screen artist"
 msgstr "Narisal pozdravno okno"
 
-#: main.cpp:260
+#: main.cpp:256
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:260
+#: main.cpp:256
 #, kde-format
 msgid "Context view"
 msgstr "Prikaz konteksta"
 
-#: main.cpp:264
+#: main.cpp:260
 #, kde-format
 msgid "Former contributors"
 msgstr "Nekdanji prispevajoči"
 
-#: main.cpp:264
+#: main.cpp:260
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
 "Ljudje na spodnjem seznamu so prispevali v preteklosti. Najlepše se jim "
 "zahvaljujemo!"
 
-#: main.cpp:266
+#: main.cpp:262
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:266
+#: main.cpp:262
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "Preučevalniki, popravki, Shoutcast"
 
-#: main.cpp:268
+#: main.cpp:264
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:268 main.cpp:276
+#: main.cpp:264 main.cpp:272
 #, kde-format
 msgid "Patches"
 msgstr "Popravki"
 
-#: main.cpp:270
+#: main.cpp:266
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:272
+#: main.cpp:268
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:272
+#: main.cpp:268
 #, kde-format
 msgid "MySQL support"
 msgstr "Podpora za MySQL"
 
-#: main.cpp:274
+#: main.cpp:270
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:274
+#: main.cpp:270
 #, kde-format
 msgid "Postgresql support"
 msgstr "Podpora za PostgreSQL"
 
-#: main.cpp:276
+#: main.cpp:272
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:278
+#: main.cpp:274
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:278
+#: main.cpp:274
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "Predstavnostne naprave MTP in Rio Karma, popravki"
 
-#: main.cpp:280
+#: main.cpp:276
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:282
+#: main.cpp:278
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:282
+#: main.cpp:278
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "Grafika, pozdravno okno"
 
-#: main.cpp:284
+#: main.cpp:280
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:284
+#: main.cpp:280
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr ""
 "Preučevalniki, brskalnik za kontekst in vidni priboljški za sistemsko vrstico"
 
-#: main.cpp:286
+#: main.cpp:282
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:288
+#: main.cpp:284
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:290
+#: main.cpp:286
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:290
+#: main.cpp:286
 #, kde-format
 msgid "Icons and image work"
 msgstr "Ikone in slike"
 
-#: main.cpp:292
+#: main.cpp:288
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:292
+#: main.cpp:288
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "Pogovorno okno za filtriranje naslovov zbirk"
 
-#: main.cpp:294
+#: main.cpp:290
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:294
+#: main.cpp:290
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "Preizkuševalec, operater kanala na IRC-u, bičanje"
 
-#: main.cpp:296
+#: main.cpp:292
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:296
+#: main.cpp:292
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "Rokymotor, popravljavec napak (Firetech)"
 
-#: main.cpp:298
+#: main.cpp:294
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:298
+#: main.cpp:294
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "Stranski pas za Konqueror, nekaj metod DCOP"
 
-#: main.cpp:300
+#: main.cpp:296
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:302
+#: main.cpp:298
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:302
+#: main.cpp:298
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "Rutina FHT, popravki"
 
-#: main.cpp:304
+#: main.cpp:300
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:304
+#: main.cpp:300
 #, kde-format
 msgid "K3b export code"
 msgstr "Koda za izvoz v K3b"
 
-#: main.cpp:306
+#: main.cpp:302
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:308
+#: main.cpp:304
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:310
+#: main.cpp:306
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:310
+#: main.cpp:306
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "Popravki, podpora za PostgreSQL"
 
-#: main.cpp:312
+#: main.cpp:308
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:314
+#: main.cpp:310
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:314
+#: main.cpp:310
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "Podpora za Wikipedijo, popravki"
 
-#: main.cpp:316
+#: main.cpp:312
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:316
+#: main.cpp:312
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr "Nekdanji logotip za Amarok, nekdanje pozdravno okno, nekdanje ikone"
 
-#: main.cpp:318
+#: main.cpp:314
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:318
+#: main.cpp:314
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "Podpora za Audioscrobbler"
 
-#: main.cpp:320
+#: main.cpp:316
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:322
+#: main.cpp:318
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:322
+#: main.cpp:318
 #, kde-format
 msgid "Loads of stuff"
 msgstr "Ogromno stvari"
 
-#: main.cpp:324
+#: main.cpp:320
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:324
+#: main.cpp:320
 #, kde-format
 msgid "Splash screen"
 msgstr "Pozdravno okno"
 
-#: main.cpp:329
+#: main.cpp:325
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:330
+#: main.cpp:326
 #, kde-format
 msgid "Chris Wales"
 msgstr "Chris Wales"
 
-#: main.cpp:331
+#: main.cpp:327
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:257
+#: MainWindow.cpp:265
 #, kde-format
 msgid "Local Music"
 msgstr "Krajevna glasba"
 
-#: MainWindow.cpp:259
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Local sources of content"
 msgstr "Krajevni viri vsebin"
 
-#: MainWindow.cpp:266
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:268
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Online sources of content"
 msgstr "Spletni viri vsebin"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:282
 #, kde-format
 msgid "Playlists"
 msgstr "Seznami predvajanja"
 
-#: MainWindow.cpp:276
+#: MainWindow.cpp:284
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Različne vrste seznamov predvajanja"
 
-#: MainWindow.cpp:285
+#: MainWindow.cpp:293
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Brskajte po vsebini krajevnih trdih diskov"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:336
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "Pogled"
 
-#: MainWindow.cpp:331
+#: MainWindow.cpp:339
 #, kde-format
 msgid "Lock Layout"
 msgstr "Zakleni razpored"
 
-#: MainWindow.cpp:368 MainWindow.cpp:1320
+#: MainWindow.cpp:376 MainWindow.cpp:1349
 #, kde-format
 msgid "Reset Layout"
 msgstr "Ponastavi razpored"
 
-#: MainWindow.cpp:425
+#: MainWindow.cpp:433
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10814,276 +10814,276 @@ msgstr ""
 "vrstici. Da bi zaprli program, iz menija ali menija ikone sistemske vrstice "
 "izberite <B>Končaj</B>.</qt>"
 
-#: MainWindow.cpp:427
+#: MainWindow.cpp:435
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Zasidranje v sistemsko vrstico"
 
-#: MainWindow.cpp:527
+#: MainWindow.cpp:535
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Predvajaj (datoteke ali naslove URL)"
 
-#: MainWindow.cpp:527
+#: MainWindow.cpp:535
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Dodaj (datoteke ali naslove URL)"
 
-#: MainWindow.cpp:547
+#: MainWindow.cpp:555
 #, kde-format
 msgid "Add Stream"
 msgstr "Dodaj pretok"
 
-#: MainWindow.cpp:547
+#: MainWindow.cpp:555
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Vnesite naslov URL pretoka:"
 
-#: MainWindow.cpp:755
+#: MainWindow.cpp:784
 #, kde-format
 msgid "&Add Media..."
 msgstr "Dodaj predstavnostne datoteke..."
 
-#: MainWindow.cpp:760
+#: MainWindow.cpp:789
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "Počisti seznam predvajanja"
 
-#: MainWindow.cpp:765
+#: MainWindow.cpp:794
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Uredi čakalno vrsto"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:799
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Odstrani podvojene"
 
-#: MainWindow.cpp:777
+#: MainWindow.cpp:806
 #, kde-format
 msgid "&Add Stream..."
 msgstr "Dod&aj pretok..."
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:810
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "Izvozi seznam predvajanja kot..."
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:822
 #, kde-format
 msgid "Equalizer"
 msgstr "Uravnalnik"
 
-#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:826 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Zaznamuj razpored seznama predvajanja"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:830
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Zaznamuj aplete za zavihke konteksta"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:838
 #, kde-format
 msgid "Play Media..."
 msgstr "Predvajaj predstavnostne datoteke ..."
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:843
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Uredi podrobnosti trenutno izbrane skladbe"
 
-#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
+#: MainWindow.cpp:849 MainWindow.cpp:855 MainWindow.cpp:862
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Previj naprej za %1 sekund"
 
-#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
+#: MainWindow.cpp:869 MainWindow.cpp:875 MainWindow.cpp:882
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Previj nazaj za %1 sekund"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:888
 #, kde-format
 msgid "Update Collection"
 msgstr "Posodobi zbirko"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Uskladi statistiko ..."
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:900
 #, kde-format
 msgid "Previous Track"
 msgstr "Predhodna skladba"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Restart current track"
 msgstr "Predvajaj trenutno pesem od začetka"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:914
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Premešaj seznam predvajanja"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:920
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Znova napolni seznam predvajanja"
 
-#: MainWindow.cpp:897
+#: MainWindow.cpp:926
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Onemogoči dinamičen seznam predvajanja"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Next Track"
 msgstr "Naslednja skladba"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:935
 #, kde-format
 msgid "Increase Volume"
 msgstr "Povečaj glasnost"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:941
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Zmanjšaj glasnost"
 
-#: MainWindow.cpp:918
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Preklopi glavno okno"
 
-#: MainWindow.cpp:923
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Preklopi celozaslonski način"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
+#: MainWindow.cpp:957 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "Išči po seznamu predvajanja"
 
-#: MainWindow.cpp:938
+#: MainWindow.cpp:967
 #, kde-format
 msgid "Show active track"
 msgstr "Pokaži dejavno skladbo"
 
-#: MainWindow.cpp:942
+#: MainWindow.cpp:971
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Prikaži pojavno okno z obvestilom"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:976
 #, kde-format
 msgid "Mute Volume"
 msgstr "Utišaj"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:981
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: trenutna skladba mi je všeč"
 
-#: MainWindow.cpp:957
+#: MainWindow.cpp:986
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: izobči trenutno skladbo"
 
-#: MainWindow.cpp:962
+#: MainWindow.cpp:991
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: preskoči trenutno skladbo"
 
-#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:996 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Dodaj skladbo v vrsto"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:1001
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Postavi Izvajalec - Naslov trenutne skladbe v odložišče"
 
-#: MainWindow.cpp:977
+#: MainWindow.cpp:1006
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Oceni trenutno skladbo: 1"
 
-#: MainWindow.cpp:982
+#: MainWindow.cpp:1011
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Oceni trenutno skladbo: 2"
 
-#: MainWindow.cpp:987
+#: MainWindow.cpp:1016
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Oceni trenutno skladbo: 3"
 
-#: MainWindow.cpp:992
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Oceni trenutno skladbo: 4"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Oceni trenutno skladbo: 5"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:1032
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Pregledovalnik zahtev omrežja"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1050
 #, kde-format
 msgid "&About Amarok"
 msgstr "O Amarok-u"
 
-#: MainWindow.cpp:1025
+#: MainWindow.cpp:1054
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnostika"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1058
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Poročaj o napaki..."
 
-#: MainWindow.cpp:1076
+#: MainWindow.cpp:1105
 #, kde-format
 msgid "&Music"
 msgstr "Glasba"
 
-#: MainWindow.cpp:1078
+#: MainWindow.cpp:1107
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1135 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "Seznam &predvajanja"
 
-#: MainWindow.cpp:1123
+#: MainWindow.cpp:1152
 #, kde-format
 msgid "&Tools"
 msgstr "Orodja"
 
-#: MainWindow.cpp:1138
+#: MainWindow.cpp:1167
 #, kde-format
 msgid "&Settings"
 msgstr "Nastavitve"
 
-#: MainWindow.cpp:1190
+#: MainWindow.cpp:1219
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11094,22 +11094,22 @@ msgstr ""
 "\n"
 "Za njen priklic lahko vedno uporabite bližnjico \"%1\"."
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1220
 #, kde-format
 msgid "Hide Menu"
 msgstr "Skrij meni"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "V premoru :: %1"
 
-#: MainWindow.cpp:1246
+#: MainWindow.cpp:1275
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1320
+#: MainWindow.cpp:1349
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Uveljavim to spremembo razporeda?"
@@ -11527,7 +11527,7 @@ msgid "Show tooltips"
 msgstr "Prikaži orodne namige"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:503
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
 #, kde-format
 msgid "Preview"
 msgstr "Predogled"
@@ -13252,57 +13252,57 @@ msgstr "Uvozi predloge nastavitev"
 msgid "Preset files"
 msgstr "Prednastavljene datoteke"
 
-#: playlistgenerator/PresetModel.cpp:213
+#: playlistgenerator/PresetModel.cpp:215
 #, kde-format
 msgid "Preset exported to %1"
 msgstr "Predloga nastavitev je bila izvožena v %1"
 
-#: playlistgenerator/PresetModel.cpp:220
+#: playlistgenerator/PresetModel.cpp:222
 #, kde-format
 msgid "Preset could not be exported to %1"
 msgstr "Predloge nastavitev ni bilo mogoče izvoziti v %1"
 
-#: playlistgenerator/PresetModel.cpp:238
+#: playlistgenerator/PresetModel.cpp:240
 #, kde-format
 msgid "Presets could not be imported from %1"
 msgstr "Predlog nastavitev ni bilo mogoče uvoziti iz %1"
 
-#: playlistgenerator/PresetModel.cpp:245
+#: playlistgenerator/PresetModel.cpp:247
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr "%1 ni bilo mogoče odpreti za uvoz predlog nastavitev"
 
-#: playlistgenerator/PresetModel.cpp:250
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr "1. primer: nove skladbe, dodane ta teden"
 
-#: playlistgenerator/PresetModel.cpp:251
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr "2. primer: rok ali pop glasba"
 
-#: playlistgenerator/PresetModel.cpp:252
+#: playlistgenerator/PresetModel.cpp:254
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr "3. primer: približno ena ura skladb različnih izvajalcev"
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:255
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr "4. primer: kot moja priljubljena radijska postaja"
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:256
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr "5. primer: 80-minuten CD z rokom, metalom in industrijsko"
 
-#: playlistgenerator/PresetModel.cpp:294
+#: playlistgenerator/PresetModel.cpp:296
 #, kde-format
 msgid "Export \"%1\" preset"
 msgstr "Izvozi predlogo nastavitev \"%1\""
 
-#: playlistgenerator/PresetModel.cpp:296
+#: playlistgenerator/PresetModel.cpp:298
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr "Datoteke s predlogami nastavitev (*.xml )"
@@ -13401,7 +13401,7 @@ msgstr ""
 "\n"
 "%2"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:64
+#: scripting/scriptconsole/ScriptConsole.cpp:65
 #, kde-format
 msgid ""
 "A KDE text-editor component could not be found.\n"
@@ -13410,82 +13410,82 @@ msgstr ""
 "Sestavnega dela KDE za urejanje besedila ni bilo mogoče najti.\n"
 "Preverite vašo namestitev KDE. Izhod iz konzole!"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:75
+#: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
 msgid "Code"
 msgstr "Koda"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:76
+#: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Console"
 msgstr "Konzola"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:77
+#: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Output"
 msgstr "Izhod"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:78
+#: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
 msgid "Error"
 msgstr "Napaka"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:101
+#: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
 msgstr "Izvedi skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:105
+#: scripting/scriptconsole/ScriptConsole.cpp:106
 #, kde-format
 msgid "&New Script"
 msgstr "&Nov skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:109
+#: scripting/scriptconsole/ScriptConsole.cpp:110
 #, kde-format
 msgid "&Delete Script"
 msgstr "Izbriši skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:112
+#: scripting/scriptconsole/ScriptConsole.cpp:113
 #, kde-format
 msgid "&Clear All Scripts"
 msgstr "Počisti vse skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:115
+#: scripting/scriptconsole/ScriptConsole.cpp:116
 #, kde-format
 msgid "Previous Script"
 msgstr "Predhoden skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:119
+#: scripting/scriptconsole/ScriptConsole.cpp:120
 #, kde-format
 msgid "Next Script"
 msgstr "Naslednji skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:127
+#: scripting/scriptconsole/ScriptConsole.cpp:128
 #, kde-format
 msgid "&View"
 msgstr "Pogled"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:216
+#: scripting/scriptconsole/ScriptConsole.cpp:217
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "To bo zaustavilo skript! Nadaljujem?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:228
+#: scripting/scriptconsole/ScriptConsole.cpp:229
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Izberite kam želite shraniti vaše skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:421
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Odstranim skriptno datoteko iz diska?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:421
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Remove Script"
 msgstr "Odstrani skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:451
+#: scripting/scriptconsole/ScriptConsole.cpp:452
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Ali ste povsem prepričani?"
@@ -15887,12 +15887,12 @@ msgid "Slim Toolbar"
 msgstr "Vitka orodna vrstica"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:210
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Glasnost: %1 % (utišano)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:210
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, kde-format
 msgid "Volume: %1%"
@@ -16332,17 +16332,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "med"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:196
 #, kde-format
 msgid "Rating changed"
 msgstr "Ocena je spremenjena"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:271
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Glasnost: 100 % (utišano)"
 
-#: widgets/Osd.cpp:503
+#: widgets/Osd.cpp:514
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16351,12 +16351,12 @@ msgstr ""
 "Ogled prikaza na zaslonu\n"
 "Povlecite, da spremenite položaj"
 
-#: widgets/Osd.cpp:755
+#: widgets/Osd.cpp:766
 #, kde-format
 msgid "Stopped"
 msgstr "Zaustavljeno"
 
-#: widgets/Osd.cpp:764
+#: widgets/Osd.cpp:775
 #, kde-format
 msgid "Paused"
 msgstr "V premoru"

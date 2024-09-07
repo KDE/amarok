@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-23 01:49+0000\n"
+"POT-Creation-Date: 2024-09-07 01:45+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -183,80 +183,80 @@ msgstr "ម៉ឺនុយ Amarok"
 msgid "Play/Pause"
 msgstr "ចាក់​/ផ្អាក​"
 
-#: ActionClasses.cpp:323
+#: ActionClasses.cpp:331
 #, kde-format
 msgid "Click to change"
 msgstr "ចុច​ដើម្បី​ផ្លាស់ប្ដូរ"
 
-#: ActionClasses.cpp:340
+#: ActionClasses.cpp:348
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "ចាក់​របៀប​យក​ម្ដង​ទៀត"
 
-#: ActionClasses.cpp:342
+#: ActionClasses.cpp:350
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "បិទ"
 
-#: ActionClasses.cpp:343
+#: ActionClasses.cpp:351
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "បទ"
 
-#: ActionClasses.cpp:344
+#: ActionClasses.cpp:352
 #, kde-format
 msgid "&Album"
 msgstr "អាល់ប៊ុម"
 
-#: ActionClasses.cpp:364
+#: ActionClasses.cpp:372
 #, kde-format
 msgid "Burn"
 msgstr "ដុត"
 
-#: ActionClasses.cpp:403
+#: ActionClasses.cpp:411
 #, kde-format
 msgid "Current Playlist"
 msgstr "បញ្ជី​ចាក់​បច្ចុប្បន្ន"
 
-#: ActionClasses.cpp:404
+#: ActionClasses.cpp:412
 #, kde-format
 msgid "Selected Tracks"
 msgstr "បទ​ដែល​បាន​ជ្រើស"
 
-#: ActionClasses.cpp:435 scripting/scriptconsole/ScriptConsole.cpp:97
+#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "បញ្ឈប់"
 
-#: ActionClasses.cpp:479
+#: ActionClasses.cpp:487
 #, kde-format
 msgid "Stop after current Track"
 msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ចុប្បន្ន​"
 
-#: ActionClasses.cpp:496
+#: ActionClasses.cpp:504
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ចុប្បន្ន​ ៖ បិទ​​"
 
-#: ActionClasses.cpp:501
+#: ActionClasses.cpp:509
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ចុប្បន្ន ៖ បើក​"
 
-#: ActionClasses.cpp:505
+#: ActionClasses.cpp:513
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:673
 #, kde-format
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:509
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
-#: MainWindow.cpp:1246
+#: ActionClasses.cpp:517
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
+#: main.cpp:92 MainWindow.cpp:153 MainWindow.cpp:1256 MainWindow.cpp:1262
+#: MainWindow.cpp:1275
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -886,7 +886,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "បើក​/​បិទ​ការ​បង្ហាញ​លើ​អេក្រង់ ។"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:44
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:47
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "ប្រើ​ការ​គំរាម​សម្រាប់ការ​ជូនដំណឹង"
@@ -1523,7 +1523,7 @@ msgstr "មិន​ស្គាល់"
 msgid "New Bookmark"
 msgstr "ចំណាំ​ថ្មី"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:818
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​ចំណាំ"
@@ -1609,18 +1609,18 @@ msgstr "លុប"
 msgid "&Create timecode track"
 msgstr "បង្កើត​បទ​មាន​កូដ​ពេលវេលា"
 
-#: amarokurls/BookmarkTreeView.cpp:368
+#: amarokurls/BookmarkTreeView.cpp:374
 #, kde-format
 msgid "New Timecode Track"
 msgstr "បទ​ដែលមានកូដ​ពេលវេលា​ថ្មី"
 
-#: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
-#: amarokurls/BookmarkTreeView.cpp:371
+#: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
+#: amarokurls/BookmarkTreeView.cpp:377
 #: context/applets/albums/plugin/AlbumItem.cpp:99
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1275
 #, kde-format
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
@@ -1641,7 +1641,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "បរិបទ"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:290
 #, kde-format
 msgid "Files"
 msgstr "ឯកសារ"
@@ -1671,7 +1671,7 @@ msgstr "សិល្បករ \"%1\" ពី %2"
 msgid "Artist \"%1\""
 msgstr "សិល្បករ \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:814
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "ចំណាំ​ទិដ្ឋភាព​ប្រភព​មេឌៀ"
@@ -1859,7 +1859,7 @@ msgid ""
 msgstr ""
 "នេះ​ជា​កន្លែង​ដែល​អ្នក​នឹង​រក​តន្ត្រី​​ក្នុង​មូលដ្ឋាន​របស់​អ្នក ព្រមទាំង​តន្ត្រី​ពី​កម្មវិធី​ចាក់​អូឌីយ៉ូ​ចល័ត និងស៊ីឌី ។"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:962
 #, kde-format
 msgid "Search collection"
 msgstr "ស្វែងរក​សម្រាំង"
@@ -2556,13 +2556,13 @@ msgstr "លុប​បញ្ជី​ចាក់"
 msgid "Confirm Playlist Deletion"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ​អាប់ភ្លេត​ព័ត៌មាន​របស់​បញ្ជី​ចាក់"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:456
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ប្រើ​ផ្លូវ​ទំនាក់ទំនង​​សម្រាប់​រក្សាទុក"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:469
 #, kde-format
 msgid "Save As"
 msgstr "រក្សាទុក​ជា"
@@ -2711,7 +2711,7 @@ msgstr[0] "ឆានែល %1"
 msgid "Title"
 msgstr "ចំណង​ជើង"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:515
 #, kde-format
 msgid "Summary"
 msgstr "សង្ខេប"
@@ -2832,7 +2832,7 @@ msgid "Configure Plugins"
 msgstr "កំណត់​រចនាសម្ព័ន្ធ​កម្មវិធី​ជំនួយ"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:376
+#: scripting/scriptconsole/ScriptConsole.cpp:377
 #, kde-format
 msgid "Scripts"
 msgstr "ស្គ្រីប"
@@ -3711,7 +3711,7 @@ msgstr "បាន​ដំឡើង %1 ដោយ​ជោគជ័យ"
 msgid "Generic"
 msgstr "​ទូទៅ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:517
 #, kde-format
 msgid "Lyrics"
 msgstr "Lyrics"
@@ -3737,7 +3737,7 @@ msgstr "ដំឡើង​ការ​គាំទ្រ MP3"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
-#: scripting/scriptconsole/ScriptConsole.cpp:71
+#: scripting/scriptconsole/ScriptConsole.cpp:72
 #, fuzzy, kde-format
 #| msgid "Scripts"
 msgid "Script Console"
@@ -3910,7 +3910,7 @@ msgstr "បន្ថែម​ទៅ​បញ្ជីខ្មៅ"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedLabelsButton)
 #: context/applets/labels/LabelsApplet.cpp:94
-#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:515
+#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:518
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
@@ -4176,38 +4176,38 @@ msgstr "តម្រឹម"
 msgid "Font:"
 msgstr "ទ្រង់ទ្រាយ ៖"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:83
+#: context/applets/lyrics/package/contents/ui/main.qml:57
 #, fuzzy, kde-format
 msgid "Toggle auto scroll"
 msgstr "បិទ/បើ​ពេញអែក្រង់ "
 
-#: context/applets/lyrics/package/contents/ui/main.qml:90
+#: context/applets/lyrics/package/contents/ui/main.qml:67
 #, fuzzy, kde-format
 #| msgid "Reload Lyrics"
 msgid "Reload lyrics"
 msgstr "ផ្ទុក​អត្ថបទ​ចម្រៀង"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:98
+#: context/applets/lyrics/package/contents/ui/main.qml:111
 #, fuzzy, kde-format
 #| msgid "Lyrics: Not found"
 msgid "No lyrics found"
 msgstr "អត្ថបទ​ចម្រៀង ៖ រក​មិន​ឃើញ"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:113
+#: context/applets/lyrics/package/contents/ui/main.qml:128
 #, kde-format
 msgid "Suggestions: "
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
-#: context/applets/lyrics/package/contents/ui/main.qml:122
+#: context/applets/lyrics/package/contents/ui/main.qml:137
 #: dialogs/TagGuessOptions.ui:101 services/opmldirectory/AddOpmlWidget.ui:78
 #, kde-format
 msgid "Title:"
 msgstr "​ចំណងជើង ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, label_22)
-#: context/applets/lyrics/package/contents/ui/main.qml:125
+#: context/applets/lyrics/package/contents/ui/main.qml:140
 #: dialogs/TagGuessOptions.ui:127
 #, kde-format
 msgid "Artist:"
@@ -7528,7 +7528,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:834
 #, kde-format
 msgid "Cover Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​គម្រប"
@@ -8118,7 +8118,7 @@ msgid "Expand All"
 msgstr "បន្លាយ​តាម"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1399
+#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1402
 #, kde-format
 msgid "MusicBrainz Tagger"
 msgstr ""
@@ -8504,57 +8504,57 @@ msgstr "កន្សោម​ធម្មតា"
 msgid "Character string"
 msgstr "ខ្សែអក្សរ​តួអក្សរ"
 
-#: dialogs/TagDialog.cpp:513
+#: dialogs/TagDialog.cpp:516
 #, kde-format
 msgid "Tags"
 msgstr "ស្លាក"
 
-#: dialogs/TagDialog.cpp:670 dialogs/TagDialog.cpp:678
+#: dialogs/TagDialog.cpp:673 dialogs/TagDialog.cpp:681
 #, kde-format
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
 
-#: dialogs/TagDialog.cpp:715
+#: dialogs/TagDialog.cpp:718
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "សេចក្ដី​លម្អិត​បទ ៖ %1 ដោយ %2"
 
-#: dialogs/TagDialog.cpp:721
+#: dialogs/TagDialog.cpp:724
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
 msgstr[0] "ព័ត៌មាន​សម្រាប់​បទ %1"
 
-#: dialogs/TagDialog.cpp:750 dialogs/TagDialog.cpp:760
+#: dialogs/TagDialog.cpp:753 dialogs/TagDialog.cpp:763
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:752 dialogs/TagDialog.cpp:762
+#: dialogs/TagDialog.cpp:755 dialogs/TagDialog.cpp:765
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:758
+#: dialogs/TagDialog.cpp:761
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b> នៅ <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:768
+#: dialogs/TagDialog.cpp:771
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "កែសម្រួល​ឯកសារ %1"
 
-#: dialogs/TagDialog.cpp:806
+#: dialogs/TagDialog.cpp:809
 #, kde-format
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "គ្មាន"
 
-#: dialogs/TagDialog.cpp:974
+#: dialogs/TagDialog.cpp:977
 #, kde-format
 msgid "The track is not playable. %1"
 msgstr ""
@@ -9662,7 +9662,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "ឈ្មោះ​បញ្ជី​ចាក់ ៖"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:130 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "ឥឡូវ​កំពុង​ចាក់"
@@ -9677,18 +9677,18 @@ msgstr "អត្ថបទ​ចម្រៀង​ដែល​បាន​ទទ
 msgid "Lyrics data could not be parsed"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:689
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:700
 #, kde-format
 msgid "No information available for this track"
 msgstr "មិន​មាន​ព័ត៌មាន សម្រាប់​បទ​នេះ​ឡើយ"
 
-#: main.cpp:98
+#: main.cpp:94
 #, fuzzy, kde-format
 #| msgid "The audio player for KDE"
 msgid "The audio player by KDE"
 msgstr "កម្មវិធី​ចាក់​អូឌីយ៉ូ​សម្រាប់ KDE"
 
-#: main.cpp:100
+#: main.cpp:96
 #, fuzzy, kde-format
 #| msgid ""
 #| "(C) 2002-2003, Mark Kretschmann\n"
@@ -9700,7 +9700,7 @@ msgstr ""
 "រក្សាសិទ្ធិ​ឆ្នាំ ២០០២-២០០៣ ដោយ Mark Kretschmann\n"
 "រក្សាសិទ្ធិ​ឆ្នាំ ២០០៣-២០១២ ដោយ​ក្រុម​អ្នក​អភិវឌ្ឍន៍ Amarok"
 
-#: main.cpp:101
+#: main.cpp:97
 #, fuzzy, kde-format
 #| msgid ""
 #| "IRC:\n"
@@ -9727,897 +9727,897 @@ msgstr ""
 "\n"
 "(កាលបរិច្ឆេទ​ស្ថាបនា ៖ %1)"
 
-#: main.cpp:111
+#: main.cpp:107
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr ""
 
-#: main.cpp:112
+#: main.cpp:108
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
 
-#: main.cpp:118
+#: main.cpp:114
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Where are my toothpicks' Cerneels"
 
-#: main.cpp:119
+#: main.cpp:115
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (Stecchino)"
 
-#: main.cpp:122
+#: main.cpp:118
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:123
+#: main.cpp:119
 #, fuzzy, kde-format
 #| msgid "Developer (eean)"
 msgid "Developer (dr_lepper)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (eean)"
 
-#: main.cpp:126
+#: main.cpp:122
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr ""
 
-#: main.cpp:127
+#: main.cpp:123
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "អ្នក​បង្កើត​គម្រោង (markey)"
 
-#: main.cpp:130
+#: main.cpp:126
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:131
+#: main.cpp:127
 #, fuzzy, kde-format
 #| msgid "iPod collection rewrite & more"
 msgid "iPod collection rewrite & more (strohel)"
 msgstr "ការ​សរសេរ​សម្រាំង iPod ឡើងវិញ និង​ច្រើន​ទៀត"
 
-#: main.cpp:134
+#: main.cpp:130
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:134
+#: main.cpp:130
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "Rokymoter, Bug triaging (Mamarok)"
 
-#: main.cpp:137
+#: main.cpp:133
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf 'SalsaMaster' Engels"
 
-#: main.cpp:138
+#: main.cpp:134
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (rengels)"
 
-#: main.cpp:141
+#: main.cpp:137
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:141
+#: main.cpp:137
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "ការ​ស្ថាបនា​វីនដូ (TheOneRing)"
 
-#: main.cpp:145
+#: main.cpp:141
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:146
+#: main.cpp:142
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (stuffcorpse)"
 
-#: main.cpp:149
+#: main.cpp:145
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:149
+#: main.cpp:145
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (Sentynel)"
 
-#: main.cpp:153
+#: main.cpp:149
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:153
+#: main.cpp:149
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ Rokymoter (sven423)"
 
-#: main.cpp:156
+#: main.cpp:152
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:157
+#: main.cpp:153
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (Teo`)"
 
-#: main.cpp:160
+#: main.cpp:156
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:161
+#: main.cpp:157
 #, fuzzy, kde-format
 #| msgid "Rokymoter (dangle)"
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Rokymoter (dangle)"
 
-#: main.cpp:164
+#: main.cpp:160
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
-#: main.cpp:164
+#: main.cpp:160
 #, kde-format
 msgid "Developer (eean)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (eean)"
 
-#: main.cpp:167
+#: main.cpp:163
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROKSOHARD' Mitchell"
 
-#: main.cpp:167
+#: main.cpp:163
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (jefferai)"
 
-#: main.cpp:170
+#: main.cpp:166
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: main.cpp:170
+#: main.cpp:166
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (lfranchi)"
 
-#: main.cpp:173
+#: main.cpp:169
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'is wrong(TM)' Pintscher"
 
-#: main.cpp:173
+#: main.cpp:169
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "ការ​ចេញផ្សាយ Vixen (Nightrose)"
 
-#: main.cpp:176
+#: main.cpp:172
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:176
+#: main.cpp:172
 #, kde-format
 msgid "Developer, Vision"
 msgstr "​អ្នក​អភិវឌ្ឍន៍ ទស្សនវិស័យ"
 
-#: main.cpp:179
+#: main.cpp:175
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:179
+#: main.cpp:175
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (maxx_k)"
 
-#: main.cpp:182
+#: main.cpp:178
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
-#: main.cpp:182
+#: main.cpp:178
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (nhn)"
 
-#: main.cpp:185
+#: main.cpp:181
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
-#: main.cpp:185
+#: main.cpp:181
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (sebr)"
 
-#: main.cpp:190
+#: main.cpp:186
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:190
+#: main.cpp:186
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (xevix)"
 
-#: main.cpp:192
+#: main.cpp:188
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:192
+#: main.cpp:188
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "អ្នក​អភិវឌ្ឍន៍ គាំទ្រ​ការ​ចាក់​ម្ដងទៀត​​កើន​ឡើង"
 
-#: main.cpp:194
+#: main.cpp:190
 #, kde-format
 msgid "Casey Link"
 msgstr "តំណ Casey"
 
-#: main.cpp:194
+#: main.cpp:190
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "ការ​រួមបញ្ចូល Mp3tunes"
 
-#: main.cpp:196
+#: main.cpp:192
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:196
+#: main.cpp:192
 #, kde-format
 msgid "Windows porting"
 msgstr "ច្រក​​វីនដូ"
 
-#: main.cpp:198
+#: main.cpp:194
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:198
+#: main.cpp:194
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "Rokymoter (dangle)"
 
-#: main.cpp:200
+#: main.cpp:196
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:200
+#: main.cpp:196
 #, kde-format
 msgid "Usability"
 msgstr "ភាព​មាន​ប្រយោជន៍"
 
-#: main.cpp:202
+#: main.cpp:198
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, it compiled...' Meltzer"
 
-#: main.cpp:202
+#: main.cpp:198
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (hydrogen)"
 
-#: main.cpp:204
+#: main.cpp:200
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:204
+#: main.cpp:200
 #, kde-format
 msgid "Biased playlists"
 msgstr "បញ្ជី​ចាក់​ទ្រេត"
 
-#: main.cpp:206
+#: main.cpp:202
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:206
+#: main.cpp:202
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "ស្លាក Guesser ស្លាក ឧបករណ៍​វិភាគ​វិសាលគម"
 
-#: main.cpp:208
+#: main.cpp:204
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:208
+#: main.cpp:204
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "ការ​រួមបញ្ចូល​ Nepomuk"
 
-#: main.cpp:210
+#: main.cpp:206
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:210 main.cpp:230
+#: main.cpp:206 main.cpp:226
 #, kde-format
 msgid "Podcast improvements"
 msgstr "ការ​ធ្វើឲ្យ​ Podcast ប្រសើរ​ឡើង​"
 
-#: main.cpp:212
+#: main.cpp:208
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:212
+#: main.cpp:208
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "ស៊ីឌី​បន្ត​ផ្ទាល់ កំហុស squashing (oggb4mp3)"
 
-#: main.cpp:214
+#: main.cpp:210
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:214
+#: main.cpp:210
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr ""
 
-#: main.cpp:216
+#: main.cpp:212
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:216
+#: main.cpp:212
 #, kde-format
 msgid "Assorted patches"
 msgstr ""
 
-#: main.cpp:218
+#: main.cpp:214
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:218
+#: main.cpp:214
 #, kde-format
 msgid "Icons"
 msgstr " រូប​តំ​ណាង"
 
-#: main.cpp:220
+#: main.cpp:216
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:220
+#: main.cpp:216
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "អ្នក​បង្កើត​ រូបរាង​តំបន់បណ្ដាញ (KRF)"
 
-#: main.cpp:222
+#: main.cpp:218
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:222
+#: main.cpp:218
 #, kde-format
 msgid "Rokymoter"
 msgstr "Rokymoter"
 
-#: main.cpp:224
+#: main.cpp:220
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:224 main.cpp:236
+#: main.cpp:220 main.cpp:232
 #, kde-format
 msgid "Artwork"
 msgstr "Artwork"
 
-#: main.cpp:226
+#: main.cpp:222
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:226
+#: main.cpp:222
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Rokymoter (ljubomir)"
 
-#: main.cpp:228
+#: main.cpp:224
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:228
+#: main.cpp:224
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "អ្នក​អភិវឌ្ឍន៍ (MaskMaster)"
 
-#: main.cpp:230
+#: main.cpp:226
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:232
+#: main.cpp:228
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:232
+#: main.cpp:228
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "កំហុស triaging និង sanitizing"
 
-#: main.cpp:234
+#: main.cpp:230
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:234
+#: main.cpp:230
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "ការ​គាំទ្រ UPnP និង​ប៉ណះ (nsm)"
 
-#: main.cpp:236
+#: main.cpp:232
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:238
+#: main.cpp:234
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:238
+#: main.cpp:234
 #, kde-format
 msgid "Website hosting"
 msgstr "ការ​បង្ហោះ​តំបន់បណ្ដាញ"
 
-#: main.cpp:240
+#: main.cpp:236
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:240
+#: main.cpp:236
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Rokymoter (emunkki)"
 
-#: main.cpp:242
+#: main.cpp:238
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:242
+#: main.cpp:238
 #, kde-format
 msgid "Scripting interface"
 msgstr "ចំណុចប្រទាក់​​ស្គ្រីប"
 
-#: main.cpp:244
+#: main.cpp:240
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr ""
 
-#: main.cpp:244
+#: main.cpp:240
 #, fuzzy, kde-format
 #| msgid "Nepomuk Collection"
 msgid "Nepomuk Collection (phalgun)"
 msgstr "សម្រាំង​របស់ Nepomuk"
 
-#: main.cpp:246
+#: main.cpp:242
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:246
+#: main.cpp:242
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "កូដ TagLib និង ktrm "
 
-#: main.cpp:248
+#: main.cpp:244
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:248
+#: main.cpp:244
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "បំណះ​ច្រក​វីនដូ (shakes)"
 
-#: main.cpp:250
+#: main.cpp:246
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:250
+#: main.cpp:246
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "អាប់ភ្លេត​របស់​រូប​ថត វីដេអូ ទិដ្ឋភាព​បរិបទ"
 
-#: main.cpp:252
+#: main.cpp:248
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:252
+#: main.cpp:248
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "អ្នក​អភិវឌ្ឍន៍ អ្នក​បង្កើត​បញ្ជី​ចាក់​ស្វ័យ​ប្រវត្តិ"
 
-#: main.cpp:254
+#: main.cpp:250
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:254 main.cpp:256 main.cpp:270 main.cpp:280 main.cpp:286
-#: main.cpp:288 main.cpp:300 main.cpp:306 main.cpp:308 main.cpp:312
-#: main.cpp:320
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
 #, kde-format
 msgid "Developer"
 msgstr "អ្នក​អភិវឌ្ឍន៍"
 
-#: main.cpp:256
+#: main.cpp:252
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:258
+#: main.cpp:254
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:258
+#: main.cpp:254
 #, kde-format
 msgid "Splash screen artist"
 msgstr "បង្ហាញ​អេក្រង់​វិចិត្រករ"
 
-#: main.cpp:260
+#: main.cpp:256
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:260
+#: main.cpp:256
 #, kde-format
 msgid "Context view"
 msgstr "​ទិដ្ឋ​ភាព​បរិបទ"
 
-#: main.cpp:264
+#: main.cpp:260
 #, kde-format
 msgid "Former contributors"
 msgstr "អ្នក​ចែកចាយ​ពីមុន"
 
-#: main.cpp:264
+#: main.cpp:260
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr "ឈ្មោះ​មនុស្ស​ខាងក្រោម​នេះ​គឺជា​អ្នក​ដែល​បាន​ចែកចាយ​ទៅ Amarok កាល​ពីមុន ។ អរគុណ!"
 
-#: main.cpp:266
+#: main.cpp:262
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:266
+#: main.cpp:262
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "អ្នក​វិភាគ បំណះ shoutcast"
 
-#: main.cpp:268
+#: main.cpp:264
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:268 main.cpp:276
+#: main.cpp:264 main.cpp:272
 #, kde-format
 msgid "Patches"
 msgstr "បំណះ"
 
-#: main.cpp:270
+#: main.cpp:266
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:272
+#: main.cpp:268
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:272
+#: main.cpp:268
 #, kde-format
 msgid "MySQL support"
 msgstr "គាំទ្រ MySQL"
 
-#: main.cpp:274
+#: main.cpp:270
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:274
+#: main.cpp:270
 #, kde-format
 msgid "Postgresql support"
 msgstr "គាំ​ទ្រ Postgresql"
 
-#: main.cpp:276
+#: main.cpp:272
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:278
+#: main.cpp:274
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:278
+#: main.cpp:274
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "MTP និង​ឧបករណ៍​មេឌៀ Rio Karma បំណះ"
 
-#: main.cpp:280
+#: main.cpp:276
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:282
+#: main.cpp:278
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:282
+#: main.cpp:278
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "ក្រាហ្វិក អេក្រង់​ស្វាគមន៍"
 
-#: main.cpp:284
+#: main.cpp:280
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:284
+#: main.cpp:280
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr "អ្នក​វិភាគ កម្ម​វិធី​រុក​រក​បរិបទ និង​ថាស​ប្រព័ន្ធ​ទិដ្ឋភាព​ស្រស់​ស្អាត"
 
-#: main.cpp:286
+#: main.cpp:282
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:288
+#: main.cpp:284
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:290
+#: main.cpp:286
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:290
+#: main.cpp:286
 #, kde-format
 msgid "Icons and image work"
 msgstr "រូបតំណាង និង​រូបភាព​ការងារ"
 
-#: main.cpp:292
+#: main.cpp:288
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:292
+#: main.cpp:288
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "ប្រអប់​ដើម្បី​ត្រង​ចំណងជើង​សម្រាំង"
 
-#: main.cpp:294
+#: main.cpp:290
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:294
+#: main.cpp:290
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "អ្នក​សាកល្បង​​ ការី​ឆានែល IRC  ការ​វាយ​"
 
-#: main.cpp:296
+#: main.cpp:292
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:296
+#: main.cpp:292
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "Rokymoter អ្នក​ជួសជុល​កំហុស (Firetech)"
 
-#: main.cpp:298
+#: main.cpp:294
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:298
+#: main.cpp:294
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "របារ​ចំហៀង​របស់ Konqueror វិធីសាស្ត្រ​ខ្លះ​របស់ DCOP "
 
-#: main.cpp:300
+#: main.cpp:296
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:302
+#: main.cpp:298
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:302
+#: main.cpp:298
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "ទម្រង់​ការ FHT ជូសជុល​កំហុស"
 
-#: main.cpp:304
+#: main.cpp:300
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:304
+#: main.cpp:300
 #, kde-format
 msgid "K3b export code"
 msgstr "កូដ​នាំ​ចេញ K3b"
 
-#: main.cpp:306
+#: main.cpp:302
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:308
+#: main.cpp:304
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:310
+#: main.cpp:306
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:310
+#: main.cpp:306
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "ជួសជុល​​កំហុស គាំទ្រ​ ostgreSQL"
 
-#: main.cpp:312
+#: main.cpp:308
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:314
+#: main.cpp:310
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:314
+#: main.cpp:310
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "គាំទ្រ​បំណះ​របស់ Wikipedia"
 
-#: main.cpp:316
+#: main.cpp:312
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:316
+#: main.cpp:312
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr " រូប​សញ្ញា Amarok ពី​មុន ​អេក្រង់​ស្វាគមន៍​ពីមុន រូបតំណាង​ពីមុន"
 
-#: main.cpp:318
+#: main.cpp:314
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:318
+#: main.cpp:314
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "គាំទ្រ Audioscrobbler"
 
-#: main.cpp:320
+#: main.cpp:316
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:322
+#: main.cpp:318
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:322
+#: main.cpp:318
 #, kde-format
 msgid "Loads of stuff"
 msgstr "ការ​ផ្ទុក​វត្ថុ"
 
-#: main.cpp:324
+#: main.cpp:320
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:324
+#: main.cpp:320
 #, kde-format
 msgid "Splash screen"
 msgstr "អេក្រង់​ស្វាគមន៍"
 
-#: main.cpp:329
+#: main.cpp:325
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:330
+#: main.cpp:326
 #, fuzzy, kde-format
 #| msgid "Christie Harris"
 msgid "Chris Wales"
 msgstr "Christie Harris"
 
-#: main.cpp:331
+#: main.cpp:327
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr ""
 
-#: MainWindow.cpp:257
+#: MainWindow.cpp:265
 #, fuzzy, kde-format
 msgid "Local Music"
 msgstr " ​តន្ត្រី​មូល​ដ្ឋាន"
 
-#: MainWindow.cpp:259
+#: MainWindow.cpp:267
 #, fuzzy, kde-format
 msgid "Local sources of content"
 msgstr "ប្រភព​មាតិកា​លើ​បណ្ដាញ"
 
-#: MainWindow.cpp:266
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Internet"
 msgstr "អ៊ីនធឺណិត"
 
-#: MainWindow.cpp:268
+#: MainWindow.cpp:276
 #, fuzzy, kde-format
 msgid "Online sources of content"
 msgstr "ប្រភព​មាតិកា​លើ​បណ្ដាញ"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:282
 #, kde-format
 msgid "Playlists"
 msgstr "បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:276
+#: MainWindow.cpp:284
 #, fuzzy, kde-format
 msgid "Various types of playlists"
 msgstr "ប្រ​ភេទ​ផ្សេង​គ្នា​នៃ​បញ្ជីចាក់"
 
-#: MainWindow.cpp:285
+#: MainWindow.cpp:293
 #, fuzzy, kde-format
 msgid "Browse local hard drive for content"
 msgstr " រកមើលដ្រាយថាស​រឹងជា​មូលដ្ឋានក្នុង​តារាងមាតាកា​"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:336
 #, fuzzy, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "ទិដ្ឋភាព"
 
-#: MainWindow.cpp:331
+#: MainWindow.cpp:339
 #, fuzzy, kde-format
 msgid "Lock Layout"
 msgstr "ចាក់សោ​ប្លង់"
 
-#: MainWindow.cpp:368 MainWindow.cpp:1320
+#: MainWindow.cpp:376 MainWindow.cpp:1349
 #, fuzzy, kde-format
 msgid "Reset Layout"
 msgstr "ប្លង់​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:425
+#: MainWindow.cpp:433
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10627,124 +10627,124 @@ msgstr ""
 "<qt>បិទ​បង្អួច​មេ​នឹង​​ទុក​ឲ្យ Amarok រត់​នៅ​ក្នុង​ថាស​ប្រព័ន្ធ ។ ប្រើ<B>ចេញ</B> ពី​ម៉ឺនុយ ឬ​រូបតំណាង​ថាស "
 "Amarok ដើម្បី​ចាកចេញ​ពី​កម្មវិធី ។</qt>"
 
-#: MainWindow.cpp:427
+#: MainWindow.cpp:435
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "ចត​ក្នុង​ថាស​ប្រព័ន្ធ"
 
-#: MainWindow.cpp:527
+#: MainWindow.cpp:535
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "ចាក់​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:527
+#: MainWindow.cpp:535
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "បន្ថែម​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:547
+#: MainWindow.cpp:555
 #, kde-format
 msgid "Add Stream"
 msgstr "បន្ថែម​ស្ទ្រីម​"
 
-#: MainWindow.cpp:547
+#: MainWindow.cpp:555
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "បញ្ចូល​ URL ស្ទ្រីម ៖"
 
-#: MainWindow.cpp:755
+#: MainWindow.cpp:784
 #, kde-format
 msgid "&Add Media..."
 msgstr "បន្ថែម​មេឌៀ..."
 
-#: MainWindow.cpp:760
+#: MainWindow.cpp:789
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ជម្រះ​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:765
+#: MainWindow.cpp:794
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "ជួរ"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:799
 #, fuzzy, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "យក​អាប់ភ្លេត​ចេញ"
 
-#: MainWindow.cpp:777
+#: MainWindow.cpp:806
 #, kde-format
 msgid "&Add Stream..."
 msgstr "បន្ថែម​ស្ទ្រីម​..."
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:810
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:822
 #, kde-format
 msgid "Equalizer"
 msgstr "អេហ្គុយ"
 
-#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:826 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "ចំណាំ​បង្កើត​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:830
 #, fuzzy, kde-format
 msgid "Bookmark Context Applets"
 msgstr "ចំណាំ​សិល្បករ​នេះ"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:838
 #, kde-format
 msgid "Play Media..."
 msgstr "ចាក់​មេឌៀ..."
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:843
 #, fuzzy, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "ការ​ផ្លាស់​ប្តូរ​រក្សា​ទុក​បាន​កំណត់​ជ្រើស​​ជា​ស្រេច​ពេល​បច្ចុប្បន្ន ។"
 
-#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
+#: MainWindow.cpp:849 MainWindow.cpp:855 MainWindow.cpp:862
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "ស្វែងរក​ទៅ​មុខ"
 
-#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
+#: MainWindow.cpp:869 MainWindow.cpp:875 MainWindow.cpp:882
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "ស្វែងរក​ថយ​ក្រោយ"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:888
 #, kde-format
 msgid "Update Collection"
 msgstr "ធ្វើ​ឲ្យ​សម្រាំង​ទាន់សម័យ"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:900
 #, kde-format
 msgid "Previous Track"
 msgstr "បទ​មុន"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:907
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:914
 #, fuzzy, kde-format
 #| msgctxt "number of playlists from one source"
 #| msgid "One Playlist"
@@ -10752,159 +10752,159 @@ msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន �
 msgid "Shuffle Playlist"
 msgstr "បញ្ជី​ចាក់ %1"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:920
 #, fuzzy, kde-format
 msgid "Repopulate Playlist"
 msgstr "ជំនួស​​បញ្ជីចាក់​"
 
-#: MainWindow.cpp:897
+#: MainWindow.cpp:926
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "បញ្ជី​ចាក់​ថាមវន្ត​លំនាំដើម"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Next Track"
 msgstr "បទ​បន្ទាប់"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:935
 #, kde-format
 msgid "Increase Volume"
 msgstr "បង្កើន​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:941
 #, kde-format
 msgid "Decrease Volume"
 msgstr "បន្ថយ​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:918
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "បិទ/​បើក​បង្អួច​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:923
+#: MainWindow.cpp:952
 #, fuzzy, kde-format
 msgid "Toggle Full Screen"
 msgstr "បិទ/បើ​ពេញអែក្រង់ "
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
+#: MainWindow.cpp:957 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "ស្វែងរក​បញ្ជី​​ចាក់"
 
-#: MainWindow.cpp:938
+#: MainWindow.cpp:967
 #, kde-format
 msgid "Show active track"
 msgstr "បង្ហាញបទ​សកម្ម"
 
-#: MainWindow.cpp:942
+#: MainWindow.cpp:971
 #, fuzzy, kde-format
 msgid "Show Notification Popup"
 msgstr "ទីតាំង ៖"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:976
 #, kde-format
 msgid "Mute Volume"
 msgstr "បិទ​សំឡេង"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:981
 #, fuzzy, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:957
+#: MainWindow.cpp:986
 #, fuzzy, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:962
+#: MainWindow.cpp:991
 #, fuzzy, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:996 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "រៀបបទ​ជា​ជួរ"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:1001
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:977
+#: MainWindow.cpp:1006
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:982
+#: MainWindow.cpp:1011
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ២"
 
-#: MainWindow.cpp:987
+#: MainWindow.cpp:1016
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៣"
 
-#: MainWindow.cpp:992
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៤"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៥"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:1032
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1050
 #, fuzzy, kde-format
 msgid "&About Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1025
+#: MainWindow.cpp:1054
 #, kde-format
 msgid "&Diagnostics"
 msgstr ""
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1058
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1076
+#: MainWindow.cpp:1105
 #, kde-format
 msgid "&Music"
 msgstr "តន្ត្រី"
 
-#: MainWindow.cpp:1078
+#: MainWindow.cpp:1107
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1135 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "បញ្ជីចាក់"
 
-#: MainWindow.cpp:1123
+#: MainWindow.cpp:1152
 #, kde-format
 msgid "&Tools"
 msgstr "ឧបករណ៍"
 
-#: MainWindow.cpp:1138
+#: MainWindow.cpp:1167
 #, kde-format
 msgid "&Settings"
 msgstr "ការ​កំណត់"
 
-#: MainWindow.cpp:1190
+#: MainWindow.cpp:1219
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10912,23 +10912,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1220
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "លាក់​ម៉ឺនុយ"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "បាន​ផ្អាក  ::  %1"
 
-#: MainWindow.cpp:1246
+#: MainWindow.cpp:1275
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1320
+#: MainWindow.cpp:1349
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -11344,7 +11344,7 @@ msgid "Show tooltips"
 msgstr "បង្ហាញ​ព័ត៌មាន​ជំនួយ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:503
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
 #, kde-format
 msgid "Preview"
 msgstr "មើល​​ជា​មុន"
@@ -13038,57 +13038,57 @@ msgstr "នាំចូល​សម្រាំង"
 msgid "Preset files"
 msgstr "ការ​កំណត់ជា​​ស្រេច​​ ៖"
 
-#: playlistgenerator/PresetModel.cpp:213
+#: playlistgenerator/PresetModel.cpp:215
 #, kde-format
 msgid "Preset exported to %1"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:220
+#: playlistgenerator/PresetModel.cpp:222
 #, fuzzy, kde-format
 msgid "Preset could not be exported to %1"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
-#: playlistgenerator/PresetModel.cpp:238
+#: playlistgenerator/PresetModel.cpp:240
 #, fuzzy, kde-format
 msgid "Presets could not be imported from %1"
 msgstr "រក​មិនឃើញ​មូលដ្ឋាន​ទិន្នន័យ​នៅ ៖ %1"
 
-#: playlistgenerator/PresetModel.cpp:245
+#: playlistgenerator/PresetModel.cpp:247
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:250
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:251
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:252
+#: playlistgenerator/PresetModel.cpp:254
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:255
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:256
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr ""
 
-#: playlistgenerator/PresetModel.cpp:294
+#: playlistgenerator/PresetModel.cpp:296
 #, fuzzy, kde-format
 msgid "Export \"%1\" preset"
 msgstr "នាំចូល​សម្រាំង"
 
-#: playlistgenerator/PresetModel.cpp:296
+#: playlistgenerator/PresetModel.cpp:298
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr ""
@@ -13180,97 +13180,97 @@ msgid ""
 "%2"
 msgstr "ការ​វិភាគ​រក​សម្រាំង​ត្រូវ​បាន​បោះបង់ ។ បាន​ជួបប្រទះ​កំហុស​ច្រើន​ពេក​នៅ​ពេល​វិភាគ​រក ។"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:64
+#: scripting/scriptconsole/ScriptConsole.cpp:65
 #, kde-format
 msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:75
+#: scripting/scriptconsole/ScriptConsole.cpp:76
 #, fuzzy, kde-format
 msgid "Code"
 msgstr " កូដ PIN ៖"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:76
+#: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Console"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:77
+#: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Output"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:78
+#: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
 msgid "Error"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:101
+#: scripting/scriptconsole/ScriptConsole.cpp:102
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Execute Script"
 msgstr "ស្វែងរក​​ស្គ្រីប"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:105
+#: scripting/scriptconsole/ScriptConsole.cpp:106
 #, fuzzy, kde-format
 #| msgid "Scripts"
 msgid "&New Script"
 msgstr "ស្គ្រីប"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:109
+#: scripting/scriptconsole/ScriptConsole.cpp:110
 #, fuzzy, kde-format
 #| msgid "&Delete bias"
 msgid "&Delete Script"
 msgstr "លុប​ភាព​លម្អៀង"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:112
+#: scripting/scriptconsole/ScriptConsole.cpp:113
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&Clear All Scripts"
 msgstr "ស្វែងរក​​ស្គ្រីប"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:115
+#: scripting/scriptconsole/ScriptConsole.cpp:116
 #, fuzzy, kde-format
 #| msgid "Previous Track"
 msgid "Previous Script"
 msgstr "បទ​មុន"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:119
+#: scripting/scriptconsole/ScriptConsole.cpp:120
 #, fuzzy, kde-format
 #| msgid "Scripts"
 msgid "Next Script"
 msgstr "ស្គ្រីប"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:127
+#: scripting/scriptconsole/ScriptConsole.cpp:128
 #, fuzzy, kde-format
 msgid "&View"
 msgstr "ទិដ្ឋភាព"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:216
+#: scripting/scriptconsole/ScriptConsole.cpp:217
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:228
+#: scripting/scriptconsole/ScriptConsole.cpp:229
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:421
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, fuzzy, kde-format
 #| msgid "Remove empty folders?"
 msgid "Remove script file from disk?"
 msgstr "យក​ថត​ទទេ​ចេញ​ឬ ?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:421
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "យក​ការ​ជាវ​ចេញ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:451
+#: scripting/scriptconsole/ScriptConsole.cpp:452
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -15605,13 +15605,13 @@ msgid "Slim Toolbar"
 msgstr "របារ​ឧបករណ៍​មេ"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:210
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:210
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, fuzzy, kde-format
 msgid "Volume: %1%"
@@ -16039,30 +16039,30 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "ចន្លោះ"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:196
 #, kde-format
 msgid "Rating changed"
 msgstr "បាន​ផ្លាស់ប្ដូរ​ការវាយ​តម្លៃ"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:271
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: widgets/Osd.cpp:503
+#: widgets/Osd.cpp:514
 #, fuzzy, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr "ទិដ្ឋភាព OSD - អូស​ដើម្បី​ប្ដូរ​ទីតាំង"
 
-#: widgets/Osd.cpp:755
+#: widgets/Osd.cpp:766
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "បញ្ឈប់"
 
-#: widgets/Osd.cpp:764
+#: widgets/Osd.cpp:775
 #, kde-format
 msgid "Paused"
 msgstr "បាន​ផ្អាក"

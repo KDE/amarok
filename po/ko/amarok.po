@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-07-23 01:49+0000\n"
+"POT-Creation-Date: 2024-09-07 01:45+0000\n"
 "PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -176,80 +176,80 @@ msgstr "Amarok 메뉴"
 msgid "Play/Pause"
 msgstr "재생/일시 정지"
 
-#: ActionClasses.cpp:323
+#: ActionClasses.cpp:331
 #, kde-format
 msgid "Click to change"
 msgstr "변경하려면 클릭"
 
-#: ActionClasses.cpp:340
+#: ActionClasses.cpp:348
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "리플레이게인 모드(&R)"
 
-#: ActionClasses.cpp:342
+#: ActionClasses.cpp:350
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "끄기(&O)"
 
-#: ActionClasses.cpp:343
+#: ActionClasses.cpp:351
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "곡(&T)"
 
-#: ActionClasses.cpp:344
+#: ActionClasses.cpp:352
 #, kde-format
 msgid "&Album"
 msgstr "앨범(&A)"
 
-#: ActionClasses.cpp:364
+#: ActionClasses.cpp:372
 #, kde-format
 msgid "Burn"
 msgstr "굽기"
 
-#: ActionClasses.cpp:403
+#: ActionClasses.cpp:411
 #, kde-format
 msgid "Current Playlist"
 msgstr "현재 재생 목록"
 
-#: ActionClasses.cpp:404
+#: ActionClasses.cpp:412
 #, kde-format
 msgid "Selected Tracks"
 msgstr "선택한 곡"
 
-#: ActionClasses.cpp:435 scripting/scriptconsole/ScriptConsole.cpp:97
+#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "정지"
 
-#: ActionClasses.cpp:479
+#: ActionClasses.cpp:487
 #, kde-format
 msgid "Stop after current Track"
 msgstr "현재 곡 이후 정지"
 
-#: ActionClasses.cpp:496
+#: ActionClasses.cpp:504
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "현재 곡 이후 정지: 끄기"
 
-#: ActionClasses.cpp:501
+#: ActionClasses.cpp:509
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "현재 곡 이후 정지: 켜기"
 
-#: ActionClasses.cpp:505
+#: ActionClasses.cpp:513
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:662
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:673
 #, kde-format
 msgid "No track playing"
 msgstr "재생 중인 곡 없음"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:509
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:53
-#: main.cpp:96 MainWindow.cpp:150 MainWindow.cpp:1227 MainWindow.cpp:1233
-#: MainWindow.cpp:1246
+#: ActionClasses.cpp:517
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
+#: main.cpp:92 MainWindow.cpp:153 MainWindow.cpp:1256 MainWindow.cpp:1262
+#: MainWindow.cpp:1275
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -883,7 +883,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "화면상 디스플레이 사용 여부를 결정합니다."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:44
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:47
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "Growl 알림 사용"
@@ -1517,7 +1517,7 @@ msgstr "알 수 없음"
 msgid "New Bookmark"
 msgstr "새 책갈피"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:818
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "책갈피 관리자"
@@ -1603,18 +1603,18 @@ msgstr "삭제(&D)"
 msgid "&Create timecode track"
 msgstr "타임코드 곡 만들기(&C)"
 
-#: amarokurls/BookmarkTreeView.cpp:368
+#: amarokurls/BookmarkTreeView.cpp:374
 #, kde-format
 msgid "New Timecode Track"
 msgstr "새 타임코드 곡"
 
-#: amarokurls/BookmarkTreeView.cpp:369 amarokurls/BookmarkTreeView.cpp:370
-#: amarokurls/BookmarkTreeView.cpp:371
+#: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
+#: amarokurls/BookmarkTreeView.cpp:377
 #: context/applets/albums/plugin/AlbumItem.cpp:99
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1246
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1275
 #, kde-format
 msgid "Unknown"
 msgstr "알 수 없음"
@@ -1635,7 +1635,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "콘텍스트"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:282
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:290
 #, kde-format
 msgid "Files"
 msgstr "파일"
@@ -1665,7 +1665,7 @@ msgstr "%2의 아티스트 \"%1\""
 msgid "Artist \"%1\""
 msgstr "아티스트 \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:814
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "미디어 원본 보기 책갈피에 추가"
@@ -1846,7 +1846,7 @@ msgid ""
 msgstr ""
 "로컬 음악, 모바일 오디오 재생기, CD에 있는 음악을 찾을 수 있는 곳입니다."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:962
 #, kde-format
 msgid "Search collection"
 msgstr "모음집 검색"
@@ -2529,13 +2529,13 @@ msgstr "%1의 재생 목록을 삭제합니다."
 msgid "Confirm Playlist Deletion"
 msgstr "재생 목록 삭제 확인"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:448
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:456
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "저장할 때 상대 경로 사용하기(&S)"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:461
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:469
 #, kde-format
 msgid "Save As"
 msgstr "다른 이름으로 저장"
@@ -2684,7 +2684,7 @@ msgstr[0] "채널 %1개"
 msgid "Title"
 msgstr "제목"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:515
 #, kde-format
 msgid "Summary"
 msgstr "요약"
@@ -2805,7 +2805,7 @@ msgid "Configure Plugins"
 msgstr "플러그인 설정"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:376
+#: scripting/scriptconsole/ScriptConsole.cpp:377
 #, kde-format
 msgid "Scripts"
 msgstr "스크립트"
@@ -3694,7 +3694,7 @@ msgstr "%1 스크립트가 성공적으로 설치됨"
 msgid "Generic"
 msgstr "일반"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:514
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:517
 #, kde-format
 msgid "Lyrics"
 msgstr "가사"
@@ -3718,7 +3718,7 @@ msgstr "로컬 스크립트 설치"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
-#: scripting/scriptconsole/ScriptConsole.cpp:71
+#: scripting/scriptconsole/ScriptConsole.cpp:72
 #, kde-format
 msgid "Script Console"
 msgstr "스크립트 콘솔"
@@ -3875,7 +3875,7 @@ msgstr "차단 목록에 추가"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedLabelsButton)
 #: context/applets/labels/LabelsApplet.cpp:94
-#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:515
+#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:518
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
@@ -4135,36 +4135,36 @@ msgstr "가운데 정렬"
 msgid "Font:"
 msgstr "글꼴:"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:83
+#: context/applets/lyrics/package/contents/ui/main.qml:57
 #, kde-format
 msgid "Toggle auto scroll"
 msgstr "자동 스크롤 전환"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:90
+#: context/applets/lyrics/package/contents/ui/main.qml:67
 #, kde-format
 msgid "Reload lyrics"
 msgstr "가사 새로 고침"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:98
+#: context/applets/lyrics/package/contents/ui/main.qml:111
 #, kde-format
 msgid "No lyrics found"
 msgstr "가사를 찾을 수 없음"
 
-#: context/applets/lyrics/package/contents/ui/main.qml:113
+#: context/applets/lyrics/package/contents/ui/main.qml:128
 #, kde-format
 msgid "Suggestions: "
 msgstr "제안:"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
-#: context/applets/lyrics/package/contents/ui/main.qml:122
+#: context/applets/lyrics/package/contents/ui/main.qml:137
 #: dialogs/TagGuessOptions.ui:101 services/opmldirectory/AddOpmlWidget.ui:78
 #, kde-format
 msgid "Title:"
 msgstr "제목:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_22)
-#: context/applets/lyrics/package/contents/ui/main.qml:125
+#: context/applets/lyrics/package/contents/ui/main.qml:140
 #: dialogs/TagGuessOptions.ui:127
 #, kde-format
 msgid "Artist:"
@@ -7384,7 +7384,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:834
 #, kde-format
 msgid "Cover Manager"
 msgstr "앨범 커버 관리자"
@@ -7977,7 +7977,7 @@ msgid "Expand All"
 msgstr "모두 펴기"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1399
+#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1402
 #, kde-format
 msgid "MusicBrainz Tagger"
 msgstr "MusicBrainz 태그 도구"
@@ -8374,57 +8374,57 @@ msgstr "정규 표현식"
 msgid "Character string"
 msgstr "문자열"
 
-#: dialogs/TagDialog.cpp:513
+#: dialogs/TagDialog.cpp:516
 #, kde-format
 msgid "Tags"
 msgstr "태그"
 
-#: dialogs/TagDialog.cpp:670 dialogs/TagDialog.cpp:678
+#: dialogs/TagDialog.cpp:673 dialogs/TagDialog.cpp:681
 #, kde-format
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: dialogs/TagDialog.cpp:715
+#: dialogs/TagDialog.cpp:718
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "곡 정보: %2의 %1"
 
-#: dialogs/TagDialog.cpp:721
+#: dialogs/TagDialog.cpp:724
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
 msgstr[0] "%1곡 정보"
 
-#: dialogs/TagDialog.cpp:750 dialogs/TagDialog.cpp:760
+#: dialogs/TagDialog.cpp:753 dialogs/TagDialog.cpp:763
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%2</b>의 <b>%1</b>"
 
-#: dialogs/TagDialog.cpp:752 dialogs/TagDialog.cpp:762
+#: dialogs/TagDialog.cpp:755 dialogs/TagDialog.cpp:765
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:758
+#: dialogs/TagDialog.cpp:761
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%2</b>의 <b>%1</b>(<b>%3</b>)"
 
-#: dialogs/TagDialog.cpp:768
+#: dialogs/TagDialog.cpp:771
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "%1개 파일 편집 중"
 
-#: dialogs/TagDialog.cpp:806
+#: dialogs/TagDialog.cpp:809
 #, kde-format
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "없음"
 
-#: dialogs/TagDialog.cpp:974
+#: dialogs/TagDialog.cpp:977
 #, kde-format
 msgid "The track is not playable. %1"
 msgstr "곡을 재생할 수 없습니다. %1"
@@ -9515,7 +9515,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "대상 이름"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:130 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "지금 재생 중"
@@ -9530,17 +9530,17 @@ msgstr "가져온 가사가 비어 있음"
 msgid "Lyrics data could not be parsed"
 msgstr "가사 데이터를 해석할 수 없음"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:689
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:700
 #, kde-format
 msgid "No information available for this track"
 msgstr "이 곡 정보가 없음"
 
-#: main.cpp:98
+#: main.cpp:94
 #, kde-format
 msgid "The audio player by KDE"
 msgstr "KDE의 음악 재생기"
 
-#: main.cpp:100
+#: main.cpp:96
 #, fuzzy, kde-format
 #| msgid ""
 #| "(C) 2002-2003, Mark Kretschmann\n"
@@ -9552,7 +9552,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2013, The Amarok Development Squad"
 
-#: main.cpp:101
+#: main.cpp:97
 #, fuzzy, kde-format
 #| msgid ""
 #| "IRC:\n"
@@ -9579,12 +9579,12 @@ msgstr ""
 "\n"
 "(빌드 날짜: %1)"
 
-#: main.cpp:111
+#: main.cpp:107
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr "<i>활동하지 않는 작성자</i>"
 
-#: main.cpp:112
+#: main.cpp:108
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
@@ -9593,880 +9593,880 @@ msgstr ""
 "Amarok 작성은 취미가 아니며 라이프 스타일입니다. 그러나 누군가 떠나가도 떠나"
 "간 이들을 존중하는 의미에서 여기에서 계속 언급합니다:"
 
-#: main.cpp:118
+#: main.cpp:114
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart '내 칫솔 어디 갔어' Cerneels"
 
-#: main.cpp:119
+#: main.cpp:115
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "개발자(Stecchino)"
 
-#: main.cpp:122
+#: main.cpp:118
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:123
+#: main.cpp:119
 #, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "개발자(dr_lepper)"
 
-#: main.cpp:126
+#: main.cpp:122
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr "Mark Kretschmann"
 
-#: main.cpp:127
+#: main.cpp:123
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "프로젝트 설립자(markey)"
 
-#: main.cpp:130
+#: main.cpp:126
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:131
+#: main.cpp:127
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr "iPod 모음집 다시 작성 및 기타 기능(strohel)"
 
-#: main.cpp:134
+#: main.cpp:130
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:134
+#: main.cpp:130
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "로키모터, 버그 트리아징(Mamarok)"
 
-#: main.cpp:137
+#: main.cpp:133
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf '살사마스터' Engels"
 
-#: main.cpp:138
+#: main.cpp:134
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "개발자(rengels)"
 
-#: main.cpp:141
+#: main.cpp:137
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:141
+#: main.cpp:137
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "Windows 빌드(TheOneRing)"
 
-#: main.cpp:145
+#: main.cpp:141
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:146
+#: main.cpp:142
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "개발자(stuffcorpse)"
 
-#: main.cpp:149
+#: main.cpp:145
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:149
+#: main.cpp:145
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "개발자(Sentynel)"
 
-#: main.cpp:153
+#: main.cpp:149
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:153
+#: main.cpp:149
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "로키모터, 개발자 (sven423)"
 
-#: main.cpp:156
+#: main.cpp:152
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:157
+#: main.cpp:153
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "개발자(Teo`)"
 
-#: main.cpp:160
+#: main.cpp:156
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:161
+#: main.cpp:157
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "로키모터, 안내서(valorie)"
 
-#: main.cpp:164
+#: main.cpp:160
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
-#: main.cpp:164
+#: main.cpp:160
 #, kde-format
 msgid "Developer (eean)"
 msgstr "개발자(eean)"
 
-#: main.cpp:167
+#: main.cpp:163
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROKSOHARD' Mitchell"
 
-#: main.cpp:167
+#: main.cpp:163
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "개발자(jefferai)"
 
-#: main.cpp:170
+#: main.cpp:166
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: main.cpp:170
+#: main.cpp:166
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "개발자(lfranchi)"
 
-#: main.cpp:173
+#: main.cpp:169
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'is wrong(TM)' Pintscher"
 
-#: main.cpp:173
+#: main.cpp:169
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Vixen 릴리스(Nightrose)"
 
-#: main.cpp:176
+#: main.cpp:172
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:176
+#: main.cpp:172
 #, kde-format
 msgid "Developer, Vision"
 msgstr "개발자, 비전"
 
-#: main.cpp:179
+#: main.cpp:175
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:179
+#: main.cpp:175
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "개발자(maxx_k)"
 
-#: main.cpp:182
+#: main.cpp:178
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald '또한 아주 뜨거운' Nielsen"
 
-#: main.cpp:182
+#: main.cpp:178
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "개발자(nhn)"
 
-#: main.cpp:185
+#: main.cpp:181
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
-#: main.cpp:185
+#: main.cpp:181
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "개발자(sebr)"
 
-#: main.cpp:190
+#: main.cpp:186
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:190
+#: main.cpp:186
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "개발자(xevix)"
 
-#: main.cpp:192
+#: main.cpp:188
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:192
+#: main.cpp:188
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "개발자, 리플레이게인 지원"
 
-#: main.cpp:194
+#: main.cpp:190
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:194
+#: main.cpp:190
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "MP3tunes 완성"
 
-#: main.cpp:196
+#: main.cpp:192
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:196
+#: main.cpp:192
 #, kde-format
 msgid "Windows porting"
 msgstr "Windows 이식"
 
-#: main.cpp:198
+#: main.cpp:194
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:198
+#: main.cpp:194
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "로키모터(dangle)"
 
-#: main.cpp:200
+#: main.cpp:196
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:200
+#: main.cpp:196
 #, kde-format
 msgid "Usability"
 msgstr "사용 편의성"
 
-#: main.cpp:202
+#: main.cpp:198
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan '어이, 컴파일에 성공했어...' Meltzer"
 
-#: main.cpp:202
+#: main.cpp:198
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "개발자(hydrogen)"
 
-#: main.cpp:204
+#: main.cpp:200
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:204
+#: main.cpp:200
 #, kde-format
 msgid "Biased playlists"
 msgstr "편차된 재생 목록"
 
-#: main.cpp:206
+#: main.cpp:202
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:206
+#: main.cpp:202
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "태그 추측기, 레이블, 스펙트럼 분석기"
 
-#: main.cpp:208
+#: main.cpp:204
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:208
+#: main.cpp:204
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "Nepomuk 통합"
 
-#: main.cpp:210
+#: main.cpp:206
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:210 main.cpp:230
+#: main.cpp:206 main.cpp:226
 #, kde-format
 msgid "Podcast improvements"
 msgstr "팟캐스트 개선"
 
-#: main.cpp:212
+#: main.cpp:208
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:212
+#: main.cpp:208
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "라이브 CD, 버그 잡기(oggb4mp3)"
 
-#: main.cpp:214
+#: main.cpp:210
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:214
+#: main.cpp:210
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr "Phonon, KDE 멀티미디어의 대장(apachelogger)"
 
-#: main.cpp:216
+#: main.cpp:212
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:216
+#: main.cpp:212
 #, kde-format
 msgid "Assorted patches"
 msgstr "다양한 패치"
 
-#: main.cpp:218
+#: main.cpp:214
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:218
+#: main.cpp:214
 #, kde-format
 msgid "Icons"
 msgstr "아이콘"
 
-#: main.cpp:220
+#: main.cpp:216
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:220
+#: main.cpp:216
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "개발자, 웹사이트 테마(KRF)"
 
-#: main.cpp:222
+#: main.cpp:218
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:222
+#: main.cpp:218
 #, kde-format
 msgid "Rokymoter"
 msgstr "로키모터"
 
-#: main.cpp:224
+#: main.cpp:220
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:224 main.cpp:236
+#: main.cpp:220 main.cpp:232
 #, kde-format
 msgid "Artwork"
 msgstr "삽화"
 
-#: main.cpp:226
+#: main.cpp:222
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:226
+#: main.cpp:222
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "로키모터(ljubomir)"
 
-#: main.cpp:228
+#: main.cpp:224
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:228
+#: main.cpp:224
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "개발자(MaskMaster)"
 
-#: main.cpp:230
+#: main.cpp:226
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:232
+#: main.cpp:228
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:232
+#: main.cpp:228
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "버그 트리아징 및 해결"
 
-#: main.cpp:234
+#: main.cpp:230
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:234
+#: main.cpp:230
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "UPnP 지원 및 패치(nsm)"
 
-#: main.cpp:236
+#: main.cpp:232
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:238
+#: main.cpp:234
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:238
+#: main.cpp:234
 #, kde-format
 msgid "Website hosting"
 msgstr "웹사이트 호스팅"
 
-#: main.cpp:240
+#: main.cpp:236
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:240
+#: main.cpp:236
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "로키모터(emunkki)"
 
-#: main.cpp:242
+#: main.cpp:238
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:242
+#: main.cpp:238
 #, kde-format
 msgid "Scripting interface"
 msgstr "스크립팅 인터페이스"
 
-#: main.cpp:244
+#: main.cpp:240
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr "Phalgun Guduthur"
 
-#: main.cpp:244
+#: main.cpp:240
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr "Nepomuk 모음집(phalgun)"
 
-#: main.cpp:246
+#: main.cpp:242
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:246
+#: main.cpp:242
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "TagLib 및 ktrm 코드"
 
-#: main.cpp:248
+#: main.cpp:244
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:248
+#: main.cpp:244
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "패치 및 Windows 이식(shakes)"
 
-#: main.cpp:250
+#: main.cpp:246
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:250
+#: main.cpp:246
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "사진 및 동영상 애플릿, 콘텍스트 보기"
 
-#: main.cpp:252
+#: main.cpp:248
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:252
+#: main.cpp:248
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "개발자, 자동 목록 생성기"
 
-#: main.cpp:254
+#: main.cpp:250
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:254 main.cpp:256 main.cpp:270 main.cpp:280 main.cpp:286
-#: main.cpp:288 main.cpp:300 main.cpp:306 main.cpp:308 main.cpp:312
-#: main.cpp:320
+#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
+#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
+#: main.cpp:316
 #, kde-format
 msgid "Developer"
 msgstr "개발자"
 
-#: main.cpp:256
+#: main.cpp:252
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:258
+#: main.cpp:254
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:258
+#: main.cpp:254
 #, kde-format
 msgid "Splash screen artist"
 msgstr "시작 화면 작성"
 
-#: main.cpp:260
+#: main.cpp:256
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:260
+#: main.cpp:256
 #, kde-format
 msgid "Context view"
 msgstr "콘텍스트 보기"
 
-#: main.cpp:264
+#: main.cpp:260
 #, kde-format
 msgid "Former contributors"
 msgstr "이전 기여자"
 
-#: main.cpp:264
+#: main.cpp:260
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr "아래에 있는 사람은 이전에 Amarok에 기여했습니다. 감사합니다!"
 
-#: main.cpp:266
+#: main.cpp:262
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:266
+#: main.cpp:262
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "분석기, 패치, Shoutcast"
 
-#: main.cpp:268
+#: main.cpp:264
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:268 main.cpp:276
+#: main.cpp:264 main.cpp:272
 #, kde-format
 msgid "Patches"
 msgstr "패치"
 
-#: main.cpp:270
+#: main.cpp:266
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:272
+#: main.cpp:268
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:272
+#: main.cpp:268
 #, kde-format
 msgid "MySQL support"
 msgstr "MySQL 지원"
 
-#: main.cpp:274
+#: main.cpp:270
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:274
+#: main.cpp:270
 #, kde-format
 msgid "Postgresql support"
 msgstr "PostgreSQL 지원"
 
-#: main.cpp:276
+#: main.cpp:272
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:278
+#: main.cpp:274
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:278
+#: main.cpp:274
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "MTP, Rio Karma 미디어 장치, 패치"
 
-#: main.cpp:280
+#: main.cpp:276
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:282
+#: main.cpp:278
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:282
+#: main.cpp:278
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "그래픽, 시작 화면"
 
-#: main.cpp:284
+#: main.cpp:280
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:284
+#: main.cpp:280
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr "분석기, 콘텍스트 탐색기 및 시스템 트레이 모양"
 
-#: main.cpp:286
+#: main.cpp:282
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:288
+#: main.cpp:284
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:290
+#: main.cpp:286
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:290
+#: main.cpp:286
 #, kde-format
 msgid "Icons and image work"
 msgstr "아이콘 및 이미지 작업"
 
-#: main.cpp:292
+#: main.cpp:288
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:292
+#: main.cpp:288
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "모음집 제목 필터 대화 상자"
 
-#: main.cpp:294
+#: main.cpp:290
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:294
+#: main.cpp:290
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "테스터, IRC 채널 관리"
 
-#: main.cpp:296
+#: main.cpp:292
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:296
+#: main.cpp:292
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "로키모터, 버그 수리(Firetech)"
 
-#: main.cpp:298
+#: main.cpp:294
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:298
+#: main.cpp:294
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "Konqueror 사이드바, DCOP 메서드"
 
-#: main.cpp:300
+#: main.cpp:296
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:302
+#: main.cpp:298
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:302
+#: main.cpp:298
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "FHT 루틴, 버그 수정"
 
-#: main.cpp:304
+#: main.cpp:300
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:304
+#: main.cpp:300
 #, kde-format
 msgid "K3b export code"
 msgstr "K3b 내보내기 코드"
 
-#: main.cpp:306
+#: main.cpp:302
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:308
+#: main.cpp:304
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:310
+#: main.cpp:306
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:310
+#: main.cpp:306
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "버그 수정, PostgreSQL 지원"
 
-#: main.cpp:312
+#: main.cpp:308
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:314
+#: main.cpp:310
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:314
+#: main.cpp:310
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "위키백과 지원, 패치"
 
-#: main.cpp:316
+#: main.cpp:312
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:316
+#: main.cpp:312
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr "이전 Amarok 로고, 시작 화면, 아이콘"
 
-#: main.cpp:318
+#: main.cpp:314
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:318
+#: main.cpp:314
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "Audioscrobbler 지원"
 
-#: main.cpp:320
+#: main.cpp:316
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:322
+#: main.cpp:318
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:322
+#: main.cpp:318
 #, kde-format
 msgid "Loads of stuff"
 msgstr "기타 여러 가지"
 
-#: main.cpp:324
+#: main.cpp:320
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:324
+#: main.cpp:320
 #, kde-format
 msgid "Splash screen"
 msgstr "시작 화면"
 
-#: main.cpp:329
+#: main.cpp:325
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:330
+#: main.cpp:326
 #, kde-format
 msgid "Chris Wales"
 msgstr "Chris Wales"
 
-#: main.cpp:331
+#: main.cpp:327
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:257
+#: MainWindow.cpp:265
 #, kde-format
 msgid "Local Music"
 msgstr "로컬 음악"
 
-#: MainWindow.cpp:259
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Local sources of content"
 msgstr "로컬 콘텐츠"
 
-#: MainWindow.cpp:266
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Internet"
 msgstr "인터넷"
 
-#: MainWindow.cpp:268
+#: MainWindow.cpp:276
 #, kde-format
 msgid "Online sources of content"
 msgstr "온라인 콘텐츠"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:282
 #, kde-format
 msgid "Playlists"
 msgstr "재생 목록"
 
-#: MainWindow.cpp:276
+#: MainWindow.cpp:284
 #, kde-format
 msgid "Various types of playlists"
 msgstr "다양한 재생 목록 형식"
 
-#: MainWindow.cpp:285
+#: MainWindow.cpp:293
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "로컬 하드 드라이브에서 콘텐츠 찾기"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:336
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "보기(&V)"
 
-#: MainWindow.cpp:331
+#: MainWindow.cpp:339
 #, kde-format
 msgid "Lock Layout"
 msgstr "레이아웃 잠금"
 
-#: MainWindow.cpp:368 MainWindow.cpp:1320
+#: MainWindow.cpp:376 MainWindow.cpp:1349
 #, kde-format
 msgid "Reset Layout"
 msgstr "레이아웃 초기화"
 
-#: MainWindow.cpp:425
+#: MainWindow.cpp:433
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10476,276 +10476,276 @@ msgstr ""
 "<qt>주 창을 닫아도 시스템 트레이에서 Amarok이 실행됩니다. 앱을 끝내려면 파일 "
 "메뉴의 <B>끝내기</B> 항목 또는 시스템 트레이 아이콘을 사용하십시오.</qt>"
 
-#: MainWindow.cpp:427
+#: MainWindow.cpp:435
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "시스템 트레이에 놓기"
 
-#: MainWindow.cpp:527
+#: MainWindow.cpp:535
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "미디어 재생(파일이나 URL)"
 
-#: MainWindow.cpp:527
+#: MainWindow.cpp:535
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "미디어 추가(파일이나 URL)"
 
-#: MainWindow.cpp:547
+#: MainWindow.cpp:555
 #, kde-format
 msgid "Add Stream"
 msgstr "스트림 추가"
 
-#: MainWindow.cpp:547
+#: MainWindow.cpp:555
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "스트림 URL을 입력하십시오:"
 
-#: MainWindow.cpp:755
+#: MainWindow.cpp:784
 #, kde-format
 msgid "&Add Media..."
 msgstr "미디어 추가(&A)..."
 
-#: MainWindow.cpp:760
+#: MainWindow.cpp:789
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "재생 목록 지우기(&C)"
 
-#: MainWindow.cpp:765
+#: MainWindow.cpp:794
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "대기열 편집(&Q)"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:799
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "중복 삭제(&M)"
 
-#: MainWindow.cpp:777
+#: MainWindow.cpp:806
 #, kde-format
 msgid "&Add Stream..."
 msgstr "스트림 추가(&A)..."
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:810
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "재생 목록 내보내기(&E)..."
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:822
 #, kde-format
 msgid "Equalizer"
 msgstr "이퀼라이저"
 
-#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:826 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "책갈피 재생 목록 설정"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:830
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "콘텍스트 애플릿 책갈피"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:838
 #, kde-format
 msgid "Play Media..."
 msgstr "미디어 재생..."
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:843
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "현재 선택된 곡의 세부 사항 편집"
 
-#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
+#: MainWindow.cpp:849 MainWindow.cpp:855 MainWindow.cpp:862
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "%1초 앞으로 탐색"
 
-#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
+#: MainWindow.cpp:869 MainWindow.cpp:875 MainWindow.cpp:882
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "%1초 뒤로 탐색"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:888
 #, kde-format
 msgid "Update Collection"
 msgstr "모음집 업데이트"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "통계 동기화 중..."
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:900
 #, kde-format
 msgid "Previous Track"
 msgstr "이전 곡"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Restart current track"
 msgstr "현재 곡 다시 시작"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:914
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "재생 목록 순서 섞기"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:920
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "재생 목록 다시 채우기"
 
-#: MainWindow.cpp:897
+#: MainWindow.cpp:926
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "동적 재생 목록 사용 중지"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Next Track"
 msgstr "다음 곡"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:935
 #, kde-format
 msgid "Increase Volume"
 msgstr "음량 증가"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:941
 #, kde-format
 msgid "Decrease Volume"
 msgstr "음량 감소"
 
-#: MainWindow.cpp:918
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "주 창 표시/숨기기"
 
-#: MainWindow.cpp:923
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "전체 화면 전환"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:50
+#: MainWindow.cpp:957 playlist/ProgressiveSearchWidget.cpp:50
 #, kde-format
 msgid "Search playlist"
 msgstr "재생 목록 검색"
 
-#: MainWindow.cpp:938
+#: MainWindow.cpp:967
 #, kde-format
 msgid "Show active track"
 msgstr "활성 곡 표시"
 
-#: MainWindow.cpp:942
+#: MainWindow.cpp:971
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "알림 팝업 표시"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:976
 #, kde-format
 msgid "Mute Volume"
 msgstr "볼륨 음소거"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:981
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: 현재 곡 좋아하기"
 
-#: MainWindow.cpp:957
+#: MainWindow.cpp:986
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: 현재 곡 금지하기"
 
-#: MainWindow.cpp:962
+#: MainWindow.cpp:991
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: 현재 곡 건너뛰기"
 
-#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:996 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "곡 대기열에 추가"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:1001
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "아티스트 넣기 - 클립보드에 대한 현재 곡의 제목"
 
-#: MainWindow.cpp:977
+#: MainWindow.cpp:1006
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "현재 곡 별점: 1"
 
-#: MainWindow.cpp:982
+#: MainWindow.cpp:1011
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "현재 곡 별점: 2"
 
-#: MainWindow.cpp:987
+#: MainWindow.cpp:1016
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "현재 곡 별점: 3"
 
-#: MainWindow.cpp:992
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "현재 곡 별점: 4"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "현재 곡 별점: 5"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:1032
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "네트워크 요청 보기 도구"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1050
 #, kde-format
 msgid "&About Amarok"
 msgstr "Amarok 소개(&A)"
 
-#: MainWindow.cpp:1025
+#: MainWindow.cpp:1054
 #, kde-format
 msgid "&Diagnostics"
 msgstr "진단(&D)"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1058
 #, kde-format
 msgid "&Report Bug..."
 msgstr "버그 보고(&R)..."
 
-#: MainWindow.cpp:1076
+#: MainWindow.cpp:1105
 #, kde-format
 msgid "&Music"
 msgstr "음악(&M)"
 
-#: MainWindow.cpp:1078
+#: MainWindow.cpp:1107
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok(&A)"
 
-#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1135 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "재생 목록(&P)"
 
-#: MainWindow.cpp:1123
+#: MainWindow.cpp:1152
 #, kde-format
 msgid "&Tools"
 msgstr "도구(&T)"
 
-#: MainWindow.cpp:1138
+#: MainWindow.cpp:1167
 #, kde-format
 msgid "&Settings"
 msgstr "설정(&S)"
 
-#: MainWindow.cpp:1190
+#: MainWindow.cpp:1219
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10756,22 +10756,22 @@ msgstr ""
 "\n"
 "메뉴 표시줄을 다시 표시하려면 단축키 \"%1\"을(를) 누르십시오."
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1220
 #, kde-format
 msgid "Hide Menu"
 msgstr "메뉴 숨기기"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "일시 정지됨 :: %1"
 
-#: MainWindow.cpp:1246
+#: MainWindow.cpp:1275
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1320
+#: MainWindow.cpp:1349
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "이 레이아웃 변경을 적용하시겠습니까?"
@@ -11183,7 +11183,7 @@ msgid "Show tooltips"
 msgstr "풍선 도움말 표시"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:503
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
 #, kde-format
 msgid "Preview"
 msgstr "미리 보기"
@@ -12860,57 +12860,57 @@ msgstr "설정 가져오기"
 msgid "Preset files"
 msgstr "사전 설정 파일"
 
-#: playlistgenerator/PresetModel.cpp:213
+#: playlistgenerator/PresetModel.cpp:215
 #, kde-format
 msgid "Preset exported to %1"
 msgstr "%1(으)로 사전 설정 내보냄"
 
-#: playlistgenerator/PresetModel.cpp:220
+#: playlistgenerator/PresetModel.cpp:222
 #, kde-format
 msgid "Preset could not be exported to %1"
 msgstr "사전 설정을 %1(으)로 내보낼 수 없음"
 
-#: playlistgenerator/PresetModel.cpp:238
+#: playlistgenerator/PresetModel.cpp:240
 #, kde-format
 msgid "Presets could not be imported from %1"
 msgstr "사전 설정을 %1에서 가져올 수 없음"
 
-#: playlistgenerator/PresetModel.cpp:245
+#: playlistgenerator/PresetModel.cpp:247
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr "%1에서 사전 설정을 가져오려고 열 수 없음"
 
-#: playlistgenerator/PresetModel.cpp:250
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr "예 1: 이번 주에 추가된 새 곡"
 
-#: playlistgenerator/PresetModel.cpp:251
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr "예 2: 록 또는 팝 음악"
 
-#: playlistgenerator/PresetModel.cpp:252
+#: playlistgenerator/PresetModel.cpp:254
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr "예 3: 다른 아티스트의 곡 약 1시간"
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:255
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr "예 4: 내가 가장 좋아하는 라디오 방송국과 비슷함"
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:256
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr "예 5: 80분 분량의 록, 메탈 및 인더스트리얼 CD"
 
-#: playlistgenerator/PresetModel.cpp:294
+#: playlistgenerator/PresetModel.cpp:296
 #, kde-format
 msgid "Export \"%1\" preset"
 msgstr "\"%1\" 사전 설정 내보내기"
 
-#: playlistgenerator/PresetModel.cpp:296
+#: playlistgenerator/PresetModel.cpp:298
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr "사전 설정 파일 (*.xml)"
@@ -13007,7 +13007,7 @@ msgstr ""
 "\n"
 "%2"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:64
+#: scripting/scriptconsole/ScriptConsole.cpp:65
 #, kde-format
 msgid ""
 "A KDE text-editor component could not be found.\n"
@@ -13016,82 +13016,82 @@ msgstr ""
 "KDE 텍스트 편집기 구성 요소를 찾을 수 없습니다.\n"
 "KDE 설치를 확인하십시오.  콘솔을 종료합니다!"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:75
+#: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
 msgid "Code"
 msgstr "코드"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:76
+#: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Console"
 msgstr "콘솔"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:77
+#: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Output"
 msgstr "출력"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:78
+#: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
 msgid "Error"
 msgstr "오류"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:101
+#: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
 msgstr "스크립트 실행"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:105
+#: scripting/scriptconsole/ScriptConsole.cpp:106
 #, kde-format
 msgid "&New Script"
 msgstr "새 스크립트(&N)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:109
+#: scripting/scriptconsole/ScriptConsole.cpp:110
 #, kde-format
 msgid "&Delete Script"
 msgstr "스크립트 삭제(&D)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:112
+#: scripting/scriptconsole/ScriptConsole.cpp:113
 #, kde-format
 msgid "&Clear All Scripts"
 msgstr "모든 스크립트 삭제(&C)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:115
+#: scripting/scriptconsole/ScriptConsole.cpp:116
 #, kde-format
 msgid "Previous Script"
 msgstr "이전 스크립트"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:119
+#: scripting/scriptconsole/ScriptConsole.cpp:120
 #, kde-format
 msgid "Next Script"
 msgstr "다음 스크립트"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:127
+#: scripting/scriptconsole/ScriptConsole.cpp:128
 #, kde-format
 msgid "&View"
 msgstr "보기(&V)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:216
+#: scripting/scriptconsole/ScriptConsole.cpp:217
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "스크립트를 중단합니다! 계속하시겠습니까?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:228
+#: scripting/scriptconsole/ScriptConsole.cpp:229
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "스크립트 저장 위치 선택"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:421
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "디스크에서 스크립트 파일을 삭제하시겠습니까?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:421
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Remove Script"
 msgstr "스크립트 삭제"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:451
+#: scripting/scriptconsole/ScriptConsole.cpp:452
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "계속 진행하시겠습니까?"
@@ -15396,12 +15396,12 @@ msgid "Slim Toolbar"
 msgstr "얇은 도구 모음"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:210
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "음량: %1%(음소거)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:210
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, kde-format
 msgid "Volume: %1%"
@@ -15816,17 +15816,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "다음 사이"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:196
 #, kde-format
 msgid "Rating changed"
 msgstr "별점 변경됨"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:271
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "음량: 100%(음소거)"
 
-#: widgets/Osd.cpp:503
+#: widgets/Osd.cpp:514
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -15835,12 +15835,12 @@ msgstr ""
 "OSD 미리 보기\n"
 "위치를 바꿀 곳으로 드래그"
 
-#: widgets/Osd.cpp:755
+#: widgets/Osd.cpp:766
 #, kde-format
 msgid "Stopped"
 msgstr "정지됨"
 
-#: widgets/Osd.cpp:764
+#: widgets/Osd.cpp:775
 #, kde-format
 msgid "Paused"
 msgstr "일시 정지"
