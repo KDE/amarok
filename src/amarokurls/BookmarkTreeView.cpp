@@ -232,7 +232,7 @@ bool BookmarkTreeView::viewportEvent( QEvent *event )
            QSize shr = itemDelegate( idx )->sizeHint( viewOptions(), idx );
 #else
            QStyleOptionViewItem o;
-           initViewItemOption( &o )
+           initViewItemOption( &o );
            QSize shr = itemDelegate( idx )->sizeHint( o, idx );
 #endif
 

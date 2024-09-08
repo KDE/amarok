@@ -139,8 +139,8 @@ KNotificationBackend::showCurrentTrack( bool force )
     notify->setText( text );
     notify->setPixmap( pixmap );
 
-    if( m_notify ) // existing notification already shown
-        notify->update();
-    notify->sendEvent(); // (re)start timeout in both cases
+    // looking at KF 5.89 sources, setting properties and calling sendEvent seems to take care of any
+    // updating or creating new notifications, so a call to update() was removed here during Qt6 porting
+    notify->sendEvent();
     m_notify = notify;
 }

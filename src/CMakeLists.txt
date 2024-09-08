@@ -832,6 +832,7 @@ if(BUILD_WITH_QT6)
         KF${KF_MAJOR_VERSION}::Package
         KF${KF_MAJOR_VERSION}::StatusNotifierItem
         KF${KF_MAJOR_VERSION}::TextEditor
+        KF${KF_MAJOR_VERSION}::TextWidgets
         KF${KF_MAJOR_VERSION}::ThreadWeaver
         KF${KF_MAJOR_VERSION}::WidgetsAddons
         KF${KF_MAJOR_VERSION}::WindowSystem

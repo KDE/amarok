@@ -46,6 +46,8 @@ KTextEditor::View*
 ScriptEditorDocument::createView( QWidget* parent )
 {
     KTextEditor::View *view = m_document->createView( parent );
+    //TODO completion Qt6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     KTextEditor::CodeCompletionInterface *codeCompletionIf = qobject_cast<KTextEditor::CodeCompletionInterface*>( view );
     if( codeCompletionIf )
     {
@@ -57,6 +59,7 @@ ScriptEditorDocument::createView( QWidget* parent )
     KTextEditor::ConfigInterface *configIface = qobject_cast<KTextEditor::ConfigInterface*>( view );
     if( configIface )
         configIface->setConfigValue( QStringLiteral("line-numbers"), true );
+#endif
     return view;
 }
 
@@ -96,6 +99,7 @@ ScriptEditorDocument::setReadWrite( bool readWrite )
 void
 ScriptEditorDocument::highlight( KTextEditor::View *view, int line, const QColor &color )
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     KTextEditor::MovingInterface *movingIf = qobject_cast<KTextEditor::MovingInterface*>( view->document() );
     if( !movingIf )
       return;
@@ -107,4 +111,9 @@ ScriptEditorDocument::highlight( KTextEditor::View *view, int line, const QColor
     KTextEditor::Attribute::Ptr attrb( new KTextEditor::Attribute() );
     attrb->setBackground( color );
     movingRange->setAttribute( attrb );
+#else
+    Q_UNUSED(view) //TODO highlight Qt6
+    Q_UNUSED(line)
+    Q_UNUSED(color)
+#endif
 }

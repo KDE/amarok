@@ -173,8 +173,8 @@ MainWindow::MainWindow()
     connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
     connect( KWindowSystem::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KWindowSystem::windowChanged),
 #else
-    connect( KWindowSystem::self(), &KX11Extras::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
-    connect( KWindowSystem::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KX11Extras::windowChanged),
+    connect( KX11Extras::self(), &KX11Extras::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
+    connect( KX11Extras::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KX11Extras::windowChanged),
 #endif
              [this](WId id, NET::Properties prop, NET::Properties2 ) {
                  if ( id == winId() && ( prop & NET::WMDesktop || prop & NET::WMState || prop & NET::XAWMState ) )
