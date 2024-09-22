@@ -82,7 +82,7 @@ BrowserBreadcrumbWidget::updateBreadcrumbs()
     // spacer is the right-most widget
     new QWidget(m_breadcrumbArea);
 
-    showAsNeeded();
+    QTimer::singleShot( 0 , this, &BrowserBreadcrumbWidget::showAsNeeded );
 }
 
 void
