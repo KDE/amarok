@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-07 01:45+0000\n"
-"PO-Revision-Date: 2024-09-22 01:10+0200\n"
+"PO-Revision-Date: 2024-09-22 12:46+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Proxecto Trasno (proxecto@trasno.gal)\n"
 "Language: gl\n"
@@ -820,7 +820,7 @@ msgstr ""
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr ""
-"Cando está activa, un complemento de ecualizador filtra o fluxo de son."
+"Se escolle esta opción, un complemento de ecualizador filtra o fluxo de son."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
@@ -7095,14 +7095,14 @@ msgstr ""
 "O <a href=http://flac.sourceforge.net/documentation_tools_flac.html>nivel de "
 "compresión</a> é un valor enteiro entre 0 e 8 que representa o compromiso "
 "entre tamaño de ficheiro e velocidade de compresión mentres se codifica con "
-"<b>FLAC</b>. <br/>Ao estabelecer o nivel de compresión a <b>0</b> fornecese "
-"un tempo de compresión máis curto pero xerase un ficheiro comparativamente "
-"grande, un nivel de compresión de <b>8</b> fai a compresión bastante lenta "
-"pero xera un ficheiro máis pequeno. <br/>Teña en conta que dado que FLAC é "
-"por definición un códec sen perdas, a calidade da saída de son é exactamente "
-"a mesma con independencia d nivel de compresión. <br/>Tamén, os niveis "
-"superiores a <b>5</b> incrementan drasticamente o tempo de compresión pero "
-"crean un ficheiro só lixeiramente máis pequeno e non se recomendan."
+"<b>FLAC</b>. <br/>Definir o nivel de compresión como <b>0</b> reduce o tempo "
+"de compresión pero xera un ficheiro comparativamente grande. Un nivel de "
+"compresión de <b>8</b> fai a compresión bastante lenta pero xera un ficheiro "
+"máis pequeno. <br/>Teña en conta que dado que FLAC é por definición un códec "
+"sen perdas, a calidade da saída de son é exactamente a mesma con "
+"independencia d nivel de compresión. <br/>Tamén, os niveis superiores a "
+"<b>5</b> incrementan drasticamente o tempo de compresión pero crean un "
+"ficheiro só lixeiramente máis pequeno e non se recomendan."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:41
 #, kde-format
@@ -7152,10 +7152,10 @@ msgstr ""
 "Variable_bitrate#VBR>taxa de bits variábel (VBR)</a>, o que significa que o "
 "valor da taxa de bits varía ao longo da pista en función da complexidade do "
 "contido do son. Os intervalos máis complexos de datos codifícanse cunha taxa "
-"de bits máis elevada que os menos complexos; esta aproximación fornece sobre "
-"todo unha mellor calidade e un ficheiro máis pequeno que unha taxa de bits "
-"constante ao longo da pista. <br>Por este motivo, a medida da taxa de bits "
-"neste control esvaradío é só unha estimación da taxa media de bits da pista "
+"de bits máis elevada que os menos complexos; este método dá sobre todo unha "
+"mellor calidade e un ficheiro máis pequeno que unha taxa de bits constante "
+"ao longo da pista. <br>Por este motivo, a medida da taxa de bits neste "
+"control esvaradío é só unha estimación da taxa media de bits da pista "
 "codificada. <br><b>160kb/s</b> é unha boa elección para escoitar música nun "
 "reprodutor portátil. <br/>Calquera valor inferior a <b>120kb/s</b> podería "
 "non ser satisfactorio para música e calquera superior a <b>205kb/s</b> é "
@@ -7207,13 +7207,13 @@ msgstr ""
 "Taxa_de_bits>taxa de bits variábel (VBR)</a>, o que significa que o valor da "
 "taxa de bits varía ao longo da pista en función da complexidade do contido "
 "do son. Os intervalos máis complexos de datos codifícanse cunha taxa de bits "
-"máis elevada que os menos complexos; esta aproximación fornece sobre todo "
-"unha mellor calidade e un ficheiro máis pequeno que unha taxa de bits "
-"constante ao longo da pista. <br>Por este motivo, a medida da taxa de bits "
-"neste control esvaradío é só unha estimación da taxa media de bits da pista "
-"codificada. <br><b>128kb/s</b> é unha boa elección para escoitar música nun "
-"reprodutor portátil. <br/>Calquera valor inferior a <b>100kb/s</b> podería "
-"non ser satisfactorio para música e calquera superior a <b>256kb/s</b> é "
+"máis elevada que os menos complexos; este método dá sobre todo unha mellor "
+"calidade e un ficheiro máis pequeno que unha taxa de bits constante ao longo "
+"da pista. <br>Por este motivo, a medida da taxa de bits neste control "
+"esvaradío é só unha estimación da taxa media de bits da pista codificada. "
+"<br><b>128kb/s</b> é unha boa elección para escoitar música nun reprodutor "
+"portátil. <br/>Calquera valor inferior a <b>100kb/s</b> podería non ser "
+"satisfactorio para música e calquera superior a <b>256kb/s</b> é "
 "probabelmente esaxerado."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
@@ -7288,9 +7288,9 @@ msgid ""
 "excellent choice, especially for portable music players that support it."
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Vorbis>Ogg Vorbis</a> é un códec aberto "
-"e libre de taxas para compresión de son con perdas. <br>Fornece ficheiros "
-"máis pequenos que MP3 a unha calidade equivalente ou superior. Ogg Vorbis é "
-"unha excelente elección en todo caso, especialmente para os reprodutores de "
+"e libre de taxas para compresión de son con perdas. <br>Xera ficheiros máis "
+"pequenos que MP3 a unha calidade equivalente ou superior. Ogg Vorbis é unha "
+"excelente elección en todo caso, especialmente para os reprodutores de "
 "música portátiles compatíbeis."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:28
@@ -7407,7 +7407,7 @@ msgstr "A obtención da portada de «%1» fallou."
 #: covermanager/CoverFetcher.cpp:438
 #, kde-format
 msgid "Canceled fetching cover for '%1'."
-msgstr "Cancelouse a descarga da portada de «%1»."
+msgstr "Cancelouse a obtención da portada de «%1»."
 
 #: covermanager/CoverFetcher.cpp:447
 #, kde-format
@@ -7712,7 +7712,7 @@ msgstr[1] " Non se atoparon <b>%1</b> portadas"
 #: covermanager/CoverManager.cpp:640
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
-msgstr "Obtendo a portada de %1 - %2…"
+msgstr "Obtendo a portada de %1 — %2…"
 
 #: covermanager/CoverManager.cpp:646
 #, kde-format
@@ -7736,7 +7736,7 @@ msgstr[1] "Obtivéronse %1"
 #: covermanager/CoverManager.cpp:658
 #, kde-format
 msgid " - "
-msgstr " - "
+msgstr " — "
 
 #: covermanager/CoverManager.cpp:659
 #, kde-format
@@ -7780,8 +7780,8 @@ msgstr "%1 (por %2)"
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
-msgstr[0] "%2 - ( <b>1</b> sen portada )"
-msgstr[1] "%2 - ( <b>%1</b> sen portada )"
+msgstr[0] "%2 — ( <b>1</b> sen portada )"
+msgstr[1] "%2 — ( <b>%1</b> sen portada )"
 
 #: covermanager/CoverManager.cpp:764
 #, kde-format
@@ -7791,7 +7791,7 @@ msgstr "Portada"
 #: covermanager/CoverManager.cpp:839
 #, kde-format
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 — %2"
 
 #: covermanager/CoverManager.cpp:856
 #, kde-format
@@ -7909,7 +7909,8 @@ msgstr[1] "<b><font color='green'>Éxito:</font></b> Importáronse %1 pistas"
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> Unable to import statistics"
 msgstr ""
-"<b><font color='red'>Fallou:</font></b> Non se poden importar as estatísticas"
+"<b><font color='red'>Fallou:</font></b> Non é posíbel importar as "
+"estatísticas."
 
 #: dialogs/DatabaseImporterDialog.cpp:130
 #, kde-format
@@ -7958,7 +7959,7 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from "
 "%3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
-"Importado <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;de %3<br/"
+"Importado <b><font color='green'>%1 — %2</font></b><br/>&nbsp;&nbsp;de %3<br/"
 ">&nbsp;&nbsp;a %4"
 
 #: dialogs/DatabaseImporterDialog.cpp:181
@@ -7970,7 +7971,7 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from "
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
-"Importado <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;de "
+"Importado <b><font color='green'>%1 — %2 (%3)</font></b><br/>&nbsp;&nbsp;de "
 "%4<br/>&nbsp;&nbsp;a %5"
 
 #: dialogs/DatabaseImporterDialog.cpp:193
@@ -8078,7 +8079,7 @@ msgstr "Condición"
 #: dialogs/EditFilterDialog.ui:67
 #, kde-format
 msgid "invert"
-msgstr "inverter"
+msgstr "Inverter."
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbAnd)
 #: dialogs/EditFilterDialog.ui:99 widgets/MetaQueryWidget.cpp:583
@@ -8116,7 +8117,7 @@ msgstr ""
 #: dialogs/EqualizerDialog.ui:22
 #, kde-format
 msgid "Active"
-msgstr "Activo"
+msgstr "Activo."
 
 #. i18n: ectx: property (title), widget (QGroupBox, eqPresetsGroupBox)
 #: dialogs/EqualizerDialog.ui:29
@@ -8147,8 +8148,8 @@ msgstr "Gardar"
 #, kde-format
 msgid "Delete currently selected preset. Not available for built-in presets."
 msgstr ""
-"Elimina a predefinición seleccionada. Non dispoñíbel para predefinicións de "
-"serie."
+"Elimina a predefinición seleccionada. Non dispoñíbel para predefinicións "
+"incluídas."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetResetBtn)
 #: dialogs/EqualizerDialog.ui:89
@@ -8244,7 +8245,7 @@ msgstr "Limpar todas as escollas, mesmo as feitas manualmente."
 #: dialogs/MusicBrainzTagger.cpp:101
 #, kde-format
 msgid "Collapse Chosen"
-msgstr "Recoller o escollido"
+msgstr "Pregar o escollido"
 
 #: dialogs/MusicBrainzTagger.cpp:112
 #, kde-format
@@ -8331,7 +8332,7 @@ msgid ""
 "that section will be hidden if the token is empty."
 msgstr ""
 "Se rodea as seccións do texto que conteñen un símbolo con chaves, esa "
-"sección será agochada se o elemento está baleiro."
+"sección será agochada se o símbolo está baleiro."
 
 #: dialogs/OrganizeCollectionDialog.cpp:316
 #, kde-format
@@ -8441,14 +8442,14 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Marque isto para "
 "sobrescribir automaticamente os ficheiros co mesmo nome. <span style=\" font-"
-"style:italic;\">(Aviso: a sobrescrita non se pode desfacer)</span></p></"
+"style:italic;\">(Aviso: a sobrescrita non se pode desfacer)</span>.</p></"
 "body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, overwriteCheck)
 #: dialogs/OrganizeCollectionDialogBase.ui:169
 #, kde-format
 msgid "Overwrite &Destination"
-msgstr "Sobrescribir o &destino"
+msgstr "Sobrescribir o &destino."
 
 #. i18n: ectx: property (title), widget (QGroupBox, OrganizeCollectionsOptions)
 #: dialogs/OrganizeCollectionOptions.ui:20
@@ -8476,7 +8477,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:41
 #, kde-format
 msgid "Replace spaces with &underscores"
-msgstr "Substituír os espazos con signos de s&ubliñado"
+msgstr "Substituír os espazos con signos de s&ubliñado."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:54
@@ -8493,15 +8494,15 @@ msgid ""
 "If checked all artists starting with \"The\" will have it moved to the end. "
 "Example, \"The Beatles\" would become \"Beatles, The\""
 msgstr ""
-"Se está marcado, todos os autores que teñan a palabra «The» ao principio "
-"trataranse como se «The» non estiver. Por exemplo, «The Beatles» "
-"converterase en «Beatles, The»,"
+"Se está marcado, todas as persoas autoras que teñan a palabra «The» ao "
+"principio trataranse como se «The» non estiver. Por exemplo, «The Beatles» "
+"converterase en «Beatles, The»."
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:60
 #, kde-format
 msgid "&Append 'The' to artist names"
-msgstr "Eng&adir «The» aos nomes dos intérpretes"
+msgstr "Eng&adir «The» aos nomes dos intérpretes."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:75
@@ -8539,7 +8540,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:83
 #, kde-format
 msgid "&VFAT safe names"
-msgstr "Nomes &VFAT seguros"
+msgstr "Nomes &VFAT seguros."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:104
@@ -8643,7 +8644,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:116
 #, kde-format
 msgid "Restrict to &ASCII"
-msgstr "Restrinxir a &ASCII"
+msgstr "Restrinxir a &ASCII."
 
 #. i18n: ectx: property (text), widget (QLabel, replaceLabel1)
 #: dialogs/OrganizeCollectionOptions.ui:137
@@ -8958,7 +8959,7 @@ msgstr "Segui&nte"
 #: dialogs/TagDialogBase.ui:1110
 #, kde-format
 msgid "Per trac&k"
-msgstr "Por &pista"
+msgstr "Por &pista."
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_ok)
 #: dialogs/TagDialogBase.ui:1133
@@ -9006,7 +9007,7 @@ msgstr "&lt;baleiro&gt;"
 #: dialogs/TagGuessOptions.ui:23
 #, kde-format
 msgid "Edit &case"
-msgstr "Editar as maiús&culas e minúsculas"
+msgstr "Editar as maiús&culas e minúsculas."
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbTitleCase)
 #: dialogs/TagGuessOptions.ui:36
@@ -9036,13 +9037,13 @@ msgstr "Todo en mi&núsculas"
 #: dialogs/TagGuessOptions.ui:70
 #, kde-format
 msgid "Remove trailing &spaces in tags"
-msgstr "Retirar os &espazos adicionais nas etiquetas"
+msgstr "Retirar os &espazos adicionais nas etiquetas."
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbReplaceUnderscores)
 #: dialogs/TagGuessOptions.ui:80
 #, kde-format
 msgid "Replace &underscores with spaces"
-msgstr "&Substituír os trazos baixos por espazos"
+msgstr "&Substituír os trazos baixos por espazos."
 
 #. i18n: ectx: property (title), widget (QGroupBox, resultGroupBox)
 #: dialogs/TagGuessOptions.ui:95
@@ -9282,7 +9283,7 @@ msgstr "o intérprete da pista anterior"
 #: dynamic/biases/EchoNestBias.cpp:145
 #, kde-format
 msgid "one of the artist in the current playlist"
-msgstr "un dos intérpretes pistas da lista de reprodución actual"
+msgstr "unha das intérpretes da lista de reprodución actual"
 
 #: dynamic/biases/IfElseBias.cpp:35
 #, kde-format
@@ -9670,7 +9671,7 @@ msgstr "Cero"
 #, kde-format
 msgctxt "Database type"
 msgid "embedded"
-msgstr "integrado"
+msgstr "incrustada"
 
 #: importers/amarok/AmarokConfigWidget.cpp:82
 #, kde-format
@@ -9687,7 +9688,7 @@ msgstr "externo"
 #: services/ampache/NewServerWidget.ui:50
 #, kde-format
 msgid "Username"
-msgstr "Nome de usuaria"
+msgstr "Nome de persoa usuaria"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/amarok/AmarokConfigWidget.ui:58
@@ -9738,7 +9739,7 @@ msgstr "Nome da base de datos"
 #: importers/amarok/AmarokConfigWidget.ui:163
 #, kde-format
 msgid "MySQL server binary"
-msgstr "Executábel do servidor de MySQL"
+msgstr "Binario do servidor de MySQL"
 
 #. i18n: ectx: property (filter), widget (KUrlRequester, m_mysqlBinary)
 #: importers/amarok/AmarokConfigWidget.ui:170
@@ -9843,14 +9844,15 @@ msgstr "Non se dispón de información sobre esta pista"
 msgid "The audio player by KDE"
 msgstr "O reprodutor de son de KDE"
 
+# skip-rule: trasno-mark
 #: main.cpp:96
 #, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
-"© 2002-2003, Mark Kretschmann\n"
-"© 2003-2024, a brigada de desenvolvemento de Amarok"
+"© 2002-2003 Mark Kretschmann\n"
+"© 2003-2024 A brigada de desenvolvemento de Amarok"
 
 #: main.cpp:97
 #, kde-format
@@ -9874,7 +9876,7 @@ msgstr ""
 #: main.cpp:107
 #, kde-format
 msgid "<i>Inactive authors</i>"
-msgstr "<i>Autores inactivos</i>"
+msgstr "<i>Persoas autoras inactivas</i>"
 
 #: main.cpp:108
 #, kde-format
@@ -9885,7 +9887,7 @@ msgstr ""
 "O desenvolvemento de Amarok non é un mero pasatempo, é unha forma de vida. "
 "Pero cando a xente deixa o equipo, gústanos respectalos mencionándoos aquí:"
 
-# skip-rule: PT-2010-dual_search
+# skip-rule: trasno-search_reverse
 #: main.cpp:114
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
@@ -9894,7 +9896,7 @@ msgstr "Bart Cerneels o busca-escarvadentes"
 #: main.cpp:115
 #, kde-format
 msgid "Developer (Stecchino)"
-msgstr "Desenvolvedor (Stecchino)"
+msgstr "Desenvolvemento (Stecchino)"
 
 #: main.cpp:118
 #, kde-format
@@ -9904,8 +9906,9 @@ msgstr "Edward «Hades» Toroshchin"
 #: main.cpp:119
 #, kde-format
 msgid "Developer (dr_lepper)"
-msgstr "Desenvolvedor (dr_lepper)"
+msgstr "Desenvolvemento (dr_lepper)"
 
+# skip-rule: trasno-mark
 #: main.cpp:122
 #, kde-format
 msgid "Mark Kretschmann"
@@ -9944,7 +9947,7 @@ msgstr "Ralf 'SalsaMaster' Engels"
 #: main.cpp:134
 #, kde-format
 msgid "Developer (rengels)"
-msgstr "Desenvolvedor (rengels)"
+msgstr "Desenvolvemento (rengels)"
 
 #: main.cpp:137
 #, kde-format
@@ -9964,7 +9967,7 @@ msgstr "Rick W. Chen"
 #: main.cpp:142
 #, kde-format
 msgid "Developer (stuffcorpse)"
-msgstr "Desenvolvedor (stuffcorpse)"
+msgstr "Desenvolvemento (stuffcorpse)"
 
 #: main.cpp:145
 #, kde-format
@@ -9974,7 +9977,7 @@ msgstr "Sam Lade"
 #: main.cpp:145
 #, kde-format
 msgid "Developer (Sentynel)"
-msgstr "Desenvolvedor (Sentynel)"
+msgstr "Desenvolvemento (Sentynel)"
 
 #: main.cpp:149
 #, kde-format
@@ -9984,7 +9987,7 @@ msgstr "Sven Krohlas"
 #: main.cpp:149
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
-msgstr "Rokymoter, Desenvolvedor (sven423)"
+msgstr "Rokymoter, desenvolvemento (sven423)"
 
 #: main.cpp:152
 #, kde-format
@@ -9994,7 +9997,7 @@ msgstr "Téo Mrnjavac"
 #: main.cpp:153
 #, kde-format
 msgid "Developer (Teo`)"
-msgstr "Desenvolvedor (Teo`)"
+msgstr "Desenvolvemento (Teo`)"
 
 #: main.cpp:156
 #, kde-format
@@ -10014,7 +10017,7 @@ msgstr "Ian Monroe, «O Oso»"
 #: main.cpp:160
 #, kde-format
 msgid "Developer (eean)"
-msgstr "Desenvolvedor (eean)"
+msgstr "Desenvolvemento (eean)"
 
 #: main.cpp:163
 #, kde-format
@@ -10024,7 +10027,7 @@ msgstr "Jeff 'IROKSOHARD' Mitchell"
 #: main.cpp:163
 #, kde-format
 msgid "Developer (jefferai)"
-msgstr "Desenvolvedor (jefferai)"
+msgstr "Desenvolvemento (jefferai)"
 
 #: main.cpp:166
 #, kde-format
@@ -10034,7 +10037,7 @@ msgstr "Leo Franchi"
 #: main.cpp:166
 #, kde-format
 msgid "Developer (lfranchi)"
-msgstr "Desenvolvedor (lfranchi)"
+msgstr "Desenvolvemento (lfranchi)"
 
 #: main.cpp:169
 #, kde-format
@@ -10054,7 +10057,7 @@ msgstr "Max Howell"
 #: main.cpp:172
 #, kde-format
 msgid "Developer, Vision"
-msgstr "Desenvolvedor, Vision"
+msgstr "Desenvolvemento, visión"
 
 #: main.cpp:175
 #, kde-format
@@ -10064,7 +10067,7 @@ msgstr "Maximilian Kossick"
 #: main.cpp:175
 #, kde-format
 msgid "Developer (maxx_k)"
-msgstr "Desenvolvedor (maxx_k)"
+msgstr "Desenvolvemento (maxx_k)"
 
 #: main.cpp:178
 #, kde-format
@@ -10074,7 +10077,7 @@ msgstr "Nikolaj Hald «Also very hot» Nielsen"
 #: main.cpp:178
 #, kde-format
 msgid "Developer (nhn)"
-msgstr "Desenvolvedor (nhn)"
+msgstr "Desenvolvemento (nhn)"
 
 #: main.cpp:181
 #, kde-format
@@ -10084,7 +10087,7 @@ msgstr "Seb 'Surfin' down under' Ruiz"
 #: main.cpp:181
 #, kde-format
 msgid "Developer (sebr)"
-msgstr "Desenvolvedor (sebr)"
+msgstr "Desenvolvemento (sebr)"
 
 #: main.cpp:186
 #, kde-format
@@ -10094,7 +10097,7 @@ msgstr "Alejandro Wainzinger"
 #: main.cpp:186
 #, kde-format
 msgid "Developer (xevix)"
-msgstr "Desenvolvedor (xevix)"
+msgstr "Desenvolvemento (xevix)"
 
 #: main.cpp:188
 #, kde-format
@@ -10104,7 +10107,7 @@ msgstr "Alex Merry"
 #: main.cpp:188
 #, kde-format
 msgid "Developer, Replay Gain support"
-msgstr "Desenvolvedor, compatibilidade de ReplayGain"
+msgstr "Desenvolvemento, compatibilidade de ReplayGain."
 
 #: main.cpp:190
 #, kde-format
@@ -10154,7 +10157,7 @@ msgstr "Dan Meltzer"
 #: main.cpp:198
 #, kde-format
 msgid "Developer (hydrogen)"
-msgstr "Desenvolvedor (hydrogen)"
+msgstr "Desenvolvemento (hydrogen)"
 
 #: main.cpp:200
 #, kde-format
@@ -10244,7 +10247,7 @@ msgstr "Kevin Funk"
 #: main.cpp:216
 #, kde-format
 msgid "Developer, Website theme (KRF)"
-msgstr "Desenvolvedor, tema da páxina web (KRF)"
+msgstr "Desenvolvemento, tema da páxina web (KRF)"
 
 #: main.cpp:218
 #, kde-format
@@ -10284,7 +10287,7 @@ msgstr "Lucas Gomes"
 #: main.cpp:224
 #, kde-format
 msgid "Developer (MaskMaster)"
-msgstr "Desenvolvedor (MaskMaster)"
+msgstr "Desenvolvemento (MaskMaster)"
 
 #: main.cpp:226
 #, kde-format
@@ -10394,7 +10397,7 @@ msgstr "Soren Harward"
 #: main.cpp:248
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
-msgstr "Desenvolvedor, xerador automático de listas de reprodución"
+msgstr "Desenvolvemento, xerador automático de listas de reprodución"
 
 #: main.cpp:250
 #, kde-format
@@ -10406,7 +10409,7 @@ msgstr "Thomas Lübking"
 #: main.cpp:316
 #, kde-format
 msgid "Developer"
-msgstr "Desenvolvedor"
+msgstr "Desenvolvemento"
 
 #: main.cpp:252
 #, kde-format
@@ -10743,7 +10746,7 @@ msgstr "Varios tipos de listas de reprodución"
 #: MainWindow.cpp:293
 #, kde-format
 msgid "Browse local hard drive for content"
-msgstr "Navegar polo disco local por contido"
+msgstr "Navegar polo disco duro local por contido"
 
 #: MainWindow.cpp:336
 #, kde-format
@@ -10759,7 +10762,7 @@ msgstr "Bloquear o deseño"
 #: MainWindow.cpp:376 MainWindow.cpp:1349
 #, kde-format
 msgid "Reset Layout"
-msgstr "Reiniciar a disposición"
+msgstr "Restabelecer a disposición"
 
 #: MainWindow.cpp:433
 #, kde-format
@@ -10768,14 +10771,14 @@ msgid ""
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
 "qt>"
 msgstr ""
-"<qt>Se pecha a xanela principal Amarok continuará a funcionar na área de "
+"<qt>Se pecha a xanela principal Amarok continuará en execución na área de "
 "notificación. Use <B>Pechar</B> no menú, ou a icona de Amarok na área de "
 "notificación para saír da aplicación</qt>"
 
 #: MainWindow.cpp:435
 #, kde-format
 msgid "Docking in System Tray"
-msgstr "Ancorar na área de notificación"
+msgstr "Acoplar na área de notificación"
 
 #: MainWindow.cpp:535
 #, kde-format
@@ -10938,7 +10941,7 @@ msgstr "Amosar a pista activa"
 #: MainWindow.cpp:971
 #, kde-format
 msgid "Show Notification Popup"
-msgstr "Amosar mensaxe emerxente de notificacións"
+msgstr "Amosar a notificación emerxente"
 
 #: MainWindow.cpp:976
 #, kde-format
@@ -10968,7 +10971,7 @@ msgstr "Pór a pista en espera"
 #: MainWindow.cpp:1001
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr "Pór Intérprete - Título da pista actual no portapapeis"
+msgstr "Pór Intérprete — Título da pista actual no portapapeis"
 
 #: MainWindow.cpp:1006
 #, kde-format
@@ -11065,7 +11068,7 @@ msgstr "En pausa  ::  %1"
 #: MainWindow.cpp:1275
 #, kde-format
 msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
+msgstr "%1 — %2  ::  %3"
 
 #: MainWindow.cpp:1349
 #, kde-format
@@ -11312,12 +11315,12 @@ msgstr ""
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr "O deseño «%1» é un dos predeterminados e non se pode eliminar."
+msgstr "O deseño «%1» é un dos predeterminados e non é posíbel eliminalo."
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "Cannot Delete Default Layouts"
-msgstr "Os deseños predeterminados non se poden eliminar"
+msgstr "Non é posíbel eliminar os deseños predeterminados"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:81
 #, kde-format
@@ -11424,7 +11427,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
 #, kde-format
 msgid "Cannot rename a layout to have no name."
-msgstr "Non pode renomear un deseño para que quede sen nome."
+msgstr "Non é posíbel renomear un deseño para que quede sen nome."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
@@ -11467,7 +11470,7 @@ msgstr "Deseño"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:255
 #, kde-format
 msgid "Show inline playback controls"
-msgstr "Amosar os controis de reprodución en liña"
+msgstr "Amosar os controis de reprodución en liña."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
@@ -11480,7 +11483,7 @@ msgstr "Agrupar por"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:279
 #, kde-format
 msgid "Show tooltips"
-msgstr "Amosar indicacións"
+msgstr "Amosar as indicacións emerxentes."
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
@@ -11814,7 +11817,7 @@ msgstr "Tamaño do ficheiro"
 #, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
-msgstr "%1: %2 - %3"
+msgstr "%1: %2 — %3"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PlaylistQueueEditor)
 #: playlist/PlaylistQueueEditor.ui:14
@@ -12319,7 +12322,7 @@ msgid ""
 "How strict the APG should be about matching the playlist duration to the "
 "specified time."
 msgstr ""
-"Como de estrito debería ser o APG sobre emparellar a duración da pista de "
+"Como de estrito debería ser o APG sobre emparellar a duración da lista de "
 "reprodución co tempo indicado."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
@@ -12367,10 +12370,10 @@ msgid ""
 "more than that number of tracks; and the strictness with which the APG "
 "should match the target number of tracks."
 msgstr ""
-"Un editor de restricións de lonxitude de lista de reprodución. O usuario "
-"pode indicar o número de pistas que quere e se a lista de reprodución contén "
-"menos, tantas ou máis pistas que as indicadas. e a rixidez coa que o APG "
-"debería facer coincidir ese número de pistas."
+"Un editor de restricións de lonxitude de lista de reprodución. A persoa "
+"usuaria pode indicar o número de pistas que quere e se a lista de "
+"reprodución contén menos, tantas ou máis pistas que as indicadas. e a "
+"rixidez coa que o APG debería facer coincidir ese número de pistas."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:21
@@ -13326,12 +13329,12 @@ msgstr "Buscando música"
 #: scanner/GenericScannerJob.cpp:119
 #, kde-format
 msgid "Abort for scanner requested"
-msgstr "Solicitouse interromper da exploración"
+msgstr "Solicitouse interromper o escáner"
 
 #: scanner/GenericScannerJob.cpp:148
 #, kde-format
 msgid "Aborting scanner with error: %1"
-msgstr "Interrompendo a exploración co erro: %1"
+msgstr "Interrompendo o escáner co erro: %1"
 
 #: scanner/GenericScannerJob.cpp:209
 #, kde-format
@@ -13341,7 +13344,7 @@ msgstr "Non foi posíbel atopar amarokcollectionscanner!"
 #: scanner/GenericScannerJob.cpp:270
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
-msgstr "Non é posíbel iniciar o explorador de coleccións de Amarok."
+msgstr "Non é posíbel iniciar o escáner de coleccións de Amarok."
 
 #: scanner/GenericScannerJob.cpp:319
 #, kde-format
@@ -13351,7 +13354,7 @@ msgid ""
 "\n"
 "%2"
 msgstr ""
-"Interrompeuse a exploración da colección; apareceron demasiadas quebras (%1) "
+"Interrompeuse o escaneo da colección; apareceron demasiadas quebras (%1) "
 "durante ela. Os seguintes ficheiros foron os responsábeis das quebras:\n"
 "\n"
 "%2"
@@ -13433,7 +13436,7 @@ msgstr "Escolla onde gardar os guións."
 #: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Remove script file from disk?"
-msgstr "Quere retirar o ficheiro de guión definitivamente?"
+msgstr "Quere retirar o ficheiro de guión do disco?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
@@ -13640,13 +13643,13 @@ msgstr ""
 "O servizo de GPodder non puido obter datos do servidor. Volverase intentar "
 "dentro de 10 segundos…"
 
-# skip-rule: gl-directorio
+# skip-rule: proposta-gl-directorio
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
 msgstr "gpodder.net: servizo de directorio de podcast"
 
-# skip-rule: gl-directorio
+# skip-rule: proposta-gl-directorio
 #: services/gpodder/GpodderService.cpp:119
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
@@ -13683,8 +13686,8 @@ msgstr "Probando…"
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr ""
-"Un dos datos fornecidos —o nome de usuaria ou o contrasinal— estaba baleiro. "
-"Corríxao e probe de novo."
+"Ou o nome de persoa usuaria ou o contrasinal están baleiros, corríxao e "
+"inténteo de novo."
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
 #: services/gpodder/GpodderServiceSettings.cpp:179
@@ -13711,8 +13714,8 @@ msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr ""
-"Ou o nome de usuaria ou o contrasinal non era correcto. Corríxao e probe de "
-"novo."
+"Ou o nome de persoa usuaria ou o contrasinal non era correcto. Corríxao e "
+"probe de novo."
 
 #: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
@@ -13762,8 +13765,8 @@ msgid ""
 msgstr ""
 "Jamendo.com pon en contacto aos intérpretes cos amantes da música. O sitio "
 "permite que os intérpretes envíen os seus álbums para compartilos con todo o "
-"mundo e aos usuarios descargalos de balde. Escoite e descargue os contidos "
-"de Jamendo.com desde Amarok."
+"mundo e ás persoas usuarias descargalos de balde. Escoite e descargue os "
+"contidos de Jamendo.com desde Amarok."
 
 #: services/jamendo/JamendoService.cpp:121
 #, kde-format
@@ -13965,14 +13968,14 @@ msgstr "Servizos de Last.fm"
 #: services/lastfm/LastFmConfigWidget.ui:116
 #, kde-format
 msgid "&Submit tracks"
-msgstr "&Enviar as pistas"
+msgstr "&Entregar as pistas."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
 #: services/lastfm/LastFmConfigWidget.ui:126
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
-"&Usar os datos do compositor se están dispoñíbeis en Last.fm como intérprete"
+"&Usar os datos do compositor se están dispoñíbeis en Last.fm como intérprete."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:136
@@ -13999,9 +14002,9 @@ msgid ""
 "track tags like artist, album and title. Check this to be notified when this "
 "happens and what the autocorrection was</html>"
 msgstr ""
-"<html>Ao enviar escoitas a Last.fm, corríxense automaticamente erros comúns "
-"nas etiquetas das pistas, como o intérprete, o álbum ou o título. Marque "
-"esta opción para notificarse cando ocorra e informado de cal foi a "
+"<html>Ao entregar escoitas a Last.fm, corríxense automaticamente erros "
+"comúns nas etiquetas das pistas, como o intérprete, o álbum ou o título. "
+"Marque esta opción para notificarse cando ocorra e informado de cal foi a "
 "modificación.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
@@ -14034,7 +14037,7 @@ msgid ""
 "will not be scrobbled</html>"
 msgstr ""
 "<html>Escolla a etiqueta que prefira (ou escriba unha nova). As pistas con "
-"esta pista non serán escoitadas.</html>"
+"esta pista non han ser escoitadas.</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -14081,12 +14084,12 @@ msgstr "Insira unha etiqueta"
 #: services/lastfm/LastFmService.cpp:328
 #, kde-format
 msgid "Enter a Last.fm user name"
-msgstr "Insira un nome de usuaria de Last.fm"
+msgstr "Insira un nome de persoa usuaria de Last.fm"
 
 #: services/lastfm/LastFmService.cpp:341
 #, kde-format
 msgid "Username: %1"
-msgstr "Nome de usuaria: %1"
+msgstr "Nome de persoa usuaria: %1"
 
 #: services/lastfm/LastFmService.cpp:346
 #, kde-format
@@ -14108,7 +14111,7 @@ msgstr "Etiqueta"
 #: services/lastfm/LastFmService.cpp:395
 #, kde-format
 msgid "User"
-msgstr "Usuario"
+msgstr "Persoa usuaria"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -14278,7 +14281,7 @@ msgstr "Radio con etiqueta global: «%1»"
 #: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
-msgstr "Radio de etiqueta de usuario: «%1»"
+msgstr "Radio de etiqueta de persoa usuaria: «%1»"
 
 #: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
@@ -14410,7 +14413,7 @@ msgstr "Descargando álbum de Magnatune.com"
 #, kde-format
 msgid "Magnatune download seems to have failed. Cannot read zip file"
 msgstr ""
-"Semella que fallou a descarga de Magnatune. Non se pode ler o ficheiro zip"
+"Semella que fallou a descarga de Magnatune. Non é posíbel ler o ficheiro zip."
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format
@@ -14465,12 +14468,14 @@ msgstr ""
 msgid "Update Magnatune database automatically"
 msgstr "Actualizar a base de datos de Magnatune automaticamente."
 
+# skip-rule: trasno-download_reverse
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:43
 #, kde-format
 msgid "Redownloads"
 msgstr "Volver descargar"
 
+# skip-rule: trasno-download_reverse
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: services/magnatune/MagnatuneConfigWidget.ui:49
 #, kde-format
@@ -14498,7 +14503,7 @@ msgstr "Opcións dos membros"
 #: services/magnatune/MagnatuneConfigWidget.ui:85
 #, kde-format
 msgid "I am a member"
-msgstr "Son membro"
+msgstr "Teño conta."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneConfigWidget.ui:105
@@ -14517,7 +14522,7 @@ msgstr "Fluxo"
 #, kde-format
 msgctxt "Username for logins to Magnatune"
 msgid "Username:"
-msgstr "Nome de usuaria:"
+msgstr "Nome de persoa usuaria:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:143
@@ -14666,7 +14671,7 @@ msgstr ""
 "Volver descargar un álbum comprado anteriormente en Magnatune.com «%1» por "
 "«%2».\n"
 "\n"
-"Nome de usuaria: %3\n"
+"Nome de persoa usuaria: %3\n"
 "Contrasinal: %4\n"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:32
@@ -14753,7 +14758,7 @@ msgid ""
 "Magnatune service configuration."
 msgstr ""
 "Se activa a seguinte opción, Amarok comprobará se hai actualizacións de "
-"Magnatune e as descargará automaticamente. Pode desactivar esta opción máis "
+"Magnatune e as descargará automaticamente. Pode desmarcar esta opción máis "
 "adiante na configuración do servizo Magnatune."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
@@ -14784,7 +14789,7 @@ msgstr "&Descargar de novo"
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:60
 #, kde-format
 msgid "Artist - Album"
-msgstr "Artista - Álbum"
+msgstr "Artista — Álbum"
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:148
 #, kde-format
@@ -15079,6 +15084,7 @@ msgstr "O identificador que debe usar o servizo."
 msgid "The email to be used for authentication."
 msgstr "O correo electrónico a usar na autenticación."
 
+# skip-rule: preacordo-trasno-en-pin
 #: services/mp3tunes/harmonydaemon/main.cpp:50
 #, kde-format
 msgid "The pin to be used for authentication."
@@ -15203,7 +15209,7 @@ msgstr "Autenticando"
 #: services/mp3tunes/Mp3tunesService.cpp:269
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
-msgstr "MP3tunes non se puido autenticar."
+msgstr "MP3tunes non puido autenticar."
 
 #: services/mp3tunes/Mp3tunesService.cpp:299
 #, kde-format
@@ -15265,7 +15271,7 @@ msgstr "Engadir un ficheiro OPML local ou remoto para incluílo na lista."
 #: services/opmldirectory/AddOpmlWidget.ui:88
 #, kde-format
 msgid "If left blank the title from the OPML will be used."
-msgstr "Utilizarase se se deixa en branco o título do OPML."
+msgstr "Usarase se se deixa en branco o título do OPML."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
@@ -15294,7 +15300,7 @@ msgstr "Engadir OPML"
 msgid "New Folder"
 msgstr "Novo cartafol"
 
-# skip-rule: gl-directorio
+# skip-rule: proposta-gl-directorio
 #: services/opmldirectory/OpmlDirectoryService.cpp:53
 #, kde-format
 msgid "Podcast Directory"
@@ -15456,16 +15462,15 @@ msgstr[1] ""
 #, kde-format
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
-msgstr[0] "Enviouse <b>unha</b> pista á fila de espera de escoita a %2."
-msgstr[1] "Enviáronse <b>%1</b> pistas á fila de espera de escoita a %2."
+msgstr[0] "Engadiuse <b>unha</b> pista á fila de espera de escoita a %2."
+msgstr[1] "Engadíronse <b>%1</b> pistas á fila de espera de escoita a %2."
 
 #: statsyncing/Process.cpp:280
 #, kde-format
 msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
 msgstr[0] ""
-"O tempo de reprodución de <b>unha</b> pista foi demasiado curto para a "
-"escoita."
+"O tempo de reprodución <b>dunha</b> pista foi demasiado curto para a escoita."
 msgstr[1] ""
 "O tempo de reprodución de <b>%1</b> pistas foi demasiado curto para a "
 "escoita."
@@ -15474,11 +15479,8 @@ msgstr[1] ""
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
-msgstr[0] ""
-"<b>Unha</b> das pistas reproduciuse hai demasiado tempo, e non se enviarán "
-"as súas escoitas."
-msgstr[1] ""
-"<b>%1</b> das pistas tiñan metadatos insuficientes para as escoitas."
+msgstr[0] "<b>Unha</b> das pistas tiña metadatos insuficientes para entregar."
+msgstr[1] "<b>%1</b> das pistas tiñan metadatos insuficientes para entregar."
 
 #: statsyncing/Process.cpp:288
 #, kde-format
@@ -15494,11 +15496,11 @@ msgid "<b>One</b> track was last played in too distant past to be scrobbled."
 msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
 msgstr[0] ""
-"<b>Unha</b> das pistas reproduciuse hai demasiado tempo, e non se enviarán "
+"<b>Unha</b> das pistas reproduciuse hai demasiado tempo, e non se entregarán "
 "as súas escoitas."
 msgstr[1] ""
-"<b>%1</b> das pistas reproduciuse hai demasiado tempo, e non se enviarán as "
-"súas escoitas."
+"<b>%1</b> das pistas reproduciuse hai demasiado tempo, e non se entregarán "
+"as súas escoitas."
 
 #: statsyncing/Process.cpp:296
 #, kde-format
@@ -15506,9 +15508,10 @@ msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
-"Omitiuse a escoita de <b>unha</b> pista tal e como configurou o usuario."
+"Omitiuse a escoita <b>dunha</b> pista tal e como configurou a persoa usuaria."
 msgstr[1] ""
-"Omitiuse a escoita de <b>%1</b> pistas tal e como configurou o usuario."
+"Omitiuse a escoita de <b>%1</b> pistas tal e como configurou a persoa "
+"usuaria."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
@@ -15611,12 +15614,12 @@ msgstr "Expandir a actualización"
 #: statsyncing/ui/MatchedTracksPage.cpp:163
 #, kde-format
 msgid "Collapse Tracks Without Conflicts"
-msgstr "Recoller as pistas sen conflitos"
+msgstr "Pregar as pistas sen conflitos"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:165
 #, kde-format
 msgid "Collapse Not Updated"
-msgstr "Recoller o que non estea actualizado"
+msgstr "Pregar o que non estea actualizado"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
@@ -15687,8 +15690,8 @@ msgstr[1] "<b>%1</b> reproducións"
 msgctxt "%2 is the 'X plays message above'"
 msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
-msgstr[0] "As escoitas de %2 de <b>unha</b> pista enviaranse a %3."
-msgstr[1] "As escoitas de %2 de <b>%1</b> pistas enviaranse a %3."
+msgstr[0] "As escoitas de %2 <b>dunha</b> pista entregaranse a %3."
+msgstr[1] "As escoitas de %2 de <b>%1</b> pistas entregaranse a %3."
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
@@ -15736,7 +15739,7 @@ msgstr "Expandir"
 #: statsyncing/ui/MatchedTracksPage.ui:126
 #, kde-format
 msgid "Collapse"
-msgstr "Recoller"
+msgstr "Pregar"
 
 #. i18n: ectx: attribute (title), widget (QWidget, uniqueTab)
 #: statsyncing/ui/MatchedTracksPage.ui:152
@@ -15754,7 +15757,7 @@ msgstr "Pistas excluídas"
 #: statsyncing/ui/MatchedTracksPage.ui:267
 #, kde-format
 msgid "Scrobbling"
-msgstr "Envío de escoitas"
+msgstr "Entrega de escoitas"
 
 #: statusbar/CompoundProgressBar.cpp:65 statusbar/CompoundProgressBar.cpp:194
 #: statusbar/ProgressBar.cpp:48
@@ -15765,7 +15768,7 @@ msgstr "Interromper"
 #: statusbar/CompoundProgressBar.cpp:69 statusbar/CompoundProgressBar.cpp:206
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
-msgstr "Varias tarefas de fondo en funcionamento (prema para amosalas)"
+msgstr "Varias tarefas executándose en segundo plano (prema para amosalas)"
 
 #: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
@@ -15944,7 +15947,7 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.ui:275
 #, kde-format
 msgid "Remember this choice for the next time"
-msgstr "Lembrar esta elección para a seguinte vez"
+msgstr "Lembrar esta elección para a seguinte vez."
 
 #: transcoding/TranscodingOptionsStackedWidget.cpp:55
 #, kde-format
