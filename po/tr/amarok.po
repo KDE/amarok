@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-09-07 01:45+0000\n"
-"PO-Revision-Date: 2024-07-15 12:59+0300\n"
+"PO-Revision-Date: 2024-09-23 15:31+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.07.70\n"
+"X-Generator: Lokalize 24.11.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -9772,8 +9772,8 @@ msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
-"(C) 2002–2003, Mark Kretschmann\n"
-"(C) 2003–2024, Amarok Geliştirme Takımı"
+"© 2002–2003, Mark Kretschmann\n"
+"© 2003–2024, Amarok Geliştirme Takımı"
 
 #: main.cpp:97
 #, kde-format
@@ -14942,7 +14942,7 @@ msgstr "Amarok’un MP3Tunes Harmony Ardalan Süreci"
 #: services/mp3tunes/harmonydaemon/main.cpp:38
 #, kde-format
 msgid "(C) 2008, Casey Link"
-msgstr "(C) 2008, Casey Link"
+msgstr "© 2008, Casey Link"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:39
 #, kde-format
