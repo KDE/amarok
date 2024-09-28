@@ -114,7 +114,9 @@ Controller::registerProvider( const ProviderPtr &provider )
                     "with other collections. Do you want to keep %1 synchronized?\n\n"
                     "You can always change the decision in Amarok configuration.",
                     provider->prettyName() );
-                enabled = KMessageBox::questionYesNo( The::mainWindow(), text ) == KMessageBox::Yes;
+                enabled = KMessageBox::questionTwoActions( The::mainWindow(), text, text,
+                            KGuiItem( i18nc( "Select if collection should be synchronized", "Keep synchronized" ) ),
+                            KGuiItem( i18nc( "Select if collection should be synchronized", "Don't keep synchronized" ) ) ) == KMessageBox::PrimaryAction;
                 break;
             }
             case Provider::YesByDefault:

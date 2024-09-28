@@ -94,9 +94,9 @@ CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation *loc ) const
 {
     const QString text( i18n( "Do you want to remove empty folders?" ) );
     const QString caption( i18n( "Remove empty folders?" ) );
-    int result = KMessageBox::questionYesNo( nullptr, text, caption, KStandardGuiItem::yes(),
-        KStandardGuiItem::no(), QStringLiteral("Delete empty dirs from ") + loc->prettyLocation() );
-    return result == KMessageBox::Yes;
+    int result = KMessageBox::questionTwoActions( nullptr, text, caption, KGuiItem(i18nc( "Select if empty folders should be removed", "Remove")),
+        KGuiItem(i18nc( "Select if empty folders should be removed", "Don't remove")), QStringLiteral("Delete empty dirs from ") + loc->prettyLocation() );
+    return result == KMessageBox::PrimaryAction;
 }
 
 Transcoding::Configuration

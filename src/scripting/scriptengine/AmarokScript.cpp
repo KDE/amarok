@@ -22,6 +22,7 @@
 #include "core/support/Debug.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
+#include <KLocalizedString>
 #include <KMessageBox>
 
 #include <QJSEngine>
@@ -63,15 +64,23 @@ AmarokScript::AmarokScript::alert( const QString& text, const QString& type ) co
         return -1;
     }
     else if( type == QLatin1String("questionYesNo") )
-        return KMessageBox::questionYesNo( nullptr, text );
+        return KMessageBox::questionTwoActions( nullptr, text, text,
+            KGuiItem( i18nc( "Generic script dialog answer button", "Yes") ),
+            KGuiItem( i18nc( "Generic script dialog answer button", "No") ) );
     else if( type == QLatin1String("questionYesNoCancel") )
-        return KMessageBox::questionYesNo( nullptr, text );
+        return KMessageBox::questionTwoActionsCancel( nullptr, text, text,
+            KGuiItem( i18nc( "Generic script dialog answer button", "Yes") ),
+            KGuiItem( i18nc( "Generic script dialog answer button", "No") ) );
     else if( type == QLatin1String("warningYesNo") )
-        return KMessageBox::warningYesNo( nullptr, text );
+        return KMessageBox::warningTwoActions( nullptr, text, text,
+            KGuiItem( i18nc( "Generic script dialog answer button", "Yes") ),
+            KGuiItem( i18nc( "Generic script dialog answer button", "No") ) );
     else if( type == QLatin1String("warningContinueCancel") )
         return KMessageBox::warningContinueCancel( nullptr, text );
     else if( type == QLatin1String("warningYesNoCancel") )
-        return KMessageBox::warningYesNoCancel( nullptr, text );
+        return KMessageBox::warningTwoActionsCancel( nullptr, text, text,
+            KGuiItem( i18nc( "Generic script dialog answer button", "Yes") ),
+            KGuiItem( i18nc( "Generic script dialog answer button", "No") ) );
 
     debug( QStringLiteral("alert type not found!") );
     return -1;

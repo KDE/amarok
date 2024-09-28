@@ -419,11 +419,12 @@ ScriptListDockWidget::removeCurrentScript()
 {
     QListWidgetItem *item = m_scriptListWidget->takeItem( m_scriptListWidget->currentRow() );
     ScriptConsoleItem *scriptItem = qvariant_cast<ScriptConsoleItem*>( item->data( ScriptRole ) );
-    switch( KMessageBox::warningYesNoCancel( this, i18n( "Remove script file from disk?" ), i18n( "Remove Script" ) ) )
+    switch( KMessageBox::warningTwoActionsCancel( this, i18n( "Remove script file from disk?" ), i18n( "Remove Script" ), KGuiItem(i18nc( "Confirm if script file should be removed", "Remove")),
+        KGuiItem(i18nc( "Confirm if script file should be removed", "Don't remove") ) ) )
     {
         case KMessageBox::Cancel:
             return;
-        case KMessageBox::Yes:
+        case KMessageBox::PrimaryAction:
             scriptItem->setClearOnDeletion( true );
         default:
             break;

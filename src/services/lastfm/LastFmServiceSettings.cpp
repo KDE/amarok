@@ -87,8 +87,9 @@ void
 LastFmServiceSettings::disconnectAccount()
 {
     debug() << "Disconnecting Last.fm account"<< m_config->username();
-    if( KMessageBox::warningYesNo( this, i18n( "Do you want to disconnect Amarok from Last.fm account %1?", m_config->username() ),
-        i18n( "Disconnect Last.fm account?" ), KStandardGuiItem::yes(), KStandardGuiItem::cancel() ) == KMessageBox::Yes )
+    if( KMessageBox::warningTwoActions( this, i18n( "Do you want to disconnect Amarok from Last.fm account %1?", m_config->username() ),
+        i18n( "Disconnect Last.fm account?" ), KGuiItem(i18nc( "Disconnect Last.fm account in settings", "Disconnect")), KStandardGuiItem::cancel() )
+        == KMessageBox::PrimaryAction )
     {
         m_config->setSessionKey( QString() );
         m_config->setUsername( QString() );

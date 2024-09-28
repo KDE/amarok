@@ -43,7 +43,7 @@
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
 #include "TagGuesserDialog.h"
 
-#include <KIO/JobUiDelegate>
+#include <KIO/JobUiDelegateFactory>
 #include <KIO/OpenUrlJob>
 
 #include <QLineEdit>
@@ -374,7 +374,7 @@ inline void
 TagDialog::openPressed() //SLOT
 {
     auto *job = new KIO::OpenUrlJob( QUrl::fromLocalFile( m_path ) );
-    job->setUiDelegate( new KIO::JobUiDelegate( KJobUiDelegate::AutoHandlingEnabled, this ) );
+    job->setUiDelegate( KIO::createDefaultJobUiDelegate( KJobUiDelegate::AutoHandlingEnabled, this ) );
     job->start();
 }
 

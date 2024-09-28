@@ -661,17 +661,19 @@ void App::handleFirstRun()
     const QString musicDir = QStandardPaths::writableLocation( QStandardPaths::MusicLocation );
     const QDir dir( musicDir );
 
-    int result = KMessageBox::No;
+    int result = KMessageBox::SecondaryAction;
     if( dir.exists() && dir.isReadable() )
     {
-        result = KMessageBox::questionYesNoCancel( m_mainWindow, i18n( "A music path, "
-                "%1, is set in System Settings.\nWould you like to use that as a "
-                "collection folder?", musicDir ) );
+        result = KMessageBox::questionTwoActionsCancel( m_mainWindow, i18n( "A music path, "
+                "%1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir),
+                i18nc("Select if should use a path as collection folder", "Select collection folder"),
+                KGuiItem( i18nc("Select if should use a path as collection folder", "Use" ) ),
+                KGuiItem( i18nc("Select if should use a path as collection folder", "Don't use" ) ) );
     }
 
     switch( result )
     {
-        case KMessageBox::Yes:
+        case KMessageBox::PrimaryAction:
         {
             Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
             if( coll )
@@ -681,7 +683,7 @@ void App::handleFirstRun()
             }
             break;
         }
-        case KMessageBox::No:
+        case KMessageBox::SecondaryAction:
             slotConfigAmarok( QStringLiteral("CollectionConfig") );
             break;
         default:
