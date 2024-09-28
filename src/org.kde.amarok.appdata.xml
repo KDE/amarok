@@ -511,6 +511,7 @@
   <content_rating type="oars-1.1"/>
   <project_group>KDE</project_group>
   <releases>
+    <release version="3.1.1" date="2024-09-28" type="stable"/>
     <release version="3.1.0" date="2024-08-02" type="stable"/>
     <release version="3.0.81" date="2024-07-18" type="development"/>
     <release version="3.0.1" date="2024-06-02" type="stable"/>

@@ -4,9 +4,8 @@ Amarok ChangeLog
 
 VERSION 3.1.1
   FEATURES:
-
   CHANGES:
-   * Most of the context view QML ported from QtControls 1 to QtControls 2
+   * Most of the context view QML items ported from QtControls 1 to QtControls 2
    * Default to no fadeout on pause and stop (BR 491603)
 
   BUGFIXES:
