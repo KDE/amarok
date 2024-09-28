@@ -26,9 +26,7 @@
 #include <KNotification>
 #include <KWindowInfo>
 #include <KWindowSystem>
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
 #include <KX11Extras>
-#endif
 
 using namespace Amarok;
 
@@ -84,11 +82,7 @@ bool
 KNotificationBackend::isFullscreenWindowActive() const
 {
     // Get information of the active window.
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    KWindowInfo activeWindowInfo( KWindowSystem::activeWindow(), NET::WMState );
-#else
     KWindowInfo activeWindowInfo( KX11Extras::activeWindow(), NET::WMState );
-#endif
 
     // Check if it is running in fullscreen mode.
     return activeWindowInfo.hasState( NET::FullScreen );

@@ -95,9 +95,7 @@
 #include <KStandardAction>
 #include <KWindowInfo>
 #include <KWindowSystem>
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
 #include <KX11Extras>
-#endif
 
 #include <iostream>
 
@@ -169,13 +167,8 @@ MainWindow::MainWindow()
     connect( engine, &EngineController::trackPlaying, this, &MainWindow::slotNewTrackPlaying );
     connect( engine, &EngineController::trackMetadataChanged, this, &MainWindow::slotMetadataChanged );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
-    connect( KWindowSystem::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KWindowSystem::windowChanged),
-#else
     connect( KX11Extras::self(), &KX11Extras::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
     connect( KX11Extras::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KX11Extras::windowChanged),
-#endif
              [this](WId id, NET::Properties prop, NET::Properties2 ) {
                  if ( id == winId() && ( prop & NET::WMDesktop || prop & NET::WMState || prop & NET::XAWMState ) )
                      checkIfExpensivesShouldBeDrawn();
@@ -598,11 +591,7 @@ void
 MainWindow::showHide() //SLOT
 {
     const KWindowInfo info( winId(), {}, {} );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    const int currentDesktop = KWindowSystem::currentDesktop();
-#else
     const int currentDesktop = KX11Extras::currentDesktop();
-#endif
     if( !isVisible() )
     {
         setVisible( true );
@@ -613,13 +602,8 @@ MainWindow::showHide() //SLOT
         {
             if( !isActiveWindow() ) // not minimised and without focus
             {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-                KWindowSystem::setOnDesktop( winId(), currentDesktop );
-                KWindowSystem::activateWindow( winId() );
-#else
                 KX11Extras::setOnDesktop( winId(), currentDesktop );
                 KX11Extras::activateWindow( winId() );
-#endif
             }
             else // Amarok has focus
             {
@@ -629,13 +613,8 @@ MainWindow::showHide() //SLOT
         else // Amarok is minimised
         {
             setWindowState( windowState() & ~Qt::WindowMinimized );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            KWindowSystem::setOnDesktop( winId(), currentDesktop );
-            KWindowSystem::activateWindow( winId() );
-#else
             KX11Extras::setOnDesktop( winId(), currentDesktop );
             KX11Extras::activateWindow( winId() );
-#endif
         }
     }
 }
@@ -738,20 +717,12 @@ MainWindow::activate()
 {
     const KWindowInfo info( winId(), NET::WMState | NET::XAWMState | NET::WMDesktop );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( KWindowSystem::activeWindow() != winId() )
-#else
     if( KX11Extras::activeWindow() != winId() )
-#endif
         setVisible( true );
     else if( !info.isMinimized() )
         setVisible( true );
     if( !isHidden() )
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        KWindowSystem::activateWindow( winId() );
-#else
         KWindowSystem::activateWindow( windowHandle() );
-#endif
 }
 
 void

@@ -37,9 +37,7 @@
 #include <KLocalizedString>
 #include <KRatingPainter>
 #include <KWindowSystem>
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
 #include <KX11Extras>
-#endif
 
 #include <QApplication>
 #include <QIcon>
@@ -131,11 +129,7 @@ OSDWidget::show()
     {
         QWidget::show();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        if( windowOpacity() == 0.0 && KWindowSystem::compositingActive() )
-#else
         if( windowOpacity() == 0.0 && KX11Extras::compositingActive() )
-#endif
         {
             m_fadeTimeLine->setDirection( QTimeLine::Forward );
             m_fadeTimeLine->start();
@@ -152,11 +146,7 @@ OSDWidget::show()
 void
 OSDWidget::hide()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( KWindowSystem::compositingActive() )
-#else
     if( KX11Extras::compositingActive() )
-#endif
     {
         m_fadeTimeLine->setDirection( QTimeLine::Backward );
         m_fadeTimeLine->start();
