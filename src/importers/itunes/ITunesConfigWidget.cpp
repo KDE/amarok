@@ -26,7 +26,7 @@ ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *pare
     : SimpleImporterConfigWidget( QStringLiteral("iTunes"), config, parent, f )
 {
     KUrlRequester *dbField = new KUrlRequester;
-    dbField->setFilter( QStringLiteral("iTunes Music Library.xml") );
+    dbField->setNameFilter( QStringLiteral("iTunes Music Library.xml") );
     addField( QStringLiteral("dbPath"), i18n( "Database location" ), dbField, QStringLiteral("text") );
 }
 

@@ -31,7 +31,7 @@ ClementineConfigWidget::ClementineConfigWidget( const QVariantMap &config,
                 QDir::homePath() + QStringLiteral("/.config/Clementine/clementine.db") );
 
     KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
-    dbField->setFilter( QStringLiteral("clementine.db") );
+    dbField->setNameFilter( QStringLiteral("clementine.db") );
     addField( QStringLiteral("dbPath"), i18n( "Database location" ), dbField, QStringLiteral("text") );
 }
 

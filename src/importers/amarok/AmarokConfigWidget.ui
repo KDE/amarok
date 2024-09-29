@@ -136,7 +136,7 @@
    </item>
    <item row="4" column="1">
     <widget class="KUrlRequester" name="m_databaseLocation">
-     <property name="filter">
+     <property name="nameFilter">
       <string notr="true"/>
      </property>
      <property name="mode">
@@ -166,7 +166,7 @@
    </item>
    <item row="3" column="1">
     <widget class="KUrlRequester" name="m_mysqlBinary">
-     <property name="filter">
+     <property name="nameFilter">
       <string>mysqld</string>
      </property>
     </widget>

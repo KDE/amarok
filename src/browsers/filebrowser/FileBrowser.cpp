@@ -101,7 +101,11 @@ FileBrowser::Private::readConfig()
     }
     else
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         KIO::StatJob *statJob = KIO::statDetails( savedUrl, KIO::StatJob::DestinationSide);
+#else
+        KIO::StatJob *statJob = KIO::stat( savedUrl, KIO::StatJob::DestinationSide);
+#endif
         statJob->exec();
         if( statJob->statResult().isDir() )
         {
