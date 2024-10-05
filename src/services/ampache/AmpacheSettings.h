@@ -32,7 +32,7 @@ class AmpacheSettings : public KCModule
 {
     Q_OBJECT
 public:
-    explicit AmpacheSettings( QWidget *parent, const QVariantList &args );
+    explicit AmpacheSettings( QObject *parent, const QVariantList &args );
 
     ~AmpacheSettings() override;
 

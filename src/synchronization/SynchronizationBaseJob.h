@@ -17,7 +17,7 @@
 #ifndef SYNCHRONIZATIONBASEJOB_H
 #define SYNCHRONIZATIONBASEJOB_H
 
-#include "core/meta/forward_declarations.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
 
 #include <QHash>

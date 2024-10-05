@@ -32,7 +32,7 @@ class MagnatuneSettingsModule : public KCModule
 {
     Q_OBJECT
 public:
-    explicit MagnatuneSettingsModule( QWidget *parent = nullptr, const QVariantList &args = QVariantList() );
+    explicit MagnatuneSettingsModule( QObject *parent = nullptr, const QVariantList &args = QVariantList() );
 
     ~MagnatuneSettingsModule() override;
 

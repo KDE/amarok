@@ -28,7 +28,7 @@ MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WindowFla
 {
     setupUi(this);
     downloadTargetURLRequester->setMode( KFile::Directory );
-
+    connect( downloadButton, &QPushButton::clicked, this, &MagnatuneDownloadDialog::downloadButtonClicked );
 }
 
 MagnatuneDownloadDialog::~MagnatuneDownloadDialog()

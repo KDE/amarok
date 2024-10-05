@@ -31,6 +31,7 @@ MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char
     redownloadListView->header()->setStretchLastSection( true );
     redownloadListView->setRootIsDecorated( false );
     connect( redownloadListView, &QTreeWidget::itemSelectionChanged, this, &MagnatuneRedownloadDialog::selectionChanged );
+    connect( redownloadButton, &QPushButton::clicked, this, &MagnatuneRedownloadDialog::slotRedownload );
 }
 
 MagnatuneRedownloadDialog::~MagnatuneRedownloadDialog()

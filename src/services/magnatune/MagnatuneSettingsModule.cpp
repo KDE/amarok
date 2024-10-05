@@ -25,11 +25,15 @@
 
 K_PLUGIN_FACTORY_WITH_JSON( MagnatuneSettingsModuleFactory, "amarok_service_magnatunestore_config.json", registerPlugin<MagnatuneSettingsModule>(); )
 
-MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVariantList &args )
-    : KCModule( parent, args )
+MagnatuneSettingsModule::MagnatuneSettingsModule( QObject *parent, const QVariantList & )
+    : KCModule( parent )
 {
     m_configDialog = new Ui::MagnatuneConfigWidget;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_configDialog->setupUi( this );
+#else
+    m_configDialog->setupUi( this->widget() );
+#endif
 
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
     connect ( m_configDialog->usernameEdit, &QLineEdit::textChanged, this, &MagnatuneSettingsModule::settingsChanged );

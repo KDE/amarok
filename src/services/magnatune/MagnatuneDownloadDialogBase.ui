@@ -97,22 +97,4 @@
  </customwidgets>
  <includes/>
  <resources/>
- <connections>
-  <connection>
-   <sender>downloadButton</sender>
-   <signal>clicked()</signal>
-   <receiver>magnatuneDownloadDialogBase</receiver>
-   <slot>downloadButtonClicked()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>262</x>
-     <y>547</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>262</x>
-     <y>283</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
 </ui>

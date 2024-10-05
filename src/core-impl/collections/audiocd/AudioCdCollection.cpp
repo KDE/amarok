@@ -105,7 +105,11 @@ AudioCdCollection::readCd()
 {
     DEBUG_BLOCK
     //get the CDDB info file if possible.
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
+#else
+    KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, KIO::ListJob::ListFlags() );
+#endif
     connect( listJob, &KIO::ListJob::entries, this, &AudioCdCollection::audioCdEntries );
     connect( listJob, &KIO::ListJob::result, this, &AudioCdCollection::slotEntriesJobDone );
 }
