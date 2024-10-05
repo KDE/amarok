@@ -113,7 +113,7 @@ AmpacheSettings::add()
         m_config.addServer( server );
     }
     loadList();
-    Q_EMIT changed( true );
+    setNeedsSave( true );
 }
 
 void
@@ -123,7 +123,7 @@ AmpacheSettings::remove()
     m_configDialog->serverList->removeRow( index );
     m_config.removeServer( index );
 
-    Q_EMIT changed( true );
+    setNeedsSave( true );
 }
 
 void
@@ -163,7 +163,7 @@ AmpacheSettings::saveCellEdit(int row, int column)
     }
     m_config.updateServer(row, server);
     m_configDialog->serverList->resizeColumnToContents(column);
-    Q_EMIT changed( true );
+    setNeedsSave( true );
 }
 
 

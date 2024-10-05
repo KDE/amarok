@@ -102,7 +102,7 @@ void MagnatuneSettingsModule::defaults()
 
 void MagnatuneSettingsModule::settingsChanged()
 {
-    Q_EMIT changed( true );
+    setNeedsSave( true );
 }
 
 #include <MagnatuneSettingsModule.moc>
