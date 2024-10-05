@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: CC0-1.0
 
 Dependencies:
-- 'on': ['@all']
+- 'on': ['Linux/Qt5', 'FreeBSD/Qt5']
   'require':
     'frameworks/extra-cmake-modules': '@stable'
-    'frameworks/attica': '@stable'
     'frameworks/karchive': '@stable'
     'frameworks/kcmutils': '@stable'
     'frameworks/kcodecs': '@stable'
@@ -14,7 +13,6 @@ Dependencies:
     'frameworks/kcoreaddons': '@stable'
     'frameworks/kcrash': '@stable'
     'frameworks/kdbusaddons': '@stable'
-    'frameworks/kdeclarative': '@stable'
     'frameworks/kdnssd': '@stable'
     'frameworks/kdoctools': '@stable'
     'frameworks/kglobalaccel': '@stable'
@@ -33,3 +31,35 @@ Dependencies:
     'frameworks/threadweaver': '@stable'
     'libraries/qca' : '@latest'
     'libraries/phonon': '@stable'
+
+- 'on': ['Linux/Qt6', 'FreeBSD/Qt6']
+  'require':
+    'frameworks/extra-cmake-modules': '@latest-kf6'
+    'frameworks/karchive': '@latest-kf6'
+    'frameworks/kcmutils': '@latest-kf6'
+    'frameworks/kcodecs': '@latest-kf6'
+    'frameworks/kconfig': '@latest-kf6'
+    'frameworks/kconfigwidgets': '@latest-kf6'
+    'frameworks/kcoreaddons': '@latest-kf6'
+    'frameworks/kcrash': '@latest-kf6'
+    'frameworks/kdbusaddons': '@latest-kf6'
+    'frameworks/kdnssd': '@latest-kf6'
+    'frameworks/kdoctools': '@latest-kf6'
+    'frameworks/kglobalaccel': '@latest-kf6'
+    'frameworks/kguiaddons': '@latest-kf6'
+    'frameworks/ki18n': '@latest-kf6'
+    'frameworks/kiconthemes': '@latest-kf6'
+    'frameworks/kio': '@latest-kf6'
+    'frameworks/kirigami': '@latest-kf6'
+    'frameworks/knewstuff': '@latest-kf6'
+    'frameworks/knotifications': '@latest-kf6'
+    'frameworks/kpackage': '@latest-kf6'
+    'frameworks/kstatusnotifieritem': '@latest-kf6'
+    'frameworks/ktexteditor': '@latest-kf6'
+    'frameworks/kwidgetsaddons': '@latest-kf6'
+    'frameworks/kwindowsystem': '@latest-kf6'
+    'frameworks/solid': '@latest-kf6'
+    'frameworks/threadweaver': '@latest-kf6'
+    'libraries/qca' : '@latest'
+    'libraries/phonon': '@latest-kf6'
+
