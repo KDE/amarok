@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-07 01:45+0000\n"
+"POT-Creation-Date: 2024-10-06 01:48+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -244,7 +244,7 @@ msgstr "Stop tar éis an Amhráin reatha: Ann"
 
 #: ActionClasses.cpp:513
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:673
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Níl aon amhrán ag seinm"
@@ -252,8 +252,8 @@ msgstr "Níl aon amhrán ag seinm"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:517
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:153 MainWindow.cpp:1256 MainWindow.cpp:1262
-#: MainWindow.cpp:1275
+#: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -920,7 +920,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "Cumasaigh/Díchumasaigh Taispeáint ar Scáileán."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:47
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:45
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "Déan fógraí le Growl"
@@ -1572,7 +1572,7 @@ msgstr "Anaithnid"
 msgid "New Bookmark"
 msgstr "Leabharmharc Nua"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:818
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Bainisteoir Leabharmharcanna"
@@ -1666,10 +1666,10 @@ msgstr "Rian Nua Am-Chóid"
 #: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
 #: amarokurls/BookmarkTreeView.cpp:377
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:496
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:497
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1275
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:504
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:505
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:506
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "Anaithnid"
@@ -1690,7 +1690,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Comhthéacs"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:290
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
 #, kde-format
 msgid "Files"
 msgstr "Comhaid"
@@ -1720,7 +1720,7 @@ msgstr "Ealaíontóir \"%1\" ó %2"
 msgid "Artist \"%1\""
 msgstr "Ealaíontóir \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:814
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Cruthaigh Leabharmharc don Amharc Foinsí Meán"
@@ -1870,6 +1870,26 @@ msgstr ""
 "Socraíodh conair cheoil, %1, i Socruithe an Chórais.\n"
 "An bhfuil fonn ort é seo a úsáid mar fhillteán bailiúchán?"
 
+#: App.cpp:669
+#, fuzzy, kde-format
+#| msgid "Collection Folders"
+msgctxt "Select if should use a path as collection folder"
+msgid "Select collection folder"
+msgstr "Fillteáin Bhailiúcháin"
+
+#: App.cpp:670
+#, fuzzy, kde-format
+#| msgid "User"
+msgctxt "Select if should use a path as collection folder"
+msgid "Use"
+msgstr "Úsáideoir"
+
+#: App.cpp:671
+#, kde-format
+msgctxt "Select if should use a path as collection folder"
+msgid "Don't use"
+msgstr ""
+
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
 msgid "Media Sources Home"
@@ -1900,7 +1920,7 @@ msgstr ""
 "Aimseoidh tú do chuid ceoil logánta anseo, chomh maith le ceol ó "
 "sheinnteoirí soghluaiste agus dlúthdhioscaí."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:962
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "Cuardaigh an bailiúchán"
@@ -2075,7 +2095,7 @@ msgid "Composer"
 msgstr "Cumadóir"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:96
+#: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Seánra"
@@ -2174,7 +2194,7 @@ msgstr "&Athnuaigh"
 msgid "Filter Files"
 msgstr "Scag Comhaid"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:222
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2631,13 +2651,13 @@ msgstr "&Scrios an seinmliosta"
 msgid "Confirm Playlist Deletion"
 msgstr "Cumraigh Feidhmchláirín Faisnéise Seinmliosta"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:456
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "&Sábháil de réir chonair choibhneasta"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:469
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
 #, kde-format
 msgid "Save As"
 msgstr "Sábháil Mar"
@@ -4513,7 +4533,7 @@ msgid "Don't change page automatically"
 msgstr "Nuashonraigh an bunachar sonraí Magnatune go huathoibríoch"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:376
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:380
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4658,7 +4678,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Nuashonraigh Bailiúchán"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:403
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:411
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -5662,6 +5682,19 @@ msgstr "An bhfuil fonn ort fillteáin fholmha a bhaint?"
 #, kde-format
 msgid "Remove empty folders?"
 msgstr "An bhfuil fonn ort fillteáin fholmha a bhaint?"
+
+#: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
+#, fuzzy, kde-format
+#| msgid "Remove"
+msgctxt "Select if empty folders should be removed"
+msgid "Remove"
+msgstr "Bain"
+
+#: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
+#, kde-format
+msgctxt "Select if empty folders should be removed"
+msgid "Don't remove"
+msgstr ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -7808,7 +7841,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:834
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "Bainisteoir na gClúdach"
@@ -7920,7 +7953,7 @@ msgstr[3] "%1 gcinn gan aimsiú"
 msgstr[4] "%1 cinn gan aimsiú"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:105
+#: services/lastfm/LastFmServiceSettings.cpp:106
 #, kde-format
 msgid "Connecting..."
 msgstr "Ag ceangal..."
@@ -9180,13 +9213,13 @@ msgid "Location:"
 msgstr "Suíomh:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Previous"
 msgstr "&Siar"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
 #, kde-format
 msgid "&Next"
 msgstr "&Ar Aghaidh"
@@ -9957,7 +9990,7 @@ msgstr "Ainm an Bhunachair Sonraí"
 msgid "MySQL server binary"
 msgstr ""
 
-#. i18n: ectx: property (filter), widget (KUrlRequester, m_mysqlBinary)
+#. i18n: ectx: property (nameFilter), widget (KUrlRequester, m_mysqlBinary)
 #: importers/amarok/AmarokConfigWidget.ui:170
 #, kde-format
 msgid "mysqld"
@@ -10040,7 +10073,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "ainm an ealaíontóra"
 
-#: KNotificationBackend.cpp:130 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:124 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "Á sheinm anois"
@@ -10055,7 +10088,7 @@ msgstr "Bhí na liricí faighte folamh"
 msgid "Lyrics data could not be parsed"
 msgstr "Níorbh fhéidir na liricí a pharsáil"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:700
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Níl aon fhaisnéis faoin amhrán seo ar fáil"
@@ -10943,59 +10976,59 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:265
+#: MainWindow.cpp:258
 #, kde-format
 msgid "Local Music"
 msgstr "Ceol Logánta"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:260
 #, kde-format
 msgid "Local sources of content"
 msgstr "Foinsí logánta ábhar"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Internet"
 msgstr "Idirlíon"
 
-#: MainWindow.cpp:276
+#: MainWindow.cpp:269
 #, kde-format
 msgid "Online sources of content"
 msgstr "Foinsí ábhar ar líne"
 
-#: MainWindow.cpp:282
+#: MainWindow.cpp:275
 #, kde-format
 msgid "Playlists"
 msgstr "Seinmliostaí"
 
-#: MainWindow.cpp:284
+#: MainWindow.cpp:277
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Seinmliostaí éagsúla"
 
-#: MainWindow.cpp:293
+#: MainWindow.cpp:286
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Brabhsáil an diosca crua logánta ag lorg ábhair"
 
-#: MainWindow.cpp:336
+#: MainWindow.cpp:329
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Amharc"
 
-#: MainWindow.cpp:339
+#: MainWindow.cpp:332
 #, kde-format
 msgid "Lock Layout"
 msgstr "Cuir an Leagan Amach Faoi Ghlas"
 
-#: MainWindow.cpp:376 MainWindow.cpp:1349
+#: MainWindow.cpp:369 MainWindow.cpp:1320
 #, fuzzy, kde-format
 #| msgid "Default Layout"
 msgid "Reset Layout"
 msgstr "Leagan Amach Réamhshocraithe"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -11006,279 +11039,279 @@ msgstr ""
 "an Chórais. Úsáid <B>Scoir</B> ón roghchlár, nó an deilbhín Amarok sa "
 "tráidire chun an feidhmchlár a scor.</qt>"
 
-#: MainWindow.cpp:435
+#: MainWindow.cpp:428
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Á Chur i dTráidire an Chórais"
 
-#: MainWindow.cpp:535
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Seinn Meáin (Comhaid nó URLanna)"
 
-#: MainWindow.cpp:535
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Cuir Meáin Leis (Comhaid nó URLanna)"
 
-#: MainWindow.cpp:555
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Add Stream"
 msgstr "Cuir Sruth Leis"
 
-#: MainWindow.cpp:555
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Iontráil URL an Srutha:"
 
-#: MainWindow.cpp:784
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Cuir Meáin Leis..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Glan Seinmliosta"
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Cuir &Ciú in Eagar"
 
-#: MainWindow.cpp:799
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "&Bain Amhráin Dhúbailte"
 
-#: MainWindow.cpp:806
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "Cuir &Sruth Leis..."
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Easpórtáil Seinmliosta Mar..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "Cothromóir"
 
-#: MainWindow.cpp:826 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Cruthaigh Leabharmharc do Shocrú Seinmliosta"
 
-#: MainWindow.cpp:830
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr ""
 
-#: MainWindow.cpp:838
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "Seinn Meán..."
 
-#: MainWindow.cpp:843
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Cuir Mionsonraí an Amhráin Roghnaithe in Eagar"
 
-#: MainWindow.cpp:849 MainWindow.cpp:855 MainWindow.cpp:862
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "&Lorg Ar Aghaidh"
 
-#: MainWindow.cpp:869 MainWindow.cpp:875 MainWindow.cpp:882
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "&Lorg Siar"
 
-#: MainWindow.cpp:888
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "Nuashonraigh Bailiúchán"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Sioncrónaigh na Staitisticí..."
 
-#: MainWindow.cpp:900
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "An tAmhrán Roimhe Seo"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "Atosaigh an t-amhrán reatha"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:885
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "Shuffle Playlist"
 msgstr "&Sábháil Seinmliosta"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Athlíon an Seinmliosta"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Díchumasaigh Seinmliosta Dinimiciúil"
 
-#: MainWindow.cpp:930
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "An Chéad Amhrán Eile"
 
-#: MainWindow.cpp:935
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "Méadaigh an Airde"
 
-#: MainWindow.cpp:941
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Laghdaigh an Airde"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Scoránaigh an Phríomhfhuinneog"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Scoránaigh an Mód Lánscáileáin"
 
-#: MainWindow.cpp:957 playlist/ProgressiveSearchWidget.cpp:50
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Cuardaigh an seinmliosta"
 
-#: MainWindow.cpp:967
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "Taispeáin an t-amhrán gníomhach"
 
-#: MainWindow.cpp:971
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Taispeáin Fógra i bPreabfhuinneog"
 
-#: MainWindow.cpp:976
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "Gan Fuaim"
 
-#: MainWindow.cpp:981
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Is Breá Liom an tAmhrán Reatha"
 
-#: MainWindow.cpp:986
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Cuir Cosc ar an Amhrán Reatha"
 
-#: MainWindow.cpp:991
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Gabh Thar an Amhrán Reatha"
 
-#: MainWindow.cpp:996 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Ciúáil Amhrán"
 
-#: MainWindow.cpp:1001
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:1006
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Rátáil an tAmhrán Reatha: 1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Rátáil an tAmhrán Reatha: 2"
 
-#: MainWindow.cpp:1016
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Rátáil an tAmhrán Reatha: 3"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Rátáil an tAmhrán Reatha: 4"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Rátáil an tAmhrán Reatha: 5"
 
-#: MainWindow.cpp:1032
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Amharcán Iarratas Líonra"
 
-#: MainWindow.cpp:1050
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "Maidir le h&Amarok"
 
-#: MainWindow.cpp:1054
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnóisic"
 
-#: MainWindow.cpp:1058
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Seol tuairisc ar fhabht..."
 
-#: MainWindow.cpp:1105
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "&Ceol"
 
-#: MainWindow.cpp:1107
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1135 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Seinmliosta"
 
-#: MainWindow.cpp:1152
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "&Uirlisí"
 
-#: MainWindow.cpp:1167
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "&Socruithe"
 
-#: MainWindow.cpp:1219
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11286,22 +11319,22 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "Folaigh an Roghchlár"
 
-#: MainWindow.cpp:1262
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Moillithe :: %1"
 
-#: MainWindow.cpp:1275
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1349
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -11725,7 +11758,7 @@ msgid "Show tooltips"
 msgstr "Taispeáin leideanna uirlisí"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Réamhamharc"
@@ -12039,7 +12072,7 @@ msgstr "Ráta giotán"
 msgid "Sample Rate"
 msgstr "Ráta Samplála"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "Rátáil"
@@ -12130,42 +12163,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "Seinmliosta"
 
-#: playlist/ProgressiveSearchWidget.cpp:54
+#: playlist/ProgressiveSearchWidget.cpp:51
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "Clóscríobh chun an seinmliosta a scagadh de réir a chéile"
 
-#: playlist/ProgressiveSearchWidget.cpp:75
+#: playlist/ProgressiveSearchWidget.cpp:72
 #, kde-format
 msgid "Tracks"
 msgstr "Amhráin"
 
-#: playlist/ProgressiveSearchWidget.cpp:82
+#: playlist/ProgressiveSearchWidget.cpp:79
 #, kde-format
 msgid "Albums"
 msgstr "Albaim"
 
-#: playlist/ProgressiveSearchWidget.cpp:89
+#: playlist/ProgressiveSearchWidget.cpp:86
 #, kde-format
 msgid "Artists"
 msgstr "Ealaíontóirí"
 
-#: playlist/ProgressiveSearchWidget.cpp:103
+#: playlist/ProgressiveSearchWidget.cpp:100
 #, kde-format
 msgid "Composers"
 msgstr "Cumadóirí"
 
-#: playlist/ProgressiveSearchWidget.cpp:117
+#: playlist/ProgressiveSearchWidget.cpp:114
 #, kde-format
 msgid "Years"
 msgstr "Bliain"
 
-#: playlist/ProgressiveSearchWidget.cpp:126
+#: playlist/ProgressiveSearchWidget.cpp:123
 #, kde-format
 msgid "Show only matches"
 msgstr "Taispeáin rudaí comhoiriúnacha amháin"
 
-#: playlist/ProgressiveSearchWidget.cpp:138
+#: playlist/ProgressiveSearchWidget.cpp:135
 #, kde-format
 msgid "Search Preferences"
 msgstr "Sainroghanna Cuardaigh"
@@ -13728,10 +13761,45 @@ msgstr "An bhfuil fonn ort fillteáin fholmha a bhaint?"
 msgid "Remove Script"
 msgstr "&Bain Síntiús"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:452
+#: scripting/scriptconsole/ScriptConsole.cpp:422
+#, fuzzy, kde-format
+#| msgid "Remove"
+msgctxt "Confirm if script file should be removed"
+msgid "Remove"
+msgstr "Bain"
+
+#: scripting/scriptconsole/ScriptConsole.cpp:423
+#, kde-format
+msgctxt "Confirm if script file should be removed"
+msgid "Don't remove"
+msgstr ""
+
+#: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
+
+#: scripting/scriptengine/AmarokScript.cpp:68
+#: scripting/scriptengine/AmarokScript.cpp:72
+#: scripting/scriptengine/AmarokScript.cpp:76
+#: scripting/scriptengine/AmarokScript.cpp:82
+#, fuzzy, kde-format
+#| msgctxt "Usage"
+#| msgid "Yes"
+msgctxt "Generic script dialog answer button"
+msgid "Yes"
+msgstr "Tá"
+
+#: scripting/scriptengine/AmarokScript.cpp:69
+#: scripting/scriptengine/AmarokScript.cpp:73
+#: scripting/scriptengine/AmarokScript.cpp:77
+#: scripting/scriptengine/AmarokScript.cpp:83
+#, fuzzy, kde-format
+#| msgctxt "Usage"
+#| msgid "No"
+msgctxt "Generic script dialog answer button"
+msgid "No"
+msgstr "Níl"
 
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
@@ -13969,16 +14037,16 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:198
-#: services/lastfm/LastFmServiceSettings.cpp:204
-#: services/lastfm/LastFmServiceSettings.cpp:220
-#: services/lastfm/LastFmServiceSettings.cpp:243
+#: services/lastfm/LastFmServiceSettings.cpp:199
+#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:221
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
 msgid "Failed"
 msgstr "Teipthe"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:211
+#: services/lastfm/LastFmServiceSettings.cpp:212
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
@@ -14224,8 +14292,8 @@ msgstr "Ainm úsáideora:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:221
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -14233,7 +14301,7 @@ msgstr "Theip ar cheangal"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:272
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, fuzzy, kde-format
 #| msgid "Player not connected"
 msgid "Not connected"
@@ -14449,28 +14517,35 @@ msgstr ""
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:138
-#: services/lastfm/LastFmServiceSettings.cpp:195
-#: services/lastfm/LastFmServiceSettings.cpp:203
+#: services/lastfm/LastFmServiceSettings.cpp:91
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgctxt "Disconnect Last.fm account in settings"
+msgid "Disconnect"
+msgstr "&Dícheangail an Gléas"
+
+#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:196
+#: services/lastfm/LastFmServiceSettings.cpp:204
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Teipthe"
 
-#: services/lastfm/LastFmServiceSettings.cpp:143
+#: services/lastfm/LastFmServiceSettings.cpp:144
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "Oscail leathanach Last.fm don imeacht seo"
 
-#: services/lastfm/LastFmServiceSettings.cpp:161
+#: services/lastfm/LastFmServiceSettings.cpp:162
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:186
+#: services/lastfm/LastFmServiceSettings.cpp:187
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -14478,7 +14553,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:243
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Ní féidir ceangal a dhéanamh leis an tseirbhís Last.fm."
@@ -15629,7 +15704,21 @@ msgid ""
 "You can always change the decision in Amarok configuration."
 msgstr ""
 
-#: statsyncing/Controller.cpp:378
+#: statsyncing/Controller.cpp:118
+#, fuzzy, kde-format
+#| msgid "Synchronize"
+msgctxt "Select if collection should be synchronized"
+msgid "Keep synchronized"
+msgstr "Sioncrónaigh"
+
+#: statsyncing/Controller.cpp:119
+#, fuzzy, kde-format
+#| msgid "Artwork synchronized"
+msgctxt "Select if collection should be synchronized"
+msgid "Don't keep synchronized"
+msgstr "Sioncrónaíodh an ealaín"
+
+#: statsyncing/Controller.cpp:380
 #, kde-format
 msgid ""
 "You only seem to have the Local Collection. Statistics synchronization only "
@@ -16073,13 +16162,13 @@ msgid "Slim Toolbar"
 msgstr "Barra Uirlisí Caol"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:210
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Airde: 100% (gan fuaim)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:210
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, kde-format
 msgid "Volume: %1%"
@@ -16521,17 +16610,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "idir"
 
-#: widgets/Osd.cpp:196
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Athraíodh an rátáil"
 
-#: widgets/Osd.cpp:271
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Airde: 100% (gan fuaim)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16540,12 +16629,12 @@ msgstr ""
 "Réamhamharc ar an Taispeáint ar Scáileán\n"
 "Tarraing chun suíomh nua más mian leat"
 
-#: widgets/Osd.cpp:766
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Stadtha"
 
-#: widgets/Osd.cpp:775
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Moillithe"
@@ -19095,9 +19184,6 @@ msgstr "folamh"
 #~ msgstr ""
 #~ "Tá Amarok ar tí ealaín ar <i>%1</i> a shioncrónú.  An bhfuil fonn ort dul "
 #~ "ar aghaidh?"
-
-#~ msgid "Artwork synchronized"
-#~ msgstr "Sioncrónaíodh an ealaín"
 
 #~ msgid "iPod artwork could not be synchronized"
 #~ msgstr "Níorbh fhéidir ealaín iPod a shioncrónú"

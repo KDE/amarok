@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-07 01:45+0000\n"
+"POT-Creation-Date: 2024-10-06 01:48+0000\n"
 "PO-Revision-Date: 2024-09-10 02:16+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -243,7 +243,7 @@ msgstr "在目前曲目後停止：開啟"
 
 #: ActionClasses.cpp:513
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:673
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "沒有播放任何曲目"
@@ -251,8 +251,8 @@ msgstr "沒有播放任何曲目"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:517
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:153 MainWindow.cpp:1256 MainWindow.cpp:1262
-#: MainWindow.cpp:1275
+#: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -865,7 +865,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "啟用/停用 OSD (On-Screen Display)。"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:47
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:45
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "使用咆哮信通知"
@@ -1480,7 +1480,7 @@ msgstr "未知"
 msgid "New Bookmark"
 msgstr "新增書籤"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:818
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "書籤管理員"
@@ -1574,10 +1574,10 @@ msgstr "新增時間碼軌道"
 #: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
 #: amarokurls/BookmarkTreeView.cpp:377
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:496
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:497
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1275
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:504
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:505
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:506
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1246
 #, kde-format
 msgid "Unknown"
 msgstr "未知"
@@ -1598,7 +1598,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "情境"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:290
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
 #, kde-format
 msgid "Files"
 msgstr "檔案"
@@ -1628,7 +1628,7 @@ msgstr "從 %2 來的演出者「%1」"
 msgid "Artist \"%1\""
 msgstr "演出者「%1」"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:814
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "將媒體來源檢視加入書籤"
@@ -1781,6 +1781,26 @@ msgstr ""
 "在系統設定中已經設定了一個音樂路徑 %1。\n"
 "您要用它做為收藏資料夾嗎？"
 
+#: App.cpp:669
+#, fuzzy, kde-format
+#| msgid "Collection Folders"
+msgctxt "Select if should use a path as collection folder"
+msgid "Select collection folder"
+msgstr "收藏目錄"
+
+#: App.cpp:670
+#, fuzzy, kde-format
+#| msgid "User"
+msgctxt "Select if should use a path as collection folder"
+msgid "Use"
+msgstr "使用者"
+
+#: App.cpp:671
+#, kde-format
+msgctxt "Select if should use a path as collection folder"
+msgid "Don't use"
+msgstr ""
+
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
 msgid "Media Sources Home"
@@ -1808,7 +1828,7 @@ msgid ""
 "audio players and CDs."
 msgstr "在這裡您會找到您的本地端音樂，以及可攜式音樂播放器與 CD 上的音樂。"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:962
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
 #, kde-format
 msgid "Search collection"
 msgstr "搜尋收藏"
@@ -1975,7 +1995,7 @@ msgid "Composer"
 msgstr "作曲家"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
-#: playlist/ProgressiveSearchWidget.cpp:96
+#: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "風格"
@@ -2073,7 +2093,7 @@ msgstr "刷新"
 msgid "Filter Files"
 msgstr "過濾檔案"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:222
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2481,13 +2501,13 @@ msgstr "要從 %2 刪除 %1 個播放清單嗎？"
 msgid "Confirm Playlist Deletion"
 msgstr "確認刪除播放清單"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:456
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "儲存時使用相對路徑(&S)"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:469
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
 #, kde-format
 msgid "Save As"
 msgstr "另存為"
@@ -4289,7 +4309,7 @@ msgid "Don't change page automatically"
 msgstr "不要自動變更頁面"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:376
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:380
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4431,7 +4451,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "聚集收藏"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:403
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:411
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -5275,6 +5295,19 @@ msgstr "您確定要移除空白的資料夾嗎？"
 #, kde-format
 msgid "Remove empty folders?"
 msgstr "移除空白資料夾？"
+
+#: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
+#, fuzzy, kde-format
+#| msgid "Remove"
+msgctxt "Select if empty folders should be removed"
+msgid "Remove"
+msgstr "移除"
+
+#: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
+#, kde-format
+msgctxt "Select if empty folders should be removed"
+msgid "Don't remove"
+msgstr ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -7284,7 +7317,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "網址"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:834
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
 #, kde-format
 msgid "Cover Manager"
 msgstr "封面管理員"
@@ -7380,7 +7413,7 @@ msgid_plural "%1 not found"
 msgstr[0] "找不到 %1 張"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:105
+#: services/lastfm/LastFmServiceSettings.cpp:106
 #, kde-format
 msgid "Connecting..."
 msgstr "正在連接..."
@@ -8538,13 +8571,13 @@ msgid "Location:"
 msgstr "位置："
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:67
+#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Previous"
 msgstr "上一曲目(&P)"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
 #, kde-format
 msgid "&Next"
 msgstr "下一曲目(&N)"
@@ -9309,7 +9342,7 @@ msgstr "資料庫名稱"
 msgid "MySQL server binary"
 msgstr "MySQL 伺服器執行檔"
 
-#. i18n: ectx: property (filter), widget (KUrlRequester, m_mysqlBinary)
+#. i18n: ectx: property (nameFilter), widget (KUrlRequester, m_mysqlBinary)
 #: importers/amarok/AmarokConfigWidget.ui:170
 #, kde-format
 msgid "mysqld"
@@ -9387,7 +9420,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "目標名稱"
 
-#: KNotificationBackend.cpp:130 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:124 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "現正播放"
@@ -9402,7 +9435,7 @@ msgstr "已取得歌詞是空的"
 msgid "Lyrics data could not be parsed"
 msgstr "無法剖析歌詞資料。"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:700
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "這首曲目沒有可用的資訊。"
@@ -10284,58 +10317,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:265
+#: MainWindow.cpp:258
 #, kde-format
 msgid "Local Music"
 msgstr "本地端音樂"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:260
 #, kde-format
 msgid "Local sources of content"
 msgstr "內容的本地端來源"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Internet"
 msgstr "網際網路"
 
-#: MainWindow.cpp:276
+#: MainWindow.cpp:269
 #, kde-format
 msgid "Online sources of content"
 msgstr "線上的內容來源"
 
-#: MainWindow.cpp:282
+#: MainWindow.cpp:275
 #, kde-format
 msgid "Playlists"
 msgstr "播放清單"
 
-#: MainWindow.cpp:284
+#: MainWindow.cpp:277
 #, kde-format
 msgid "Various types of playlists"
 msgstr "多種類型的播放清單"
 
-#: MainWindow.cpp:293
+#: MainWindow.cpp:286
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "瀏覽本地端硬碟以取得內容"
 
-#: MainWindow.cpp:336
+#: MainWindow.cpp:329
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "檢視(&V)"
 
-#: MainWindow.cpp:339
+#: MainWindow.cpp:332
 #, kde-format
 msgid "Lock Layout"
 msgstr "鎖定配置"
 
-#: MainWindow.cpp:376 MainWindow.cpp:1349
+#: MainWindow.cpp:369 MainWindow.cpp:1320
 #, kde-format
 msgid "Reset Layout"
 msgstr "重設佈局"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10345,276 +10378,276 @@ msgstr ""
 "<qt>關閉主視窗不等於關閉 Amarok，它仍會在系統列繼續運作。要完全關閉，您可以在"
 "選單中按<B>離開</B>，或用系統匣圖示來結束應用程式。</qt>"
 
-#: MainWindow.cpp:435
+#: MainWindow.cpp:428
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "停駐在系統列中"
 
-#: MainWindow.cpp:535
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "播放媒體 (檔案或 URL)"
 
-#: MainWindow.cpp:535
+#: MainWindow.cpp:528
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "加入媒體 (檔案或 URL)"
 
-#: MainWindow.cpp:555
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Add Stream"
 msgstr "加入串流"
 
-#: MainWindow.cpp:555
+#: MainWindow.cpp:548
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "請輸入串流網址："
 
-#: MainWindow.cpp:784
+#: MainWindow.cpp:755
 #, kde-format
 msgid "&Add Media..."
 msgstr "加入媒體(&A)..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:760
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "清除播放清單(&C)"
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:765
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "編輯佇列(&Q)"
 
-#: MainWindow.cpp:799
+#: MainWindow.cpp:770
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "移除重複曲目(&M)"
 
-#: MainWindow.cpp:806
+#: MainWindow.cpp:777
 #, kde-format
 msgid "&Add Stream..."
 msgstr "加入串流(&A)..."
 
-#: MainWindow.cpp:810
+#: MainWindow.cpp:781
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "將播放清單匯出為(&E)..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:793
 #, kde-format
 msgid "Equalizer"
 msgstr "等化器"
 
-#: MainWindow.cpp:826 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "將播放清單設定加入書籤"
 
-#: MainWindow.cpp:830
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "將情境小程式加入書籤"
 
-#: MainWindow.cpp:838
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Play Media..."
 msgstr "播放媒體..."
 
-#: MainWindow.cpp:843
+#: MainWindow.cpp:814
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "編輯目前選取的曲目詳情"
 
-#: MainWindow.cpp:849 MainWindow.cpp:855 MainWindow.cpp:862
+#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "往前搜尋 %1 秒"
 
-#: MainWindow.cpp:869 MainWindow.cpp:875 MainWindow.cpp:882
+#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "往後搜尋 %1 秒"
 
-#: MainWindow.cpp:888
+#: MainWindow.cpp:859
 #, kde-format
 msgid "Update Collection"
 msgstr "更新收藏"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:863
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "同步統計..."
 
-#: MainWindow.cpp:900
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Previous Track"
 msgstr "上一曲目"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Restart current track"
 msgstr "重新開始目前的曲目"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "播放清單洗牌"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "重新安排播放清單"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:897
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "關閉動態播放清單"
 
-#: MainWindow.cpp:930
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Next Track"
 msgstr "下一曲目"
 
-#: MainWindow.cpp:935
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Increase Volume"
 msgstr "增大音量"
 
-#: MainWindow.cpp:941
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Decrease Volume"
 msgstr "減少音量"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:918
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "切換主視窗"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:923
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "切換全螢幕"
 
-#: MainWindow.cpp:957 playlist/ProgressiveSearchWidget.cpp:50
+#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "搜尋播放清單"
 
-#: MainWindow.cpp:967
+#: MainWindow.cpp:938
 #, kde-format
 msgid "Show active track"
 msgstr "顯示目前的曲目"
 
-#: MainWindow.cpp:971
+#: MainWindow.cpp:942
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "顯示通知彈出式視窗"
 
-#: MainWindow.cpp:976
+#: MainWindow.cpp:947
 #, kde-format
 msgid "Mute Volume"
 msgstr "靜止音量"
 
-#: MainWindow.cpp:981
+#: MainWindow.cpp:952
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm：喜愛目前的曲目"
 
-#: MainWindow.cpp:986
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm：禁止目前的曲目"
 
-#: MainWindow.cpp:991
+#: MainWindow.cpp:962
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm：跳過目前的曲目"
 
-#: MainWindow.cpp:996 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "把曲目放入佇列"
 
-#: MainWindow.cpp:1001
+#: MainWindow.cpp:972
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "將目前曲目的「演出者 - 標題」放入剪貼簿"
 
-#: MainWindow.cpp:1006
+#: MainWindow.cpp:977
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "將目前曲目評等為：1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:982
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "將目前曲目評等為：2"
 
-#: MainWindow.cpp:1016
+#: MainWindow.cpp:987
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "將目前曲目評等為：3"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:992
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "將目前曲目評等為：4"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "將目前曲目評等為：5"
 
-#: MainWindow.cpp:1032
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "網路請求檢視器"
 
-#: MainWindow.cpp:1050
+#: MainWindow.cpp:1021
 #, kde-format
 msgid "&About Amarok"
 msgstr "關於 Amarok(&A)"
 
-#: MainWindow.cpp:1054
+#: MainWindow.cpp:1025
 #, kde-format
 msgid "&Diagnostics"
 msgstr "診斷(&D)"
 
-#: MainWindow.cpp:1058
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&Report Bug..."
 msgstr "報告問題(&R)..."
 
-#: MainWindow.cpp:1105
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "&Music"
 msgstr "音樂(&M)"
 
-#: MainWindow.cpp:1107
+#: MainWindow.cpp:1078
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok(&A)"
 
-#: MainWindow.cpp:1135 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "播放清單(&P)"
 
-#: MainWindow.cpp:1152
+#: MainWindow.cpp:1123
 #, kde-format
 msgid "&Tools"
 msgstr "工具(&T)"
 
-#: MainWindow.cpp:1167
+#: MainWindow.cpp:1138
 #, kde-format
 msgid "&Settings"
 msgstr "設定(&S)"
 
-#: MainWindow.cpp:1219
+#: MainWindow.cpp:1190
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10625,22 +10658,22 @@ msgstr ""
 "\n"
 "請記得您可以用 %1 來把選單列叫回來。"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1191
 #, kde-format
 msgid "Hide Menu"
 msgstr "隱藏選單"
 
-#: MainWindow.cpp:1262
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "暫停 :: %1"
 
-#: MainWindow.cpp:1275
+#: MainWindow.cpp:1246
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1349
+#: MainWindow.cpp:1320
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "要套用此佈局變更嗎？"
@@ -11046,7 +11079,7 @@ msgid "Show tooltips"
 msgstr "顯示工具提示"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "預覽"
@@ -11350,7 +11383,7 @@ msgstr "位元率"
 msgid "Sample Rate"
 msgstr "取樣頻率"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:110
+#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "評等"
@@ -11440,42 +11473,42 @@ msgctxt ""
 msgid "Playlist"
 msgstr "播放清單"
 
-#: playlist/ProgressiveSearchWidget.cpp:54
+#: playlist/ProgressiveSearchWidget.cpp:51
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr "開始輸入以即時搜尋整個播放清單"
 
-#: playlist/ProgressiveSearchWidget.cpp:75
+#: playlist/ProgressiveSearchWidget.cpp:72
 #, kde-format
 msgid "Tracks"
 msgstr "曲目"
 
-#: playlist/ProgressiveSearchWidget.cpp:82
+#: playlist/ProgressiveSearchWidget.cpp:79
 #, kde-format
 msgid "Albums"
 msgstr "專輯"
 
-#: playlist/ProgressiveSearchWidget.cpp:89
+#: playlist/ProgressiveSearchWidget.cpp:86
 #, kde-format
 msgid "Artists"
 msgstr "演出者"
 
-#: playlist/ProgressiveSearchWidget.cpp:103
+#: playlist/ProgressiveSearchWidget.cpp:100
 #, kde-format
 msgid "Composers"
 msgstr "作曲家"
 
-#: playlist/ProgressiveSearchWidget.cpp:117
+#: playlist/ProgressiveSearchWidget.cpp:114
 #, kde-format
 msgid "Years"
 msgstr "年份"
 
-#: playlist/ProgressiveSearchWidget.cpp:126
+#: playlist/ProgressiveSearchWidget.cpp:123
 #, kde-format
 msgid "Show only matches"
 msgstr "只顯示符合"
 
-#: playlist/ProgressiveSearchWidget.cpp:138
+#: playlist/ProgressiveSearchWidget.cpp:135
 #, kde-format
 msgid "Search Preferences"
 msgstr "搜尋喜好設定"
@@ -12924,10 +12957,45 @@ msgstr "要從磁碟中移除文稿檔嗎？"
 msgid "Remove Script"
 msgstr "移除文稿"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:452
+#: scripting/scriptconsole/ScriptConsole.cpp:422
+#, fuzzy, kde-format
+#| msgid "Remove"
+msgctxt "Confirm if script file should be removed"
+msgid "Remove"
+msgstr "移除"
+
+#: scripting/scriptconsole/ScriptConsole.cpp:423
+#, kde-format
+msgctxt "Confirm if script file should be removed"
+msgid "Don't remove"
+msgstr ""
+
+#: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "您完全確定嗎？"
+
+#: scripting/scriptengine/AmarokScript.cpp:68
+#: scripting/scriptengine/AmarokScript.cpp:72
+#: scripting/scriptengine/AmarokScript.cpp:76
+#: scripting/scriptengine/AmarokScript.cpp:82
+#, fuzzy, kde-format
+#| msgctxt "Usage"
+#| msgid "Yes"
+msgctxt "Generic script dialog answer button"
+msgid "Yes"
+msgstr "是"
+
+#: scripting/scriptengine/AmarokScript.cpp:69
+#: scripting/scriptengine/AmarokScript.cpp:73
+#: scripting/scriptengine/AmarokScript.cpp:77
+#: scripting/scriptengine/AmarokScript.cpp:83
+#, fuzzy, kde-format
+#| msgctxt "Usage"
+#| msgid "No"
+msgctxt "Generic script dialog answer button"
+msgid "No"
+msgstr "否"
 
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
@@ -13170,16 +13238,16 @@ msgstr "使用者名稱或密碼是空的。請修正後再試一次。"
 #: services/gpodder/GpodderServiceSettings.cpp:179
 #: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:198
-#: services/lastfm/LastFmServiceSettings.cpp:204
-#: services/lastfm/LastFmServiceSettings.cpp:220
-#: services/lastfm/LastFmServiceSettings.cpp:243
+#: services/lastfm/LastFmServiceSettings.cpp:199
+#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:221
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
 msgid "Failed"
 msgstr "失敗"
 
 #: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:211
+#: services/lastfm/LastFmServiceSettings.cpp:212
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
@@ -13394,8 +13462,8 @@ msgstr "使用者名稱："
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:221
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/lastfm/LastFmServiceSettings.cpp:222
+#: services/lastfm/LastFmServiceSettings.cpp:245
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -13403,7 +13471,7 @@ msgstr "連線失敗"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:272
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, fuzzy, kde-format
 #| msgctxt "In a dialog: Some file: Not needed"
 #| msgid "Not needed"
@@ -13614,28 +13682,35 @@ msgstr ""
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:138
-#: services/lastfm/LastFmServiceSettings.cpp:195
-#: services/lastfm/LastFmServiceSettings.cpp:203
+#: services/lastfm/LastFmServiceSettings.cpp:91
+#, fuzzy, kde-format
+#| msgid "&Disconnect Device"
+msgctxt "Disconnect Last.fm account in settings"
+msgid "Disconnect"
+msgstr "中斷裝置連線(&D)"
+
+#: services/lastfm/LastFmServiceSettings.cpp:139
+#: services/lastfm/LastFmServiceSettings.cpp:196
+#: services/lastfm/LastFmServiceSettings.cpp:204
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "失敗"
 
-#: services/lastfm/LastFmServiceSettings.cpp:143
+#: services/lastfm/LastFmServiceSettings.cpp:144
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "開啟此事件在 Last.fm 上的網頁"
 
-#: services/lastfm/LastFmServiceSettings.cpp:161
+#: services/lastfm/LastFmServiceSettings.cpp:162
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:186
+#: services/lastfm/LastFmServiceSettings.cpp:187
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -13643,7 +13718,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:243
+#: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "無法連線到 Last.fm 服務。"
@@ -14803,7 +14878,20 @@ msgstr ""
 "\n"
 "您可以在 Amarok 的設定中修改此設定。"
 
-#: statsyncing/Controller.cpp:378
+#: statsyncing/Controller.cpp:118
+#, fuzzy, kde-format
+#| msgid "Synchronize"
+msgctxt "Select if collection should be synchronized"
+msgid "Keep synchronized"
+msgstr "同步"
+
+#: statsyncing/Controller.cpp:119
+#, kde-format
+msgctxt "Select if collection should be synchronized"
+msgid "Don't keep synchronized"
+msgstr ""
+
+#: statsyncing/Controller.cpp:380
 #, kde-format
 msgid ""
 "You only seem to have the Local Collection. Statistics synchronization only "
@@ -15192,12 +15280,12 @@ msgid "Slim Toolbar"
 msgstr "薄型工具列"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:210
+#: widgets/Osd.cpp:200
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "音量：%1% (已靜音)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:210
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, kde-format
 msgid "Volume: %1%"
@@ -15609,17 +15697,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "介於"
 
-#: widgets/Osd.cpp:196
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "評等已變更"
 
-#: widgets/Osd.cpp:271
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "音量：100% (已靜音)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -15628,12 +15716,12 @@ msgstr ""
 "OSD 預覽\n"
 "您可以拖曳到適合的位置"
 
-#: widgets/Osd.cpp:766
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "已停止"
 
-#: widgets/Osd.cpp:775
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "已暫停"
