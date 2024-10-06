@@ -133,7 +133,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     filename.replace( QLatin1Char('/'), QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
-    Playlists::PlaylistFormat format = Playlists::getFormat( QUrl::fromUserInput( filename, QString(), QUrl::AssumeLocalFile ) );
+    Playlists::PlaylistFormat format = Playlists::getFormat( QUrl::fromUserInput( filename, QStringLiteral("./"), QUrl::AssumeLocalFile ) );
     if( format == Playlists::Unknown ) // maybe the name just had a dot in it. We just add .xspf
     {
         format = Playlists::XSPF;

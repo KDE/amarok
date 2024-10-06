@@ -69,8 +69,8 @@ void TestPlaylistFileProvider::testSave_data()
     QTest::addColumn<QString>("result");
 
     QTest::newRow("no extension, should default to xspf") << "Amarok Test Playlist" << "Amarok Test Playlist.xspf";
-    QTest::newRow("directory separators '\\' and '/' in file name are being replaced by '-'") << "amarok/playlist" << "amarok-playlist.xspf";
-    QTest::newRow("directory separators '\\' and '/' in file name are being replaced by '-'") << "amarok\\playlist" << "amarok-playlist.xspf";
+    QTest::newRow("directory separators '/' in file name are being replaced by '-'") << "amarok/playlist" << "amarok-playlist.xspf";
+    QTest::newRow("directory separators '\\' in file name are being replaced by '-'") << "amarok\\playlist" << "amarok-playlist.xspf";
     QTest::newRow("xspf") << "Amarok Test Playlist.xspf" << "Amarok Test Playlist.xspf";
     QTest::newRow("m3u") << "Amarok Test Playlist.m3u" << "Amarok Test Playlist.m3u";
     QTest::newRow("pls") << "Amarok Test Playlist.pls" << "Amarok Test Playlist.pls";
