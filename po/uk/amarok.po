@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-06 01:48+0000\n"
-"PO-Revision-Date: 2024-07-15 08:46+0300\n"
-"Last-Translator: Fracture dept <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"PO-Revision-Date: 2024-10-06 09:40+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1888,24 +1888,22 @@ msgstr ""
 "Бажаєте використати цю адресу як адресу теки збірки?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Теки збірки"
+msgstr "Вибрати теку збірки"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Користувач"
+msgstr "Використати"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Не використовувати"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -5648,17 +5646,16 @@ msgid "Remove empty folders?"
 msgstr "Вилучити порожні теки?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
-msgstr "Вилучити"
+msgstr "Вилучати"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Не вилучати"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -13654,8 +13651,7 @@ msgid "Remove Script"
 msgstr "Вилучити скрипт"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Вилучити"
@@ -13664,7 +13660,7 @@ msgstr "Вилучити"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Не вилучати"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13675,23 +13671,19 @@ msgstr "Ви абсолютно певні?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
-msgstr "так"
+msgstr "Так"
 
 #: scripting/scriptengine/AmarokScript.cpp:69
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
-msgstr "ні"
+msgstr "Ні"
 
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
@@ -14407,11 +14399,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "Від'єднатися від облікового запису Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Роз'єднатися з пристроєм"
+msgstr "Від'єднати"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -15647,8 +15638,7 @@ msgstr ""
 "Скасувати синхронізацію завжди можна у налаштуваннях Amarok."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
 msgstr "Синхронізувати"
@@ -15657,7 +15647,7 @@ msgstr "Синхронізувати"
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "Не синхронізувати"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format

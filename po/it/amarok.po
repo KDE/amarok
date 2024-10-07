@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-06 01:48+0000\n"
-"PO-Revision-Date: 2024-07-16 03:20+0200\n"
+"PO-Revision-Date: 2024-10-06 13:15+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.05.2\n"
+"X-Generator: Lokalize 24.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1885,24 +1885,22 @@ msgstr ""
 "Vuoi utilizzarlo come una cartella della collezione?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Cartelle della collezione"
+msgstr "Seleziona la cartella della collezione"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Utente"
+msgstr "Utilizza"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Non utilizzare"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -5542,8 +5540,7 @@ msgid "Remove empty folders?"
 msgstr "Rimuovere le cartelle vuote?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Rimuovi"
@@ -5552,7 +5549,7 @@ msgstr "Rimuovi"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Non rimuovere"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -13447,8 +13444,7 @@ msgid "Remove Script"
 msgstr "Rimuovi script"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Rimuovi"
@@ -13457,7 +13453,7 @@ msgstr "Rimuovi"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Non rimuovere"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13468,9 +13464,7 @@ msgstr "Sei assolutamente sicuro?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Sì"
@@ -13479,9 +13473,7 @@ msgstr "Sì"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "No"
@@ -14194,11 +14186,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "Vuoi disconnettere l'account Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Disconnetti dispositivo"
+msgstr "Disconnetti"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -15419,18 +15410,16 @@ msgstr ""
 "Amarok."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Sincronizza"
+msgstr "Mantieni la sincronizzazione"
 
 #: statsyncing/Controller.cpp:119
-#, fuzzy, kde-format
-#| msgid "Artwork synchronized"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr "Copertine sincronizzate"
+msgstr "Non mantenere la sincronizzazione"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format

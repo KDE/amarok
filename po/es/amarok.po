@@ -1,16 +1,16 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Javier Viñal <fjvinal@gmail.com>, 2012, 2013, 2014.
+# SPDX-FileCopyrightText: 2012, 2013, 2014 Javier Viñal <fjvinal@gmail.com>
 # Javier Vinal <fjvinalgmail.com>, 2012, 2014.
 # SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024 Eloy Cuadra <ecuadra@eloihr.net>
-# Sergio Ahumada <sahumada@texla.cl>, 2015.
+# SPDX-FileCopyrightText: 2015 Sergio Ahumada <sahumada@texla.cl>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-06 01:48+0000\n"
-"PO-Revision-Date: 2024-07-16 16:20+0200\n"
+"PO-Revision-Date: 2024-10-06 22:37+0200\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.05.2\n"
+"X-Generator: Lokalize 24.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1897,24 +1897,22 @@ msgstr ""
 "¿Le gustaría utilizarla como una carpeta de colección?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Carpetas de la colección"
+msgstr "Seleccionar carpetas de la colección"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Usuario"
+msgstr "Usar"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "No usar"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -5552,8 +5550,7 @@ msgid "Remove empty folders?"
 msgstr "¿Eliminar carpetas vacías?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Eliminar"
@@ -5562,7 +5559,7 @@ msgstr "Eliminar"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "No eliminar"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -13459,8 +13456,7 @@ msgid "Remove Script"
 msgstr "Eliminar guion"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Eliminar"
@@ -13469,7 +13465,7 @@ msgstr "Eliminar"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "No eliminar"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13480,9 +13476,7 @@ msgstr "¿Está completamente seguro?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Sí"
@@ -13491,9 +13485,7 @@ msgstr "Sí"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "No"
@@ -14204,11 +14196,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "¿Desconectar cuenta de Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Desconectar dispositivo"
+msgstr "Desconectar"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -15424,17 +15415,16 @@ msgstr ""
 "Siempre puede cambiar esta decisión en la configuración de Amarok."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Sincronizar"
+msgstr "Mantener sincronizados"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "No mantener sincronizados"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format

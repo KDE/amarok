@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-06 01:48+0000\n"
-"PO-Revision-Date: 2024-07-15 16:33+0200\n"
+"PO-Revision-Date: 2024-10-06 19:30+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.05.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #, kde-format
@@ -1853,24 +1853,22 @@ msgstr ""
 "Vill du använda den som samlingskatalog?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Samlingskataloger"
+msgstr "Välj samlingskatalog"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Användare"
+msgstr "Använd"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Använd inte"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -5480,8 +5478,7 @@ msgid "Remove empty folders?"
 msgstr "Ta bort tomma kataloger?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Ta bort"
@@ -5490,7 +5487,7 @@ msgstr "Ta bort"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ta inte bort"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -13338,8 +13335,7 @@ msgid "Remove Script"
 msgstr "Ta bort skript"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Ta bort"
@@ -13348,7 +13344,7 @@ msgstr "Ta bort"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ta inte bort"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13359,9 +13355,7 @@ msgstr "Är du helt säker?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Ja"
@@ -13370,9 +13364,7 @@ msgstr "Ja"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Nej"
@@ -14076,11 +14068,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "Koppla bort Last.fm konto?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Koppla bort enhet"
+msgstr "Koppla ner"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -15294,18 +15285,16 @@ msgstr ""
 "Du kan alltid ändra beslutet i Amaroks inställningar."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Synkronisera"
+msgstr "Behåll synkroniserad"
 
 #: statsyncing/Controller.cpp:119
-#, fuzzy, kde-format
-#| msgid "Artwork synchronized"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr "Grafik synkroniserad"
+msgstr "Behåll inte synkroniserad"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
