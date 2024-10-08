@@ -7,6 +7,5 @@ int main()
 #error \"Qt was compiled with Glib disabled\"
 #endif
 return 0;
-}" 
+}"
 QT5_GLIB_SUPPORT)
-

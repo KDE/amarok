@@ -116,10 +116,10 @@ add_database_test( testsqltrack "${testsqltrack_SRCS}" )
 
 #-------------------------------- Test SqlCollectionLocation -----------------------
 
-set( testsqlcollectionlocation_SRCS
-        TestSqlCollectionLocation.cpp
-	${AMAROK_SOURCE_TREE}/core/logger/Logger.cpp
-        ${GOOGLEMOCK_SRCS}
+set(testsqlcollectionlocation_SRCS
+    TestSqlCollectionLocation.cpp
+    ${AMAROK_SOURCE_TREE}/core/logger/Logger.cpp
+    ${GOOGLEMOCK_SRCS}
     )
 
 add_database_test( testsqlcollectionlocation "${testsqlcollectionlocation_SRCS}" )

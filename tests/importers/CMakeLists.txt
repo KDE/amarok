@@ -6,7 +6,6 @@ add_custom_target( importers_files
 set( testimporterscommon_LIBS
     amaroklib
     amarokcore
-    
     KF${KF_MAJOR_VERSION}::KIOCore
     KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Sql

@@ -3,8 +3,6 @@ include_directories( ../..
   podcasts
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  
-  
   )
 
 ########### next target ################
@@ -21,7 +19,7 @@ ki18n_wrap_ui(amarok_collection-umscollection_PART_SRCS
 )
 
 add_library(amarok_collection-umscollection MODULE ${amarok_collection-umscollection_PART_SRCS})
-	
+
 target_link_libraries(amarok_collection-umscollection
   amarokshared
   amaroklib
@@ -33,7 +31,7 @@ target_link_libraries(amarok_collection-umscollection
   Qt::Gui
   )
 
-install(TARGETS 
+install(TARGETS
   amarok_collection-umscollection 
-  DESTINATION 
-  ${KDE_INSTALL_PLUGINDIR} )
+  DESTINATION
+  ${KDE_INSTALL_PLUGINDIR})

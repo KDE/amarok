@@ -25,7 +25,7 @@ else ()
     gpod/itdb.h
     PATH_SUFFIXES gpod-1.0
     )
-    
+
     find_library(IPOD_LIBRARIES NAMES
     gpod libgpod gpod-4 libgpod-4
     )

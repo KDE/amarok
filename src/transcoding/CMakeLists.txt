@@ -4,8 +4,6 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src
-    
-    
 )
 
 set(amarok_transcoding_SRCS

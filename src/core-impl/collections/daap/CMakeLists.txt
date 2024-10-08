@@ -2,7 +2,7 @@ include_directories( ../..
     ${CMAKE_BINARY_DIR}/src
     ${AMAROK_COLLECTION_SUPPORT_DIR}
     daapreader
-     )
+    )
 
 remove_definitions(-DQT_NO_HTTP)
 

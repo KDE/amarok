@@ -31,7 +31,7 @@ if(NOT WIN32 AND NOT APPLE)
 endif()
 
 if(APPLE)
-	SET_TARGET_PROPERTIES(amarok_storage-mysqlserverstorage PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    SET_TARGET_PROPERTIES(amarok_storage-mysqlserverstorage PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
 install(TARGETS amarok_storage-mysqlserverstorage DESTINATION ${KDE_INSTALL_PLUGINDIR} )

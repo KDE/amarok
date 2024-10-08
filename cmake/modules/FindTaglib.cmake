@@ -42,7 +42,7 @@ if(TAGLIBCONFIG_EXECUTABLE)
         set(TAGLIB_FOUND TRUE)
      endif()
      string(REGEX REPLACE " *-I" ";" TAGLIB_INCLUDES "${TAGLIB_CFLAGS}")
-  endif() 
+  endif()
   mark_as_advanced(TAGLIB_CFLAGS TAGLIB_LIBRARIES TAGLIB_INCLUDES)
 
 else()
@@ -64,9 +64,9 @@ else()
 
       # 1. get all possible libnames
       set(args PATHS ${LIB_INSTALL_DIR})
-      set(newargs "")               
-      set(libnames_release "")      
-      set(libnames_debug "")        
+      set(newargs "")
+      set(libnames_release "")
+      set(libnames_debug "")
 
       list(LENGTH args listCount)
 
@@ -114,7 +114,7 @@ else()
       mark_as_advanced(TAGLIB_LIBRARIES_DEBUG)
 
     endif()
-  
+
   include(FindPackageMessage)
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Taglib DEFAULT_MSG TAGLIB_INCLUDES TAGLIB_LIBRARIES)

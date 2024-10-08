@@ -95,8 +95,8 @@ if( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
 
         # make sure that we use the gtest supplied with googlemock
         set(GOOGLEMOCK_INCLUDE_DIR
-            "${GOOGLEMOCK_INCLUDE_DIR}" 
-            "${GOOGLEMOCK_SOURCES}/gmock" 
+            "${GOOGLEMOCK_INCLUDE_DIR}"
+            "${GOOGLEMOCK_SOURCES}/gmock"
             "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest/include"
         )
 

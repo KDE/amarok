@@ -6,7 +6,7 @@ set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 
 add_subdirectory( daap )
 
-if( NOT WIN32)
+if(NOT WIN32)
     add_subdirectory( audiocd )
 endif()
 

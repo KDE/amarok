@@ -15,4 +15,4 @@ target_link_libraries( amarok_collection-playdarcollection
                        KF${KF_MAJOR_VERSION}::ThreadWeaver
                        KF${KF_MAJOR_VERSION}::KIOCore )
 
-install(TARGETS amarok_collection-playdarcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
+install(TARGETS amarok_collection-playdarcollection DESTINATION ${KDE_INSTALL_PLUGINDIR})

@@ -4,7 +4,6 @@
             ../../core-impl/collections
             ../../statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../..
-            
              )
 
 add_subdirectory( images )

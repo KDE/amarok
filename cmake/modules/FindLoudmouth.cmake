@@ -18,13 +18,13 @@ else ()
     # in the FIND_PATH() and FIND_LIBRARY() calls
     find_package(PkgConfig)
     pkg_search_module(LOUDMOUTH loudmouth-1.0)
-  
+
   else()
 
     find_path(LOUDMOUTH_INCLUDE_DIRS loudmouth/loudmouth.h /usr/include/loudmouth-1.0
       ${_LOUDMOUTHIncDir}
     )
-  
+
     find_library(LOUDMOUTH_LIBRARIES NAMES loudmouth-1
       PATHS
       ${_LOUDMOUTHLinkDir}

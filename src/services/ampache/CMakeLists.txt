@@ -25,7 +25,6 @@ add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
 target_link_libraries(ampache_account_login
     amaroklib
     amarokcore
-    
     KF${KF_MAJOR_VERSION}::KIOCore
 )
 install(TARGETS ampache_account_login DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})

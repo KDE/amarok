@@ -75,7 +75,6 @@ target_link_libraries( kcm_amarok_service_lastfm
     amarokcore
     amaroklib
     ${LIBLASTFM_LIBRARY}
-    
     KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Network
 )
