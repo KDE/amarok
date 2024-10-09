@@ -29,7 +29,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-06 01:48+0000\n"
-"PO-Revision-Date: 2024-08-31 18:59+0200\n"
+"PO-Revision-Date: 2024-10-07 12:57+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -1922,24 +1922,22 @@ msgstr ""
 "Voulez-vous l'utiliser comme dossier de la collection ?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Dossiers de la collection"
+msgstr "Sélectionner un dossier de collection"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Utilisateur"
+msgstr "Utiliser"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Ne pas utiliser"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -5615,17 +5613,16 @@ msgid "Remove empty folders?"
 msgstr "Effacer les dossiers vides ?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
-msgstr "Effacer"
+msgstr "Supprimer"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ne pas supprimer"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -13554,17 +13551,16 @@ msgid "Remove Script"
 msgstr "Supprimer le script"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
-msgstr "Effacer"
+msgstr "Supprimer"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:423
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ne pas supprimer"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13575,9 +13571,7 @@ msgstr "Êtes-vous absolument certain ?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Oui"
@@ -13586,9 +13580,7 @@ msgstr "Oui"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Non"
@@ -14311,11 +14303,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "Se déconnecter du compte « Last.fm » ?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Déconnecter le périphérique"
+msgstr "Déconnecter le périphérique"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -15547,17 +15538,16 @@ msgstr ""
 "Vous pouvez toujours modifier cette décision dans la configuration de Amarok."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Synchroniser"
+msgstr "Maintenir synchronisé"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "Ne pas maintenir synchronisé"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
