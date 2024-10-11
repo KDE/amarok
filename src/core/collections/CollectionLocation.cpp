@@ -582,7 +582,8 @@ CollectionLocation::slotFinishRemove()
 void
 CollectionLocation::slotAborted()
 {
-    m_destination->deleteLater();
+    if( m_destination )
+        m_destination->deleteLater();
     deleteLater();
 }
 
