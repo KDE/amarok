@@ -16,13 +16,15 @@
 
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Dialogs 1.3 as Dialogs
 import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.14 as Kirigami
 import org.kde.amarok.lyrics 1.0
 
 
-Dialogs.Dialog {
+Dialog {
     id: dialog
+    width: parent.width - Kirigami.Units.largeSpacing * 4
+    height: parent.height - Kirigami.Units.largeSpacing * 4
 
     function accept() {
         LyricsEngine.fontSize = sizeBox.value;
@@ -41,13 +43,13 @@ Dialogs.Dialog {
     }
 
     onAccepted: accept()
-    onApply: accept()
+    onApplied: accept()
 
     title: i18n("Lyrics config")
-    standardButtons: Dialogs.StandardButton.Ok | Dialogs.StandardButton.Apply | Dialogs.StandardButton.Cancel
+    standardButtons: Dialog.Ok | Dialog.Apply | Dialog.Cancel
 
     Column {
-        width: 800
+        width: parent.width
 
         RowLayout {
             width: parent.width

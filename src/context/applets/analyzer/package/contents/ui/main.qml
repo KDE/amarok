@@ -16,7 +16,6 @@
 
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Dialogs 1.3 as Dialogs // QtQuick.Controls Dialogs only work properly with ApplicationWindow
 import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
 import org.kde.kirigami 2.14 as Kirigami
@@ -32,12 +31,13 @@ AmarokQml.Applet {
         anchors.fill: parent
     }
 
-    configDialog: Dialogs.Dialog {
+    configDialog: Dialog {
         id: dialog
 
         title: i18nc("The title of the analyzer config dialog", "%1 config", applet.name)
-        width: Kirigami.Units.largeSpacing * 25
-        standardButtons: Dialogs.StandardButton.Ok | Dialogs.StandardButton.Apply | Dialogs.StandardButton.Cancel
+        width: parent.width - Kirigami.Units.largeSpacing * 4
+        height: parent.height - Kirigami.Units.largeSpacing * 4
+        standardButtons: Dialog.Ok | Dialog.Apply | Dialog.Cancel
 
         function applyChanges() {
             blocky.columnWidth = columnWidthSlider.trueValue;
@@ -50,7 +50,7 @@ AmarokQml.Applet {
         }
 
         onAccepted: applyChanges();
-        onApply: applyChanges();
+        onApplied: applyChanges();
 
         Column {
             width: parent.width
