@@ -1,4 +1,5 @@
 {
+    "KPackageStructure": "Amarok/ContextApplet",
     "KPlugin": {
         "Authors": [
             {
