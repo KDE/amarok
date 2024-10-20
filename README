@@ -39,7 +39,7 @@ not be entirely up to date. You can always look at CMakeLists.txt to discover
 the most recent dependencies.
 
 Required
-    * KDE Frameworks 5.89 (or newer, for an exact list look at CMakeLists.txt)
+    * KDE Frameworks 5.108 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
     * Phonon 4.6.60 (or newer with support for Qt5) and one of the following backends:
@@ -48,6 +48,12 @@ Required
 
     * Qt 5.15
       https://qt.io/
+      * Alternatively, building an experimental Qt6/KF6 version is now possible. Qt6
+        and KDE Frameworks 6 development files are required, in addition to Phonon
+        version with support for Qt6. Please be aware that there are likely a number
+        of unknown issues in addition to known the ones (albums context applet not
+        working, last.fm and gpodder not being available due to no relevant Qt6
+        libraries available)
 
     * TagLib 1.12 (or newer)
       (Metadata tagging library)
