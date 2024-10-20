@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QLabel>
 #include <QMenu>
@@ -420,7 +421,7 @@ namespace CollectionFolder {
         QString _excludePath = normalPath( excludePath );
         if( _root == _excludePath )
             return;
-        QDirIterator it( _root );
+        QDirIterator it( _root, QDirIterator::NoIteratorFlags );
         while( it.hasNext() )
         {
             QString nextPath = it.next();
