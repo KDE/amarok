@@ -137,5 +137,4 @@ void
 PlaylistFileLoaderJob::slotDone()
 {
     m_playlist->notifyObserversTracksLoaded();
-    deleteLater();
 }
