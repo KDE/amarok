@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-06 01:48+0000\n"
-"PO-Revision-Date: 2024-09-10 02:16+0900\n"
+"PO-Revision-Date: 2024-10-19 19:43+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.08.0\n"
+"X-Generator: Lokalize 24.08.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, kde-format
@@ -1770,7 +1770,7 @@ msgstr ""
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Last.fm 工作階段金鑰錯誤"
 
 #: App.cpp:667
 #, kde-format
@@ -1782,24 +1782,22 @@ msgstr ""
 "您要用它做為收藏資料夾嗎？"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "收藏目錄"
+msgstr "選擇收藏資料夾"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "使用者"
+msgstr "使用"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "不要使用"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -4133,12 +4131,10 @@ msgid "Width"
 msgstr "寬度"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "從 <b>%1</b>"
+msgstr "類似 <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
@@ -5297,8 +5293,7 @@ msgid "Remove empty folders?"
 msgstr "移除空白資料夾？"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "移除"
@@ -5307,7 +5302,7 @@ msgstr "移除"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "不要移除"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -9455,15 +9450,7 @@ msgstr ""
 "(C) 2003-2024, Amarok 開發小組"
 
 #: main.cpp:97
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9474,7 +9461,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "問題回報:\n"
 "amarok@kde.org\n"
@@ -12958,8 +12945,7 @@ msgid "Remove Script"
 msgstr "移除文稿"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "移除"
@@ -12968,7 +12954,7 @@ msgstr "移除"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "不要移除"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -12979,9 +12965,7 @@ msgstr "您完全確定嗎？"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "是"
@@ -12990,9 +12974,7 @@ msgstr "是"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "否"
@@ -13680,7 +13662,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "要中斷 Last.fm 帳號的連線嗎？"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, fuzzy, kde-format
@@ -14879,17 +14861,16 @@ msgstr ""
 "您可以在 Amarok 的設定中修改此設定。"
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "同步"
+msgstr "保持同步"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "不要保持同步"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
