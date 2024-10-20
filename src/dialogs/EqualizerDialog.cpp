@@ -84,7 +84,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
 
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = equalizer->eqMaxGain();
-    const QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
+    const QString mlblText = i18nc( "label for equalizer gain and suffix", "%1\ndB", QString::number( mValueScale, 'f', 1 ) );
     eqMaxEq->setText( QStringLiteral("+") + mlblText );
     eqMinEq->setText( QStringLiteral("-") + mlblText );
 

@@ -132,9 +132,9 @@ EqualizerController::eqBandsFreq() const
         {
             QRegularExpressionMatch rmatch = rx.match( mParam.name() );
             if( rmatch.captured( 0 ).toInt() < 1000 )
-                bandFrequencies << i18n( "%0\nHz" ).arg( rmatch.captured( 0 ) );
+                bandFrequencies << i18nc( "label for equalizer band frequency", "%1\nHz", rmatch.captured( 0 ) );
             else
-                bandFrequencies << i18n( "%0\nkHz" ).arg( QString::number( rmatch.captured( 0 ).toInt()/1000 ) );
+                bandFrequencies << i18nc( "label for equalizer band frequency", "%1\nkHz", QString::number( rmatch.captured( 0 ).toInt()/1000 ) );
         }
         else
             bandFrequencies << mParam.name();
