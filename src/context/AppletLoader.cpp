@@ -43,7 +43,7 @@ QList<KPluginMetaData> AppletLoader::applets() const
 QList<KPluginMetaData> Context::AppletLoader::enabledApplets() const
 {
     QList<KPluginMetaData> list;
-    QStringList enabledApplets = Amarok::config(QStringLiteral("Context")).readEntry("enabledApplets", QStringList());
+    QStringList enabledApplets = Amarok::config(QStringLiteral("Context")).readEntry("enabledApplets", QStringList( QStringLiteral("org.kde.amarok.currenttrack") ));
 
     for (const auto &applet : m_applets)
     {

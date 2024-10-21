@@ -7,6 +7,7 @@ VERSION 3.1.81
    * Building an experimental Qt6/KF6 Amarok version is now possible
   CHANGES:
    * Amarok now depends on KDE Frameworks 5.108
+   * Show current track context applet by default
   BUGFIXES:
    * Fix context view applets on Qt6/KF6
 
