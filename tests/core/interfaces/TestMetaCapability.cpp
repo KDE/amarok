@@ -59,22 +59,21 @@ class MetaCapabilityMock : public MetaCapability
             return nullptr;
         }
 
-    private:
-        static QAction *action;
-        static QList<QAction*> actionsList;
 };
 
-QAction *MetaCapabilityMock::action = new QAction( nullptr );
-QList<QAction*> MetaCapabilityMock::actionsList;
+static QAction *action;
+static QList<QAction*> actionsList;
 
 // Create the static instances to be returned for testing
 Capabilities::ActionsCapability *MetaCapabilityMock::actionsCapability = new Capabilities::ActionsCapability( actionsList );
-Capabilities::BookmarkThisCapability *MetaCapabilityMock::bookmarkThisCapability= new Capabilities::BookmarkThisCapability( action );
+Capabilities::BookmarkThisCapability *MetaCapabilityMock::bookmarkThisCapability;
 
 QTEST_MAIN( TestMetaCapability )
 
 TestMetaCapability::TestMetaCapability()
 {
+     action = new QAction( nullptr );
+     MetaCapabilityMock::bookmarkThisCapability = new Capabilities::BookmarkThisCapability( action );
 }
 
 void
