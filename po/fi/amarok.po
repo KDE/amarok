@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2024-07-15 10:48+0300\n"
 "Last-Translator: Tuomas Nurmi <tuomas@norsumanageri.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -3876,7 +3876,7 @@ msgstr "Lisää &jonoon"
 msgid "Edit Track Details"
 msgstr "Muokkaa kappaleen sisältökuvauksia"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4194,37 +4194,37 @@ msgstr "Korvaus"
 msgid "Remove selected"
 msgstr "Poista valitut"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, kde-format
 msgid "Lyrics config"
 msgstr "Sanoitusasetukset"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, kde-format
 msgid "Font size:"
 msgstr "Fontin koko:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, kde-format
 msgid "Text alignment:"
 msgstr "Tekstin tasaus:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align left"
 msgstr "Tasaa vasemmalle"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align right"
 msgstr "Tasaa oikealle"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align center"
 msgstr "Keskitä"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, kde-format
 msgid "Font:"
 msgstr "Fontti:"
@@ -7767,44 +7767,44 @@ msgstr ""
 msgid "Input file"
 msgstr "Syötetiedosto"
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr "Täysi uudelleenhaku"
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr "Muodostaa koko kokoelman uudelleen. Tämä <i>ei</i> tuhoa tilastoja."
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, kde-format
 msgid "Import batch file..."
 msgstr "Tuo erätiedosto…"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, kde-format
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "Tuo kokoelma amarokcollectionscanner-ohjelman tuottamasta tiedostosta."
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 "&Etsi myös alikansioista (tekee täyden tarkistuksen valittaessa ensi kertaa)"
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "&Tarkkaile kansioiden muutoksia"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "Mikäli valittu, Amarok käy läpi kaikki alikansiot."
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
@@ -7813,7 +7813,7 @@ msgstr ""
 "Jos valittu, kokoelman kansioita tarkkaillaan muutosten varalta.\n"
 "Tarkkailu ei havaitse muutoksia symbolisten linkkien kohteissa."
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr "Hae uudelleen kansiosta ”%1”"
@@ -8044,12 +8044,11 @@ msgstr "Taajuuskorjaimen asetukset"
 
 #: dialogs/EqualizerDialog.cpp:87
 #, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
 msgstr ""
-"%0\n"
-"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11104,17 +11103,20 @@ msgstr "OPML-podcastin luku kohteesta %1 päättyi virheeseen:\n"
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
-"%0\n"
-"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "%0\n"
+#| "kHz"
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 "%0\n"
@@ -16358,6 +16360,20 @@ msgstr "Artisti: %1"
 #, kde-format
 msgid "empty"
 msgstr "tyhjä"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr ""
+#~ "%0\n"
+#~ "dB"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "Hz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "Hz"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "&Hae samankaltaisia artisteja"

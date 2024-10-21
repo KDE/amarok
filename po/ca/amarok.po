@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2024-10-16 19:12+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -3912,7 +3912,7 @@ msgstr "En&cua la peça"
 msgid "Edit Track Details"
 msgstr "Edita els detalls de la peça"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4228,37 +4228,37 @@ msgstr "Substitució"
 msgid "Remove selected"
 msgstr "Elimina la selecció"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, kde-format
 msgid "Lyrics config"
 msgstr "Configuració de les lletres"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, kde-format
 msgid "Font size:"
 msgstr "Mida del tipus de lletra:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, kde-format
 msgid "Text alignment:"
 msgstr "Alineació del text:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align left"
 msgstr "Alinea a l'esquerra"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align right"
 msgstr "Alinea a la dreta"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align center"
 msgstr "Alineació centrada"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, kde-format
 msgid "Font:"
 msgstr "Tipus de lletra:"
@@ -7836,12 +7836,12 @@ msgstr ""
 msgid "Input file"
 msgstr "Fitxer d'entrada"
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr "Torna a explorar-ho tot"
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
@@ -7849,35 +7849,35 @@ msgstr ""
 "Torna a explorar tota la col·lecció. Això <i>no</i> suprimirà cap "
 "estadística."
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, kde-format
 msgid "Import batch file..."
 msgstr "Importa un fitxer per lots..."
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, kde-format
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr ""
 "Importa una col·lecció des d'un fitxer produït per l'amarokcollectionscanner."
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 "E&xplora les carpetes recursivament (requereix una exploració completa si "
 "s'ha activat de nou)"
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "&Vigila els canvis en les carpetes"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "Si està seleccionat, l'Amarok llegirà totes les subcarpetes."
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
@@ -7887,7 +7887,7 @@ msgstr ""
 "col·lecció.\n"
 "El vigilant no s'adonarà dels canvis darrere els enllaços simbòlics."
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr "Torna a explorar «%1»"
@@ -8120,12 +8120,11 @@ msgstr "Configura l'equalitzador"
 
 #: dialogs/EqualizerDialog.cpp:87
 #, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
 msgstr ""
-"%0\n"
-"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11190,17 +11189,20 @@ msgstr "La lectura de l'OPML del pòdcast des de %1 ha acabat amb error:\n"
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
-"%0\n"
-"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "%0\n"
+#| "kHz"
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 "%0\n"
@@ -16459,6 +16461,20 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr ""
+#~ "%0\n"
+#~ "dB"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "Hz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "Hz"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "&Recupera els artistes semblants"

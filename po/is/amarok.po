@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2024-05-25 10:53+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
@@ -3908,7 +3908,7 @@ msgstr "Setja í &biðröð"
 msgid "Edit Track Details"
 msgstr "Sýsla með lagaupplýsingar"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4244,43 +4244,43 @@ msgstr "Skipta út"
 msgid "Remove selected"
 msgstr "Fjarlægja valið"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Settings"
 msgid "Lyrics config"
 msgstr "Stillingar"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Format:"
 msgid "Font size:"
 msgstr "Snið:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Text alignment:"
 msgstr "Jafnvægisstillingar"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Align left"
 msgstr "Jöfnun"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "Jafna skjábirtingu að"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Align center"
 msgstr "Jöfnun"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 #| msgid "Format:"
 msgid "Font:"
@@ -7878,52 +7878,52 @@ msgstr ""
 msgid "Input file"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "&Export Playlist As..."
 msgid "Import batch file..."
 msgstr "&Flytja út lagalista sem..."
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok Applet Manager"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "Amarok smáforritastjóri"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "&Fylgjast með breytingum á möppum"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "Ef valið mun Amarok leita í öllum undirmöppum."
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr ""
@@ -8151,8 +8151,9 @@ msgstr "Virkja hljóðblandara"
 
 #: dialogs/EqualizerDialog.cpp:87
 #, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
 msgstr ""
 
@@ -11288,15 +11289,17 @@ msgstr "Flyt inn hlaðvarpsrás (podcast channel) frá %1"
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 

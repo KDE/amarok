@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -3935,7 +3935,7 @@ msgstr "&Ciúáil"
 msgid "Edit Track Details"
 msgstr "Cuir Mionsonraí an Amhráin in Eagar"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4258,43 +4258,43 @@ msgstr "Ionadú"
 msgid "Remove selected"
 msgstr "Bain na cinn roghnaithe"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Lyrics Settings"
 msgid "Lyrics config"
 msgstr "Socruithe Liricí"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Font scale:"
 msgid "Font size:"
 msgstr "Scála an chló:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Text alignment:"
 msgstr "Ailíniú: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Align left"
 msgstr "Ailíniú"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "Ailínigh an T-ar-S le"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Align center"
 msgstr "Ailíniú"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font:"
@@ -8041,55 +8041,55 @@ msgstr ""
 msgid "Input file"
 msgstr "Inchomhad"
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr "Athscanadh iomlán"
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr ""
 "Athscan do bhailiúchán iomlán.  <i>Ní</i> scriosfaidh seo aon staitisticí."
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "Import Existing..."
 msgid "Import batch file..."
 msgstr "Iompórtáil Ceann Atá Ann..."
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok collection scanner"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "Scanóir bailiúchán Amarok"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 "&Scan fillteáin go hathchúrsach (déanfar scanadh iomlán an chéad uair a "
 "chuirfear tic anseo)"
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "&Coimhéad fillteáin ar athruithe"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "Más roghnaithe, Léifidh Amarok na fofhillteáin go léir."
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr "Athscan '%1'"
@@ -8343,12 +8343,11 @@ msgstr "Cumraigh an Cothromóir"
 
 #: dialogs/EqualizerDialog.cpp:87
 #, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
 msgstr ""
-"%0\n"
-"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11443,17 +11442,20 @@ msgstr "Theip ar phodchraoladh OPML a léamh ó %1 le hearráid:\n"
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
-"%0\n"
-"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "%0\n"
+#| "kHz"
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 "%0\n"
@@ -16765,6 +16767,20 @@ msgstr "Ealaíontóir: %1"
 #, kde-format
 msgid "empty"
 msgstr "folamh"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr ""
+#~ "%0\n"
+#~ "dB"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "Hz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "Hz"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "&Faigh ealaíontóirí cosúil leis"

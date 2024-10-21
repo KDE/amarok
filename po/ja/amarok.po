@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -3912,7 +3912,7 @@ msgstr "キューに追加(&Q)"
 msgid "Edit Track Details"
 msgstr "トラックの詳細を編集"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4229,43 +4229,43 @@ msgstr "置換"
 msgid "Remove selected"
 msgstr "選択したものを削除"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Lyrics"
 msgid "Lyrics config"
 msgstr "歌詞"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Font scale:"
 msgid "Font size:"
 msgstr "フォントスケール:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Text alignment:"
 msgstr "配置: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Align left"
 msgstr "配置: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "OSD の配置"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Align center"
 msgstr "配置: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font:"
@@ -7896,48 +7896,48 @@ msgstr ""
 msgid "Input file"
 msgstr "入力ファイル"
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr "完全再スキャン"
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr ""
 "コレクション全体を再スキャンします。統計情報については <i>削除しません</i>。"
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "Import OPML File"
 msgid "Import batch file..."
 msgstr "OPML ファイルをインポート"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok collection scanner"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "Amarok コレクションスキャナ"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 "フォルダを再帰的にスキャンする (新しくチェックする場合は完全スキャンが必要で"
 "す)(&S)"
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "フォルダの変更を監視する(&W)"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "有効にすると、Amarok はすべてのサブフォルダを読み込みます。"
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
@@ -7947,7 +7947,7 @@ msgstr ""
 "す。\n"
 "ただし、監視処理はシンボリックリンクの先にあるものまでは監視しません。"
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr "'%1' を再スキャン"
@@ -8175,12 +8175,11 @@ msgstr "イコライザを設定"
 
 #: dialogs/EqualizerDialog.cpp:87
 #, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
 msgstr ""
-"%0\n"
-"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11283,17 +11282,20 @@ msgstr "%1 からの OPML ポッドキャストの読み込み時にエラー:\n
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
-"%0\n"
-"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "%0\n"
+#| "kHz"
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 "%0\n"
@@ -16537,6 +16539,20 @@ msgstr "アーティスト: %1"
 #, kde-format
 msgid "empty"
 msgstr "空"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr ""
+#~ "%0\n"
+#~ "dB"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "Hz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "Hz"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "類似したアーティストを取得する(&R)"

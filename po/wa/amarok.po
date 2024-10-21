@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2014-03-28 22:28+0100\n"
 "Last-Translator: Jean Cayron <jean.cayron@gmail.com>\n"
 "Language-Team: Walloon <linux-wa@walon.org>\n"
@@ -3921,7 +3921,7 @@ msgstr "&Cawêye"
 msgid "Edit Track Details"
 msgstr "Candjî detays do boket"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4243,43 +4243,43 @@ msgstr "Discandjaedje"
 msgid "Remove selected"
 msgstr "Oister tchoezi"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Lyrics Settings"
 msgid "Lyrics config"
 msgstr "Apontiaedjes des paroles"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Font scale:"
 msgid "Font size:"
 msgstr "Schåle del fonte :"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Text alignment:"
 msgstr "Aroymint : "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Align left"
 msgstr "Aroymint"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "Aroyî OSD so"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment"
 msgid "Align center"
 msgstr "Aroymint"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font:"
@@ -7893,12 +7893,12 @@ msgstr ""
 msgid "Input file"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
@@ -7906,41 +7906,41 @@ msgstr ""
 "Ricorwaitî tote vosse ramexhnêye. Çouci n' disfaçrè <i>nén</i> les "
 "statistikes."
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "Import OPML File"
 msgid "Import batch file..."
 msgstr "Abaguer fitchî OPML"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok AFT Tagger"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "Fijheu d' etiketes Amarok AFT"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "&Waitî cwand les ridants candjèt"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "S' il est tchoezi, Amarok lérè tos les sorridants."
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr "Ricorwaitî « %1 »"
@@ -8174,12 +8174,12 @@ msgid "Configure Equalizer"
 msgstr "Mete en alaedje ewalijheu"
 
 #: dialogs/EqualizerDialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "0dB"
+#, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
-msgstr "0dB"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11307,17 +11307,20 @@ msgstr ""
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
-"%0\n"
-"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "%0\n"
+#| "kHz"
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 "%0\n"
@@ -16569,6 +16572,20 @@ msgstr "Årtisse : %1"
 #, kde-format
 msgid "empty"
 msgstr "vude"
+
+#, fuzzy
+#~| msgid "0dB"
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr "0dB"
+
+#~ msgid ""
+#~ "%0\n"
+#~ "Hz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "Hz"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "&Obtini des årtisses k' î rshonnèt"

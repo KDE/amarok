@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2010-01-30 14:30+0000\n"
 "Last-Translator: Emile Joubert <emile.joubert@gmail.com>\n"
 "Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
@@ -3999,7 +3999,7 @@ msgstr "Wagtou"
 msgid "Edit Track Details"
 msgstr "Wysig Snit Besonderhede"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4342,43 +4342,43 @@ msgstr "Vervang"
 msgid "Remove selected"
 msgstr "Verwyder Miniprogram"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Lyrics Settings"
 msgid "Lyrics config"
 msgstr "Lirieke Instellings"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font size:"
 msgstr "Skriftipe: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Text alignment:"
 msgstr "Belyning: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Align left"
 msgstr "Belyning: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "Belyn Voor-Skerm Vertoon met"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Align center"
 msgstr "Belyning: "
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font:"
@@ -8057,53 +8057,53 @@ msgstr ""
 msgid "Input file"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr ""
 "Herskandeer jou hele versameling. Dit sal <i>geen</i> statistieke skrap nie."
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "Import OPML File"
 msgid "Import batch file..."
 msgstr "Invoer OPML Lêers"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok Applet Manager"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "Amarok Miniprogram Bestuurder"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "Monitor gidse vir veranderinge"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "Indien gekies, sal Amarok al die subgidse lees."
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, fuzzy, kde-format
 #| msgid "Rescan"
 msgid "Rescan '%1'"
@@ -8341,12 +8341,12 @@ msgid "Configure Equalizer"
 msgstr "Band Menger Opstel"
 
 #: dialogs/EqualizerDialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "0 dB"
+#, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
-msgstr "0 dB"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11550,15 +11550,17 @@ msgstr "Opdateer potgooi van %1 het misluk met fout:\n"
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 
@@ -16994,6 +16996,13 @@ msgstr "Kunstenaar \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#, fuzzy
+#~| msgid "0 dB"
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr "0 dB"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "Onttrek verwante kunstenaars"

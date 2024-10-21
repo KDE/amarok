@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -3937,7 +3937,7 @@ msgstr "เพิ่มไปยัง&คิว"
 msgid "Edit Track Details"
 msgstr "แก้ไขรายละเอียดของแทร็ก"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4278,43 +4278,43 @@ msgstr "แทนที่"
 msgid "Remove selected"
 msgstr "เอาแอพเพล็ตออก"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Lyrics Settings"
 msgid "Lyrics config"
 msgstr "ตั้งค่าแอพเพล็ตเนื้อร้อง"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font size:"
 msgstr "แบบอักษร:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Text alignment:"
 msgstr "การจัดวาง:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Align left"
 msgstr "การจัดวาง:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "จัดวาง OSD กับ"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Alignment: "
 msgid "Align center"
 msgstr "การจัดวาง:"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 #| msgid "Font: "
 msgid "Font:"
@@ -7895,52 +7895,52 @@ msgstr ""
 msgid "Input file"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr "ตรวจค้นคลังสื่ออีกครั้งอย่างเต็มรูปแบบ แต่จะ<i>ไม่มี</i>การลบค่าสถิติใด ๆ"
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "Import OPML File"
 msgid "Import batch file..."
 msgstr "นำเข้าแฟ้ม OPML"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok Applet Manager"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "ตัวจัดการแอพเพล็ตของแอมอะร็อก"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "&คอยเฝ้าดูการเปลี่ยนแปลงของโฟลเดอร์"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "หากเลือกตัวเลือกนี้ แอมอะร็อกจะทำการอ่านโฟลเดอร์ย่อยทั้งหมด"
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr "ตรวจค้น '%1' อีกครั้ง"
@@ -8175,12 +8175,12 @@ msgid "Configure Equalizer"
 msgstr "ปรับแต่งอิควอไลเซอร์"
 
 #: dialogs/EqualizerDialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "0 dB"
+#, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
-msgstr "0 dB"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11288,15 +11288,17 @@ msgstr "กำลังนำเข้าช่องของพ็อดแค
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 
@@ -16524,6 +16526,13 @@ msgstr "ศิลปิน \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#, fuzzy
+#~| msgid "0 dB"
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr "0 dB"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "&ดึงข้อมูลศิลปินเดียวกันนี้"

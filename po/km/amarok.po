@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-06 01:48+0000\n"
+"POT-Creation-Date: 2024-10-21 01:50+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -3833,7 +3833,7 @@ msgstr "ជួរ"
 msgid "Edit Track Details"
 msgstr "កែសម្រួល​សេចក្ដី​លម្អិត​បទ"
 
-#: context/applets/analyzer/package/contents/ui/main.qml:38
+#: context/applets/analyzer/package/contents/ui/main.qml:37
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
@@ -4158,40 +4158,40 @@ msgstr "ជំនួស"
 msgid "Remove selected"
 msgstr "យក​អាប់ភ្លេត​ចេញ"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, fuzzy, kde-format
 #| msgid "Lyrics Settings"
 msgid "Lyrics config"
 msgstr "ការ​កំណត់​អត្ថបទ​ចម្រៀង"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, fuzzy, kde-format
 #| msgid "Font scale:"
 msgid "Font size:"
 msgstr "មាត្រដ្ឋាន​ពុម្ពអក្សរ​ ៖"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, fuzzy, kde-format
 msgid "Text alignment:"
 msgstr "តម្រឹម"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 msgid "Align left"
 msgstr "តម្រឹម"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 #| msgid "Align OSD to"
 msgid "Align right"
 msgstr "តម្រឹម OSD ត្រឹម"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, fuzzy, kde-format
 msgid "Align center"
 msgstr "តម្រឹម"
 
-#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
+#: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, fuzzy, kde-format
 msgid "Font:"
 msgstr "ទ្រង់ទ្រាយ ៖"
@@ -7731,52 +7731,52 @@ msgstr ""
 msgid "Input file"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:67
+#: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:68
+#: dialogs/CollectionSetup.cpp:69
 #, kde-format
 msgid ""
 "Rescan your entire collection. This will <i>not</i> delete any statistics."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:72
 #, fuzzy, kde-format
 #| msgid "Import OPML File"
 msgid "Import batch file..."
 msgstr "នាំ​ចូល​ឯកសារ​ OPML"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:73
 #, fuzzy, kde-format
 #| msgid "Amarok Applet Manager"
 msgid "Import collection from file produced by amarokcollectionscanner."
 msgstr "កម្មវិធី​គ្រប់គ្រង​អាភ្លេត​របស់ Amarok"
 
-#: dialogs/CollectionSetup.cpp:80
+#: dialogs/CollectionSetup.cpp:81
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:81
+#: dialogs/CollectionSetup.cpp:82
 #, kde-format
 msgid "&Watch folders for changes"
 msgstr "ឃ្លាំមើល​ការ​ផ្លាស់​ប្ដូរ​ថត"
 
-#: dialogs/CollectionSetup.cpp:90
+#: dialogs/CollectionSetup.cpp:91
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
 msgstr "ប្រសិន​បើ​បានជ្រើស នោះ Amarok នឹង​អាន​ថតរង​ទាំងអស់ ។"
 
-#: dialogs/CollectionSetup.cpp:91
+#: dialogs/CollectionSetup.cpp:92
 #, kde-format
 msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
 
-#: dialogs/CollectionSetup.cpp:189
+#: dialogs/CollectionSetup.cpp:190
 #, kde-format
 msgid "Rescan '%1'"
 msgstr ""
@@ -7998,12 +7998,12 @@ msgid "Configure Equalizer"
 msgstr "បើក​អេហ្គុយ"
 
 #: dialogs/EqualizerDialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "0 dB"
+#, kde-format
+msgctxt "label for equalizer gain and suffix"
 msgid ""
-"%0\n"
+"%1\n"
 "dB"
-msgstr "​0 dB"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11073,15 +11073,17 @@ msgstr "បា​នបរាជ័យ​ជាមួយកំហុស​កា
 
 #: playback/EqualizerController.cpp:135
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "Hz"
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
 #, kde-format
+msgctxt "label for equalizer band frequency"
 msgid ""
-"%0\n"
+"%1\n"
 "kHz"
 msgstr ""
 
@@ -16281,6 +16283,13 @@ msgstr "សិល្បករ \"%1\""
 #, kde-format
 msgid "empty"
 msgstr "សម្អាត"
+
+#, fuzzy
+#~| msgid "0 dB"
+#~ msgid ""
+#~ "%0\n"
+#~ "dB"
+#~ msgstr "​0 dB"
 
 #~ msgid "&Retrieve similar artists"
 #~ msgstr "ទៅ​យក​សិល្បករ​ស្រដៀង​គ្នា"
