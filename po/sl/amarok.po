@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-21 01:50+0000\n"
-"PO-Revision-Date: 2024-10-11 19:17+0200\n"
+"PO-Revision-Date: 2024-10-21 07:07+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -8189,6 +8189,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -9994,7 +9996,7 @@ msgstr "Matěj Laitl"
 #: main.cpp:127
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
-msgstr "Znova napisana koda za zbirke iPod in več (strohel)"
+msgstr "Znova napisana zbirka iPod in več (strohel)"
 
 #: main.cpp:130
 #, kde-format
@@ -11247,18 +11249,17 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
