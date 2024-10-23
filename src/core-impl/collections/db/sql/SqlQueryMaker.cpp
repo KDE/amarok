@@ -143,6 +143,7 @@ struct SqlQueryMaker::Private
     Meta::LabelList blockingLabels;
     bool blocking;
     bool used;
+    bool workerEnqueued;
     qint64 returnValueType;
 };
 
@@ -163,16 +164,18 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     d->blocking = false;
     d->used = false;
     d->returnValueType = 0;
+    d->workerEnqueued = false;
 }
 
 SqlQueryMaker::~SqlQueryMaker()
 {
     disconnect();
     abortQuery();
-    if( d->worker )
+    if( !d->workerEnqueued && d->worker )
     {
         d->worker->deleteWhenReady();
         d->worker = nullptr;
+        d->workerEnqueued = false;
     }
     delete d;
 }
@@ -180,7 +183,7 @@ SqlQueryMaker::~SqlQueryMaker()
 void
 SqlQueryMaker::abortQuery()
 {
-    if( d->worker )
+    if( !d->workerEnqueued && d->worker )
     {
         d->worker->requestAbort();
         d->worker->disconnect( this );
@@ -197,7 +200,7 @@ SqlQueryMaker::run()
         debug() << "sql querymaker used without reset or initialization" << Qt::endl;
         return; //better error handling?
     }
-    if( d->worker && !d->worker->isFinished() )
+    if( !d->workerEnqueued && d->worker && !d->worker->isFinished() )
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
@@ -221,6 +224,7 @@ SqlQueryMaker::run()
             connect( qmi, &Collections::SqlQueryMakerInternal::newLabelsReady, this, &SqlQueryMaker::newLabelsReady, Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
             connect( d->worker, &SqlWorkerThread::done, this, &SqlQueryMaker::done );
+            d->workerEnqueued = true;
             ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->worker) );
         }
         else //use it blocking
@@ -246,6 +250,7 @@ SqlQueryMaker::done( ThreadWeaver::JobPointer job )
     Q_UNUSED( job )
 
     d->worker = nullptr; // d->worker *is* the job, prevent stale pointer
+    d->workerEnqueued = false;
     Q_EMIT queryDone();
 }
 
