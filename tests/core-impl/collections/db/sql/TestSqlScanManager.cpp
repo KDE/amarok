@@ -493,9 +493,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
     {
         Meta::FieldHash uidChange;
         QString uid = track->uidUrl().remove( QStringLiteral("amarok-sqltrackuid://") );
-        QStringView left = uid.left( 10 );
-        QStringView right = uid.right( uid.size() - left.size() );
-        QString newUid = QStringLiteral("%1%2").arg( right.toString(), left.toString() );
+        QString newUid = QStringLiteral("%1%2").arg( uid.right( uid.size() - 10 ), uid.left( 10 ) );
         uidChange.insert( Meta::valUniqueId, newUid );
         uidChanges.insert( track->trackNumber(), newUid );
 
