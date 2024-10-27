@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-21 01:50+0000\n"
-"PO-Revision-Date: 2024-10-12 10:40+0200\n"
+"PO-Revision-Date: 2024-10-26 12:29+0200\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
 "Language: pl\n"
@@ -8149,6 +8149,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -11206,18 +11208,17 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40

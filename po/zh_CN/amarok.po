@@ -10727,17 +10727,12 @@ msgid ""
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
-"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -15736,17 +15731,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "dB"
-#~ msgstr ""
-#~ "%0\n"
-#~ "dB"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%0\n"
-#~ "Hz"
