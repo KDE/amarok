@@ -771,7 +771,7 @@
 >Orígens de suports</guilabel
 >. Aquesta icona s'expandeix i es contrau a mesura que navegueu a través de la subfinestra <guilabel
 >Orígens de suports</guilabel
->, permetent navegar fàcilment per la vostra col·lecció fent clic a la carpeta desitjada a la barra del fil d'Ariadna. </para>
+>, que permet navegar fàcilment per la vostra col·lecció fent clic a la carpeta desitjada a la barra del fil d'Ariadna. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -10721,7 +10721,7 @@
 >Barra d'ànim</guilabel
 > diu que no pot trobar un element, &ead;, dona un missatge d'error com <screen
 >No s'ha pogut crear un element del tipus «fftwspectrum», si us plau, instal·leu-lo.</screen
->, això normalment significa que no estan instal·lats els connectors necessaris (vegeu la llista de connectors <link linkend="supported-filetypes"
+> això normalment significa que no estan instal·lats els connectors necessaris (vegeu la llista de connectors <link linkend="supported-filetypes"
 >aquí</link
 >), o que no heu instal·lat el paquet Moodbar en el mateix prefix que el GStreamer. Si la libmoodbar.so i la libgstdecodebin.so no estan en el mateix directori, llavors el paquet Moodbar no està instal·lat en el mateix prefix que el GStreamer. Llegiu al fitxer INSTALL les instruccions sobre com configurar correctament el paquet «moodbar». Alternativament, <emphasis
 >si sabeu què esteu fent,</emphasis
