@@ -80,4 +80,3 @@ target_link_libraries( kcm_amarok_service_gpodder
 )
 
 install(TARGETS kcm_amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR})
-install(FILES amarok_service_gpodder_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )

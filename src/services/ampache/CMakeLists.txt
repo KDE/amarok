@@ -63,9 +63,7 @@ endif()
 
 
 install(TARGETS amarok_service_ampache DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-if(NOT BUILD_WITH_QT6)
-  install(FILES amarok_service_ampache.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-endif()
+
 
 ########### next target ###############
 
@@ -91,7 +89,3 @@ endif()
 
 
 install(TARGETS kcm_amarok_service_ampache DESTINATION ${KDE_INSTALL_PLUGINDIR})
-
-if(NOT BUILD_WITH_QT6)
-  install(FILES amarok_service_ampache_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-endif()

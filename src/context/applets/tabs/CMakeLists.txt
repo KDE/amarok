@@ -13,7 +13,6 @@ target_link_libraries( amarok_context_applet_tabs
 )
 
 install( TARGETS amarok_context_applet_tabs DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-install( FILES amarok-context-applet-tabs.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
 install( FILES amarok-tabs-guitar.png DESTINATION ${KDE_INSTALL_DATADIR}/amarok/images/ )
 install( FILES amarok-tabs-bass.png DESTINATION ${KDE_INSTALL_DATADIR}/amarok/images/ )
 install( FILES amarok-tabs-drum.png DESTINATION ${KDE_INSTALL_DATADIR}/amarok/images/ )

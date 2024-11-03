@@ -138,4 +138,3 @@ target_link_libraries( kcm_amarok_service_mp3tunes
 )
 
 install(TARGETS kcm_amarok_service_mp3tunes DESTINATION ${KDE_INSTALL_PLUGINDIR})
-install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
