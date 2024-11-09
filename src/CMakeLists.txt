@@ -977,7 +977,6 @@ if(NOT BUILD_WITH_QT6)
   install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
   install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 endif()
-#install(FILES amarokpcast.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 install(FILES amarokconfig.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} )
 install(FILES dbus/org.kde.amarok.App.xml

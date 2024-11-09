@@ -10,5 +10,3 @@ if(APPLE)
    set_target_properties(amarok_context_applet_songkick PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 target_link_libraries(amarok_context_applet_songkick amarokcore amaroklib KF${KF_MAJOR_VERSION}::Plasma KF${KF_MAJOR_VERSION}::KIOCore)
-
-install(TARGETS amarok_context_applet_songkick DESTINATION ${KDE_INSTALL_PLUGINDIR})KDE_INSTALL_KSERVICES5DIR})

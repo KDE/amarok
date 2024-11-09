@@ -81,8 +81,3 @@ target_link_libraries( kcm_amarok_service_lastfm
 
 install( TARGETS kcm_amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
-########### install files ###############
-
-if(NOT BUILD_WITH_QT6)
-  install( FILES amaroklastfm.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
-endif()
