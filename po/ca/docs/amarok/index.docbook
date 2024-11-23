@@ -28,7 +28,7 @@
 >2.9.0</releaseinfo>
 <abstract>
 <para
->L'&amarok; és un reproductor de música lliure, versàtil i potent per al &Linux;. L'última sèrie de llançament 2.x, sovint coneguda com a «Amarok&nbsp;2», és multiplataforma (pot ser utilitzada en moltes plataformes, incloent-hi &Linux;, &MacOS; i &Microsoft; &Windows;) i implementa una base de codi completament reelaborada que li permetrà incorporar característiques noves interessants a mesura que el llançament madura. El llançament estable actual és la versió 2.4.</para>
+>L'&amarok; és un reproductor de música lliure, versàtil i potent per al &Linux;. L'última sèrie de llançament 2.x, sovint coneguda com a «Amarok&nbsp;2», és multiplataforma (pot ser utilitzada en moltes plataformes, incloent-hi &Linux;, &MacOS; i &Microsoft; &Windows;) i implementa una base de codi completament reelaborada que li permetrà incorporar característiques noves interessants a mesura que el llançament es fa madur. El llançament estable actual és la versió 2.4.</para>
       </abstract>
 <keywordset>
  <keyword
@@ -14269,7 +14269,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Informació sobre KDE, i enllaços per unir-se i donar suport a KDE.</para
+>Informació sobre KDE, i enllaços per a unir-se i donar suport a KDE.</para
 ></entry>
   </row>
   </tbody>
