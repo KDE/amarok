@@ -9,7 +9,7 @@
 # Ville-Pekka Vainio <vpivaini@cs.helsinki.fi>, 2007.
 # Mikko Piippo <piippo@cc.helsinki.fi>, 2007.
 # Mikael Lammentausta <mikael.lammentausta+kdetrans@gmail.com>, 2009.
-# Tommi Nieminen <translator@legisign.org>, 2009, 2010, 2011, 2012, 2013, 2014, 2019, 2020, 2021, 2022, 2024.
+# SPDX-FileCopyrightText: 2009, 2010, 2011, 2012, 2013, 2014, 2019, 2020, 2021, 2022, 2024 Tommi Nieminen <translator@legisign.org>
 # Lasse Liehu <lasse.liehu@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016.
 # Jiri Grönroos <jiri.gronroos+kde@iki.fi>, 2012.
 msgid ""
@@ -17,16 +17,15 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-21 01:50+0000\n"
-"PO-Revision-Date: 2024-07-15 10:48+0300\n"
-"Last-Translator: Tuomas Nurmi <tuomas@norsumanageri.org>\n"
+"PO-Revision-Date: 2024-10-19 09:28+0300\n"
+"Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-POT-Import-Date: 2013-01-13 20:43:14+0000\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 23.08.5\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1880,24 +1879,22 @@ msgstr ""
 "Haluatko käyttää sitä kokoelmakansiona?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Kokoelman kansiot"
+msgstr "Valitse kokoelmakansio"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Käyttäjä"
+msgstr "Käytä"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Älä käytä"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -5505,8 +5502,7 @@ msgid "Remove empty folders?"
 msgstr "Poistetaanko tyhjät kansiot?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Poista"
@@ -5515,7 +5511,7 @@ msgstr "Poista"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Älä poista"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -13362,8 +13358,7 @@ msgid "Remove Script"
 msgstr "Poista skripti"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Poista"
@@ -13372,7 +13367,7 @@ msgstr "Poista"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Älä poista"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13383,9 +13378,7 @@ msgstr "Oletko aivan varma?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Kyllä"
@@ -13394,9 +13387,7 @@ msgstr "Kyllä"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Ei"
@@ -14111,11 +14102,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "Irrotetaanko Last.fm-tunnuksen liitos?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "Irrota &medialaite"
+msgstr "Irrota"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -15324,18 +15314,16 @@ msgstr ""
 "Voit aina muuttaa päätöstäsi Amarokin asetuksista."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Synkronoi"
+msgstr "Tahdista"
 
 #: statsyncing/Controller.cpp:119
-#, fuzzy, kde-format
-#| msgid "Artwork synchronized"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr "Taide tahdistettu"
+msgstr "Älä tahdista"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
