@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-21 01:50+0000\n"
-"PO-Revision-Date: 2024-10-19 19:43+0900\n"
+"PO-Revision-Date: 2024-12-02 17:22+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.08.2\n"
+"X-Generator: Lokalize 24.08.3\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, kde-format
@@ -1765,6 +1765,7 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"無效的 Last.fm 工作階段金鑰。請在外掛程式設定中重新連線您的 Last.fm 帳號。"
 
 #: App.cpp:606
 #, kde-format
@@ -4140,7 +4141,7 @@ msgstr "類似 <b>%1</b>"
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 個聆聽者<br>%2 次播放"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4148,7 +4149,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>您播放過 %1 次"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -7755,6 +7756,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -10768,18 +10771,17 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
@@ -12992,14 +12994,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "文稿 %1 已經執行超過五秒了。要結束它嗎？"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13007,8 +13002,8 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"文稿 %1 使用了已廢棄的 API 呼叫。請聯繫文稿作者 %2 （%3），並請對方在下次 "
-"Amarok 釋出前更新文稿。"
+"文稿 %1 使用了已廢棄的 API 呼叫。請聯繫文稿作者群 %2 並請對方在下次 Amarok 釋"
+"出前更新文稿。"
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13438,9 +13433,7 @@ msgstr "Last.fm 設定檔"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "使用者名稱："
 
@@ -13448,33 +13441,28 @@ msgstr "使用者名稱："
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:222
 #: services/lastfm/LastFmServiceSettings.cpp:245
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "連線失敗"
+msgstr "連線到帳號"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:273
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "不需要"
+msgstr "未連線"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">登入 Last.fm</a>"
+msgstr "<a href=\"https://www.last.fm/join\">註冊 Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "中斷裝置連線(&D)"
+msgstr "中斷帳號連線"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13655,11 +13643,13 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"從 KWallet 轉移 Last.fm 使用者名稱時發生了錯誤。請在外掛程式設定中重新連線您"
+"的 Last.fm 帳號。"
 
 #: services/lastfm/LastFmServiceSettings.cpp:90
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "您要將 Amarok 從 Last.fm 帳號 %1 中斷連線嗎？"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
@@ -13667,11 +13657,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "要中斷 Last.fm 帳號的連線嗎？"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "中斷裝置連線(&D)"
+msgstr "中斷連線"
 
 #: services/lastfm/LastFmServiceSettings.cpp:139
 #: services/lastfm/LastFmServiceSettings.cpp:196
@@ -13682,17 +13671,16 @@ msgid "Failed"
 msgstr "失敗"
 
 #: services/lastfm/LastFmServiceSettings.cpp:144
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "開啟此事件在 Last.fm 上的網頁"
+msgstr "正在開啟 Last.fm 網頁"
 
 #: services/lastfm/LastFmServiceSettings.cpp:162
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "完成帳號連線"
 
 #: services/lastfm/LastFmServiceSettings.cpp:187
 #, kde-format
@@ -13701,6 +13689,8 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Last.fm 帳號連線未成功完成。請確保您在之前開啟的 Last.fm 網頁上授權 Amarok 連"
+"線至您的 Last.fm 帳號，然後再試一次。"
 
 #: services/lastfm/LastFmServiceSettings.cpp:244
 #, kde-format
@@ -14448,13 +14438,7 @@ msgid "Updating the local Magnatune database."
 msgstr "正在更新本地端的 Magnatune 資料庫。"
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14466,7 +14450,7 @@ msgstr ""
 "\n"
 "\taddMoodyTracks &lt;心情&gt; &lt;數量&gt;：隨機挑選指定數量的曲目至播放清"
 "單。選定的曲目必須符合「心情」引數所指定的心情。若「心情」引數中含有空格，則"
-"必須以 %%20 取代。"
+"必須以 &#37;20 取代。"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -14545,14 +14529,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "在 Amarok 中處理 MP3tunes 服務的自動同步。"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -14561,7 +14538,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"伺服器: irc.libera.chat / 頻道: #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"伺服器: irc.libera.chat / 頻道: #amarok\n"
 "\n"
 "問題回報:\n"
 "amarok@kde.org"
