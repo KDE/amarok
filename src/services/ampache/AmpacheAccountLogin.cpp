@@ -110,7 +110,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &dat
     }
     else
     {
-        debug() << "Version Older than 35001 Generated MD5 Auth " << version;
+        debug() << "Version Older than 350001 Generated MD5 Auth " << version;
 
         QString rawHandshake = timestamp + m_password;
         QCryptographicHash md5Hash( QCryptographicHash::Md5 );
@@ -181,13 +181,27 @@ AmpacheAccountLogin::getVersion( const QDomDocument& doc ) const
     QDomElement error = root.firstChildElement(QStringLiteral("error"));
     //find status code:
     QDomElement version = root.firstChildElement(QStringLiteral("version"));
+    QDomElement compatible = root.firstChildElement(QStringLiteral("compatible"));
 
-    // It's OK if we get a null response from the version, that just means we're dealing with an older version
+    // It's OK if we get a null response from the "version" or "compatible"
+    // element as that just means we're dealing with a very old version.
+    //
+    // N.B. The format of the "version" response changed from a 6 digit integer
+    // to a dotted triple in Ampache 5.0.0 and the conversion to integer
+    // produces a small value.  For that reason, prefer the "compatible"
+    // value if it exists.  That will typically be "350001" representing
+    // Ampache version 3.5.1, but that is good enough to determine that we
+    // should use the new password scheme when authenticating.
     if( !error.isNull() )
     {
         // Default the Version down if it didn't work
         debug() << "getVersion error: " << error.text();
         return 100000;
+    }
+    else if( !compatible.isNull() )
+    {
+        debug() << "getVersion returned: " << compatible.text();
+        return compatible.text().toInt();
     }
     else if( !version.isNull() )
     {
