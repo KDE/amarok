@@ -10,6 +10,7 @@ VERSION 3.1.81
    * Show current track context applet by default
   BUGFIXES:
    * Fix context view applets on Qt6/KF6
+   * Fix Ampache login on server version 5.0.0 and later (BR 496581)
 
 VERSION 3.1.1
   FEATURES:
