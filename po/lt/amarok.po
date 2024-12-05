@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-21 01:50+0000\n"
+"POT-Creation-Date: 2024-12-05 01:51+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -13856,7 +13856,7 @@ msgid "Authentication failed."
 msgstr "Autentikacija nepavyko."
 
 #: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:233
+#: services/ampache/AmpacheAccountLogin.cpp:247
 #, kde-format
 msgid "Authentication Error"
 msgstr "Autentifikavimo klaida"

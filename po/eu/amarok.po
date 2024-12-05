@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-21 01:50+0000\n"
+"POT-Creation-Date: 2024-12-05 01:51+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -13583,7 +13583,7 @@ msgid "Authentication failed."
 msgstr "Egiaztapenak huts egin du."
 
 #: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:233
+#: services/ampache/AmpacheAccountLogin.cpp:247
 #, kde-format
 msgid "Authentication Error"
 msgstr "Errorea autentifikazioan"

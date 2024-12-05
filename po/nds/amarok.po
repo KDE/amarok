@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-21 01:50+0000\n"
+"POT-Creation-Date: 2024-12-05 01:51+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -13667,7 +13667,7 @@ msgid "Authentication failed."
 msgstr "Identiteetprööv: TCP fehlslaan"
 
 #: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:233
+#: services/ampache/AmpacheAccountLogin.cpp:247
 #, kde-format
 msgid "Authentication Error"
 msgstr "Identiteetprööv fehlslaan"
