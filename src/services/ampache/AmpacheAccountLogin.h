@@ -54,6 +54,7 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
     private Q_SLOTS:
         void authenticate( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
         void authenticationComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+        void ampacheRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
 
     private:
         int getVersion( const QDomDocument& doc ) const;

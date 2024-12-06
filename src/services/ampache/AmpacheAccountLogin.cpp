@@ -43,12 +43,24 @@ AmpacheAccountLogin::AmpacheAccountLogin( const QUrl& url, const QString& userna
     , m_authRequest( nullptr )
     , m_pingRequest( nullptr )
 {
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedReply,
+             this, &AmpacheAccountLogin::ampacheRequestRedirected );
     reauthenticate();
 }
 
 
 AmpacheAccountLogin::~AmpacheAccountLogin()
 {
+}
+
+void
+AmpacheAccountLogin::ampacheRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply )
+{
+    debug() << "Ampache request was redirected from" << oldReply->url() << "to" << newReply->url() << "- seeing if old request is stored";
+    if( m_pingRequest == oldReply )
+        m_pingRequest = newReply;
+    else if( m_authRequest == oldReply )
+        m_authRequest = newReply;
 }
 
 void
