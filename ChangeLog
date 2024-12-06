@@ -12,6 +12,7 @@ VERSION 3.1.81
    * Probably fix occasional crashes when filtering collection (BR 492406)
    * Fix context view applets on Qt6/KF6
    * Fix Ampache login on server version 5.0.0 and later (BR 496581)
+   * Fix crash if Ampache login is redirected (BR 396590)
 
 VERSION 3.1.1
   FEATURES:
