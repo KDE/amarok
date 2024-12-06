@@ -37,6 +37,7 @@
 QTEST_GUILESS_MAIN( TestASXPlaylist )
 
 TestASXPlaylist::TestASXPlaylist()
+: m_tempDir( nullptr )
 {
 }
 

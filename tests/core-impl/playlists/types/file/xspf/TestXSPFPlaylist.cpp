@@ -37,6 +37,7 @@
 QTEST_GUILESS_MAIN( TestXSPFPlaylist )
 
 TestXSPFPlaylist::TestXSPFPlaylist()
+: m_tempDir( nullptr )
 {}
 
 QString

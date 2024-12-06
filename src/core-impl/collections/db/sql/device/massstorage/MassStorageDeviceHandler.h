@@ -49,7 +49,6 @@ private:
 class MassStorageDeviceHandler : public DeviceHandler
 {
 public:
-    MassStorageDeviceHandler();
     MassStorageDeviceHandler(int deviceId, const QString &mountPoint, const QString &uuid );
 
     ~MassStorageDeviceHandler() override;

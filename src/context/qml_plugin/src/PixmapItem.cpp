@@ -25,7 +25,8 @@
 
 
 PixmapItem::PixmapItem()
-    : m_sizeChanged( true )
+    : m_pixmapChanged( false )
+    , m_sizeChanged( true )
 {
     setFlag( ItemHasContents );
 }

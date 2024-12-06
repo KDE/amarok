@@ -27,10 +27,6 @@
 #include <Solid/StorageAccess>
 #include <Solid/StorageVolume>
 
-MassStorageDeviceHandler::MassStorageDeviceHandler(): DeviceHandler()
-{
-}
-
 MassStorageDeviceHandler::MassStorageDeviceHandler( int deviceId, const QString &mountPoint, const QString &udi )
     : DeviceHandler()
     , m_deviceID( deviceId )

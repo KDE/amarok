@@ -36,6 +36,7 @@
 QTEST_GUILESS_MAIN( TestPLSPlaylist )
 
 TestPLSPlaylist::TestPLSPlaylist()
+: m_tempDir( nullptr )
 {}
 
 QString

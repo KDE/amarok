@@ -34,6 +34,7 @@
 QTEST_GUILESS_MAIN( TestM3UPlaylist )
 
 TestM3UPlaylist::TestM3UPlaylist()
+: m_tempDir( nullptr )
 {
 }
 

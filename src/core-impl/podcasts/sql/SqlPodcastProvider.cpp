@@ -1364,7 +1364,6 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
         Amarok::QStringx filenameLayout = Amarok::QStringx( sqlChannel->filenameLayout() );
         QMap<QString,QString> layoutmap;
-        QString sequenceNumber;
 
         if( sqlEpisode->artist() )
             layoutmap.insert( QStringLiteral("artist"), sqlEpisode->artist()->prettyName() );
@@ -1382,8 +1381,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
         layoutmap.insert( QStringLiteral("pubdate"), sqlEpisode->pubDate().toString() );
 
-        sequenceNumber.asprintf( "%.6d", sqlEpisode->sequenceNumber() );
-        layoutmap.insert( QStringLiteral("number"), sequenceNumber );
+        layoutmap.insert( QStringLiteral("number"), QString::number( sqlEpisode->sequenceNumber() ).rightJustified( 6, QLatin1Char( '0' ) ) );
 
         if( sqlEpisode->album() )
             layoutmap.insert( QStringLiteral("album"), sqlEpisode->album()->prettyName() );

@@ -33,6 +33,7 @@ ServiceBrowser * ServiceBrowser::instance()
 
 ServiceBrowser::ServiceBrowser( const QString& name, QWidget* parent )
     : BrowserCategoryList( name, parent, true )
+    , m_scriptableServiceManager( nullptr )
 {
     debug() << "ServiceBrowser starting...";
 
