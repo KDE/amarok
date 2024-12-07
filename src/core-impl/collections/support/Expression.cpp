@@ -178,7 +178,7 @@ void ExpressionParser::finishedElement()
     m_element.text = m_string;
     m_string.clear();
 
-    if( !m_element.text.isEmpty() )
+    if( !m_element.text.isEmpty() || !m_element.field.isEmpty() )
         m_or.append( m_element );
 
     //m_element = expression_element();

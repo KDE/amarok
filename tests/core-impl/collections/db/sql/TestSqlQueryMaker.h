@@ -75,6 +75,9 @@ private Q_SLOTS:
     void testReturnFunctions_data();
     void testReturnFunctions();
 
+    void testEmptyMatch();
+    void testNotEmptyMatch();
+
     void testLabelMatch();
     void testMultipleLabelMatches();
 

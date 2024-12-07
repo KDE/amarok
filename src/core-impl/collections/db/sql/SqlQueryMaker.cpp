@@ -532,6 +532,10 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
         QString filter = QStringLiteral(" %1 tracks.url IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ");
         d->queryFilter += filter.arg( andOr(), like );
     }
+    else if( filter.isEmpty() )
+    {
+        d->queryFilter += QStringLiteral( " %1 ( %2 IS NULL or %3 = '') " ).arg( andOr(), nameForValue( value ), nameForValue( value ) );
+    }
     else
     {
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
@@ -555,6 +559,10 @@ SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBeg
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
         QString filter = QStringLiteral(" %1 tracks.url NOT IN (SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ");
         d->queryFilter += filter.arg( andOr(), like );
+    }
+    else if( filter.isEmpty() )
+    {
+        d->queryFilter += QStringLiteral( " %1 NOT ( %2 IS NULL or %3 = '') " ).arg( andOr(), nameForValue( value ), nameForValue( value ) );
     }
     else
     {

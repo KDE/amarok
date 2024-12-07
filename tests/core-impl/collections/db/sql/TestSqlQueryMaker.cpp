@@ -855,6 +855,30 @@ TestSqlQueryMaker::testReturnFunctions()
 }
 
 void
+TestSqlQueryMaker::testEmptyMatch()
+{
+    Collections::SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( Collections::QueryMaker::Track );
+
+    qm.addFilter( Meta::valComment, "", true, true );
+    qm.run();
+    checkResultCount( &qm, Collections::QueryMaker::Track, 2 );
+}
+
+void
+TestSqlQueryMaker::testNotEmptyMatch()
+{
+    Collections::SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( Collections::QueryMaker::Track );
+
+    qm.excludeFilter( Meta::valComment, "", true, true );
+    qm.run();
+    checkResultCount( &qm, Collections::QueryMaker::Track, 4 );
+}
+
+void
 TestSqlQueryMaker::testLabelMatch()
 {
     Meta::LabelPtr label = m_collection->registry()->getLabel( QStringLiteral("labelB") );

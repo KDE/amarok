@@ -5,6 +5,7 @@ Amarok ChangeLog
 VERSION 3.1.81
   FEATURES:
    * Building an experimental Qt6/KF6 Amarok version is now possible
+   * Allow filtering collection by lack of tag / empty tag (BR 325317)
   CHANGES:
    * Amarok now depends on KDE Frameworks 5.108
    * Show current track context applet by default

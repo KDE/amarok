@@ -148,10 +148,24 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
                     case Meta::valSamplerate:
                     case Meta::valDiscNr:
                     case Meta::valTrackNr:
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toInt(), compare );
+                        if( elem.text.isEmpty() )
+                        {
+                            ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        }
+                        else
+                        {
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toInt(), compare );
+                        }
                         break;
                     case Meta::valRating:
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toFloat() * 2, compare );
+                        if( elem.text.isEmpty() )
+                        {
+                            ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        }
+                        else
+                        {
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toFloat() * 2, compare );
+                        }
                         break;
                     case Meta::valLength:
                         ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toInt() * 1000, compare );
