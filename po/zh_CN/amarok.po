@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-05 01:51+0000\n"
+"POT-Creation-Date: 2024-12-07 01:51+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -2671,7 +2671,7 @@ msgstr ""
 "创建、编辑、整理或加载播放列表。Amarok 会在扫描您的收藏集时，将找到的播放列表"
 "自动添加进来。同时此处也会您手动保存的播放列表。"
 
-#: browsers/servicebrowser/ServiceBrowser.cpp:39
+#: browsers/servicebrowser/ServiceBrowser.cpp:40
 #, kde-format
 msgid ""
 "The Internet browser lets you browse online sources of content that "
@@ -5800,7 +5800,7 @@ msgid "Cancel Download and Quit."
 msgstr "取消下载并退出。"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "无法将播客单集文件保存至 %1"
@@ -12974,13 +12974,13 @@ msgstr "连接成功"
 msgid "Connection failure"
 msgstr "连接失败"
 
-#: services/ampache/AmpacheAccountLogin.cpp:161
+#: services/ampache/AmpacheAccountLogin.cpp:173
 #, kde-format
 msgid "Authentication failed."
 msgstr "验证失败。"
 
-#: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:247
+#: services/ampache/AmpacheAccountLogin.cpp:174
+#: services/ampache/AmpacheAccountLogin.cpp:259
 #, kde-format
 msgid "Authentication Error"
 msgstr "认证错误"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-05 01:51+0000\n"
+"POT-Creation-Date: 2024-12-07 01:51+0000\n"
 "PO-Revision-Date: 2021-06-17 23:03+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -2947,7 +2947,7 @@ msgstr ""
 "automaticamente as listas de reprodução encontradas na análise da sua "
 "colecção, sendo que todas as listas que gravar também são aqui apresentadas."
 
-#: browsers/servicebrowser/ServiceBrowser.cpp:39
+#: browsers/servicebrowser/ServiceBrowser.cpp:40
 #, kde-format
 msgid ""
 "The Internet browser lets you browse online sources of content that "
@@ -6241,7 +6241,7 @@ msgid "Cancel Download and Quit."
 msgstr "Cancelar a Transferência e Sair."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Não é possível gravar o ficheiro do episódio do 'podcast' em %1"
@@ -13704,13 +13704,13 @@ msgstr "Ligado com sucesso"
 msgid "Connection failure"
 msgstr "Não foi possível a ligação"
 
-#: services/ampache/AmpacheAccountLogin.cpp:161
+#: services/ampache/AmpacheAccountLogin.cpp:173
 #, kde-format
 msgid "Authentication failed."
 msgstr "A autenticação falhou."
 
-#: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:247
+#: services/ampache/AmpacheAccountLogin.cpp:174
+#: services/ampache/AmpacheAccountLogin.cpp:259
 #, kde-format
 msgid "Authentication Error"
 msgstr "Erro na Autenticação"

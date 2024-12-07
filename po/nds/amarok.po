@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-05 01:51+0000\n"
+"POT-Creation-Date: 2024-12-07 01:51+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -2809,7 +2809,7 @@ msgid ""
 "save are also shown here."
 msgstr ""
 
-#: browsers/servicebrowser/ServiceBrowser.cpp:39
+#: browsers/servicebrowser/ServiceBrowser.cpp:40
 #, kde-format
 msgid ""
 "The Internet browser lets you browse online sources of content that "
@@ -6113,7 +6113,7 @@ msgid "Cancel Download and Quit."
 msgstr "Daalladen afbreken un Programm utmaken."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Podcast-Kapitel lett sik nich as \"%1\" sekern"
@@ -13660,14 +13660,14 @@ msgstr "Mit Spood tokoppelt"
 msgid "Connection failure"
 msgstr "Tokoppelfehler"
 
-#: services/ampache/AmpacheAccountLogin.cpp:161
+#: services/ampache/AmpacheAccountLogin.cpp:173
 #, fuzzy, kde-format
 #| msgid "Authentication Tcp Failed"
 msgid "Authentication failed."
 msgstr "Identiteetprööv: TCP fehlslaan"
 
-#: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:247
+#: services/ampache/AmpacheAccountLogin.cpp:174
+#: services/ampache/AmpacheAccountLogin.cpp:259
 #, kde-format
 msgid "Authentication Error"
 msgstr "Identiteetprööv fehlslaan"

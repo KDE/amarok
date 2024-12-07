@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-05 01:51+0000\n"
+"POT-Creation-Date: 2024-12-07 01:51+0000\n"
 "PO-Revision-Date: 2023-04-10 19:07+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
@@ -2786,7 +2786,7 @@ msgstr ""
 "automat orice liste de redare găsite la citirea colecției, și orice liste pe "
 "care le salvați sînt, de asemenea, afișate aici."
 
-#: browsers/servicebrowser/ServiceBrowser.cpp:39
+#: browsers/servicebrowser/ServiceBrowser.cpp:40
 #, kde-format
 msgid ""
 "The Internet browser lets you browse online sources of content that "
@@ -6029,7 +6029,7 @@ msgid "Cancel Download and Quit."
 msgstr "Anulează descărcarea și ieși."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1418
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr ""
@@ -13470,14 +13470,14 @@ msgstr "Conectare reușită"
 msgid "Connection failure"
 msgstr "Eșec la conectare"
 
-#: services/ampache/AmpacheAccountLogin.cpp:161
+#: services/ampache/AmpacheAccountLogin.cpp:173
 #, fuzzy, kde-format
 #| msgid "Authenticating"
 msgid "Authentication failed."
 msgstr "Autentificare"
 
-#: services/ampache/AmpacheAccountLogin.cpp:162
-#: services/ampache/AmpacheAccountLogin.cpp:247
+#: services/ampache/AmpacheAccountLogin.cpp:174
+#: services/ampache/AmpacheAccountLogin.cpp:259
 #, kde-format
 msgid "Authentication Error"
 msgstr "Eroare de autentificare"
