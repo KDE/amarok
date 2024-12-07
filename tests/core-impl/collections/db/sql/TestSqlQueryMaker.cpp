@@ -861,7 +861,7 @@ TestSqlQueryMaker::testEmptyMatch()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
 
-    qm.addFilter( Meta::valComment, "", true, true );
+    qm.addFilter( Meta::valComment, QStringLiteral(""), true, true );
     qm.run();
     checkResultCount( &qm, Collections::QueryMaker::Track, 2 );
 }
@@ -873,7 +873,7 @@ TestSqlQueryMaker::testNotEmptyMatch()
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
 
-    qm.excludeFilter( Meta::valComment, "", true, true );
+    qm.excludeFilter( Meta::valComment, QStringLiteral(""), true, true );
     qm.run();
     checkResultCount( &qm, Collections::QueryMaker::Track, 4 );
 }
