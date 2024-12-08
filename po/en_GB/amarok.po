@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-07 01:51+0000\n"
+"POT-Creation-Date: 2024-12-08 01:47+0000\n"
 "PO-Revision-Date: 2024-11-01 14:16+0000\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
@@ -5472,27 +5472,27 @@ msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
 msgstr "%1 (by %2)"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:277
+#: core-impl/collections/support/TextualQueryFilter.cpp:291
 #, kde-format
 msgid "today"
 msgstr "today"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:279
+#: core-impl/collections/support/TextualQueryFilter.cpp:293
 #, kde-format
 msgid "last week"
 msgstr "last week"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:281
+#: core-impl/collections/support/TextualQueryFilter.cpp:295
 #, kde-format
 msgid "last month"
 msgstr "last month"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:283
+#: core-impl/collections/support/TextualQueryFilter.cpp:297
 #, kde-format
 msgid "two months ago"
 msgstr "two months ago"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:285
+#: core-impl/collections/support/TextualQueryFilter.cpp:299
 #, kde-format
 msgid "three months ago"
 msgstr "three months ago"

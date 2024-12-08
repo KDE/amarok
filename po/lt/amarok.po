@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-07 01:51+0000\n"
+"POT-Creation-Date: 2024-12-08 01:47+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -5712,27 +5712,27 @@ msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
 msgstr "po %1"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:277
+#: core-impl/collections/support/TextualQueryFilter.cpp:291
 #, kde-format
 msgid "today"
 msgstr "šiandien"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:279
+#: core-impl/collections/support/TextualQueryFilter.cpp:293
 #, kde-format
 msgid "last week"
 msgstr "praeitą savaitę"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:281
+#: core-impl/collections/support/TextualQueryFilter.cpp:295
 #, kde-format
 msgid "last month"
 msgstr "praeitą mėnesį"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:283
+#: core-impl/collections/support/TextualQueryFilter.cpp:297
 #, kde-format
 msgid "two months ago"
 msgstr "prieš du mėnesius"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:285
+#: core-impl/collections/support/TextualQueryFilter.cpp:299
 #, kde-format
 msgid "three months ago"
 msgstr "prieš tris mėnesius"

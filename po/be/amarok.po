@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-07 01:51+0000\n"
+"POT-Creation-Date: 2024-12-08 01:47+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -5591,28 +5591,28 @@ msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
 msgstr "%1 (%2)"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:277
+#: core-impl/collections/support/TextualQueryFilter.cpp:291
 #, fuzzy, kde-format
 msgid "today"
 msgstr "Змяніць"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:279
+#: core-impl/collections/support/TextualQueryFilter.cpp:293
 #, fuzzy, kde-format
 msgid "last week"
 msgstr "&Тыдзень"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:281
+#: core-impl/collections/support/TextualQueryFilter.cpp:295
 #, fuzzy, kde-format
 #| msgid "Play Count"
 msgid "last month"
 msgstr "Колькасць прайграванняў"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:283
+#: core-impl/collections/support/TextualQueryFilter.cpp:297
 #, kde-format
 msgid "two months ago"
 msgstr ""
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:285
+#: core-impl/collections/support/TextualQueryFilter.cpp:299
 #, fuzzy, kde-format
 #| msgid "One minute ago"
 #| msgid_plural "%1 minutes ago"

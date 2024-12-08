@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-07 01:51+0000\n"
+"POT-Creation-Date: 2024-12-08 01:47+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -5739,29 +5739,29 @@ msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
 msgstr "%1 (%2)"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:277
+#: core-impl/collections/support/TextualQueryFilter.cpp:291
 #, fuzzy, kde-format
 #| msgid "Modify scheme"
 msgid "today"
 msgstr "योजना परिमार्जन गर्नुहोस्"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:279
+#: core-impl/collections/support/TextualQueryFilter.cpp:293
 #, fuzzy, kde-format
 msgid "last week"
 msgstr "१ हप्ता"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:281
+#: core-impl/collections/support/TextualQueryFilter.cpp:295
 #, fuzzy, kde-format
 #| msgid "Play Count"
 msgid "last month"
 msgstr "प्ले गणना"
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:283
+#: core-impl/collections/support/TextualQueryFilter.cpp:297
 #, kde-format
 msgid "two months ago"
 msgstr ""
 
-#: core-impl/collections/support/TextualQueryFilter.cpp:285
+#: core-impl/collections/support/TextualQueryFilter.cpp:299
 #, fuzzy, kde-format
 msgid "three months ago"
 msgstr "एक मिनेट अघि"
