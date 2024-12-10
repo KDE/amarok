@@ -297,6 +297,7 @@
       <li xml:lang="id">Terintegrasi layanan Internet: last.fm, Magnatune, Ampache, dan selebihnya.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Ampache e altri.</li>
       <li xml:lang="ka">ინტეგრირებული ინტერნეტ-სერვისები: last.fm, Magnatune, Jamendo, Amplache და სხვ.</li>
+      <li xml:lang="ko">인터넷 서비스 통합: last.fm, Magnatune, Ampache 등.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Ampache en meer.</li>
       <li xml:lang="pl">Zintegrowane usługi internetowe: last.fm, Magnatune, Ampache i więcej.</li>
       <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Ampache in druge.</li>
@@ -443,6 +444,7 @@
       <caption xml:lang="id">Memutar musik di Amarok 3.0</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok 3.0</caption>
       <caption xml:lang="ka">მუსიკის დაკვრა Amarok 3.0-ში</caption>
+      <caption xml:lang="ko">Amarok 3.0으로 음악 재생</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok 3.0</caption>
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku 3.0</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku 3.0</caption>
@@ -466,6 +468,7 @@
       <caption xml:lang="gl">Xanela do reprodutor Amarok 3.1 cunha disposición personalizada.</caption>
       <caption xml:lang="id">Pemutar Amarok 3.1 dengan tata letak terkustomisasi</caption>
       <caption xml:lang="it">La finestra del lettore di Amarok 3.1 con una disposizione personalizzata</caption>
+      <caption xml:lang="ko">Amarok 3.1 재생기 창, 사용자 정의 레이아웃</caption>
       <caption xml:lang="nl">Afspelervenster van Amarok 3.1 met een aangepaste indeling</caption>
       <caption xml:lang="pl">Okno odtwarzacza Amarok 3.1 z dostosowanym układem</caption>
       <caption xml:lang="sl">Okno predvajalnika Amarok 3.1 postavitvijo po meri</caption>
