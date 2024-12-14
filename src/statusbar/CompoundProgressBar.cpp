@@ -226,8 +226,10 @@ int CompoundProgressBar::calcCompoundPercentage()
 void CompoundProgressBar::cancelAll()
 {
     QMutexLocker locker( &m_mutex );
-
-    for( ProgressBar *currentBar : m_progressMap )
+    // m_mutex is a recursive one, so ProgressBar->cancel() might cause changes
+    // to m_progressMap - there are signs of this kinds of crashes happening, so copy it
+    const auto progressMap = m_progressMap;
+    for( ProgressBar *currentBar : progressMap )
         currentBar->cancel();
 }
 

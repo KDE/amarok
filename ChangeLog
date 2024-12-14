@@ -2,6 +2,12 @@ Amarok ChangeLog
 ================
 (C) 2002-2024 the Amarok authors.
 
+VERSION 3.1.82
+  FEATURES:
+  CHANGES:
+  BUGFIXES:
+   * Probably fix occasional crashes when clearing CompondProgressBars
+
 VERSION 3.1.81
   FEATURES:
    * Building an experimental Qt6/KF6 Amarok version is now possible
