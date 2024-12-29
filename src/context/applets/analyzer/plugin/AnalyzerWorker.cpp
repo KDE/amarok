@@ -116,7 +116,7 @@ void Analyzer::Worker::applyWindowFunction()
     // Apply window function
     for( uint i = 0; i < m_size; i++ )
     {
-        double windowFactor;
+        double windowFactor = 1.0;
         switch( m_windowFunction )
         {
             case Base::Rectangular:
