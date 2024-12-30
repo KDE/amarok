@@ -5,6 +5,7 @@ Amarok ChangeLog
 VERSION 3.2.1
   FEATURES:
   CHANGES:
+   * Support gpodder and lastfm on Qt6 builds
   BUGFIXES:
 
 VERSION 3.2.0

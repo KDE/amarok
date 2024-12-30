@@ -52,8 +52,7 @@ Required
         and KDE Frameworks 6 development files are required, in addition to Phonon
         version with support for Qt6. Please be aware that there are likely a number
         of unknown issues in addition to known the ones (albums context applet not
-        working, last.fm and gpodder not being available due to no relevant Qt6
-        libraries available)
+        working)
 
     * TagLib 1.12 (or newer)
       (Metadata tagging library)
@@ -80,6 +79,8 @@ Optional
     * Liblastfm 1.0.3 (or newer)
       (For scrobbling, internet radio, and artist info)
       https://github.com/lastfm/liblastfm
+        * for Qt6 builds, liblastfm needs to be built with Qt6 support,
+          as of 24/12/31 available e.g. at https://github.com/drfiemost/liblastfm
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
@@ -88,6 +89,8 @@ Optional
 
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.1.0 (or newer)
+        * for Qt6 builds, libmygpo needs to be built with Qt6 support,
+          as of 24/12/31 only available at https://github.com/gpodder/libmygpo-qt/pull/23
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
