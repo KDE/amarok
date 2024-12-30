@@ -20,7 +20,6 @@
 #include "LastFmServiceSettings.h"
 
 #include "core/collections/QueryMaker.h"
-#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -36,12 +35,16 @@
 
 K_PLUGIN_FACTORY_WITH_JSON( LastFmServiceSettingsFactory, "amarok_service_lastfm_config.json", registerPlugin<LastFmServiceSettings>(); )
 
-LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantList &args )
-    : KCModule( parent, args )
+LastFmServiceSettings::LastFmServiceSettings( QObject *parent, const QVariantList & )
+    : KCModule( parent )
     , m_config( LastFmServiceConfig::instance() )
 {
     m_configDialog = new Ui::LastFmConfigWidget;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_configDialog->setupUi( this );
+#else
+    m_configDialog->setupUi( this->widget() );
+#endif
 
     connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmServiceSettings::onConfigUpdated );
 
@@ -87,7 +90,13 @@ void
 LastFmServiceSettings::disconnectAccount()
 {
     debug() << "Disconnecting Last.fm account"<< m_config->username();
-    if( KMessageBox::warningTwoActions( this, i18n( "Do you want to disconnect Amarok from Last.fm account %1?", m_config->username() ),
+    if(
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        KMessageBox::warningTwoActions( this,
+#else
+        KMessageBox::warningTwoActions( this->widget(),
+#endif
+        i18n( "Do you want to disconnect Amarok from Last.fm account %1?", m_config->username() ),
         i18n( "Disconnect Last.fm account?" ), KGuiItem(i18nc( "Disconnect Last.fm account in settings", "Disconnect")), KStandardGuiItem::cancel() )
         == KMessageBox::PrimaryAction )
     {
@@ -196,13 +205,23 @@ LastFmServiceSettings::onAuthenticated()
                 m_configDialog->connectToAccount->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
                 m_configDialog->connectToAccount->setEnabled( true );
                 if( lfm[ QStringLiteral("error") ].attribute( QStringLiteral("code") ) == QStringLiteral("14") )
-                    KMessageBox::error( this, tokenErrorMessage, i18n( "Failed" ) );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                    KMessageBox::error( this,
+#else
+                    KMessageBox::error( this->widget(),
+#endif
+                        tokenErrorMessage, i18n( "Failed" ) );
             }
             else if( sessionkey.isEmpty() || username.isEmpty() )
             {
                 debug() << "Problem getting last.fm sessionkey and username, response:" << lfm.text();
                 m_configDialog->connectToAccount->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
-                KMessageBox::error( this, tokenErrorMessage, i18n( "Failed" ) );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+                KMessageBox::error( this,
+#else
+                KMessageBox::error( this->widget(),
+#endif
+                    tokenErrorMessage, i18n( "Failed" ) );
             }
             else
             {
@@ -218,7 +237,12 @@ LastFmServiceSettings::onAuthenticated()
 
         case QNetworkReply::AuthenticationRequiredError:
             debug() << "AuthenticationFailed";
-            KMessageBox::error( this, tokenErrorMessage, i18n( "Failed" ) );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            KMessageBox::error( this,
+#else
+            KMessageBox::error( this->widget(),
+#endif
+                tokenErrorMessage, i18n( "Failed" ) );
             m_configDialog->connectToAccount->setText( i18n( "Connect to account" ) );
             m_configDialog->connectToAccount->setEnabled( true );
             break;
@@ -241,7 +265,12 @@ LastFmServiceSettings::onError( QNetworkReply::NetworkError code )
         return;
     }
 
-    KMessageBox::error( this, i18n( "Unable to connect to Last.fm service." ), i18n( "Failed" ) );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    KMessageBox::error( this,
+#else
+    KMessageBox::error( this->widget(),
+#endif
+        i18n( "Unable to connect to Last.fm service." ), i18n( "Failed" ) );
     m_configDialog->connectToAccount->setText( i18n( "Connect to account" ) );
     m_configDialog->connectToAccount->setEnabled( true );
 
@@ -299,7 +328,7 @@ LastFmServiceSettings::defaults()
 void
 LastFmServiceSettings::settingsChanged()
 {
-    Q_EMIT changed( true );
+    setNeedsSave( true );
 }
 
 void

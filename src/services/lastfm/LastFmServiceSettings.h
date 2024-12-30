@@ -19,7 +19,7 @@
 #define LASTFMSERVICESETTINGS_H
 
 #include "LastFmServiceConfig.h"
-#include "core/meta/forward_declarations.h" // for using the Meta::LabelList
+#include "core/meta/Meta.h" // for using the Meta::LabelList
 
 #include <kcmodule.h>
 
@@ -34,7 +34,7 @@ class LastFmServiceSettings : public KCModule
     Q_OBJECT
 
 public:
-    explicit LastFmServiceSettings( QWidget *parent = nullptr, const QVariantList &args = QVariantList() );
+    explicit LastFmServiceSettings( QObject *parent = nullptr, const QVariantList &args = QVariantList() );
 
     ~LastFmServiceSettings() override;
 

@@ -169,7 +169,11 @@ LastFmTreeModel::slotAddTopArtists()
     QModelIndex parent = index( m_myTopArtists->row(), 0 );
     beginInsertRows( parent, start, start + playcountArtists.size() );
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMapIterator<int, QString> it( playcountArtists );
+#else
+    QMultiMapIterator<int, QString> it( playcountArtists );
+#endif
     it.toBack();
     while( it.hasPrevious() )
     {

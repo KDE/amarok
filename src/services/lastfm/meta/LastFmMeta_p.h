@@ -26,6 +26,7 @@
 #include "core-impl/support/TagStatisticsStore.h"
 
 #include <KIO/Job>
+#include <KIO/StoredTransferJob>
 
 #include <QDir>
 #include <QImage>

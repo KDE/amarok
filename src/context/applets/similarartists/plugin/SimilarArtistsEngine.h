@@ -22,7 +22,7 @@
 
 #include "SimilarArtistModel.h"
 
-#include "core/meta/forward_declarations.h"
+#include "core/meta/Meta.h"
 #include "network/NetworkAccessManagerProxy.h"
 
 namespace Collections
