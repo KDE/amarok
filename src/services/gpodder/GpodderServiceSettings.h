@@ -21,9 +21,14 @@
 #define GPODDERSERVICESETTINGS_H
 
 #include "GpodderServiceConfig.h"
-#include <mygpo-qt5/ApiRequest.h>
 
-#include <KConfigWidgets/KCModule>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <mygpo-qt5/ApiRequest.h>
+#else
+#include <mygpo-qt6/ApiRequest.h>
+#endif
+
+#include <KCModule>
 
 #include <QNetworkReply>
 
@@ -34,7 +39,7 @@ class GpodderServiceSettings : public KCModule
     Q_OBJECT
 
 public:
-    GpodderServiceSettings( QWidget *parent, const QVariantList &args );
+    GpodderServiceSettings( QObject *parent, const QVariantList &args );
 
     ~GpodderServiceSettings() override;
 

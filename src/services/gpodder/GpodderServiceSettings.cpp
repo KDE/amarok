@@ -38,15 +38,19 @@
 
 K_PLUGIN_FACTORY_WITH_JSON( GpodderServiceSettingsFactory, "amarok_service_gpodder_config.json", registerPlugin<GpodderServiceSettings>(); )
 
-GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantList &args )
-        : KCModule( parent, args )
+GpodderServiceSettings::GpodderServiceSettings( QObject *parent, const QVariantList & )
+        : KCModule( parent )
         , m_enableProvider( false )
         , m_createDevice( nullptr )
 {
     debug() << "Creating gpodder.net config object";
 
     m_configDialog = new Ui::GpodderConfigWidget;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_configDialog->setupUi( this );
+#else
+    m_configDialog->setupUi( this->widget() );
+#endif
 
     connect( m_configDialog->kcfg_GpodderUsername, &QLineEdit::textChanged,
              this, &GpodderServiceSettings::settingsChanged );
@@ -107,7 +111,11 @@ GpodderServiceSettings::testLogin()
     }
     else
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         KMessageBox::error( this,
+#else
+        KMessageBox::error( this->widget(),
+#endif
                             i18n( "Either the username or the password is empty, please correct and try again." ),
                             i18n( "Failed" ) );
     }
@@ -174,7 +182,11 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
     {
         debug() << "Authentication failed";
 
-        KMessageBox::error( this,
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            KMessageBox::error( this,
+#else
+            KMessageBox::error( this->widget(),
+#endif
             i18n( "Either the username or the password is incorrect, please correct and try again" ),
                             i18n( "Failed" ) );
 
@@ -183,7 +195,11 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
     }
     else
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         KMessageBox::error( this,
+#else
+        KMessageBox::error( this->widget(),
+#endif
             i18n( "Unable to connect to gpodder.net service or other error occurred." ),
                             i18n( "Failed" ) );
 
@@ -200,7 +216,12 @@ GpodderServiceSettings::onParseError()
     m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
     m_configDialog->testLogin->setEnabled( true );
 
-    KMessageBox::error( this, i18n( "Error parsing the Reply, check if gpodder.net is working correctly and report a bug" ), i18n( "Failed" ) );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        KMessageBox::error( this,
+#else
+        KMessageBox::error( this->widget(),
+#endif
+                        i18n( "Error parsing the Reply, check if gpodder.net is working correctly and report a bug" ), i18n( "Failed" ) );
 }
 
 void
@@ -248,7 +269,7 @@ GpodderServiceSettings::settingsChanged()
     m_configDialog->testLogin->setEnabled( true );
 
     m_enableProvider = true;
-    Q_EMIT changed( true );
+    setNeedsSave( true );
 }
 
 #include "GpodderServiceSettings.moc"

@@ -12,7 +12,7 @@ endif()
 
 add_subdirectory( ampache )
 
-if ( Mygpo-qt5_FOUND )
+if ( Mygpo-qt5_FOUND OR Mygpo-qt6_FOUND )
     add_subdirectory( gpodder )
 endif()
 

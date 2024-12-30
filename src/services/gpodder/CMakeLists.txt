@@ -48,6 +48,18 @@ set(amarok_service_gpodder_PART_SRCS
 
 add_library(amarok_service_gpodder MODULE ${amarok_service_gpodder_PART_SRCS})
 
+if(BUILD_WITH_QT6)
+target_link_libraries(amarok_service_gpodder
+    amarokcore
+    amaroklib
+    amarokpud
+    gpodder_service_config
+    mygpo-qt6
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    Qt::Network
+)
+else()
 target_link_libraries(amarok_service_gpodder
     amarokcore
     amaroklib
@@ -58,6 +70,7 @@ target_link_libraries(amarok_service_gpodder
     KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Network
 )
+endif()
 
 install( TARGETS amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
@@ -69,6 +82,18 @@ ki18n_wrap_ui( kcm_amarok_service_gpodder_PART_SRCS GpodderConfigWidget.ui )
 
 add_library(kcm_amarok_service_gpodder MODULE ${kcm_amarok_service_gpodder_PART_SRCS} )
 
+if(BUILD_WITH_QT6)
+    target_link_libraries( kcm_amarok_service_gpodder
+    amarokcore
+    amaroklib
+    gpodder_service_config
+    mygpo-qt6
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::KCMUtils
+    Qt::Network
+)
+else()
 target_link_libraries( kcm_amarok_service_gpodder
     amarokcore
     amaroklib
@@ -78,5 +103,8 @@ target_link_libraries( kcm_amarok_service_gpodder
     KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Network
 )
+endif()
+
+
 
 install(TARGETS kcm_amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR})

@@ -259,13 +259,23 @@ if( WITH_PLAYER )
 
     if( WITH_GPODDER )
         ## gpodder Service
-        find_package(Mygpo-qt5 1.1.0 CONFIG)
-        set_package_properties(Mygpo-qt5 PROPERTIES
-            DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
-            URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
-            TYPE OPTIONAL
-            PURPOSE "Synchronize podcast subscriptions with gpodder.net"
-        )
+        if(BUILD_WITH_QT6)
+            find_package(Mygpo-qt6 1.1.0 CONFIG)
+            set_package_properties(Mygpo-qt6 PROPERTIES
+                DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
+                URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
+                TYPE OPTIONAL
+                PURPOSE "Synchronize podcast subscriptions with gpodder.net"
+            )
+        else()
+            find_package(Mygpo-qt5 1.1.0 CONFIG)
+            set_package_properties(Mygpo-qt5 PROPERTIES
+                DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
+                URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
+                TYPE OPTIONAL
+                PURPOSE "Synchronize podcast subscriptions with gpodder.net"
+            )
+        endif()
     endif()
 
     if( WITH_GPODDER OR WITH_LASTFM ) ## problems in their header files as of 07/2024, not compatible with strict flags
