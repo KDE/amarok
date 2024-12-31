@@ -927,20 +927,19 @@ MediaDeviceHandler::privateParseTracks()
 }
 
 void
-MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track )
+MediaDeviceHandler::slotCopyNextTrackFailed( const Meta::TrackPtr& track )
 {
-    Q_UNUSED( job );
     enqueueNextCopyThread();
     m_copyFailed = true;
     slotCopyTrackFailed( track );
 }
 
 void
-MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track )
+MediaDeviceHandler::slotCopyNextTrackDone( const bool success, const Meta::TrackPtr& track )
 {
     Q_UNUSED( track )
     enqueueNextCopyThread();
-    if ( job->success() )
+    if ( success )
         slotFinalizeTrackCopy( track );
     else
     {
@@ -1274,11 +1273,11 @@ CopyWorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver:
 void
 CopyWorkerThread::slotDoneSuccess( ThreadWeaver::JobPointer )
 {
-    Q_EMIT copyTrackDone( QSharedPointer<ThreadWeaver::Job>(this), m_track );
+    Q_EMIT copyTrackDone( this->success(), m_track );
 }
 
 void
 CopyWorkerThread::slotDoneFailed( ThreadWeaver::JobPointer )
 {
-    Q_EMIT copyTrackFailed( QSharedPointer<ThreadWeaver::Job>(this), m_track );
+    Q_EMIT copyTrackFailed( m_track );
 }

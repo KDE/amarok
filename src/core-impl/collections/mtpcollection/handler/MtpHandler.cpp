@@ -1434,7 +1434,6 @@ WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, 
 {
     connect( this, &WorkerThread::failed, m_handler, &Meta::MtpHandler::slotDeviceMatchFailed );
     connect( this, &WorkerThread::done, m_handler, &Meta::MtpHandler::slotDeviceMatchSucceeded );
-    connect( this, &WorkerThread::done, this, &WorkerThread::deleteLater );
 }
 
 WorkerThread::~WorkerThread()

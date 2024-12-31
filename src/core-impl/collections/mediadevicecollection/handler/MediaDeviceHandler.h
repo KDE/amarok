@@ -215,8 +215,8 @@ public Q_SLOTS:
     void removeNextTrackFromDevice();
     void privateRemoveTrackFromDevice( const Meta::TrackPtr &track );
 
-    void slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
-    void slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
+    void slotCopyNextTrackFailed( const Meta::TrackPtr& track );
+    void slotCopyNextTrackDone( const bool success, const Meta::TrackPtr& track );
 
 protected:
 
@@ -456,7 +456,7 @@ Q_SIGNALS:
     * @param track The source track used for the copy
     */
 
-    void copyTrackDone( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
+    void copyTrackDone( const bool success, const Meta::TrackPtr& track );
 
     /**
     * Is emitted when the job is done and has failed
@@ -464,7 +464,7 @@ Q_SIGNALS:
     * The job that was done
     * @param track The source track used for the copy
     */
-    void copyTrackFailed( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
+    void copyTrackFailed( const Meta::TrackPtr& track );
 
     /** This signal is emitted when this job is being processed by a thread. */
     void started(ThreadWeaver::JobPointer);
