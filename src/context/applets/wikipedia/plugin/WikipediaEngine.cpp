@@ -677,8 +677,7 @@ WikipediaEngine::wikiParse( QString &wiki )
         while( ( matchIndex = tagMatcher.indexIn( wiki, matchIndex ) ) != -1 )
         {
             const int nToTagEnd = wiki.indexOf( tagEnd, matchIndex ) - matchIndex;
-            const QStringView tagRef = wiki.midRef( matchIndex, nToTagEnd + tagEndSize );
-            wiki.remove( tagRef.toString() );
+            wiki.remove( matchIndex, nToTagEnd + tagEndSize );
         }
     };
 

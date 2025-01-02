@@ -8,6 +8,7 @@ VERSION 3.2.1
    * Support gpodder and lastfm on Qt6 builds
   BUGFIXES:
    * Display settings for Internet services on Qt6 builds
+   * Enable Wikipedia context applet on Qt6 builds
 
 VERSION 3.2.0
   FEATURES:
