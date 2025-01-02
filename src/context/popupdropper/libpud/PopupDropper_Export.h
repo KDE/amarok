@@ -29,7 +29,7 @@
 #  define POPUPDROPPER_EXPORT Q_DECL_IMPORT
 # endif
 #else
-# define POPUPDROPPER_EXPORT Q_DECL_EXPORT
+# define POPUPDROPPER_EXPORT __attribute__((visibility("default")))
 #endif 
 
 #endif
