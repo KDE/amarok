@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-08 01:47+0000\n"
+"POT-Creation-Date: 2025-01-03 01:53+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -4460,12 +4460,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:756
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:755
 #, kde-format
 msgid "Choose Language"
 msgstr "ਭਾਸ਼ਾ ਚੁਣੋ"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:889
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:888
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5489,7 +5489,7 @@ msgid "Yes, delete from %1."
 msgstr "ਹਾਂ, %1 ਤੋਂ ਹਟਾਉ।"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:349
+#: services/gpodder/GpodderProvider.cpp:352
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "ਚੈਨਲ ਅਤੇ ਕਾਂਡ ਹਟਾਓ(&D)"
@@ -7510,7 +7510,7 @@ msgstr[0] "1 ਨਹੀਂ ਲੱਭਿਆ"
 msgstr[1] "%1 ਨਹੀਂ ਲੱਭੇ"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:106
+#: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "ਕੁਨੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
@@ -13342,32 +13342,32 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:181
-#: services/gpodder/GpodderServiceSettings.cpp:190
-#: services/gpodder/GpodderServiceSettings.cpp:200
-#: services/gpodder/GpodderServiceSettings.cpp:218
-#: services/gpodder/GpodderServiceSettings.cpp:247
+#: services/gpodder/GpodderServiceSettings.cpp:193
+#: services/gpodder/GpodderServiceSettings.cpp:206
+#: services/gpodder/GpodderServiceSettings.cpp:216
+#: services/gpodder/GpodderServiceSettings.cpp:239
+#: services/gpodder/GpodderServiceSettings.cpp:268
 #, kde-format
 msgid "&Test Login"
 msgstr "ਲਾਗਇਨ ਟੈਸਟ(&T)"
 
-#: services/gpodder/GpodderProvider.cpp:291
+#: services/gpodder/GpodderProvider.cpp:294
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Gpodder ਪੋਡਕਾਸਟ"
 
-#: services/gpodder/GpodderProvider.cpp:468
+#: services/gpodder/GpodderProvider.cpp:473
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:528
+#: services/gpodder/GpodderProvider.cpp:535
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:777
-#: services/gpodder/GpodderProvider.cpp:788
+#: services/gpodder/GpodderProvider.cpp:786
+#: services/gpodder/GpodderProvider.cpp:797
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -13404,12 +13404,12 @@ msgstr ""
 "ਕੋਈ ਕੇਵਾਲਿਟ ਨਹੀਂ ਚੱਲਦਾ ਹੈ। ਕੀ ਤੁਸੀਂ ਅਮਰੋਕ ਨੂੰ ਤੁਹਾਡੀ gpodder.net ਸਨਦ ਨੂੰ ਸਧਾਰਨ ਟੈਕਸਟ ਵਿੱਚ "
 "ਸੰਭਾਲਣ ਦੇਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: services/gpodder/GpodderServiceSettings.cpp:94
+#: services/gpodder/GpodderServiceSettings.cpp:98
 #, kde-format
 msgid "Testing..."
 msgstr "ਟੈਸਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 
-#: services/gpodder/GpodderServiceSettings.cpp:111
+#: services/gpodder/GpodderServiceSettings.cpp:119
 #, fuzzy, kde-format
 #| msgid ""
 #| "Either the username or the password is incorrect, please correct and try "
@@ -13418,39 +13418,39 @@ msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr "ਜਾਂ ਤਾਂ ਤੁਹਾਡਾ ਯੂਜ਼ਰ ਨਾਂ ਜਾਂ ਪਾਸਵਰਡ ਗਲਤ ਹੈ, ਠੀਕ ਕਰਕੇ ਮੁੜ ਟਰਾਈ ਕਰੋ ਜੀ।"
 
-#: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:179
-#: services/gpodder/GpodderServiceSettings.cpp:188
-#: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:199
-#: services/lastfm/LastFmServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:221
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/gpodder/GpodderServiceSettings.cpp:120
+#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Failed"
 msgstr "ਫੇਲ੍ਹ"
 
-#: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:212
+#: services/gpodder/GpodderServiceSettings.cpp:131
+#: services/lastfm/LastFmServiceSettings.cpp:231
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "ਸਫ਼ਲ"
 
-#: services/gpodder/GpodderServiceSettings.cpp:178
+#: services/gpodder/GpodderServiceSettings.cpp:190
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr "ਜਾਂ ਤਾਂ ਤੁਹਾਡਾ ਯੂਜ਼ਰ ਨਾਂ ਜਾਂ ਪਾਸਵਰਡ ਗਲਤ ਹੈ, ਠੀਕ ਕਰਕੇ ਮੁੜ ਟਰਾਈ ਕਰੋ ਜੀ।"
 
-#: services/gpodder/GpodderServiceSettings.cpp:187
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, fuzzy, kde-format
 #| msgid "Unable to retrieve from Flickr.com "
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "Flicker.com ਤੋਂ ਲੈਣ ਲਈ ਅਸਮਰੱਥ"
 
-#: services/gpodder/GpodderServiceSettings.cpp:203
+#: services/gpodder/GpodderServiceSettings.cpp:224
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -13647,8 +13647,8 @@ msgstr "ਯੂਜ਼ਰ ਨਾਂ:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:274
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -13656,7 +13656,7 @@ msgstr "ਕੁਨੈਕਸ਼ਨ ਫੇਲ੍ਹ ਹੋਇਆ"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:302
 #, fuzzy, kde-format
 #| msgctxt "In a dialog: Some file: Not needed"
 #| msgid "Not needed"
@@ -13847,45 +13847,45 @@ msgid ""
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:90
+#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, fuzzy, kde-format
 #| msgid "&Disconnect Device"
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr "ਜੰਤਰ ਡਿਸ-ਕੁਨੈਕਟ(&D)"
 
-#: services/lastfm/LastFmServiceSettings.cpp:139
-#: services/lastfm/LastFmServiceSettings.cpp:196
-#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:148
+#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:218
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "ਫੇਲ੍ਹ"
 
-#: services/lastfm/LastFmServiceSettings.cpp:144
+#: services/lastfm/LastFmServiceSettings.cpp:153
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "ਇਹ ਈਵੈਂਟ ਲਈ Last.fm ਵੈੱਬਪੇਜ਼ ਖੋਲ੍ਹੋ"
 
-#: services/lastfm/LastFmServiceSettings.cpp:162
+#: services/lastfm/LastFmServiceSettings.cpp:171
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:187
+#: services/lastfm/LastFmServiceSettings.cpp:196
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -13893,7 +13893,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Last.fm ਸਰਵਿਸ ਨਾਲ ਕੁਨੈਕਟ ਕਰਨ ਲਈ ਅਸਮਰੱਥ ਹੈ।"
@@ -13904,7 +13904,7 @@ msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:184
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -13912,37 +13912,37 @@ msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2 (%1 ਚੱਲਿਆ)"
 msgstr[1] "%2 (%1 ਚੱਲਿਆ)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
+#: services/lastfm/LastFmTreeModel.cpp:201
 #, kde-format
 msgid "Personal Radio"
 msgstr "ਨਿੱਜੀ ਰੇਡੀਓ"
 
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Recommendations"
 msgstr "ਮੇਰੀਆਂ ਸਿਫਾਰਸ਼ੀ"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Radio Station"
 msgstr "ਮੇਰਾ ਰੇਡੀਓ ਸਟੇਸ਼ਨ"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Mix Radio"
 msgstr "ਮੇਰਾ ਮਿਕਸ ਰੇਡੀਓ"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
 msgid "My Top Artists"
 msgstr "ਮੇਰ ਟਾਪ ਕਲਾਕਾਰ"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:322
 #, kde-format
 msgid "My Tags"
 msgstr "ਮੇਰੇ ਟੈਗ"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:324
 #, kde-format
 msgid "Friends"
 msgstr "ਦੋਸਤ"

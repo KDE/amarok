@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-08 01:47+0000\n"
+"POT-Creation-Date: 2025-01-03 01:53+0000\n"
 "PO-Revision-Date: 2024-12-09 22:47+0100\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -4438,12 +4438,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "%1은(는) 위키백과 검색에 필요합니다."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:756
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:755
 #, kde-format
 msgid "Choose Language"
 msgstr "언어 선택"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:889
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:888
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5456,7 +5456,7 @@ msgid "Yes, delete from %1."
 msgstr "예, %1에서 삭제합니다."
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:349
+#: services/gpodder/GpodderProvider.cpp:352
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "채널과 에피소드 삭제(&D)"
@@ -7505,7 +7505,7 @@ msgid_plural "%1 not found"
 msgstr[0] "%1개 찾을 수 없음"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:106
+#: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "연결 중..."
@@ -13326,32 +13326,32 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:181
-#: services/gpodder/GpodderServiceSettings.cpp:190
-#: services/gpodder/GpodderServiceSettings.cpp:200
-#: services/gpodder/GpodderServiceSettings.cpp:218
-#: services/gpodder/GpodderServiceSettings.cpp:247
+#: services/gpodder/GpodderServiceSettings.cpp:193
+#: services/gpodder/GpodderServiceSettings.cpp:206
+#: services/gpodder/GpodderServiceSettings.cpp:216
+#: services/gpodder/GpodderServiceSettings.cpp:239
+#: services/gpodder/GpodderServiceSettings.cpp:268
 #, kde-format
 msgid "&Test Login"
 msgstr "로그인 테스트(&T)"
 
-#: services/gpodder/GpodderProvider.cpp:291
+#: services/gpodder/GpodderProvider.cpp:294
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Gpodder 팟캐스트"
 
-#: services/gpodder/GpodderProvider.cpp:468
+#: services/gpodder/GpodderProvider.cpp:473
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr "gpodder.net과 팟캐스트 상태 동기화"
 
-#: services/gpodder/GpodderProvider.cpp:528
+#: services/gpodder/GpodderProvider.cpp:535
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr "gpodder.net과 팟캐스트 구독 동기화"
 
-#: services/gpodder/GpodderProvider.cpp:777
-#: services/gpodder/GpodderProvider.cpp:788
+#: services/gpodder/GpodderProvider.cpp:786
+#: services/gpodder/GpodderProvider.cpp:797
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -13390,49 +13390,49 @@ msgstr ""
 "실행 중인 KWallet을 찾을 수 없습니다. gpodder.net 인증 정보를 일반 텍스트 파"
 "일에 저장하시겠습니까?"
 
-#: services/gpodder/GpodderServiceSettings.cpp:94
+#: services/gpodder/GpodderServiceSettings.cpp:98
 #, kde-format
 msgid "Testing..."
 msgstr "시험 중..."
 
-#: services/gpodder/GpodderServiceSettings.cpp:111
+#: services/gpodder/GpodderServiceSettings.cpp:119
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr "사용자 이름이나 암호가 비어 있습니다. 다시 시도하십시오."
 
-#: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:179
-#: services/gpodder/GpodderServiceSettings.cpp:188
-#: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:199
-#: services/lastfm/LastFmServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:221
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/gpodder/GpodderServiceSettings.cpp:120
+#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Failed"
 msgstr "실패"
 
-#: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:212
+#: services/gpodder/GpodderServiceSettings.cpp:131
+#: services/lastfm/LastFmServiceSettings.cpp:231
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "성공"
 
-#: services/gpodder/GpodderServiceSettings.cpp:178
+#: services/gpodder/GpodderServiceSettings.cpp:190
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr "사용자 이름이나 암호가 잘못되었습니다. 다시 시도하십시오"
 
-#: services/gpodder/GpodderServiceSettings.cpp:187
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "gpodder.net 서비스에 연결할 수 없거나 다른 오류가 발생했습니다."
 
-#: services/gpodder/GpodderServiceSettings.cpp:203
+#: services/gpodder/GpodderServiceSettings.cpp:224
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -13631,8 +13631,8 @@ msgstr "사용자 이름:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:274
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -13640,7 +13640,7 @@ msgstr "연결 실패"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:302
 #, kde-format
 msgid "Not connected"
 msgstr "연결되지 않음"
@@ -13840,45 +13840,45 @@ msgid ""
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:90
+#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, fuzzy, kde-format
 #| msgid "&Disconnect Device"
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr "장치 연결 끊기(&D)"
 
-#: services/lastfm/LastFmServiceSettings.cpp:139
-#: services/lastfm/LastFmServiceSettings.cpp:196
-#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:148
+#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:218
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "실패"
 
-#: services/lastfm/LastFmServiceSettings.cpp:144
+#: services/lastfm/LastFmServiceSettings.cpp:153
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "이 이벤트의 Last.fm 웹 페이지 열기"
 
-#: services/lastfm/LastFmServiceSettings.cpp:162
+#: services/lastfm/LastFmServiceSettings.cpp:171
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:187
+#: services/lastfm/LastFmServiceSettings.cpp:196
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -13886,7 +13886,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Last.fm 서비스에 연결할 수 없습니다."
@@ -13897,44 +13897,44 @@ msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1(%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:184
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2(%1회 재생)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
+#: services/lastfm/LastFmTreeModel.cpp:201
 #, kde-format
 msgid "Personal Radio"
 msgstr "개인 라디오"
 
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Recommendations"
 msgstr "내 추천"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Radio Station"
 msgstr "내 라디오 스테이션"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Mix Radio"
 msgstr "내 믹스 라디오"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
 msgid "My Top Artists"
 msgstr "내 상위 아티스트"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:322
 #, kde-format
 msgid "My Tags"
 msgstr "내 태그"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:324
 #, kde-format
 msgid "Friends"
 msgstr "친구"

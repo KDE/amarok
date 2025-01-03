@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-08 01:47+0000\n"
+"POT-Creation-Date: 2025-01-03 01:53+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -4344,12 +4344,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "需要以 %1 为关键词来搜索维基百科。"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:756
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:755
 #, kde-format
 msgid "Choose Language"
 msgstr "选择语言"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:889
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:888
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5352,7 +5352,7 @@ msgid "Yes, delete from %1."
 msgstr "确定，从 %1 中删除。"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:349
+#: services/gpodder/GpodderProvider.cpp:352
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "删除频道及其单集(&D)"
@@ -7380,7 +7380,7 @@ msgid_plural "%1 not found"
 msgstr[0] "有 %1 个未找到任何结果"
 
 #: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:106
+#: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "正在连接..."
@@ -13086,32 +13086,32 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:181
-#: services/gpodder/GpodderServiceSettings.cpp:190
-#: services/gpodder/GpodderServiceSettings.cpp:200
-#: services/gpodder/GpodderServiceSettings.cpp:218
-#: services/gpodder/GpodderServiceSettings.cpp:247
+#: services/gpodder/GpodderServiceSettings.cpp:193
+#: services/gpodder/GpodderServiceSettings.cpp:206
+#: services/gpodder/GpodderServiceSettings.cpp:216
+#: services/gpodder/GpodderServiceSettings.cpp:239
+#: services/gpodder/GpodderServiceSettings.cpp:268
 #, kde-format
 msgid "&Test Login"
 msgstr "登录测试(&T)"
 
-#: services/gpodder/GpodderProvider.cpp:291
+#: services/gpodder/GpodderProvider.cpp:294
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Gpodder 播客"
 
-#: services/gpodder/GpodderProvider.cpp:468
+#: services/gpodder/GpodderProvider.cpp:473
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr "尝试与 gpodder.net 同步状态"
 
-#: services/gpodder/GpodderProvider.cpp:528
+#: services/gpodder/GpodderProvider.cpp:535
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr "尝试与 gpodder.net 同步订阅"
 
-#: services/gpodder/GpodderProvider.cpp:777
-#: services/gpodder/GpodderProvider.cpp:788
+#: services/gpodder/GpodderProvider.cpp:786
+#: services/gpodder/GpodderProvider.cpp:797
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -13146,49 +13146,49 @@ msgid ""
 "credentials in plaintext?"
 msgstr "KWallet 未运行，您要将 gpodder.net 登录信息以纯文本的方式保存吗？"
 
-#: services/gpodder/GpodderServiceSettings.cpp:94
+#: services/gpodder/GpodderServiceSettings.cpp:98
 #, kde-format
 msgid "Testing..."
 msgstr "正在测试..."
 
-#: services/gpodder/GpodderServiceSettings.cpp:111
+#: services/gpodder/GpodderServiceSettings.cpp:119
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr "用户名或密码为空，请修改后重试。"
 
-#: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:179
-#: services/gpodder/GpodderServiceSettings.cpp:188
-#: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:199
-#: services/lastfm/LastFmServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:221
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/gpodder/GpodderServiceSettings.cpp:120
+#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Failed"
 msgstr "失败"
 
-#: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:212
+#: services/gpodder/GpodderServiceSettings.cpp:131
+#: services/lastfm/LastFmServiceSettings.cpp:231
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "成功"
 
-#: services/gpodder/GpodderServiceSettings.cpp:178
+#: services/gpodder/GpodderServiceSettings.cpp:190
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr "用户名或密码不正确，请修改后重试。"
 
-#: services/gpodder/GpodderServiceSettings.cpp:187
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "无法连接到 gpodder.net 服务，或者可能发生了其他错误。"
 
-#: services/gpodder/GpodderServiceSettings.cpp:203
+#: services/gpodder/GpodderServiceSettings.cpp:224
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -13383,15 +13383,15 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:274
 #, kde-format
 msgid "Connect to account"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:302
 #, kde-format
 msgid "Not connected"
 msgstr ""
@@ -13584,43 +13584,43 @@ msgid ""
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:90
+#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:139
-#: services/lastfm/LastFmServiceSettings.cpp:196
-#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:148
+#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:218
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "失败"
 
-#: services/lastfm/LastFmServiceSettings.cpp:144
+#: services/lastfm/LastFmServiceSettings.cpp:153
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:162
+#: services/lastfm/LastFmServiceSettings.cpp:171
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:187
+#: services/lastfm/LastFmServiceSettings.cpp:196
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -13628,7 +13628,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "无法连接到 Last.fm 服务。"
@@ -13639,44 +13639,44 @@ msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:184
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2 (%1 次播放)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
+#: services/lastfm/LastFmTreeModel.cpp:201
 #, kde-format
 msgid "Personal Radio"
 msgstr "个人电台"
 
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Recommendations"
 msgstr "我的推荐"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Radio Station"
 msgstr "我的广播电台"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Mix Radio"
 msgstr "我的串烧电台"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
 msgid "My Top Artists"
 msgstr "我最喜欢的艺人"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:322
 #, kde-format
 msgid "My Tags"
 msgstr "我的标签"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:324
 #, kde-format
 msgid "Friends"
 msgstr "好友"
