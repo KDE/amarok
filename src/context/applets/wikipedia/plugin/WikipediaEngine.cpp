@@ -663,7 +663,6 @@ WikipediaEngine::wikiParse( QString &wiki )
     const QString title = wiki.mid( titleIndex, bsTitleIndex );
 
     // Ok lets remove the top and bottom parts of the page
-    QStringView wikiRef;
     const int contentStart = wiki.indexOf( QLatin1String("<!-- start content -->") );
     const int contentEnd = wiki.indexOf( QLatin1String("<div class=\"printfooter\">"), contentStart );
 

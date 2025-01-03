@@ -402,7 +402,7 @@ ScriptManager::loadScript( const QString& path )
 
     if( !SupportAPIVersion.contains( ScriptVersion ) )
     {*/
-        warning() << "script API version not compatible with Amarok.";
+    warning() << "script API version not compatible with Amarok.";
     /*  return false;
     }*/
 

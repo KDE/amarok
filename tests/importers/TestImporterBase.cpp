@@ -401,7 +401,7 @@ TestImporterBase::checkStatistics( const QString &artist )
     for( auto const &track : provider->artistTracks( artist ) )
         trackForName.insert( track->name(), track );
 
-    const QString testName( QLatin1String( QTest::currentDataTag() ) );
+    const QString testName = QLatin1String( QTest::currentDataTag() );
     QCOMPARE( trackForName.size(), 10 );
     QVERIFY( trackForName.contains( testName ) );
 
