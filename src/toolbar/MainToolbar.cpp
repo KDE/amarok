@@ -734,7 +734,7 @@ MainToolbar::showEvent( QShowEvent *ev )
     connect( The::playlistController(), &Playlist::Controller::changed,
              this, &MainToolbar::updatePrevAndNext );
 
-    connect( The::playlist()->qaim(), &QAbstractItemModel::dataChanged, //FIXME: dataChanged used to be queueChanged
+    connect( qobject_cast<Playlist::ProxyBase*>(The::playlist()->qaim()), &Playlist::ProxyBase::queueChanged,
              this, &MainToolbar::updatePrevAndNext );
 
     connect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
@@ -764,7 +764,7 @@ MainToolbar::hideEvent( QHideEvent *ev )
     disconnect( The::playlistController(), &Playlist::Controller::changed,
                 this, &MainToolbar::updatePrevAndNext );
 
-    disconnect( The::playlist()->qaim(), &QAbstractItemModel::dataChanged, //FIXME: dataChanged used to be queueChanged
+    disconnect( qobject_cast<Playlist::ProxyBase*>(The::playlist()->qaim()), &Playlist::ProxyBase::queueChanged,
                 this, &MainToolbar::updatePrevAndNext );
 
     disconnect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
