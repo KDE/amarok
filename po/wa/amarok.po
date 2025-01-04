@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-03 01:53+0000\n"
+"POT-Creation-Date: 2025-01-04 01:51+0000\n"
 "PO-Revision-Date: 2014-03-28 22:28+0100\n"
 "Last-Translator: Jean Cayron <jean.cayron@gmail.com>\n"
 "Language-Team: Walloon <linux-wa@walon.org>\n"
@@ -4584,12 +4584,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "%1 est reki po cweri e Wikipedia"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:755
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
 #, kde-format
 msgid "Choose Language"
 msgstr "Tchoezi on lingaedje"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:888
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "

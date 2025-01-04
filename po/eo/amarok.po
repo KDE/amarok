@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-03 01:53+0000\n"
-"PO-Revision-Date: 2024-07-27 16:22+0200\n"
+"POT-Creation-Date: 2025-01-04 01:51+0000\n"
+"PO-Revision-Date: 2025-01-03 21:16+0100\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -1839,24 +1839,22 @@ msgstr ""
 "Ĉu vi ŝatus uzi tion kiel kolektodosierujon?"
 
 #: App.cpp:669
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Dosierujoj de la kolekto"
+msgstr "Baskuligi dosierujon por kolekto"
 
 #: App.cpp:670
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Uzanto"
+msgstr "Uzi"
 
 #: App.cpp:671
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Ne uzi"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -4470,12 +4468,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "%1 necesas por serĉi Vikipedion."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:755
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
 #, kde-format
 msgid "Choose Language"
 msgstr "Elekti Lingvon"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:888
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5455,8 +5453,7 @@ msgid "Remove empty folders?"
 msgstr "Ĉu forigi malplenajn dosierujojn?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Forigi"
@@ -5465,7 +5462,7 @@ msgstr "Forigi"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ne forigi"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -11049,16 +11046,13 @@ msgid ""
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
@@ -13296,8 +13290,7 @@ msgid "Remove Script"
 msgstr "Forigi Skripton"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Forigi"
@@ -13306,7 +13299,7 @@ msgstr "Forigi"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ne forigi"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13317,9 +13310,7 @@ msgstr "Ĉu vi estas absolute certa?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Jes"
@@ -13328,9 +13319,7 @@ msgstr "Jes"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Ne"
@@ -14030,11 +14019,10 @@ msgid "Disconnect Last.fm account?"
 msgstr "Ĉu malkonekti Last.fm-konton?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:100
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Malkonekti Aparaton"
+msgstr "Malkonekti"
 
 #: services/lastfm/LastFmServiceSettings.cpp:148
 #: services/lastfm/LastFmServiceSettings.cpp:205
@@ -15240,17 +15228,16 @@ msgstr ""
 "Vi ĉiam povas ŝanĝi la decidon en Amarok-agordo."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Sinkronigi"
+msgstr "Teni sinkronigita"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "Ne teni sinkronigita"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
@@ -16252,20 +16239,3 @@ msgstr "Artisto: %1"
 #, kde-format
 msgid "empty"
 msgstr "malplena"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "dB"
-#~ msgstr ""
-#~ "%0\n"
-#~ "dB"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%0\n"
-#~ "Hz"
-
-#~ msgid "&Retrieve similar artists"
-#~ msgstr "&Retrovi similajn artistojn"
