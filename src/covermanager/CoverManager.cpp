@@ -111,8 +111,6 @@ CoverManager::CoverManager( QWidget *parent )
     setWindowTitle( i18n("Cover Manager") );
     setAttribute( Qt::WA_DeleteOnClose );
 
-    // TODO: There is no hidden signal in QDialog. Needs porting to QT5.
-//     connect( this, &CoverManager::hidden, this, &CoverManager::delayedDestruct );
     connect( buttonBox->button(QDialogButtonBox::Close), &QAbstractButton::clicked, this, &CoverManager::delayedDestruct );
 
     m_splitter = new QSplitter( this );
@@ -719,6 +717,13 @@ CoverManager::delayedDestruct()
         hide();
 
     deleteLater();
+}
+
+void
+CoverManager::hideEvent( QHideEvent *event )
+{
+    QDialog::hideEvent( event );
+    delayedDestruct();
 }
 
 void

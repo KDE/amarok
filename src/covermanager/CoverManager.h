@@ -70,6 +70,9 @@ class CoverManager : public QDialog, public Meta::Observer
         void updateStatusBar();
         void delayedDestruct();
 
+    protected:
+        virtual void hideEvent(QHideEvent *event) override;
+
     private:
         enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };
 
