@@ -132,30 +132,6 @@ namespace Amarok
             ReplayGainModeAction( KActionCollection *ac, QObject* );
     };
 
-    class BurnMenu : public QMenu
-    {
-        Q_OBJECT
-
-        public:
-            explicit BurnMenu( QWidget* parent );
-            static QMenu *instance();
-
-        private Q_SLOTS:
-            void slotBurnCurrentPlaylist();
-            void slotBurnSelectedTracks();
-
-        private:
-            static BurnMenu* s_instance;
-    };
-
-
-    class BurnMenuAction : public QAction
-    {
-        public:
-            BurnMenuAction( KActionCollection*, QObject* );
-            virtual QWidget* createWidget( QWidget* );
-    };
-
     class StopAction : public QAction
     {
         Q_OBJECT
