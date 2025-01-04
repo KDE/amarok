@@ -145,6 +145,7 @@ class MtpHandler : public MediaDeviceHandler
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
+        virtual void refreshCapacity();
 
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );

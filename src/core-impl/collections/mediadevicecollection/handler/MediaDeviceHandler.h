@@ -179,7 +179,6 @@ Q_SIGNALS:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, QUrl> &urls );
     void databaseWritten( bool succeeded );
 
-    void deleteTracksDone();
     void incrementProgress();
     void endProgressOperation( QObject *owner );
 

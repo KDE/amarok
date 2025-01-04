@@ -10,6 +10,7 @@ VERSION 3.2.1
    * Display settings for Internet services on Qt6 builds
    * Enable Wikipedia context applet on Qt6 builds
    * Don't crash when copying multiple files to MTP device (BR 467616)
+   * Avoid unnecessarily flooding MTP devices with storage capacity queries
 
 VERSION 3.2.0
   FEATURES:

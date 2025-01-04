@@ -62,6 +62,8 @@ MtpHandler::MtpHandler( Collections::MtpCollection *mc )
     DEBUG_BLOCK
     m_copyingthreadsafe = true;
     m_tempDir->setAutoRemove( true );
+    connect( this, &MediaDeviceHandler::copyTracksDone, this, &MtpHandler::refreshCapacity );
+    connect( this, &MediaDeviceHandler::removeTracksDone, this, &MtpHandler::refreshCapacity );
 //    init();
 }
 
@@ -286,16 +288,7 @@ MtpHandler::getDeviceInfo()
     else
         debug() << "Unknown battery level";
 
-    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
-    {
-        debug() << "Failed to get storage properties, cannot get capacity";
-        m_capacity = 0.0;
-    }
-
-    else
-    {
-        m_capacity = m_device->storage->MaxCapacity;
-    }
+    refreshCapacity();
 
     QString modelname = QLatin1String( LIBMTP_Get_Modelname( m_device ) );
 
@@ -1099,12 +1092,28 @@ float
 MtpHandler::usedCapacity() const
 {
     DEBUG_BLOCK
-    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+    if( m_capacity == 0.0 )
     {
         debug() << "Failed to get storage properties, cannot get capacity";
         return 0.0;
     }
     return ( totalCapacity() - m_device->storage->FreeSpaceInBytes );
+}
+
+void
+MtpHandler::refreshCapacity()
+{
+    DEBUG_BLOCK
+    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+    {
+        debug() << "Failed to get storage properties, cannot get capacity";
+        m_capacity = 0.0;
+    }
+
+    else
+    {
+        m_capacity = m_device->storage->MaxCapacity;
+    }
 }
 
 /// Sets
