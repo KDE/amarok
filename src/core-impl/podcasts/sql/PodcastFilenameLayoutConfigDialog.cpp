@@ -35,7 +35,6 @@ PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( const Podc
     setModal( true );
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-//    showButtonSeparator( true ); TODO KF5: Replace with a Qt5 equivalent (if any equivalent exists)
 
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);

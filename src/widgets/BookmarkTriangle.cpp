@@ -80,7 +80,7 @@ void BookmarkTriangle::paintEvent ( QPaintEvent* )
 
 void BookmarkTriangle::showEvent ( QShowEvent * event )
 {
-    Q_UNUSED( event );  //FIXME: event->accept() should probably be called
+    Q_UNUSED( event );
 
     if ( m_showPopup )
     {

@@ -383,7 +383,7 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
 
         setPulsating( false );
 
-        if ( we->angleDelta().y() < 0 ) //FIXME: check if .x() must be used
+        if ( we->angleDelta().y() < 0 )
         {
             ++m_visibleIndex;
             if ( m_visibleIndex >= m_data.count() )

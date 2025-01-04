@@ -72,8 +72,6 @@ int ScriptableServiceManager::insertItem( const QString &serviceName, int level,
     }
 
     return m_serviceMap[serviceName]->insertItem( level, parentId, name, infoHtml, callbackData, playableUrl, albumOverride, artistOverride, genreOverride, composerOverride, yearOverride, coverUrl );
-
-    //return -1; // FIXME: what should this return?
 }
 
 void ScriptableServiceManager::setCurrentInfo( const QString &serviceName, const QString & info )

@@ -151,7 +151,7 @@ VolumePopupButton::wheelEvent( QWheelEvent * event )
 
     EngineController* const ec = The::engineController();
 
-    const int volume = qBound( 0, ec->volume() + event->angleDelta().y() / 40 , 100 ); //FIXME: check if .x() must be used
+    const int volume = qBound( 0, ec->volume() + event->angleDelta().y() / Amarok::VOLUME_SENSITIVITY , 100 );
     ec->setVolume( volume );
 }
 

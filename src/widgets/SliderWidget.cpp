@@ -95,7 +95,7 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
 
     // Position Slider (horizontal)
     // only used for progress slider now!
-    int step = e->angleDelta().y() * 24; //FIXME: check if .x() must be used
+    int step = e->angleDelta().y() * 24;
     int nval = value() + step;
     nval = qMax(nval, minimum());
     nval = qMin(nval, maximum());
@@ -267,7 +267,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 {
-    const uint step = e->angleDelta().y() / Amarok::VOLUME_SENSITIVITY; //FIXME: check if .x() must be used
+    const uint step = e->angleDelta().y() / Amarok::VOLUME_SENSITIVITY;
     QSlider::setValue( QSlider::value() + step );
 
     Q_EMIT sliderReleased( value() );
