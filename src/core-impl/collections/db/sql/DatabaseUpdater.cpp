@@ -949,8 +949,6 @@ DatabaseUpdater::createTables() const
                             ",score FLOAT"
                             ",rating INTEGER DEFAULT 0"
                             ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;") );
-
-        //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
         storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)") );
 
         storage->query( QStringLiteral("CREATE TABLE statistics_tag "
@@ -962,8 +960,6 @@ DatabaseUpdater::createTables() const
                              ",score FLOAT"
                              ",rating INTEGER DEFAULT 0"
                              ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM") );
-
-        //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
         storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)") );
     }
 }
