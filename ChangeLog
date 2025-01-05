@@ -11,6 +11,7 @@ VERSION 3.2.1
    * Enable Wikipedia context applet on Qt6 builds
    * Don't crash when copying multiple files to MTP device (BR 467616)
    * Avoid unnecessarily flooding MTP devices with storage capacity queries
+   * Compilation fixes for various compiler + Qt6 version combinations
 
 VERSION 3.2.0
   FEATURES:
