@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-04 01:51+0000\n"
+"POT-Creation-Date: 2025-01-05 01:54+0000\n"
 "PO-Revision-Date: 2024-12-02 17:22+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -206,42 +206,27 @@ msgstr "曲目(&T)"
 msgid "&Album"
 msgstr "專輯(&A)"
 
-#: ActionClasses.cpp:372
-#, kde-format
-msgid "Burn"
-msgstr "燒錄"
-
-#: ActionClasses.cpp:411
-#, kde-format
-msgid "Current Playlist"
-msgstr "目前的播放清單"
-
-#: ActionClasses.cpp:412
-#, kde-format
-msgid "Selected Tracks"
-msgstr "選擇的曲目"
-
-#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "停止"
 
-#: ActionClasses.cpp:487
+#: ActionClasses.cpp:419
 #, kde-format
 msgid "Stop after current Track"
 msgstr "在目前曲目後停止"
 
-#: ActionClasses.cpp:504
+#: ActionClasses.cpp:436
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "在目前曲目後停止：關閉"
 
-#: ActionClasses.cpp:509
+#: ActionClasses.cpp:441
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "在目前曲目後停止：開啟"
 
-#: ActionClasses.cpp:513
+#: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -249,7 +234,7 @@ msgid "No track playing"
 msgstr "沒有播放任何曲目"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:517
+#: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
 #: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
 #: MainWindow.cpp:1246
@@ -1951,7 +1936,7 @@ msgstr "未知"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:843
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -3842,7 +3827,7 @@ msgstr "重新載入"
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4677,7 +4662,7 @@ msgstr "未知的收藏"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
@@ -5161,41 +5146,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr "%1 上的 Podcast"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:155
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr "無法連接 MTP 裝置"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:372
 #, kde-format
 msgid "Could not copy track from device."
 msgstr "無法複製裝置上的曲目。"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
 #: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "未知專輯"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
 #: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "未知的風格"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:587
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:719
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:904
 #, kde-format
 msgid "Could not delete item"
 msgstr "無法刪除項目"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:597
 #, kde-format
 msgid "Delete failed"
 msgstr "刪除失敗"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:877
 #, kde-format
 msgid "Could not save playlist."
 msgstr "無法儲存播放清單。"
@@ -7318,142 +7303,142 @@ msgstr "網址"
 msgid "Cover Manager"
 msgstr "封面管理員"
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:122
 #, kde-format
 msgid "Albums By"
 msgstr "專輯作者"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:132
 #, kde-format
 msgid "All Artists"
 msgstr "所有演出者"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:178 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "請輸入搜尋的項目"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:191
 #, kde-format
 msgid "All Albums"
 msgstr "所有專輯"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "Albums With Cover"
 msgstr "有封面的專輯"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "無封面的專輯"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:206
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "取得未有的封面"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:312
 #, kde-format
 msgid "Fetching"
 msgstr "擷取中"
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:407
 #, kde-format
 msgid "Loading"
 msgstr "載入中"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:618
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "已完成。"
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:620
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " 找不到這 <b>%1</b> 張封面"
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "正在取得 %1 - %2 的封面..."
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:644
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "正在取得 %1 的封面..."
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:650
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "正在取得 <b>%1</b> 張封面..."
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "已取得 %1 張"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:656
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:657
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "找不到 %1 張"
 
-#: covermanager/CoverManager.cpp:662
+#: covermanager/CoverManager.cpp:660
 #: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "正在連接..."
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:683
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "搜尋 %2 找到 %1 個結果"
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:687
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "%1 張專輯"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ", "
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "%1 by %2"
 msgstr "%2 - %1"
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:704
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] "%2 - ( <b>%1</b> 張無封面 )"
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:769
 #, kde-format
 msgid "Cover Image"
 msgstr "封面影像"
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:844
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:861
 #, kde-format
 msgid "No Artist"
 msgstr "沒有演出者"
@@ -15810,6 +15795,15 @@ msgstr "演出者：%1"
 #, kde-format
 msgid "empty"
 msgstr "空白"
+
+#~ msgid "Burn"
+#~ msgstr "燒錄"
+
+#~ msgid "Current Playlist"
+#~ msgstr "目前的播放清單"
+
+#~ msgid "Selected Tracks"
+#~ msgstr "選擇的曲目"
 
 #~ msgid ""
 #~ "%0\n"

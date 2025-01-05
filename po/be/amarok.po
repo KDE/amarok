@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-04 01:51+0000\n"
+"POT-Creation-Date: 2025-01-05 01:54+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -205,45 +205,30 @@ msgstr "&Дарожка"
 msgid "&Album"
 msgstr "Альбом"
 
-#: ActionClasses.cpp:372
-#, fuzzy, kde-format
-msgid "Burn"
-msgstr "Выпаліць"
-
-#: ActionClasses.cpp:411
-#, kde-format
-msgid "Current Playlist"
-msgstr "Бягучы спіс прайгравання"
-
-#: ActionClasses.cpp:412
-#, kde-format
-msgid "Selected Tracks"
-msgstr ""
-
-#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Спыніць"
 
-#: ActionClasses.cpp:487
+#: ActionClasses.cpp:419
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "Stop after current Track"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:504
+#: ActionClasses.cpp:436
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "Stop after current track: Off"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:509
+#: ActionClasses.cpp:441
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "Stop after current track: On"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:513
+#: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -251,7 +236,7 @@ msgid "No track playing"
 msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:517
+#: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
 #: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
 #: MainWindow.cpp:1246
@@ -1996,7 +1981,7 @@ msgstr "Невядомы"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:843
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -3998,7 +3983,7 @@ msgstr "&Сцягнуць"
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, fuzzy, kde-format
@@ -4879,7 +4864,7 @@ msgstr "Калекцыя"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
@@ -5409,41 +5394,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr "Мясцовыя подкасты"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:155
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr ""
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:372
 #, kde-format
 msgid "Could not copy track from device."
 msgstr ""
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
 #: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Невядомы альбом"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
 #: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Невядомы жанр"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:587
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:719
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:904
 #, kde-format
 msgid "Could not delete item"
 msgstr ""
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:597
 #, kde-format
 msgid "Delete failed"
 msgstr "Памылка выдалення"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:877
 #, kde-format
 msgid "Could not save playlist."
 msgstr "Немагчыма запісаць спіс прайгравання."
@@ -7731,63 +7716,63 @@ msgstr "URL"
 msgid "Cover Manager"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:122
 #, fuzzy, kde-format
 #| msgid "Albums by %1"
 msgid "Albums By"
 msgstr "Альбомы %1"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:132
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgid "All Artists"
 msgstr "Выканаўца"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:178 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:191
 #, kde-format
 msgid "All Albums"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "Albums With Cover"
 msgstr "Альбомы з вокладкай"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "Альбомы без вокладкі"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:206
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "Сцягнуць нехапаючыя вокладкі"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:312
 #, fuzzy, kde-format
 #| msgid "Searching..."
 msgid "Fetching"
 msgstr "Пошук..."
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:407
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgid "Loading"
 msgstr "Адзнака"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:618
 #, fuzzy, kde-format
 #| msgid "Finished."
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "С&кончана"
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:620
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
@@ -7795,17 +7780,17 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr ""
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:644
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr ""
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:650
 #, fuzzy, kde-format
 #| msgid "Fetch Missing Covers"
 msgid "Fetching 1 cover: "
@@ -7814,7 +7799,7 @@ msgstr[0] "Сцягнуць нехапаючыя вокладкі"
 msgstr[1] "Сцягнуць нехапаючыя вокладкі"
 msgstr[2] "Сцягнуць нехапаючыя вокладкі"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
@@ -7822,12 +7807,12 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:656
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:657
 #, fuzzy, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
@@ -7835,13 +7820,13 @@ msgstr[0] " (не знойдзена)"
 msgstr[1] " (не знойдзена)"
 msgstr[2] " (не знойдзена)"
 
-#: covermanager/CoverManager.cpp:662
+#: covermanager/CoverManager.cpp:660
 #: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "Злучаюся..."
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:683
 #, fuzzy, kde-format
 #| msgid "No results found"
 msgid "1 result for \"%2\""
@@ -7850,7 +7835,7 @@ msgstr[0] "Нічога не знойдзена"
 msgstr[1] "Нічога не знойдзена"
 msgstr[2] "Нічога не знойдзена"
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:687
 #, fuzzy, kde-format
 #| msgid "Album"
 msgid "1 album"
@@ -7859,20 +7844,20 @@ msgstr[0] "Альбом:"
 msgstr[1] "Альбомы"
 msgstr[2] "Альбомы"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, fuzzy, kde-format
 #| msgid ", "
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ", "
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, fuzzy, kde-format
 #| msgid "%1 (%2)"
 msgid "%1 by %2"
 msgstr "%1 (%2)"
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:704
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
@@ -7880,17 +7865,17 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:769
 #, kde-format
 msgid "Cover Image"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:844
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:861
 #, fuzzy, kde-format
 #| msgid "Artist"
 msgid "No Artist"
@@ -16511,6 +16496,13 @@ msgstr "Выканаўца"
 #| msgid "Retry"
 msgid "empty"
 msgstr "Паўтарыць"
+
+#, fuzzy
+#~ msgid "Burn"
+#~ msgstr "Выпаліць"
+
+#~ msgid "Current Playlist"
+#~ msgstr "Бягучы спіс прайгравання"
 
 #, fuzzy
 #~| msgid "Smart Playlist"

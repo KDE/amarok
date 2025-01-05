@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-04 01:51+0000\n"
+"POT-Creation-Date: 2025-01-05 01:54+0000\n"
 "PO-Revision-Date: 2024-10-08 14:40+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -212,42 +212,27 @@ msgstr "&Skladba"
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:372
-#, kde-format
-msgid "Burn"
-msgstr "Vypálit"
-
-#: ActionClasses.cpp:411
-#, kde-format
-msgid "Current Playlist"
-msgstr "Aktuální seznam skladeb"
-
-#: ActionClasses.cpp:412
-#, kde-format
-msgid "Selected Tracks"
-msgstr "Vybrané skladby"
-
-#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Zastavit"
 
-#: ActionClasses.cpp:487
+#: ActionClasses.cpp:419
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Zastavit po současné skladbě"
 
-#: ActionClasses.cpp:504
+#: ActionClasses.cpp:436
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Zastavit po současné skladbě: Vypnuto"
 
-#: ActionClasses.cpp:509
+#: ActionClasses.cpp:441
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Zastavit po současné skladbě: Zapnuto"
 
-#: ActionClasses.cpp:513
+#: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -255,7 +240,7 @@ msgid "No track playing"
 msgstr "Nepřehrává se žádná skladba"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:517
+#: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
 #: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
 #: MainWindow.cpp:1246
@@ -2036,7 +2021,7 @@ msgstr "Neznámý"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:843
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -3985,7 +3970,7 @@ msgstr "Obnovit"
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4827,7 +4812,7 @@ msgstr "Neznámá sbírka"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
@@ -5368,41 +5353,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr "Podcasty na %1"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:155
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr " Nelze se připojit k MTP zařízení"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:372
 #, kde-format
 msgid "Could not copy track from device."
 msgstr "Skladbu není možné ze zařízení zkopírovat."
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
 #: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Neznámé album"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
 #: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Neznámý žánr"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:587
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:719
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:904
 #, kde-format
 msgid "Could not delete item"
 msgstr "Položku není možné smazat"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:597
 #, kde-format
 msgid "Delete failed"
 msgstr "Mazání selhalo"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:877
 #, kde-format
 msgid "Could not save playlist."
 msgstr "Nelze uložit seznam skladeb."
@@ -7639,58 +7624,58 @@ msgstr "URL"
 msgid "Cover Manager"
 msgstr "Správce obalů"
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:122
 #, kde-format
 msgid "Albums By"
 msgstr "Alba od"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:132
 #, kde-format
 msgid "All Artists"
 msgstr "Všichni umělci"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:178 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "Zde zadejte hledané výrazy"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:191
 #, kde-format
 msgid "All Albums"
 msgstr "Všechna alba"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "Albums With Cover"
 msgstr "Alba s obalem"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "Alba bez obalu"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:206
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "Získat chybějící obaly"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:312
 #, kde-format
 msgid "Fetching"
 msgstr "Stahuji"
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:407
 #, kde-format
 msgid "Loading"
 msgstr "Načítání"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:618
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Hotovo."
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:620
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
@@ -7698,17 +7683,17 @@ msgstr[0] "Obal nenalezen"
 msgstr[1] " <b>%1</b> obaly nenalezeny"
 msgstr[2] " <b>%1</b> obalů nenalezeno"
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Získává se obal pro %1 - %2..."
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:644
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Získává se obal pro %1..."
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:650
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
@@ -7716,7 +7701,7 @@ msgstr[0] "Získává se 1 obal: "
 msgstr[1] "Získávají se <b>%1</b> obaly... : "
 msgstr[2] "Získává se <b>%1</b> obalů... : "
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
@@ -7724,12 +7709,12 @@ msgstr[0] "1 získán"
 msgstr[1] "%1 získány"
 msgstr[2] "%1 získáno"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:656
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:657
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
@@ -7737,13 +7722,13 @@ msgstr[0] "1 nenalezen"
 msgstr[1] "%1 nenalezeny"
 msgstr[2] "%1 nenalezeno"
 
-#: covermanager/CoverManager.cpp:662
+#: covermanager/CoverManager.cpp:660
 #: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "Připojuje se..."
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:683
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
@@ -7751,7 +7736,7 @@ msgstr[0] "1 výsledek pro \"%2\""
 msgstr[1] "%1 výsledky pro \"%2\""
 msgstr[2] "%1 výsledků pro \"%2\""
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:687
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
@@ -7759,18 +7744,18 @@ msgstr[0] "1 album"
 msgstr[1] "%1 alba"
 msgstr[2] "%1 alb"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ", "
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "%1 by %2"
 msgstr "%1 od %2"
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:704
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
@@ -7778,17 +7763,17 @@ msgstr[0] "%2 - (<b>1</b> bez obalu)"
 msgstr[1] "%2 - (<b>%1</b> bez obalu)"
 msgstr[2] "%2 - (<b>%1</b> bez obalu)"
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:769
 #, kde-format
 msgid "Cover Image"
 msgstr "Obrázek obalu"
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:844
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:861
 #, kde-format
 msgid "No Artist"
 msgstr "Žádný umělec"
@@ -16415,6 +16400,15 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
+
+#~ msgid "Burn"
+#~ msgstr "Vypálit"
+
+#~ msgid "Current Playlist"
+#~ msgstr "Aktuální seznam skladeb"
+
+#~ msgid "Selected Tracks"
+#~ msgstr "Vybrané skladby"
 
 #~ msgid ""
 #~ "%0\n"

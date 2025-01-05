@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-04 01:51+0000\n"
+"POT-Creation-Date: 2025-01-05 01:54+0000\n"
 "PO-Revision-Date: 2024-10-21 17:17+0200\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
@@ -205,42 +205,27 @@ msgstr "Pis&ta"
 msgid "&Album"
 msgstr "Ál&bum"
 
-#: ActionClasses.cpp:372
-#, kde-format
-msgid "Burn"
-msgstr "Grabar"
-
-#: ActionClasses.cpp:411
-#, kde-format
-msgid "Current Playlist"
-msgstr "Lista de reproducción actual"
-
-#: ActionClasses.cpp:412
-#, kde-format
-msgid "Selected Tracks"
-msgstr "Pistas seleccionadas"
-
-#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Detener"
 
-#: ActionClasses.cpp:487
+#: ActionClasses.cpp:419
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Detener después de la pista actual"
 
-#: ActionClasses.cpp:504
+#: ActionClasses.cpp:436
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Detener después de la pista actual: Desactivado"
 
-#: ActionClasses.cpp:509
+#: ActionClasses.cpp:441
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Detener después de la pista actual: Activado"
 
-#: ActionClasses.cpp:513
+#: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -248,7 +233,7 @@ msgid "No track playing"
 msgstr "Ninguna pista en reproducción"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:517
+#: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
 #: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
 #: MainWindow.cpp:1246
@@ -2068,7 +2053,7 @@ msgstr "Desconocido"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:843
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -4022,7 +4007,7 @@ msgstr "Volver a cargar"
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4869,7 +4854,7 @@ msgstr "Colección desconocida"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
@@ -5399,41 +5384,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr "Podcast en %1"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:155
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr "No se pudo conectar al dispositivo MTP"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:372
 #, kde-format
 msgid "Could not copy track from device."
 msgstr "No se pudo copiar la pista del dispositivo."
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
 #: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Álbum desconocido"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
 #: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Género desconocido"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:587
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:719
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:904
 #, kde-format
 msgid "Could not delete item"
 msgstr "No se ha podido borrar el elemento"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:597
 #, kde-format
 msgid "Delete failed"
 msgstr "Fallo al borrar"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:877
 #, kde-format
 msgid "Could not save playlist."
 msgstr "No se pudo guardar la lista de reproducción."
@@ -7658,149 +7643,149 @@ msgstr "URL"
 msgid "Cover Manager"
 msgstr "Gestor de carátulas"
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:122
 #, kde-format
 msgid "Albums By"
 msgstr "Álbumes por"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:132
 #, kde-format
 msgid "All Artists"
 msgstr "Todos los artistas"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:178 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "Introduzca aquí los términos de búsqueda"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:191
 #, kde-format
 msgid "All Albums"
 msgstr "Todos los álbumes"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "Albums With Cover"
 msgstr "Álbumes con carátula"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "Álbumes sin carátula"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:206
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "Obtener las carátulas que faltan"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:312
 #, kde-format
 msgid "Fetching"
 msgstr "Recuperando"
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:407
 #, kde-format
 msgid "Loading"
 msgstr "Cargando"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:618
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Finalizado."
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:620
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " Carátula no encontrada"
 msgstr[1] " <b>%1</b> carátulas no encontradas"
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Descargando la carátula de %1 - %2..."
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:644
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Descargando la carátula de %1..."
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:650
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "Obteniendo 1 carátula: "
 msgstr[1] "Obteniendo <b>%1</b> carátulas...: "
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "1 obtenida"
 msgstr[1] "%1 obtenidas"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:656
 #, kde-format
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:657
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "1 no encontrada"
 msgstr[1] "%1 no encontradas"
 
-#: covermanager/CoverManager.cpp:662
+#: covermanager/CoverManager.cpp:660
 #: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "Conectando..."
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:683
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "1 resultado para «%2»"
 msgstr[1] "%1 resultados para «%2»"
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:687
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "1 álbum"
 msgstr[1] "%1 álbumes"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ", "
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "%1 by %2"
 msgstr "%1 por %2"
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:704
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] "%2 - (<b>1</b> sin carátula)"
 msgstr[1] "%2 - (<b>%1</b> sin carátula)"
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:769
 #, kde-format
 msgid "Cover Image"
 msgstr "Imagen de la carátula"
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:844
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:861
 #, kde-format
 msgid "No Artist"
 msgstr "Sin artista"
@@ -16435,6 +16420,15 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "vacío"
+
+#~ msgid "Burn"
+#~ msgstr "Grabar"
+
+#~ msgid "Current Playlist"
+#~ msgstr "Lista de reproducción actual"
+
+#~ msgid "Selected Tracks"
+#~ msgstr "Pistas seleccionadas"
 
 #~ msgid ""
 #~ "%0\n"
