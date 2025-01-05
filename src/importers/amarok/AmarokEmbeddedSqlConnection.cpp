@@ -137,8 +137,8 @@ AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketP
          << QStringLiteral("--skip-grant-tables")
          << QStringLiteral("--myisam-recover-options=FORCE")
          << QStringLiteral("--key-buffer-size=16777216")
-         << QStringLiteral("--character-set-server=utf8")
-         << QStringLiteral("--collation-server=utf8_bin")
+         << QStringLiteral("--character-set-server=utf8mb4")
+         << QStringLiteral("--collation-server=utf8mb4_bin")
          << QStringLiteral("--skip-innodb")
          << QStringLiteral("--bind-address=localhost")
          << QStringLiteral("--socket=") + socketPath

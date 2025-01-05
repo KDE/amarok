@@ -8,6 +8,7 @@ VERSION 3.2.71 UNRELEASED
   CHANGES:
    * Qt5/KF5 support has been dropped
    * Remove TagLib extras support (RealMedia and Audible files)
+   * Update database character set to allow full utf-8 values (BR 462268)
 
   BUGFIXES:
   

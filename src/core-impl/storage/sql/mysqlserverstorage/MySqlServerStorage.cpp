@@ -150,8 +150,8 @@ MySqlServerStorage::query( const QString &query )
     if( tid != mysql_thread_id( m_db ) )
     {
         debug() << "NOTE: MySQL server had gone away, ping reconnected it";
-        if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8'" ).toUtf8().constData() ) )
-            reportError( QStringLiteral("SET NAMES 'utf8' died") );
+        if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8mb4'" ).toUtf8().constData() ) )
+            reportError( QStringLiteral("SET NAMES 'utf8mb4' died") );
         if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( m_databaseName ).toUtf8().constData() ) )
             reportError( QStringLiteral("Could not select database") );
     }

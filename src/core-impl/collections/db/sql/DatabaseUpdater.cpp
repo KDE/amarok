@@ -30,7 +30,7 @@
 
 #include <KMessageBox>
 
-static const int DB_VERSION = 15;
+static const int DB_VERSION = 16;
 
 int
 DatabaseUpdater::expectedDatabaseVersion()
@@ -126,7 +126,10 @@ DatabaseUpdater::update()
                 Q_FALLTHROUGH();
             case 14:
                 upgradeVersion14to15();
-                dbVersion = 15; // be sure to update this manually when introducing new version!
+                Q_FALLTHROUGH();
+            case 15:
+                upgradeVersion15to16();
+                dbVersion = 16; // be sure to update this manually when introducing new version!
         }
 
         QString query = QStringLiteral( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
@@ -729,6 +732,45 @@ DatabaseUpdater::upgradeVersion14to15()
 }
 
 void
+DatabaseUpdater::upgradeVersion15to16()
+{
+    /* This update solves bugs 426807 and 462268
+     * It changes database charset to utf8mb4 (from the deprecated utf8 = utf8mb3)
+     * and directories' changedate from INTEGER to
+     * */
+
+
+    storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin") );
+
+    // due to increased memory usage, servername(80)+sharename(240) doesn't fit in 1000 byte max key any more,
+    // avoid by creating only prefix indexes. The index is not unique so shouldn't probably cause problems.
+    storage->query( QStringLiteral("DROP INDEX devices_rshare ON devices") );
+    storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername(60), sharename(180) );") );
+
+
+
+    QStringList tables;
+    tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
+    tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
+    tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
+    tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
+    tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
+    tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
+    tables << QStringLiteral("jamendo_albums") << QStringLiteral("jamendo_artists") << QStringLiteral("jamendo_genre") << QStringLiteral("jamendo_tracks");
+    tables << QStringLiteral("magnatune_albums") << QStringLiteral("magnatune_artists") << QStringLiteral("magnatune_genre") << QStringLiteral("magnatune_moods") << QStringLiteral("magnatune_tracks");
+    tables << QStringLiteral("opmldirectory_albums") << QStringLiteral("opmldirectory_artists") << QStringLiteral("opmldirectory_genre") << QStringLiteral("opmldirectory_tracks");
+
+
+    for( const QString &table : tables )
+    {
+        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin COLLATE utf8mb4_bin ENGINE = MyISAM") );
+        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin") );
+    }
+
+
+}
+
+void
 DatabaseUpdater::cleanupDatabase()
 {
     // maybe clean up redundant information here?
@@ -759,7 +801,7 @@ DatabaseUpdater::createTables() const
 
     // see docs/database/amarokTables.svg for documentation about database layout
     {
-        QString c = QStringLiteral("CREATE TABLE admin (component ") + storage->textColumnType() + QStringLiteral(", version INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;");
+        QString c = QStringLiteral("CREATE TABLE admin (component ") + storage->textColumnType() + QStringLiteral(", version INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( c );
     }
     {
@@ -770,11 +812,13 @@ DatabaseUpdater::createTables() const
                          QStringLiteral(",lastmountpoint ") + storage->textColumnType() +
                          QStringLiteral(",uuid ") + storage->textColumnType() +
                          QStringLiteral(",servername ") + storage->textColumnType(80) +
-                         QStringLiteral(",sharename ") + storage->textColumnType(240) + QStringLiteral(") COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",sharename ") + storage->textColumnType(240) + QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE INDEX devices_type ON devices( type );") );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX devices_uuid ON devices( uuid );") );
-        storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername, sharename );") );
+        // changing from utf8 to utf8mb4 increased bytes per character, so servername(80)+sharename(240) doesn't fit in 1000 byte max key
+        // avoid by creating only prefix indexes. this index is not unique so shouldn't probably cause problems in any case
+        storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername(60), sharename(180) );") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE urls "
@@ -782,7 +826,7 @@ DatabaseUpdater::createTables() const
                          QStringLiteral(",deviceid INTEGER"
                          ",rpath ") + storage->exactIndexableTextColumnType() + QStringLiteral(" NOT NULL") +
                          QStringLiteral(",directory INTEGER"
-                         ",uniqueid ") + storage->exactTextColumnType(128) + QStringLiteral(" UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         ",uniqueid ") + storage->exactTextColumnType(128) + QStringLiteral(" UNIQUE) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);") );
         storage->query( QStringLiteral("CREATE INDEX urls_uniqueid ON urls(uniqueid);") );
@@ -793,21 +837,21 @@ DatabaseUpdater::createTables() const
                          "(id ") + storage->idType() +
                          QStringLiteral(",deviceid INTEGER"
                          ",dir ") + storage->exactTextColumnType() + QStringLiteral(" NOT NULL") +
-                         QStringLiteral(",changedate INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",changedate INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE INDEX directories_deviceid ON directories(deviceid);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE artists "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX artists_name ON artists(name);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE images "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",path ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",path ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX images_name ON images(path);") );
     }
@@ -816,7 +860,7 @@ DatabaseUpdater::createTables() const
                     "(id ") + storage->idType() +
                     QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL"
                     ",artist INTEGER") +
-                    QStringLiteral(",image INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;");
+                    QStringLiteral(",image INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( c );
         storage->query( QStringLiteral("CREATE INDEX albums_name ON albums(name);") );
         storage->query( QStringLiteral("CREATE INDEX albums_artist ON albums(artist);") );
@@ -828,21 +872,21 @@ DatabaseUpdater::createTables() const
     {
         QString create = QStringLiteral("CREATE TABLE genres "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX genres_name ON genres(name);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE composers "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX composers_name ON composers(name);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE years "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;");
+                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX years_name ON years(name);") );
     }
@@ -871,7 +915,7 @@ DatabaseUpdater::createTables() const
                     ",albumpeakgain FLOAT" // decibels, relative to albumgain
                     ",trackgain FLOAT"
                     ",trackpeakgain FLOAT" // decibels, relative to trackgain
-                    ") COLLATE = utf8_bin ENGINE = MyISAM;");
+                    ") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
 
         storage->query( c );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX tracks_url ON tracks(url);") );
@@ -895,7 +939,7 @@ DatabaseUpdater::createTables() const
                     ",rating INTEGER NOT NULL DEFAULT 0" // the "default" undefined rating is 0. We cannot display anything else.
                     ",playcount INTEGER NOT NULL DEFAULT 0" // a track is either played or not.
                     ",deleted BOOL NOT NULL DEFAULT ") + storage->boolFalse() +
-                    QStringLiteral(") COLLATE = utf8_bin ENGINE = MyISAM;");
+                    QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( c );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX statistics_url ON statistics(url);") );
         QStringList indices;
@@ -910,7 +954,7 @@ DatabaseUpdater::createTables() const
         QString q = QStringLiteral("CREATE TABLE labels "
                     "(id ") + storage->idType() +
                     QStringLiteral(",label ") + storage->textColumnType() +
-                    QStringLiteral(") COLLATE = utf8_bin ENGINE = MyISAM;");
+                    QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( q );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX labels_label ON labels(label);") );
 
@@ -924,7 +968,7 @@ DatabaseUpdater::createTables() const
                     "asin ") + storage->textColumnType( 20 ) +
                     QStringLiteral(",locale ") + storage->textColumnType( 2 ) +
                     QStringLiteral(",filename ") + storage->textColumnType( 33 ) +
-                    QStringLiteral(",refetchdate INTEGER ) COLLATE = utf8_bin ENGINE = MyISAM;");
+                    QStringLiteral(",refetchdate INTEGER ) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( q );
         storage->query( QStringLiteral("CREATE INDEX amazon_date ON amazon(refetchdate);") );
     }
@@ -932,7 +976,7 @@ DatabaseUpdater::createTables() const
         QString q = QStringLiteral("CREATE TABLE lyrics ("
                     "url INTEGER PRIMARY KEY"
                     ",lyrics ") + storage->longTextColumnType() +
-                    QStringLiteral(") COLLATE = utf8_bin ENGINE = MyISAM;");
+                    QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( q );
     }
     storage->query( QStringLiteral("INSERT INTO admin(component,version) "
@@ -944,7 +988,7 @@ DatabaseUpdater::createTables() const
                             ",lastplayed DATETIME"
                             ",score FLOAT"
                             ",rating INTEGER DEFAULT 0"
-                            ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;") );
+                            ",playcount INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;") );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)") );
 
         storage->query( QStringLiteral("CREATE TABLE statistics_tag "
@@ -955,7 +999,7 @@ DatabaseUpdater::createTables() const
                              ",lastplayed DATETIME"
                              ",score FLOAT"
                              ",rating INTEGER DEFAULT 0"
-                             ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM") );
+                             ",playcount INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM") );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)") );
     }
 }

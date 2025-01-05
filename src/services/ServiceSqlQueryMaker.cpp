@@ -822,7 +822,7 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
         ret += QLatin1Char('\'');
 
         //Case insensitive collation for queries
-        ret += QLatin1String(" COLLATE utf8_unicode_ci ");
+        ret += QLatin1String(" COLLATE utf8mb4_unicode_ci ");
 
         //Use / as the escape character
         ret += QLatin1String(" ESCAPE '/' ");

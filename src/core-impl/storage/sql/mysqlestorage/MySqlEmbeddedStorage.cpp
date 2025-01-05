@@ -75,8 +75,8 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
                << "--myisam-recover=FORCE"
 #endif
                << "--key-buffer-size=16777216" // (16Mb)
-               << "--character-set-server=utf8"
-               << "--collation-server=utf8_bin";
+               << "--character-set-server=utf8mb4"
+               << "--collation-server=utf8mb4_bin";
 
 
     if( !QFile::exists( databaseDir ) )

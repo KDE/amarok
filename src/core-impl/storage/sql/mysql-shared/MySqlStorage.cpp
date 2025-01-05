@@ -300,11 +300,11 @@ bool
 MySqlStorage::sharedInit( const QString &databaseName )
 {
     QMutexLocker locker( &m_mutex );
-    if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8'" ).toUtf8().constData() ) )
-        reportError( QStringLiteral("SET NAMES 'utf8' died") );
-    if( mysql_query( m_db, QStringLiteral( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8().constData() ) )
+    if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8mb4'" ).toUtf8().constData() ) )
+        reportError( QStringLiteral("SET NAMES 'utf8mb4' died") );
+    if( mysql_query( m_db, QStringLiteral( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin" ).arg( databaseName ).toUtf8().constData() ) )
         reportError( QStringLiteral( "Could not create %1 database" ).arg( databaseName ) );
-    if( mysql_query( m_db, QStringLiteral( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8().constData() ) )
+    if( mysql_query( m_db, QStringLiteral( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin" ).arg( databaseName ).toUtf8().constData() ) )
         reportError( QStringLiteral("Could not alter database charset/collation") );
     if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( databaseName ).toUtf8().constData() ) )
     {
