@@ -43,7 +43,7 @@ ColumnLayout {
         color: Kirigami.Theme.textColor
         maximumLineCount: 1
         fontSizeMode: Text.Fit
-        font.pointSize: 32
+        font.pointSize: root.parent.flow == GridLayout.TopToBottom ? 24 : 32
         minimumPointSize: 12
         elide: Text.ElideRight
 
@@ -66,7 +66,7 @@ ColumnLayout {
         color: Kirigami.Theme.textColor
         maximumLineCount: 1
         fontSizeMode: Text.Fit
-        font.pointSize: 32
+        font.pointSize: root.parent.flow == GridLayout.TopToBottom ? 24 : 32
         font.italic: true
         minimumPointSize: 12
         elide: Text.ElideRight
@@ -90,7 +90,7 @@ ColumnLayout {
         color: Kirigami.Theme.textColor
         maximumLineCount: 1
         fontSizeMode: Text.Fit
-        font.pointSize: 32
+        font.pointSize: root.parent.flow == GridLayout.TopToBottom ? 24 : 32
         minimumPointSize: 12
         elide: Text.ElideRight
 

@@ -6,6 +6,7 @@ VERSION 3.2.1
   FEATURES:
   CHANGES:
    * Support gpodder and lastfm on Qt6 builds
+   * Limit maximum current track font size more when context view is narrow
   BUGFIXES:
    * Fix displaying settings button for Internet services
    * Enable Wikipedia context applet on Qt6 builds
