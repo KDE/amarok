@@ -7,7 +7,7 @@ VERSION 3.2.1
   CHANGES:
    * Support gpodder and lastfm on Qt6 builds
   BUGFIXES:
-   * Display settings for Internet services on Qt6 builds
+   * Fix displaying settings button for Internet services
    * Enable Wikipedia context applet on Qt6 builds
    * Don't crash when copying multiple files to MTP device (BR 467616)
    * Avoid unnecessarily flooding MTP devices with storage capacity queries
