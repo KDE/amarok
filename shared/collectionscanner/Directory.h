@@ -65,7 +65,7 @@ public:
     QString rpath() const;
 
     /** Returns the modification time of the directory. */
-    uint mtime() const;
+    quint64 mtime() const;
 
     /** Returns true if the directory was skipped and not scanned.
      *  Usually this is being done because the directory was unmodified in an
@@ -89,7 +89,7 @@ private:
 
     QString m_path;
     QString m_rpath;
-    uint m_mtime;
+    quint64 m_mtime;
     bool m_skipped;
     bool m_ignored; // the directory was ignored e.g. because of "fmps_ignore"
 

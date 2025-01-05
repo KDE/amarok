@@ -136,7 +136,7 @@ CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
             else if( name == QLatin1String("rpath") )
                 m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == QLatin1String("mtime") )
-                m_mtime = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
+                m_mtime = reader->readElementText(QXmlStreamReader::SkipChildElements).toULongLong();
             else if( name == QLatin1String("cover") )
                 m_covers.append(reader->readElementText(QXmlStreamReader::SkipChildElements));
             else if( name == QLatin1String("skipped") )
@@ -184,7 +184,7 @@ CollectionScanner::Directory::rpath() const
     return m_rpath;
 }
 
-uint
+quint64
 CollectionScanner::Directory::mtime() const
 {
     return m_mtime;

@@ -76,7 +76,7 @@ SqlRegistry::~SqlRegistry()
 
 // ------ directory
 int
-SqlRegistry::getDirectory( const QString &path, uint mtime )
+SqlRegistry::getDirectory( const QString &path, quint64 mtime )
 {
     int dirId;
     int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(path) );
@@ -105,7 +105,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
     {
         // update old one
         dirId = res[0].toUInt();
-        uint oldMtime = res[1].toUInt();
+        quint64 oldMtime = res[1].toULongLong();
         if( oldMtime != mtime )
         {
             QString update = QStringLiteral( "UPDATE directories SET changedate = %1 "

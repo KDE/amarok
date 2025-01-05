@@ -736,9 +736,10 @@ DatabaseUpdater::upgradeVersion15to16()
 {
     /* This update solves bugs 426807 and 462268
      * It changes database charset to utf8mb4 (from the deprecated utf8 = utf8mb3)
-     * and directories' changedate from INTEGER to
+     * and directories' changedate from INTEGER to BIGINT
      * */
 
+    auto storage = m_collection->sqlStorage();
 
     storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin") );
 
@@ -768,6 +769,7 @@ DatabaseUpdater::upgradeVersion15to16()
     }
 
 
+    storage->query( QStringLiteral("ALTER TABLE directories MODIFY changedate BIGINT") );
 }
 
 void
@@ -837,7 +839,7 @@ DatabaseUpdater::createTables() const
                          "(id ") + storage->idType() +
                          QStringLiteral(",deviceid INTEGER"
                          ",dir ") + storage->exactTextColumnType() + QStringLiteral(" NOT NULL") +
-                         QStringLiteral(",changedate INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                         QStringLiteral(",changedate BIGINT) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
         storage->query( create );
         storage->query( QStringLiteral("CREATE INDEX directories_deviceid ON directories(deviceid);") );
     }

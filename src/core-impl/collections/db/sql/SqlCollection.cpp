@@ -101,7 +101,7 @@ protected:
         {
             int deviceid = iter.next().toInt();
             QString dir = iter.next();
-            uint mtime = iter.next().toUInt();
+            quint64 mtime = iter.next().toULongLong();
 
             QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, dir );
             result.append( QPair<QString, uint>( folder, mtime ) );

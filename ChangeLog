@@ -11,6 +11,7 @@ VERSION 3.2.71 UNRELEASED
    * Update database character set to allow full utf-8 values (BR 462268)
 
   BUGFIXES:
+   * Fix year 2038 problem for various dates saved in database (BR 426807)
   
 VERSION 3.2.2
   FEATURES:

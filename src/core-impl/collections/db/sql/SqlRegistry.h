@@ -87,7 +87,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
             @param mtime if mtime is != 0 then the mtime of the entry is updated
             @returns the directory id
          */
-        int getDirectory( const QString &path, uint mtime = 0 );
+        int getDirectory( const QString &path, quint64 mtime = 0 );
 
         Meta::TrackPtr getTrack( int urlId );
         Meta::TrackPtr getTrack( const QString &path );
