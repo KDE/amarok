@@ -45,6 +45,8 @@ private Q_SLOTS:
     void testCopiesLabelFromExternalTracks();
     void testCopyTrackToDirectoryWithExistingTracks();
 
+    void test2100sChangeDate();
+
 private:
     QString setupFileInTempDir( const QString &relativeName );
 

@@ -280,3 +280,17 @@ TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
     QProcess::execute( QStringLiteral("touch"), QStringList() << absoluteName );
     return QLatin1Char('.') + absoluteName;
 }
+
+void
+TestSqlCollectionLocation::test2100sChangeDate()
+{
+    // BUG 426807: see if Amarok handles changedates out of database's integer range
+    // NOTE to Amarok maintainers of early 2100's: maybe bump this test to 2200's
+    QCOMPARE( m_storage->getLastErrors().length(), 0 );
+    m_storage->query( QStringLiteral("INSERT INTO directories(deviceid,changedate,dir) VALUES (-1, 294963696, '.") + s_tmpDir->path() + QStringLiteral("/abcd/')"));
+    QCOMPARE( m_storage->getLastErrors().length(), 0 );
+    m_storage->query( QStringLiteral("INSERT INTO directories(deviceid,changedate,dir) VALUES (-1, 4294963696, '.") + s_tmpDir->path() + QStringLiteral("/abcde/')"));
+    if( m_storage->getLastErrors().length() > 0 )
+        qDebug() << m_storage->getLastErrors();
+    QCOMPARE( m_storage->getLastErrors().length(), 0 );
+}

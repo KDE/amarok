@@ -61,6 +61,8 @@ private Q_SLOTS:
     void testRemoveLabelFromTrack();
     void testRemoveLabelFromTrackWhenNotInCache();
 
+    void testFullUtf8();
+
 private:
     void setAllValues( Meta::SqlTrack *track );
     void getAllValues( Meta::SqlTrack *track );

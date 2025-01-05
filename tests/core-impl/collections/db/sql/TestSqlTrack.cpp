@@ -559,3 +559,15 @@ TestSqlTrack::testRemoveLabelFromTrackWhenNotInCache()
     QCOMPARE( urlsLabelsCount.first().toInt(), 0 );
 }
 
+void
+TestSqlTrack::testFullUtf8()
+{
+    // BUG 462268: mariadb and mysql historically use utf8mb3, but full utf8 support requires utf8mb4
+    // trying to insert the following track with rocket emoji as comment fails if utf8mb4 is not enabled
+    QCOMPARE( m_storage->getLastErrors().length(), 0 );
+    m_storage->query( QStringLiteral("INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                      "VALUES(3,3,'track3','comment🚀',1,3,1,1,1);") );
+    if( m_storage->getLastErrors().length() > 0 )
+        qDebug() << m_storage->getLastErrors();
+    QCOMPARE( m_storage->getLastErrors().length(), 0 );
+}
