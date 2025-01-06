@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-12-08 01:47+0000\n"
+"POT-Creation-Date: 2025-01-05 01:54+0000\n"
 "PO-Revision-Date: 2020-12-13 13:52+0100\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -200,42 +200,27 @@ msgstr "&Spor"
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:372
-#, kde-format
-msgid "Burn"
-msgstr "Brenn"
-
-#: ActionClasses.cpp:411
-#, kde-format
-msgid "Current Playlist"
-msgstr "Denne spelelista"
-
-#: ActionClasses.cpp:412
-#, kde-format
-msgid "Selected Tracks"
-msgstr "Valde spor"
-
-#: ActionClasses.cpp:443 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Stopp"
 
-#: ActionClasses.cpp:487
+#: ActionClasses.cpp:419
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Stopp etter dette sporet"
 
-#: ActionClasses.cpp:504
+#: ActionClasses.cpp:436
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Stopp etter dette sporet: av"
 
-#: ActionClasses.cpp:509
+#: ActionClasses.cpp:441
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Stopp etter dette sporet: på"
 
-#: ActionClasses.cpp:513
+#: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
@@ -243,7 +228,7 @@ msgid "No track playing"
 msgstr "Ingen spor spelar"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:517
+#: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
 #: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
 #: MainWindow.cpp:1246
@@ -1979,7 +1964,7 @@ msgstr "Ukjend"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
-#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:838
+#: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:843
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
@@ -3836,7 +3821,7 @@ msgstr ""
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
-#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:46
+#: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
@@ -4358,12 +4343,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:756
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
 #, kde-format
 msgid "Choose Language"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:889
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4647,7 +4632,7 @@ msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
 #: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
@@ -5133,41 +5118,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr ""
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:155
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr "Klarte ikkje kopla til MTP-eining"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:372
 #, kde-format
 msgid "Could not copy track from device."
 msgstr "Klarte ikkje kopiera spor frå eining."
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
 #: core/meta/Meta.cpp:302
 #, kde-format
 msgid "Unknown Album"
 msgstr "Ukjent album"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
 #: core/meta/Meta.cpp:335
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Ukjend sjanger"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:587
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:719
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:904
 #, kde-format
 msgid "Could not delete item"
 msgstr "Klarte ikkje sletta element"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:597
 #, kde-format
 msgid "Delete failed"
 msgstr "Feil ved sletting"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:877
 #, kde-format
 msgid "Could not save playlist."
 msgstr "Klarte ikkje lagra speleliste."
@@ -5352,7 +5337,7 @@ msgid "Yes, delete from %1."
 msgstr ""
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:349
+#: services/gpodder/GpodderProvider.cpp:352
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr ""
@@ -7227,149 +7212,149 @@ msgstr ""
 msgid "Cover Manager"
 msgstr "Plateomslag"
 
-#: covermanager/CoverManager.cpp:124
+#: covermanager/CoverManager.cpp:122
 #, kde-format
 msgid "Albums By"
 msgstr "Album av"
 
-#: covermanager/CoverManager.cpp:134
+#: covermanager/CoverManager.cpp:132
 #, kde-format
 msgid "All Artists"
 msgstr "Alle artistar"
 
-#: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:65
+#: covermanager/CoverManager.cpp:178 widgets/SearchWidget.cpp:65
 #, kde-format
 msgid "Enter search terms here"
 msgstr "Skriv inn søkjeteksten her"
 
-#: covermanager/CoverManager.cpp:193
+#: covermanager/CoverManager.cpp:191
 #, kde-format
 msgid "All Albums"
 msgstr "Alle album"
 
-#: covermanager/CoverManager.cpp:194
+#: covermanager/CoverManager.cpp:192
 #, kde-format
 msgid "Albums With Cover"
 msgstr "Album med plateomslag"
 
-#: covermanager/CoverManager.cpp:195
+#: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "Albums Without Cover"
 msgstr "Album utan plateomslag"
 
-#: covermanager/CoverManager.cpp:208
+#: covermanager/CoverManager.cpp:206
 #, kde-format
 msgid "Fetch Missing Covers"
 msgstr "Hent manglande omslag"
 
-#: covermanager/CoverManager.cpp:314
+#: covermanager/CoverManager.cpp:312
 #, kde-format
 msgid "Fetching"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:409
+#: covermanager/CoverManager.cpp:407
 #, kde-format
 msgid "Loading"
 msgstr "Startar"
 
-#: covermanager/CoverManager.cpp:620
+#: covermanager/CoverManager.cpp:618
 #, kde-format
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Ferdig."
 
-#: covermanager/CoverManager.cpp:622
+#: covermanager/CoverManager.cpp:620
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " Fann ikkje omslag"
 msgstr[1] " Fann ikkje <b>%1</b> omslag"
 
-#: covermanager/CoverManager.cpp:640
+#: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Hentar omslag til %1 – %2 …"
 
-#: covermanager/CoverManager.cpp:646
+#: covermanager/CoverManager.cpp:644
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Hentar omslag til %1 …"
 
-#: covermanager/CoverManager.cpp:652
+#: covermanager/CoverManager.cpp:650
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "Hentar eitt omslag:"
 msgstr[1] "Hentar <b>%1</b> omslag:"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "Henta 1"
 msgstr[1] "Henta %1"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:656
 #, kde-format
 msgid " - "
 msgstr " – "
 
-#: covermanager/CoverManager.cpp:659
+#: covermanager/CoverManager.cpp:657
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "Fann ikkje 1"
 msgstr[1] "Fann ikkje %1"
 
-#: covermanager/CoverManager.cpp:662
-#: services/lastfm/LastFmServiceSettings.cpp:106
+#: covermanager/CoverManager.cpp:660
+#: services/lastfm/LastFmServiceSettings.cpp:115
 #, kde-format
 msgid "Connecting..."
 msgstr "Koplar til …"
 
-#: covermanager/CoverManager.cpp:685
+#: covermanager/CoverManager.cpp:683
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "1 result for «%2»"
 msgstr[1] "%1 result for «%2»"
 
-#: covermanager/CoverManager.cpp:689
+#: covermanager/CoverManager.cpp:687
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "1 album"
 msgstr[1] "%1 album"
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr ""
 
-#: covermanager/CoverManager.cpp:701
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "%1 by %2"
 msgstr ""
 
-#: covermanager/CoverManager.cpp:706
+#: covermanager/CoverManager.cpp:704
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] ""
 msgstr[1] ""
 
-#: covermanager/CoverManager.cpp:764
+#: covermanager/CoverManager.cpp:769
 #, kde-format
 msgid "Cover Image"
 msgstr "Plateomslag"
 
-#: covermanager/CoverManager.cpp:839
+#: covermanager/CoverManager.cpp:844
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 – %2"
 
-#: covermanager/CoverManager.cpp:856
+#: covermanager/CoverManager.cpp:861
 #, kde-format
 msgid "No Artist"
 msgstr "Ingen artist"
@@ -12877,32 +12862,32 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:181
-#: services/gpodder/GpodderServiceSettings.cpp:190
-#: services/gpodder/GpodderServiceSettings.cpp:200
-#: services/gpodder/GpodderServiceSettings.cpp:218
-#: services/gpodder/GpodderServiceSettings.cpp:247
+#: services/gpodder/GpodderServiceSettings.cpp:193
+#: services/gpodder/GpodderServiceSettings.cpp:206
+#: services/gpodder/GpodderServiceSettings.cpp:216
+#: services/gpodder/GpodderServiceSettings.cpp:239
+#: services/gpodder/GpodderServiceSettings.cpp:268
 #, kde-format
 msgid "&Test Login"
 msgstr "&Testinnlogging"
 
-#: services/gpodder/GpodderProvider.cpp:291
+#: services/gpodder/GpodderProvider.cpp:294
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:468
+#: services/gpodder/GpodderProvider.cpp:473
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:528
+#: services/gpodder/GpodderProvider.cpp:535
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:777
-#: services/gpodder/GpodderProvider.cpp:788
+#: services/gpodder/GpodderProvider.cpp:786
+#: services/gpodder/GpodderProvider.cpp:797
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -12937,37 +12922,37 @@ msgid ""
 "credentials in plaintext?"
 msgstr ""
 
-#: services/gpodder/GpodderServiceSettings.cpp:94
+#: services/gpodder/GpodderServiceSettings.cpp:98
 #, kde-format
 msgid "Testing..."
 msgstr "Testar …"
 
-#: services/gpodder/GpodderServiceSettings.cpp:111
+#: services/gpodder/GpodderServiceSettings.cpp:119
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr ""
 
-#: services/gpodder/GpodderServiceSettings.cpp:112
-#: services/gpodder/GpodderServiceSettings.cpp:179
-#: services/gpodder/GpodderServiceSettings.cpp:188
-#: services/gpodder/GpodderServiceSettings.cpp:203
-#: services/lastfm/LastFmServiceSettings.cpp:199
-#: services/lastfm/LastFmServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:221
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/gpodder/GpodderServiceSettings.cpp:120
+#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/gpodder/GpodderServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:213
+#: services/lastfm/LastFmServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Failed"
 msgstr "Feil"
 
-#: services/gpodder/GpodderServiceSettings.cpp:123
-#: services/lastfm/LastFmServiceSettings.cpp:212
+#: services/gpodder/GpodderServiceSettings.cpp:131
+#: services/lastfm/LastFmServiceSettings.cpp:231
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Vellukka"
 
-#: services/gpodder/GpodderServiceSettings.cpp:178
+#: services/gpodder/GpodderServiceSettings.cpp:190
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -12975,12 +12960,12 @@ msgid ""
 msgstr ""
 "Brukarnamnet eller passordet er ugyldig. Rett dei opp, og prøv så på nytt."
 
-#: services/gpodder/GpodderServiceSettings.cpp:187
+#: services/gpodder/GpodderServiceSettings.cpp:203
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr ""
 
-#: services/gpodder/GpodderServiceSettings.cpp:203
+#: services/gpodder/GpodderServiceSettings.cpp:224
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -13175,15 +13160,15 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:222
-#: services/lastfm/LastFmServiceSettings.cpp:245
+#: services/lastfm/LastFmServiceSettings.cpp:246
+#: services/lastfm/LastFmServiceSettings.cpp:274
 #, kde-format
 msgid "Connect to account"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:302
 #, kde-format
 msgid "Not connected"
 msgstr ""
@@ -13369,43 +13354,43 @@ msgid ""
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:90
+#: services/lastfm/LastFmServiceSettings.cpp:99
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:91
+#: services/lastfm/LastFmServiceSettings.cpp:100
 #, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:139
-#: services/lastfm/LastFmServiceSettings.cpp:196
-#: services/lastfm/LastFmServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:148
+#: services/lastfm/LastFmServiceSettings.cpp:205
+#: services/lastfm/LastFmServiceSettings.cpp:218
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Feil"
 
-#: services/lastfm/LastFmServiceSettings.cpp:144
+#: services/lastfm/LastFmServiceSettings.cpp:153
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:162
+#: services/lastfm/LastFmServiceSettings.cpp:171
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:187
+#: services/lastfm/LastFmServiceSettings.cpp:196
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -13413,7 +13398,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:244
+#: services/lastfm/LastFmServiceSettings.cpp:273
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr ""
@@ -13424,7 +13409,7 @@ msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:184
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -13432,37 +13417,37 @@ msgid_plural "%2 (%1 plays)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: services/lastfm/LastFmTreeModel.cpp:197
+#: services/lastfm/LastFmTreeModel.cpp:201
 #, kde-format
 msgid "Personal Radio"
 msgstr "Personleg radio"
 
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Recommendations"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Radio Station"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Mix Radio"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
 msgid "My Top Artists"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:322
 #, kde-format
 msgid "My Tags"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:324
 #, kde-format
 msgid "Friends"
 msgstr ""
