@@ -57,6 +57,13 @@
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>Rediscover your music</summary>
+  <summary xml:lang="ca">Torna a descobrir la teva música</summary>
+  <summary xml:lang="gl">Volva descubrir a súa música.</summary>
+  <summary xml:lang="nl">Herontdek uw muziek</summary>
+  <summary xml:lang="sl">Ponovno odkrijte vašo glasbo</summary>
+  <summary xml:lang="tr">Müziğinizi yeniden keşfedin</summary>
+  <summary xml:lang="uk">Відкрийте свою музику знову</summary>
+  <summary xml:lang="x-test">xxRediscover your musicxx</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="bg">Amarok е безплатен, междуплатформен, универсален, мощен и богат на функции музикален плейър и мениджър на колекции.</p>
