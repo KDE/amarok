@@ -103,7 +103,7 @@ option(WITH_LASTFM "Enable last.fm support" ON)
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.12")
 find_package(Taglib REQUIRED)
-set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
+set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadata." URL "https://taglib.org/" TYPE REQUIRED PURPOSE "Required for tag reading" )
 
 # Check if TagLib is built with ASF and MP4 support
 include(CheckCXXSourceCompiles)
