@@ -13,12 +13,6 @@ set(amarok_afttagger_SRCS
 
 add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
 
-if( TAGLIB-EXTRAS_FOUND )
-    include_directories(SYSTEM ${TAGLIB-EXTRAS_INCLUDES})
-    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
-    target_link_libraries(amarok_afttagger ${TAGLIB-EXTRAS_LIBRARIES})
-endif()
-
 target_link_libraries(amarok_afttagger
                         Qt::Core
                         ${TAGLIB_LIBRARIES}

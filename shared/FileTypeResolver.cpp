@@ -25,10 +25,6 @@
 #include <QFileInfo>
 #include <QtDebug>
 
-#ifdef TAGLIB_EXTRAS_FOUND
-#include <audiblefile.h>
-#include <realmediafile.h>
-#endif // TAGLIB_EXTRAS_FOUND
 #include <aifffile.h>
 #include <asffile.h>
 #include <flacfile.h>
@@ -89,14 +85,6 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     {
         result = new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
     }
-#ifdef TAGLIB_EXTRAS_FOUND
-    else if( mimetype.inherits( QLatin1String("audio/vnd.rn-realaudio") )
-            || mimetype.inherits( QLatin1String("audio/x-pn-realaudioplugin") )
-            || mimetype.inherits( QLatin1String("audio/vnd.rn-realvideo") ) )
-    {
-        result = new TagLibExtras::RealMedia::File(fileName, readProperties, propertiesStyle);
-    }
-#endif
 #ifdef TAGLIB_OPUS_FOUND
     else if( mimetype.inherits( QStringLiteral("audio/opus") )
             || mimetype.inherits( QStringLiteral("audio/x-opus+ogg") ) )

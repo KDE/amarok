@@ -121,11 +121,6 @@ check_cxx_source_compiles("#include <opusfile.h>
 int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
 cmake_pop_check_state()
 
-set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-find_package(Taglib-Extras)
-set_package_properties(Taglib-Extras PROPERTIES DESCRIPTION "Support for metadata reading of RealMedia and Audible file types" URL "https://websvn.kde.org/trunk/kdesupport/taglib-extras/" TYPE OPTIONAL )
-set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
-
 include(CheckTagLibFileName)
 
 check_taglib_filename(COMPLEX_TAGLIB_FILENAME)

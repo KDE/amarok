@@ -61,10 +61,6 @@ Required
       Embedded (In-process database support)
 
 Optional
-    * TagLib Extras 1.0.1 (or newer)
-      (Support for metadata reading of RealMedia and Audible file types)
-      https://websvn.kde.org/trunk/kdesupport/taglib-extras/
-
     * iPod support requires:
       * libgpod 0.8.2 (or newer)
         http://www.gtkpod.org/libgpod/

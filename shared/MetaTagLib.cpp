@@ -51,11 +51,6 @@
 //Taglib:
 #include <audioproperties.h>
 
-#ifdef TAGLIB_EXTRAS_FOUND
-#include <audiblefiletyperesolver.h>
-#include <realmediafiletyperesolver.h>
-#endif // TAGLIB_EXTRAS_FOUND
-
 
 namespace Meta
 {
@@ -178,10 +173,6 @@ static void ensureFileTypeResolvers()
     if( !alreadyAdded ) {
         alreadyAdded = true;
 
-#ifdef TAGLIB_EXTRAS_FOUND
-        TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-        TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
-#endif
         TagLib::FileRef::addFileTypeResolver(new Meta::Tag::FileTypeResolver());
     }
 }

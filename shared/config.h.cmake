@@ -3,9 +3,6 @@
 /* Whether TagLib::FileName is a struct supporting wide characters or just a typedef */
 #cmakedefine COMPLEX_TAGLIB_FILENAME 1
 
-/* have TagLib-Extras */
-#cmakedefine TAGLIB_EXTRAS_FOUND 1
-
 /* have module file format support in TagLib */
 #cmakedefine TAGLIB_MOD_FOUND 1
 

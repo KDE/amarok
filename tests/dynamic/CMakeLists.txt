@@ -16,7 +16,6 @@ macro(link_database_test test_target)
         Qt::Core
         ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
-#        ${TAGLIB-EXTRAS_LIBRARIES}
 #        ${TAGLIB_LIBRARIES}
     )
 
