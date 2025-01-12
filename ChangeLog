@@ -4,7 +4,11 @@ Amarok ChangeLog
 
 VERSION 3.2.2 UNRELEASED
   FEATURES:
+   * Try to preserve collection browser order when adding tracks
+     to playlist (BR 180404)
+
   CHANGES:
+
   BUGFIXES:
    * Fix DAAP collection connections, browsing and playing (BR 498654)
    * Fix first line of lyrics.ovh lyrics missing (BR 493882)

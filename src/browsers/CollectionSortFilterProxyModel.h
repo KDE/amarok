@@ -42,6 +42,7 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 
         bool hasChildren(const QModelIndex &parent) const override;
 
+        virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     protected:
         bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
         bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;

@@ -593,7 +593,59 @@ CollectionTreeItemModelBase::itemIndex( CollectionTreeItem *item ) const
 bool
 CollectionTreeItemModelBase::currentOrderTrackLessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right ) const
 {
-    return Meta::Track::lessThan( left, right );
+    int comp = 0;
+    for( int level = 0; m_levelType.value( level ) != CategoryId::None && comp == 0; level ++)
+    {
+        switch( m_levelType.value( level ) )
+        {
+            case CategoryId::Album:
+                if( left->album() && right->album() )
+                {
+                    if( AmarokConfig::showYears() )
+                        comp = left->year()->year() < right->year()->year() ? 1 : ( left->year()->year() > right->year()->year() ? -1 : 0 );
+                    if( !comp )
+                        comp = QString::localeAwareCompare( left->album()->sortableName(), right->album()->sortableName() );
+                }
+                break;
+            case CategoryId::Artist:
+                if( left->artist() && right->artist() )
+                    comp = QString::localeAwareCompare( left->artist()->sortableName(), right->artist()->sortableName() );
+                break;
+            case CategoryId::AlbumArtist:
+                if( left->album() && right->album() )
+                {
+                    if( left->album()->isCompilation() != right->album()->isCompilation() )
+                        comp = left->album()->isCompilation() ? -1 : 1;
+                    else if( left->album()->hasAlbumArtist() && right->album()->hasAlbumArtist() )
+                        comp = QString::localeAwareCompare( left->album()->albumArtist()->sortableName(), right->album()->albumArtist()->sortableName() );
+                }
+                break;
+            case CategoryId::Composer:
+                if( left->composer() && right->composer() )
+                    comp = QString::localeAwareCompare( left->composer()->sortableName(), right->composer()->sortableName() );
+                break;
+            case CategoryId::Genre:
+                if( left->genre() && right->genre() )
+                    comp = QString::localeAwareCompare( left->genre()->sortableName(), right->genre()->sortableName() );
+                break;
+            case CategoryId::Year:
+                if( left->year() && right->year() )
+                    comp = left->year()->year() < right->year()->year() ? 1 : ( left->year()->year() > right->year()->year() ? -1 : 0 );
+                break;
+            case CategoryId::Label:
+                if( left->labels().length() == 0 || right->labels().length() == 0 )
+                    comp = left->labels().length() == right->labels().length() ? 0 : ( left->labels().length() == 0 ? -1 : 1 );
+                else // NOTE multiple labels not handled properly, but that might remain an unsolvable corner case
+                    comp = QString::localeAwareCompare( left->labels().first()->sortableName(), right->labels().first()->sortableName() );
+                break;
+            default:
+                break;
+        }
+    }
+    if( property( "descending" ).toBool() == true )
+        comp = -comp;
+    // if no difference yet, do a track based ordering
+    return comp < 0 ? true : ( comp > 0 ? false : Meta::Track::lessThan( left, right ) );
 }
 
 void

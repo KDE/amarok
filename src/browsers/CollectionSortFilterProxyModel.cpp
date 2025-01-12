@@ -56,6 +56,14 @@ CollectionSortFilterProxyModel::hasChildren(const QModelIndex & parent) const
     return sourceModel()->hasChildren(sourceParent);
 }
 
+void
+CollectionSortFilterProxyModel::sort(int column, Qt::SortOrder order)
+{
+    // an ugly-but-minimal way to keep our source model informed of our current sorting order
+    sourceModel()->setProperty( "descending", order != Qt::AscendingOrder );
+    QSortFilterProxyModel::sort( column, order );
+}
+
 bool
 CollectionSortFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
