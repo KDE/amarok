@@ -535,7 +535,13 @@ CollectionTreeItemModelBase::mimeData( const QList<CollectionTreeItem*> &items )
         }
     }
 
-    std::stable_sort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
+
+    std::stable_sort( tracks.begin(), tracks.end(),
+                [this](const Meta::TrackPtr& left, const Meta::TrackPtr& right)
+                {
+                    return currentOrderTrackLessThan( left, right );
+                }
+            );
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );
@@ -582,6 +588,12 @@ CollectionTreeItemModelBase::itemIndex( CollectionTreeItem *item ) const
         return QModelIndex();
 
     return createIndex( item->row(), 0, item );
+}
+
+bool
+CollectionTreeItemModelBase::currentOrderTrackLessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right ) const
+{
+    return Meta::Track::lessThan( left, right );
 }
 
 void

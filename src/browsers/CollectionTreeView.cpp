@@ -831,7 +831,15 @@ CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
 
     Playlist::AddOptions insertMode = m_playChildTracksMode.take( mime );
 
-    std::stable_sort( list.begin(), list.end(), Meta::Track::lessThan );
+    if(m_treeModel)
+        std::stable_sort( list.begin(), list.end(),
+                            [ &m_treeModel = m_treeModel ](const Meta::TrackPtr& left, const Meta::TrackPtr& right)
+                            {
+                                return m_treeModel->currentOrderTrackLessThan( left, right );
+                            }
+                        );
+    else
+        std::stable_sort( list.begin(), list.end(), Meta::Track::lessThan );
     The::playlistController()->insertOptioned( list, insertMode );
 
     mime->deleteLater();

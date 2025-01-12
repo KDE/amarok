@@ -654,13 +654,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         debug() << "this is a track";
         const AmarokMimeData* trackListDrag = qobject_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
-        {
-
-            Meta::TrackList tracks = trackListDrag->tracks();
-            std::stable_sort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
-
-            The::playlistController()->insertTracks( beginRow, tracks );
-        }
+            The::playlistController()->insertTracks( beginRow, trackListDrag->tracks() );
         return true;
     }
     else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )

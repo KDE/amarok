@@ -110,6 +110,12 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          */
         QModelIndex itemIndex( CollectionTreeItem *item ) const;
 
+        /**
+         * Sort tracks in the order they're currently shown in collection tree, allowing to
+         * keep their order when adding to playlist.
+         */
+        bool currentOrderTrackLessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right ) const;
+
     Q_SIGNALS:
         void expandIndex( const QModelIndex &index );
         void allQueriesFinished( bool autoExpand );
