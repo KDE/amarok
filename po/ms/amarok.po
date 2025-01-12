@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-05 01:54+0000\n"
+"POT-Creation-Date: 2025-01-12 02:01+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -9382,7 +9382,7 @@ msgstr ""
 #, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, The Amarok Development Squad"
+"(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 
 #: main.cpp:97
