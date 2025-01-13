@@ -3,14 +3,14 @@
 #
 # SPDX-FileCopyrightText: 2012, 2013, 2014 Javier Viñal <fjvinal@gmail.com>
 # Javier Vinal <fjvinalgmail.com>, 2012, 2014.
-# SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024 Eloy Cuadra <ecuadra@eloihr.net>
+# SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024, 2025 Eloy Cuadra <ecuadra@eloihr.net>
 # SPDX-FileCopyrightText: 2015 Sergio Ahumada <sahumada@texla.cl>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-01-12 02:01+0000\n"
-"PO-Revision-Date: 2024-10-21 17:17+0200\n"
+"PO-Revision-Date: 2025-01-12 12:46+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.08.2\n"
+"X-Generator: Lokalize 24.12.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -9837,16 +9837,13 @@ msgid "The audio player by KDE"
 msgstr "El reproductor de audio creado por KDE"
 
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2024, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "© 2002-2003, Mark Kretschmann\n"
-"© 2003-2024, la brigada de desarrollo de Amarok"
+"© 2003-2025, la brigada de desarrollo de Amarok"
 
 #: main.cpp:97
 #, kde-format

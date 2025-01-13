@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-01-12 02:01+0000\n"
-"PO-Revision-Date: 2024-10-21 07:07+0200\n"
+"PO-Revision-Date: 2025-01-12 07:45+0100\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -9901,16 +9901,13 @@ msgid "The audio player by KDE"
 msgstr "KDE glasbeni predvajalnik"
 
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2024, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, razvojna ekipa Amaroka"
+"(C) 2003-2025, razvojna ekipa Amaroka"
 
 #: main.cpp:97
 #, kde-format
