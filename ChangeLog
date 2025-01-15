@@ -2,16 +2,16 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
-VERSION 3.2.2
+VERSION 3.2.2 UNRELEASED
   FEATURES:
   CHANGES:
   BUGFIXES:
 
 VERSION 3.2.1
-  FEATURES:
   CHANGES:
    * Support gpodder and lastfm on Qt6 builds
    * Limit maximum current track font size more when context view is narrow
+
   BUGFIXES:
    * Fix displaying settings button for Internet services
    * Enable Wikipedia context applet on Qt6 builds
@@ -20,8 +20,6 @@ VERSION 3.2.1
    * Compilation fixes for various compiler + Qt6 version combinations
 
 VERSION 3.2.0
-  FEATURES:
-  CHANGES:
   BUGFIXES:
    * Probably fix occasional crashes when clearing CompondProgressBars
 
@@ -29,9 +27,11 @@ VERSION 3.1.81
   FEATURES:
    * Building an experimental Qt6/KF6 Amarok version is now possible
    * Allow filtering collection by lack of tag / empty tag (BR 325317)
+
   CHANGES:
    * Amarok now depends on KDE Frameworks 5.108
    * Show current track context applet by default
+
   BUGFIXES:
    * Probably fix occasional crashes when filtering collection (BR 492406)
    * Fix context view applets on Qt6/KF6
@@ -39,7 +39,6 @@ VERSION 3.1.81
    * Fix crash if Ampache login is redirected (BR 396590)
 
 VERSION 3.1.1
-  FEATURES:
   CHANGES:
    * Most of the context view QML items ported from QtControls 1 to QtControls 2
    * Default to no fadeout on pause and stop (BR 491603)
@@ -50,8 +49,6 @@ VERSION 3.1.1
    * Ensure home icon is shown in browser breadcrumb widgets (BR 491354)
 
 VERSION 3.1.0
-  FEATURES:
-  CHANGES:
   BUGFIXES:
    * Small UI and compilation fixes
 
@@ -178,12 +175,8 @@ VERSION 2.9.71
      functionalities temporarily or permanently removed due to porting, are too numerous
      to be accurately represented here.
 
-  BUGFIXES:
-
 
 VERSION 2.9.0
-  FEATURES:
-
   CHANGES:
    * Substitute deprecated MySQL option --myisam-recover for compatibility with
      MySQL 5.7+ thanks to Terje Rosten, Stefano Pettini. (BR 354255)
