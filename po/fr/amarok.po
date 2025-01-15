@@ -23,13 +23,13 @@
 # Sébastien Renard <renard@kde.org>, 2012.
 # Myriam Schweingruber <myriam@kde.org>, 2015.
 # Simon Depiets <sdepiets@gmail.com>, 2018, 2019, 2020.
-# SPDX-FileCopyrightText: 2020, 2021, 2023, 2024 Xavier Besnard <xavier.besnard@kde.org>
+# SPDX-FileCopyrightText: 2020, 2021, 2023, 2024, 2025 Xavier Besnard <xavier.besnard@kde.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-01-12 02:01+0000\n"
-"PO-Revision-Date: 2024-10-22 12:18+0200\n"
+"PO-Revision-Date: 2025-01-13 09:40+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -39,7 +39,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Accelerator-Marker: &\n"
 "X-Environment: kde\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.12.1\n"
 "X-Text-Markup: kde4\n"
 
 #, kde-format
@@ -9911,16 +9911,13 @@ msgid "The audio player by KDE"
 msgstr "Le lecteur audio par KDE"
 
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2024, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, L'équipe de développement de Amarok "
+"(C) 2003-2025, L'équipe de développement de Amarok "
 
 #: main.cpp:97
 #, kde-format
