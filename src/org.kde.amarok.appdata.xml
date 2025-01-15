@@ -57,6 +57,7 @@
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>Rediscover your music</summary>
+  <summary xml:lang="bg">Преоткрийте музиката си</summary>
   <summary xml:lang="ca">Torna a descobrir la teva música</summary>
   <summary xml:lang="ca-valencia">Torna a descobrir la teua música</summary>
   <summary xml:lang="es">Redescubra su música</summary>
