@@ -59,6 +59,7 @@ void
 ContentFetcher::getDaap( const QString &command, QIODevice* musicFile /*= 0*/ )
 {
     QUrl url( command );
+    url.setScheme( QLatin1String( "http" ) );
     url.setHost( m_hostname );
     url.setPort( m_port );
     QNetworkRequest request( url );
