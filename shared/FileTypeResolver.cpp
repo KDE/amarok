@@ -62,7 +62,11 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
 
     QMimeDatabase db;
 
+#ifndef Q_OS_WINDOWS
     QString fn = QFile::decodeName( fileName );
+#else
+    QString fn = QFile::decodeName( QString::fromWCharArray( fileName ).toLocal8Bit() );
+#endif
     QString suffix = QFileInfo( fn ).suffix();
     QMimeType mimetype = db.mimeTypeForFile( fn );
 

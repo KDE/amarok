@@ -305,7 +305,11 @@ Meta::Tag::selectHelper( const TagLib::FileRef &fileref, bool forceCreation )
         if( tag )
         {
             Amarok::FileType specificType = Amarok::Mp4;
+#ifndef Q_OS_WINDOWS
             QString filename = QString::fromLatin1( fileref.file()->name() );
+#else
+            QString filename = QString::fromWCharArray( fileref.file()->name() );
+#endif
             QList<Amarok::FileType> types;
             types << Amarok::M4a << Amarok::M4v;
             for( Amarok::FileType type : types )
