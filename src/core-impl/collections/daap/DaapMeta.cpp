@@ -57,6 +57,7 @@ DaapTrack::playableUrl() const
 {
     QUrl url( m_playableUrl );
     url.setScheme( QStringLiteral("http") );
+    url.setQuery( m_collection->sessionKey() );
     return url;
 }
 

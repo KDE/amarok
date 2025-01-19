@@ -271,6 +271,12 @@ DaapCollection::prettyName() const
     return i18n("Music share at %1", host);
 }
 
+QString
+DaapCollection::sessionKey() const
+{
+    return QStringLiteral("session-id=") + QString::number( m_reader->sessionId() );
+}
+
 void
 DaapCollection::passwordRequired()
 {

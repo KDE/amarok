@@ -88,6 +88,8 @@ class DaapCollection : public Collections::Collection
         QString prettyName() const override;
         QIcon icon() const override { return QIcon::fromTheme(QStringLiteral("network-server")); }
 
+        QString sessionKey() const;
+
         void serverOffline();
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }

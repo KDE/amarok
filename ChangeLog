@@ -6,6 +6,7 @@ VERSION 3.2.2 UNRELEASED
   FEATURES:
   CHANGES:
   BUGFIXES:
+   * Fix DAAP collection connections, browsing and playing (BR 498654)
 
 VERSION 3.2.1
   CHANGES:
