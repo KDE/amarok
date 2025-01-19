@@ -64,7 +64,8 @@ void NetworkAccessViewer::addRequest( QNetworkAccessManager::Operation op, const
         cols << QString::fromLatin1("POST");
         break;
     default:
-        qWarning() << "Unknown network operation";
+        cols << QString::fromLatin1("?");
+        qWarning() << "Unknown network operation" << op;
     }
     cols << req.url().toString();
     cols << tr("Pending");
