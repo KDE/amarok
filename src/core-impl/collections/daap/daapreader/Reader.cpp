@@ -126,6 +126,7 @@ Reader::contentCodesReceived()
 
     connect( http, &ContentFetcher::loginRequired,
              this, &Reader::loginHeaderReceived );
+    connect( http, &ContentFetcher::finished, this, &Reader::loginFinished );
     http->getDaap( QStringLiteral("/login") );
 }
 
@@ -165,7 +166,7 @@ Reader::loginFinished()
     m_sessionId = innerList.value( 0 ).toInt();
     m_loginString = QStringLiteral("session-id=") + QString::number( m_sessionId );
     connect( http, &ContentFetcher::finished, this, &Reader::updateFinished );
-    http->getDaap( QStringLiteral("/update?") + m_loginString );
+    http->getDaap( QStringLiteral("/update?revision-number=1&") + m_loginString );
 }
 
 void

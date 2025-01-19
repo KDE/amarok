@@ -122,9 +122,9 @@ ContentFetcher::onFinished()
     else
         m_lastResult = read;
 
-    Q_EMIT finished();
     m_reply->deleteLater();
     m_reply = nullptr;
+    Q_EMIT finished();
 }
 
 
