@@ -27,6 +27,8 @@
 #include <QList>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#else
+#include <QNetworkInformation>
 #endif
 #include <QTimer>
 
@@ -293,8 +295,10 @@ GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
     {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         if( !QNetworkConfigurationManager().isOnline() )
-            return false;
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
 #endif
+            return false;
 
         return true;
     }
@@ -338,11 +342,13 @@ GpodderServiceModel::requestTopTags()
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestTopTags()) );
         return;
     }
-#endif
 
     m_rootItem->setHasChildren( true );
 
@@ -358,11 +364,13 @@ GpodderServiceModel::requestTopPodcasts()
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestTopPodcasts()) );
         return;
     }
-#endif
 
     m_rootItem->setHasChildren( true );
 
@@ -382,11 +390,13 @@ GpodderServiceModel::requestSuggestedPodcasts()
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestSuggestedPodcasts()) );
         return;
     }
-#endif
 
     m_rootItem->setHasChildren( true );
 

@@ -37,6 +37,8 @@
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#else
+#include <QNetworkInformation>
 #endif
 #include <QTimer>
 
@@ -452,8 +454,10 @@ void GpodderProvider::synchronizeStatus()
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
-        return;
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
 #endif
+        return;
 
     if( !m_uploadEpisodeStatusMap.isEmpty() )
     {
@@ -520,8 +524,10 @@ GpodderProvider::synchronizeSubscriptions()
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
-        return;
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
 #endif
+        return;
 
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
     {
@@ -699,11 +705,13 @@ GpodderProvider::requestDeviceUpdates()
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
         return;
     }
-#endif
 
     m_deviceUpdatesResult =
             m_apiRequest->deviceUpdates( m_username,
@@ -804,11 +812,13 @@ GpodderProvider::requestEpisodeActionsInCascade()
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if( !QNetworkConfigurationManager().isOnline() )
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestEpisodeActionsInCascade()) );
         return;
     }
-#endif
 
     //This function will download all episode actions for
     //every podcast contained in m_channelsToRequestActions

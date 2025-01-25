@@ -54,6 +54,8 @@
 #include <QMessageBox>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#else
+#include <QNetworkInformation>
 #endif
 #include <QProgressDialog>
 #include <QStandardPaths>
@@ -1016,6 +1018,12 @@ SqlPodcastProvider::autoUpdate()
     if( !mgr.isOnline() )
     {
         debug() << "Solid reports we are not online, canceling podcast auto-update";
+        return;
+    }
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+    {
+        debug() << "Qt reports we are not online, canceling podcast auto-update";
         return;
     }
 #endif

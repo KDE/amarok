@@ -29,6 +29,8 @@
 #include <QImage>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#else
+#include <QNetworkInformation>
 #endif
 
 #include <KLocalizedString>
@@ -207,8 +209,10 @@ Track::networkNotPlayableReason() const
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QNetworkConfigurationManager mgr;
     if( !mgr.isOnline() )
-        return i18n( "No network connection" );
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
 #endif
+        return i18n( "No network connection" );
 
     return QString();
 }

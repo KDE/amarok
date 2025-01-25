@@ -21,6 +21,8 @@
 #include <QCryptographicHash>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#else
+#include <QNetworkInformation>
 #endif
 
 #include <KIO/MkdirJob>
@@ -117,6 +119,14 @@ PodcastImageFetcher::run()
     if( !mgr.isOnline() )
     {
         debug() << "QNetworkConfigurationManager reports we are not online, canceling podcast image download";
+        Q_EMIT( done( this ) );
+        //TODO: schedule another run after Solid reports we are online again
+        return;
+    }
+#else
+    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
+    {
+        debug() << "QNetworkInformation reports we are not online, canceling podcast image download";
         Q_EMIT( done( this ) );
         //TODO: schedule another run after Solid reports we are online again
         return;
