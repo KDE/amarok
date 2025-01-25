@@ -191,11 +191,8 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
     }
 
     QString lyricString = document.object().value( QStringLiteral("lyrics") ).toString();
-    if( lyricString.contains( QStringLiteral( "\r\n" ) ) )
-    {
-        int lindex = lyricString.indexOf( QStringLiteral( "\r\n" ) ); // lyrics.ovh lyrics start from second row
-        lyricsResult( ( QStringLiteral( "<lyric>" ) + lyricString.mid( lindex+2 ) + QStringLiteral( "</lyric>" ) ).toUtf8(), track );
-    }
+    if( lyricString.length() > 10 )
+        lyricsResult( ( QStringLiteral( "<lyric>" ) + lyricString + QStringLiteral( "</lyric>" ) ).toUtf8(), track );
     else
         warning() << "No lyrics found in data:" << data;
 }
