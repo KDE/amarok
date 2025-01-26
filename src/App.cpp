@@ -80,6 +80,10 @@
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
 
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#include <QNetworkInformation>
+#endif
+
 #ifdef Q_OS_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 extern void setupEventHandler_mac(SRefCon);
@@ -504,6 +508,10 @@ App::continueInit()
     //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
     //FFmpeg which should not take more than ~200msec.
     Amarok::Components::setTranscodingController( new Transcoding::Controller( this ) );
+
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    QNetworkInformation::instance()->loadBackendByFeatures( QNetworkInformation::Feature::Reachability );
+#endif
 
     PERF_LOG( "App init done" )
 
