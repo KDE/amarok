@@ -30,5 +30,8 @@
 #define HAVE_LIBOFA 1
 #endif
 
+/* Whether building with X11 dependent components */
+#cmakedefine WITH_X11
+
 /* Whether cmake build type is debug */
 #cmakedefine DEBUG_BUILD_TYPE

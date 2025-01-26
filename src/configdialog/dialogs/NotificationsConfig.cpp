@@ -17,13 +17,17 @@
 
 #include "NotificationsConfig.h"
 
+#include <config.h>
+
 #include "amarokconfig.h"
 #include "configdialog/ConfigDialog.h"
 #include "core/support/Debug.h"
 #include "KNotificationBackend.h"
 
+#ifdef WITH_X11
 #include <KX11Extras>
 #include <KWindowSystem>
+#endif
 
 NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent ) 
@@ -49,11 +53,16 @@ NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
                  this,          &NotificationsConfig::setGrowlEnabled );
     #endif
 
+#ifdef WITH_X11
     // Enable/disable the translucency option depending on availability of desktop compositing
     // As opacity functionality is not available on Wayland at least with current implementation, don't enable option there
     kcfg_OsdUseTranslucency->setEnabled( !KWindowSystem::isPlatformWayland() && KX11Extras::compositingActive() );
     // Also disable other functionalities not (yet?) available on Wayland
     kcfg_OsdScreen->setEnabled( !KWindowSystem::isPlatformWayland() );
+#else
+    kcfg_OsdUseTranslucency->setEnabled( false );
+    kcfg_OsdScreen->setEnabled( false );
+#endif
 
     connect( m_osdPreview, &OSDPreviewWidget::positionChanged, this, &NotificationsConfig::slotPositionChanged );
 

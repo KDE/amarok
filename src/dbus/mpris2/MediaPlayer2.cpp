@@ -31,7 +31,9 @@
 #include <QWidget>
 
 #include <KAboutData>
+#ifdef WITH_X11
 #include <KX11Extras>
+#endif
 
 using namespace Amarok;
 
@@ -58,7 +60,9 @@ void MediaPlayer2::Raise() const
         return;
     }
     window->show();
+#ifdef WITH_X11
     KX11Extras::forceActiveWindow( window->winId() );
+#endif
 }
 
 bool MediaPlayer2::CanQuit() const

@@ -93,9 +93,12 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardAction>
+
+#ifdef WITH_X11
 #include <KWindowInfo>
 #include <KWindowSystem>
 #include <KX11Extras>
+#endif
 
 #include <iostream>
 
@@ -167,12 +170,14 @@ MainWindow::MainWindow()
     connect( engine, &EngineController::trackPlaying, this, &MainWindow::slotNewTrackPlaying );
     connect( engine, &EngineController::trackMetadataChanged, this, &MainWindow::slotMetadataChanged );
 
+#ifdef WITH_X11
     connect( KX11Extras::self(), &KX11Extras::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
     connect( KX11Extras::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KX11Extras::windowChanged),
              [this](WId id, NET::Properties prop, NET::Properties2 ) {
                  if ( id == winId() && ( prop & NET::WMDesktop || prop & NET::WMState || prop & NET::XAWMState ) )
                      checkIfExpensivesShouldBeDrawn();
             } );
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -590,16 +595,18 @@ MainWindow::showNetworkRequestViewer() //SLOT
 void
 MainWindow::showHide() //SLOT
 {
-    const KWindowInfo info( winId(), {}, {} );
-    const int currentDesktop = KX11Extras::currentDesktop();
     if( !isVisible() )
     {
         setVisible( true );
     }
     else
     {
+#ifdef WITH_X11
+        const int currentDesktop = KX11Extras::currentDesktop();
+#endif
         if( !isMinimized() )
         {
+#ifdef WITH_X11
             if( !isActiveWindow() ) // not minimised and without focus
             {
                 KX11Extras::setOnDesktop( winId(), currentDesktop );
@@ -609,12 +616,17 @@ MainWindow::showHide() //SLOT
             {
                 setVisible( false );
             }
+#else
+        setVisible( false );
+#endif
         }
         else // Amarok is minimised
         {
             setWindowState( windowState() & ~Qt::WindowMinimized );
+#ifdef WITH_X11
             KX11Extras::setOnDesktop( winId(), currentDesktop );
             KX11Extras::activateWindow( winId() );
+#endif
         }
     }
 }
@@ -715,6 +727,7 @@ void MainWindow::slotPutCurrentTrackToClipboard()
 void
 MainWindow::activate()
 {
+#ifdef WITH_X11
     const KWindowInfo info( winId(), NET::WMState | NET::XAWMState | NET::WMDesktop );
 
     if( KX11Extras::activeWindow() != winId() )
@@ -723,6 +736,9 @@ MainWindow::activate()
         setVisible( true );
     if( !isHidden() )
         KWindowSystem::activateWindow( windowHandle() );
+#else
+    setVisible( true );
+#endif
 }
 
 void
@@ -1401,6 +1417,7 @@ MainWindow::isWaitingForCd() const
 void
 MainWindow::checkIfExpensivesShouldBeDrawn()
 {
+#ifdef WITH_X11
     const KWindowInfo info( winId(), NET::WMState | NET::XAWMState | NET::WMDesktop );
 
     bool newNeed = true;
@@ -1414,6 +1431,7 @@ MainWindow::checkIfExpensivesShouldBeDrawn()
         m_expensiveDrawingPaused = newNeed;
         Q_EMIT drawNeedChanged( newNeed );
     }
+#endif
 }
 
 

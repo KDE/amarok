@@ -16,6 +16,8 @@
 
 #include "KNotificationBackend.h"
 
+#include <config.h>
+
 #include "EngineController.h"
 #include "SvgHandler.h"
 #include "core/meta/Meta.h"
@@ -24,9 +26,11 @@
 #include <KIconLoader>
 #include <KLocalizedString>
 #include <KNotification>
+
+#ifdef WITH_X11
 #include <KWindowInfo>
-#include <KWindowSystem>
 #include <KX11Extras>
+#endif
 
 using namespace Amarok;
 
@@ -81,11 +85,15 @@ KNotificationBackend::isEnabled() const
 bool
 KNotificationBackend::isFullscreenWindowActive() const
 {
+#ifdef WITH_X11
     // Get information of the active window.
     KWindowInfo activeWindowInfo( KX11Extras::activeWindow(), NET::WMState );
 
     // Check if it is running in fullscreen mode.
     return activeWindowInfo.hasState( NET::FullScreen );
+#else
+    return false;
+#endif
 }
 
 void

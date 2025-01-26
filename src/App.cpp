@@ -16,7 +16,6 @@
 
 #include "App.h"
 
-#include <config.h>
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "MainWindow.h"

@@ -22,6 +22,8 @@
 
 #include "Osd.h"
 
+#include <config.h>
+
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "PaletteHandler.h"
@@ -36,8 +38,11 @@
 #include <KIconLoader>
 #include <KLocalizedString>
 #include <KRatingPainter>
+
+#ifdef WITH_X11
 #include <KWindowSystem>
 #include <KX11Extras>
+#endif
 
 #include <QApplication>
 #include <QIcon>
@@ -129,6 +134,7 @@ OSDWidget::show()
     {
         QWidget::show();
 
+#ifdef WITH_X11
         if( windowOpacity() == 0.0 && KX11Extras::compositingActive() )
         {
             m_fadeTimeLine->setDirection( QTimeLine::Forward );
@@ -136,6 +142,7 @@ OSDWidget::show()
         }
         // Skip fading if OSD is already visible or if compositing is disabled
         else
+#endif
         {
             m_fadeTimeLine->stop();
             setWindowOpacity( 1 );
@@ -146,12 +153,14 @@ OSDWidget::show()
 void
 OSDWidget::hide()
 {
+#ifdef WITH_X11
     if( KX11Extras::compositingActive() )
     {
         m_fadeTimeLine->setDirection( QTimeLine::Backward );
         m_fadeTimeLine->start();
     }
     else
+#endif
     {
         QWidget::hide();
     }
@@ -501,7 +510,11 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     setTranslucent( AmarokConfig::osdUseTranslucency() );
     // Drag-positioning not available on Wayland, so let's hide any untrue ideas about dragging
     // TODO maybe one day Wayland will be first-class OSD citizen
+#ifdef WITH_X11
     setText( KWindowSystem::isPlatformWayland() ? i18n ( "Preview" ) : i18n( "On-Screen-Display preview\nDrag to reposition" ) );
+#else
+    setText( i18n ( "Preview" ) );
+#endif
 }
 
 void
@@ -511,11 +524,13 @@ OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 
     // As we can't position OSD on Wayland at the moment, and grabbing mouse doesn't quite work
     // either, let's disable this for now.
+#ifdef WITH_X11
     if( !KWindowSystem::isPlatformWayland() && event->button() == Qt::LeftButton && !m_dragging )
     {
         grabMouse( Qt::SizeAllCursor );
         m_dragging = true;
     }
+#endif
 }
 
 void

@@ -93,6 +93,9 @@ endif()
 
 
 ###############
+if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
+  option(WITH_X11 "Build with X11 integration" ON)
+endif()
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 # option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON) #build is disabled for now, no need to show option
