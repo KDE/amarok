@@ -25,7 +25,11 @@
 #include "MediaPlayer2AmarokExtensions.h"
 #include "DBusAmarokApp.h"
 
+#ifdef Q_OS_WINDOWS
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <QDBusConnection>
 
@@ -42,7 +46,11 @@ Mpris2::Mpris2( QObject *parent )
     // and the name is already taken. In that event the MPRIS2 spec wants the
     // following:
     if (!success) {
+#ifdef Q_OS_WINDOWS
+        mpris2Name = mpris2Name + QStringLiteral(".instance") + QString::number( _getpid() );
+#else
         mpris2Name = mpris2Name + QStringLiteral(".instance") + QString::number( getpid() );
+#endif
         success = QDBusConnection::sessionBus().registerService( mpris2Name );
     }
 

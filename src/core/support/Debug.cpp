@@ -26,7 +26,10 @@
 #include <QObject>
 
 #include <iostream>
+
+#ifndef Q_OS_WINDOWS
 #include <unistd.h>
+#endif
 
 // Define Application wide prefix
 #ifndef APP_PREFIX

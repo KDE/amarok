@@ -27,7 +27,9 @@
 #include <QScopedPointer>
 #include <QTest>
 
+#ifndef Q_OS_WINDOWS
 #include <unistd.h>
+#endif
 
 QTEST_MAIN( TestGenericScanManager )
 

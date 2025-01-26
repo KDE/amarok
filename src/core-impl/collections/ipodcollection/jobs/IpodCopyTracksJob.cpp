@@ -33,7 +33,9 @@
 #include <QFile>
 
 #include <gpod/itdb.h>
+#ifndef Q_OS_WINDOWS
 #include <unistd.h>  // fsync()
+#endif
 
 IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
                                       const QPointer<IpodCollection> &collection,
