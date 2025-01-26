@@ -84,6 +84,10 @@
 #include <QNetworkInformation>
 #endif
 
+#ifdef Q_OS_WINDOWS
+#include <QDBusConnectionInterface>
+#endif
+
 #ifdef Q_OS_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 extern void setupEventHandler_mac(SRefCon);

@@ -8,6 +8,8 @@ VERSION 3.2.2 UNRELEASED
      to playlist (BR 180404)
 
   CHANGES:
+   * Allow building without X11 support
+   * Various build fixes for non-UNIX systems
 
   BUGFIXES:
    * Fix DAAP collection connections, browsing and playing (BR 498654)
