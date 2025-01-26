@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-12 02:01+0000\n"
+"POT-Creation-Date: 2025-01-26 01:53+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -3849,24 +3849,6 @@ msgstr "Pārvaldīt skriptus"
 msgid "Search Scripts"
 msgstr "Meklēt skriptus"
 
-#: context/AmarokContextPackageStructure.cpp:28
-#, fuzzy, kde-format
-#| msgid "Manage Scripts"
-msgid "Main Script File"
-msgstr "Pārvaldīt skriptus"
-
-#: context/AmarokContextPackageStructure.cpp:29
-#: context/AmarokContextPackageStructure.cpp:30
-#, fuzzy, kde-format
-#| msgid "Apple Lossless"
-msgid "Applet Icon File"
-msgstr "Apple Lossless"
-
-#: context/AmarokContextPackageStructure.cpp:32
-#, kde-format
-msgid "Images"
-msgstr ""
-
 #: context/applets/albums/package/contents/ui/main.qml:77
 #, fuzzy, kde-format
 #| msgctxt ""
@@ -4894,7 +4876,7 @@ msgstr "Nezināma kolekcija"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
-#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:261 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5456,13 +5438,13 @@ msgid "Could not copy track from device."
 msgstr "Neizdevās nokopēt celiņu no ierīces."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
-#: core/meta/Meta.cpp:302
+#: core/meta/Meta.cpp:306
 #, kde-format
 msgid "Unknown Album"
 msgstr "Nezināms albums"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
-#: core/meta/Meta.cpp:335
+#: core/meta/Meta.cpp:339
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Nezināms žanrs"
@@ -5694,7 +5676,7 @@ msgid "Yes, delete from %1."
 msgstr "Jā, dzēsiet no %1."
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:352
+#: services/gpodder/GpodderProvider.cpp:354
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "&Dzēst kanālu un sērijas"
@@ -6034,57 +6016,57 @@ msgstr[2] " %1 vienību"
 msgid "Podcast"
 msgstr "Podraide"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:295
 #, kde-format
 msgid "&Update All Channels"
 msgstr "Atja&unināt visus kanālus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:301
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Konfigurēt vispārīgos iestatījumus"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:307
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Eksportēt visus pierakstījumus uz OPML failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:333
 #, kde-format
 msgid "&Configure"
 msgstr "&Konfigurēt"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:346
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Izmest pierakstu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:355
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Atjaunināt kanālu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:391
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Lejupielādēt sēriju"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:399
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Dzēst lejupielādēto epizodi"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:408
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Rakstīt barotnes informāciju failā"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "&Paturēt lejupielādēto failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:417
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6094,18 +6076,18 @@ msgstr ""
 "Pārslēgt \"paturēt\" statusu lejupielādētajam šīs podraides failam. "
 "Lejupielādētie faili ar šo statusu netiks dzēsti pat tīrīšanas gadījumā."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:483
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Jau pierakstījies uz %1."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "ik pēc "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:609
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6113,37 +6095,37 @@ msgstr[0] " minūtes"
 msgstr[1] " minūtēm"
 msgstr[2] " minūtēm"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:624
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Konfigurēt lokālās podraides"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:645
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Pārvietot podraides"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:646
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Vai vēlaties pārvietot visas lejupielādētās epizodes uz jaunu vietu?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:713
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Izvēlieties failu OPML eksportēšanai"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:860
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Vai tiešām vēlaties atrakstīties no \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:863
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Dzēst lejupielādēto sēriju"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:986
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6151,23 +6133,23 @@ msgstr[0] "Vēl notiek %1 podraides lejupielāde"
 msgstr[1] "Vēl notiek %1 podraižu lejupielādes"
 msgstr[2] "Vēl notiek %1 podraižu lejupielādes"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:989
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Atcelt lejupielādi un iziet."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1176
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1424
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Neizdevās saglabāt podraides epizodi failā %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1186
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Lejupielādē podraides failu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1187
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Ielādē podraidi \"%1\""
@@ -6336,27 +6318,27 @@ msgstr[0] "Pārkodē un kopē %1 celiņu uz %2"
 msgstr[1] "Pārkodē un kopē %1 celiņus uz %2"
 msgstr[2] "Pārkodē un kopē %1 celiņu uz %2"
 
-#: core/meta/Meta.cpp:210
+#: core/meta/Meta.cpp:215
 #, kde-format
 msgid "No network connection"
 msgstr "Nav tīkla savienojuma"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "File does not exist"
 msgstr "Fails neeksistē"
 
-#: core/meta/Meta.cpp:223
+#: core/meta/Meta.cpp:227
 #, kde-format
 msgid "Not a file"
 msgstr "Nav fails"
 
-#: core/meta/Meta.cpp:225
+#: core/meta/Meta.cpp:229
 #, kde-format
 msgid "No read permissions"
 msgstr "Nav lasīšanas atļauju"
 
-#: core/meta/Meta.cpp:357
+#: core/meta/Meta.cpp:361
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Nezināms komponists"
@@ -13795,23 +13777,23 @@ msgstr ""
 msgid "&Test Login"
 msgstr "&Pārbaudīt pieteikšanos"
 
-#: services/gpodder/GpodderProvider.cpp:294
+#: services/gpodder/GpodderProvider.cpp:296
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Gpodder podraides"
 
-#: services/gpodder/GpodderProvider.cpp:473
+#: services/gpodder/GpodderProvider.cpp:477
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr "Mēģina sinhronizēt statusus ar gpodder.net"
 
-#: services/gpodder/GpodderProvider.cpp:535
+#: services/gpodder/GpodderProvider.cpp:541
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr "Mēģina sinhronizēt pierakstus ar gpodder.net"
 
-#: services/gpodder/GpodderProvider.cpp:786
-#: services/gpodder/GpodderProvider.cpp:797
+#: services/gpodder/GpodderProvider.cpp:794
+#: services/gpodder/GpodderProvider.cpp:805
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -16626,6 +16608,16 @@ msgstr "Izpildītājs: %1"
 #, kde-format
 msgid "empty"
 msgstr "tukšs"
+
+#, fuzzy
+#~| msgid "Manage Scripts"
+#~ msgid "Main Script File"
+#~ msgstr "Pārvaldīt skriptus"
+
+#, fuzzy
+#~| msgid "Apple Lossless"
+#~ msgid "Applet Icon File"
+#~ msgstr "Apple Lossless"
 
 #~ msgid "Burn"
 #~ msgstr "Iecept"

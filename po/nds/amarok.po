@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-12 02:01+0000\n"
+"POT-Creation-Date: 2025-01-26 01:53+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -3818,23 +3818,6 @@ msgstr "Utföhrbor Skripten"
 msgid "Search Scripts"
 msgstr "Söökskripten"
 
-#: context/AmarokContextPackageStructure.cpp:28
-#, fuzzy, kde-format
-#| msgid "Main Script File"
-msgid "Main Script File"
-msgstr "Hööft-Skriptdatei"
-
-#: context/AmarokContextPackageStructure.cpp:29
-#: context/AmarokContextPackageStructure.cpp:30
-#, kde-format
-msgid "Applet Icon File"
-msgstr ""
-
-#: context/AmarokContextPackageStructure.cpp:32
-#, kde-format
-msgid "Images"
-msgstr "Biller"
-
 #: context/applets/albums/package/contents/ui/main.qml:77
 #, fuzzy, kde-format
 #| msgid "first played"
@@ -4848,7 +4831,7 @@ msgstr "Nich begäng Sammeln"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
-#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:261 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5383,13 +5366,13 @@ msgid "Could not copy track from device."
 msgstr "Stück lett sik nich vun de Reedschap koperen."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
-#: core/meta/Meta.cpp:302
+#: core/meta/Meta.cpp:306
 #, kde-format
 msgid "Unknown Album"
 msgstr "Nich begäng Album"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
-#: core/meta/Meta.cpp:335
+#: core/meta/Meta.cpp:339
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Nich begäng Musikoort"
@@ -5631,7 +5614,7 @@ msgid "Yes, delete from %1."
 msgstr "Jo, vun %1 wegdoon."
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:352
+#: services/gpodder/GpodderProvider.cpp:354
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "Kanaal un Kapiteln &wegdoon"
@@ -5972,58 +5955,58 @@ msgstr[1] " Indrääg"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:295
 #, kde-format
 msgid "&Update All Channels"
 msgstr "All Kanaals &opfrischen"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:301
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Allmeen Instellen fastleggen"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:307
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:333
 #, kde-format
 msgid "&Configure"
 msgstr "&Instellen"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:346
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "Bestellen &wegmaken"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:355
 #, kde-format
 msgid "&Update Channel"
 msgstr "Kanaal &opfrischen"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:391
 #, kde-format
 msgid "&Download Episode"
 msgstr "Kapitel &daalladen"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:399
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "Daallaadt Kapitel &wegdoon"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:408
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, fuzzy, kde-format
 #| msgid "Delete downloaded episodes"
 msgid "&Keep downloaded file"
 msgstr "Daallaadt Kapitel wegdoon"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:417
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6031,12 +6014,12 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:483
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Du hest \"%1\" al bestellt."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, fuzzy, kde-format
 #| msgctxt "prefix to 'x minutes'"
 #| msgid "every "
@@ -6045,70 +6028,70 @@ msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "elk "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:609
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " Minuut"
 msgstr[1] "Minuten"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:624
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Lokaal Pottkasts instellen..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:645
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "Podcasts"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:646
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:713
 #, fuzzy, kde-format
 #| msgid "Select OPML file to import"
 msgid "Select file for OPML export"
 msgstr "OPML-Datei utsöken, de Du importeren wullt"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:860
 #, fuzzy, kde-format
 #| msgid "Do you really want to remove this %1?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Wullt Du disse \"%1\"-Utgaav redig wegmaken?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:863
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Daallaadt Kapitel wegdoon"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:986
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:989
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Daalladen afbreken un Programm utmaken."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1176
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1424
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Podcast-Kapitel lett sik nich as \"%1\" sekern"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1186
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Podcast-Medien warrt daallaadt"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1187
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Podcast \"%1\" warrt daallaadt"
@@ -6286,31 +6269,31 @@ msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "Ümkoderen"
 msgstr[1] "Ümkoderen"
 
-#: core/meta/Meta.cpp:210
+#: core/meta/Meta.cpp:215
 #, fuzzy, kde-format
 #| msgid "Check Connection"
 msgid "No network connection"
 msgstr "Verbinnen pröven"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, fuzzy, kde-format
 #| msgid "does not end with"
 msgid "File does not exist"
 msgstr "endt nich op"
 
-#: core/meta/Meta.cpp:223
+#: core/meta/Meta.cpp:227
 #, fuzzy, kde-format
 #| msgid "Not Notified"
 msgid "Not a file"
 msgstr "Keen Bescheed geven"
 
-#: core/meta/Meta.cpp:225
+#: core/meta/Meta.cpp:229
 #, fuzzy, kde-format
 #| msgid "Bad session"
 msgid "No read permissions"
 msgstr "Leeg Törn"
 
-#: core/meta/Meta.cpp:357
+#: core/meta/Meta.cpp:361
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Nich begäng Komponist"
@@ -13783,24 +13766,24 @@ msgstr ""
 msgid "&Test Login"
 msgstr "Anmellen utproberen"
 
-#: services/gpodder/GpodderProvider.cpp:294
+#: services/gpodder/GpodderProvider.cpp:296
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Gpodder Podcasts"
 msgstr "Podcasts"
 
-#: services/gpodder/GpodderProvider.cpp:473
+#: services/gpodder/GpodderProvider.cpp:477
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:535
+#: services/gpodder/GpodderProvider.cpp:541
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:786
-#: services/gpodder/GpodderProvider.cpp:797
+#: services/gpodder/GpodderProvider.cpp:794
+#: services/gpodder/GpodderProvider.cpp:805
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -16589,6 +16572,14 @@ msgstr "Künstler: %1"
 #, kde-format
 msgid "empty"
 msgstr "leddig"
+
+#, fuzzy
+#~| msgid "Main Script File"
+#~ msgid "Main Script File"
+#~ msgstr "Hööft-Skriptdatei"
+
+#~ msgid "Images"
+#~ msgstr "Biller"
 
 #~ msgid "Burn"
 #~ msgstr "Brennen"

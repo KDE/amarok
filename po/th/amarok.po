@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-12 02:01+0000\n"
+"POT-Creation-Date: 2025-01-26 01:53+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -3876,23 +3876,6 @@ msgstr "สคริปต์ต่าง ๆ ที่ประมวลผล�
 msgid "Search Scripts"
 msgstr "ค้นหาสคริปต์ต่าง ๆ"
 
-#: context/AmarokContextPackageStructure.cpp:28
-#, fuzzy, kde-format
-#| msgid "&Install Script"
-msgid "Main Script File"
-msgstr "&ติดตั้งสคริปต์"
-
-#: context/AmarokContextPackageStructure.cpp:29
-#: context/AmarokContextPackageStructure.cpp:30
-#, kde-format
-msgid "Applet Icon File"
-msgstr ""
-
-#: context/AmarokContextPackageStructure.cpp:32
-#, kde-format
-msgid "Images"
-msgstr "รูปภาพต่าง ๆ"
-
 #: context/applets/albums/package/contents/ui/main.qml:77
 #, fuzzy, kde-format
 #| msgid "First Played"
@@ -4950,7 +4933,7 @@ msgstr "คลังสื่อ"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
-#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:261 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5466,13 +5449,13 @@ msgid "Could not copy track from device."
 msgstr "ไม่สามารถคัดลอกแทร็กเสียงจากอุปกรณ์ได้"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
-#: core/meta/Meta.cpp:302
+#: core/meta/Meta.cpp:306
 #, kde-format
 msgid "Unknown Album"
 msgstr "อัลบั้มที่ไม่รู้จัก"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
-#: core/meta/Meta.cpp:335
+#: core/meta/Meta.cpp:339
 #, kde-format
 msgid "Unknown Genre"
 msgstr "ประเภทที่ไม่รู้จัก"
@@ -5719,7 +5702,7 @@ msgid "Yes, delete from %1."
 msgstr "ใช่ ลบออกจาก %1"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:352
+#: services/gpodder/GpodderProvider.cpp:354
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "ล&บช่องและตอน"
@@ -6053,61 +6036,61 @@ msgstr[0] " รายการ"
 msgid "Podcast"
 msgstr "พ็อดแคสท์"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:295
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgid "&Update All Channels"
 msgstr "&ปรับปรุงทั้งหมด"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:301
 #, fuzzy, kde-format
 #| msgid "Configure General Options"
 msgid "&Configure General Settings"
 msgstr "ปรับแต่งตัวเลือกทั่วไป"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:307
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:333
 #, kde-format
 msgid "&Configure"
 msgstr "ปรับแ&ต่ง"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:346
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&ลบการบอกรับเป็นสมาชิก"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:355
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgid "&Update Channel"
 msgstr "&ปรับปรุงทั้งหมด"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:391
 #, kde-format
 msgid "&Download Episode"
 msgstr "ดาวน์โหลดตอน"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:399
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "ล&บตอน ที่ได้ดาวน์โหลดมาแล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:408
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "&Keep downloaded file"
 msgstr "ล&บตอน ที่ได้ดาวน์โหลดมาแล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:417
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6115,12 +6098,12 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:483
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "แจ้งบอกรับกับ %1 อยู่แล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, fuzzy, kde-format
 #| msgctxt "prefix to update interval in minutes"
 #| msgid "every "
@@ -6128,69 +6111,69 @@ msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "ทุก ๆ "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:609
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " นาที"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:624
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "ปรับแต่งพ็อดแคสท์ภายในระบบ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:645
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "พ็อดแคสท์"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:646
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:713
 #, fuzzy, kde-format
 #| msgid "Select OPML file to import"
 msgid "Select file for OPML export"
 msgstr "เลือกแฟ้ม OPML ที่จะนำเข้า"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:860
 #, fuzzy, kde-format
 #| msgid "Do you really want to remove this %1?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "คุณแน่ใจหรือว่าต้องการลบ %1 นี้ออกไป ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:863
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
 msgstr "ล&บตอน ที่ได้ดาวน์โหลดมาแล้ว"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:986
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:989
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1176
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1424
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "ไม่สามารถบันทึกแฟ้มตอนของพ็อดแคสท์ไปยัง %1 ได้"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1186
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "กำลังดาวน์โหลดสื่อของพ็อดแคสท์"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1187
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "กำลังดาวน์โหลดพ็อดแคสท์ \"%1\""
@@ -6337,29 +6320,29 @@ msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "ทำการแปลงรหัส"
 
-#: core/meta/Meta.cpp:210
+#: core/meta/Meta.cpp:215
 #, fuzzy, kde-format
 #| msgid "Connection"
 msgid "No network connection"
 msgstr "การเชื่อมต่อ"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, fuzzy, kde-format
 #| msgid "does not end with"
 msgid "File does not exist"
 msgstr "ไม่ได้ลงท้ายด้วย"
 
-#: core/meta/Meta.cpp:223
+#: core/meta/Meta.cpp:227
 #, kde-format
 msgid "Not a file"
 msgstr ""
 
-#: core/meta/Meta.cpp:225
+#: core/meta/Meta.cpp:229
 #, kde-format
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:357
+#: core/meta/Meta.cpp:361
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "Unknown Composer"
@@ -13794,24 +13777,24 @@ msgstr ""
 msgid "&Test Login"
 msgstr "&ทดสอบการล็อกอิน"
 
-#: services/gpodder/GpodderProvider.cpp:294
+#: services/gpodder/GpodderProvider.cpp:296
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Gpodder Podcasts"
 msgstr "พ็อดแคสท์"
 
-#: services/gpodder/GpodderProvider.cpp:473
+#: services/gpodder/GpodderProvider.cpp:477
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:535
+#: services/gpodder/GpodderProvider.cpp:541
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr ""
 
-#: services/gpodder/GpodderProvider.cpp:786
-#: services/gpodder/GpodderProvider.cpp:797
+#: services/gpodder/GpodderProvider.cpp:794
+#: services/gpodder/GpodderProvider.cpp:805
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -16511,6 +16494,14 @@ msgstr "ศิลปิน \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#, fuzzy
+#~| msgid "&Install Script"
+#~ msgid "Main Script File"
+#~ msgstr "&ติดตั้งสคริปต์"
+
+#~ msgid "Images"
+#~ msgstr "รูปภาพต่าง ๆ"
 
 #~ msgid "Burn"
 #~ msgstr "เขียนลงแผ่น"

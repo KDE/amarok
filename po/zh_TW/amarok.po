@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-12 02:01+0000\n"
+"POT-Creation-Date: 2025-01-26 01:53+0000\n"
 "PO-Revision-Date: 2024-12-02 17:22+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -3679,22 +3679,6 @@ msgstr "開啟文稿主控台"
 msgid "Search Scripts"
 msgstr "搜尋文稿"
 
-#: context/AmarokContextPackageStructure.cpp:28
-#, kde-format
-msgid "Main Script File"
-msgstr "主要文稿檔"
-
-#: context/AmarokContextPackageStructure.cpp:29
-#: context/AmarokContextPackageStructure.cpp:30
-#, kde-format
-msgid "Applet Icon File"
-msgstr "小程式圖示檔案"
-
-#: context/AmarokContextPackageStructure.cpp:32
-#, kde-format
-msgid "Images"
-msgstr "影像"
-
 #: context/applets/albums/package/contents/ui/main.qml:77
 #, kde-format
 msgid "Display"
@@ -4663,7 +4647,7 @@ msgstr "未知的收藏"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
-#: core/meta/Meta.cpp:257 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:261 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5157,13 +5141,13 @@ msgid "Could not copy track from device."
 msgstr "無法複製裝置上的曲目。"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
-#: core/meta/Meta.cpp:302
+#: core/meta/Meta.cpp:306
 #, kde-format
 msgid "Unknown Album"
 msgstr "未知專輯"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
-#: core/meta/Meta.cpp:335
+#: core/meta/Meta.cpp:339
 #, kde-format
 msgid "Unknown Genre"
 msgstr "未知的風格"
@@ -5360,7 +5344,7 @@ msgid "Yes, delete from %1."
 msgstr "是的，請從 %1 刪除。"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:352
+#: services/gpodder/GpodderProvider.cpp:354
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "刪除頻道與專輯(&D)"
@@ -5689,57 +5673,57 @@ msgstr[0] " 個項目"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:293
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:295
 #, kde-format
 msgid "&Update All Channels"
 msgstr "更新所有頻道(&U)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:299
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:301
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "設定一般選項(&C)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:305
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:307
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "將訂閱匯出為 OPML 檔(&E)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:331
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:333
 #, kde-format
 msgid "&Configure"
 msgstr "設定(&C)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:344
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:346
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "移除訂閱(&R)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:353
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:355
 #, kde-format
 msgid "&Update Channel"
 msgstr "更新頻道(&U)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:389
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:391
 #, kde-format
 msgid "&Download Episode"
 msgstr "下載專輯(&D)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:397
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:399
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "刪除已下載的專輯(&D)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:406
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:408
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "將 Feed 資訊寫入檔案(&W)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "保存已下載的檔案(&K)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:417
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -5749,76 +5733,76 @@ msgstr ""
 "切換此 podcast 下載檔的「保留」狀態。有此狀態的下載檔，即使套用徹底移除也不會"
 "被刪除。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:481
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:483
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "已訂閱 %1。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:606
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "每 "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:607
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:609
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " 分鐘"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:622
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:624
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "設定本地端 Podcast..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:643
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:645
 #, kde-format
 msgid "Move Podcasts"
 msgstr "移動 Podcasts"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:644
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:646
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "您要將所有下載的專輯移到新的位置嗎？"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:711
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:713
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "從 OPML 匯出選擇檔案"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:860
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "您確定要取消訂閱 %1 嗎？"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:861
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:863
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "刪除已下載的專輯"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:986
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "仍然有 %1 個 podcast 下載進行中"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:987
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:989
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "取消下載並離開"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1176
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1424
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "無法儲存 podcast episode 檔案到 %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1178
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1186
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "正在下載 Podcast 媒體"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1179
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1187
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "正在下載 Podcast \"%1\""
@@ -5972,27 +5956,27 @@ msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "轉換曲目格式並將 %1 首曲目複製到 %2 "
 
-#: core/meta/Meta.cpp:210
+#: core/meta/Meta.cpp:215
 #, kde-format
 msgid "No network connection"
 msgstr "沒有網路連線"
 
-#: core/meta/Meta.cpp:221
+#: core/meta/Meta.cpp:225
 #, kde-format
 msgid "File does not exist"
 msgstr "檔案不存在"
 
-#: core/meta/Meta.cpp:223
+#: core/meta/Meta.cpp:227
 #, kde-format
 msgid "Not a file"
 msgstr "不是一個檔案"
 
-#: core/meta/Meta.cpp:225
+#: core/meta/Meta.cpp:229
 #, kde-format
 msgid "No read permissions"
 msgstr "沒有讀取權限"
 
-#: core/meta/Meta.cpp:357
+#: core/meta/Meta.cpp:361
 #, kde-format
 msgid "Unknown Composer"
 msgstr "未知的作曲者"
@@ -13138,23 +13122,23 @@ msgstr ""
 msgid "&Test Login"
 msgstr "測試登入(&T)"
 
-#: services/gpodder/GpodderProvider.cpp:294
+#: services/gpodder/GpodderProvider.cpp:296
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Gpodder Podcasts"
 
-#: services/gpodder/GpodderProvider.cpp:473
+#: services/gpodder/GpodderProvider.cpp:477
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr "試著與 gpodder.net 同步狀態中"
 
-#: services/gpodder/GpodderProvider.cpp:535
+#: services/gpodder/GpodderProvider.cpp:541
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr "試著與 gpodder.net 同步訂閱中"
 
-#: services/gpodder/GpodderProvider.cpp:786
-#: services/gpodder/GpodderProvider.cpp:797
+#: services/gpodder/GpodderProvider.cpp:794
+#: services/gpodder/GpodderProvider.cpp:805
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -15798,6 +15782,15 @@ msgstr "演出者：%1"
 #, kde-format
 msgid "empty"
 msgstr "空白"
+
+#~ msgid "Main Script File"
+#~ msgstr "主要文稿檔"
+
+#~ msgid "Applet Icon File"
+#~ msgstr "小程式圖示檔案"
+
+#~ msgid "Images"
+#~ msgstr "影像"
 
 #~ msgid "Burn"
 #~ msgstr "燒錄"
