@@ -16,6 +16,10 @@ set(pud_LIB_SRCS
 
 add_library(pud SHARED ${pud_LIB_SRCS})
 
+if(WIN32)
+    target_compile_definitions(pud PUBLIC MAKE_POPUPDROPPER_LIB)
+endif()
+
 if(BUILD_WITH_QT6)
   target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets)
 else()

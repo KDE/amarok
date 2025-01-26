@@ -21,6 +21,10 @@
 #include <QtGlobal>
 
 #ifndef AMAROK_SQLSTORAGE_EXPORT
+
+#ifdef Q_OS_WINDOWS
+#  define AMAROK_SQLSTORAGE_EXPORT Q_DECL_EXPORT
+#else
 # if defined(MAKE_AMAROK_SQLSTORAGE_LIB)
    /* We are building this library */
 #   define AMAROK_SQLSTORAGE_EXPORT Q_DECL_EXPORT
@@ -30,7 +34,14 @@
 # endif
 #endif
 
+#endif
+
+
 #ifndef AMAROK_SQLSTORAGE_MYSQLE_EXPORT
+
+#ifdef Q_OS_WINDOWS
+#  define AMAROK_SQLSTORAGE_MYSQLE_EXPORT Q_DECL_EXPORT
+#else
 # if defined(MAKE_AMAROK_STORAGE_MYSQLESTORAGE_LIB)
    /* We are building this library */
 #   define AMAROK_SQLSTORAGE_MYSQLE_EXPORT Q_DECL_EXPORT
@@ -38,6 +49,8 @@
    /* We are using this library */
 #   define AMAROK_SQLSTORAGE_MYSQLE_EXPORT Q_DECL_IMPORT
 # endif
+#endif
+
 #endif
 
 # ifndef AMAROK_SQLSTORAGE_EXPORT_DEPRECATED

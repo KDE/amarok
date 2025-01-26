@@ -23,11 +23,13 @@
 #include <QtGlobal>
 
 #ifdef Q_OS_WINDOWS
-# if defined(MAKE_POPUPDROPPER_LIB)
+# ifdef MAKE_POPUPDROPPER_LIB
+   /* We are building this library */
 #  define POPUPDROPPER_EXPORT Q_DECL_EXPORT
 # else
+   /* We are using this library */
 #  define POPUPDROPPER_EXPORT Q_DECL_IMPORT
-# endif
+# endif // MAKE_POPUPDROPPER_LIB
 #else
 # define POPUPDROPPER_EXPORT __attribute__((visibility("default")))
 #endif 

@@ -814,6 +814,10 @@ ki18n_wrap_ui(amaroklib_LIB_SRCS
 
 add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
+if(WIN32)
+    target_compile_definitions(amaroklib PUBLIC MAKE_AMAROKLIB_LIB)
+endif()
+
 if(BUILD_WITH_QT6)
     target_link_libraries(amaroklib
         Phonon::phonon4qt${QT_MAJOR_VERSION}
