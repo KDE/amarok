@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-26 01:53+0000\n"
+"POT-Creation-Date: 2025-01-27 01:58+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -1619,97 +1619,97 @@ msgctxt ""
 msgid "Play"
 msgstr "播放"
 
-#: App.cpp:358
+#: App.cpp:362
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "要打开的文件或URL"
 
-#: App.cpp:359
+#: App.cpp:363
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "立刻开始播放音频 CD"
 
-#: App.cpp:360
+#: App.cpp:364
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "在播放列表内向前播放"
 
-#: App.cpp:361
+#: App.cpp:365
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "播放当前列表"
 
-#: App.cpp:362
+#: App.cpp:366
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "播放时此按钮为暂停，反之则为播放"
 
-#: App.cpp:363
+#: App.cpp:367
 #, kde-format
 msgid "Pause playback"
 msgstr "暂停播放"
 
-#: App.cpp:364
+#: App.cpp:368
 #, kde-format
 msgid "Stop playback"
 msgstr "停止播放"
 
-#: App.cpp:365
+#: App.cpp:369
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "在播放列表内向后播放"
 
-#: App.cpp:367
+#: App.cpp:371
 #, kde-format
 msgid "Additional options:"
 msgstr "其他选项："
 
-#: App.cpp:368
+#: App.cpp:372
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "将文件或 URL 添加到播放列表中"
 
-#: App.cpp:369
+#: App.cpp:373
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "将 URL 排到当前播放的歌曲之后"
 
-#: App.cpp:370
+#: App.cpp:374
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "加载 URL 并将内容替换至此播放列表"
 
-#: App.cpp:371 App.cpp:373
+#: App.cpp:375 App.cpp:377
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "显示详细调试信息"
 
-#: App.cpp:374
+#: App.cpp:378
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "显示来自音频系统的详细调试信息"
 
-#: App.cpp:375
+#: App.cpp:379
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "禁用彩色调试输出。"
 
-#: App.cpp:376
+#: App.cpp:380
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "允许同时运行多个 Amarok"
 
-#: App.cpp:377
+#: App.cpp:381
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "相对文件名或 URL 的起始点"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "数据库出错"
 
-#: App.cpp:514
+#: App.cpp:522
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1721,12 +1721,12 @@ msgstr ""
 "%1\n"
 "在绝大多数情况下，您需要解决这些问题才能继续运行 Amarok。"
 
-#: App.cpp:581
+#: App.cpp:589
 #, kde-format
 msgid "Moving files to trash"
 msgstr "将文件移到回收站"
 
-#: App.cpp:605
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1734,13 +1734,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:606
+#: App.cpp:614
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:667
+#: App.cpp:675
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1749,19 +1749,19 @@ msgstr ""
 "系统设置中已设定了一个音乐路径 %1。\n"
 "您要将其作为收藏集文件夹吗？"
 
-#: App.cpp:669
+#: App.cpp:677
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr ""
 
-#: App.cpp:670
+#: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr ""
 
-#: App.cpp:671
+#: App.cpp:679
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
@@ -15700,12 +15700,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid "Main Script File"
-#~ msgstr "主脚本文件"
-
-#~ msgid "Applet Icon File"
-#~ msgstr "小程序图标文件"
-
-#~ msgid "Images"
-#~ msgstr "图片"

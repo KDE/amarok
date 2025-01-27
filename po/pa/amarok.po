@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-26 01:53+0000\n"
+"POT-Creation-Date: 2025-01-27 01:58+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -1685,98 +1685,98 @@ msgctxt ""
 msgid "Play"
 msgstr "ਚਲਾਓ"
 
-#: App.cpp:358
+#: App.cpp:362
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "ਖੋਲ੍ਹਣ ਲਈ ਫਾਇਲਾਂ/URL"
 
-#: App.cpp:359
+#: App.cpp:363
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "ਆਡੀਓ ਸੀਡੀ ਤੁਰੰਤ ਚਲਾਉਣ ਸ਼ੁਰੂ ਕਰੋ"
 
-#: App.cpp:360
+#: App.cpp:364
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "ਪਲੇਅ-ਲਿਸਟ 'ਚ ਪਿੱਛੇ ਵੱਲ ਛੱਡੋ"
 
-#: App.cpp:361
+#: App.cpp:365
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "ਮੌਜੂਦਾ ਪਲੇਅ-ਲਿਸਟ ਚਲਾਉਣੀ ਸ਼ੁਰੂ"
 
-#: App.cpp:362
+#: App.cpp:366
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "ਜੇਕਰ ਰੁਕਿਆ ਹੈ ਤਾਂ ਚਲਾਉ, ਜੇ ਚੱਲਦਾ ਹੈ ਤਾਂ ਰੋਕੋ"
 
-#: App.cpp:363
+#: App.cpp:367
 #, kde-format
 msgid "Pause playback"
 msgstr "ਚਲਾਉ ਨੂੰ ਵਿਰਾਮ ਕਰੋ"
 
-#: App.cpp:364
+#: App.cpp:368
 #, kde-format
 msgid "Stop playback"
 msgstr "ਚਲਾਉਣਾ ਬੰਦ ਕਰੋ"
 
-#: App.cpp:365
+#: App.cpp:369
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਵਿੱਚ ਅੱਗੇ ਛੱਡੋ"
 
-#: App.cpp:367
+#: App.cpp:371
 #, kde-format
 msgid "Additional options:"
 msgstr "ਹੋਰ ਚੋਣ:"
 
-#: App.cpp:368
+#: App.cpp:372
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਵਿੱਚ ਫਾਇਲਾਂ/URL ਸ਼ਾਮਿਲ"
 
-#: App.cpp:369
+#: App.cpp:373
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "ਮੌਜੂਦਾ ਚੱਲਦੇ ਟਰੈਕ ਦੇ ਬਾਅਦ URL ਕਿਊਰੀ"
 
-#: App.cpp:370
+#: App.cpp:374
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "URL ਲੋਡ ਕਰੋ, ਮੌਜੂਦਾ ਪਲੇਅ-ਲਿਸਟ ਬਦਲੀ ਜਾ ਰਹੀ ਹੈ"
 
-#: App.cpp:371 App.cpp:373
+#: App.cpp:375 App.cpp:377
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "ਵੇਰਵੇ ਸਮੇਤ ਡੀਬੱਗ ਜਾਣਕਾਰੀ ਪਰਿੰਟ ਕਰੋ"
 
-#: App.cpp:374
+#: App.cpp:378
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "ਵੇਰਵੇ ਸਮੇਤ ਡੀਬੱਗ ਜਾਣਕਾਰੀ ਪਰਿੰਟ ਕਰੋ"
 
-#: App.cpp:375
+#: App.cpp:379
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "ਡੀਬੱਗ ਆਉਟ ਲਈ ਰੰਗਦਾਰ ਕਰਨਾ ਬੰਦ ਕਰੋ।"
 
-#: App.cpp:376
+#: App.cpp:380
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "ਕਈ ਅਮਰੋਕ ਇੱਕਠੇ ਚਲਾਉਣੇ ਮਨਜ਼ੂਰ"
 
-#: App.cpp:377
+#: App.cpp:381
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "ਅਨੁਸਾਰੀ ਫਾਇਲ-ਨਾਂ/URL ਲਈ ਅਧਾਰ"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "ਡਾਟਾਬੇਸ ਗਲਤੀ"
 
-#: App.cpp:514
+#: App.cpp:522
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1785,12 +1785,12 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:581
+#: App.cpp:589
 #, kde-format
 msgid "Moving files to trash"
 msgstr "ਫਾਇਲਾਂ ਰੱਦੀ ਵਿੱਚ ਭੇਜੀਆਂ ਜਾਂਦੀਆਂ ਹਨ"
 
-#: App.cpp:605
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1798,13 +1798,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:606
+#: App.cpp:614
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:667
+#: App.cpp:675
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1813,21 +1813,21 @@ msgstr ""
 "ਸੰਗੀਤ ਪਾਥ, %1, ਸਿਸਟਮ ਸੈਟਿੰਗ 'ਚ ਸੈੱਟ ਕੀਤਾ ਗਿਆ ਹੈ।\n"
 "ਕੀ ਤੁਸੀਂ ਉਸ ਨੂੰ ਭੰਡਾਰ ਫੋਲਡਰ ਵਜੋਂ ਵਰਤਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: App.cpp:669
+#: App.cpp:677
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "ਭੰਡਾਰ ਫੋਲਡਰ"
 
-#: App.cpp:670
+#: App.cpp:678
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "ਯੂਜ਼ਰ"
 
-#: App.cpp:671
+#: App.cpp:679
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"

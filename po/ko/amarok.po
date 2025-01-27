@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-26 01:53+0000\n"
+"POT-Creation-Date: 2025-01-27 01:58+0000\n"
 "PO-Revision-Date: 2024-12-09 22:47+0100\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -1670,97 +1670,97 @@ msgctxt ""
 msgid "Play"
 msgstr "재생"
 
-#: App.cpp:358
+#: App.cpp:362
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "열 파일 및 URL"
 
-#: App.cpp:359
+#: App.cpp:363
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "오디오 CD 재생 바로 시작"
 
-#: App.cpp:360
+#: App.cpp:364
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "재생 목록에서 뒤로 건너뛰기"
 
-#: App.cpp:361
+#: App.cpp:365
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "현재 재생 목록 재생 시작"
 
-#: App.cpp:362
+#: App.cpp:366
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "정지되었다면 재생하고, 재생 중이면 일시 정지"
 
-#: App.cpp:363
+#: App.cpp:367
 #, kde-format
 msgid "Pause playback"
 msgstr "재생 일시 정지"
 
-#: App.cpp:364
+#: App.cpp:368
 #, kde-format
 msgid "Stop playback"
 msgstr "재생 정지"
 
-#: App.cpp:365
+#: App.cpp:369
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "재생 목록에서 앞으로 건너뛰기"
 
-#: App.cpp:367
+#: App.cpp:371
 #, kde-format
 msgid "Additional options:"
 msgstr "추가 옵션:"
 
-#: App.cpp:368
+#: App.cpp:372
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "재생 목록에 파일 또는 URL 추가하기"
 
-#: App.cpp:369
+#: App.cpp:373
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "현재 재생 중인 곡 뒤에 URL을 대기열에 추가하기"
 
-#: App.cpp:370
+#: App.cpp:374
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "URL을 읽어서 현재 재생 목록을 바꾸기"
 
-#: App.cpp:371 App.cpp:373
+#: App.cpp:375 App.cpp:377
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "자세한 디버깅 정보 출력하기"
 
-#: App.cpp:374
+#: App.cpp:378
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "오디오 시스템의 자세한 디버깅 정보 출력하기"
 
-#: App.cpp:375
+#: App.cpp:379
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "디버그 출력의 색상을 사용하지 않습니다."
 
-#: App.cpp:376
+#: App.cpp:380
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Amarok을 여러 개 실행시킬 수 있도록 하기"
 
-#: App.cpp:377
+#: App.cpp:381
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "상대 경로로 된 파일 이름/URL의 기본 위치"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "데이터베이스 오류"
 
-#: App.cpp:514
+#: App.cpp:522
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1772,12 +1772,12 @@ msgstr ""
 "%1\n"
 "대부분의 경우 Amarok이 제대로 실행되기 전에 이러한 오류를 해결해야 합니다."
 
-#: App.cpp:581
+#: App.cpp:589
 #, kde-format
 msgid "Moving files to trash"
 msgstr "파일을 휴지통으로 이동하는 중"
 
-#: App.cpp:605
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1785,13 +1785,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:606
+#: App.cpp:614
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:667
+#: App.cpp:675
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1800,20 +1800,20 @@ msgstr ""
 "음악 경로 %1이(가) 시스템 설정에 정의되어 있습니다.모음집 폴더로 사용하시겠습"
 "니까?"
 
-#: App.cpp:669
+#: App.cpp:677
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "모음집 폴더"
 
-#: App.cpp:670
+#: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "사용"
 
-#: App.cpp:671
+#: App.cpp:679
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"

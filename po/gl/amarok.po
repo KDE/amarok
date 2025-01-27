@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-26 01:53+0000\n"
+"POT-Creation-Date: 2025-01-27 01:58+0000\n"
 "PO-Revision-Date: 2025-01-12 14:22+0100\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Proxecto Trasno (proxecto@trasno.gal)\n"
@@ -1772,97 +1772,97 @@ msgctxt ""
 msgid "Play"
 msgstr "Reproducir"
 
-#: App.cpp:358
+#: App.cpp:362
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Ficheiros e enderezos URL para abrir."
 
-#: App.cpp:359
+#: App.cpp:363
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Comezar a reproducir inmediatamente un CD de son"
 
-#: App.cpp:360
+#: App.cpp:364
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Saltar cara atrás na lista de reprodución"
 
-#: App.cpp:361
+#: App.cpp:365
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Comezar a reproducir esta lista de reprodución"
 
-#: App.cpp:362
+#: App.cpp:366
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Reproducir se está detido, pausar se está a reproducir"
 
-#: App.cpp:363
+#: App.cpp:367
 #, kde-format
 msgid "Pause playback"
 msgstr "Pausar a reprodución"
 
-#: App.cpp:364
+#: App.cpp:368
 #, kde-format
 msgid "Stop playback"
 msgstr "Deter a reprodución"
 
-#: App.cpp:365
+#: App.cpp:369
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Saltar cara adiante na lista de reprodución"
 
-#: App.cpp:367
+#: App.cpp:371
 #, kde-format
 msgid "Additional options:"
 msgstr "Opcións adicionais:"
 
-#: App.cpp:368
+#: App.cpp:372
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Engadir ficheiros e enderezos URL á lista de reprodución."
 
-#: App.cpp:369
+#: App.cpp:373
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Pór os URL a continuación da pista que se está reproducindo"
 
-#: App.cpp:370
+#: App.cpp:374
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Cargar os enderezos URL, substituíndo a lista de reprodución actual."
 
-#: App.cpp:371 App.cpp:373
+#: App.cpp:375 App.cpp:377
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Amosar información verbosa de depuración"
 
-#: App.cpp:374
+#: App.cpp:378
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Imprimir información verbosa de depuración xerada polo sistema de son."
 
-#: App.cpp:375
+#: App.cpp:379
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Desactivar o coloreado para a saída de depuración."
 
-#: App.cpp:376
+#: App.cpp:380
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Permitir a execución de varias instancias de Amarok"
 
-#: App.cpp:377
+#: App.cpp:381
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Base para os nomes de ficheiro e URL relativos"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Erro da base de datos"
 
-#: App.cpp:514
+#: App.cpp:522
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1875,12 +1875,12 @@ msgstr ""
 "Na maioría dos casos hai que resolver estes erros para que Amarok se execute "
 "correctamente."
 
-#: App.cpp:581
+#: App.cpp:589
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Movendo os ficheiros para o lixo"
 
-#: App.cpp:605
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1890,13 +1890,13 @@ msgstr ""
 "A chave de sesión de Last.fm non é válida. Reconecte a conta de Last.fm na "
 "configuración do complemento."
 
-#: App.cpp:606
+#: App.cpp:614
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr "Erro de chave de sesión de Last.fm"
 
-#: App.cpp:667
+#: App.cpp:675
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1905,19 +1905,19 @@ msgstr ""
 "A ruta da música, %1, está definida na configuración do sistema.\n"
 "Quere usala como cartafol da colección?"
 
-#: App.cpp:669
+#: App.cpp:677
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Seleccionar o cartafol da colección"
 
-#: App.cpp:670
+#: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Usar"
 
-#: App.cpp:671
+#: App.cpp:679
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"

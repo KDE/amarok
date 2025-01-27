@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-26 01:53+0000\n"
+"POT-Creation-Date: 2025-01-27 01:58+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -1721,98 +1721,98 @@ msgctxt ""
 msgid "Play"
 msgstr "Afspelen"
 
-#: App.cpp:358
+#: App.cpp:362
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Dateien/URLs, de opmaakt warrn schöölt"
 
-#: App.cpp:359
+#: App.cpp:363
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Klang-CD direktemang afspelen"
 
-#: App.cpp:360
+#: App.cpp:364
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Torüch binnen de Afspeellist"
 
-#: App.cpp:361
+#: App.cpp:365
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "De aktuelle Afspeellist afspelen"
 
-#: App.cpp:362
+#: App.cpp:366
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Afspelen wenn anhollen, anhollen wenn an't Spelen"
 
-#: App.cpp:363
+#: App.cpp:367
 #, kde-format
 msgid "Pause playback"
 msgstr "Afspeelpaus"
 
-#: App.cpp:364
+#: App.cpp:368
 #, kde-format
 msgid "Stop playback"
 msgstr "Afspelen anhollen"
 
-#: App.cpp:365
+#: App.cpp:369
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Vörut binnen de Afspeellist"
 
-#: App.cpp:367
+#: App.cpp:371
 #, kde-format
 msgid "Additional options:"
 msgstr "Anner Optschonen:"
 
-#: App.cpp:368
+#: App.cpp:372
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Dateien/URLs de Afspeellist tofögen"
 
-#: App.cpp:369
+#: App.cpp:373
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "URLs na dat nu spelen Stück inregen"
 
-#: App.cpp:370
+#: App.cpp:374
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "URLs laden, aktuelle Afspeellist utwesseln"
 
-#: App.cpp:371 App.cpp:373
+#: App.cpp:375 App.cpp:377
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Utföhrlich Fehlersöök-Informatschonen utgeven"
 
-#: App.cpp:374
+#: App.cpp:378
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "Utföhrlich Fehlersöök-Informatschonen utgeven"
 
-#: App.cpp:375
+#: App.cpp:379
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:376
+#: App.cpp:380
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Mehr as een Amarok-Utgaav tolaten"
 
-#: App.cpp:377
+#: App.cpp:381
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Basis för relative Dateinaams/URLs"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Datenbankfehler"
 
-#: App.cpp:514
+#: App.cpp:522
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1821,12 +1821,12 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:581
+#: App.cpp:589
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Dateien warrt na de Affalltünn verschaven"
 
-#: App.cpp:605
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1834,34 +1834,34 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:606
+#: App.cpp:614
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:667
+#: App.cpp:675
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
 
-#: App.cpp:669
+#: App.cpp:677
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Sammelnornern"
 
-#: App.cpp:670
+#: App.cpp:678
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Bruker"
 
-#: App.cpp:671
+#: App.cpp:679
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"

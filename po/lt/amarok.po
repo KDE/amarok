@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-26 01:53+0000\n"
+"POT-Creation-Date: 2025-01-27 01:58+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -1727,98 +1727,98 @@ msgctxt ""
 msgid "Play"
 msgstr "Groti"
 
-#: App.cpp:358
+#: App.cpp:362
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Atverti failus arba URL"
 
-#: App.cpp:359
+#: App.cpp:363
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Nedelsiant pradėti groti garso plokštelę"
 
-#: App.cpp:360
+#: App.cpp:364
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Grojaraštyje eiti atgal"
 
-#: App.cpp:361
+#: App.cpp:365
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Pradėti groti dabartinį grojaraštį"
 
-#: App.cpp:362
+#: App.cpp:366
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Groti jei sustabdyta, pristabdyti jei grojama"
 
-#: App.cpp:363
+#: App.cpp:367
 #, kde-format
 msgid "Pause playback"
 msgstr "Pristabdyti"
 
-#: App.cpp:364
+#: App.cpp:368
 #, kde-format
 msgid "Stop playback"
 msgstr "Nustoti groti"
 
-#: App.cpp:365
+#: App.cpp:369
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Grojaraštyje eiti pirmyn"
 
-#: App.cpp:367
+#: App.cpp:371
 #, kde-format
 msgid "Additional options:"
 msgstr "Papildomos parinktys:"
 
-#: App.cpp:368
+#: App.cpp:372
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Papildyti grojaraštį failais arba URL"
 
-#: App.cpp:369
+#: App.cpp:373
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Įtraukti URL į eilę po dabar grojančios dainos"
 
-#: App.cpp:370
+#: App.cpp:374
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Įkelti URL pakeičiant dabartinį grojaraštį"
 
-#: App.cpp:371 App.cpp:373
+#: App.cpp:375 App.cpp:377
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Spausdinti išsamią klaidų derinimo informaciją"
 
-#: App.cpp:374
+#: App.cpp:378
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "Spausdinti išsamią klaidų derinimo informaciją"
 
-#: App.cpp:375
+#: App.cpp:379
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Išjungti spalvinimą derinimo išvestyje."
 
-#: App.cpp:376
+#: App.cpp:380
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Galima vienu metu paleisti daugiau nei vieną Amaroką"
 
-#: App.cpp:377
+#: App.cpp:381
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Santykinių failų pavadinimų ar URL pradžia"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Duombazės klaida"
 
-#: App.cpp:514
+#: App.cpp:522
 #, fuzzy, kde-format
 #| msgid ""
 #| "The amarok database reported the following errors:\n"
@@ -1836,12 +1836,12 @@ msgstr ""
 "Dažniausiai jums teks pataisyti šias klaidas jei norėsite, kad Amarok "
 "tvarkingai dirbtų."
 
-#: App.cpp:581
+#: App.cpp:589
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Failai perkeliami į šiukšliadėžę"
 
-#: App.cpp:605
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1849,13 +1849,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:606
+#: App.cpp:614
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:667
+#: App.cpp:675
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1864,21 +1864,21 @@ msgstr ""
 "Muzikos kelias „%1“ yra nurodytas sistemos nustatymuose.\n"
 "Ar norite jį naudoti kaip jūsų fonotekos aplanką?"
 
-#: App.cpp:669
+#: App.cpp:677
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Fonotekos aplankai"
 
-#: App.cpp:670
+#: App.cpp:678
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Naudotojas"
 
-#: App.cpp:671
+#: App.cpp:679
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
