@@ -69,6 +69,9 @@ class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
          */
         void copySelectedToLocalCollection();
 
+        // Try to sort tracks corresponding to current model order
+        bool modelCurrentOrderTrackLessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right ) const;
+
     public Q_SLOTS:
         void slotSetFilter( const QString &filter );
 

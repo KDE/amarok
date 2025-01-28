@@ -535,7 +535,14 @@ CollectionTreeItemModelBase::mimeData( const QList<CollectionTreeItem*> &items )
         }
     }
 
-    std::stable_sort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
+    // NOTE: only sorts those where item->allDescendentTracksLoaded() is true
+    // e.g. playlist will re-sort everything when drop happens
+    std::stable_sort( tracks.begin(), tracks.end(),
+                    [this](const Meta::TrackPtr& left, const Meta::TrackPtr& right)
+                    {
+                        return currentOrderTrackLessThan( left, right );
+                    }
+                    );
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );

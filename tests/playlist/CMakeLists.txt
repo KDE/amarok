@@ -16,8 +16,17 @@ include_directories(SYSTEM
 set( testplaylistmodels_SRCS
         TestPlaylistModels.cpp
         ${AMAROK_SOURCE_TREE}/EngineController.cpp
+        ${AMAROK_SOURCE_TREE}/browsers/CollectionSortFilterProxyModel.cpp
+        ${AMAROK_SOURCE_TREE}/browsers/collectionbrowser/CollectionBrowserTreeView.cpp
+        ${AMAROK_SOURCE_TREE}/browsers/collectionbrowser/CollectionWidget.cpp
+        ${AMAROK_SOURCE_TREE}/browsers/CollectionTreeItemModel.cpp
+        ${AMAROK_SOURCE_TREE}/browsers/CollectionTreeItemModelBase.cpp
+        ${AMAROK_SOURCE_TREE}/browsers/CollectionTreeView.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/TrashCollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/Expression.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/TextualQueryFilter.cpp
         ${AMAROK_SOURCE_TREE}/playback/PowerManager.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistDefines.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistModel.cpp
@@ -31,6 +40,10 @@ set( testplaylistmodels_SRCS
         ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistItem.cpp
         ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/scripting/scriptengine/AmarokCollectionViewScript.cpp
+        ${AMAROK_SOURCE_TREE}/scripting/scriptengine/ScriptingDefines.cpp
+        ${AMAROK_SOURCE_TREE}/widgets/PrettyTreeDelegate.cpp
+
         ${GOOGLEMOCK_SRCS}
 )
 

@@ -845,6 +845,14 @@ CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
     mime->deleteLater();
 }
 
+bool
+CollectionTreeView::modelCurrentOrderTrackLessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right ) const
+{
+    if(m_treeModel)
+        return m_treeModel->currentOrderTrackLessThan( left, right );
+    return false;
+}
+
 void
 CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem *> &items ) const
 {

@@ -30,11 +30,14 @@
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
+#include "browsers/collectionbrowser/CollectionWidget.h"
+#include "browsers/collectionbrowser/CollectionBrowserTreeView.h"
 #include "EngineController.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
+#include "MainWindow.h"
 #include "PlaylistDefines.h"
 #include "PlaylistActions.h"
 #include "PlaylistController.h"
@@ -656,7 +659,12 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( trackListDrag )
         {
             Meta::TrackList tracks = trackListDrag->tracks();
-            std::stable_sort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
+
+            std::stable_sort( tracks.begin(), tracks.end(),
+                [this](const Meta::TrackPtr& left, const Meta::TrackPtr& right)
+                {
+                    return The::mainWindow()->collectionBrowser()->currentView()->modelCurrentOrderTrackLessThan( left, right );
+                });
 
             The::playlistController()->insertTracks( beginRow, tracks );
         }
