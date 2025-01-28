@@ -200,6 +200,12 @@ Playlist::PrettyListView::removeSelection()
                 firstRow = i;
         }
 
+        //Don't try to select anything if list is empty
+        if( model()->rowCount() < 1 )
+        {
+            selectionModel()->clearSelection();
+            return;
+        }
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, model()->rowCount() - 1 );
