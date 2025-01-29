@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-27 01:58+0000\n"
+"POT-Creation-Date: 2025-01-29 01:54+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -1600,7 +1600,7 @@ msgid "Group"
 msgstr "Grupa"
 
 #: amarokurls/BookmarkModel.cpp:258
-#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:935
+#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:942
 #, kde-format
 msgid "Type"
 msgstr "Tip"
@@ -2055,11 +2055,11 @@ msgid "Various Artists"
 msgstr "Razni Izvođači"
 
 # >! Contexts.
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:222
@@ -2067,51 +2067,51 @@ msgstr "Razni Izvođači"
 msgid "Album"
 msgstr "Album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Year - Album"
 msgstr "Godina — album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1104
+#: browsers/CollectionTreeItemModelBase.cpp:1169
 #, kde-format
 msgid "Track Artist"
 msgstr "Izvođač numere"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
-#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "Izvođač albuma"
 
 # >! Contexts.
-#: browsers/CollectionTreeItemModelBase.cpp:1108
+#: browsers/CollectionTreeItemModelBase.cpp:1173
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
-#: playlist/PlaylistModel.cpp:926
+#: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "Kompozitor"
 
 # >! Contexts.
-#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
+#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Žanr"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1112
-#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:927
+#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "Godina"
 
 # >> @item:inlistbox
-#: browsers/CollectionTreeItemModelBase.cpp:1114
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #, kde-format
 msgid "Label"
 msgstr "Etiketa"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116
+#: browsers/CollectionTreeItemModelBase.cpp:1181
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2153,7 +2153,7 @@ msgstr "Obriši numere"
 msgid "More..."
 msgstr "Više..."
 
-#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2161,7 +2161,7 @@ msgstr "Više..."
 msgid "&Add to Playlist"
 msgstr "Dod&aj u listu numera"
 
-#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2170,13 +2170,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Zamijeni listu numera"
 
-#: browsers/CollectionTreeView.cpp:1150
+#: browsers/CollectionTreeView.cpp:1166
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organizuj datoteke"
 
-#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Izmijeni podatke numere"
@@ -2777,7 +2777,7 @@ msgstr[2] "%1 kanala"
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:320
 #: context/applets/tabs/ReloadEditDialog.ui:86
-#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:923
+#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Title"
 msgstr "Naslov"
@@ -3943,13 +3943,13 @@ msgid "Sample size:"
 msgstr "Uzorkovanje:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
-#: playlist/PlaylistModel.cpp:941
+#: playlist/PlaylistModel.cpp:948
 #, kde-format
 msgid "Play Count"
 msgstr "Brojač puštanja"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
-#: playlist/PlaylistModel.cpp:939
+#: playlist/PlaylistModel.cpp:946
 #, kde-format
 msgid "Score"
 msgstr "Rezultat"
@@ -4374,7 +4374,7 @@ msgstr "Ponovo učitaj tablature sa sljedećim naslovom i izvođačem"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
@@ -6867,14 +6867,14 @@ msgid "unknown type"
 msgstr "nepoznata vrsta"
 
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:89
-#: playlist/PlaylistModel.cpp:495
+#: playlist/PlaylistModel.cpp:498
 #, kde-format
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Nikada"
 
 # >> @item
-#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:499
+#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:502
 #, kde-format
 msgctxt "When this track was last played"
 msgid "Unknown"
@@ -11175,7 +11175,7 @@ msgid "Response"
 msgstr "Odgovor"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:936
+#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Length"
 msgstr "Trajanje"
@@ -11785,89 +11785,89 @@ msgstr "Veličina reda: %1"
 msgid "Queue length: %1"
 msgstr "Dužina reda: %1"
 
-#: playlist/PlaylistModel.cpp:267 playlist/PlaylistModel.cpp:379
+#: playlist/PlaylistModel.cpp:270 playlist/PlaylistModel.cpp:382
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
 msgstr "<b>Napomena:</b> Ova numera se ne može pokrenuti.<br>%1"
 
-#: playlist/PlaylistModel.cpp:302
+#: playlist/PlaylistModel.cpp:305
 #, kde-format
 msgid "(...)"
 msgstr "(...)"
 
-#: playlist/PlaylistModel.cpp:331
+#: playlist/PlaylistModel.cpp:334
 #, kde-format
 msgctxt "%1: bitrate"
 msgid "%1 kbps"
 msgstr "%1 kbps"
 
-#: playlist/PlaylistModel.cpp:334
+#: playlist/PlaylistModel.cpp:337
 #, kde-format
 msgid "No extra information available"
 msgstr "Nisu dostupne dodatne informacije"
 
-#: playlist/PlaylistModel.cpp:922
+#: playlist/PlaylistModel.cpp:929
 #, kde-format
 msgctxt "The name of the file this track is stored in"
 msgid "Filename"
 msgstr "Ime datoteke"
 
-#: playlist/PlaylistModel.cpp:929
+#: playlist/PlaylistModel.cpp:936
 #, kde-format
 msgid "Disc Number"
 msgstr "Broj diska"
 
 # >> @title:column
-#: playlist/PlaylistModel.cpp:930
+#: playlist/PlaylistModel.cpp:937
 #, kde-format
 msgctxt "The Track number for this item"
 msgid "Track"
 msgstr "Numera"
 
-#: playlist/PlaylistModel.cpp:931
+#: playlist/PlaylistModel.cpp:938
 #, kde-format
 msgid "BPM"
 msgstr "BPM"
 
-#: playlist/PlaylistModel.cpp:933
+#: playlist/PlaylistModel.cpp:940
 #, kde-format
 msgid "Comment"
 msgstr "Komentar"
 
 # >> @title:column
-#: playlist/PlaylistModel.cpp:934
+#: playlist/PlaylistModel.cpp:941
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
 msgstr "Direktorij"
 
-#: playlist/PlaylistModel.cpp:937
+#: playlist/PlaylistModel.cpp:944
 #, kde-format
 msgid "Bitrate"
 msgstr "Bitski protok"
 
-#: playlist/PlaylistModel.cpp:938
+#: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Sample Rate"
 msgstr "Učestanost uzorkovanja"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:947 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "Rejting"
 
-#: playlist/PlaylistModel.cpp:942
+#: playlist/PlaylistModel.cpp:949
 #, kde-format
 msgctxt "Column name"
 msgid "Last Played"
 msgstr "Posljednje puštano"
 
-#: playlist/PlaylistModel.cpp:943
+#: playlist/PlaylistModel.cpp:950
 #, kde-format
 msgid "Mood"
 msgstr "Raspoloženje"
 
-#: playlist/PlaylistModel.cpp:944
+#: playlist/PlaylistModel.cpp:951
 #, kde-format
 msgid "File Size"
 msgstr "Veličine datoteke"
@@ -12002,12 +12002,12 @@ msgstr "Uklonjene numere"
 msgid "Tracks moved"
 msgstr "Numera pomjerena"
 
-#: playlist/view/listview/PrettyListView.cpp:692
+#: playlist/view/listview/PrettyListView.cpp:698
 #, kde-format
 msgid "Tracks have been hidden due to the active search."
 msgstr "Numera je sakrivena zbog aktivne pretrage."
 
-#: playlist/view/listview/PrettyListView.cpp:694
+#: playlist/view/listview/PrettyListView.cpp:700
 #, fuzzy, kde-format
 #| msgid "Add some songs here by dragging them from all around."
 msgctxt "Placeholder message in empty playlist view"

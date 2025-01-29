@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-27 01:58+0000\n"
+"POT-Creation-Date: 2025-01-29 01:54+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -1636,7 +1636,7 @@ msgid "Group"
 msgstr "Ομαδοποίηση"
 
 #: amarokurls/BookmarkModel.cpp:258
-#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:935
+#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:942
 #, kde-format
 msgid "Type"
 msgstr "Τύπος"
@@ -2080,11 +2080,11 @@ msgstr "Άγνωστο"
 msgid "Various Artists"
 msgstr "Διάφοροι καλλιτέχνες"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:222
@@ -2092,48 +2092,48 @@ msgstr "Διάφοροι καλλιτέχνες"
 msgid "Album"
 msgstr "Άλμπουμ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Year - Album"
 msgstr "Έτος - άλμπουμ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1104
+#: browsers/CollectionTreeItemModelBase.cpp:1169
 #, kde-format
 msgid "Track Artist"
 msgstr "Καλλιτέχνης κομματιού"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
-#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "Καλλιτέχνης άλμπουμ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1108
+#: browsers/CollectionTreeItemModelBase.cpp:1173
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
-#: playlist/PlaylistModel.cpp:926
+#: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "Συνθέτης"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
+#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Είδος"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1112
-#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:927
+#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "Έτος"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1114
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #, kde-format
 msgid "Label"
 msgstr "Ετικέτα"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116
+#: browsers/CollectionTreeItemModelBase.cpp:1181
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2175,7 +2175,7 @@ msgstr "Διαγραφή κομματιών"
 msgid "More..."
 msgstr "Περισσότερα..."
 
-#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2183,7 +2183,7 @@ msgstr "Περισσότερα..."
 msgid "&Add to Playlist"
 msgstr "Προσθήκη στη λίστ&α αναπαραγωγής"
 
-#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2192,13 +2192,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Αντικατάσταση της λίστας αναπα&ραγωγής"
 
-#: browsers/CollectionTreeView.cpp:1150
+#: browsers/CollectionTreeView.cpp:1166
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Οργάνωση αρχείων"
 
-#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Επεξεργασία λεπτομερειών κομματιού"
@@ -2801,7 +2801,7 @@ msgstr[1] "%1 κανάλια"
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:320
 #: context/applets/tabs/ReloadEditDialog.ui:86
-#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:923
+#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Title"
 msgstr "Τίτλος"
@@ -3963,13 +3963,13 @@ msgid "Sample size:"
 msgstr "Μέγεθος δείγματος:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
-#: playlist/PlaylistModel.cpp:941
+#: playlist/PlaylistModel.cpp:948
 #, kde-format
 msgid "Play Count"
 msgstr "Μετρητής αναπαραγωγής"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
-#: playlist/PlaylistModel.cpp:939
+#: playlist/PlaylistModel.cpp:946
 #, kde-format
 msgid "Score"
 msgstr "Βαθμολογία"
@@ -4384,7 +4384,7 @@ msgstr "Επαναφόρτωση παρτιτούρων με τον ακόλου
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
@@ -6854,13 +6854,13 @@ msgid "unknown type"
 msgstr "άγνωστος τύπος"
 
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:89
-#: playlist/PlaylistModel.cpp:495
+#: playlist/PlaylistModel.cpp:498
 #, kde-format
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Ποτέ"
 
-#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:499
+#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:502
 #, kde-format
 msgctxt "When this track was last played"
 msgid "Unknown"
@@ -11180,7 +11180,7 @@ msgid "Response"
 msgstr "Απάντηση"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:936
+#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Length"
 msgstr "Διάρκεια"
@@ -11782,87 +11782,87 @@ msgstr "Μέγεθος σειράς αναμονής: %1"
 msgid "Queue length: %1"
 msgstr "Μήκος σειράς αναμονής: %1"
 
-#: playlist/PlaylistModel.cpp:267 playlist/PlaylistModel.cpp:379
+#: playlist/PlaylistModel.cpp:270 playlist/PlaylistModel.cpp:382
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
 msgstr "<b>Σημείωση:</b> Το κομμάτι αυτό δεν μπροεί να εκτελεστεί.<br>%1"
 
-#: playlist/PlaylistModel.cpp:302
+#: playlist/PlaylistModel.cpp:305
 #, kde-format
 msgid "(...)"
 msgstr "(...)"
 
-#: playlist/PlaylistModel.cpp:331
+#: playlist/PlaylistModel.cpp:334
 #, kde-format
 msgctxt "%1: bitrate"
 msgid "%1 kbps"
 msgstr "%1 kbps"
 
-#: playlist/PlaylistModel.cpp:334
+#: playlist/PlaylistModel.cpp:337
 #, kde-format
 msgid "No extra information available"
 msgstr "Δεν υπάρχουν επιπλέον διαθέσιμες πληροφορίες"
 
-#: playlist/PlaylistModel.cpp:922
+#: playlist/PlaylistModel.cpp:929
 #, kde-format
 msgctxt "The name of the file this track is stored in"
 msgid "Filename"
 msgstr "Όνομα αρχείου"
 
-#: playlist/PlaylistModel.cpp:929
+#: playlist/PlaylistModel.cpp:936
 #, kde-format
 msgid "Disc Number"
 msgstr "Αριθμός δίσκου"
 
-#: playlist/PlaylistModel.cpp:930
+#: playlist/PlaylistModel.cpp:937
 #, kde-format
 msgctxt "The Track number for this item"
 msgid "Track"
 msgstr "Κομμάτι"
 
-#: playlist/PlaylistModel.cpp:931
+#: playlist/PlaylistModel.cpp:938
 #, kde-format
 msgid "BPM"
 msgstr "BPM"
 
-#: playlist/PlaylistModel.cpp:933
+#: playlist/PlaylistModel.cpp:940
 #, kde-format
 msgid "Comment"
 msgstr "Σχόλιο"
 
-#: playlist/PlaylistModel.cpp:934
+#: playlist/PlaylistModel.cpp:941
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
 msgstr "Κατάλογος"
 
-#: playlist/PlaylistModel.cpp:937
+#: playlist/PlaylistModel.cpp:944
 #, kde-format
 msgid "Bitrate"
 msgstr "Ρυθμός bit"
 
-#: playlist/PlaylistModel.cpp:938
+#: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Sample Rate"
 msgstr "Ρυθμός δειγματοληψίας"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:947 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "Αξιολόγηση"
 
-#: playlist/PlaylistModel.cpp:942
+#: playlist/PlaylistModel.cpp:949
 #, kde-format
 msgctxt "Column name"
 msgid "Last Played"
 msgstr "Τελευταία εκτελεσμένα"
 
-#: playlist/PlaylistModel.cpp:943
+#: playlist/PlaylistModel.cpp:950
 #, kde-format
 msgid "Mood"
 msgstr "Διάθεση"
 
-#: playlist/PlaylistModel.cpp:944
+#: playlist/PlaylistModel.cpp:951
 #, kde-format
 msgid "File Size"
 msgstr "Μέγεθος αρχείου"
@@ -11992,12 +11992,12 @@ msgstr "Κομμάτια που αφαιρέθηκαν"
 msgid "Tracks moved"
 msgstr "Τα κομμάτια μετακινήθηκαν"
 
-#: playlist/view/listview/PrettyListView.cpp:692
+#: playlist/view/listview/PrettyListView.cpp:698
 #, kde-format
 msgid "Tracks have been hidden due to the active search."
 msgstr "Έχει γίνει απόκρυψη κομματιών εξαιτίας της ενεργής αναζήτησης."
 
-#: playlist/view/listview/PrettyListView.cpp:694
+#: playlist/view/listview/PrettyListView.cpp:700
 #, fuzzy, kde-format
 #| msgid "Add some songs here by dragging them from all around."
 msgctxt "Placeholder message in empty playlist view"

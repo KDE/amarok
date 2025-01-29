@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-27 01:58+0000\n"
+"POT-Creation-Date: 2025-01-29 01:54+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -1597,7 +1597,7 @@ msgid "Group"
 msgstr "Grupė"
 
 #: amarokurls/BookmarkModel.cpp:258
-#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:935
+#: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:942
 #, kde-format
 msgid "Type"
 msgstr "Tipas"
@@ -2051,11 +2051,11 @@ msgstr "Nežinomas"
 msgid "Various Artists"
 msgstr "Įvairūs atlikėjai"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
-#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:928
+#: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:222
@@ -2063,48 +2063,48 @@ msgstr "Įvairūs atlikėjai"
 msgid "Album"
 msgstr "Albumas"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Year - Album"
 msgstr "Metai – Albumas"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1104
+#: browsers/CollectionTreeItemModelBase.cpp:1169
 #, kde-format
 msgid "Track Artist"
 msgstr "Takelio atlikėjas"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
-#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "Albumo atlikėjas"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1108
+#: browsers/CollectionTreeItemModelBase.cpp:1173
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
-#: playlist/PlaylistModel.cpp:926
+#: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "Kompozitorius"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110 playlist/PlaylistModel.cpp:932
+#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Žanras"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1112
-#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:927
+#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "Metai"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1114
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #, kde-format
 msgid "Label"
 msgstr "Etiketė"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1116
+#: browsers/CollectionTreeItemModelBase.cpp:1181
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2146,7 +2146,7 @@ msgstr "Trinti dainas"
 msgid "More..."
 msgstr "Daugiau..."
 
-#: browsers/CollectionTreeView.cpp:1090 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2154,7 +2154,7 @@ msgstr "Daugiau..."
 msgid "&Add to Playlist"
 msgstr "&Pridėti į grojaraštį"
 
-#: browsers/CollectionTreeView.cpp:1101 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2163,13 +2163,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Pakeisti grojaraštį"
 
-#: browsers/CollectionTreeView.cpp:1150
+#: browsers/CollectionTreeView.cpp:1166
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Sudėlioti failus"
 
-#: browsers/CollectionTreeView.cpp:1183 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "K&eisti dainos informaciją"
@@ -2793,7 +2793,7 @@ msgstr[3] "%1 kanalas"
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:320
 #: context/applets/tabs/ReloadEditDialog.ui:86
-#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:923
+#: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Title"
 msgstr "Pavadinimas"
@@ -3972,13 +3972,13 @@ msgid "Sample size:"
 msgstr "Taktavimo dažnis:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
-#: playlist/PlaylistModel.cpp:941
+#: playlist/PlaylistModel.cpp:948
 #, kde-format
 msgid "Play Count"
 msgstr "Dažnumas"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
-#: playlist/PlaylistModel.cpp:939
+#: playlist/PlaylistModel.cpp:946
 #, kde-format
 msgid "Score"
 msgstr "Balai"
@@ -4405,7 +4405,7 @@ msgstr "Iš naujo įkelti korteles su šiuo pavadinimu ir atlikėju"
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
-#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:924
+#: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
@@ -6973,13 +6973,13 @@ msgid "unknown type"
 msgstr "nežinomas tipas"
 
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:89
-#: playlist/PlaylistModel.cpp:495
+#: playlist/PlaylistModel.cpp:498
 #, kde-format
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Niekada"
 
-#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:499
+#: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:502
 #, kde-format
 msgctxt "When this track was last played"
 msgid "Unknown"
@@ -11358,7 +11358,7 @@ msgid "Response"
 msgstr "Atsakymas"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:936
+#: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Length"
 msgstr "Trukmė"
@@ -11968,87 +11968,87 @@ msgstr "Eilės dydis: %1"
 msgid "Queue length: %1"
 msgstr "Eilės ilgis: %1"
 
-#: playlist/PlaylistModel.cpp:267 playlist/PlaylistModel.cpp:379
+#: playlist/PlaylistModel.cpp:270 playlist/PlaylistModel.cpp:382
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
 msgstr ""
 
-#: playlist/PlaylistModel.cpp:302
+#: playlist/PlaylistModel.cpp:305
 #, kde-format
 msgid "(...)"
 msgstr "(...)"
 
-#: playlist/PlaylistModel.cpp:331
+#: playlist/PlaylistModel.cpp:334
 #, kde-format
 msgctxt "%1: bitrate"
 msgid "%1 kbps"
 msgstr "%1 kbps"
 
-#: playlist/PlaylistModel.cpp:334
+#: playlist/PlaylistModel.cpp:337
 #, kde-format
 msgid "No extra information available"
 msgstr "Nėra papildomos informacijos"
 
-#: playlist/PlaylistModel.cpp:922
+#: playlist/PlaylistModel.cpp:929
 #, kde-format
 msgctxt "The name of the file this track is stored in"
 msgid "Filename"
 msgstr "Failo pavadinimas"
 
-#: playlist/PlaylistModel.cpp:929
+#: playlist/PlaylistModel.cpp:936
 #, kde-format
 msgid "Disc Number"
 msgstr "Disko numeris"
 
-#: playlist/PlaylistModel.cpp:930
+#: playlist/PlaylistModel.cpp:937
 #, kde-format
 msgctxt "The Track number for this item"
 msgid "Track"
 msgstr "Daina"
 
-#: playlist/PlaylistModel.cpp:931
+#: playlist/PlaylistModel.cpp:938
 #, kde-format
 msgid "BPM"
 msgstr "BPM"
 
-#: playlist/PlaylistModel.cpp:933
+#: playlist/PlaylistModel.cpp:940
 #, kde-format
 msgid "Comment"
 msgstr "Komentaras"
 
-#: playlist/PlaylistModel.cpp:934
+#: playlist/PlaylistModel.cpp:941
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
 msgstr "Aplankas"
 
-#: playlist/PlaylistModel.cpp:937
+#: playlist/PlaylistModel.cpp:944
 #, kde-format
 msgid "Bitrate"
 msgstr "Bitų dažnis"
 
-#: playlist/PlaylistModel.cpp:938
+#: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Sample Rate"
 msgstr "Kadrų dažnis"
 
-#: playlist/PlaylistModel.cpp:940 playlist/ProgressiveSearchWidget.cpp:107
+#: playlist/PlaylistModel.cpp:947 playlist/ProgressiveSearchWidget.cpp:107
 #, kde-format
 msgid "Rating"
 msgstr "Įvertinimas"
 
-#: playlist/PlaylistModel.cpp:942
+#: playlist/PlaylistModel.cpp:949
 #, kde-format
 msgctxt "Column name"
 msgid "Last Played"
 msgstr "Atlikta"
 
-#: playlist/PlaylistModel.cpp:943
+#: playlist/PlaylistModel.cpp:950
 #, kde-format
 msgid "Mood"
 msgstr "Nuotaika"
 
-#: playlist/PlaylistModel.cpp:944
+#: playlist/PlaylistModel.cpp:951
 #, kde-format
 msgid "File Size"
 msgstr "Failo dydis"
@@ -12179,13 +12179,13 @@ msgstr "Pašalintos dainos"
 msgid "Tracks moved"
 msgstr "Daina perkelta"
 
-#: playlist/view/listview/PrettyListView.cpp:692
+#: playlist/view/listview/PrettyListView.cpp:698
 #, fuzzy, kde-format
 #| msgid "Warning: tracks have been hidden in the playlist"
 msgid "Tracks have been hidden due to the active search."
 msgstr "Įspėjimas: grojaraštyje paslėptos dainos"
 
-#: playlist/view/listview/PrettyListView.cpp:694
+#: playlist/view/listview/PrettyListView.cpp:700
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
