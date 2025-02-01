@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-29 01:54+0000\n"
+"POT-Creation-Date: 2025-02-01 01:54+0000\n"
 "PO-Revision-Date: 2024-05-25 10:53+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
@@ -233,7 +233,7 @@ msgstr "Líkar við núverandi lag"
 
 #: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
 msgid "No track playing"
 msgstr "Ekkert lag í spilun"
@@ -241,8 +241,8 @@ msgstr "Ekkert lag í spilun"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
-#: MainWindow.cpp:1246
+#: main.cpp:92 MainWindow.cpp:154 MainWindow.cpp:1243 MainWindow.cpp:1249
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -900,7 +900,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "Virkja/slökkva á skjábirtingu."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:45
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:49
 #, fuzzy, kde-format
 msgid "Use Growl for notifications"
 msgstr "Nota Growl fyrir tilkynningar"
@@ -1544,7 +1544,7 @@ msgstr "Óþekkt"
 msgid "New Bookmark"
 msgstr "Nýtt bókamerki"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:805
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Bókamerkjastjóri"
@@ -1645,7 +1645,7 @@ msgstr "Valin lög"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:504
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:505
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:506
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1246
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1262
 #, kde-format
 msgid "Unknown"
 msgstr "Óþekkt"
@@ -1667,7 +1667,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Samhengi"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:288
 #, kde-format
 msgid "Files"
 msgstr "Skrár"
@@ -1697,7 +1697,7 @@ msgstr "Flytjandi \"%1\" af %2"
 msgid "Artist \"%1\""
 msgstr "Flytjandi \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:801
 #, fuzzy, kde-format
 #| msgid "File Extension of Source"
 msgid "Bookmark Media Sources View"
@@ -1724,98 +1724,98 @@ msgctxt ""
 msgid "Play"
 msgstr "Spila"
 
-#: App.cpp:362
+#: App.cpp:365
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Skrár/slóðir til að opna"
 
-#: App.cpp:363
+#: App.cpp:366
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr ""
 
-#: App.cpp:364
+#: App.cpp:367
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Fara afturábak í lagalista"
 
-#: App.cpp:365
+#: App.cpp:368
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Hefja spilun á núverandi lagalista"
 
-#: App.cpp:366
+#: App.cpp:369
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Spila ef stöðvað, setja í hlé ef spilandi"
 
-#: App.cpp:367
+#: App.cpp:370
 #, kde-format
 msgid "Pause playback"
 msgstr "Gera hlé á afspilun"
 
-#: App.cpp:368
+#: App.cpp:371
 #, kde-format
 msgid "Stop playback"
 msgstr "Stöðva afspilun"
 
-#: App.cpp:369
+#: App.cpp:372
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Fara áfram í lagalista"
 
-#: App.cpp:371
+#: App.cpp:374
 #, kde-format
 msgid "Additional options:"
 msgstr "Viðbótarvalkostir:"
 
-#: App.cpp:372
+#: App.cpp:375
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Bæta skrám/slóðum við lagalista"
 
-#: App.cpp:373
+#: App.cpp:376
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Setja slóðir í biðröð eftir núverandi lagi"
 
-#: App.cpp:374
+#: App.cpp:377
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Hlaða inn slóðum og skipta út núverandi lagalista"
 
-#: App.cpp:375 App.cpp:377
+#: App.cpp:378 App.cpp:380
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Skrifa viðbótarupplýsingar við villuleit"
 
-#: App.cpp:378
+#: App.cpp:381
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "Skrifa viðbótarupplýsingar við villuleit"
 
-#: App.cpp:379
+#: App.cpp:382
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:380
+#: App.cpp:383
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Leyfa keyrslu margra eintaka af Amarok"
 
-#: App.cpp:381
+#: App.cpp:384
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Grunnur fyrir tengd skráarnöfn/slóðir"
 
-#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:524 configdialog/dialogs/DatabaseConfig.cpp:109
 #, fuzzy, kde-format
 msgid "Database Error"
 msgstr "Gagnagrunnsheiti"
 
-#: App.cpp:522
+#: App.cpp:525
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1824,12 +1824,12 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:589
+#: App.cpp:592
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Flyt skrár í ruslið"
 
-#: App.cpp:613
+#: App.cpp:616
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1837,34 +1837,34 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:614
+#: App.cpp:617
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:675
+#: App.cpp:678
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
 
-#: App.cpp:677
+#: App.cpp:680
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Safnmöppur"
 
-#: App.cpp:678
+#: App.cpp:681
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Notandi"
 
-#: App.cpp:679
+#: App.cpp:682
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
@@ -1901,7 +1901,7 @@ msgid ""
 "audio players and CDs."
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:949
 #, fuzzy, kde-format
 #| msgid "Rescan Collection"
 msgid "Search collection"
@@ -2626,13 +2626,13 @@ msgstr "Heiti lagalista:"
 msgid "Confirm Playlist Deletion"
 msgstr "Stilla spilunarlistaforritlinginn"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:454
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Nota afstæða &slóð við vistun"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
 #, kde-format
 msgid "Save As"
 msgstr "Vista sem"
@@ -4858,7 +4858,7 @@ msgid "Writing iTunes database to %1 failed: %2"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
 msgid "Disconnected iPod/iPad/iPhone"
 msgstr ""
@@ -4908,7 +4908,7 @@ msgid ""
 "added back to the iTunes database. %4"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:224
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:226
 #, fuzzy, kde-format
 #| msgid "tracks"
 msgctxt "%2 is collection name"
@@ -4917,7 +4917,7 @@ msgid_plural "Transferred %1 tracks to %2."
 msgstr[0] "lög"
 msgstr[1] "lög"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, fuzzy, kde-format
 #| msgid "Moving files to trash"
 msgctxt "%2 is collection name"
@@ -4926,14 +4926,14 @@ msgid_plural "Transcoded %1 tracks to %2."
 msgstr[0] "Flyt skrár í ruslið"
 msgstr[1] "Flyt skrár í ruslið"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:236
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:238
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:244
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:246
 #, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
@@ -4941,14 +4941,14 @@ msgid_plural "%2 %1 tracks were already there."
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks to MTP Device"
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr "Færi lög á MTP tæki"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:377
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -4957,13 +4957,13 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
 #, fuzzy, kde-format
 #| msgid "tracks"
 msgid "Transfer of tracks failed."
 msgstr "lög"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -4972,13 +4972,13 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:394
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:401
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -4989,14 +4989,14 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
@@ -5004,17 +5004,17 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:419
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:429
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
@@ -7664,7 +7664,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "Slóð (URL)"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:821
 #, kde-format
 msgid "Cover Manager"
 msgstr "Umslagsstjóri"
@@ -9844,7 +9844,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Heiti lagalista:"
 
-#: KNotificationBackend.cpp:124 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:132 TrayIcon.cpp:150
 #, fuzzy, kde-format
 #| msgid "No track playing"
 msgid "Now playing"
@@ -9862,7 +9862,7 @@ msgstr "Ná í svipaða flytjendur"
 msgid "Lyrics data could not be parsed"
 msgstr "Ekki var hægt að búa til þennan hlut."
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
 #, kde-format
 msgid "No information available for this track"
 msgstr "Það eru engar upplýsingar fáanlegar yfir þetta lag"
@@ -10767,62 +10767,62 @@ msgstr "Christie Harris"
 msgid "ZImin Stanislav"
 msgstr ""
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:263
 #, kde-format
 msgid "Local Music"
 msgstr ""
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:265
 #, kde-format
 msgid "Local sources of content"
 msgstr ""
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:272
 #, kde-format
 msgid "Internet"
 msgstr "Internetið"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Online sources of content"
 msgstr ""
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:280
 #, kde-format
 msgid "Playlists"
 msgstr "Lagalistar"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:282
 #, fuzzy, kde-format
 #| msgid "Various Artists"
 msgid "Various types of playlists"
 msgstr "Ýmsir flytjendur"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:291
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr ""
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:334
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "S&koða"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:337
 #, fuzzy, kde-format
 #| msgid "Layout"
 msgid "Lock Layout"
 msgstr "Útlit"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1320
+#: MainWindow.cpp:374 MainWindow.cpp:1336
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgid "Reset Layout"
 msgstr "Heiti lagalista:"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:431
 #, fuzzy, kde-format
 #| msgid ""
 #| "<qt>Closing the main-window will keep Amarok running in the System Tray. "
@@ -10836,291 +10836,291 @@ msgstr ""
 "<qt>Amarok keyrir áfram í kerfisbakkanum. Veldu <B>Hætta</B> í valmyndinni, "
 "eða Amarok táknmyndinni til að hætta í forritinu.</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:433
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Set í kerfisbakka"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:533
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Spila miðil (skrár eða slóðir)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:533
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Bæta við miðli (skrár eða slóðir)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:553
 #, fuzzy, kde-format
 msgid "Add Stream"
 msgstr "Bæta við straum"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:553
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Sláðu inn slóð á straum (URL):"
 
-#: MainWindow.cpp:755
+#: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Media..."
 msgstr "Bæt&a við miðli..."
 
-#: MainWindow.cpp:760
+#: MainWindow.cpp:776
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Hreinsa lagalista"
 
-#: MainWindow.cpp:765
+#: MainWindow.cpp:781
 #, fuzzy, kde-format
 #| msgid "&Queue Track"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Setja í &biðröð"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:786
 #, fuzzy, kde-format
 #| msgid "Remove %1"
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Fja&rlægja %1"
 
-#: MainWindow.cpp:777
+#: MainWindow.cpp:793
 #, kde-format
 msgid "&Add Stream..."
 msgstr "Bæt&a við straum..."
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:797
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Flytja út lagalista sem..."
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Equalizer"
 msgstr "Hljóðblandari"
 
-#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:813 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 #| msgid "Smart Playlist"
 msgid "Bookmark Playlist Setup"
 msgstr "Snjallir lagalistar"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:817
 #, fuzzy, kde-format
 #| msgid "Bookmark this Artist"
 msgid "Bookmark Context Applets"
 msgstr "Bókamerkja þennan flytjanda"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:825
 #, kde-format
 msgid "Play Media..."
 msgstr "Spila miðil..."
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:830
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr ""
 
-#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
+#: MainWindow.cpp:836 MainWindow.cpp:842 MainWindow.cpp:849
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "&Leita áfram"
 
-#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
+#: MainWindow.cpp:856 MainWindow.cpp:862 MainWindow.cpp:869
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "&Leita afturábak"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:875
 #, kde-format
 msgid "Update Collection"
 msgstr "Uppfæra safn"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:887
 #, kde-format
 msgid "Previous Track"
 msgstr "Fyrra lag"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:894
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "Stigagjöf lags: 1"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:901
 #, fuzzy, kde-format
 #| msgid "&Playlist"
 msgid "Shuffle Playlist"
 msgstr "&Lagalisti"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:907
 #, fuzzy, kde-format
 #| msgid "Repeat Playlist"
 msgid "Repopulate Playlist"
 msgstr "Endurtaka lagalista"
 
-#: MainWindow.cpp:897
+#: MainWindow.cpp:913
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "Sérsniðinn breytilegur lagalisti"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:917
 #, kde-format
 msgid "Next Track"
 msgstr "Næsta lag"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:922
 #, kde-format
 msgid "Increase Volume"
 msgstr "Auka hljóðstyrk"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:928
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Minnka hljóðstyrk"
 
-#: MainWindow.cpp:918
+#: MainWindow.cpp:934
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Víxla aðalglugga"
 
-#: MainWindow.cpp:923
+#: MainWindow.cpp:939
 #, fuzzy, kde-format
 msgid "Toggle Full Screen"
 msgstr "Víxla skjáfylli af/á"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:944 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Leit í lagalistum"
 
-#: MainWindow.cpp:938
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Show active track"
 msgstr "Sýna virkt lag"
 
-#: MainWindow.cpp:942
+#: MainWindow.cpp:958
 #, fuzzy, kde-format
 #| msgid "Location:"
 msgid "Show Notification Popup"
 msgstr "Staðsetning:"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Mute Volume"
 msgstr "Þagga niður hljóð"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:968
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Love Current Track"
 msgstr "Líkar við núverandi lag"
 
-#: MainWindow.cpp:957
+#: MainWindow.cpp:973
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Ban Current Track"
 msgstr "Líkar við núverandi lag"
 
-#: MainWindow.cpp:962
+#: MainWindow.cpp:978
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Skip Current Track"
 msgstr "Líkar við núverandi lag"
 
-#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:983 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Setja lag í biðröð"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:977
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Stigagjöf lags: 1"
 
-#: MainWindow.cpp:982
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Stigagjöf lags: 2"
 
-#: MainWindow.cpp:987
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Stigagjöf lags: 3"
 
-#: MainWindow.cpp:992
+#: MainWindow.cpp:1008
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Stigagjöf lags: 4"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:1013
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Stigagjöf lags: 5"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:1019
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1037
 #, fuzzy, kde-format
 #| msgid "&Amarok"
 msgid "&About Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1025
+#: MainWindow.cpp:1041
 #, fuzzy, kde-format
 msgid "&Diagnostics"
 msgstr "Bilanagreining"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1045
 #, fuzzy, kde-format
 msgid "&Report Bug..."
 msgstr "&Senda villutilkynnngu..."
 
-#: MainWindow.cpp:1076
+#: MainWindow.cpp:1092
 #, kde-format
 msgid "&Music"
 msgstr "&Tónlist"
 
-#: MainWindow.cpp:1078
+#: MainWindow.cpp:1094
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1122 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Lagalisti"
 
-#: MainWindow.cpp:1123
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "&Tools"
 msgstr "Á&höld"
 
-#: MainWindow.cpp:1138
+#: MainWindow.cpp:1154
 #, kde-format
 msgid "&Settings"
 msgstr "&Stillingar"
 
-#: MainWindow.cpp:1190
+#: MainWindow.cpp:1206
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11128,23 +11128,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1207
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "Fela valmynd"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1249
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Í bið  ::  %1"
 
-#: MainWindow.cpp:1246
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1320
+#: MainWindow.cpp:1336
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -11606,7 +11606,8 @@ msgid "Show tooltips"
 msgstr "Sýna vísbendingar"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
+#: widgets/Osd.cpp:516
 #, fuzzy, kde-format
 #| msgid "Preview Tracks"
 msgid "Preview"
@@ -16067,13 +16068,13 @@ msgid "Slim Toolbar"
 msgstr "Aðaltækjaslá"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:200
+#: widgets/Osd.cpp:209
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Hljóðstyrkur: 100% (þaggað)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, fuzzy, kde-format
 #| msgid "Volume: %1% %2"
@@ -16515,17 +16516,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "á milli"
 
-#: widgets/Osd.cpp:186
+#: widgets/Osd.cpp:195
 #, kde-format
 msgid "Rating changed"
 msgstr "Stigagjöf breytt"
 
-#: widgets/Osd.cpp:261
+#: widgets/Osd.cpp:270
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Hljóðstyrkur: 100% (þaggað)"
 
-#: widgets/Osd.cpp:504
+#: widgets/Osd.cpp:514
 #, fuzzy, kde-format
 #| msgid "OSD Preview - drag to reposition"
 msgid ""
@@ -16533,12 +16534,12 @@ msgid ""
 "Drag to reposition"
 msgstr "Dragðu boxið þangað sem þú vilt að það birtist"
 
-#: widgets/Osd.cpp:756
+#: widgets/Osd.cpp:771
 #, kde-format
 msgid "Stopped"
 msgstr "Stöðvað"
 
-#: widgets/Osd.cpp:765
+#: widgets/Osd.cpp:780
 #, kde-format
 msgid "Paused"
 msgstr "Í bið"

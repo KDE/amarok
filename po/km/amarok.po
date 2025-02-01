@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-29 01:54+0000\n"
+"POT-Creation-Date: 2025-02-01 01:54+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -232,7 +232,7 @@ msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ច
 
 #: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
@@ -240,8 +240,8 @@ msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទ
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
-#: MainWindow.cpp:1246
+#: main.cpp:92 MainWindow.cpp:154 MainWindow.cpp:1243 MainWindow.cpp:1249
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -871,7 +871,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "បើក​/​បិទ​ការ​បង្ហាញ​លើ​អេក្រង់ ។"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:45
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:49
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "ប្រើ​ការ​គំរាម​សម្រាប់ការ​ជូនដំណឹង"
@@ -1508,7 +1508,7 @@ msgstr "មិន​ស្គាល់"
 msgid "New Bookmark"
 msgstr "ចំណាំ​ថ្មី"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:805
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​ចំណាំ"
@@ -1605,7 +1605,7 @@ msgstr "បទ​ដែលមានកូដ​ពេលវេលា​ថ្ម
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:504
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:505
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:506
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1246
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1262
 #, kde-format
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
@@ -1626,7 +1626,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "បរិបទ"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:288
 #, kde-format
 msgid "Files"
 msgstr "ឯកសារ"
@@ -1656,7 +1656,7 @@ msgstr "សិល្បករ \"%1\" ពី %2"
 msgid "Artist \"%1\""
 msgstr "សិល្បករ \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "ចំណាំ​ទិដ្ឋភាព​ប្រភព​មេឌៀ"
@@ -1679,98 +1679,98 @@ msgctxt ""
 msgid "Play"
 msgstr "ចាក់"
 
-#: App.cpp:362
+#: App.cpp:365
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "ឯកសារ​/​URL ដែលត្រូវ​​បើក"
 
-#: App.cpp:363
+#: App.cpp:366
 #, fuzzy, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "ភ្លាមៗ​នេះ​ ចាប់​ផ្តើមចាក់​ស៊ីឌី​អូឌីយ៉ូ"
 
-#: App.cpp:364
+#: App.cpp:367
 #, fuzzy, kde-format
 msgid "Skip backwards in playlist"
 msgstr "រំលង​ទៅ​ក្រោយ​ក្នុង​បញ្ជី​ចាក់"
 
-#: App.cpp:365
+#: App.cpp:368
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "ចាប់ផ្ដើម​ចាក់​បញ្ជី​ចាក់​បច្ចុប្បន្ន"
 
-#: App.cpp:366
+#: App.cpp:369
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "បើ​ឈប់ ឲ្យចាក់ បើ​ចាក់ ឲ្យ​ផ្អាក"
 
-#: App.cpp:367
+#: App.cpp:370
 #, kde-format
 msgid "Pause playback"
 msgstr "ផ្អាក​ចាក់​សារ​ថ្មី"
 
-#: App.cpp:368
+#: App.cpp:371
 #, kde-format
 msgid "Stop playback"
 msgstr "ឈប់​ចាក់​សារ​ថ្មី"
 
-#: App.cpp:369
+#: App.cpp:372
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "រំលង​ទៅ​មុខ​ក្នុង​បញ្ជី​ចាក់"
 
-#: App.cpp:371
+#: App.cpp:374
 #, kde-format
 msgid "Additional options:"
 msgstr "ជម្រើស​បន្ថែម ៖"
 
-#: App.cpp:372
+#: App.cpp:375
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "បន្ថែម​ឯកសារ​/​URL ទៅ​ខាង​ចុង​បញ្ជី​ចាក់"
 
-#: App.cpp:373
+#: App.cpp:376
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "រៀប URL ជា​ជួរ​បន្ទាប់​ពី​ចាក់​បទ​រួច"
 
-#: App.cpp:374
+#: App.cpp:377
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "ផ្ទុក URL ដោយ​ជំនួស​បញ្ជី​ចាក់​បច្ចុប្បន្ន"
 
-#: App.cpp:375 App.cpp:377
+#: App.cpp:378 App.cpp:380
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "បោះពុម្ព​ព័ត៌មាន​បំបាត់​កំហុស​ការ​បរិយាយ"
 
-#: App.cpp:378
+#: App.cpp:381
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "បោះពុម្ព​ព័ត៌មាន​បំបាត់​កំហុស​ការ​បរិយាយ"
 
-#: App.cpp:379
+#: App.cpp:382
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:380
+#: App.cpp:383
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "អនុញ្ញាត​ឲ្យ​រត់​ធាតុ Amarok ជា​ច្រើន"
 
-#: App.cpp:381
+#: App.cpp:384
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "គោល​សម្រាប់​ឈ្មោះ​ឯកសារ​/​URL ប្រែប្រួល"
 
-#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:524 configdialog/dialogs/DatabaseConfig.cpp:109
 #, fuzzy, kde-format
 msgid "Database Error"
 msgstr "កំហុស​មូលដ្ឋាន​ទិន្នន័យ"
 
-#: App.cpp:522
+#: App.cpp:525
 #, fuzzy, kde-format
 #| msgid ""
 #| "The amarok database reported the following errors:\n"
@@ -1787,12 +1787,12 @@ msgstr ""
 "%1\n"
 "ជាទូទៅ​អ្នក​ត្រូវតែ​ដោះស្រាយ​កំហុស​នេះ​ជាមុន​ទើប​ Amarok ដំណើរការ​ត្រឹមត្រូវ ។"
 
-#: App.cpp:589
+#: App.cpp:592
 #, fuzzy, kde-format
 msgid "Moving files to trash"
 msgstr "កំពុង​ផ្លាស់ទី​ឯកសារ​ទៅ​ធុងសំរាម"
 
-#: App.cpp:613
+#: App.cpp:616
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1800,13 +1800,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:614
+#: App.cpp:617
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:675
+#: App.cpp:678
 #, fuzzy, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1815,21 +1815,21 @@ msgstr ""
 "ផ្លូវតន្ត្រី​ %1 ត្រូវបាន​កំណត់​ក្នុង​ការ​កំណត់​ប្រព័ន្ធ​ ។\n"
 "តើ​អ្នក​ចង់​ប្រើ​ជា​ការ​ជ្រើស​ថត ឬ​ ?"
 
-#: App.cpp:677
+#: App.cpp:680
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "ថត​សម្រាំង"
 
-#: App.cpp:678
+#: App.cpp:681
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "អ្នក​ប្រើ"
 
-#: App.cpp:679
+#: App.cpp:682
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
@@ -1864,7 +1864,7 @@ msgid ""
 msgstr ""
 "នេះ​ជា​កន្លែង​ដែល​អ្នក​នឹង​រក​តន្ត្រី​​ក្នុង​មូលដ្ឋាន​របស់​អ្នក ព្រមទាំង​តន្ត្រី​ពី​កម្មវិធី​ចាក់​អូឌីយ៉ូ​ចល័ត និងស៊ីឌី ។"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:949
 #, kde-format
 msgid "Search collection"
 msgstr "ស្វែងរក​សម្រាំង"
@@ -2561,13 +2561,13 @@ msgstr "លុប​បញ្ជី​ចាក់"
 msgid "Confirm Playlist Deletion"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ​អាប់ភ្លេត​ព័ត៌មាន​របស់​បញ្ជី​ចាក់"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:454
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ប្រើ​ផ្លូវ​ទំនាក់ទំនង​​សម្រាប់​រក្សាទុក"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
 #, kde-format
 msgid "Save As"
 msgstr "រក្សាទុក​ជា"
@@ -4766,7 +4766,7 @@ msgid "Writing iTunes database to %1 failed: %2"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​សរសេរ​មូលដ្ឋាន​ទិន្នន័យ iTunes ទៅកាន់ %1 ៖ %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
 msgid "Disconnected iPod/iPad/iPhone"
 msgstr "បាន​ផ្ដាច់ iPod/iPad/iPhone"
@@ -4826,40 +4826,40 @@ msgstr ""
 "មូលដ្ឋាន​ទិន្នន័យ iTunes ចាស់ ធាតុ​មូលដ្ឋាន​ទិន្នន័យ​ចាស់ៗ​ចំនួន %2 ត្រូវ​បាន​យកចេញ បទ​ដែល​មើល​មិន​ឃើញ​ចំនួន "
 "%3 ត្រូវ​បាន​បន្ថែម​ទៅកាន់​មូលដ្ឋាន​ទិន្នន័យ iTunes ។ %4"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:224
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:226
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
 msgstr[0] "បាន​ផ្ទេរ %1 បទ​ទៅកាន់ %2 ។"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
 msgstr[0] "បាន​បម្លែង​ត្រឡប់ %1 បទ​ទៅកាន់ %2 ។"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:236
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:238
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
 msgstr[0] "បាន​បោះបង់​ការ​ផ្ទេរ ។ បាន​លៃលក​ផ្ទេរ  %1 បទ ។"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:244
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:246
 #, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
 msgstr[0] "%2 %1 បទ​ត្រូវ​បាន​ផ្ទេរ​រួចហើយ ។"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr "បាន​ផ្ទេរ​បទ​ទៅកាន់ %1"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:377
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -4867,12 +4867,12 @@ msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] "%1 បទ​ត្រូវ​បាន​ផ្ទេរ​ដោយ​ជាគជ័យ ប៉ុន្តែ​ការ​ផ្ទេរ​មួយ​ចំនួន​ផ្សេងទៀត​ត្រូវ​បាន​បរាជ័យ ។"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
 #, kde-format
 msgid "Transfer of tracks failed."
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​ផ្ទេរ​បទ ។"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -4880,14 +4880,14 @@ msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] "%1 បទ​មិន​ត្រូវ​បាន​ផ្ទេរ​ទេ​ព្រោះ​វា​បាន​លើស​ពី​សមត្ថភាព​របស់ iPod ។<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:394
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 "<i>Amarok បម្រុងទុក %1 នៅ​លើ iPod សម្រាប់​ការ​សរសេរ​មូលដ្ឋាន​ទិន្នន័យ iTunes ។</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:401
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -4899,30 +4899,30 @@ msgstr[0] ""
 "%1 បទ​មិន​ត្រូវ​បាន​ចម្លង​ទេ ព្រោះ​ពួកវា​មិនមែន​ជា​បទ​ដែល​អាច​ចាក់​បាន - ពួកវា​ជា​ទម្រង់​ដែល​មិន​គាំទ្រ (%2) "
 "។<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
 msgstr[0] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
 msgstr[0] "%1 បទ​មិន​ត្រូវ​បាន​ផ្ទេរ​ដោយសារ​កំហុស​ខាងក្នុង​របស់ Amarok ។<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:419
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr "<i>អ្នក​អាច​រក​មើល​សេចក្ដី​លម្អិត​នៅ​ក្នុង​លទ្ធផល​កម្មវិធី​បំបាត់​កំហុស​របស់ Amarok ។</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr "មិន​បាន​ផ្ទេរ​សំណល់​ទេ ព្រោះ​សម្រាំង iPod មិន​បាន​បង្ហាញ ។<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:429
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
@@ -7528,7 +7528,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:821
 #, kde-format
 msgid "Cover Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​គម្រប"
@@ -9662,7 +9662,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "ឈ្មោះ​បញ្ជី​ចាក់ ៖"
 
-#: KNotificationBackend.cpp:124 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:132 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "ឥឡូវ​កំពុង​ចាក់"
@@ -9677,7 +9677,7 @@ msgstr "អត្ថបទ​ចម្រៀង​ដែល​បាន​ទទ
 msgid "Lyrics data could not be parsed"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
 #, kde-format
 msgid "No information available for this track"
 msgstr "មិន​មាន​ព័ត៌មាន សម្រាប់​បទ​នេះ​ឡើយ"
@@ -10566,58 +10566,58 @@ msgstr "Christie Harris"
 msgid "ZImin Stanislav"
 msgstr ""
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:263
 #, fuzzy, kde-format
 msgid "Local Music"
 msgstr " ​តន្ត្រី​មូល​ដ្ឋាន"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:265
 #, fuzzy, kde-format
 msgid "Local sources of content"
 msgstr "ប្រភព​មាតិកា​លើ​បណ្ដាញ"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:272
 #, kde-format
 msgid "Internet"
 msgstr "អ៊ីនធឺណិត"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:274
 #, fuzzy, kde-format
 msgid "Online sources of content"
 msgstr "ប្រភព​មាតិកា​លើ​បណ្ដាញ"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:280
 #, kde-format
 msgid "Playlists"
 msgstr "បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:282
 #, fuzzy, kde-format
 msgid "Various types of playlists"
 msgstr "ប្រ​ភេទ​ផ្សេង​គ្នា​នៃ​បញ្ជីចាក់"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:291
 #, fuzzy, kde-format
 msgid "Browse local hard drive for content"
 msgstr " រកមើលដ្រាយថាស​រឹងជា​មូលដ្ឋានក្នុង​តារាងមាតាកា​"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:334
 #, fuzzy, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "ទិដ្ឋភាព"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:337
 #, fuzzy, kde-format
 msgid "Lock Layout"
 msgstr "ចាក់សោ​ប្លង់"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1320
+#: MainWindow.cpp:374 MainWindow.cpp:1336
 #, fuzzy, kde-format
 msgid "Reset Layout"
 msgstr "ប្លង់​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:431
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10627,124 +10627,124 @@ msgstr ""
 "<qt>បិទ​បង្អួច​មេ​នឹង​​ទុក​ឲ្យ Amarok រត់​នៅ​ក្នុង​ថាស​ប្រព័ន្ធ ។ ប្រើ<B>ចេញ</B> ពី​ម៉ឺនុយ ឬ​រូបតំណាង​ថាស "
 "Amarok ដើម្បី​ចាកចេញ​ពី​កម្មវិធី ។</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:433
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "ចត​ក្នុង​ថាស​ប្រព័ន្ធ"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:533
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "ចាក់​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:533
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "បន្ថែម​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:553
 #, kde-format
 msgid "Add Stream"
 msgstr "បន្ថែម​ស្ទ្រីម​"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:553
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "បញ្ចូល​ URL ស្ទ្រីម ៖"
 
-#: MainWindow.cpp:755
+#: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Media..."
 msgstr "បន្ថែម​មេឌៀ..."
 
-#: MainWindow.cpp:760
+#: MainWindow.cpp:776
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ជម្រះ​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:765
+#: MainWindow.cpp:781
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "ជួរ"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:786
 #, fuzzy, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "យក​អាប់ភ្លេត​ចេញ"
 
-#: MainWindow.cpp:777
+#: MainWindow.cpp:793
 #, kde-format
 msgid "&Add Stream..."
 msgstr "បន្ថែម​ស្ទ្រីម​..."
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:797
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Equalizer"
 msgstr "អេហ្គុយ"
 
-#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:813 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "ចំណាំ​បង្កើត​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:817
 #, fuzzy, kde-format
 msgid "Bookmark Context Applets"
 msgstr "ចំណាំ​សិល្បករ​នេះ"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:825
 #, kde-format
 msgid "Play Media..."
 msgstr "ចាក់​មេឌៀ..."
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:830
 #, fuzzy, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "ការ​ផ្លាស់​ប្តូរ​រក្សា​ទុក​បាន​កំណត់​ជ្រើស​​ជា​ស្រេច​ពេល​បច្ចុប្បន្ន ។"
 
-#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
+#: MainWindow.cpp:836 MainWindow.cpp:842 MainWindow.cpp:849
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "ស្វែងរក​ទៅ​មុខ"
 
-#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
+#: MainWindow.cpp:856 MainWindow.cpp:862 MainWindow.cpp:869
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "ស្វែងរក​ថយ​ក្រោយ"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:875
 #, kde-format
 msgid "Update Collection"
 msgstr "ធ្វើ​ឲ្យ​សម្រាំង​ទាន់សម័យ"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:887
 #, kde-format
 msgid "Previous Track"
 msgstr "បទ​មុន"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:894
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:901
 #, fuzzy, kde-format
 #| msgctxt "number of playlists from one source"
 #| msgid "One Playlist"
@@ -10752,159 +10752,159 @@ msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន �
 msgid "Shuffle Playlist"
 msgstr "បញ្ជី​ចាក់ %1"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:907
 #, fuzzy, kde-format
 msgid "Repopulate Playlist"
 msgstr "ជំនួស​​បញ្ជីចាក់​"
 
-#: MainWindow.cpp:897
+#: MainWindow.cpp:913
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "បញ្ជី​ចាក់​ថាមវន្ត​លំនាំដើម"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:917
 #, kde-format
 msgid "Next Track"
 msgstr "បទ​បន្ទាប់"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:922
 #, kde-format
 msgid "Increase Volume"
 msgstr "បង្កើន​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:928
 #, kde-format
 msgid "Decrease Volume"
 msgstr "បន្ថយ​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:918
+#: MainWindow.cpp:934
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "បិទ/​បើក​បង្អួច​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:923
+#: MainWindow.cpp:939
 #, fuzzy, kde-format
 msgid "Toggle Full Screen"
 msgstr "បិទ/បើ​ពេញអែក្រង់ "
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:944 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "ស្វែងរក​បញ្ជី​​ចាក់"
 
-#: MainWindow.cpp:938
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Show active track"
 msgstr "បង្ហាញបទ​សកម្ម"
 
-#: MainWindow.cpp:942
+#: MainWindow.cpp:958
 #, fuzzy, kde-format
 msgid "Show Notification Popup"
 msgstr "ទីតាំង ៖"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Mute Volume"
 msgstr "បិទ​សំឡេង"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:968
 #, fuzzy, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:957
+#: MainWindow.cpp:973
 #, fuzzy, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:962
+#: MainWindow.cpp:978
 #, fuzzy, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:983 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "រៀបបទ​ជា​ជួរ"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:977
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:982
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ២"
 
-#: MainWindow.cpp:987
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៣"
 
-#: MainWindow.cpp:992
+#: MainWindow.cpp:1008
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៤"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:1013
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៥"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:1019
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1037
 #, fuzzy, kde-format
 msgid "&About Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1025
+#: MainWindow.cpp:1041
 #, kde-format
 msgid "&Diagnostics"
 msgstr ""
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1045
 #, kde-format
 msgid "&Report Bug..."
 msgstr ""
 
-#: MainWindow.cpp:1076
+#: MainWindow.cpp:1092
 #, kde-format
 msgid "&Music"
 msgstr "តន្ត្រី"
 
-#: MainWindow.cpp:1078
+#: MainWindow.cpp:1094
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1122 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "បញ្ជីចាក់"
 
-#: MainWindow.cpp:1123
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "&Tools"
 msgstr "ឧបករណ៍"
 
-#: MainWindow.cpp:1138
+#: MainWindow.cpp:1154
 #, kde-format
 msgid "&Settings"
 msgstr "ការ​កំណត់"
 
-#: MainWindow.cpp:1190
+#: MainWindow.cpp:1206
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10912,23 +10912,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1207
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "លាក់​ម៉ឺនុយ"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1249
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "បាន​ផ្អាក  ::  %1"
 
-#: MainWindow.cpp:1246
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1320
+#: MainWindow.cpp:1336
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -11346,7 +11346,8 @@ msgid "Show tooltips"
 msgstr "បង្ហាញ​ព័ត៌មាន​ជំនួយ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
+#: widgets/Osd.cpp:516
 #, kde-format
 msgid "Preview"
 msgstr "មើល​​ជា​មុន"
@@ -15659,13 +15660,13 @@ msgid "Slim Toolbar"
 msgstr "របារ​ឧបករណ៍​មេ"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:200
+#: widgets/Osd.cpp:209
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, fuzzy, kde-format
 msgid "Volume: %1%"
@@ -16093,30 +16094,30 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "ចន្លោះ"
 
-#: widgets/Osd.cpp:186
+#: widgets/Osd.cpp:195
 #, kde-format
 msgid "Rating changed"
 msgstr "បាន​ផ្លាស់ប្ដូរ​ការវាយ​តម្លៃ"
 
-#: widgets/Osd.cpp:261
+#: widgets/Osd.cpp:270
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: widgets/Osd.cpp:504
+#: widgets/Osd.cpp:514
 #, fuzzy, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr "ទិដ្ឋភាព OSD - អូស​ដើម្បី​ប្ដូរ​ទីតាំង"
 
-#: widgets/Osd.cpp:756
+#: widgets/Osd.cpp:771
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "បញ្ឈប់"
 
-#: widgets/Osd.cpp:765
+#: widgets/Osd.cpp:780
 #, kde-format
 msgid "Paused"
 msgstr "បាន​ផ្អាក"

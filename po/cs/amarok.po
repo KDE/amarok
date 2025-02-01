@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-01-29 01:54+0000\n"
+"POT-Creation-Date: 2025-02-01 01:54+0000\n"
 "PO-Revision-Date: 2024-10-08 14:40+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -234,7 +234,7 @@ msgstr "Zastavit po současné skladbě: Zapnuto"
 
 #: ActionClasses.cpp:445
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
 msgid "No track playing"
 msgstr "Nepřehrává se žádná skladba"
@@ -242,8 +242,8 @@ msgstr "Nepřehrává se žádná skladba"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:449
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:151 MainWindow.cpp:1227 MainWindow.cpp:1233
-#: MainWindow.cpp:1246
+#: main.cpp:92 MainWindow.cpp:154 MainWindow.cpp:1243 MainWindow.cpp:1249
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -901,7 +901,7 @@ msgid "Enable/Disable the On-Screen Display."
 msgstr "Povolit/zakázat OSD."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:45
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:49
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "Pro upozornění použít Growl"
@@ -1546,7 +1546,7 @@ msgstr "Neznámé"
 msgid "New Bookmark"
 msgstr "Nová záložka"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:789
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:805
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Správce záložek"
@@ -1643,7 +1643,7 @@ msgstr "Nová skladba s časovým kódem"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:504
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:505
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:506
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1246
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1262
 #, kde-format
 msgid "Unknown"
 msgstr "Neznámé"
@@ -1664,7 +1664,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Kontext"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:283
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:288
 #, kde-format
 msgid "Files"
 msgstr "Soubory"
@@ -1694,7 +1694,7 @@ msgstr "Umělec \"%1\" z %2"
 msgid "Artist \"%1\""
 msgstr "Umělec \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:785
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:801
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Přidat pohled na zdroje médií do záložek"
@@ -1717,97 +1717,97 @@ msgctxt ""
 msgid "Play"
 msgstr "Přehrát"
 
-#: App.cpp:362
+#: App.cpp:365
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Soubory/URL k otevření"
 
-#: App.cpp:363
+#: App.cpp:366
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Okamžitě zahájit přehrávání audio CD"
 
-#: App.cpp:364
+#: App.cpp:367
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Přeskočit v seznamu skladeb zpět"
 
-#: App.cpp:365
+#: App.cpp:368
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Zahájit přehrávání aktuálního seznamu skladeb"
 
-#: App.cpp:366
+#: App.cpp:369
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Přehrát, pokud je zastaveno, pozastavit, pokud se hraje"
 
-#: App.cpp:367
+#: App.cpp:370
 #, kde-format
 msgid "Pause playback"
 msgstr "Pozastavit přehrávání"
 
-#: App.cpp:368
+#: App.cpp:371
 #, kde-format
 msgid "Stop playback"
 msgstr "Zastavit přehrávání"
 
-#: App.cpp:369
+#: App.cpp:372
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Přeskočit v seznamu skladeb vpřed"
 
-#: App.cpp:371
+#: App.cpp:374
 #, kde-format
 msgid "Additional options:"
 msgstr "Další volby:"
 
-#: App.cpp:372
+#: App.cpp:375
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Přidat soubory/URL do seznamu skladeb"
 
-#: App.cpp:373
+#: App.cpp:376
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Zařadit URL do fronty za právě přehrávanou skladbu"
 
-#: App.cpp:374
+#: App.cpp:377
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Nahradit aktuální seznam skladeb načtenými URL"
 
-#: App.cpp:375 App.cpp:377
+#: App.cpp:378 App.cpp:380
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Zobrazit podrobné ladicí informace"
 
-#: App.cpp:378
+#: App.cpp:381
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Zobrazit podrobné ladicí informace z audio systému"
 
-#: App.cpp:379
+#: App.cpp:382
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Vypnout vybarvování ladicího výstupu."
 
-#: App.cpp:380
+#: App.cpp:383
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Povolit spuštění více instancí Amaroku"
 
-#: App.cpp:381
+#: App.cpp:384
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Základ pro relativní názvy souborů/URL"
 
-#: App.cpp:521 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:524 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Chyba databáze"
 
-#: App.cpp:522
+#: App.cpp:525
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1820,12 +1820,12 @@ msgstr ""
 "Ve většině případů budete tyto problémy muset vyřešit než Amarok poběží "
 "korektně."
 
-#: App.cpp:589
+#: App.cpp:592
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Soubory se přesunují do koše"
 
-#: App.cpp:613
+#: App.cpp:616
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1833,13 +1833,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:614
+#: App.cpp:617
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr "Chyba klíče relace Last.fm"
 
-#: App.cpp:675
+#: App.cpp:678
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1848,19 +1848,19 @@ msgstr ""
 "Cesta k hudbě je nastavena, %1, je nastavena v systémovém nastavení.\n"
 "Přejete si ji používat jako složku sbírky?"
 
-#: App.cpp:677
+#: App.cpp:680
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Vyberte složku sbírky"
 
-#: App.cpp:678
+#: App.cpp:681
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Použít"
 
-#: App.cpp:679
+#: App.cpp:682
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
@@ -1895,7 +1895,7 @@ msgstr ""
 "Zde naleznete svojí místní hudbu, stejně tak jako hudbu z mobilních "
 "přehrávačů audia a z CD."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:933
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:949
 #, kde-format
 msgid "Search collection"
 msgstr "Prohledat sbírku"
@@ -2588,13 +2588,13 @@ msgstr "Smazat %1 seznam skladeb z %2?"
 msgid "Confirm Playlist Deletion"
 msgstr "Potvrdit smazání seznamu skladeb"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:449
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:454
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Pro &uložení použít relativní cestu"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:462
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
 #, kde-format
 msgid "Save As"
 msgstr "Uložit jako"
@@ -4783,7 +4783,7 @@ msgid "Writing iTunes database to %1 failed: %2"
 msgstr "Zápis databáze iTunes na %1 selhal: %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
 msgid "Disconnected iPod/iPad/iPhone"
 msgstr "Odpojený iPod/iPad/iPhone"
@@ -4840,7 +4840,7 @@ msgstr ""
 "nadbytečnými záznamy v iTunes databázi, %2 nadbytečných záznamů bylo smazáno "
 "z databáze, %3 osiřelých skladeb bylo přidáno zpět do iTunes databáze. %4"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:224
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:226
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
@@ -4849,7 +4849,7 @@ msgstr[0] "Přenesena jedna skladba do sbírky %2."
 msgstr[1] "Přeneseny %1 skladby do sbírky %2."
 msgstr[2] "Přeneseno %1 skladeb do sbírky %2."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
@@ -4858,7 +4858,7 @@ msgstr[0] "Převedena jedna skladba do %2."
 msgstr[1] "Převedeny %1 skladby do %2."
 msgstr[2] "Převedeno %1 skladeb do %2."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:236
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:238
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
@@ -4866,7 +4866,7 @@ msgstr[0] "Přenos přerušen. Povedlo se přenést jednu skladbu."
 msgstr[1] "Přenos přerušen. Povedlo se přenést %1 skladby."
 msgstr[2] "Přenos přerušen. Povedlo se přenést %1 skladeb."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:244
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:246
 #, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
@@ -4875,13 +4875,13 @@ msgstr[0] "%2 Jedna skladba už tam byla."
 msgstr[1] "%2 %1 skladby už tam byly."
 msgstr[2] "%2 %1 skladeb už tam bylo."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr "Skladby přeneseny do sbírky %1"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:377
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -4894,12 +4894,12 @@ msgstr[1] ""
 msgstr[2] ""
 "%1 skladeb bylo úspěšně přeneseno, ale přenos ostatních skladeb selhal."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
 #, kde-format
 msgid "Transfer of tracks failed."
 msgstr "Přenos skladeb selhal."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -4913,14 +4913,14 @@ msgstr[1] ""
 msgstr[2] ""
 "%1 skladeb nebylo přenesených, protože by byla překročena kapacita iPodu.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:394
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 "<i>Amarok vyhrazuje %1 na iPodu pro zapisování iTunes databáze.</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:401
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -4938,7 +4938,7 @@ msgstr[2] ""
 "%1 skladeb nebylo zkopírováno, protože by nemohlo být přehráno - mají "
 "nepodporované formáty (%2).<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
@@ -4946,7 +4946,7 @@ msgstr[0] "Kopírování/přesun/převod jednoho souboru selhal.<br>"
 msgstr[1] "Kopírování/přesun/převod %1 souborů selhal.<br>"
 msgstr[2] "Kopírování/přesun/převod %1 souborů selhal.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
@@ -4955,17 +4955,17 @@ msgstr[0] "Jedna skladba nebyla přenesena z důvodu vnitřní chyby Amaroku.<br
 msgstr[1] "%1 skladby nebyly přeneseny z důvodu vnitřní chyby Amaroku.<br>"
 msgstr[2] "%1 skladeb nebylo přenesených z důvodu vnitřní chyby Amaroku.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:419
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr "<i>Detaily najdete v ladicím výstupu Amaroku.</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr "Zbytek nebyl přenesen, protože iPod sbírka zmizela.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:429
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
@@ -7603,7 +7603,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:805
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:821
 #, kde-format
 msgid "Cover Manager"
 msgstr "Správce obalů"
@@ -9774,7 +9774,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Název cílového přehrávače"
 
-#: KNotificationBackend.cpp:124 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:132 TrayIcon.cpp:150
 #, kde-format
 msgid "Now playing"
 msgstr "Nyní přehrávám"
@@ -9789,7 +9789,7 @@ msgstr "Stažený text písně je prázdný"
 msgid "Lyrics data could not be parsed"
 msgstr "Data s textem písně nešlo zpracovat"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
 #, kde-format
 msgid "No information available for this track"
 msgstr "O této skladbě nejsou dostupné žádné informace"
@@ -10666,58 +10666,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "Zimin Stanislav"
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:263
 #, kde-format
 msgid "Local Music"
 msgstr "Místní hudba"
 
-#: MainWindow.cpp:260
+#: MainWindow.cpp:265
 #, kde-format
 msgid "Local sources of content"
 msgstr "Místní zdroje obsahu"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:272
 #, kde-format
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:269
+#: MainWindow.cpp:274
 #, kde-format
 msgid "Online sources of content"
 msgstr "Internetové zdroje obsahu"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:280
 #, kde-format
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
-#: MainWindow.cpp:277
+#: MainWindow.cpp:282
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Různé typy seznamů skladeb"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:291
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Procházet kvůli obsahu místní pevný disk"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:334
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "Po&hled"
 
-#: MainWindow.cpp:332
+#: MainWindow.cpp:337
 #, kde-format
 msgid "Lock Layout"
 msgstr "Uzamknout rozvržení"
 
-#: MainWindow.cpp:369 MainWindow.cpp:1320
+#: MainWindow.cpp:374 MainWindow.cpp:1336
 #, kde-format
 msgid "Reset Layout"
 msgstr "Obnovit rozvržení"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:431
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10728,276 +10728,276 @@ msgstr ""
 "panelu. Použijte <B>Ukončit</B> z nabídky, nebo ikonu Amaroku v panelu k "
 "ukončení celé aplikace.</qt>"
 
-#: MainWindow.cpp:428
+#: MainWindow.cpp:433
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Ukotvení v systémovém panelu"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:533
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Přehrát multimédia (soubory nebo URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:533
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Přidat multimédia (soubory nebo URL)"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:553
 #, kde-format
 msgid "Add Stream"
 msgstr "Přidat proud"
 
-#: MainWindow.cpp:548
+#: MainWindow.cpp:553
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Zadejte URL proudu:"
 
-#: MainWindow.cpp:755
+#: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Media..."
 msgstr "Přid&at média..."
 
-#: MainWindow.cpp:760
+#: MainWindow.cpp:776
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "S&mazat seznam skladeb"
 
-#: MainWindow.cpp:765
+#: MainWindow.cpp:781
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Upravit &frontu"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:786
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Odstra&nit duplikáty"
 
-#: MainWindow.cpp:777
+#: MainWindow.cpp:793
 #, kde-format
 msgid "&Add Stream..."
 msgstr "Přid&at proud..."
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:797
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Exportovat seznam skladeb jako..."
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Equalizer"
 msgstr "Ekvalizér"
 
-#: MainWindow.cpp:797 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:813 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Přidat nastavení seznamu skladeb do záložek"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:817
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Přidat kontextové applety do záložek "
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:825
 #, kde-format
 msgid "Play Media..."
 msgstr "Přehrát média..."
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:830
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Uložit změny aktuálně vybrané skladby"
 
-#: MainWindow.cpp:820 MainWindow.cpp:826 MainWindow.cpp:833
+#: MainWindow.cpp:836 MainWindow.cpp:842 MainWindow.cpp:849
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Rychle vpřed o %1 vteřin"
 
-#: MainWindow.cpp:840 MainWindow.cpp:846 MainWindow.cpp:853
+#: MainWindow.cpp:856 MainWindow.cpp:862 MainWindow.cpp:869
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Rychle vzad o %1 vteřin"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:875
 #, kde-format
 msgid "Update Collection"
 msgstr "Aktualizovat sbírku"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Synchronizovat statistiky..."
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:887
 #, kde-format
 msgid "Previous Track"
 msgstr "Předchozí skladba"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:894
 #, kde-format
 msgid "Restart current track"
 msgstr "Znovu spustit aktuální skladbu"
 
-#: MainWindow.cpp:885
+#: MainWindow.cpp:901
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Promíchat seznam skladeb"
 
-#: MainWindow.cpp:891
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Znovu naplnit seznam skladeb"
 
-#: MainWindow.cpp:897
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Zakázat dynamický seznam skladeb"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:917
 #, kde-format
 msgid "Next Track"
 msgstr "Následující skladba"
 
-#: MainWindow.cpp:906
+#: MainWindow.cpp:922
 #, kde-format
 msgid "Increase Volume"
 msgstr "Zvýšit hlasitost"
 
-#: MainWindow.cpp:912
+#: MainWindow.cpp:928
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Snížit hlasitost"
 
-#: MainWindow.cpp:918
+#: MainWindow.cpp:934
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Přepnout hlavní okno"
 
-#: MainWindow.cpp:923
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Přepnout na celou obrazovku"
 
-#: MainWindow.cpp:928 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:944 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Prohledat seznam skladeb"
 
-#: MainWindow.cpp:938
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Show active track"
 msgstr "Zobrazit aktivní skladbu"
 
-#: MainWindow.cpp:942
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Zobrazovat vyskakovací okno upozornění"
 
-#: MainWindow.cpp:947
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Mute Volume"
 msgstr "Ztlumit hlasitost"
 
-#: MainWindow.cpp:952
+#: MainWindow.cpp:968
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Tuhle skladbu miluji"
 
-#: MainWindow.cpp:957
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Zakázat právě právě přehrávanou skladbu"
 
-#: MainWindow.cpp:962
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Přeskočit současnou skladbu"
 
-#: MainWindow.cpp:967 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:983 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Zařadit skladbu do fronty"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Vložit kombinaci \"Umělec - Název aktuální skladby\" do schránky"
 
-#: MainWindow.cpp:977
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Hodnotit aktuální skladbu: 1"
 
-#: MainWindow.cpp:982
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Hodnotit aktuální skladbu: 2"
 
-#: MainWindow.cpp:987
+#: MainWindow.cpp:1003
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Hodnotit aktuální skladbu: 3"
 
-#: MainWindow.cpp:992
+#: MainWindow.cpp:1008
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Hodnotit aktuální skladbu: 4"
 
-#: MainWindow.cpp:997
+#: MainWindow.cpp:1013
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Hodnotit aktuální skladbu: 5"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:1019
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Prohlížeč síťových dotazů"
 
-#: MainWindow.cpp:1021
+#: MainWindow.cpp:1037
 #, kde-format
 msgid "&About Amarok"
 msgstr "O aplikaci &Amarok"
 
-#: MainWindow.cpp:1025
+#: MainWindow.cpp:1041
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnostika"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1045
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Nahlásit &chybu..."
 
-#: MainWindow.cpp:1076
+#: MainWindow.cpp:1092
 #, kde-format
 msgid "&Music"
 msgstr "&Hudba"
 
-#: MainWindow.cpp:1078
+#: MainWindow.cpp:1094
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1106 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1122 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "Se&znam skladeb"
 
-#: MainWindow.cpp:1123
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "&Tools"
 msgstr "&Nástroje"
 
-#: MainWindow.cpp:1138
+#: MainWindow.cpp:1154
 #, kde-format
 msgid "&Settings"
 msgstr "&Nastavení"
 
-#: MainWindow.cpp:1190
+#: MainWindow.cpp:1206
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11009,22 +11009,22 @@ msgstr ""
 "Pamatujte, že pro opětovné zobrazení panelu můžete vždy použít zkratku "
 "\"%1\"."
 
-#: MainWindow.cpp:1191
+#: MainWindow.cpp:1207
 #, kde-format
 msgid "Hide Menu"
 msgstr "Skrýt nabídku"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1249
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pozastaveno  ::  %1"
 
-#: MainWindow.cpp:1246
+#: MainWindow.cpp:1262
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1320
+#: MainWindow.cpp:1336
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Aplikovat tuto změnu rozvržení?"
@@ -11449,7 +11449,8 @@ msgid "Show tooltips"
 msgstr "Zobrazovat nástrojové tipy"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
+#: widgets/Osd.cpp:516
 #, kde-format
 msgid "Preview"
 msgstr "Náhled"
@@ -15796,12 +15797,12 @@ msgid "Slim Toolbar"
 msgstr "Úzký panel nástrojů"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:200
+#: widgets/Osd.cpp:209
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Hlasitost: %1% (ztlumeno)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
 #: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
 #, kde-format
 msgid "Volume: %1%"
@@ -16234,17 +16235,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "mezi"
 
-#: widgets/Osd.cpp:186
+#: widgets/Osd.cpp:195
 #, kde-format
 msgid "Rating changed"
 msgstr "Hodnocení změněno"
 
-#: widgets/Osd.cpp:261
+#: widgets/Osd.cpp:270
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Hlasitost: 100% (ztlumeno)"
 
-#: widgets/Osd.cpp:504
+#: widgets/Osd.cpp:514
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16253,12 +16254,12 @@ msgstr ""
 "OSD náhled\n"
 "přetáhněte jej na vámi požadovanou pozici"
 
-#: widgets/Osd.cpp:756
+#: widgets/Osd.cpp:771
 #, kde-format
 msgid "Stopped"
 msgstr "Zastaveno"
 
-#: widgets/Osd.cpp:765
+#: widgets/Osd.cpp:780
 #, kde-format
 msgid "Paused"
 msgstr "Pozastaveno"
