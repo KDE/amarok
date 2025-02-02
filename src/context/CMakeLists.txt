@@ -11,6 +11,10 @@ set( amarokpud_LIB_SRCS
 
 add_library( amarokpud SHARED ${amarokpud_LIB_SRCS} )
 
+if(WIN32)
+    target_compile_definitions(amarokpud PUBLIC MAKE_POPUPDROPPER_LIB)
+endif()
+
 target_include_directories( amarokpud PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/popupdropper/libpud
 )
