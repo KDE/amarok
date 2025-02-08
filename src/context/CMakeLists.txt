@@ -12,7 +12,7 @@ set( amarokpud_LIB_SRCS
 add_library( amarokpud SHARED ${amarokpud_LIB_SRCS} )
 
 if(WIN32)
-    target_compile_definitions(amarokpud PUBLIC MAKE_POPUPDROPPER_LIB)
+    target_compile_definitions(amarokpud PRIVATE MAKE_POPUPDROPPER_LIB)
 endif()
 
 target_include_directories( amarokpud PUBLIC

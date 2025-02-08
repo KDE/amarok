@@ -22,6 +22,10 @@ set(libampache_account_login_SRCS
 
 add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
 
+if(WIN32)
+    target_compile_definitions(ampache_account_login PRIVATE MAKE_AMPACHE_ACCOUNT_LOGIN_LIB)
+endif()
+
 target_link_libraries(ampache_account_login
     amaroklib
     amarokcore

@@ -30,14 +30,10 @@
 
 class QNetworkReply;
 
-#ifdef Q_OS_WINDOWS
-#define AMPACHE_ACCOUNT_EXPORT Q_DECL_EXPORT
-#else
 #ifdef MAKE_AMPACHE_ACCOUNT_LOGIN_LIB
 #define AMPACHE_ACCOUNT_EXPORT Q_DECL_EXPORT
 #else
 #define AMPACHE_ACCOUNT_EXPORT Q_DECL_IMPORT
-#endif
 #endif
 
 class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject

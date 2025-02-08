@@ -10,6 +10,10 @@ set( amarok_storage-mysqlserverstorage_PART_SRCS
 
 add_library(amarok_storage-mysqlserverstorage MODULE ${amarok_storage-mysqlserverstorage_PART_SRCS})
 
+if(WIN32)
+    target_compile_definitions(amarok_storage-mysqlserverstorage PRIVATE MAKE_AMAROK_STORAGE_MYSQLESTORAGE_LIB)
+endif()
+
 string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
 
