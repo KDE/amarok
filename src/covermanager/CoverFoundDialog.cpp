@@ -72,7 +72,7 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
     layout()->addWidget( splitter );
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this );
-    QPushButton *clearButton = buttonBox->addButton( QStringLiteral( "clear" ), QDialogButtonBox::ActionRole ); // clear icon view
+    QPushButton *clearButton = buttonBox->addButton( i18n( "&Clear" ), QDialogButtonBox::ActionRole ); // clear icon view
     layout()->addWidget( buttonBox );
 
     connect( clearButton, &QAbstractButton::clicked, this, &CoverFoundDialog::clearView );
