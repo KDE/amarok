@@ -326,11 +326,12 @@ void AlbumsEngine::showContextMenu( const QModelIndexList &indexes, const QModel
 
 QString AlbumsEngine::getSelectedUrlList(const QModelIndexList &indexes) const
 {
+    qDebug() << indexes;
     const Meta::TrackList list=getSelectedTracks(indexes);
     QString urlList;
     for(const Meta::TrackPtr &t : list)
     {
-        urlList += t->playableUrl().toString() + QStringLiteral("\n");
+        urlList += t->playableUrl().toString() + QStringLiteral("\r\n");
     }
     return urlList;
 }

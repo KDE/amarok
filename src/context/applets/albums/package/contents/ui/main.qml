@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2017 Malte Veerman <malte.veerman@gmail.com>                           *
+ * Copyright (c) 2025 Tuomas Nurmi  <tuomas@norsumanageri.org>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,84 +15,133 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.15
-import QtQuick.Controls 1.4
+import QtQuick
+import QtQuick.Controls
 import QtQml.Models 2.15
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.albums 1.0
+import org.kde.kirigami 2.14 as Kirigami
+
 
 AmarokQml.Applet {
     id: applet
 
     TreeView {
         id: treeView
-
         anchors.fill: parent
-        sortIndicatorVisible: false
-        headerVisible: false
+        boundsBehavior: Flickable.StopAtBounds
+        boundsMovement: Flickable.StopAtBounds
         model: AlbumsEngine.model
-        selectionMode: SelectionMode.ExtendedSelection
-        selection: ItemSelectionModel {
+        selectionModel: ItemSelectionModel {
             id: selectionModel
-
             model: AlbumsEngine.model
         }
-
-        itemDelegate: Row {
-            Loader {
-                active: !!model && !!model["albumCover"]
-                height: parent.height
-                width: height
-                visible: active
-
-                AmarokQml.PixmapItem {
-                    source: !!model ? model["albumCover"] : undefined
-                }
-            }
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                color: styleData.selected ? applet.palette.highlightedText : applet.palette.text
-                elide: styleData.elideMode
-                text: styleData.value
-                textFormat: Text.StyledText
+        TapHandler {
+            acceptedButtons: Qt.LeftButton
+            onSingleTapped: {
+                if (treeView.cellAtPosition(point.position) == Qt.point(-1,-1))
+                    selectionModel.clear()
             }
         }
 
-        rowDelegate: Rectangle {
-            property color backgroundColor: styleData.alternate ? applet.palette.alternateBase : applet.palette.base
-
-            height: !!model && !!model["size"] ? model["size"].height : 0
-            width: parent.width
-            color: styleData.selected ? applet.palette.highlight : backgroundColor
+        delegate: TreeViewDelegate {
+            implicitHeight: !!model && !!model["size"] ? model["size"].height : 0
+            implicitWidth: applet.width - 2 * Kirigami.Units.smallSpacing
 
             MouseArea {
-                id: rowMouseArea
-
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.NoButton
-            }
-        }
-
-        TableViewColumn {
-            title: i18n("Display")
-            role: "display"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.RightButton
-            onClicked: {
-                var index = treeView.indexAt(mouse.x, mouse.y);
-                if (!selectionModel.isSelected(index)) {
-                    selectionModel.select(index, ItemSelectionModel.ClearAndSelect);
+                // For some reason unknown to me, TableView.ExtendedSelection fails to work here, so corresponding
+                // selection logic has been re-written here. I tried first based on TapHandler, but encountered some
+                // seemingly unresolvable issues with first clicked item not getting selected.
+                drag.target: dragItem
+                drag {
+                    onActiveChanged: {
+                        if (drag.active )
+                        {
+                            if (!parent.selected)
+                            {
+                                treeView.selectionModel.select(treeView.index(row, column), ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Current | ItemSelectionModel.Rows);
+                                selectionModel.setCurrentIndex(treeView.index(row, column), ItemSelectionModel.NoUpdate)
+                            }
+                            dragItem.updateMimedata();
+                            dragItem.Drag.active=true;
+                        }
+                    }
                 }
-                AlbumsEngine.showContextMenu(selectionModel.selectedIndexes, index);
-            }
-        }
+                acceptedButtons: Qt.LeftButton
+                propagateComposedEvents: true
+                anchors.fill: parent
+                onClicked: (mouse)=> {
+                    let treeIndex = treeView.index(row, column);
+                    switch (mouse.modifiers) {
+                        case Qt.ControlModifier:
+                            if (parent.selected)
+                                selectionModel.clearCurrentIndex()
+                            else
+                                selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
 
-        Component.onCompleted: {
-            __mouseArea.pressAndHoldInterval=200;
+                            selectionModel.select(treeIndex, ItemSelectionModel.Toggle)
+                        break;
+                        case Qt.ShiftModifier:
+                            if(selectionModel.currentIndex.row >= 0 )
+                            {
+                                for(let i=Math.min(row, selectionModel.currentIndex.row); i<Math.max(row, selectionModel.currentIndex.row); i++)
+                                {
+                                    selectionModel.select(treeView.index(i, column), ItemSelectionModel.Select)
+                                }
+                            }
+                            selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
+                        break;
+                        default:
+                            if( mouse && mouse.x >= parent.indicator.x && mouse.x <= parent.indicator.x+parent.indicator.width
+                                && mouse.y >= parent.indicator.y && mouse.y <= parent.indicator.y+parent.indicator.height )
+                            {
+                                treeView.toggleExpanded(row)
+                            }
+                            else
+                            {
+                                treeView.selectionModel.select(treeIndex, ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Current | ItemSelectionModel.Rows);
+                                selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
+                            }
+                        break;
+                    }
+                }
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.RightButton
+                onSingleTapped: {
+                    if (!parent.selected) {
+                        selectionModel.select(treeView.index(row, column), ItemSelectionModel.ClearAndSelect);
+                        selectionModel.setCurrentIndex(treeView.index(row, column), ItemSelectionModel.NoUpdate)
+                    }
+                    AlbumsEngine.showContextMenu(selectionModel.selectedIndexes, treeView.index(row, column));
+                }
+            }
+
+            contentItem: Row {
+                spacing: Kirigami.Units.mediumSpacing
+                width: parent.width
+
+                Loader {
+                    id: albumCover
+                    active: !!model && !!model["albumCover"]
+                    height: parent.height
+                    width: height
+                    visible: active
+
+                    AmarokQml.PixmapItem {
+                        source: !!model ? model["albumCover"] : undefined
+                    }
+                }
+
+                Text {
+                    anchors.verticalCenter:  parent.verticalCenter
+                    color: parent.parent.selected ? applet.palette.highlightedText : applet.palette.text
+                    text: model.display
+                    textFormat: Text.StyledText
+                }
+            }
+
         }
 
         Item {
@@ -106,11 +156,6 @@ AmarokQml.Applet {
             }
 
             Drag.dragType: Drag.Automatic
-        }
-
-        onPressAndHold: function() {
-            dragItem.updateMimedata();
-            dragItem.Drag.active=true;
         }
     }
 }
