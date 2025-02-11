@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -7543,6 +7543,12 @@ msgstr[1] ""
 msgid "Select Cover Image File"
 msgstr "Pela Wêneya Rûgirê Albumê Hilbijêre"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "&Paqij Bike"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
@@ -11295,12 +11301,6 @@ msgstr "Hejmara Stranê"
 #| msgid "Framework Version"
 msgid "Network Requests"
 msgstr "Guhertoya Pêşvebira Çarçovê"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "&Paqij Bike"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

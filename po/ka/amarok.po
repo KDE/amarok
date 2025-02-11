@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2024-07-07 06:39+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -6960,6 +6960,12 @@ msgstr[1] ""
 msgid "Select Cover Image File"
 msgstr "აირჩიეთ ყდის გამოსახულების ფაილი"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "&გაწმენდა"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, kde-format
 msgid "Finding cover for"
@@ -10406,12 +10412,6 @@ msgstr "ტრეკის გვერდზე გადასვლა"
 #, kde-format
 msgid "Network Requests"
 msgstr "ქსელის მოთხოვნები"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "&გაწმენდა"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

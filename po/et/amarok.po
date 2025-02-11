@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2020-06-05 19:27+0300\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -7354,6 +7354,12 @@ msgstr[1] "Määra kohandatud kaanepildid %1 albumile"
 msgid "Select Cover Image File"
 msgstr "Kaanepildi faili valik"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "&Puhasta"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, kde-format
 msgid "Finding cover for"
@@ -10974,12 +10980,6 @@ msgstr "Mine pala leheküljele"
 #, kde-format
 msgid "Network Requests"
 msgstr "Võrgupäringud"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "&Puhasta"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

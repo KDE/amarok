@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2025-01-12 14:27+0100\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
@@ -7437,6 +7437,12 @@ msgstr[1] "Eigen hoezen instellen voor deze %1 albums"
 msgid "Select Cover Image File"
 msgstr "Bestand van hoesafbeelding selecteren"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "&Wissen"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, kde-format
 msgid "Finding cover for"
@@ -11067,12 +11073,6 @@ msgstr "Ga naar de trackpagina"
 #, kde-format
 msgid "Network Requests"
 msgstr "Netwerkverzoeken"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "&Wissen"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

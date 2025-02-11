@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -7350,6 +7350,12 @@ msgstr[0] "កំណត់​ការងារ​សិល្បៈ​ផ្ទ
 msgid "Select Cover Image File"
 msgstr "ជ្រើស​ឯកសារ​រូបភាព​គម្រប"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "ជម្រះ"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 msgid "Finding cover for"
@@ -10973,12 +10979,6 @@ msgstr "បទ #"
 #, fuzzy, kde-format
 msgid "Network Requests"
 msgstr "កំហុស​បណ្តាញ"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "ជម្រះ"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

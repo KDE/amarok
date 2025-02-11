@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -7101,6 +7101,13 @@ msgstr[1] ""
 msgid "Select Cover Image File"
 msgstr "Pilih Fail Imej Kulit Album"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, fuzzy, kde-format
+#| msgid "Year"
+msgid "&Clear"
+msgstr "Tahun"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 msgid "Finding cover for"
@@ -10613,13 +10620,6 @@ msgstr "Trek"
 #, fuzzy, kde-format
 msgid "Network Requests"
 msgstr "Tiada ralat"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, fuzzy, kde-format
-#| msgid "Year"
-msgid "&Clear"
-msgstr "Tahun"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2024-05-25 10:53+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
@@ -7481,6 +7481,12 @@ msgstr[1] "Setja sérsniðið myndefni við þessi %1 umslög"
 msgid "Select Cover Image File"
 msgstr "Veldu umslagsmynd"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "&Hreinsa"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
@@ -11191,12 +11197,6 @@ msgstr "Lag #"
 #| msgid "Framework Version"
 msgid "Network Requests"
 msgstr "Útgáfa grunns"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "&Hreinsa"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41

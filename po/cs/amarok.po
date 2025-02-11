@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2024-10-08 14:40+0200\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -7434,6 +7434,12 @@ msgstr[2] "Nastavit vlastní obal pro těchto %1 alb"
 msgid "Select Cover Image File"
 msgstr "Vyberte soubor s obrázkem obalu"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "&Smazat"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, kde-format
 msgid "Finding cover for"
@@ -9800,16 +9806,11 @@ msgid "The audio player by KDE"
 msgstr "Přehrávač zvuků od KDE"
 
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2024, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
-"(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, skupina vývojářů Amaroku"
 
 #: main.cpp:97
 #, kde-format
@@ -11066,12 +11067,6 @@ msgstr "Přejít na stránku skladby"
 msgid "Network Requests"
 msgstr "Síťové požadavky"
 
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "&Smazat"
-
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41
 #, kde-format
@@ -11135,17 +11130,12 @@ msgid ""
 msgstr ""
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
-"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16388,35 +16378,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "Main Script File"
-#~ msgstr "Soubor s hlavním skriptem"
-
-#~ msgid "Applet Icon File"
-#~ msgstr "Soubor ikony appletu"
-
-#~ msgid "Images"
-#~ msgstr "Obrázky"
-
-#~ msgid "Burn"
-#~ msgstr "Vypálit"
-
-#~ msgid "Current Playlist"
-#~ msgstr "Aktuální seznam skladeb"
-
-#~ msgid "Selected Tracks"
-#~ msgstr "Vybrané skladby"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "dB"
-#~ msgstr ""
-#~ "%0\n"
-#~ "dB"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%0\n"
-#~ "Hz"

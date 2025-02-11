@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-01 01:54+0000\n"
+"POT-Creation-Date: 2025-02-11 02:00+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -7631,6 +7631,12 @@ msgstr[1] ""
 msgid "Select Cover Image File"
 msgstr "आवरण छवि फाइल चयन गर्नुहोस्"
 
+#. i18n: ectx: property (text), widget (QPushButton, clearButton)
+#: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
+#, kde-format
+msgid "&Clear"
+msgstr "खाली गर्नुहोस्"
+
 #: covermanager/CoverFoundDialog.cpp:88
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
@@ -11370,12 +11376,6 @@ msgstr "ट्रयाक नम्बर"
 #| msgid "No Error"
 msgid "Network Requests"
 msgstr "कुनै त्रुटि छैन"
-
-#. i18n: ectx: property (text), widget (QPushButton, clearButton)
-#: network/NetworkRequests.ui:27
-#, kde-format
-msgid "&Clear"
-msgstr "खाली गर्नुहोस्"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41
