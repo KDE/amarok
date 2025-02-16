@@ -16438,12 +16438,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "Main Script File"
-#~ msgstr "Fitxer principal de script"
-
-#~ msgid "Applet Icon File"
-#~ msgstr "Fitxer d'icona de miniaplicació"
-
-#~ msgid "Images"
-#~ msgstr "Imatges"

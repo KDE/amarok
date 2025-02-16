@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-02-11 02:00+0000\n"
-"PO-Revision-Date: 2025-01-03 21:16+0100\n"
+"PO-Revision-Date: 2025-02-15 14:15+0100\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -1812,7 +1812,7 @@ msgstr ""
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Last.fm-seanca eraro de ŝlosilo"
 
 #: App.cpp:678
 #, kde-format
@@ -7969,6 +7969,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -9689,16 +9691,13 @@ msgid "The audio player by KDE"
 msgstr "La sonludanto de KDE"
 
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2024, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, La Amarok Evoluig-Taĉmento"
+"(C) 2003-2025, La Amarok Evoluig-Taĉmento"
 
 #: main.cpp:97
 #, kde-format
@@ -11016,6 +11015,8 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:137
 #, kde-format
@@ -16212,21 +16213,3 @@ msgstr "Artisto: %1"
 #, kde-format
 msgid "empty"
 msgstr "malplena"
-
-#~ msgid "Main Script File"
-#~ msgstr "Ĉefa Skripto-Dosiero"
-
-#~ msgid "Applet Icon File"
-#~ msgstr "Apleta Piktogramo-Dosiero"
-
-#~ msgid "Images"
-#~ msgstr "Bildoj"
-
-#~ msgid "Burn"
-#~ msgstr "Enskribi"
-
-#~ msgid "Current Playlist"
-#~ msgstr "Aktuala ludlisto"
-
-#~ msgid "Selected Tracks"
-#~ msgstr "Elektitaj trakoj"
