@@ -754,17 +754,9 @@ MainWindow::createActions()
 
     m_showMenuBar = KStandardAction::showMenubar(this, &MainWindow::slotShowMenuBar, ac);
 
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    ac->action( QLatin1String(KStandardAction::name( KStandardAction::KeyBindings) ) )->setIcon( QIcon::fromTheme( QStringLiteral("configure-shortcuts-amarok") ) );
-    ac->action( QLatin1String(KStandardAction::name( KStandardAction::Preferences) ) )->setIcon( QIcon::fromTheme( QStringLiteral("configure-amarok") ) );
-    ac->action( QLatin1String(KStandardAction::name( KStandardAction::Preferences) ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
-#else
-    // name() changed to return QString in KF6
     ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( QIcon::fromTheme( QStringLiteral("configure-shortcuts-amarok") ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( QIcon::fromTheme( QStringLiteral("configure-amarok") ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
-#endif
 
     KStandardAction::quit( pApp, &App::quit, ac );
 
@@ -1104,11 +1096,7 @@ MainWindow::createMenus()
 
 #ifndef Q_OS_APPLE    // Avoid duplicate "Quit" in OS X dock menu
     actionsMenu->addSeparator();
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    actionsMenu->addAction( Amarok::actionCollection()->action( QLatin1String(KStandardAction::name( KStandardAction::Quit )) ) );
-#else
     actionsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Quit ) ) );
-#endif
 #endif
     //END Actions menu
 
@@ -1153,11 +1141,7 @@ MainWindow::createMenus()
     m_settingsMenu = new QMenu( m_menubar.data() );
     m_settingsMenu->setTitle( i18n("&Settings") );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_settingsMenu->addAction( Amarok::actionCollection()->action( QLatin1String(KStandardAction::name( KStandardAction::ShowMenubar ) ) ) );
-#else
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::ShowMenubar ) ) );
-#endif
 
     //TODO use KStandardAction or KXmlGuiWindow
 
@@ -1171,13 +1155,8 @@ MainWindow::createMenus()
     m_settingsMenu->addSeparator();
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_settingsMenu->addAction( Amarok::actionCollection()->action( QLatin1String(KStandardAction::name( KStandardAction::KeyBindings ) ) ) );
-    m_settingsMenu->addAction( Amarok::actionCollection()->action( QLatin1String(KStandardAction::name( KStandardAction::Preferences ) ) ) );
-#else
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::KeyBindings ) ) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Preferences ) ) );
-#endif
     //END Settings menu
 
     m_menubar->addMenu( actionsMenu );

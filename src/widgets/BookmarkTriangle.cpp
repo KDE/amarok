@@ -144,11 +144,7 @@ void BookmarkTriangle::deleteBookmark ()
 
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-void BookmarkTriangle::enterEvent ( QEvent * )
-#else
 void BookmarkTriangle::enterEvent ( QEnterEvent * )
-#endif
 {
     DEBUG_BLOCK
 

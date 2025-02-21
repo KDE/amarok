@@ -22,11 +22,7 @@
 
 #include "GpodderServiceConfig.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <mygpo-qt5/ApiRequest.h>
-#else
 #include <mygpo-qt6/ApiRequest.h>
-#endif
 
 #include <KCModule>
 

@@ -296,15 +296,8 @@ void AmarokMimeData::addBookmarkGroups( const BookmarkGroupList &groups )
 }
 
 QVariant
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type vtype ) const
-#else
 AmarokMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
-#endif
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QMetaType type(vtype);
-#endif
     Meta::TrackList tracks = this->tracks();
     Playlists::PlaylistList playlists = this->playlists();
     Podcasts::PodcastChannelList channels = this->podcastChannels();
@@ -366,11 +359,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
             return QVariant( result );
         }
     }
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    return QMimeData::retrieveData( mimeType, vtype );
-#else
     return QMimeData::retrieveData( mimeType, type );
-#endif
 }
 
 void

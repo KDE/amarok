@@ -46,11 +46,7 @@ GpodderServiceSettings::GpodderServiceSettings( QObject *parent, const QVariantL
     debug() << "Creating gpodder.net config object";
 
     m_configDialog = new Ui::GpodderConfigWidget;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_configDialog->setupUi( this );
-#else
     m_configDialog->setupUi( this->widget() );
-#endif
 
     connect( m_configDialog->kcfg_GpodderUsername, &QLineEdit::textChanged,
              this, &GpodderServiceSettings::settingsChanged );
@@ -111,11 +107,7 @@ GpodderServiceSettings::testLogin()
     }
     else
     {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        KMessageBox::error( this,
-#else
         KMessageBox::error( this->widget(),
-#endif
                             i18n( "Either the username or the password is empty, please correct and try again." ),
                             i18n( "Failed" ) );
     }
@@ -182,11 +174,7 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
     {
         debug() << "Authentication failed";
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            KMessageBox::error( this,
-#else
             KMessageBox::error( this->widget(),
-#endif
             i18n( "Either the username or the password is incorrect, please correct and try again" ),
                             i18n( "Failed" ) );
 
@@ -195,11 +183,7 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
     }
     else
     {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        KMessageBox::error( this,
-#else
         KMessageBox::error( this->widget(),
-#endif
             i18n( "Unable to connect to gpodder.net service or other error occurred." ),
                             i18n( "Failed" ) );
 
@@ -216,11 +200,7 @@ GpodderServiceSettings::onParseError()
     m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
     m_configDialog->testLogin->setEnabled( true );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        KMessageBox::error( this,
-#else
-        KMessageBox::error( this->widget(),
-#endif
+    KMessageBox::error( this->widget(),
                         i18n( "Error parsing the Reply, check if gpodder.net is working correctly and report a bug" ), i18n( "Failed" ) );
 }
 

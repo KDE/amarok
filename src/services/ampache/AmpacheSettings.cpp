@@ -31,11 +31,7 @@ AmpacheSettings::AmpacheSettings( QObject *parent, const QVariantList & )
     , m_lastRowEdited(-1)
     , m_lastColumnEdited(-1)
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_configDialog->setupUi( this );
-#else
     m_configDialog->setupUi( this->widget() );
-#endif
     m_configDialog->serverList->setMinimumWidth(700);
     m_configDialog->serverList->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
     m_configDialog->serverList->verticalHeader()->hide();

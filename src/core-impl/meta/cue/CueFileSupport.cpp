@@ -20,11 +20,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <KEncodingProber>
-#else
 #include <QStringConverter>
-#endif
 
 #include <QDir>
 #include <QFile>
@@ -73,22 +69,11 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
         {
             QTextStream stream ( &file );
             QString line;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            KEncodingProber prober;
-
-            KEncodingProber::ProberState result = prober.feed( file.readAll() );
-            file.seek( 0 );
-
-            if( result != KEncodingProber::NotMe )
-                stream.setCodec( QTextCodec::codecForName( prober.encoding() ) );
-            debug() << "Encoding: " << prober.encoding();
-#else
             QByteArray data = file.readAll();
             file.seek( 0 );
             auto enc = QStringConverter::encodingForData( data );
             if( enc.has_value() )
                 stream.setEncoding( enc.value() );
-#endif
 
             while ( !stream.atEnd() )
             {

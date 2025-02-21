@@ -35,11 +35,7 @@
 #include <QAction>
 #include <QLabel>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QNetworkConfigurationManager>
-#else
 #include <QNetworkInformation>
-#endif
 #include <QTimer>
 
 #include <KIO/TransferJob>
@@ -452,11 +448,7 @@ void GpodderProvider::synchronizeStatus()
 
     debug() << "new episodes status: " << m_uploadEpisodeStatusMap.size();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
         return;
 
     if( !m_uploadEpisodeStatusMap.isEmpty() )
@@ -522,11 +514,7 @@ GpodderProvider::synchronizeSubscriptions()
     debug() << "add: " << m_addList.size();
     debug() << "remove: " << m_removeList.size();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
         return;
 
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
@@ -703,11 +691,7 @@ GpodderProvider::requestDeviceUpdates()
 {
     DEBUG_BLOCK
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
         return;
@@ -810,11 +794,7 @@ GpodderProvider::requestEpisodeActionsInCascade()
 {
     DEBUG_BLOCK
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestEpisodeActionsInCascade()) );
         return;

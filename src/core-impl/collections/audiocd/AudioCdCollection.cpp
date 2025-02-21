@@ -105,11 +105,7 @@ AudioCdCollection::readCd()
 {
     DEBUG_BLOCK
     //get the CDDB info file if possible.
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
-#else
     KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, KIO::ListJob::ListFlags() );
-#endif
     connect( listJob, &KIO::ListJob::entries, this, &AudioCdCollection::audioCdEntries );
     connect( listJob, &KIO::ListJob::result, this, &AudioCdCollection::slotEntriesJobDone );
 }
@@ -385,11 +381,7 @@ qint64
 AudioCdCollection::trackLength( int i ) const
 {
     QUrl kioUrl = audiocdUrl( trackWavFileName( i ) );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    KIO::StatJob *statJob = KIO::statDetails( kioUrl, KIO::StatJob::SourceSide );
-#else
     KIO::StatJob *statJob = KIO::stat( kioUrl, KIO::StatJob::SourceSide);
-#endif
     if ( statJob->exec() )
     {
         KIO::UDSEntry uds = statJob->statResult();
@@ -524,11 +516,7 @@ AudioCdCollection::noInfoAvailable()
 
     // This will find also data tracks on mixed CDs:
     // a better way to discover the available audio tracks should be found
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    while( KIO::statDetails( audiocdUrl( trackWav ), KIO::StatJob::SourceSide )->exec() )
-#else
     while( KIO::stat( audiocdUrl( trackWav ), KIO::StatJob::SourceSide )->exec() )
-#endif
     {
         debug() << "got track url: " << audiocdUrl( trackWav );
 

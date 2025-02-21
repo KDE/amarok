@@ -32,11 +32,7 @@ PlayPauseButton::PlayPauseButton( QWidget *parent ) : IconButton( parent )
 }
 
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-void PlayPauseButton::enterEvent ( QEvent * )
-#else
 void PlayPauseButton::enterEvent ( QEnterEvent * )
-#endif
 {
     setIcon( m_isPlaying ? m_icon.pause[1] : m_icon.play[1], 3 );
 }

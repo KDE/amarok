@@ -42,11 +42,7 @@ bool TrackActionButton::eventFilter( QObject *o, QEvent *e )
     return false;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-void TrackActionButton::enterEvent ( QEvent *e )
-#else
 void TrackActionButton::enterEvent ( QEnterEvent *e )
-#endif
 {
     setIcon( m_icon.image[2], 3 );
     IconButton::enterEvent( e );

@@ -52,11 +52,7 @@
 #include <QFile>
 #include <QMap>
 #include <QMessageBox>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QNetworkConfigurationManager>
-#else
 #include <QNetworkInformation>
-#endif
 #include <QProgressDialog>
 #include <QStandardPaths>
 #include <QTimer>
@@ -1013,20 +1009,11 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::autoUpdate()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QNetworkConfigurationManager mgr;
-    if( !mgr.isOnline() )
-    {
-        debug() << "Solid reports we are not online, canceling podcast auto-update";
-        return;
-    }
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
     {
         debug() << "Qt reports we are not online, canceling podcast auto-update";
         return;
     }
-#endif
 
     for( Podcasts::SqlPodcastChannelPtr channel : m_channels )
     {

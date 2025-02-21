@@ -25,11 +25,7 @@
 #include "GpodderTagTreeItem.h"
 
 #include <QList>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QNetworkConfigurationManager>
-#else
 #include <QNetworkInformation>
-#endif
 #include <QTimer>
 
 static const int s_numberItemsToLoad = 100;
@@ -293,11 +289,7 @@ GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
 
     if( qobject_cast<GpodderTagTreeItem*>( treeItem ) )
     {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        if( !QNetworkConfigurationManager().isOnline() )
-#else
-    if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
+        if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
             return false;
 
         return true;
@@ -340,11 +332,7 @@ GpodderServiceModel::fetchMore( const QModelIndex &parent )
 void
 GpodderServiceModel::requestTopTags()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestTopTags()) );
         return;
@@ -362,11 +350,7 @@ GpodderServiceModel::requestTopTags()
 void
 GpodderServiceModel::requestTopPodcasts()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestTopPodcasts()) );
         return;
@@ -388,11 +372,7 @@ GpodderServiceModel::requestTopPodcasts()
 void
 GpodderServiceModel::requestSuggestedPodcasts()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if( !QNetworkConfigurationManager().isOnline() )
-#else
     if( QNetworkInformation::instance()->reachability() == QNetworkInformation::Reachability::Disconnected )
-#endif
     {
         QTimer::singleShot( 10000, this, SLOT(requestSuggestedPodcasts()) );
         return;
