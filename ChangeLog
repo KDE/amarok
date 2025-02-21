@@ -2,6 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
+VERSION 3.2.71 UNRELEASED
+  FEATURES:
+
+  CHANGES:
+   * Qt5/KF5 support has been dropped
+  BUGFIXES:
+
+  
 VERSION 3.2.2
   FEATURES:
    * Try to preserve collection browser order when adding tracks

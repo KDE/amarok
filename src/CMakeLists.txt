@@ -818,83 +818,43 @@ if(WIN32)
     target_compile_definitions(amaroklib PRIVATE MAKE_AMAROKLIB_LIB)
 endif()
 
-if(BUILD_WITH_QT6)
-    target_link_libraries(amaroklib
-        Phonon::phonon4qt${QT_MAJOR_VERSION}
-        KF${KF_MAJOR_VERSION}::Archive
-        KF${KF_MAJOR_VERSION}::CoreAddons
-        KF${KF_MAJOR_VERSION}::ColorScheme
-        KF${KF_MAJOR_VERSION}::GlobalAccel
-        KF${KF_MAJOR_VERSION}::GuiAddons
-        KF${KF_MAJOR_VERSION}::I18n
-        KF${KF_MAJOR_VERSION}::IconThemes
-        KF${KF_MAJOR_VERSION}::KCMUtils
-        KF${KF_MAJOR_VERSION}::KIOCore
-        KF${KF_MAJOR_VERSION}::KIOFileWidgets
-        KF${KF_MAJOR_VERSION}::KIOWidgets
-        KF${KF_MAJOR_VERSION}::Notifications
-        KF${KF_MAJOR_VERSION}::Package
-        KF${KF_MAJOR_VERSION}::StatusNotifierItem
-        KF${KF_MAJOR_VERSION}::TextEditor
-        KF${KF_MAJOR_VERSION}::TextWidgets
-        KF${KF_MAJOR_VERSION}::ThreadWeaver
-        KF${KF_MAJOR_VERSION}::WidgetsAddons
-        KF${KF_MAJOR_VERSION}::WindowSystem
-        Qt::Core5Compat
-        Qt::Gui
-        Qt::Qml
-        Qt::Quick
-        Qt::QuickWidgets
-        Qt::Sql
-        Qt::Svg
-        Qt::SvgWidgets
-        ${CMAKE_DL_LIBS}
-        Threads::Threads
-        ${EXTRA_LIBS}
-        amarokpud
-        amarokcore
-        amarok-transcoding
-        amarokshared
-    )
-else()
-    target_link_libraries(amaroklib
-        Phonon::phonon4qt${QT_MAJOR_VERSION}
-        KF${KF_MAJOR_VERSION}::Archive
-        KF${KF_MAJOR_VERSION}::CoreAddons
-        KF${KF_MAJOR_VERSION}::GlobalAccel
-        KF${KF_MAJOR_VERSION}::GuiAddons
-        KF${KF_MAJOR_VERSION}::I18n
-        KF${KF_MAJOR_VERSION}::IconThemes
-        KF${KF_MAJOR_VERSION}::KCMUtils
-        KF${KF_MAJOR_VERSION}::KIOCore
-        KF${KF_MAJOR_VERSION}::KIOFileWidgets
-        KF${KF_MAJOR_VERSION}::KIOWidgets
-        KF${KF_MAJOR_VERSION}::Notifications
-        KF${KF_MAJOR_VERSION}::Package
-        KF${KF_MAJOR_VERSION}::TextEditor
-        KF${KF_MAJOR_VERSION}::ThreadWeaver
-        KF${KF_MAJOR_VERSION}::WidgetsAddons
-        KF${KF_MAJOR_VERSION}::WindowSystem
-        Qt::Gui
-        Qt::Qml
-        Qt::Quick
-        Qt::QuickWidgets
-        Qt::Sql
-        Qt::Svg
-        ${CMAKE_DL_LIBS}
-        Threads::Threads
-        ${EXTRA_LIBS}
-        amarokpud
-        amarokcore
-        amarok-transcoding
-        amarokshared
-    )
-endif()
-
-if( Qt5WebEngine_FOUND )
-    target_link_libraries( amaroklib Qt::WebEngine )
-    add_definitions( -DWITH_QT_WEBENGINE )
-endif()
+target_link_libraries(amaroklib
+    Phonon::phonon4qt${QT_MAJOR_VERSION}
+    KF${KF_MAJOR_VERSION}::Archive
+    KF${KF_MAJOR_VERSION}::CoreAddons
+    KF${KF_MAJOR_VERSION}::ColorScheme
+    KF${KF_MAJOR_VERSION}::GlobalAccel
+    KF${KF_MAJOR_VERSION}::GuiAddons
+    KF${KF_MAJOR_VERSION}::I18n
+    KF${KF_MAJOR_VERSION}::IconThemes
+    KF${KF_MAJOR_VERSION}::KCMUtils
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOFileWidgets
+    KF${KF_MAJOR_VERSION}::KIOWidgets
+    KF${KF_MAJOR_VERSION}::Notifications
+    KF${KF_MAJOR_VERSION}::Package
+    KF${KF_MAJOR_VERSION}::StatusNotifierItem
+    KF${KF_MAJOR_VERSION}::TextEditor
+    KF${KF_MAJOR_VERSION}::TextWidgets
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+    KF${KF_MAJOR_VERSION}::WindowSystem
+    Qt::Core5Compat
+    Qt::Gui
+    Qt::Qml
+    Qt::Quick
+    Qt::QuickWidgets
+    Qt::Sql
+    Qt::Svg
+    Qt::SvgWidgets
+    ${CMAKE_DL_LIBS}
+    Threads::Threads
+    ${EXTRA_LIBS}
+    amarokpud
+    amarokcore
+    amarok-transcoding
+    amarokshared
+)
 
 if( Qt6WebEngineWidgets_FOUND )
     target_link_libraries( amaroklib Qt::WebEngineWidgets )
@@ -961,21 +921,10 @@ install(PROGRAMS org.kde.amarok.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
-if(NOT BUILD_WITH_QT6)
-  install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/ServiceMenus)
-else()
-  install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_DATADIR}/kio/servicemenus)
-endif()
+install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_DATADIR}/kio/servicemenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${KDE_INSTALL_DATADIR}/solid/actions)
 
 #install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
-
-# protocol handlers
-
-if(NOT BUILD_WITH_QT6)
-  install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
-  install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-endif()
 
 install(FILES amarokconfig.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} )
 install(FILES dbus/org.kde.amarok.App.xml

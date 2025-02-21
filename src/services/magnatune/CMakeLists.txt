@@ -66,7 +66,6 @@ ki18n_wrap_ui( kcm_amarok_service_magnatune_PART_SRCSS MagnatuneConfigWidget.ui 
 add_library(kcm_amarok_service_magnatunestore MODULE ${kcm_amarok_service_magnatune_PART_SRCSS} )
 
 
-if(BUILD_WITH_QT6)
 target_link_libraries(kcm_amarok_service_magnatunestore
     amarokcore
     amaroklib
@@ -76,17 +75,6 @@ target_link_libraries(kcm_amarok_service_magnatunestore
     Qt::Core
     Qt::Widgets
 )
-else()
-target_link_libraries(kcm_amarok_service_magnatunestore
-    amarokcore
-    amaroklib
-    KF${KF_MAJOR_VERSION}::ConfigWidgets
-    KF${KF_MAJOR_VERSION}::KIOCore
-    KF${KF_MAJOR_VERSION}::ThreadWeaver
-    Qt::Core
-    Qt::Widgets
-)
-endif()
 
 install(TARGETS kcm_amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR})
 

@@ -7,45 +7,24 @@
 # LIBLASTFM_VERSION, version of found liblastfm as a string, e.g "0.3"
 
 
-if( BUILD_WITH_QT6 )
-    find_path(LIBLASTFM_INCLUDE_DIR NAMES global.h
-    HINTS
-    ~/usr/include
-    /opt/local/include
-    /usr/include
-    /usr/local/include
-    PATH_SUFFIXES lastfm6
-    )
+find_path(LIBLASTFM_INCLUDE_DIR NAMES global.h
+HINTS
+~/usr/include
+/opt/local/include
+/usr/include
+/usr/local/include
+PATH_SUFFIXES lastfm6
+)
 
-    find_library( LIBLASTFM_LIBRARY NAMES lastfm6
-        PATHS
-        ~/usr/lib
-    /opt/local/lib
-    /usr/lib
-    /usr/lib64
-    /usr/local/lib
-    /usr/local/lib64
-    )
-else()
-    find_path(LIBLASTFM_INCLUDE_DIR NAMES global.h
-    HINTS
-    ~/usr/include
-    /opt/local/include
-    /usr/include
-    /usr/local/include
-    PATH_SUFFIXES lastfm5
-    )
-
-    find_library( LIBLASTFM_LIBRARY NAMES lastfm5
-        PATHS
-        ~/usr/lib
-    /opt/local/lib
-    /usr/lib
-    /usr/lib64
-    /usr/local/lib
-    /usr/local/lib64
-    )
-endif()
+find_library( LIBLASTFM_LIBRARY NAMES lastfm6
+    PATHS
+    ~/usr/lib
+/opt/local/lib
+/usr/lib
+/usr/lib64
+/usr/local/lib
+/usr/local/lib64
+)
 
 
 if(LIBLASTFM_INCLUDE_DIR AND LIBLASTFM_LIBRARY)

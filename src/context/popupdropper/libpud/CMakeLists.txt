@@ -20,12 +20,7 @@ if(WIN32)
     target_compile_definitions(pud PUBLIC MAKE_POPUPDROPPER_LIB)
 endif()
 
-if(BUILD_WITH_QT6)
-  target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets)
-else()
-  target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg)
-endif()
-
+target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets)
 
 set_target_properties(pud PROPERTIES
         VERSION

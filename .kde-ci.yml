@@ -2,36 +2,6 @@
 # SPDX-License-Identifier: CC0-1.0
 
 Dependencies:
-- 'on': ['Linux/Qt5', 'FreeBSD/Qt5']
-  'require':
-    'frameworks/extra-cmake-modules': '@stable'
-    'frameworks/karchive': '@stable'
-    'frameworks/kcmutils': '@stable'
-    'frameworks/kcodecs': '@stable'
-    'frameworks/kconfig': '@stable'
-    'frameworks/kconfigwidgets': '@stable'
-    'frameworks/kcoreaddons': '@stable'
-    'frameworks/kcrash': '@stable'
-    'frameworks/kdbusaddons': '@stable'
-    'frameworks/kdnssd': '@stable'
-    'frameworks/kdoctools': '@stable'
-    'frameworks/kglobalaccel': '@stable'
-    'frameworks/kguiaddons': '@stable'
-    'frameworks/ki18n': '@stable'
-    'frameworks/kiconthemes': '@stable'
-    'frameworks/kio': '@stable'
-    'frameworks/kirigami': '@stable'
-    'frameworks/knewstuff': '@stable'
-    'frameworks/knotifications': '@stable'
-    'frameworks/kpackage': '@stable'
-    'frameworks/ktexteditor': '@stable'
-    'frameworks/kwidgetsaddons': '@stable'
-    'frameworks/kwindowsystem': '@stable'
-    'frameworks/solid': '@stable'
-    'frameworks/threadweaver': '@stable'
-    'libraries/qca' : '@latest'
-    'libraries/phonon': '@stable'
-
 - 'on': ['Linux/Qt6', 'FreeBSD/Qt6']
   'require':
     'frameworks/extra-cmake-modules': '@latest-kf6'

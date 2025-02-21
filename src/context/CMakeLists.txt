@@ -19,11 +19,7 @@ target_include_directories( amarokpud PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/popupdropper/libpud
 )
 
-if(BUILD_WITH_QT6)
-  target_link_libraries(amarokpud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets Qt::Widgets)
-else()
-  target_link_libraries(amarokpud Qt::Core Qt::Gui Qt::Svg Qt::Widgets)
-endif()
+target_link_libraries(amarokpud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets Qt::Widgets)
 
 install( TARGETS amarokpud ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
@@ -42,19 +38,11 @@ set(qml_plugin_SRCS
 
 add_library(qml_plugin SHARED ${qml_plugin_SRCS})
 
-if(BUILD_WITH_QT6)
-    target_link_libraries(qml_plugin
-        amarokcore
-        Qt::Quick
-        KF${KF_MAJOR_VERSION}::WidgetsAddons
-    )
-else()
-    target_link_libraries(qml_plugin
-        amarokcore
-        Qt::Quick
-        KF${KF_MAJOR_VERSION}::WidgetsAddons
-    )
-endif()
+target_link_libraries(qml_plugin
+    amarokcore
+    Qt::Quick
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+)
 
 install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
 

@@ -4,19 +4,11 @@ project(Amarok)
 
 ###############
 
-if(BUILD_WITH_QT6)
-  message(STATUS "Trying to build Qt6 version")
-  set(KF_MIN_VERSION "6.0.0")
-  set(KF_MAJOR_VERSION "6")
-  set(QT_MIN_VERSION "6.4.0")
-  set(QT_MAJOR_VERSION "6")
-else()
-  message(STATUS "Building good old Qt5 version")
-  set(KF_MIN_VERSION "5.108.0")
-  set(KF_MAJOR_VERSION "5")
-  set(QT_MIN_VERSION "5.15.0")
-  set(QT_MAJOR_VERSION "5")
-endif()
+set(KF_MIN_VERSION "6.0.0")
+set(KF_MAJOR_VERSION "6")
+set(QT_MIN_VERSION "6.6.0")
+set(QT_MAJOR_VERSION "6")
+
 find_package(PkgConfig REQUIRED)
 find_package(ECM ${KF_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
@@ -41,15 +33,10 @@ find_package(Qt${QT_MAJOR_VERSION}QuickControls2 ${QT_MIN_VERSION})
 set_package_properties(Qt${QT_MAJOR_VERSION}QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
 
-if(BUILD_WITH_QT6)
-  find_package(Qt${QT_MAJOR_VERSION}Core5Compat ${QT_MIN_VERSION} REQUIRED)
-  find_package(Qt${QT_MAJOR_VERSION}SvgWidgets ${QT_MIN_VERSION} REQUIRED)
-  find_package(Qt${QT_MAJOR_VERSION}WebEngineWidgets ${QT_MIN_VERSION})
-  set_package_properties(Qt${QT_MAJOR_VERSION}WebEngineWidgets PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
-else()
-  find_package(Qt${QT_MAJOR_VERSION}WebEngine ${QT_MIN_VERSION})
-  set_package_properties(Qt${QT_MAJOR_VERSION}WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
-endif()
+find_package(Qt${QT_MAJOR_VERSION}Core5Compat ${QT_MIN_VERSION} REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}SvgWidgets ${QT_MIN_VERSION} REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}WebEngineWidgets ${QT_MIN_VERSION})
+set_package_properties(Qt${QT_MAJOR_VERSION}WebEngineWidgets PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
 
 find_package(Qt${QT_MAJOR_VERSION}UiTools ${QT_MIN_VERSION})
 set_package_properties(Qt${QT_MAJOR_VERSION}UiTools PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the scripting engine")
@@ -80,16 +67,11 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     WindowSystem
 )
 
-if(BUILD_WITH_QT6)
-  find_package(KF${KF_MAJOR_VERSION}ColorScheme ${KF_MIN_VERSION} REQUIRED)
-  find_package(KF${KF_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION} REQUIRED)
-  find_package(KF${KF_MAJOR_VERSION}StatusNotifierItem ${KF_MIN_VERSION} REQUIRED)
-  find_package(KF${KF_MAJOR_VERSION}Kirigami ${KF_MIN_VERSION})
-  set_package_properties(KF${KF_MAJOR_VERSION}Kirigami PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
-else()
-  find_package(KF${KF_MAJOR_VERSION}Kirigami2 ${KF_MIN_VERSION})
-  set_package_properties(KF${KF_MAJOR_VERSION}Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
-endif()
+find_package(KF${KF_MAJOR_VERSION}ColorScheme ${KF_MIN_VERSION} REQUIRED)
+find_package(KF${KF_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION} REQUIRED)
+find_package(KF${KF_MAJOR_VERSION}StatusNotifierItem ${KF_MIN_VERSION} REQUIRED)
+find_package(KF${KF_MAJOR_VERSION}Kirigami ${KF_MIN_VERSION})
+set_package_properties(KF${KF_MAJOR_VERSION}Kirigami PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
 
 ###############
@@ -266,23 +248,13 @@ if( WITH_PLAYER )
 
     if( WITH_GPODDER )
         ## gpodder Service
-        if(BUILD_WITH_QT6)
-            find_package(Mygpo-qt6 1.1.0 CONFIG)
-            set_package_properties(Mygpo-qt6 PROPERTIES
-                DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
-                URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
-                TYPE OPTIONAL
-                PURPOSE "Synchronize podcast subscriptions with gpodder.net"
-            )
-        else()
-            find_package(Mygpo-qt5 1.1.0 CONFIG)
-            set_package_properties(Mygpo-qt5 PROPERTIES
-                DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
-                URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
-                TYPE OPTIONAL
-                PURPOSE "Synchronize podcast subscriptions with gpodder.net"
-            )
-        endif()
+        find_package(Mygpo-qt6 1.1.0 CONFIG)
+        set_package_properties(Mygpo-qt6 PROPERTIES
+            DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
+            URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
+            TYPE OPTIONAL
+            PURPOSE "Synchronize podcast subscriptions with gpodder.net"
+        )
     endif()
 
     if( WITH_GPODDER OR WITH_LASTFM ) ## problems in their header files as of 07/2024, not compatible with strict flags
