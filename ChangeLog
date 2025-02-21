@@ -7,8 +7,9 @@ VERSION 3.2.71 UNRELEASED
 
   CHANGES:
    * Qt5/KF5 support has been dropped
-  BUGFIXES:
+   * Remove TagLib extras support (RealMedia and Audible files)
 
+  BUGFIXES:
   
 VERSION 3.2.2
   FEATURES:
