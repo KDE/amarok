@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-11 02:00+0000\n"
+"POT-Creation-Date: 2025-02-22 00:40+0000\n"
 "PO-Revision-Date: 2020-04-24 16:21+0300\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -194,54 +194,54 @@ msgstr "Меню Amarok"
 msgid "Play/Pause"
 msgstr "Играть/Пауза"
 
-#: ActionClasses.cpp:331
+#: ActionClasses.cpp:323
 #, kde-format
 msgid "Click to change"
 msgstr "Щёлкните для изменения"
 
-#: ActionClasses.cpp:348
+#: ActionClasses.cpp:340
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "Режим &Replay Gain"
 
-#: ActionClasses.cpp:350
+#: ActionClasses.cpp:342
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "&Отключён"
 
-#: ActionClasses.cpp:351
+#: ActionClasses.cpp:343
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "&Дорожка"
 
-#: ActionClasses.cpp:352
+#: ActionClasses.cpp:344
 #, kde-format
 msgid "&Album"
 msgstr "&Альбом"
 
-#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Остановить воспроизведение"
 
-#: ActionClasses.cpp:419
+#: ActionClasses.cpp:411
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Остановить после текущей дорожки"
 
-#: ActionClasses.cpp:436
+#: ActionClasses.cpp:428
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Остановить после текущей дорожки: выкл"
 
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Остановить после текущей дорожки: вкл"
 
-#: ActionClasses.cpp:445
+#: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
@@ -249,10 +249,10 @@ msgid "No track playing"
 msgstr "Воспроизведение остановлено"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:449
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:154 MainWindow.cpp:1243 MainWindow.cpp:1249
-#: MainWindow.cpp:1262
+#: ActionClasses.cpp:441
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1222 MainWindow.cpp:1228
+#: MainWindow.cpp:1241
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1553,7 +1553,7 @@ msgstr "Неизвестный"
 msgid "New Bookmark"
 msgstr "Новая закладка"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:805
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Управление закладками"
@@ -1639,18 +1639,18 @@ msgstr "&Удалить"
 msgid "&Create timecode track"
 msgstr "&Создать временной код дорожки"
 
-#: amarokurls/BookmarkTreeView.cpp:374
+#: amarokurls/BookmarkTreeView.cpp:370
 #, kde-format
 msgid "New Timecode Track"
 msgstr "Новый временной код дорожки"
 
-#: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
-#: amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:371 amarokurls/BookmarkTreeView.cpp:372
+#: amarokurls/BookmarkTreeView.cpp:373
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:504
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:505
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:506
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1262
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:497
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:498
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1241
 #, kde-format
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -1703,7 +1703,7 @@ msgstr "Исполнитель «%1» из %2"
 msgid "Artist \"%1\""
 msgstr "Исполнитель «%1»"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:801
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Запомнить выбор источника музыки"
@@ -1726,99 +1726,99 @@ msgctxt ""
 msgid "Play"
 msgstr "Воспроизведение"
 
-#: App.cpp:365
+#: App.cpp:363
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Файлы / Адреса для открытия"
 
-#: App.cpp:366
+#: App.cpp:364
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Воспроизводить Audio CD немедленно"
 
-#: App.cpp:367
+#: App.cpp:365
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Пропустить предыдущую дорожку в списке воспроизведения"
 
-#: App.cpp:368
+#: App.cpp:366
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Запустить воспроизведение композиций из текущего списка"
 
-#: App.cpp:369
+#: App.cpp:367
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr ""
 "Начать воспроизведение если оно было остановлено, и приостановить в "
 "противном случае"
 
-#: App.cpp:370
+#: App.cpp:368
 #, kde-format
 msgid "Pause playback"
 msgstr "Приостановить воспроизведение"
 
-#: App.cpp:371
+#: App.cpp:369
 #, kde-format
 msgid "Stop playback"
 msgstr "Остановить воспроизведение"
 
-#: App.cpp:372
+#: App.cpp:370
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Пропустить следующую дорожку в списке воспроизведения"
 
-#: App.cpp:374
+#: App.cpp:372
 #, kde-format
 msgid "Additional options:"
 msgstr "Дополнительные параметры:"
 
-#: App.cpp:375
+#: App.cpp:373
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Добавить файлы / адреса в список воспроизведения"
 
-#: App.cpp:376
+#: App.cpp:374
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Поставить адреса в очередь после текущей дорожки"
 
-#: App.cpp:377
+#: App.cpp:375
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Загрузить адреса, заменяя текущий список воспроизведения"
 
-#: App.cpp:378 App.cpp:380
+#: App.cpp:376 App.cpp:378
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Показать подробную отладочную информацию"
 
-#: App.cpp:381
+#: App.cpp:379
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Показать подробную отладочную информацию от звуковой системы"
 
-#: App.cpp:382
+#: App.cpp:380
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Отключить раскрашивание вывода отладочной информации."
 
-#: App.cpp:383
+#: App.cpp:381
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Разрешить запуск нескольких экземпляров Amarok"
 
-#: App.cpp:384
+#: App.cpp:382
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "База для относительных путей/ссылок"
 
-#: App.cpp:524 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Ошибка базы данных"
 
-#: App.cpp:525
+#: App.cpp:521
 #, fuzzy, kde-format
 #| msgid ""
 #| "The amarok database reported the following errors:\n"
@@ -1836,12 +1836,12 @@ msgstr ""
 "В большинстве случаев для продолжения правильной работы Amarok необходимо "
 "разрешить эти проблемы."
 
-#: App.cpp:592
+#: App.cpp:588
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Удаление файлов в корзину"
 
-#: App.cpp:616
+#: App.cpp:612
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1849,13 +1849,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:617
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:678
+#: App.cpp:674
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1864,21 +1864,21 @@ msgstr ""
 "В «Параметрах системы» задана папка с музыкой %1.\n"
 "Использовать её в качестве папки коллекции?"
 
-#: App.cpp:680
+#: App.cpp:676
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Папки коллекции"
 
-#: App.cpp:681
+#: App.cpp:677
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Пользователь"
 
-#: App.cpp:682
+#: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
@@ -1914,7 +1914,7 @@ msgstr ""
 "Здесь можно просматривать музыку с компьютера, а также музыку с переносных "
 "устройств и компакт-дисков."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:949
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
 #, kde-format
 msgid "Search collection"
 msgstr "Поиск в коллекции"
@@ -2189,7 +2189,7 @@ msgstr "Обновить"
 msgid "Filter Files"
 msgstr "Фильтр файлов"
 
-#: browsers/filebrowser/FileBrowser.cpp:222
+#: browsers/filebrowser/FileBrowser.cpp:218
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2572,7 +2572,7 @@ msgstr "&Удалить..."
 msgid "&Export As..."
 msgstr "&Экспорт в..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2582,13 +2582,13 @@ msgstr[1] "%1 дорожки"
 msgstr[2] "%1 дорожек"
 msgstr[3] "%1 дорожку"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Удалить %1 из %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
 #, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
@@ -2598,7 +2598,7 @@ msgstr[1] "%1 списков воспроизведения"
 msgstr[2] "%1 списков воспроизведения"
 msgstr[3] "%1 списка воспроизведения"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2608,7 +2608,7 @@ msgstr[1] "Удалить %1 дорожки из %2"
 msgstr[2] "Удалить %1 дорожек из %2"
 msgstr[3] "Удалить дорожку из %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "&Delete playlist"
 msgctxt ""
@@ -2617,7 +2617,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "&Удалить список воспроизведения"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
 #, fuzzy, kde-format
 #| msgid "&Delete playlist"
 msgctxt ""
@@ -2626,17 +2626,17 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "&Удалить список воспроизведения"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "Подтверждение удаления списка воспроизведения"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Использовать относительный путь для &сохранения"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
 #, kde-format
 msgid "Save As"
@@ -3881,15 +3881,6 @@ msgstr "Исполняемые скрипты"
 msgid "Search Scripts"
 msgstr "Поиск сценариев"
 
-#: context/applets/albums/package/contents/ui/main.qml:77
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "One word translation used in the collection filter. First played time / "
-#| "access date"
-#| msgid "firstplay"
-msgid "Display"
-msgstr "перв_воспр"
-
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
 #, kde-format
@@ -4510,7 +4501,7 @@ msgid "Don't change page automatically"
 msgstr "Обновление локальной базы данных Magnatune."
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:380
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:376
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4660,7 +4651,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Обновить коллекцию"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:411
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:403
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -4900,7 +4891,7 @@ msgstr "Неизвестная коллекция"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
-#: core/meta/Meta.cpp:261 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:252 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5486,13 +5477,13 @@ msgid "Could not copy track from device."
 msgstr "Невозможно скопировать дорожку с устройства."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
-#: core/meta/Meta.cpp:306
+#: core/meta/Meta.cpp:297
 #, kde-format
 msgid "Unknown Album"
 msgstr "Неизвестный альбом"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
-#: core/meta/Meta.cpp:339
+#: core/meta/Meta.cpp:330
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Неизвестный жанр"
@@ -5718,7 +5709,7 @@ msgid "Yes, delete from %1."
 msgstr "Да, удалить с %1"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:354
+#: services/gpodder/GpodderProvider.cpp:350
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "&Удалить подкаст со всеми выпусками"
@@ -6056,59 +6047,59 @@ msgstr[3] " выпуск"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:295
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
 #, kde-format
 msgid "&Update All Channels"
 msgstr "Обновить &все подкасты"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:301
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Настроить основные параметры"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:307
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Экспорт подписок в файл OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:333
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
 #, kde-format
 msgid "&Configure"
 msgstr "&Настроить..."
 
 # Отказаться от подписки? --Nick
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:346
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Удалить подписку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:355
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
 #, kde-format
 msgid "&Update Channel"
 msgstr "Об&новить подкаст"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:391
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
 #, kde-format
 msgid "&Download Episode"
 msgstr "&Загрузить выпуск"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:399
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Удалить загруженный выпуск"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "Записать сведения из ленты в файл"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
 #, fuzzy, kde-format
 #| msgid "Replace downloaded label"
 msgid "&Keep downloaded file"
 msgstr "Заменять полученную из Интернета метку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:417
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6116,19 +6107,19 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:483
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Вы уже подписаны на %1."
 
 # BUGME: plural forms
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "через каждые "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:609
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6137,37 +6128,37 @@ msgstr[1] " минуты"
 msgstr[2] " минут"
 msgstr[3] " минуту"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:624
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Настройка локальных подкастов"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:645
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Перемещение подкастов"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:646
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Переместить все загруженные эпизоды в другое место?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:713
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Экспорт подписок в файл OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:860
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Отписаться от «%1»?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:863
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Удалить загруженный выпуск"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:986
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6176,23 +6167,23 @@ msgstr[1] "Сейчас загружаются %1 подкаста"
 msgstr[2] "Сейчас загружаются %1 подкастов"
 msgstr[3] "Сейчас загружается один подкаст"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:989
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Отменить загрузку"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1176
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1424
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Невозможно сохранить файл выпуска подкаста %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1186
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Загрузка подкастов"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1187
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Загрузка подкаста «%1»"
@@ -6367,30 +6358,30 @@ msgstr[1] "Перекодирование и копирование %1 доро�
 msgstr[2] "Перекодирование и копирование %1 дорожек в %2"
 msgstr[3] "Перекодирование и копирование дорожки в %2"
 
-#: core/meta/Meta.cpp:215
+#: core/meta/Meta.cpp:206
 #, fuzzy, kde-format
 #| msgid "Check Connection"
 msgid "No network connection"
 msgstr "Проверить соединение"
 
-#: core/meta/Meta.cpp:225
+#: core/meta/Meta.cpp:216
 #, fuzzy, kde-format
 #| msgid "does not end with"
 msgid "File does not exist"
 msgstr "не завершается на"
 
-#: core/meta/Meta.cpp:227
+#: core/meta/Meta.cpp:218
 #, fuzzy, kde-format
 #| msgid "Not a valid mp3 file"
 msgid "Not a file"
 msgstr "Неверный файл mp3"
 
-#: core/meta/Meta.cpp:229
+#: core/meta/Meta.cpp:220
 #, kde-format
 msgid "No read permissions"
 msgstr ""
 
-#: core/meta/Meta.cpp:361
+#: core/meta/Meta.cpp:352
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Неизвестный композитор"
@@ -7844,7 +7835,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "Адрес"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:821
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
 #, kde-format
 msgid "Cover Manager"
 msgstr "Управление обложками"
@@ -7952,7 +7943,7 @@ msgstr[2] "%1 не найдено"
 msgstr[3] "%1 не найдена"
 
 #: covermanager/CoverManager.cpp:660
-#: services/lastfm/LastFmServiceSettings.cpp:115
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "Соединение..."
@@ -10067,7 +10058,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "исполнитель"
 
-#: KNotificationBackend.cpp:132 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:132 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Сейчас проигрывается"
@@ -10087,13 +10078,13 @@ msgstr "Не удалось обработать данные с текстом 
 msgid "No information available for this track"
 msgstr "Нет информации о дорожке"
 
-#: main.cpp:94
+#: main.cpp:56
 #, fuzzy, kde-format
 #| msgid "The audio player for KDE"
 msgid "The audio player by KDE"
 msgstr "Аудиопроигрыватель для KDE"
 
-#: main.cpp:96
+#: main.cpp:58
 #, fuzzy, kde-format
 #| msgid ""
 #| "(C) 2002-2003, Mark Kretschmann\n"
@@ -10105,7 +10096,7 @@ msgstr ""
 "© Mark Kretschmann, 2002-2003\n"
 "© Разработчики Amarok, 2003-2013"
 
-#: main.cpp:97
+#: main.cpp:59
 #, fuzzy, kde-format
 #| msgid ""
 #| "IRC:\n"
@@ -10132,839 +10123,839 @@ msgstr ""
 "\n"
 "(Дата сборки: %1)"
 
-#: main.cpp:107
+#: main.cpp:69
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr ""
 
-#: main.cpp:108
+#: main.cpp:70
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
 
-#: main.cpp:114
+#: main.cpp:76
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Where are my toothpicks' Cerneels"
 
-#: main.cpp:115
+#: main.cpp:77
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "Разработчик (Stecchino)"
 
-#: main.cpp:118
+#: main.cpp:80
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:119
+#: main.cpp:81
 #, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "Разработчик (dr_lepper)"
 
-#: main.cpp:122
+#: main.cpp:84
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr "Mark Kretschmann"
 
-#: main.cpp:123
+#: main.cpp:85
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "Основатель проекта (markey)"
 
-#: main.cpp:126
+#: main.cpp:88
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:127
+#: main.cpp:89
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr ""
 
-#: main.cpp:130
+#: main.cpp:92
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:130
+#: main.cpp:92
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "Промоутер, сортировка ошибок (Mamarok)"
 
-#: main.cpp:133
+#: main.cpp:95
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf 'SalsaMaster' Engels"
 
-#: main.cpp:134
+#: main.cpp:96
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "Разработчик (rengels)"
 
-#: main.cpp:137
+#: main.cpp:99
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:137
+#: main.cpp:99
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "Сборка для Windows (TheOneRing)"
 
-#: main.cpp:141
+#: main.cpp:103
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:142
+#: main.cpp:104
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "Разработчик (stuffcorpse)"
 
-#: main.cpp:145
+#: main.cpp:107
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:145
+#: main.cpp:107
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "Разработчик (Sentynel)"
 
-#: main.cpp:149
+#: main.cpp:111
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:149
+#: main.cpp:111
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "Промоутер, разработчик (sven423)"
 
-#: main.cpp:152
+#: main.cpp:114
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:153
+#: main.cpp:115
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "Разработчик (Teo`)"
 
-#: main.cpp:156
+#: main.cpp:118
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:157
+#: main.cpp:119
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Промоутер, написание руководства пользователя (valorie)"
 
-#: main.cpp:160
+#: main.cpp:122
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
-#: main.cpp:160
+#: main.cpp:122
 #, kde-format
 msgid "Developer (eean)"
 msgstr "Разработчик (eean)"
 
-#: main.cpp:163
+#: main.cpp:125
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROKSOHARD' Mitchell"
 
-#: main.cpp:163
+#: main.cpp:125
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "Разработчик (jefferai)"
 
-#: main.cpp:166
+#: main.cpp:128
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: main.cpp:166
+#: main.cpp:128
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Разработчик (lfranchi)"
 
-#: main.cpp:169
+#: main.cpp:131
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'is wrong(TM)' Pintscher"
 
-#: main.cpp:169
+#: main.cpp:131
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Организатор выпусков (Nightrose)"
 
-#: main.cpp:172
+#: main.cpp:134
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:172
+#: main.cpp:134
 #, kde-format
 msgid "Developer, Vision"
 msgstr "Разработчик, представление"
 
-#: main.cpp:175
+#: main.cpp:137
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:175
+#: main.cpp:137
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "Разработчик (maxx_k)"
 
-#: main.cpp:178
+#: main.cpp:140
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
-#: main.cpp:178
+#: main.cpp:140
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "Разработчик (nhn)"
 
-#: main.cpp:181
+#: main.cpp:143
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
-#: main.cpp:181
+#: main.cpp:143
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "Разработчик (sebr)"
 
-#: main.cpp:186
+#: main.cpp:148
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:186
+#: main.cpp:148
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "Разработчик (xevix)"
 
-#: main.cpp:188
+#: main.cpp:150
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:188
+#: main.cpp:150
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "Разработчик, поддержка Replay Gain"
 
-#: main.cpp:190
+#: main.cpp:152
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:190
+#: main.cpp:152
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "Интеграция с Mp3tunes"
 
-#: main.cpp:192
+#: main.cpp:154
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:192
+#: main.cpp:154
 #, kde-format
 msgid "Windows porting"
 msgstr "Портирование на Windows"
 
-#: main.cpp:194
+#: main.cpp:156
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:194
+#: main.cpp:156
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "Промоутер (dangle)"
 
-#: main.cpp:196
+#: main.cpp:158
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:196
+#: main.cpp:158
 #, kde-format
 msgid "Usability"
 msgstr "Эргономика"
 
-#: main.cpp:198
+#: main.cpp:160
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, it compiled...' Meltzer"
 
-#: main.cpp:198
+#: main.cpp:160
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "Разработчик (hydrogen)"
 
-#: main.cpp:200
+#: main.cpp:162
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
 # BUGME: перевод должен быть другим, "bias" -- часть условия фильтрации в динамических списках воспроизведения. --aspotashev
-#: main.cpp:200
+#: main.cpp:162
 #, kde-format
 msgid "Biased playlists"
 msgstr "Смещённые списки воспроизведения"
 
-#: main.cpp:202
+#: main.cpp:164
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:202
+#: main.cpp:164
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "Автоматический подбор тегов, метки, спектральный анализатор"
 
-#: main.cpp:204
+#: main.cpp:166
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:204
+#: main.cpp:166
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "Интеграция с Nepomuk"
 
-#: main.cpp:206
+#: main.cpp:168
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:206 main.cpp:226
+#: main.cpp:168 main.cpp:188
 #, kde-format
 msgid "Podcast improvements"
 msgstr "Улучшения для подкастов"
 
-#: main.cpp:208
+#: main.cpp:170
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:208
+#: main.cpp:170
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "LiveCD, исправление ошибок (oggb4mp3)"
 
-#: main.cpp:210
+#: main.cpp:172
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:210
+#: main.cpp:172
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr "Разработчик Phonon, специалист по KDE Multimedia (apachelogger)"
 
-#: main.cpp:212
+#: main.cpp:174
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:212
+#: main.cpp:174
 #, kde-format
 msgid "Assorted patches"
 msgstr ""
 
-#: main.cpp:214
+#: main.cpp:176
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:214
+#: main.cpp:176
 #, kde-format
 msgid "Icons"
 msgstr "Значки"
 
-#: main.cpp:216
+#: main.cpp:178
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:216
+#: main.cpp:178
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "Разработчик, оформление сайта (KRF)"
 
-#: main.cpp:218
+#: main.cpp:180
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:218
+#: main.cpp:180
 #, kde-format
 msgid "Rokymoter"
 msgstr "Промоутер"
 
-#: main.cpp:220
+#: main.cpp:182
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:220 main.cpp:232
+#: main.cpp:182 main.cpp:194
 #, kde-format
 msgid "Artwork"
 msgstr "Оформление"
 
-#: main.cpp:222
+#: main.cpp:184
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:222
+#: main.cpp:184
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Промоутер (ljubomir)"
 
-#: main.cpp:224
+#: main.cpp:186
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:224
+#: main.cpp:186
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "Разработчик (MaskMaster)"
 
-#: main.cpp:226
+#: main.cpp:188
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:228
+#: main.cpp:190
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:228
+#: main.cpp:190
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "Сортировка и очистка ошибок"
 
-#: main.cpp:230
+#: main.cpp:192
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:230
+#: main.cpp:192
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "Поддержка UPnP и исправления (nsm)"
 
-#: main.cpp:232
+#: main.cpp:194
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:234
+#: main.cpp:196
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:234
+#: main.cpp:196
 #, kde-format
 msgid "Website hosting"
 msgstr "Хостинг сайта"
 
-#: main.cpp:236
+#: main.cpp:198
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:236
+#: main.cpp:198
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Промоутер (emunkki)"
 
-#: main.cpp:238
+#: main.cpp:200
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:238
+#: main.cpp:200
 #, kde-format
 msgid "Scripting interface"
 msgstr "Поддержка сценариев"
 
-#: main.cpp:240
+#: main.cpp:202
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr "Phalgun Guduthur"
 
-#: main.cpp:240
+#: main.cpp:202
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr "Коллекция Nepomuk (phalgun)"
 
-#: main.cpp:242
+#: main.cpp:204
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:242
+#: main.cpp:204
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "Код TagLib и ktrm"
 
-#: main.cpp:244
+#: main.cpp:206
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:244
+#: main.cpp:206
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "Исправления и портирование на Windows"
 
-#: main.cpp:246
+#: main.cpp:208
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:246
+#: main.cpp:208
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "Аплеты видео и фотографий, контекстный просмотр"
 
-#: main.cpp:248
+#: main.cpp:210
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:248
+#: main.cpp:210
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "Разработчик; генератор списков воспроизведения"
 
-#: main.cpp:250
+#: main.cpp:212
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
-#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
-#: main.cpp:316
+#: main.cpp:212 main.cpp:214 main.cpp:228 main.cpp:238 main.cpp:244
+#: main.cpp:246 main.cpp:258 main.cpp:264 main.cpp:266 main.cpp:270
+#: main.cpp:278
 #, kde-format
 msgid "Developer"
 msgstr "Разработчик"
 
-#: main.cpp:252
+#: main.cpp:214
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:254
+#: main.cpp:216
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:254
+#: main.cpp:216
 #, kde-format
 msgid "Splash screen artist"
 msgstr "Художник заставки при запуске"
 
-#: main.cpp:256
+#: main.cpp:218
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:256
+#: main.cpp:218
 #, kde-format
 msgid "Context view"
 msgstr "Контекстный просмотр"
 
-#: main.cpp:260
+#: main.cpp:222
 #, kde-format
 msgid "Former contributors"
 msgstr "Прежние участники"
 
-#: main.cpp:260
+#: main.cpp:222
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr "Перечисленные ниже люди вносили вклад в Amarok в прошлом. Спасибо им!"
 
-#: main.cpp:262
+#: main.cpp:224
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:262
+#: main.cpp:224
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "Анализаторы, исправления, shoutcast"
 
-#: main.cpp:264
+#: main.cpp:226
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:264 main.cpp:272
+#: main.cpp:226 main.cpp:234
 #, kde-format
 msgid "Patches"
 msgstr "Исправления"
 
-#: main.cpp:266
+#: main.cpp:228
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:268
+#: main.cpp:230
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:268
+#: main.cpp:230
 #, kde-format
 msgid "MySQL support"
 msgstr "Поддержка MySQL"
 
-#: main.cpp:270
+#: main.cpp:232
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:270
+#: main.cpp:232
 #, kde-format
 msgid "Postgresql support"
 msgstr "Поддержка Postgresql"
 
-#: main.cpp:272
+#: main.cpp:234
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:274
+#: main.cpp:236
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:274
+#: main.cpp:236
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "Устройства MTP и Rio Karma, исправления"
 
-#: main.cpp:276
+#: main.cpp:238
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:278
+#: main.cpp:240
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:278
+#: main.cpp:240
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "Графика, логотип"
 
-#: main.cpp:280
+#: main.cpp:242
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:280
+#: main.cpp:242
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr "Графические анализаторы, панель статистики и значок в системном лотке"
 
-#: main.cpp:282
+#: main.cpp:244
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:284
+#: main.cpp:246
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:286
+#: main.cpp:248
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:286
+#: main.cpp:248
 #, kde-format
 msgid "Icons and image work"
 msgstr "Значки и прочая подобная работа"
 
-#: main.cpp:288
+#: main.cpp:250
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:288
+#: main.cpp:250
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "Диалог фильтра для коллекции"
 
-#: main.cpp:290
+#: main.cpp:252
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:290
+#: main.cpp:252
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "Тестирование, оператор канала IRC, советы"
 
-#: main.cpp:292
+#: main.cpp:254
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:292
+#: main.cpp:254
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "Промоутер, исправление ошибок (Firetech)"
 
-#: main.cpp:294
+#: main.cpp:256
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:294
+#: main.cpp:256
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "Боковая панель Konqueror, некоторые методы DCOP"
 
-#: main.cpp:296
+#: main.cpp:258
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:298
+#: main.cpp:260
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
 # BUGME: БПФ — это FFT, а здесь — FHT. --aspotashev
-#: main.cpp:298
+#: main.cpp:260
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "Новая процедура БПФ, исправления ошибок"
 
-#: main.cpp:300
+#: main.cpp:262
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:300
+#: main.cpp:262
 #, kde-format
 msgid "K3b export code"
 msgstr "Взаимодействие с K3b"
 
-#: main.cpp:302
+#: main.cpp:264
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:304
+#: main.cpp:266
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:306
+#: main.cpp:268
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:306
+#: main.cpp:268
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "Поддержка PostgreSQL, исправление ошибок"
 
-#: main.cpp:308
+#: main.cpp:270
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:310
+#: main.cpp:272
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:310
+#: main.cpp:272
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "Поддержка Википедии, заплатки"
 
-#: main.cpp:312
+#: main.cpp:274
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:312
+#: main.cpp:274
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr "Ранее используемые логотип, заставка и значки"
 
-#: main.cpp:314
+#: main.cpp:276
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:314
+#: main.cpp:276
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "Поддержка аудиоскробблера"
 
-#: main.cpp:316
+#: main.cpp:278
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Станислав Карчебный"
 
-#: main.cpp:318
+#: main.cpp:280
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:318
+#: main.cpp:280
 #, kde-format
 msgid "Loads of stuff"
 msgstr "Много разной работы"
 
-#: main.cpp:320
+#: main.cpp:282
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:320
+#: main.cpp:282
 #, kde-format
 msgid "Splash screen"
 msgstr "Художник заставки при запуске"
 
-#: main.cpp:325
+#: main.cpp:287
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:326
+#: main.cpp:288
 #, kde-format
 msgid "Chris Wales"
 msgstr "Chris Wales"
 
 # BUGME: ZImin -> Zimin --aspotashev
-#: main.cpp:327
+#: main.cpp:289
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr "Зимин Станислав"
@@ -11015,7 +11006,7 @@ msgstr "&Вид"
 msgid "Lock Layout"
 msgstr "Заблокировать изменение внешнего вида"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1336
+#: MainWindow.cpp:374 MainWindow.cpp:1315
 #, kde-format
 msgid "Reset Layout"
 msgstr "Восстановить расположение панелей по умолчанию"
@@ -11056,252 +11047,252 @@ msgstr "Добавить поток"
 msgid "Enter Stream URL:"
 msgstr "Введите адрес (URL) потока:"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:763
 #, kde-format
 msgid "&Add Media..."
 msgstr "Добавить &музыку..."
 
-#: MainWindow.cpp:776
+#: MainWindow.cpp:768
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Очистить список воспроизведения"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:773
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Изменить &очередь"
 
-#: MainWindow.cpp:786
+#: MainWindow.cpp:778
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Уд&алить повторяющиеся дорожки"
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:785
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Добавить поток..."
 
-#: MainWindow.cpp:797
+#: MainWindow.cpp:789
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Экспорт списка..."
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Equalizer"
 msgstr "Эквалайзер"
 
-#: MainWindow.cpp:813 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Запомнить настройку списка воспроизведения"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Добавить аплет в закладки"
 
-#: MainWindow.cpp:825
+#: MainWindow.cpp:817
 #, kde-format
 msgid "Play Media..."
 msgstr "Проиграть музыку..."
 
-#: MainWindow.cpp:830
+#: MainWindow.cpp:822
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Изменить свойства выбранной дорожки"
 
-#: MainWindow.cpp:836 MainWindow.cpp:842 MainWindow.cpp:849
+#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Перемотать вперёд на %1 секунд"
 
-#: MainWindow.cpp:856 MainWindow.cpp:862 MainWindow.cpp:869
+#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Перемотать назад на %1 секунд"
 
-#: MainWindow.cpp:875
+#: MainWindow.cpp:867
 #, kde-format
 msgid "Update Collection"
 msgstr "Обновить коллекцию"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Синхронизировать статистику..."
 
-#: MainWindow.cpp:887
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Previous Track"
 msgstr "Предыдущая дорожка"
 
-#: MainWindow.cpp:894
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Restart current track"
 msgstr "Перемотать в начало дорожки"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:893
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "Shuffle Playlist"
 msgstr "&Сохранить список воспроизведения"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:899
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Перезаполнить список воспроизведения"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:905
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Отключить динамический список воспроизведения"
 
-#: MainWindow.cpp:917
+#: MainWindow.cpp:909
 #, kde-format
 msgid "Next Track"
 msgstr "Следующая дорожка"
 
-#: MainWindow.cpp:922
+#: MainWindow.cpp:914
 #, kde-format
 msgid "Increase Volume"
 msgstr "Увеличить громкость"
 
-#: MainWindow.cpp:928
+#: MainWindow.cpp:920
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Уменьшить громкость"
 
-#: MainWindow.cpp:934
+#: MainWindow.cpp:926
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Показать/скрыть главное окно"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:931
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Полный экран"
 
-#: MainWindow.cpp:944 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Поиск в списке воспроизведения"
 
-#: MainWindow.cpp:954
+#: MainWindow.cpp:946
 #, kde-format
 msgid "Show active track"
 msgstr "Показать проигрываемую дорожку"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:950
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Показать экранное уведомление"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:955
 #, kde-format
 msgid "Mute Volume"
 msgstr "Выключить звук"
 
-#: MainWindow.cpp:968
+#: MainWindow.cpp:960
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: пометить текущую дорожку как «любимую»"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:965
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: запретить текущую дорожку"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:970
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: пропустить текущую дорожку"
 
-#: MainWindow.cpp:983 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Добавить в очередь воспроизведения"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:980
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:985
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Оценить текущую дорожку на 1"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:990
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Оценить текущую дорожку на 2"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:995
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Оценить текущую дорожку на 3"
 
-#: MainWindow.cpp:1008
+#: MainWindow.cpp:1000
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Оценить текущую дорожку на 4"
 
-#: MainWindow.cpp:1013
+#: MainWindow.cpp:1005
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Оценить текущую дорожку на 5"
 
-#: MainWindow.cpp:1019
+#: MainWindow.cpp:1011
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Сетевой монитор"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&About Amarok"
 msgstr "&Об Amarok"
 
-#: MainWindow.cpp:1041
+#: MainWindow.cpp:1033
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Диагностика"
 
-#: MainWindow.cpp:1045
+#: MainWindow.cpp:1037
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Сооб&щить об ошибке"
 
-#: MainWindow.cpp:1092
+#: MainWindow.cpp:1084
 #, kde-format
 msgid "&Music"
 msgstr "&Музыка"
 
-#: MainWindow.cpp:1094
+#: MainWindow.cpp:1086
 #, kde-format
 msgid "&Amarok"
 msgstr "&Действия"
 
-#: MainWindow.cpp:1122 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "С&писок воспроизведения"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1127
 #, kde-format
 msgid "&Tools"
 msgstr "С&ервис"
 
-#: MainWindow.cpp:1154
+#: MainWindow.cpp:1142
 #, kde-format
 msgid "&Settings"
 msgstr "&Настройка"
 
-#: MainWindow.cpp:1206
+#: MainWindow.cpp:1185
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11312,22 +11303,22 @@ msgstr ""
 "\n"
 "Чтобы вернуть строку меню, используйте комбинацию клавиш %1."
 
-#: MainWindow.cpp:1207
+#: MainWindow.cpp:1186
 #, kde-format
 msgid "Hide Menu"
 msgstr "Скрыть меню"
 
-#: MainWindow.cpp:1249
+#: MainWindow.cpp:1228
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Приостановлено :: %1"
 
-#: MainWindow.cpp:1262
+#: MainWindow.cpp:1241
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 — %2  ::  %3"
 
-#: MainWindow.cpp:1336
+#: MainWindow.cpp:1315
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Применить это изменение расположения элементов интерфейса программы?"
@@ -13523,57 +13514,57 @@ msgstr "Импорт конфигурации"
 msgid "Preset files"
 msgstr "Файлы конфигураций (*.xml)"
 
-#: playlistgenerator/PresetModel.cpp:215
+#: playlistgenerator/PresetModel.cpp:212
 #, kde-format
 msgid "Preset exported to %1"
 msgstr "Конфигурация была экспортирована в файл %1"
 
-#: playlistgenerator/PresetModel.cpp:222
+#: playlistgenerator/PresetModel.cpp:219
 #, kde-format
 msgid "Preset could not be exported to %1"
 msgstr "Не удалось экспортировать конфигурацию в файл %1"
 
-#: playlistgenerator/PresetModel.cpp:240
+#: playlistgenerator/PresetModel.cpp:237
 #, kde-format
 msgid "Presets could not be imported from %1"
 msgstr "Не удалось импортировать конфигурации из файла %1"
 
-#: playlistgenerator/PresetModel.cpp:247
+#: playlistgenerator/PresetModel.cpp:244
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr "Не удалось открыть файл %1 для импортирования конфигурации"
 
-#: playlistgenerator/PresetModel.cpp:252
+#: playlistgenerator/PresetModel.cpp:249
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr "Пример 1: новые дорожки, добавленные на этой неделе"
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:250
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr "Пример 2: рок- и поп-музыка"
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:251
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr "Пример 3: около часа музыки разных исполнителей"
 
-#: playlistgenerator/PresetModel.cpp:255
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr "Пример 4: подобие радиостанции с вашей любимой музыкой"
 
-#: playlistgenerator/PresetModel.cpp:256
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr "Пример 5: 80-минутный CD рока, метала и индастриала"
 
-#: playlistgenerator/PresetModel.cpp:296
+#: playlistgenerator/PresetModel.cpp:293
 #, kde-format
 msgid "Export \"%1\" preset"
 msgstr "Экспорт конфигурации «%1»"
 
-#: playlistgenerator/PresetModel.cpp:298
+#: playlistgenerator/PresetModel.cpp:295
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr "Файлы конфигураций (*.xml)"
@@ -13963,33 +13954,33 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:193
-#: services/gpodder/GpodderServiceSettings.cpp:206
-#: services/gpodder/GpodderServiceSettings.cpp:216
-#: services/gpodder/GpodderServiceSettings.cpp:239
-#: services/gpodder/GpodderServiceSettings.cpp:268
+#: services/gpodder/GpodderServiceSettings.cpp:181
+#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:200
+#: services/gpodder/GpodderServiceSettings.cpp:219
+#: services/gpodder/GpodderServiceSettings.cpp:248
 #, kde-format
 msgid "&Test Login"
 msgstr "&Проверить"
 
-#: services/gpodder/GpodderProvider.cpp:296
+#: services/gpodder/GpodderProvider.cpp:292
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Подкасты Gpodder"
 
-#: services/gpodder/GpodderProvider.cpp:477
+#: services/gpodder/GpodderProvider.cpp:469
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr "Попытка синхронизировать статусы с gpodder.net"
 
-#: services/gpodder/GpodderProvider.cpp:541
+#: services/gpodder/GpodderProvider.cpp:529
 #, fuzzy, kde-format
 #| msgid "Trying to synchronize statuses with gpodder.net"
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr "Попытка синхронизировать статусы с gpodder.net"
 
-#: services/gpodder/GpodderProvider.cpp:794
-#: services/gpodder/GpodderProvider.cpp:805
+#: services/gpodder/GpodderProvider.cpp:778
+#: services/gpodder/GpodderProvider.cpp:789
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -14026,12 +14017,12 @@ msgstr ""
 "Бумажник KDE не запущен. Сохранить данные профиля gpodder.net как обычный "
 "текст?"
 
-#: services/gpodder/GpodderServiceSettings.cpp:98
+#: services/gpodder/GpodderServiceSettings.cpp:94
 #, kde-format
 msgid "Testing..."
 msgstr "Проверка..."
 
-#: services/gpodder/GpodderServiceSettings.cpp:119
+#: services/gpodder/GpodderServiceSettings.cpp:111
 #, fuzzy, kde-format
 #| msgid ""
 #| "Either the username or the password is incorrect, please correct and try "
@@ -14041,26 +14032,26 @@ msgid ""
 msgstr ""
 "Имя пользователя или пароль введены неверно, исправьте и попробуйте снова."
 
-#: services/gpodder/GpodderServiceSettings.cpp:120
-#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:112
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:204
-#: services/gpodder/GpodderServiceSettings.cpp:224
-#: services/lastfm/LastFmServiceSettings.cpp:213
-#: services/lastfm/LastFmServiceSettings.cpp:224
-#: services/lastfm/LastFmServiceSettings.cpp:245
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:201
+#: services/lastfm/LastFmServiceSettings.cpp:208
+#: services/lastfm/LastFmServiceSettings.cpp:225
+#: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
 msgid "Failed"
 msgstr "Ошибка"
 
-#: services/gpodder/GpodderServiceSettings.cpp:131
-#: services/lastfm/LastFmServiceSettings.cpp:231
+#: services/gpodder/GpodderServiceSettings.cpp:123
+#: services/lastfm/LastFmServiceSettings.cpp:215
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Выполнено"
 
-#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:178
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14068,13 +14059,13 @@ msgid ""
 msgstr ""
 "Имя пользователя или пароль введены неверно, исправьте и попробуйте снова."
 
-#: services/gpodder/GpodderServiceSettings.cpp:203
+#: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr ""
 "Не удалось подключиться к службе gpodder.net, либо произошла другая ошибка."
 
-#: services/gpodder/GpodderServiceSettings.cpp:224
+#: services/gpodder/GpodderServiceSettings.cpp:204
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -14292,8 +14283,8 @@ msgstr "Имя пользователя:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:246
-#: services/lastfm/LastFmServiceSettings.cpp:274
+#: services/lastfm/LastFmServiceSettings.cpp:226
+#: services/lastfm/LastFmServiceSettings.cpp:250
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -14301,7 +14292,7 @@ msgstr "Ошибка соединения"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:302
+#: services/lastfm/LastFmServiceSettings.cpp:278
 #, fuzzy, kde-format
 #| msgid "Not Mounted"
 msgid "Not connected"
@@ -14507,45 +14498,45 @@ msgid ""
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:99
+#: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:100
+#: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:100
+#: services/lastfm/LastFmServiceSettings.cpp:92
 #, fuzzy, kde-format
 #| msgid "&Disconnect Device"
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr "&Отключить устройство"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:218
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:206
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Ошибка"
 
-#: services/lastfm/LastFmServiceSettings.cpp:153
+#: services/lastfm/LastFmServiceSettings.cpp:145
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "Открыть страницу этого события на Last.fm"
 
-#: services/lastfm/LastFmServiceSettings.cpp:171
+#: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:196
+#: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -14553,7 +14544,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Не удалось подключиться к службе Last.fm."
@@ -14566,7 +14557,7 @@ msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:184
+#: services/lastfm/LastFmTreeModel.cpp:180
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -14576,37 +14567,37 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: services/lastfm/LastFmTreeModel.cpp:201
+#: services/lastfm/LastFmTreeModel.cpp:197
 #, kde-format
 msgid "Personal Radio"
 msgstr "Личное радио"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:310
 #, kde-format
 msgid "My Recommendations"
 msgstr "Мои рекомендации"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:312
 #, kde-format
 msgid "My Radio Station"
 msgstr "Мои радиостанции"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Mix Radio"
 msgstr "Мои смешанные радиостанции"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Top Artists"
 msgstr "Лучшие исполнители"
 
-#: services/lastfm/LastFmTreeModel.cpp:322
+#: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Tags"
 msgstr "Мои метки"
 
-#: services/lastfm/LastFmTreeModel.cpp:324
+#: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
 msgid "Friends"
 msgstr "Друзья"
@@ -16220,7 +16211,7 @@ msgid "Volume: %1% (muted)"
 msgstr "Громкость: 100% (выкл.)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
-#: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
+#: widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
 msgid "Volume: %1%"
 msgstr "Громкость: %1%"
@@ -16379,37 +16370,37 @@ msgstr " (рекомендуется)"
 msgid "Ask before each transfer"
 msgstr "Спрашивать каждый раз"
 
-#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
 msgid "Muted"
 msgstr "Звук выключен"
 
-#: TrayIcon.cpp:162
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:164
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Громкость: %1</i>"
 
-#: TrayIcon.cpp:170
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Рейтинг: %1"
 
-#: TrayIcon.cpp:188
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Оценка: %1"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "Количество воспроизведений: %1"
 
-#: TrayIcon.cpp:198
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Последнее воспроизведение: %1"
@@ -16419,17 +16410,17 @@ msgstr "Последнее воспроизведение: %1"
 msgid "Bookmark"
 msgstr "Закладка"
 
-#: widgets/BreadcrumbItemButton.cpp:242
+#: widgets/BreadcrumbItemButton.cpp:238
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Закладки"
 
-#: widgets/BreadcrumbItemButton.cpp:260
+#: widgets/BreadcrumbItemButton.cpp:256
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Закладки Amarok"
 
-#: widgets/BreadcrumbItemButton.cpp:279
+#: widgets/BreadcrumbItemButton.cpp:275
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "Скопировать адрес в буфер обмена"
@@ -16698,12 +16689,12 @@ msgstr "Остановлено"
 msgid "Paused"
 msgstr "Приостановлено"
 
-#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:86
+#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:82
 #, kde-format
 msgid "Play"
 msgstr "Играть"
 
-#: widgets/PlayPauseButton.cpp:86
+#: widgets/PlayPauseButton.cpp:82
 #, kde-format
 msgid "Pause"
 msgstr "Приостановить"
@@ -16788,12 +16779,12 @@ msgstr "Перейти к %1"
 msgid "Drag in and out items from above."
 msgstr "Перетаскивайте элементы сверху и обратно."
 
-#: widgets/TokenWithLayout.cpp:229
+#: widgets/TokenWithLayout.cpp:221
 #, kde-format
 msgid "[prefix]"
 msgstr "[префикс]"
 
-#: widgets/TokenWithLayout.cpp:240
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[suffix]"
 msgstr "[суффикс]"
@@ -16822,6 +16813,14 @@ msgstr "Исполнитель: %1"
 #, kde-format
 msgid "empty"
 msgstr "пусто"
+
+#, fuzzy
+#~| msgctxt ""
+#~| "One word translation used in the collection filter. First played time / "
+#~| "access date"
+#~| msgid "firstplay"
+#~ msgid "Display"
+#~ msgstr "перв_воспр"
 
 #, fuzzy
 #~| msgid "&Install Script"

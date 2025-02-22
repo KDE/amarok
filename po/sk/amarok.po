@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-11 02:00+0000\n"
+"POT-Creation-Date: 2025-02-22 00:40+0000\n"
 "PO-Revision-Date: 2023-02-13 17:55+0100\n"
 "Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
 "Language-Team: Slovak <opensuse-translation@opensuse.org>\n"
@@ -184,54 +184,54 @@ msgstr "Ponuka aplikácie Amarok"
 msgid "Play/Pause"
 msgstr "Prehrať/Pozastaviť"
 
-#: ActionClasses.cpp:331
+#: ActionClasses.cpp:323
 #, kde-format
 msgid "Click to change"
 msgstr "Kliknite pre zmenu"
 
-#: ActionClasses.cpp:348
+#: ActionClasses.cpp:340
 #, kde-format
 msgid "&Replay Gain Mode"
 msgstr "Režim &Replay Gain"
 
-#: ActionClasses.cpp:350
+#: ActionClasses.cpp:342
 #, kde-format
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "&Vypnúť"
 
-#: ActionClasses.cpp:351
+#: ActionClasses.cpp:343
 #, kde-format
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "S&topa"
 
-#: ActionClasses.cpp:352
+#: ActionClasses.cpp:344
 #, kde-format
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:375 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Zastaviť"
 
-#: ActionClasses.cpp:419
+#: ActionClasses.cpp:411
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Zastaviť po aktuálnej skladbe"
 
-#: ActionClasses.cpp:436
+#: ActionClasses.cpp:428
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Zastaviť po aktuálnej skladbe: Vypnuté"
 
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Zastaviť po aktuálnej skladbe: Zapnuté"
 
-#: ActionClasses.cpp:445
+#: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
@@ -239,10 +239,10 @@ msgid "No track playing"
 msgstr "Nie je prehrávaná žiadna skladba"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:449
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:49
-#: main.cpp:92 MainWindow.cpp:154 MainWindow.cpp:1243 MainWindow.cpp:1249
-#: MainWindow.cpp:1262
+#: ActionClasses.cpp:441
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1222 MainWindow.cpp:1228
+#: MainWindow.cpp:1241
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1547,7 +1547,7 @@ msgstr "Neznáme"
 msgid "New Bookmark"
 msgstr "Nová záložka"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:805
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Správca záložiek"
@@ -1633,18 +1633,18 @@ msgstr "&Vymazať"
 msgid "&Create timecode track"
 msgstr "&Vytvoriť skladbu s časovým kódom"
 
-#: amarokurls/BookmarkTreeView.cpp:374
+#: amarokurls/BookmarkTreeView.cpp:370
 #, kde-format
 msgid "New Timecode Track"
 msgstr "Nová skladba s časovým kódom"
 
-#: amarokurls/BookmarkTreeView.cpp:375 amarokurls/BookmarkTreeView.cpp:376
-#: amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:371 amarokurls/BookmarkTreeView.cpp:372
+#: amarokurls/BookmarkTreeView.cpp:373
 #: context/applets/albums/plugin/AlbumItem.cpp:99
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:504
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:505
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:506
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:507 MainWindow.cpp:1262
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:496
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:497
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:498
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1241
 #, kde-format
 msgid "Unknown"
 msgstr "Neznáme"
@@ -1695,7 +1695,7 @@ msgstr "Umelec \"%1\" z %2"
 msgid "Artist \"%1\""
 msgstr "Umelec \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:801
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Pridať záložky pohľadu zdrojov médií"
@@ -1718,97 +1718,97 @@ msgctxt ""
 msgid "Play"
 msgstr "Prehrať"
 
-#: App.cpp:365
+#: App.cpp:363
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Súbory/Adresy URL k otvoreniu"
 
-#: App.cpp:366
+#: App.cpp:364
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Začať prehrávať Audio CD"
 
-#: App.cpp:367
+#: App.cpp:365
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Preskočiť dozadu v zozname skladieb"
 
-#: App.cpp:368
+#: App.cpp:366
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Zahájiť prehrávanie aktuálneho zoznamu skladieb"
 
-#: App.cpp:369
+#: App.cpp:367
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Prehrať pokiaľ je zastavené, pozastaviť pokiaľ je prehrávané"
 
-#: App.cpp:370
+#: App.cpp:368
 #, kde-format
 msgid "Pause playback"
 msgstr "Pozastaviť prehrávanie"
 
-#: App.cpp:371
+#: App.cpp:369
 #, kde-format
 msgid "Stop playback"
 msgstr "Zastaviť prehrávanie"
 
-#: App.cpp:372
+#: App.cpp:370
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Preskočiť dopredu v zozname skladieb"
 
-#: App.cpp:374
+#: App.cpp:372
 #, kde-format
 msgid "Additional options:"
 msgstr "Ďalšie voľby:"
 
-#: App.cpp:375
+#: App.cpp:373
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Pripojiť súbory/URL do zoznamu skladieb"
 
-#: App.cpp:376
+#: App.cpp:374
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Zaradiť URL za práve prehrávanú skladbu"
 
-#: App.cpp:377
+#: App.cpp:375
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Načítať URL a nahradiť nimi aktuálny zoznam skladieb"
 
-#: App.cpp:378 App.cpp:380
+#: App.cpp:376 App.cpp:378
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Zobraziť podrobné ladiace informácie"
 
-#: App.cpp:381
+#: App.cpp:379
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Tlačiť podrobné ladiace informácie zo zvukového systému"
 
-#: App.cpp:382
+#: App.cpp:380
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Zakázať farebný ladiaci výstup."
 
-#: App.cpp:383
+#: App.cpp:381
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Povoliť spustenie viacerých inštancií aplikácie Amarok"
 
-#: App.cpp:384
+#: App.cpp:382
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Základ pre relatívne názvy súborov/URL"
 
-#: App.cpp:524 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
 #, kde-format
 msgid "Database Error"
 msgstr "Chyba databázy"
 
-#: App.cpp:525
+#: App.cpp:521
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1821,12 +1821,12 @@ msgstr ""
 "Vo väčšine prípadov budete musieť vyriešiť tieto chyby skôr, než bude "
 "aplikácia Amarok pracovať správne."
 
-#: App.cpp:592
+#: App.cpp:588
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Presúvam súbory do koša"
 
-#: App.cpp:616
+#: App.cpp:612
 #, kde-format
 msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
@@ -1834,13 +1834,13 @@ msgid ""
 "Settings."
 msgstr ""
 
-#: App.cpp:617
+#: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
 msgstr ""
 
-#: App.cpp:678
+#: App.cpp:674
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -1849,21 +1849,21 @@ msgstr ""
 "Cesta k hudbe, %1, je nastavená v Systémových nastaveniach.\n"
 "Chcete tieto nastavenia použiť ako priečinok pre kolekciu?"
 
-#: App.cpp:680
+#: App.cpp:676
 #, fuzzy, kde-format
 #| msgid "Collection Folders"
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Priečinky kolekcie"
 
-#: App.cpp:681
+#: App.cpp:677
 #, fuzzy, kde-format
 #| msgid "User"
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Používateľ"
 
-#: App.cpp:682
+#: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
@@ -1898,7 +1898,7 @@ msgstr ""
 "Toto je miesto, kde nájdete vašu lokálnu hudbu, ako aj hudbu z mobilných "
 "zvukových prehrávačov a nosičov CD."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:949
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
 #, kde-format
 msgid "Search collection"
 msgstr "Prehľadať kolekciu"
@@ -2168,7 +2168,7 @@ msgstr "Obnoviť"
 msgid "Filter Files"
 msgstr "Filtrovať súbory"
 
-#: browsers/filebrowser/FileBrowser.cpp:222
+#: browsers/filebrowser/FileBrowser.cpp:218
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2541,7 +2541,7 @@ msgstr "&Zmazať..."
 msgid "&Export As..."
 msgstr "E&xportovať ako..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2550,13 +2550,13 @@ msgstr[0] "Skladba"
 msgstr[1] "%1 skladby"
 msgstr[2] "%1 skladieb"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Odstrániť %1 z %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
 #, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
@@ -2565,7 +2565,7 @@ msgstr[0] "1 zoznam skladieb"
 msgstr[1] "%1 zoznamy skladieb"
 msgstr[2] "%1 zoznamov skladieb"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2574,7 +2574,7 @@ msgstr[0] "Odstrániť skladbu z %2"
 msgstr[1] "Odstrániť %1 skladby z %2"
 msgstr[2] "Odstrániť %1 skladieb z %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgctxt "%1 is playlist provider pretty name"
 #| msgid "Delete playlist from %1."
@@ -2584,7 +2584,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "Odstrániť zoznam skladieb z %1."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
 #, fuzzy, kde-format
 #| msgctxt "%1 is playlist provider pretty name"
 #| msgid "Delete playlist from %1."
@@ -2594,17 +2594,17 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "Odstrániť zoznam skladieb z %1."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "Potvrdiť Vymazanie zoznamu skladieb"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Pre &uloženie použiť relatívnu cestu"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
 #, kde-format
 msgid "Save As"
@@ -3827,11 +3827,6 @@ msgstr "Povoliť konzolu skriptov"
 msgid "Search Scripts"
 msgstr "Hľadať skripty"
 
-#: context/applets/albums/package/contents/ui/main.qml:77
-#, kde-format
-msgid "Display"
-msgstr "Zobraziť"
-
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
 #, kde-format
@@ -4433,7 +4428,7 @@ msgid "Don't change page automatically"
 msgstr "Aktualizovať databázu Magnatune automaticky"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:380
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:376
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -4581,7 +4576,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Zlúčiť kolekciu"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:411
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:403
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
@@ -4816,7 +4811,7 @@ msgstr "Neznáma kolekcia"
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:415
-#: core/meta/Meta.cpp:261 covermanager/CoverFetchUnit.cpp:596
+#: core/meta/Meta.cpp:252 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
@@ -5379,13 +5374,13 @@ msgid "Could not copy track from device."
 msgstr "Nemôžem skopírovať stopu zo zariadenia"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:425
-#: core/meta/Meta.cpp:306
+#: core/meta/Meta.cpp:297
 #, kde-format
 msgid "Unknown Album"
 msgstr "Neznámy album"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
-#: core/meta/Meta.cpp:339
+#: core/meta/Meta.cpp:330
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Neznámy žáner"
@@ -5613,7 +5608,7 @@ msgid "Yes, delete from %1."
 msgstr "Áno, vymazať z %1."
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
-#: services/gpodder/GpodderProvider.cpp:354
+#: services/gpodder/GpodderProvider.cpp:350
 #, kde-format
 msgid "&Delete Channel and Episodes"
 msgstr "Vymazať kanál a epizó&dy"
@@ -5952,57 +5947,57 @@ msgstr[2] " položiek"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:295
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
 #, kde-format
 msgid "&Update All Channels"
 msgstr "Akt&ualizovať všetky kanály"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:301
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "Nastaviť všeobecné nastavenia"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:307
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Exportovať prihlásenia na odber do súboru OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:333
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
 #, kde-format
 msgid "&Configure"
 msgstr "N&astaviť"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:346
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "Odst&rániť odoberanie"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:355
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
 #, kde-format
 msgid "&Update Channel"
 msgstr "Akt&ualizovať kanál"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:391
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
 #, kde-format
 msgid "&Download Episode"
 msgstr "Stiahnuť epizó&du"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:399
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "Vymazať stiahnutú epizódu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:408
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Zapísať informáciu o kanáli do súboru"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:416
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "&Ponechať stiahnutý súbor"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:417
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6013,18 +6008,18 @@ msgstr ""
 "Stiahnuté súbory s týmto stavom by sa nevymazali, aj keby sme požiadali o "
 "vyčistenie."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:483
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "%1 už odoberáte."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:608
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "každých "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:609
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
 #, kde-format
 msgid " minute"
 msgid_plural " minutes"
@@ -6032,37 +6027,37 @@ msgstr[0] " minúta"
 msgstr[1] " minúty"
 msgstr[2] " minút"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:624
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Nastaviť lokálne podcast položky"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:645
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Presunúť Podcast položky"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:646
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Chcete presunúť všetky stiahnuté epizódy na nové miesto?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:713
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Vyberať súbor pre export OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:860
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Chcete sa skutočne odhlásiť z \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:863
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Zmazať stiahnuté epizódy"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:986
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6070,23 +6065,23 @@ msgstr[0] "Stále sa sťahuje podcast"
 msgstr[1] "Stále sa sťahuje %1 podcast položky"
 msgstr[2] "Stále sa sťahuje %1 podcast položiek"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:989
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Zrušiť sťahovanie a ukončiť"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1176
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1424
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Nedá sa uložiť súbor s podcast epizódou do %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1186
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Sťahujem Podcast média"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1187
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Sťahujem Podcast \"%1\""
@@ -6254,27 +6249,27 @@ msgstr[0] "Prekódovanie a kopírovanie jednej skladby na %2"
 msgstr[1] "Prekódovanie a kopírovanie %1 skladieb na %2"
 msgstr[2] "Prekódovanie a kopírovanie %1 skladieb na %2"
 
-#: core/meta/Meta.cpp:215
+#: core/meta/Meta.cpp:206
 #, kde-format
 msgid "No network connection"
 msgstr "Bez sieťového pripojenia"
 
-#: core/meta/Meta.cpp:225
+#: core/meta/Meta.cpp:216
 #, kde-format
 msgid "File does not exist"
 msgstr "Súbor neexistuje"
 
-#: core/meta/Meta.cpp:227
+#: core/meta/Meta.cpp:218
 #, kde-format
 msgid "Not a file"
 msgstr "Nie je súbor"
 
-#: core/meta/Meta.cpp:229
+#: core/meta/Meta.cpp:220
 #, kde-format
 msgid "No read permissions"
 msgstr "Žiadne prístupové práva na čítanie"
 
-#: core/meta/Meta.cpp:361
+#: core/meta/Meta.cpp:352
 #, kde-format
 msgid "Unknown Composer"
 msgstr "Neznámy skladateľ"
@@ -7650,7 +7645,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:821
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
 #, kde-format
 msgid "Cover Manager"
 msgstr "Správca obalov"
@@ -7754,7 +7749,7 @@ msgstr[1] "%1 nenájdené"
 msgstr[2] "%1 nenájdených"
 
 #: covermanager/CoverManager.cpp:660
-#: services/lastfm/LastFmServiceSettings.cpp:115
+#: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
 msgstr "Pripájam sa..."
@@ -9824,7 +9819,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Meno cieľa"
 
-#: KNotificationBackend.cpp:132 TrayIcon.cpp:150
+#: KNotificationBackend.cpp:132 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Práve prehrávam"
@@ -9844,12 +9839,12 @@ msgstr "Nepodarilo sa načítať text piesne"
 msgid "No information available for this track"
 msgstr "Žiadne dostupné informácie o tejto skladbe"
 
-#: main.cpp:94
+#: main.cpp:56
 #, kde-format
 msgid "The audio player by KDE"
 msgstr "Audio prehrávač od KDE"
 
-#: main.cpp:96
+#: main.cpp:58
 #, fuzzy, kde-format
 #| msgid ""
 #| "(C) 2002-2003, Mark Kretschmann\n"
@@ -9861,7 +9856,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2013, Skupina vývojárov aplikácie Amarok"
 
-#: main.cpp:97
+#: main.cpp:59
 #, fuzzy, kde-format
 #| msgid ""
 #| "IRC:\n"
@@ -9888,12 +9883,12 @@ msgstr ""
 "\n"
 "(Dátum zostavenia: %1)"
 
-#: main.cpp:107
+#: main.cpp:69
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr "<i>Neaktívni autori</i>"
 
-#: main.cpp:108
+#: main.cpp:70
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
@@ -9902,825 +9897,825 @@ msgstr ""
 "Autorstvo aplikácie Amarok nie je koníček, je to životný štýl. Ale keď ľudia "
 "idú ďalej, chceme ich tu rešpektovať prostredníctvom zmienky o nich:"
 
-#: main.cpp:114
+#: main.cpp:76
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Kde sú moje špáradlá' Cerneels"
 
-#: main.cpp:115
+#: main.cpp:77
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "Vývojár (Stecchino)"
 
-#: main.cpp:118
+#: main.cpp:80
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:119
+#: main.cpp:81
 #, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "Vývojár (dr_lepper)"
 
-#: main.cpp:122
+#: main.cpp:84
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr "Mark Kretschmann"
 
-#: main.cpp:123
+#: main.cpp:85
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "Zakladateľ projektu (markey)"
 
-#: main.cpp:126
+#: main.cpp:88
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:127
+#: main.cpp:89
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr "Prepísanie kolekciu iPod a viac (strohel)"
 
-#: main.cpp:130
+#: main.cpp:92
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:130
+#: main.cpp:92
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "Rokymoter, triedenie chýb (Mamarok)"
 
-#: main.cpp:133
+#: main.cpp:95
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf 'SalsaMaster' Engels"
 
-#: main.cpp:134
+#: main.cpp:96
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "Vývojár (rengels)"
 
-#: main.cpp:137
+#: main.cpp:99
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:137
+#: main.cpp:99
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "Zostavenie okien (TheOneRing)"
 
-#: main.cpp:141
+#: main.cpp:103
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:142
+#: main.cpp:104
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "Vývojár (stuffcorpse)"
 
-#: main.cpp:145
+#: main.cpp:107
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:145
+#: main.cpp:107
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "Vývojár (Sentynel)"
 
-#: main.cpp:149
+#: main.cpp:111
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:149
+#: main.cpp:111
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "Rokymoter, Developer (sven423)"
 
-#: main.cpp:152
+#: main.cpp:114
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:153
+#: main.cpp:115
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "Vývojár (Teo`)"
 
-#: main.cpp:156
+#: main.cpp:118
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:157
+#: main.cpp:119
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Rokymoter, Handbook (valorie)"
 
-#: main.cpp:160
+#: main.cpp:122
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'Brada' Monroe"
 
-#: main.cpp:160
+#: main.cpp:122
 #, kde-format
 msgid "Developer (eean)"
 msgstr "Vývojár (eean)"
 
-#: main.cpp:163
+#: main.cpp:125
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROKSOHARD' Mitchell"
 
-#: main.cpp:163
+#: main.cpp:125
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "Vývojár (jefferai)"
 
-#: main.cpp:166
+#: main.cpp:128
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: main.cpp:166
+#: main.cpp:128
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Vývojár (lfranchi)"
 
-#: main.cpp:169
+#: main.cpp:131
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'sa mýli(TM)' Pintscher"
 
-#: main.cpp:169
+#: main.cpp:131
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Release Vixen (Nightrose)"
 
-#: main.cpp:172
+#: main.cpp:134
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:172
+#: main.cpp:134
 #, kde-format
 msgid "Developer, Vision"
 msgstr "Vývojár, Vision"
 
-#: main.cpp:175
+#: main.cpp:137
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:175
+#: main.cpp:137
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "Vývojár (maxx_k)"
 
-#: main.cpp:178
+#: main.cpp:140
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Tiež veľmi sexy' Nielsen"
 
-#: main.cpp:178
+#: main.cpp:140
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "Vývojár (nhn)"
 
-#: main.cpp:181
+#: main.cpp:143
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'čo jazdí dole po príbojovej vlne' Ruiz"
 
-#: main.cpp:181
+#: main.cpp:143
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "Vývojár (sebr)"
 
-#: main.cpp:186
+#: main.cpp:148
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:186
+#: main.cpp:148
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "Vývojár (xevix)"
 
-#: main.cpp:188
+#: main.cpp:150
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:188
+#: main.cpp:150
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "Vývojár, Podpora Raplay gain"
 
-#: main.cpp:190
+#: main.cpp:152
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:190
+#: main.cpp:152
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "Integrácia MP3tunes"
 
-#: main.cpp:192
+#: main.cpp:154
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:192
+#: main.cpp:154
 #, kde-format
 msgid "Windows porting"
 msgstr "Portovanie na Windows"
 
-#: main.cpp:194
+#: main.cpp:156
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:194
+#: main.cpp:156
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "Rokymoter (dangle)"
 
-#: main.cpp:196
+#: main.cpp:158
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:196
+#: main.cpp:158
 #, kde-format
 msgid "Usability"
 msgstr "Použiteľnosť"
 
-#: main.cpp:198
+#: main.cpp:160
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hej, ono sa to skompilovalo...' Meltzer"
 
-#: main.cpp:198
+#: main.cpp:160
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "Vývojár (hydrogen)"
 
-#: main.cpp:200
+#: main.cpp:162
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:200
+#: main.cpp:162
 #, kde-format
 msgid "Biased playlists"
 msgstr "Ovplyvnený zoznam skladieb"
 
-#: main.cpp:202
+#: main.cpp:164
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:202
+#: main.cpp:164
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "Odhadovanie značiek, popisy, spektrálny analyzátor"
 
-#: main.cpp:204
+#: main.cpp:166
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:204
+#: main.cpp:166
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "Nepomuk integrácia"
 
-#: main.cpp:206
+#: main.cpp:168
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:206 main.cpp:226
+#: main.cpp:168 main.cpp:188
 #, kde-format
 msgid "Podcast improvements"
 msgstr "Podcast vylepšenia"
 
-#: main.cpp:208
+#: main.cpp:170
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:208
+#: main.cpp:170
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "Live CD, Bug squashing (oggb4mp3)"
 
-#: main.cpp:210
+#: main.cpp:172
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:210
+#: main.cpp:172
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr "Phonon, Lord prezident z KDE Multimedia (apachelogger)"
 
-#: main.cpp:212
+#: main.cpp:174
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:212
+#: main.cpp:174
 #, kde-format
 msgid "Assorted patches"
 msgstr "Rozmanité opravy"
 
-#: main.cpp:214
+#: main.cpp:176
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:214
+#: main.cpp:176
 #, kde-format
 msgid "Icons"
 msgstr "Ikony"
 
-#: main.cpp:216
+#: main.cpp:178
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:216
+#: main.cpp:178
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "Vývojár, Webová téma (KRF)"
 
-#: main.cpp:218
+#: main.cpp:180
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:218
+#: main.cpp:180
 #, kde-format
 msgid "Rokymoter"
 msgstr "Rokymoter"
 
-#: main.cpp:220
+#: main.cpp:182
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:220 main.cpp:232
+#: main.cpp:182 main.cpp:194
 #, kde-format
 msgid "Artwork"
 msgstr "Obal"
 
-#: main.cpp:222
+#: main.cpp:184
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:222
+#: main.cpp:184
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Rokymoter (ljubomir)"
 
-#: main.cpp:224
+#: main.cpp:186
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:224
+#: main.cpp:186
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "Vývojár (MaskMaster)"
 
-#: main.cpp:226
+#: main.cpp:188
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:228
+#: main.cpp:190
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:228
+#: main.cpp:190
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "Odstraňovanie chýb"
 
-#: main.cpp:230
+#: main.cpp:192
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:230
+#: main.cpp:192
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "Podpora UPnP a opravy (nsm)"
 
-#: main.cpp:232
+#: main.cpp:194
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:234
+#: main.cpp:196
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:234
+#: main.cpp:196
 #, kde-format
 msgid "Website hosting"
 msgstr "Webové hosťovanie"
 
-#: main.cpp:236
+#: main.cpp:198
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:236
+#: main.cpp:198
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Rokymoter (emunkki)"
 
-#: main.cpp:238
+#: main.cpp:200
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:238
+#: main.cpp:200
 #, kde-format
 msgid "Scripting interface"
 msgstr "Skriptovacie rozhranie"
 
-#: main.cpp:240
+#: main.cpp:202
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr "Phalgun Guduthur"
 
-#: main.cpp:240
+#: main.cpp:202
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr "Kolekcia Nepomuk (phalgun)"
 
-#: main.cpp:242
+#: main.cpp:204
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:242
+#: main.cpp:204
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "TagLib & ktrm kód"
 
-#: main.cpp:244
+#: main.cpp:206
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:244
+#: main.cpp:206
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "Patche & Porty pre Windows (shakes)"
 
-#: main.cpp:246
+#: main.cpp:208
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:246
+#: main.cpp:208
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "Foto & Video applety, kontextový pohľad"
 
-#: main.cpp:248
+#: main.cpp:210
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:248
+#: main.cpp:210
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "Vývojár, Automatický generátor zoznamu skladieb"
 
-#: main.cpp:250
+#: main.cpp:212
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:250 main.cpp:252 main.cpp:266 main.cpp:276 main.cpp:282
-#: main.cpp:284 main.cpp:296 main.cpp:302 main.cpp:304 main.cpp:308
-#: main.cpp:316
+#: main.cpp:212 main.cpp:214 main.cpp:228 main.cpp:238 main.cpp:244
+#: main.cpp:246 main.cpp:258 main.cpp:264 main.cpp:266 main.cpp:270
+#: main.cpp:278
 #, kde-format
 msgid "Developer"
 msgstr "Vývojár"
 
-#: main.cpp:252
+#: main.cpp:214
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:254
+#: main.cpp:216
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:254
+#: main.cpp:216
 #, kde-format
 msgid "Splash screen artist"
 msgstr "Umelec úvodnej obrazovky"
 
-#: main.cpp:256
+#: main.cpp:218
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:256
+#: main.cpp:218
 #, kde-format
 msgid "Context view"
 msgstr "Kontextový pohľad"
 
-#: main.cpp:260
+#: main.cpp:222
 #, kde-format
 msgid "Former contributors"
 msgstr "Pôvodní prispievatelia"
 
-#: main.cpp:260
+#: main.cpp:222
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
 "Ľudia zobrazení nižšie prispievali do aplikácie Amarok v minulosti. Ďakujem!"
 
-#: main.cpp:262
+#: main.cpp:224
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:262
+#: main.cpp:224
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "Analyzátory, patche , vysielanie"
 
-#: main.cpp:264
+#: main.cpp:226
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:264 main.cpp:272
+#: main.cpp:226 main.cpp:234
 #, kde-format
 msgid "Patches"
 msgstr "Patche"
 
-#: main.cpp:266
+#: main.cpp:228
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:268
+#: main.cpp:230
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:268
+#: main.cpp:230
 #, kde-format
 msgid "MySQL support"
 msgstr "Podpora MySQL"
 
-#: main.cpp:270
+#: main.cpp:232
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:270
+#: main.cpp:232
 #, kde-format
 msgid "Postgresql support"
 msgstr "Podpora Postgresql"
 
-#: main.cpp:272
+#: main.cpp:234
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:274
+#: main.cpp:236
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:274
+#: main.cpp:236
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "MTP a Rio Karma mediálne zariadenia, patche"
 
-#: main.cpp:276
+#: main.cpp:238
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:278
+#: main.cpp:240
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:278
+#: main.cpp:240
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "Grafika, úvodná obrazovka"
 
-#: main.cpp:280
+#: main.cpp:242
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:280
+#: main.cpp:242
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr "Analyzátory, Prehliadač kontextov a systray eye-candy"
 
-#: main.cpp:282
+#: main.cpp:244
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:284
+#: main.cpp:246
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:286
+#: main.cpp:248
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:286
+#: main.cpp:248
 #, kde-format
 msgid "Icons and image work"
 msgstr "Ikony a práca s obrázkami"
 
-#: main.cpp:288
+#: main.cpp:250
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:288
+#: main.cpp:250
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "Dialóg na filtrovanie titulov kolekcií"
 
-#: main.cpp:290
+#: main.cpp:252
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:290
+#: main.cpp:252
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "Tester, operátor IRC kanála, whipping"
 
-#: main.cpp:292
+#: main.cpp:254
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:292
+#: main.cpp:254
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "Rokymoter, bug fixer (Firetech)"
 
-#: main.cpp:294
+#: main.cpp:256
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:294
+#: main.cpp:256
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "Bočná lišta pre Konqueror, DCOP metódy"
 
-#: main.cpp:296
+#: main.cpp:258
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:298
+#: main.cpp:260
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:298
+#: main.cpp:260
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "FHT routine, fixovanie  chýb"
 
-#: main.cpp:300
+#: main.cpp:262
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:300
+#: main.cpp:262
 #, kde-format
 msgid "K3b export code"
 msgstr "Kód pre export do K3b"
 
-#: main.cpp:302
+#: main.cpp:264
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:304
+#: main.cpp:266
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:306
+#: main.cpp:268
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:306
+#: main.cpp:268
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "Fixovanie chýb, Podpora PostgreSQL"
 
-#: main.cpp:308
+#: main.cpp:270
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:310
+#: main.cpp:272
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:310
+#: main.cpp:272
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "Podpora Wikipédie, patche"
 
-#: main.cpp:312
+#: main.cpp:274
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:312
+#: main.cpp:274
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr "Tvorca loga Amarok, tvorca úvodnej obrazovky, tvorca ikon"
 
-#: main.cpp:314
+#: main.cpp:276
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:314
+#: main.cpp:276
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "Podpora Audioscrobbler"
 
-#: main.cpp:316
+#: main.cpp:278
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:318
+#: main.cpp:280
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:318
+#: main.cpp:280
 #, kde-format
 msgid "Loads of stuff"
 msgstr "Množstvo vecí"
 
-#: main.cpp:320
+#: main.cpp:282
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:320
+#: main.cpp:282
 #, kde-format
 msgid "Splash screen"
 msgstr "Úvodná obrazovka"
 
-#: main.cpp:325
+#: main.cpp:287
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:326
+#: main.cpp:288
 #, kde-format
 msgid "Chris Wales"
 msgstr "Chris Wales"
 
-#: main.cpp:327
+#: main.cpp:289
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
@@ -10771,7 +10766,7 @@ msgstr "&Pohľad"
 msgid "Lock Layout"
 msgstr "Zamknúť rozloženie"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1336
+#: MainWindow.cpp:374 MainWindow.cpp:1315
 #, kde-format
 msgid "Reset Layout"
 msgstr "Vynulovať rozloženie"
@@ -10812,251 +10807,251 @@ msgstr "Pridať stream"
 msgid "Enter Stream URL:"
 msgstr "Zadajte URL pre stream:"
 
-#: MainWindow.cpp:771
+#: MainWindow.cpp:763
 #, kde-format
 msgid "&Add Media..."
 msgstr "Prid&ať média..."
 
-#: MainWindow.cpp:776
+#: MainWindow.cpp:768
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Vymazať zoznam skladieb"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:773
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Upraviť frontu"
 
-#: MainWindow.cpp:786
+#: MainWindow.cpp:778
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "&Odstrániť duplikáty"
 
-#: MainWindow.cpp:793
+#: MainWindow.cpp:785
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Pridať stream..."
 
-#: MainWindow.cpp:797
+#: MainWindow.cpp:789
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Exportovať zoznam skladieb ako..."
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:801
 #, kde-format
 msgid "Equalizer"
 msgstr "Ekvalizér"
 
-#: MainWindow.cpp:813 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Založenie nastavenia zoznamu skladieb"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:809
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Pridať záložky kontextovým appletom"
 
-#: MainWindow.cpp:825
+#: MainWindow.cpp:817
 #, kde-format
 msgid "Play Media..."
 msgstr "Prehrať média..."
 
-#: MainWindow.cpp:830
+#: MainWindow.cpp:822
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Upraviť podrobnosti aktuálne vybranej skladby"
 
-#: MainWindow.cpp:836 MainWindow.cpp:842 MainWindow.cpp:849
+#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Hľadať dopredu o %1 sekúnd"
 
-#: MainWindow.cpp:856 MainWindow.cpp:862 MainWindow.cpp:869
+#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Hľadať dozadu o %1 sekúnd"
 
-#: MainWindow.cpp:875
+#: MainWindow.cpp:867
 #, kde-format
 msgid "Update Collection"
 msgstr "Aktualizovať kolekciu"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:871
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Synchronizovať štatistiky..."
 
-#: MainWindow.cpp:887
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Previous Track"
 msgstr "Predchádzajúca skladba"
 
-#: MainWindow.cpp:894
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Restart current track"
 msgstr "Znovu spustiť aktuálnu skladbu"
 
-#: MainWindow.cpp:901
+#: MainWindow.cpp:893
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Zamiešať zoznam skladieb"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:899
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Znova naplniť zoznam skladieb"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:905
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Zakázať dynamický zoznam skladieb"
 
-#: MainWindow.cpp:917
+#: MainWindow.cpp:909
 #, kde-format
 msgid "Next Track"
 msgstr "Nasledujúca skladba"
 
-#: MainWindow.cpp:922
+#: MainWindow.cpp:914
 #, kde-format
 msgid "Increase Volume"
 msgstr "Zvýšiť hlasitosť"
 
-#: MainWindow.cpp:928
+#: MainWindow.cpp:920
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Znížiť hlasitosť"
 
-#: MainWindow.cpp:934
+#: MainWindow.cpp:926
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Prepnúť hlavné okno"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:931
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Prepnúť na celú obrazovku"
 
-#: MainWindow.cpp:944 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Prehľadať zoznam skladieb"
 
-#: MainWindow.cpp:954
+#: MainWindow.cpp:946
 #, kde-format
 msgid "Show active track"
 msgstr "Zobraziť aktívnu skladbu"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:950
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Ukazovať vyskakovacie upozornenia"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:955
 #, kde-format
 msgid "Mute Volume"
 msgstr "Stlmiť hlasitosť"
 
-#: MainWindow.cpp:968
+#: MainWindow.cpp:960
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Túto skladbu milujem"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:965
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Zablokovať aktuálnu skladbu"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:970
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Preskočiť aktuálnu skladbu"
 
-#: MainWindow.cpp:983 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Zaradiť skladbu do poradia"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:980
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Dať Umelca - Názov aktuálnej skladby do schránky"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:985
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Ohodnotiť aktuálnu skladbu: 1"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:990
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Ohodnotiť aktuálnu skladbu: 2"
 
-#: MainWindow.cpp:1003
+#: MainWindow.cpp:995
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Ohodnotiť aktuálnu skladbu: 3"
 
-#: MainWindow.cpp:1008
+#: MainWindow.cpp:1000
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Ohodnotiť aktuálnu skladbu: 4"
 
-#: MainWindow.cpp:1013
+#: MainWindow.cpp:1005
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Ohodnotiť aktuálnu skladbu: 5"
 
-#: MainWindow.cpp:1019
+#: MainWindow.cpp:1011
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Prehliadač sieťovej požiadavky"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1029
 #, kde-format
 msgid "&About Amarok"
 msgstr "O aplikácii &Amarok"
 
-#: MainWindow.cpp:1041
+#: MainWindow.cpp:1033
 #, kde-format
 msgid "&Diagnostics"
 msgstr "Diagnostika"
 
-#: MainWindow.cpp:1045
+#: MainWindow.cpp:1037
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Nahlásiť chybu..."
 
-#: MainWindow.cpp:1092
+#: MainWindow.cpp:1084
 #, kde-format
 msgid "&Music"
 msgstr "&Hudba"
 
-#: MainWindow.cpp:1094
+#: MainWindow.cpp:1086
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1122 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Zoznam skladieb"
 
-#: MainWindow.cpp:1139
+#: MainWindow.cpp:1127
 #, kde-format
 msgid "&Tools"
 msgstr "&Nástroje"
 
-#: MainWindow.cpp:1154
+#: MainWindow.cpp:1142
 #, kde-format
 msgid "&Settings"
 msgstr "&Nastavenia"
 
-#: MainWindow.cpp:1206
+#: MainWindow.cpp:1185
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11067,22 +11062,22 @@ msgstr ""
 "\n"
 "Prosím, nezabudnite, že môžete vždy použiť skratku \"%1\", aby ho obnovili."
 
-#: MainWindow.cpp:1207
+#: MainWindow.cpp:1186
 #, kde-format
 msgid "Hide Menu"
 msgstr "Skryť ponuku"
 
-#: MainWindow.cpp:1249
+#: MainWindow.cpp:1228
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pozastavené  ::  %1"
 
-#: MainWindow.cpp:1262
+#: MainWindow.cpp:1241
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1336
+#: MainWindow.cpp:1315
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Použiť túto zmenu rozloženia?"
@@ -13227,57 +13222,57 @@ msgstr "Importovať predvoľbu"
 msgid "Preset files"
 msgstr "Súbory predvoľby"
 
-#: playlistgenerator/PresetModel.cpp:215
+#: playlistgenerator/PresetModel.cpp:212
 #, kde-format
 msgid "Preset exported to %1"
 msgstr "Predvoľba exportovaná do %1"
 
-#: playlistgenerator/PresetModel.cpp:222
+#: playlistgenerator/PresetModel.cpp:219
 #, kde-format
 msgid "Preset could not be exported to %1"
 msgstr "Predvoľbu nebolo možné exportovať do %1"
 
-#: playlistgenerator/PresetModel.cpp:240
+#: playlistgenerator/PresetModel.cpp:237
 #, kde-format
 msgid "Presets could not be imported from %1"
 msgstr "Predvoľby nebolo možné importovať z %1"
 
-#: playlistgenerator/PresetModel.cpp:247
+#: playlistgenerator/PresetModel.cpp:244
 #, kde-format
 msgid "%1 could not be opened for preset import"
 msgstr "%1 nebolo možné otvoriť pre import predvoľby"
 
-#: playlistgenerator/PresetModel.cpp:252
+#: playlistgenerator/PresetModel.cpp:249
 #, kde-format
 msgid "Example 1: new tracks added this week"
 msgstr "Príklad 1: nové skladby pridané tento týždeň"
 
-#: playlistgenerator/PresetModel.cpp:253
+#: playlistgenerator/PresetModel.cpp:250
 #, kde-format
 msgid "Example 2: rock or pop music"
 msgstr "Príklad 2: rock alebo pop music"
 
-#: playlistgenerator/PresetModel.cpp:254
+#: playlistgenerator/PresetModel.cpp:251
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
 msgstr "Example 3: asi hodina skladieb od rôznych umelcov"
 
-#: playlistgenerator/PresetModel.cpp:255
+#: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 4: like my favorite radio station"
 msgstr "Príklad 4: ako moja obľúbená rádiová stanica"
 
-#: playlistgenerator/PresetModel.cpp:256
+#: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr "Príklad 5: 80-minútové CD s rock, metal a industrial"
 
-#: playlistgenerator/PresetModel.cpp:296
+#: playlistgenerator/PresetModel.cpp:293
 #, kde-format
 msgid "Export \"%1\" preset"
 msgstr "Exportovať predvoľbu \"%1\""
 
-#: playlistgenerator/PresetModel.cpp:298
+#: playlistgenerator/PresetModel.cpp:295
 #, kde-format
 msgid "Preset files (*.xml)"
 msgstr "Súbory predvoľby (*.xml)"
@@ -13668,32 +13663,32 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:193
-#: services/gpodder/GpodderServiceSettings.cpp:206
-#: services/gpodder/GpodderServiceSettings.cpp:216
-#: services/gpodder/GpodderServiceSettings.cpp:239
-#: services/gpodder/GpodderServiceSettings.cpp:268
+#: services/gpodder/GpodderServiceSettings.cpp:181
+#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:200
+#: services/gpodder/GpodderServiceSettings.cpp:219
+#: services/gpodder/GpodderServiceSettings.cpp:248
 #, kde-format
 msgid "&Test Login"
 msgstr "O&testovať prihlásenie"
 
-#: services/gpodder/GpodderProvider.cpp:296
+#: services/gpodder/GpodderProvider.cpp:292
 #, kde-format
 msgid "Gpodder Podcasts"
 msgstr "Gpodder podcast položky"
 
-#: services/gpodder/GpodderProvider.cpp:477
+#: services/gpodder/GpodderProvider.cpp:469
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
 msgstr "Prebieha pokus o synchronizovanie stavov s gpodder.net"
 
-#: services/gpodder/GpodderProvider.cpp:541
+#: services/gpodder/GpodderProvider.cpp:529
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
 msgstr "Prebieha pokus o synchronizovanie prihlásení na odber s gpodder.net"
 
-#: services/gpodder/GpodderProvider.cpp:794
-#: services/gpodder/GpodderProvider.cpp:805
+#: services/gpodder/GpodderProvider.cpp:778
+#: services/gpodder/GpodderProvider.cpp:789
 #, kde-format
 msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
@@ -13732,12 +13727,12 @@ msgstr ""
 "Nebola nájdená bežiaca aplikácia KWallet Chcete, aby aplikácia  Amarok "
 "uložila vaše gpodder.net prihlasovacie údaje ako čistý text?"
 
-#: services/gpodder/GpodderServiceSettings.cpp:98
+#: services/gpodder/GpodderServiceSettings.cpp:94
 #, kde-format
 msgid "Testing..."
 msgstr "Testujem..."
 
-#: services/gpodder/GpodderServiceSettings.cpp:119
+#: services/gpodder/GpodderServiceSettings.cpp:111
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
@@ -13745,26 +13740,26 @@ msgstr ""
 "Buď je prázdne používateľské meno alebo heslo. Prosím, opravte a skúste "
 "znovu."
 
-#: services/gpodder/GpodderServiceSettings.cpp:120
-#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:112
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/gpodder/GpodderServiceSettings.cpp:188
 #: services/gpodder/GpodderServiceSettings.cpp:204
-#: services/gpodder/GpodderServiceSettings.cpp:224
-#: services/lastfm/LastFmServiceSettings.cpp:213
-#: services/lastfm/LastFmServiceSettings.cpp:224
-#: services/lastfm/LastFmServiceSettings.cpp:245
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:201
+#: services/lastfm/LastFmServiceSettings.cpp:208
+#: services/lastfm/LastFmServiceSettings.cpp:225
+#: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
 msgid "Failed"
 msgstr "Zlyhalo"
 
-#: services/gpodder/GpodderServiceSettings.cpp:131
-#: services/lastfm/LastFmServiceSettings.cpp:231
+#: services/gpodder/GpodderServiceSettings.cpp:123
+#: services/lastfm/LastFmServiceSettings.cpp:215
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Úspech"
 
-#: services/gpodder/GpodderServiceSettings.cpp:190
+#: services/gpodder/GpodderServiceSettings.cpp:178
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -13773,12 +13768,12 @@ msgstr ""
 "Buď nie je v poriadku používateľské meno alebo heslo. Vykonajte prosím "
 "opravu a skúste sa prihlásiť znovu."
 
-#: services/gpodder/GpodderServiceSettings.cpp:203
+#: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "Nedá sa pripojiť k službe gpodder.net alebo nastala iná chyba."
 
-#: services/gpodder/GpodderServiceSettings.cpp:224
+#: services/gpodder/GpodderServiceSettings.cpp:204
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -13992,8 +13987,8 @@ msgstr "Používateľské meno:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
-#: services/lastfm/LastFmServiceSettings.cpp:246
-#: services/lastfm/LastFmServiceSettings.cpp:274
+#: services/lastfm/LastFmServiceSettings.cpp:226
+#: services/lastfm/LastFmServiceSettings.cpp:250
 #, fuzzy, kde-format
 #| msgid "Connection failure"
 msgid "Connect to account"
@@ -14001,7 +13996,7 @@ msgstr "Pripojenie zlyhalo"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
-#: services/lastfm/LastFmServiceSettings.cpp:302
+#: services/lastfm/LastFmServiceSettings.cpp:278
 #, fuzzy, kde-format
 #| msgctxt "In a dialog: Some file: Not needed"
 #| msgid "Not needed"
@@ -14208,45 +14203,45 @@ msgid ""
 "account in Plugin Settings."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:99
+#: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:100
+#: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:100
+#: services/lastfm/LastFmServiceSettings.cpp:92
 #, fuzzy, kde-format
 #| msgid "&Disconnect Device"
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr "&Odpojiť zariadenie"
 
-#: services/lastfm/LastFmServiceSettings.cpp:148
-#: services/lastfm/LastFmServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:218
+#: services/lastfm/LastFmServiceSettings.cpp:140
+#: services/lastfm/LastFmServiceSettings.cpp:197
+#: services/lastfm/LastFmServiceSettings.cpp:206
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Zlyhalo"
 
-#: services/lastfm/LastFmServiceSettings.cpp:153
+#: services/lastfm/LastFmServiceSettings.cpp:145
 #, fuzzy, kde-format
 #| msgid "Open Last.fm webpage for this event"
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "Otvoriť webovú stránku Last.fm pre túto udalosť"
 
-#: services/lastfm/LastFmServiceSettings.cpp:171
+#: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:196
+#: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
 msgid ""
 "Last.fm account connection was not successful. Please make sure you have "
@@ -14254,7 +14249,7 @@ msgid ""
 "that was opened and try again."
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:273
+#: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Nedá sa pripojiť k službe Last.fm."
@@ -14265,7 +14260,7 @@ msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:184
+#: services/lastfm/LastFmTreeModel.cpp:180
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -14274,37 +14269,37 @@ msgstr[0] "%2 (%1 prehranie)"
 msgstr[1] "%2 (%1 prehrania)"
 msgstr[2] "%2 (%1 prehraní)"
 
-#: services/lastfm/LastFmTreeModel.cpp:201
+#: services/lastfm/LastFmTreeModel.cpp:197
 #, kde-format
 msgid "Personal Radio"
 msgstr "Osobné rádio"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:310
 #, kde-format
 msgid "My Recommendations"
 msgstr "Moje odporúčania"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:312
 #, kde-format
 msgid "My Radio Station"
 msgstr "Moja rádiová stanica"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Mix Radio"
 msgstr "Moje Mix Rádio"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Top Artists"
 msgstr "Moji obľúbení umelci"
 
-#: services/lastfm/LastFmTreeModel.cpp:322
+#: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Tags"
 msgstr "Moje značky"
 
-#: services/lastfm/LastFmTreeModel.cpp:324
+#: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
 msgid "Friends"
 msgstr "Priatelia"
@@ -15909,7 +15904,7 @@ msgid "Volume: %1% (muted)"
 msgstr "Hlasitosť: %1% (stlmená)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
-#: widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
+#: widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
 msgid "Volume: %1%"
 msgstr "Hlasitosť: %1%"
@@ -16076,37 +16071,37 @@ msgstr " (odporúčané)"
 msgid "Ask before each transfer"
 msgstr "Opýtať sa pred každým prenosom"
 
-#: TrayIcon.cpp:158 widgets/VolumeDial.cpp:308 widgets/VolumeDial.cpp:347
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
 msgid "Muted"
 msgstr "Stlmené"
 
-#: TrayIcon.cpp:162
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:164
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Hlasitosť: %1</i>"
 
-#: TrayIcon.cpp:170
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Skóre: %1"
 
-#: TrayIcon.cpp:188
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Hodnotenie: %1"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "Počet prehrávaní: %1"
 
-#: TrayIcon.cpp:198
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Naposledy prehrávané: %1"
@@ -16116,17 +16111,17 @@ msgstr "Naposledy prehrávané: %1"
 msgid "Bookmark"
 msgstr "Záložka"
 
-#: widgets/BreadcrumbItemButton.cpp:242
+#: widgets/BreadcrumbItemButton.cpp:238
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
 msgstr "Prehliadať a spustiť záložky, alebo vytvoriť nové"
 
-#: widgets/BreadcrumbItemButton.cpp:260
+#: widgets/BreadcrumbItemButton.cpp:256
 #, kde-format
 msgid "Amarok Bookmarks"
 msgstr "Záložky aplikácie Amarok"
 
-#: widgets/BreadcrumbItemButton.cpp:279
+#: widgets/BreadcrumbItemButton.cpp:275
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
 msgstr "Kopírovať záložku aktuálneho pohľadu do schránky"
@@ -16373,12 +16368,12 @@ msgstr "Zastavené"
 msgid "Paused"
 msgstr "Pozastavené"
 
-#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:86
+#: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:82
 #, kde-format
 msgid "Play"
 msgstr "Prehrávanie"
 
-#: widgets/PlayPauseButton.cpp:86
+#: widgets/PlayPauseButton.cpp:82
 #, kde-format
 msgid "Pause"
 msgstr "Pozastaviť"
@@ -16463,12 +16458,12 @@ msgstr "prejsť na: %1"
 msgid "Drag in and out items from above."
 msgstr "Vtiahnuť a vytiahnuť položky zhora."
 
-#: widgets/TokenWithLayout.cpp:229
+#: widgets/TokenWithLayout.cpp:221
 #, kde-format
 msgid "[prefix]"
 msgstr "[predpona]"
 
-#: widgets/TokenWithLayout.cpp:240
+#: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[suffix]"
 msgstr "[prípona]"
@@ -16497,6 +16492,9 @@ msgstr "Umelec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdne"
+
+#~ msgid "Display"
+#~ msgstr "Zobraziť"
 
 #~ msgid "Main Script File"
 #~ msgstr "Hlavný súbor skriptu"
