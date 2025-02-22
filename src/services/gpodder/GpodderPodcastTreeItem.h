@@ -20,7 +20,7 @@
 #define GPODDERPODCASTTREEITEM_H_
 
 #include "GpodderTreeItem.h"
-#include <mygpo-qt5/Podcast.h>
+#include <mygpo-qt6/Podcast.h>
 
 class GpodderPodcastTreeItem: public GpodderTreeItem
 {

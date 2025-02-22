@@ -20,8 +20,8 @@
 #define GPODDERSERVICEMODEL_H_
 
 #include "GpodderTreeItem.h"
-#include <mygpo-qt5/ApiRequest.h>
-#include <mygpo-qt5/TagList.h>
+#include <mygpo-qt6/ApiRequest.h>
+#include <mygpo-qt6/TagList.h>
 #include "NetworkAccessManagerProxy.h"
 
 #include <QAbstractItemModel>

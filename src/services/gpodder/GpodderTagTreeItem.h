@@ -20,7 +20,7 @@
 #define GPODDERTAGTREEITEM_H_
 
 #include "GpodderTreeItem.h"
-#include <mygpo-qt5/Tag.h>
+#include <mygpo-qt6/Tag.h>
 
 #include <QObject>
 

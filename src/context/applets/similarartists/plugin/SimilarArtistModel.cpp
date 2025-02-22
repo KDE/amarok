@@ -185,7 +185,7 @@ SimilarArtistModel::fillArtistInfoFromXml( QXmlStreamReader &xml )
     QString plays;
     QString ownPlays;
     QString tags;
-    QString bio=" ";
+    QString bio=QLatin1String(" ");
 
     while( xml.name() != QLatin1String("name") )
         xml.readNextStartElement();
@@ -242,7 +242,7 @@ SimilarArtistModel::fillArtistInfoFromXml( QXmlStreamReader &xml )
                 {
                     bio = xml.readElementText().replace( QStringLiteral("\n"), QStringLiteral("<br>") );
                     if(bio == QString())
-                        bio = " ";
+                        bio = QLatin1String(" ");
                 }
                 else
                     xml.skipCurrentElement();
@@ -256,7 +256,7 @@ SimilarArtistModel::fillArtistInfoFromXml( QXmlStreamReader &xml )
     {
         if( auto artist = dynamic_cast< SimilarArtistItem *>( i ) )
         {
-            artist->m_bioText = bio.isNull() ? " " : bio;
+            artist->m_bioText = bio.isNull() ? QLatin1String(" ") : bio;
             artist->m_listenerCount = listeners;
             artist->m_playCount = plays;
             artist->m_ownPlayCount = ownPlays;

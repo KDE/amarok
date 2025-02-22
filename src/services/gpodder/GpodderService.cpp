@@ -27,8 +27,8 @@
 #include "GpodderServiceModel.h"
 #include "GpodderServiceView.h"
 #include "GpodderSortFilterProxyModel.h"
-#include <mygpo-qt5/ApiRequest.h>
-#include <mygpo-qt5/Podcast.h>
+#include <mygpo-qt6/ApiRequest.h>
+#include <mygpo-qt6/Podcast.h>
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/SearchWidget.h"
 
