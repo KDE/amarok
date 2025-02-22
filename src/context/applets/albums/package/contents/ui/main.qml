@@ -92,7 +92,7 @@ AmarokQml.Applet {
                             selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
                         break;
                         default:
-                            if( mouse && mouse.x >= parent.indicator.x && mouse.x <= parent.indicator.x+parent.indicator.width
+                            if( parent.selected || mouse && mouse.x >= parent.indicator.x && mouse.x <= parent.indicator.x+parent.indicator.width
                                 && mouse.y >= parent.indicator.y && mouse.y <= parent.indicator.y+parent.indicator.height )
                             {
                                 treeView.toggleExpanded(row)
