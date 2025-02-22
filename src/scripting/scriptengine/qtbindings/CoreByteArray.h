@@ -75,7 +75,6 @@ namespace QtBindings
             int count(const QByteArray &ba) const;
             int count(const char *str) const;
             int count(char ch) const;
-            int count() const;
             QByteArray::const_reverse_iterator crbegin() const;
             QByteArray::const_reverse_iterator crend() const;
             char *data();

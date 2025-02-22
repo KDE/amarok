@@ -198,7 +198,7 @@ MP4TagHelper::setEmbeddedCover( const QImage &cover )
 
     TagLib::MP4::CoverArtList covers;
 
-    covers.append( TagLib::MP4::CoverArt( TagLib::MP4::CoverArt::JPEG, TagLib::ByteVector( bytes.data(), bytes.count() ) ) );
+    covers.append( TagLib::MP4::CoverArt( TagLib::MP4::CoverArt::JPEG, TagLib::ByteVector( bytes.data(), bytes.size() ) ) );
 
     m_tag->setItem(fieldName( Meta::valHasCover ), TagLib::MP4::Item( covers ));
 

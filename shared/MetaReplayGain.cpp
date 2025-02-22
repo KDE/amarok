@@ -132,7 +132,7 @@ static Meta::ReplayGainTagMap readID3v2Tags( TagLib::ID3v2::Tag *tag )
                 TagLib::ByteVector data = frames[i]->render().mid( 10 );
                 unsigned int offset = 0;
                 QString desc( QString::fromLatin1(data.data()) );
-                offset += desc.count() + 1;
+                offset += desc.size() + 1;
                 unsigned int channel = data.mid( offset, 1 ).toUInt( true );
                 // channel 1 is the main volume - the only one we care about
                 if ( channel == 1 )

@@ -435,7 +435,7 @@ ID3v2TagHelper::setEmbeddedCover( const QImage &cover )
     // add new cover
     frontCover = new TagLib::ID3v2::AttachedPictureFrame( field );
     frontCover->setMimeType( "image/jpeg" );
-    frontCover->setPicture( TagLib::ByteVector( bytes.data(), bytes.count() ) );
+    frontCover->setPicture( TagLib::ByteVector( bytes.data(), bytes.size() ) );
     frontCover->setType( TagLib::ID3v2::AttachedPictureFrame::FrontCover );
     m_tag->addFrame( frontCover );
 

@@ -242,7 +242,7 @@ ASFTagHelper::setEmbeddedCover( const QImage &cover )
 
     // add new cover
     TagLib::ASF::Picture picture;
-    picture.setPicture( TagLib::ByteVector( bytes.data(), bytes.count() ) );
+    picture.setPicture( TagLib::ByteVector( bytes.data(), bytes.size() ) );
     picture.setType( TagLib::ASF::Picture::FrontCover );
     picture.setMimeType( "image/jpeg" );
     m_tag->addAttribute( name, TagLib::ASF::Attribute( picture.render() ) );

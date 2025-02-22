@@ -165,11 +165,6 @@ int ByteArray::count(char ch) const
     return QByteArray::count(ch);
 }
 
-int ByteArray::count() const
-{
-    return QByteArray::count();
-}
-
 QByteArray::const_reverse_iterator ByteArray::crbegin() const
 {
     return QByteArray::crbegin();
