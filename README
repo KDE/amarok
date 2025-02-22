@@ -39,20 +39,13 @@ not be entirely up to date. You can always look at CMakeLists.txt to discover
 the most recent dependencies.
 
 Required
-    * KDE Frameworks 5.108 (or newer, for an exact list look at CMakeLists.txt)
+    * KDE Frameworks 6.0 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
-    * Phonon 4.6.60 (or newer with support for Qt5) and one of the following backends:
-      * phonon-gstreamer 4.6.3 (or newer)
-      * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
+    * Phonon 4.12.0 (or newer with support for Qt6) and one of the available backends
 
-    * Qt 5.15
+    * Qt 6.6
       https://qt.io/
-      * Alternatively, building an experimental Qt6/KF6 version is now possible. Qt6
-        and KDE Frameworks 6 development files are required, in addition to Phonon
-        version with support for Qt6. Please be aware that there are likely a number
-        of unknown issues in addition to known the ones (albums context applet not
-        working)
 
     * TagLib 1.12 (or newer)
       (Metadata tagging library)
@@ -72,11 +65,10 @@ Optional
       (MTP device support)
       http://libmtp.sourceforge.net/
 
-    * Liblastfm 1.0.3 (or newer)
+    * Liblastfm 1.1.0 (or newer)
       (For scrobbling, internet radio, and artist info)
-      https://github.com/lastfm/liblastfm
-        * for Qt6 builds, liblastfm needs to be built with Qt6 support,
-          as of 24/12/31 available e.g. at https://github.com/drfiemost/liblastfm
+      originally https://github.com/lastfm/liblastfm
+      a version with Qt6 support available at e.g. https://github.com/drfiemost/liblastfm
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
@@ -85,8 +77,8 @@ Optional
 
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.1.0 (or newer)
-        * for Qt6 builds, libmygpo needs to be built with Qt6 support,
-          as of 24/12/31 only available at https://github.com/gpodder/libmygpo-qt/pull/23
+        * libmygpo needs to be built with Qt6 support, available at
+          https://github.com/gpodder/libmygpo-qt/pull/23
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/

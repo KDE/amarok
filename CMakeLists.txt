@@ -174,12 +174,12 @@ endif()
 
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING -DQT_NO_CAST_TO_ASCII)
 
-find_package(Phonon4Qt${QT_MAJOR_VERSION} 4.6.60 REQUIRED NO_MODULE)
+find_package(Phonon4Qt${QT_MAJOR_VERSION} 4.12.0 REQUIRED NO_MODULE)
 add_definitions(-DPHONON_LIB_SONAME=\"${PHONON_LIB_SONAME}\")
 
 if( WITH_LASTFM )
-    find_package( LibLastFm )
-    set( LIBLASTFM_MIN_VERSION "1.0.0" )
+    find_package( LibLastFm 1.2.0 )
+    set( LIBLASTFM_MIN_VERSION "1.2.0" )
     if( LIBLASTFM_FOUND )
         if ( ${LIBLASTFM_MIN_VERSION} VERSION_LESS ${LIBLASTFM_VERSION} )
             set( LIBLASTFM_FOUND TRUE )
@@ -219,11 +219,9 @@ if( WITH_PLAYER )
         add_definitions( "-DNO_MYSQL_EMBEDDED" )
     endif()
 
-    # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
-    # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
-    # will be fixed in liblastfm-1.0.4
-    set( LIBLASTFM_MIN_VERSION "1.0.3" )
-    set_package_properties( LibLastFm PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" TYPE OPTIONAL )
+    # Qt6 support is currently only available in liblastfm forks
+    set( LIBLASTFM_MIN_VERSION "1.2.0" )
+    set_package_properties( LibLastFm PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "https://github.com/Mazhoon/liblastfm/" TYPE OPTIONAL )
 
     find_package(FFmpeg)
     set_package_properties(FFmpeg PROPERTIES
@@ -249,13 +247,6 @@ if( WITH_PLAYER )
             URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
             TYPE OPTIONAL
             PURPOSE "Synchronize podcast subscriptions with gpodder.net"
-        )
-    endif()
-
-    if( WITH_GPODDER OR WITH_LASTFM ) ## problems in their header files as of 07/2024, not compatible with strict flags
-        remove_definitions(
-            -DQT_NO_CAST_FROM_ASCII
-            -DQT_NO_KEYWORDS
         )
     endif()
 
