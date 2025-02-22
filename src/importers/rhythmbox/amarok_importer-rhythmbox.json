@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從 Rhythmbox 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "view-importers-rhythmbox-amarok",
-        "Id": "amarok_importer-rhythmbox",
         "License": "GPL",
         "Name": "Rhythmbox Importer",
         "Name[bg]": "Импортиране от Rhythmbox",

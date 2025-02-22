@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從標為不邪惡的 Magnatune 唱片標籤的音樂中，預聽並購買",
         "EnabledByDefault": true,
         "Icon": "view-services-magnatune-amarok",
-        "Id": "amarok_service_magnatunestore",
         "License": "GPL",
         "Name": "Magnatune Store",
         "Name[bg]": "Магазин Magnatune",

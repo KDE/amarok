@@ -55,7 +55,6 @@
         "Description[zh_TW]": "Amarok 的 DAAP 收藏外掛程式",
         "EnabledByDefault": false,
         "Icon": "network-workgroup",
-        "Id": "amarok_collection-daapcollection",
         "License": "GPL",
         "Name": "DAAP Collection",
         "Name[be]": "Калекцыя DAAP",

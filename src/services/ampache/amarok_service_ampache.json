@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從 Ampache 伺服器上聽音樂",
         "EnabledByDefault": false,
         "Icon": "view-services-ampache-amarok",
-        "Id": "amarok_service_ampache",
         "License": "GPL",
         "Name": "Ampache",
         "Name[bg]": "Ampache",

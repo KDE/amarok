@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從 Banshee 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "view-importers-banshee-amarok",
-        "Id": "amarok_importer-banshee",
         "License": "GPL",
         "Name": "Banshee Importer",
         "Name[bg]": "Импортиране от Banshee",

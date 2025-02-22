@@ -55,7 +55,6 @@
         "Description[zh_TW]": "Amarok 的收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "server-database",
-        "Id": "amarok_collection-mysqlcollection",
         "License": "GPL",
         "Name": "MySQL Collection",
         "Name[bg]": "Колекция MySQL",

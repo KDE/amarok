@@ -55,7 +55,6 @@
         "Description[zh_TW]": "一種將 Last.fm 其功能性整合到 Amarok 中的服務",
         "EnabledByDefault": true,
         "Icon": "view-services-lastfm-amarok",
-        "Id": "amarok_service_lastfm",
         "License": "GPL",
         "Name": "Last.fm",
         "Name[bg]": "Last.fm",

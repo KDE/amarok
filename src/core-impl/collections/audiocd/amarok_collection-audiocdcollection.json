@@ -55,7 +55,6 @@
         "Description[zh_TW]": "Amarok 的音效 CD 收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "media-optical-audio",
-        "Id": "amarok_collection-audiocdcollection",
         "License": "GPL",
         "Name": "AudioCd Collection",
         "Name[bg]": "Колекция с компактдискове",

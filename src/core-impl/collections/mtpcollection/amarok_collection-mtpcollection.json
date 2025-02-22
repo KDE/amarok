@@ -55,7 +55,6 @@
         "Description[zh_TW]": "Amarok 的 MTP 收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "media-flash-smart-media",
-        "Id": "amarok_collection-mtpcollection",
         "License": "GPL",
         "Name": "MTP Collection",
         "Name[be]": "Калекцыя MTP",

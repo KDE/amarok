@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從 Apple iTunes 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "media-album-track",
-        "Id": "amarok_importer-itunes",
         "License": "GPL",
         "Name": "Apple iTunes Importer",
         "Name[bg]": "Импортиране от Apple iTunes",

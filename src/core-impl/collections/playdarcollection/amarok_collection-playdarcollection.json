@@ -55,7 +55,6 @@
         "Description[zh_TW]": "Playdar 可以找到的音樂",
         "EnabledByDefault": false,
         "Icon": "network-workgroup",
-        "Id": "amarok_collection-playdarcollection",
         "License": "GPL",
         "Name": "Playdar Collection",
         "Name[bg]": "Колекция Playdar",

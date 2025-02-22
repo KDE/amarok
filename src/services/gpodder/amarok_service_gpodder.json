@@ -56,7 +56,6 @@
         "Description[zh_TW]": "Podcast 服務",
         "EnabledByDefault": false,
         "Icon": "view-services-gpodder-amarok",
-        "Id": "amarok_service_gpodder",
         "License": "GPL",
         "Name": "gpodder.net",
         "Name[bg]": "gpodder.net",

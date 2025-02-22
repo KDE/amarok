@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從 Amarok 2.x 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "amarok",
-        "Id": "amarok_importer-amarok",
         "License": "GPL",
         "Name": "Amarok 2.x Importer",
         "Name[bg]": "Импортиране от Amarok 2.x",

@@ -55,7 +55,6 @@
         "Description[zh_TW]": "Amarok 的裝置外掛程式",
         "EnabledByDefault": true,
         "Icon": "network-server-database",
-        "Id": "amarok_storage-mysqlserverstorage",
         "License": "GPL",
         "Name": "MySQLServer Storage",
         "Name[bg]": "MySQLServer Хранилище",

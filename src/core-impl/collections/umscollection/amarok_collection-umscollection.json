@@ -32,7 +32,6 @@
         "Category": "Collection",
         "EnabledByDefault": true,
         "Icon": "drive-removable-media-usb-pendrive",
-        "Id": "amarok_collection-umscollection",
         "License": "GPL",
         "Name": "Universal Mass Storage Collection",
         "Name[bg]": "Колекция Universal Mass Storage",

@@ -55,7 +55,6 @@
         "Description[zh_TW]": "瀏覽並訂閱大量的 podcast",
         "EnabledByDefault": true,
         "Icon": "view-services-opml-amarok",
-        "Id": "amarok_service_opmldirectory",
         "License": "GPL",
         "Name": "Podcast Directory",
         "Name[bg]": "Подкастове",

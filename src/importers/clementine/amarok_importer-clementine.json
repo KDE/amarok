@@ -55,7 +55,6 @@
         "Description[zh_TW]": "從 Clementine 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "view-importers-clementine-amarok",
-        "Id": "amarok_importer-clementine",
         "License": "GPL",
         "Name": "Clementine Importer",
         "Name[bg]": "Импортиране от Clementine",
