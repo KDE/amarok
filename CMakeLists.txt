@@ -241,7 +241,7 @@ if( WITH_PLAYER )
 
     if( WITH_GPODDER )
         ## gpodder Service
-        find_package(Mygpo-qt6 1.1.0 CONFIG)
+        find_package(Mygpo-qt6 1.2.0 CONFIG)
         set_package_properties(Mygpo-qt6 PROPERTIES
             DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
             URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
