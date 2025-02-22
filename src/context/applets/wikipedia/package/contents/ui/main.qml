@@ -190,7 +190,7 @@ AmarokQml.Applet {
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignBottom
 
-            onNavigationRequested: {
+            onNavigationRequested: (request)=> {
                 if (request.navigationType == WebEngineNavigationRequest.LinkClickedNavigation) {
                     request.action = WebEngineNavigationRequest.IgnoreRequest
                     WikipediaEngine.url = request.url
@@ -200,7 +200,7 @@ AmarokQml.Applet {
             Connections {
                 target: WikipediaEngine
 
-                onPageChanged: content.loadHtml(WikipediaEngine.page, WikipediaEngine.url)
+                function onPageChanged() { content.loadHtml(WikipediaEngine.page, WikipediaEngine.url) }
             }
 
             BusyIndicator {

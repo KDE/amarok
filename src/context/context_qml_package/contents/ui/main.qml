@@ -87,7 +87,7 @@ Item {
                         Connections {
                             target: AppletProxyModel
 
-                            onDataChanged: {
+                            function onDataChanged() {
                                 if (!!mainscript && mainscript != source) {
                                     Context.debug("Data changed for applet " + appletId);
                                     initialize();
@@ -97,7 +97,7 @@ Item {
                         Connections {
                             target: appletFlickable
 
-                            onScrollToApplet: {
+                            function onScrollToApplet(id) {
                                 if (id == appletId) {
                                     appletFlickable.contentY = y;
                                     Context.debug("Scroll to applet: " + appletId);

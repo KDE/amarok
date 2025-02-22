@@ -94,7 +94,7 @@ AmarokQml.Applet {
 
                 Connections {
                     target: LyricsEngine
-                    onPositionChanged: {
+                    function onPositionChanged() {
                         if (applet.autoScroll) {
                             var middle = textArea.contentHeight * LyricsEngine.position;
                             var top = middle - textView.height / 2;

@@ -48,7 +48,6 @@ ColumnLayout {
         elide: Text.ElideRight
 
         CopyArea {
-            copyMarker: copyMarker
             targetText: titleLabel.text
         }
     }
@@ -72,7 +71,6 @@ ColumnLayout {
         elide: Text.ElideRight
 
         CopyArea {
-            copyMarker: copyMarker
             targetText: artistLabel.text
         }
     }
@@ -95,7 +93,6 @@ ColumnLayout {
         elide: Text.ElideRight
 
         CopyArea {
-            copyMarker: copyMarker
             targetText: albumLabel.text
         }
     }
