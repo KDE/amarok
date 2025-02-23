@@ -32,6 +32,7 @@
   <name xml:lang="fi">Amarok</name>
   <name xml:lang="fr">Amarok</name>
   <name xml:lang="gl">Amarok</name>
+  <name xml:lang="he">Amarok</name>
   <name xml:lang="hu">Amarok</name>
   <name xml:lang="ia">Amarok</name>
   <name xml:lang="id">Amarok</name>
@@ -64,7 +65,9 @@
   <summary xml:lang="fi">Löydä uudelleen musiikkisi</summary>
   <summary xml:lang="fr">Redécouvrir votre musique</summary>
   <summary xml:lang="gl">Volva descubrir a súa música.</summary>
+  <summary xml:lang="he">גילוי המוזיקה שלך מחדש</summary>
   <summary xml:lang="it">Riscopri la tua musica</summary>
+  <summary xml:lang="ka">თავიდან აღმოაჩინეთ თქვენი მუსიკა</summary>
   <summary xml:lang="nl">Herontdek uw muziek</summary>
   <summary xml:lang="pl">Odkryj swoją muzykę na nowo</summary>
   <summary xml:lang="sl">Ponovno odkrijte vašo glasbo</summary>
@@ -89,6 +92,7 @@
     <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas monen alustan musiikkisoitin- ja -kokoelmanhallintasovellus.</p>
     <p xml:lang="fr">Amarok est un lecteur de musique et un gestionnaire de collections libre, multi-plate-forme, polyvalent, puissant et riche en fonctionnalités.</p>
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
+    <p xml:lang="he">Amarok הוא נגן מוזיקה ומנהל אוספים חופשי, חוצה מערכות הפעלה, גמיש, רב עוצמה ועתיר יכולות.</p>
     <p xml:lang="hu">Az Amarok egy szabad, többplatformos, sokféle célra alkalmas és szolgáltatásgazdag zenelejátszó és gyűjteménykezelő.</p>
     <p xml:lang="ia">Amarok es un libere, versatile e potente reproductor musical</p>
     <p xml:lang="id">Amarok adalah pemutar musik dan pengelola koleksi yang bebas, lintas platform, serbaguna, hebat, dan kaya fitur.</p>
@@ -125,6 +129,7 @@
     <p xml:lang="fi">Ominaisuudet:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="he">יכולות:</p>
     <p xml:lang="hu">Szolgáltatások:</p>
     <p xml:lang="ia">Characteristicas:</p>
     <p xml:lang="id">Fitur:</p>
@@ -168,6 +173,7 @@
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="fr">Listes de lectures dynamiques selon différents critères</li>
       <li xml:lang="gl">Listas de reprodución dinámicas que se axeitan a distintos criterios.</li>
+      <li xml:lang="he">רשימות נגינה דינמיות לפי מגוון תנאים</li>
       <li xml:lang="hu">Különböző feltételeknek megfelelő dinamikus lejátszólisták</li>
       <li xml:lang="id">Playlist dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
@@ -207,6 +213,7 @@
       <li xml:lang="fi">Kokoelmanhallinta arviointituella</li>
       <li xml:lang="fr">Gestion de collection avec prise en charge des évaluations</li>
       <li xml:lang="gl">Xestión de coleccións que permite puntuacións.</li>
+      <li xml:lang="he">ניהול אוסף עם תמיכה בדירוג</li>
       <li xml:lang="hu">Gyűjteménykezelés értékelésekkel</li>
       <li xml:lang="id">Mengelola koleksi dengan dukungan peringkat</li>
       <li xml:lang="it">Gestione della collezione con supporto per la valutazione</li>
@@ -246,6 +253,7 @@
       <li xml:lang="fi">Tuki tavallisille iPod-, MTP- ja UMS-musiikkisoitinlaitteille</li>
       <li xml:lang="fr">Prise en charge basique des iPod et des lecteurs de musique conformes à MTP et UMS</li>
       <li xml:lang="gl">Compatíbel con dispositivos de reprodución de música básicos: iPod, MTP e UMS.</li>
+      <li xml:lang="he">תמיכה בהתקני נגני מוזיקה מסוג iPod ברמה בסיסית, MTP ו־UMS</li>
       <li xml:lang="hu">iPon, MTP és UMS zenelejátszó eszközök támogatása</li>
       <li xml:lang="id">Terutama mendukung peranti pemutar musik iPod, MTP dan UMS</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
@@ -278,6 +286,7 @@
       <li xml:lang="fi">Sisään rakennetut internetpalvelut: Last.fm, Magnatune, Ampache ja muita.</li>
       <li xml:lang="fr">Intégration des services Internet : last.fm, Magnatune, Ampache et plus.</li>
       <li xml:lang="gl">Compatíbel con servizos de Internet: last.fm, Magnatune, Ampache e máis.</li>
+      <li xml:lang="he">שירותים מקוונים מובנים: last.fm,‏ Magnatune,‏ Ampache ועוד.</li>
       <li xml:lang="id">Terintegrasi layanan Internet: last.fm, Magnatune, Ampache, dan selebihnya.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Ampache e altri.</li>
       <li xml:lang="ka">ინტეგრირებული ინტერნეტ-სერვისები: last.fm, Magnatune, Jamendo, Amplache და სხვ.</li>
@@ -307,6 +316,7 @@
       <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="fr">Gestion de scripts</li>
       <li xml:lang="gl">Permite guionización.</li>
+      <li xml:lang="he">תמיכה בסקריפטים</li>
       <li xml:lang="hu">Szkripttámogatás</li>
       <li xml:lang="ia">Supporto de scripting</li>
       <li xml:lang="id">Dukungan skrip</li>
@@ -347,6 +357,7 @@
       <li xml:lang="fi">Kansikuvien hallinta</li>
       <li xml:lang="fr">Gestionnaire de pochettes</li>
       <li xml:lang="gl">Xestor de portadas.</li>
+      <li xml:lang="he">מנהל עטיפות</li>
       <li xml:lang="hu">Borítókezelő</li>
       <li xml:lang="ia">Gerente de copertura</li>
       <li xml:lang="id">Pengelola sampul</li>
@@ -386,6 +397,7 @@
       <li xml:lang="fi">Voimakkuudentasauksen tuki</li>
       <li xml:lang="fr">Prise en charge de Replay Gain</li>
       <li xml:lang="gl">Permite normalizar o volume.</li>
+      <li xml:lang="he">תמיכה באיזון עוצמת שמע רצועות</li>
       <li xml:lang="hu">Hangerőkiegyenlítés támogatása</li>
       <li xml:lang="id">Dukungan gain putar ulang</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
@@ -425,6 +437,7 @@
       <caption xml:lang="fi">Musiikin toistaminen Amarok 3.0:ssa</caption>
       <caption xml:lang="fr">Lecture de musique dans Amarok 3.0</caption>
       <caption xml:lang="gl">Reproducindo música en Amarok 3.0.</caption>
+      <caption xml:lang="he">ניגון מוזיקה ב־Amarok 3.0</caption>
       <caption xml:lang="id">Memutar musik di Amarok 3.0</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok 3.0</caption>
       <caption xml:lang="ka">მუსიკის დაკვრა Amarok 3.0-ში</caption>
@@ -450,8 +463,10 @@
       <caption xml:lang="fi">Amarok 3.1:n soitinikkuna mukautetulla asettelulla</caption>
       <caption xml:lang="fr">Fenêtre de lecteur Amarok 3.1 avec une mise en page personnalisée</caption>
       <caption xml:lang="gl">Xanela do reprodutor Amarok 3.1 cunha disposición personalizada.</caption>
+      <caption xml:lang="he">חלון נגן Amarok 3.1 עם פריסה מותאמת</caption>
       <caption xml:lang="id">Pemutar Amarok 3.1 dengan tata letak terkustomisasi</caption>
       <caption xml:lang="it">La finestra del lettore di Amarok 3.1 con una disposizione personalizzata</caption>
+      <caption xml:lang="ka">Amarok 3.1-ის დაკვრის ფანჯარა მორგებადი განლაგებით</caption>
       <caption xml:lang="ko">Amarok 3.1 재생기 창, 사용자 정의 레이아웃</caption>
       <caption xml:lang="nl">Afspelervenster van Amarok 3.1 met een aangepaste indeling</caption>
       <caption xml:lang="pl">Okno odtwarzacza Amarok 3.1 z dostosowanym układem</caption>
@@ -480,6 +495,7 @@
       <caption xml:lang="fi">Amarok-ikkunat</caption>
       <caption xml:lang="fr">Fenêtres Amarok</caption>
       <caption xml:lang="gl">Xanelas de Amarok.</caption>
+      <caption xml:lang="he">חלונות Amarok</caption>
       <caption xml:lang="hu">Az Amarok ablaka</caption>
       <caption xml:lang="ia">Fenestras de Amarok</caption>
       <caption xml:lang="id">Jendela Amarok</caption>
