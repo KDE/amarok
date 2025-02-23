@@ -4,21 +4,22 @@
 # Assaf Gillat <gillata@gmail.com>, 2005.
 # Chen Levy <contrib@chenlevy.com>, 2006.
 # tahmar1900 <tahmar1900@gmail.com>, 2008, 2009.
-# SPDX-FileCopyrightText: 2024 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2025 Yaron Shahrabani <sh.yaron@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-02-22 00:40+0000\n"
-"PO-Revision-Date: 2024-08-07 13:25+0300\n"
+"PO-Revision-Date: 2025-02-22 21:55+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.05.2\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 24.12.2\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -187,7 +188,7 @@ msgstr "לחיצה לשינוי"
 #: ActionClasses.cpp:340
 #, kde-format
 msgid "&Replay Gain Mode"
-msgstr "מצב ה&גברת שמע"
+msgstr "מצב &איזון שמע"
 
 #: ActionClasses.cpp:342
 #, kde-format
@@ -379,7 +380,7 @@ msgstr "האם להציג את הסמל במגש המערכת"
 #: amarokconfig.kcfg:69
 #, kde-format
 msgid "Enable/Disable tray icon for Amarok."
-msgstr "הפעל/בטל את הסמל במגש המערכת עבור Amarok."
+msgstr "הפעלה/כיבוי הסמל של Amarok בשורת המערכת."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
@@ -399,19 +400,19 @@ msgstr "הפעל/בטל את הסמל במגש המערכת עבור Amarok."
 #: amarokconfig.kcfg:78
 #, kde-format
 msgid "Number of undo levels in playlist"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה"
+msgstr "מספר רמות הביטול ברשימת נגינה"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:79
 #, kde-format
 msgid "The number of undo levels in the playlist."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "מספר רמות הביטול ברשימת נגינה."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:83
 #, kde-format
 msgid "Whether playlists store relative path"
-msgstr "האם רשימות־ההשמעה ישמרו כנתיב יחסי"
+msgstr "האם רשימות הנגינה תאחסנה נתיב יחסי"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:84
@@ -2039,6 +2040,8 @@ msgid "1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 רצועה"
 msgstr[1] "%1 רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:281
 #: browsers/CollectionTreeItemModelBase.cpp:372
@@ -2229,6 +2232,8 @@ msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
 msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/filebrowser/FileView.cpp:573
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
@@ -2238,11 +2243,13 @@ msgid "Confirm Move to Trash"
 msgstr "אשר העברה אל פח האשפה"
 
 #: browsers/filebrowser/FileView.cpp:574
-#, kde-format
+#, fuzzy, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
 msgstr[0] "האם אתה בטוח שאתה רוצה להעביר פריט זה אל פח האשפה?"
 msgstr[1] "האם אתה בטוח שאתה רוצה להעביר %1 פריטים אלו אל פח האשפה?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/InfoProxy.cpp:168
 #, kde-format
@@ -2545,6 +2552,8 @@ msgid "One Playlist"
 msgid_plural "%1 playlists"
 msgstr[0] "רשימת־השמעה"
 msgstr[1] "רשימת־השמעה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:124
 #, fuzzy, kde-format
@@ -2561,6 +2570,8 @@ msgid "One playlist"
 msgid_plural "%1 playlists"
 msgstr[0] "רשימת־השמעה"
 msgstr[1] "רשימת־השמעה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:399
 #, fuzzy, kde-format
@@ -2607,6 +2618,8 @@ msgid "a Track"
 msgid_plural "%1 Tracks"
 msgstr[0] "רצועה אחת"
 msgstr[1] "מידע עבור %1 רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, fuzzy, kde-format
@@ -2624,6 +2637,8 @@ msgid "1 Playlist"
 msgid_plural "%1 Playlists"
 msgstr[0] "רשימת־השמעה"
 msgstr[1] "רשימת־השמעה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, fuzzy, kde-format
@@ -2633,6 +2648,8 @@ msgid "Remove a Track From %2"
 msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "מוחק רצועות מ־iPod"
 msgstr[1] "מוחק רצועות מ־iPod"
+msgstr[2] ""
+msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
@@ -2818,6 +2835,8 @@ msgid "One Channel"
 msgid_plural "%1 channels"
 msgstr[0] "&עדכן הכול"
 msgstr[1] "&עדכן הכול"
+msgstr[2] ""
+msgstr[3] ""
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:320
@@ -3417,6 +3436,8 @@ msgid "(%2one exception%3)"
 msgid_plural "(%2%1 exceptions%3)"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_tagsGroup)
 #: configdialog/dialogs/MetadataConfig.ui:17
@@ -3914,11 +3935,13 @@ msgstr "מחפש תסריטים"
 
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 רצועה"
 msgstr[1] "%1 רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: context/applets/albums/plugin/AlbumsEngine.cpp:212
 #, kde-format
@@ -3953,6 +3976,8 @@ msgid "%1 pixel"
 msgid_plural "%1 pixels"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
 #, fuzzy, kde-format
@@ -4965,6 +4990,8 @@ msgid_plural ""
 "debugging log)"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -4985,6 +5012,8 @@ msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
 msgstr[0] "רצועות"
 msgstr[1] "רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, fuzzy, kde-format
@@ -4994,6 +5023,8 @@ msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
 msgstr[0] "מעביר קבצים לסל־המחזור"
 msgstr[1] "מעביר קבצים לסל־המחזור"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:238
 #, kde-format
@@ -5001,6 +5032,8 @@ msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:246
 #, kde-format
@@ -5009,6 +5042,8 @@ msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, fuzzy, kde-format
@@ -5025,6 +5060,8 @@ msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
 #, fuzzy, kde-format
@@ -5040,6 +5077,8 @@ msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:394
 #, kde-format
@@ -5057,6 +5096,8 @@ msgid_plural ""
 "unsupported formats (%2).<br>"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
 #, kde-format
@@ -5064,6 +5105,8 @@ msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
 #, kde-format
@@ -5072,6 +5115,8 @@ msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:419
 #, kde-format
@@ -5096,6 +5141,8 @@ msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
 msgstr[0] "מוחק רצועות מ־iPod"
 msgstr[1] "מוחק רצועות מ־iPod"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, fuzzy, kde-format
@@ -5408,6 +5455,8 @@ msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
 msgstr[0] "רצועה אחת כבר קיימת על התקן־המדיה"
 msgstr[1] "רצועה אחת כבר קיימת על התקן־המדיה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:561
 #, fuzzy, kde-format
@@ -5423,6 +5472,8 @@ msgid "Track not deleted:"
 msgid_plural "Tracks not deleted:"
 msgstr[0] "רצועות נמחקו"
 msgstr[1] "רצועות נמחקו"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:572
 #, fuzzy, kde-format
@@ -5431,6 +5482,8 @@ msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
 msgstr[0] "מוחק רצועות מ־MTP"
 msgstr[1] "מוחק רצועות מ־MTP"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, fuzzy, kde-format
@@ -5446,6 +5499,8 @@ msgid "Removing Track from Device"
 msgid_plural "Removing Tracks from Device"
 msgstr[0] "מוחק רצועות מ־iPod"
 msgstr[1] "מוחק רצועות מ־iPod"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, fuzzy, kde-format
@@ -5539,6 +5594,8 @@ msgid_plural ""
 "and from underlying storage medium."
 msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
 #, fuzzy, kde-format
@@ -5553,6 +5610,8 @@ msgid_plural ""
 "removed from %2."
 msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, fuzzy, kde-format
@@ -5567,6 +5626,8 @@ msgid_plural ""
 "originals deleted."
 msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
 #, fuzzy, kde-format
@@ -5593,6 +5654,8 @@ msgid_plural ""
 "directory is writable."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, fuzzy, kde-format
@@ -5706,6 +5769,8 @@ msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
 msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:279
 #, kde-format
@@ -5753,6 +5818,8 @@ msgid "Removing one track from %2"
 msgid_plural "Removing %1 tracks from %2"
 msgstr[0] "מוחק רצועות מ־iPod"
 msgstr[1] "מוחק רצועות מ־iPod"
+msgstr[2] ""
+msgstr[3] ""
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:14
@@ -6049,6 +6116,8 @@ msgid " Item"
 msgid_plural " Items"
 msgstr[0] " פריטים"
 msgstr[1] " פריטים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6139,6 +6208,8 @@ msgid " minute"
 msgid_plural " minutes"
 msgstr[0] "דקות"
 msgstr[1] "דקות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
 #, fuzzy, kde-format
@@ -6180,6 +6251,8 @@ msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
 #, kde-format
@@ -6340,6 +6413,8 @@ msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
 msgstr[0] "רצועות"
 msgstr[1] "רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/collections/CollectionLocation.cpp:413
 #, fuzzy, kde-format
@@ -6348,6 +6423,8 @@ msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
 msgstr[0] "מעביר קבצים לסל־המחזור"
 msgstr[1] "מעביר קבצים לסל־המחזור"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/collections/CollectionLocation.cpp:419
 #, fuzzy, kde-format
@@ -6356,6 +6433,8 @@ msgid "Moving one track to %2"
 msgid_plural "Moving %1 tracks to %2"
 msgstr[0] "רצועות"
 msgstr[1] "רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/collections/CollectionLocation.cpp:422
 #, fuzzy, kde-format
@@ -6364,6 +6443,8 @@ msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
 msgstr[0] "מעביר קבצים לסל־המחזור"
 msgstr[1] "מעביר קבצים לסל־המחזור"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/collections/CollectionLocation.cpp:428
 #, fuzzy, kde-format
@@ -6372,6 +6453,8 @@ msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
 msgstr[0] "רצועות"
 msgstr[1] "רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/collections/CollectionLocation.cpp:431
 #, fuzzy, kde-format
@@ -6380,6 +6463,8 @@ msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "מעביר קבצים לסל־המחזור"
 msgstr[1] "מעביר קבצים לסל־המחזור"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/meta/Meta.cpp:206
 #, fuzzy, kde-format
@@ -6889,6 +6974,8 @@ msgid "%1 day, "
 msgid_plural "%1 days, "
 msgstr[0] "סידור %1"
 msgstr[1] "סידור %1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/meta/support/MetaUtility.cpp:428
 #, kde-format
@@ -6906,6 +6993,8 @@ msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "שנה"
 msgstr[1] "שנה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/meta/support/MetaUtility.cpp:444
 #, fuzzy, kde-format
@@ -6915,6 +7004,8 @@ msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "חודשים"
 msgstr[1] "חודשים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/meta/support/MetaUtility.cpp:446
 #, fuzzy, kde-format
@@ -6924,6 +7015,8 @@ msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "סידור %1"
 msgstr[1] "סידור %1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/meta/support/MetaUtility.cpp:448
 #, fuzzy, kde-format
@@ -6933,6 +7026,8 @@ msgid "%1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "שעות"
 msgstr[1] "שעות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/meta/support/MetaUtility.cpp:450
 #, fuzzy, kde-format
@@ -6942,6 +7037,8 @@ msgid "%1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "דקות"
 msgstr[1] "דקות"
+msgstr[2] ""
+msgstr[3] ""
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: core/meta/support/MetaUtility.cpp:452
@@ -6952,6 +7049,8 @@ msgid "%1 second"
 msgid_plural "%1 seconds"
 msgstr[0] "שניות"
 msgstr[1] "שניות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
@@ -7044,11 +7143,13 @@ msgid "%1"
 msgstr "%1 %2"
 
 #: core/support/Amarok.cpp:64
-#, kde-format
+#, fuzzy, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "לפני שבוע"
 msgstr[1] "לפני %1 שבועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/support/Amarok.cpp:70
 #, kde-format
@@ -7056,25 +7157,31 @@ msgid "Yesterday"
 msgstr "אתמול"
 
 #: core/support/Amarok.cpp:71
-#, kde-format
+#, fuzzy, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "לפני יום"
 msgstr[1] "לפני %1 ימים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/support/Amarok.cpp:74
-#, kde-format
+#, fuzzy, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "לפני שעה"
 msgstr[1] "לפני %1 שעות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/support/Amarok.cpp:80
-#, kde-format
+#, fuzzy, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "לפני דקה"
 msgstr[1] "לפני %1 דקות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: core/support/Amarok.cpp:81
 #, kde-format
@@ -7526,11 +7633,13 @@ msgid "Unable to find a cover for '%1'."
 msgstr "מצרף עטיפה עבור %1..."
 
 #: covermanager/CoverFetchingActions.cpp:44
-#, kde-format
+#, fuzzy, kde-format
 msgid "Fetch Cover"
 msgid_plural "Fetch Covers"
 msgstr[0] "צרף עטיפה"
 msgstr[1] "צרף עטיפופת"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFetchingActions.cpp:46
 #, kde-format
@@ -7538,6 +7647,8 @@ msgid "Fetch the artwork for this album"
 msgid_plural "Fetch artwork for %1 albums"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFetchingActions.cpp:73
 #: covermanager/CoverFoundDialog.cpp:380
@@ -7551,11 +7662,13 @@ msgid "Display artwork for this album"
 msgstr ""
 
 #: covermanager/CoverFetchingActions.cpp:93
-#, kde-format
+#, fuzzy, kde-format
 msgid "Unset Cover"
 msgid_plural "Unset Covers"
 msgstr[0] "הסר עטיפה"
 msgstr[1] "הסר עטיפות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFetchingActions.cpp:95
 #, kde-format
@@ -7563,14 +7676,18 @@ msgid "Remove artwork for this album"
 msgid_plural "Remove artwork for %1 albums"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFetchingActions.cpp:108
-#, kde-format
+#, fuzzy, kde-format
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
 "Are you sure you want to delete these %1 covers from the Collection?"
 msgstr[0] "האם הנך בטוח שברצונך למחוק עטיפה זו מהאוסף?"
 msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 עטיפות אלו מהאוסף?"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFetchingActions.cpp:131
 #, kde-format
@@ -7578,11 +7695,13 @@ msgid "Set Custom Cover"
 msgstr "קבע עטיפה מותאמת אישית"
 
 #: covermanager/CoverFetchingActions.cpp:133
-#, kde-format
+#, fuzzy, kde-format
 msgid "Set custom artwork for this album"
 msgid_plural "Set custom artwork for these %1 albums"
 msgstr[0] "קבע עטיפה מותאמת אישית לאלבום הזה"
 msgstr[1] "קבע עטיפה מותאמת אישית לאלבומים האלו %1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFetchingActions.cpp:164
 #, kde-format
@@ -7695,6 +7814,8 @@ msgid "1 Image Found"
 msgid_plural "%1 Images Found"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverFoundDialog.cpp:744
 #, fuzzy, kde-format
@@ -7849,11 +7970,13 @@ msgid "Finished."
 msgstr "הסתיים."
 
 #: covermanager/CoverManager.cpp:620
-#, kde-format
+#, fuzzy, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " עטיפה לא נמצאה"
 msgstr[1] " <b>%1</b> עטיפות לא נמצאו"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:638
 #, kde-format
@@ -7866,18 +7989,22 @@ msgid "Fetching cover for %1..."
 msgstr "מצרף עטיפה עבור %1..."
 
 #: covermanager/CoverManager.cpp:650
-#, kde-format
+#, fuzzy, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "מצרף עטיפה אחת:"
 msgstr[1] "מצרף <b>%1</b> עטיפות...:"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:652
-#, kde-format
+#, fuzzy, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "אחד צורף"
 msgstr[1] "%1 צורפו"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:656
 #, kde-format
@@ -7886,11 +8013,13 @@ msgstr " - "
 
 # kde-il: don't translate
 #: covermanager/CoverManager.cpp:657
-#, kde-format
+#, fuzzy, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "אחד לא נמצא"
 msgstr[1] "%1 לא נמצאו"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:660
 #: services/lastfm/LastFmServiceSettings.cpp:107
@@ -7899,18 +8028,22 @@ msgid "Connecting..."
 msgstr "מתחבר..."
 
 #: covermanager/CoverManager.cpp:683
-#, kde-format
+#, fuzzy, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "תוצאה אחת עבור \"%2\""
 msgstr[1] "%1 תוצאות עבור \"%2\""
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:687
-#, kde-format
+#, fuzzy, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] " אלבום אחד"
 msgstr[1] "%1 אלבומים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:699
 #, kde-format
@@ -7933,6 +8066,8 @@ msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] " - ( <b>%1</b> ללא עטיפה )"
 msgstr[1] " - ( <b>%1</b> ללא עטיפה )"
+msgstr[2] ""
+msgstr[3] ""
 
 #: covermanager/CoverManager.cpp:769
 #, kde-format
@@ -8050,6 +8185,8 @@ msgid "<b><font color='green'>Success:</font></b> Imported %1 track"
 msgid_plural "<b><font color='green'>Success:</font></b> Imported %1 tracks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: dialogs/DatabaseImporterDialog.cpp:113
 #, kde-format
@@ -8832,12 +8969,14 @@ msgid "Track Details: %1 by %2"
 msgstr "מידע על הרצועה: %1 מאת %2"
 
 #: dialogs/TagDialog.cpp:724
-#, kde-format
+#, fuzzy, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
 msgstr[0] "רצועה אחת"
 msgstr[1] "מידע עבור %1 רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: dialogs/TagDialog.cpp:753 dialogs/TagDialog.cpp:763
 #, kde-format
@@ -8855,11 +8994,13 @@ msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> מאת <b>%2</b> מתוך <b>%3</b>"
 
 #: dialogs/TagDialog.cpp:771
-#, kde-format
+#, fuzzy, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "עורך קובץ אחד"
 msgstr[1] "עורך %1 קבצים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: dialogs/TagDialog.cpp:809
 #, kde-format
@@ -11949,20 +12090,24 @@ msgid "&Save playlist to \"%1\""
 msgstr "&שמור רשימת־השמעה אל \"%1\""
 
 #: playlist/PlaylistInfoWidget.cpp:58
-#, kde-format
+#, fuzzy, kde-format
 msgctxt "%1 is number of tracks, %2 is time"
 msgid "%1 track (%2)"
 msgid_plural "%1 tracks (%2)"
 msgstr[0] "%1 רצועה (%2)"
 msgstr[1] "%1 רצועות (%2)"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlist/PlaylistInfoWidget.cpp:63
-#, kde-format
+#, fuzzy, kde-format
 msgctxt "%1 is number of tracks"
 msgid "%1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 רצועה"
 msgstr[1] "%1 רצועות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlist/PlaylistInfoWidget.cpp:67
 #, fuzzy, kde-format
@@ -12755,6 +12900,8 @@ msgid "Playlist length: 1 track"
 msgid_plural "Playlist length: %1 tracks"
 msgstr[0] "רשימת־השמעה־%1"
 msgstr[1] "רשימת־השמעה־%1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:120
 #, fuzzy, kde-format
@@ -12764,6 +12911,8 @@ msgid "Playlist length: more than 1 track"
 msgid_plural "Playlist length: more than %1 tracks"
 msgstr[0] "רשימת־השמעה־%1"
 msgstr[1] "רשימת־השמעה־%1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:123
 #, fuzzy, kde-format
@@ -12773,6 +12922,8 @@ msgid "Playlist length: less than 1 track"
 msgid_plural "Playlist length: less than %1 tracks"
 msgstr[0] "רשימת־השמעה־%1"
 msgstr[1] "רשימת־השמעה־%1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:126
 #, fuzzy, kde-format
@@ -12944,6 +13095,8 @@ msgid "%1 star"
 msgid_plural "%1 stars"
 msgstr[0] "%1 רצועה"
 msgstr[1] "%1 רצועה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:188
 #, kde-format
@@ -13051,6 +13204,8 @@ msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "סידור %1"
 msgstr[1] "סידור %1"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:386
 #, fuzzy, kde-format
@@ -13059,6 +13214,8 @@ msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "חודשים"
 msgstr[1] "חודשים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:389
 #, fuzzy, kde-format
@@ -13067,6 +13224,8 @@ msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "שנה"
 msgstr[1] "שנה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:540
 #: playlistgenerator/constraints/TagMatch.cpp:757
@@ -13077,6 +13236,8 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "ימים"
 msgstr[1] "ימים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:541
 #: playlistgenerator/constraints/TagMatch.cpp:758
@@ -13087,6 +13248,8 @@ msgid "month"
 msgid_plural "months"
 msgstr[0] "חודשים"
 msgstr[1] "חודשים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:542
 #: playlistgenerator/constraints/TagMatch.cpp:759
@@ -13097,6 +13260,8 @@ msgid "year"
 msgid_plural "years"
 msgstr[0] "שנה"
 msgstr[1] "שנה"
+msgstr[2] ""
+msgstr[3] ""
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, TagMatchEditWidget)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:15
@@ -14178,7 +14343,7 @@ msgid "Updating the local Jamendo database."
 msgstr "מעדכן את בסיס־הנתונים המקומי של Jamendo"
 
 #: services/jamendo/JamendoXmlParser.cpp:171
-#, kde-format
+#, fuzzy, kde-format
 msgctxt ""
 "First part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
@@ -14186,9 +14351,11 @@ msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
 msgstr[0] "עדכון בסיס־הנתונים של Jamendo.com הסתיים. נוספה רצועה אחת תחת "
 msgstr[1] "עדכון בסיס־הנתונים של Jamendo.com הסתיים. נוספו %1 רצועות תחת "
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/jamendo/JamendoXmlParser.cpp:172
-#, kde-format
+#, fuzzy, kde-format
 msgctxt ""
 "Middle part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
@@ -14196,9 +14363,11 @@ msgid "1 album from "
 msgid_plural "%1 albums from "
 msgstr[0] "אלבום אחד מתוך "
 msgstr[1] "%1 אלבומים מתוך "
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/jamendo/JamendoXmlParser.cpp:173
-#, kde-format
+#, fuzzy, kde-format
 msgctxt ""
 "Last part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
@@ -14206,6 +14375,8 @@ msgid "1 artist."
 msgid_plural "%1 artists."
 msgstr[0] "אמן אחד."
 msgstr[1] "%1 אמנים."
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/lastfm/biases/LastFmBias.cpp:45
 #, fuzzy, kde-format
@@ -14444,11 +14615,13 @@ msgid "Username: %1"
 msgstr "שם משתמש:"
 
 #: services/lastfm/LastFmService.cpp:346
-#, kde-format
+#, fuzzy, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "מונה השמעות: השמעה אחת"
 msgstr[1] "מונה השמעות: %1 השמעות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/lastfm/LastFmService.cpp:392
 #, kde-format
@@ -14564,6 +14737,8 @@ msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/lastfm/LastFmTreeModel.cpp:197
 #, kde-format
@@ -15322,6 +15497,8 @@ msgid_plural ""
 "Magnatune.com database update complete. Database contains %1 tracks on "
 msgstr[0] "עדכון בסיס־הנתונים של Magnatune.com הסתיים. נוספה רצועה אחת תחת "
 msgstr[1] "עדכון בסיס־הנתונים של Magnatune.com הסתיים. נוספו %1 רצועות תחת "
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/magnatune/MagnatuneXmlParser.cpp:81
 #, fuzzy, kde-format
@@ -15337,6 +15514,8 @@ msgid "1 album from "
 msgid_plural "%1 albums from "
 msgstr[0] "אלבום אחד מתוך "
 msgstr[1] "%1 אלבומים מתוך "
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/magnatune/MagnatuneXmlParser.cpp:83
 #, fuzzy, kde-format
@@ -15352,6 +15531,8 @@ msgid "1 artist."
 msgid_plural "%1 artists."
 msgstr[0] "אמן אחד."
 msgstr[1] "%1 אמנים."
+msgstr[2] ""
+msgstr[3] ""
 
 #: services/mp3tunes/harmonydaemon/main.cpp:36
 #, kde-format
@@ -15750,6 +15931,8 @@ msgid_plural ""
 "Played %2 times of which %1 plays are recent and unique to this source"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/models/CommonModel.cpp:189
 #, fuzzy, kde-format
@@ -15802,6 +15985,8 @@ msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/Process.cpp:273
 #, kde-format
@@ -15809,6 +15994,8 @@ msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/Process.cpp:280
 #, kde-format
@@ -15816,6 +16003,8 @@ msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/Process.cpp:284
 #, kde-format
@@ -15823,6 +16012,8 @@ msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/Process.cpp:288
 #, kde-format
@@ -15831,6 +16022,8 @@ msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/Process.cpp:292
 #, kde-format
@@ -15839,6 +16032,8 @@ msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/Process.cpp:296
 #, kde-format
@@ -15847,6 +16042,8 @@ msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
@@ -16024,6 +16221,8 @@ msgid "<b>One</b> play"
 msgid_plural "<b>%1</b> plays"
 msgstr[0] "<b>%1</b>"
 msgstr[1] "<b>%1</b>"
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:318
 #, kde-format
@@ -16032,6 +16231,8 @@ msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
@@ -16470,6 +16671,8 @@ msgid "second"
 msgid_plural "seconds"
 msgstr[0] "שניות"
 msgstr[1] "שניות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:131
 #, fuzzy, kde-format
@@ -16478,6 +16681,8 @@ msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "דקות"
 msgstr[1] "דקות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:132
 #, fuzzy, kde-format
@@ -16486,6 +16691,8 @@ msgid "hour"
 msgid_plural "hours"
 msgstr[0] "שעות"
 msgstr[1] "שעות"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:133
 #, fuzzy, kde-format
@@ -16494,6 +16701,8 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "ימים"
 msgstr[1] "ימים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:134
 #, fuzzy, kde-format
@@ -16502,6 +16711,8 @@ msgid "week"
 msgid_plural "weeks"
 msgstr[0] "בין"
 msgstr[1] "בין"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:135
 #, fuzzy, kde-format
@@ -16510,6 +16721,8 @@ msgid "month"
 msgid_plural "months"
 msgstr[0] "חודשים"
 msgstr[1] "חודשים"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:136
 #, fuzzy, kde-format
@@ -16518,6 +16731,8 @@ msgid "year"
 msgid_plural "years"
 msgstr[0] "שנה"
 msgstr[1] "שנה"
+msgstr[2] ""
+msgstr[3] ""
 
 #: widgets/MetaQueryWidget.cpp:318
 #, kde-format
