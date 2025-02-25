@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# SPDX-FileCopyrightText: 2012, 2013, 2014, 2015, 2017, 2020, 2021, 2022, 2024 Giovanni Sora <g.sora@tiscali.it>
+# SPDX-FileCopyrightText: 2012, 2013, 2014, 2015, 2017, 2020, 2021, 2022, 2024, 2025 Giovanni Sora <g.sora@tiscali.it>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-02-22 00:40+0000\n"
-"PO-Revision-Date: 2024-07-25 15:32+0200\n"
+"PO-Revision-Date: 2025-02-24 15:45+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -1825,18 +1825,16 @@ msgid ""
 msgstr ""
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Dossieres del Collection"
+msgstr "Selige dossier de collection"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Usator"
+msgstr "Usa"
 
 #: App.cpp:678
 #, kde-format
@@ -5286,8 +5284,7 @@ msgid "Remove empty folders?"
 msgstr ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Remove"
@@ -7692,6 +7689,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -9353,16 +9352,13 @@ msgid "The audio player by KDE"
 msgstr "Le reproductor de audio pro KDE"
 
 #: main.cpp:58
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2024, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, Le equipa de disveloppamento de Amarok"
+"(C) 2003-2025, Le equipa de disveloppamento de Amarok"
 
 #: main.cpp:59
 #, kde-format
@@ -11186,7 +11182,7 @@ msgstr[1] "%1 tracias"
 #: playlist/PlaylistInfoWidget.cpp:67
 #, kde-format
 msgid "No tracks"
-msgstr ""
+msgstr "Nulle tracias"
 
 #: playlist/PlaylistInfoWidget.cpp:109 playlist/PlaylistInfoWidget.cpp:115
 #, kde-format
@@ -12810,8 +12806,7 @@ msgid "Remove Script"
 msgstr "Remove script"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Remove"
@@ -12831,9 +12826,7 @@ msgstr ""
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Si"
@@ -12842,9 +12835,7 @@ msgstr "Si"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "No"
@@ -13503,12 +13494,10 @@ msgid "Disconnect Last.fm account?"
 msgstr ""
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgctxt "Analyzer name"
-#| msgid "Disco"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "Disco"
+msgstr "Disconnecte"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14612,11 +14601,10 @@ msgid ""
 msgstr ""
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Synchronisa "
+msgstr "Mantene synchronisate"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
