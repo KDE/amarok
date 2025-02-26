@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-02-22 00:40+0000\n"
-"PO-Revision-Date: 2025-01-12 10:06+0100\n"
+"PO-Revision-Date: 2025-02-22 08:58+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -963,7 +963,7 @@ msgstr "Si ho seleccioneu, podeu utilitzar colors a mida a OSD."
 #: amarokconfig.kcfg:330
 #, kde-format
 msgid "Font color for OSD"
-msgstr "Color del tipus de lletra pel visor en pantalla"
+msgstr "Color de la lletra pel visor en pantalla"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:331
@@ -979,7 +979,7 @@ msgstr ""
 #: amarokconfig.kcfg:335
 #, kde-format
 msgid "Font scaling for OSD"
-msgstr "Escalat del tipus de lletra del visor en pantalla"
+msgstr "Escalat de la lletra del visor en pantalla"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:336
@@ -988,7 +988,7 @@ msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
 "normal size&#8221;."
 msgstr ""
-"El multiplicador d'escalat pel tipus de lletra d'OSD (visor en pantalla), en "
+"El multiplicador d'escalat per a la lletra d'OSD (visor en pantalla), en "
 "percentatge del normal. 100 és la «mida normal»."
 
 #. i18n: ectx: label, entry, group (OSD)
@@ -3621,7 +3621,7 @@ msgstr "&Translúcid"
 #: configdialog/dialogs/NotificationsConfig.ui:226
 #, kde-format
 msgid "Font scale:"
-msgstr "Escala del tipus de lletra:"
+msgstr "Escala de la lletra:"
 
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_OsdFontScaling)
 #: configdialog/dialogs/NotificationsConfig.ui:233
@@ -4105,7 +4105,7 @@ msgstr "Mostra les etiquetes personals amb puntuació:"
 #: context/applets/labels/labelsGeneralSettings.ui:127
 #, kde-format
 msgid "Affects the font size of the personal labels."
-msgstr "Afecta la mida del tipus de lletra de les etiquetes personals."
+msgstr "Afecta la mida de la lletra de les etiquetes personals."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoAddCheckBox)
 #: context/applets/labels/labelsGeneralSettings.ui:145
@@ -4205,7 +4205,7 @@ msgstr "Configureu les lletres"
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, kde-format
 msgid "Font size:"
-msgstr "Mida del tipus de lletra:"
+msgstr "Mida de la lletra:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, kde-format
@@ -4230,7 +4230,7 @@ msgstr "Alineació centrada"
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, kde-format
 msgid "Font:"
-msgstr "Tipus de lletra:"
+msgstr "Lletra:"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:57
 #, kde-format
@@ -11249,7 +11249,7 @@ msgstr "Alineació: "
 #: playlist/layouts/LayoutEditDialog.cpp:152
 #, kde-format
 msgid "Font: "
-msgstr "Tipus de lletra: "
+msgstr "Lletra: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:241
 #, kde-format
@@ -16433,6 +16433,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "Display"
-#~ msgstr "Visualització"
