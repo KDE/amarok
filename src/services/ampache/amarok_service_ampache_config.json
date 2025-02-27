@@ -12,6 +12,7 @@
         "Description[fi]": "Asettaa Ampache-palvelimet, joihin yhdistetään",
         "Description[fr]": "Définit le ou les serveurs « Ampache » auxquels se connecter",
         "Description[gl]": "Configura o servidor ampache co que conectar.",
+        "Description[he]": "מגדיר שרתי ampache להתחבר אליהם",
         "Description[it]": "Configura server Ampache ai quali connetterti",
         "Description[ka]": "Ampache-ის სერვისის მორგება",
         "Description[ko]": "연결할 Ampache 서버 설정",
