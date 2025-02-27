@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-02-22 00:40+0000\n"
-"PO-Revision-Date: 2025-02-22 21:55+0200\n"
+"PO-Revision-Date: 2025-02-26 10:56+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -13838,10 +13838,9 @@ msgstr ""
 
 # kde-il: don't translate
 #: scripting/scriptconsole/ScriptConsole.cpp:76
-#, fuzzy, kde-format
-#| msgid "PIN Code:"
+#, kde-format
 msgid "Code"
-msgstr "קוד PIN:"
+msgstr "קוד"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
@@ -13859,22 +13858,19 @@ msgid "Error"
 msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:102
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "Execute Script"
-msgstr "מחפש תסריטים"
+msgstr "הרצת סקריפט"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:106
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "&New Script"
-msgstr "מחפש תסריטים"
+msgstr "סקריפט &חדש"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:110
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "&Delete Script"
-msgstr "המחיקה נכשלה"
+msgstr "מחי&קת סקריפט"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:113
 #, fuzzy, kde-format
@@ -13883,16 +13879,14 @@ msgid "&Clear All Scripts"
 msgstr "מחפש תסריטים"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:116
-#, fuzzy, kde-format
-#| msgid "Previous Group"
+#, kde-format
 msgid "Previous Script"
-msgstr "הקבוצה הקודמת"
+msgstr "הסקריפט הקודם"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:120
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "Next Script"
-msgstr "מחפש תסריטים"
+msgstr "הסקריפט הבא"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:128
 #, fuzzy, kde-format
@@ -13912,23 +13906,20 @@ msgid "Choose where to save your scripts"
 msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "&Remove Subscription"
+#, kde-format
 msgid "Remove script file from disk?"
-msgstr "&הסר מנוי"
+msgstr "להסיר את הסקריפט מהכונן?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "&Remove Subscription"
+#, kde-format
 msgid "Remove Script"
-msgstr "&הסר מנוי"
+msgstr "הסרת סקריפט"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
-msgstr "הסר"
+msgstr "הסרה"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:423
 #, kde-format
@@ -13945,21 +13936,19 @@ msgstr ""
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgid "Years"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
-msgstr "שנים"
+msgstr "כן"
 
 #: scripting/scriptengine/AmarokScript.cpp:69
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgid "None"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
-msgstr "ללא"
+msgstr "לא"
 
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
@@ -13989,10 +13978,9 @@ msgid ""
 msgstr ""
 
 #: services/ampache/AddServerDialog.cpp:44
-#, fuzzy, kde-format
-#| msgid "Add new preset"
+#, kde-format
 msgid "Add new Ampache server"
-msgstr "הוסף אפשרויות קבועות חדשות"
+msgstr "הוספת שרת Ampache חדש"
 
 #: services/ampache/AddServerDialog.cpp:83
 #, fuzzy, kde-format
@@ -14458,9 +14446,7 @@ msgstr "הפרופיל של Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "שם משתמש:"
 
@@ -14468,33 +14454,28 @@ msgstr "שם משתמש:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:226
 #: services/lastfm/LastFmServiceSettings.cpp:250
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Connect to account"
-msgstr "חיבור"
+msgstr "חיבור חשבון"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:278
-#, fuzzy, kde-format
-#| msgctxt "The quality of music"
-#| msgid "Not rated"
+#, kde-format
 msgid "Not connected"
-msgstr "לא דורגה"
+msgstr "לא מחובר"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">הרשמה ל־last.fm</a>"
+msgstr "<a href=\"httpד://www.last.fm/join\">הרשמה ל־Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect the MTP Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&ניתוק מהתקן MTP"
+msgstr "ניתוק חשבון"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14603,16 +14584,14 @@ msgid "Enter a tag"
 msgstr "הכנס תגית"
 
 #: services/lastfm/LastFmService.cpp:328
-#, fuzzy, kde-format
-#| msgid "Enter a last.fm user name"
+#, kde-format
 msgid "Enter a Last.fm user name"
-msgstr "הכנס שם־משתמש ב־last.fm"
+msgstr "נא למלא שם משתמש ב־Last.fm"
 
 #: services/lastfm/LastFmService.cpp:341
-#, fuzzy, kde-format
-#| msgid "Username: "
+#, kde-format
 msgid "Username: %1"
-msgstr "שם משתמש:"
+msgstr "שם משתמש: %1"
 
 #: services/lastfm/LastFmService.cpp:346
 #, fuzzy, kde-format
@@ -14681,11 +14660,10 @@ msgid "Disconnect Last.fm account?"
 msgstr ""
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgid "&Disconnect the MTP Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&ניתוק מהתקן MTP"
+msgstr "ניתוק"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14716,10 +14694,9 @@ msgid ""
 msgstr ""
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
+#, kde-format
 msgid "Unable to connect to Last.fm service."
-msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
+msgstr "לא ניתן להתחבר לשירות Last.fm."
 
 #: services/lastfm/LastFmTreeModel.cpp:129
 #, fuzzy, kde-format
@@ -14976,11 +14953,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
-#, fuzzy, kde-format
-#| msgctxt "Fetch new information from the website"
-#| msgid "Update"
+#, kde-format
 msgid "Updates"
-msgstr "עדכן"
+msgstr "עדכונים"
 
 #. i18n: ectx: property (text), widget (QLabel, label_8)
 #: services/magnatune/MagnatuneConfigWidget.ui:23
@@ -15001,10 +14976,9 @@ msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:43
-#, fuzzy, kde-format
-#| msgid "Re&download"
+#, kde-format
 msgid "Redownloads"
-msgstr "&הורד מחדש"
+msgstr "הורדות מחדש"
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: services/magnatune/MagnatuneConfigWidget.ui:49
@@ -15018,12 +14992,10 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: services/magnatune/MagnatuneConfigWidget.ui:59
-#, fuzzy, kde-format
-#| msgctxt "The e-mail address of the user"
-#| msgid "E-mail:"
+#, kde-format
 msgctxt "Username for logins to Magnatune"
 msgid "E-mail:"
-msgstr "דוא\"ל:"
+msgstr "דוא״ל:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:79
@@ -15218,10 +15190,9 @@ msgstr "טוען מידע אודות האלבום..."
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
 #: services/magnatune/MagnatuneInfoParser.cpp:73
-#, fuzzy, kde-format
-#| msgid "Release Year: "
+#, kde-format
 msgid "Release Year: %1"
-msgstr "שנת יציאה לאור:"
+msgstr "שנת הוצאה לאור: %1"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:78
 #, kde-format
@@ -15287,11 +15258,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
-#, fuzzy, kde-format
-#| msgctxt "Fetch new information from the website"
-#| msgid "Update"
+#, kde-format
 msgid "Update"
-msgstr "עדכן"
+msgstr "עדכון"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatuneReDownloadDialogBase)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:13
@@ -15378,10 +15347,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:45
-#, fuzzy, kde-format
-#| msgid "Composer"
+#, kde-format
 msgid "Close"
-msgstr "מלחין"
+msgstr "סגירה"
 
 #: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
@@ -15550,14 +15518,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr ""
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, "
-#| "#amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15566,7 +15527,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"שרת: irc.freenode.net ערוצים: #amarok #amarok.de #amarok.es, #amarok.fr \n"
+"שרת: irc.libera.chat / ערוץ:‎ #amarok\n"
 "\n"
 "משוב:\n"
 "amarok@kde.org"
@@ -15811,10 +15772,9 @@ msgid "Add OPML"
 msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:344
-#, fuzzy, kde-format
-#| msgid "Add Folder"
+#, kde-format
 msgid "New Folder"
-msgstr "הוסף תיקייה"
+msgstr "תיקייה חדשה"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:53
 #, kde-format
@@ -15834,10 +15794,9 @@ msgid ""
 msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:163
-#, fuzzy, kde-format
-#| msgid "Add a sorting level to the playlist."
+#, kde-format
 msgid "Add an OPML file to the list."
-msgstr "הוספת שלב מיון לרשימת־ההשמעה."
+msgstr "הוספת קובץ OPML לרשימה."
 
 #: services/scriptable/ScriptableServiceInfoParser.cpp:44
 #: services/scriptable/ScriptableServiceInfoParser.cpp:59
@@ -15884,11 +15843,10 @@ msgid ""
 msgstr ""
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "נתונים סטטיסטים"
+msgstr "לשמור על סנכרון"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
@@ -15904,13 +15862,10 @@ msgid ""
 msgstr ""
 
 #: statsyncing/models/CommonModel.cpp:162
-#, fuzzy, kde-format
-#| msgctxt "%1 is number of tracks, %2 is time"
-#| msgid "%1 track (%2)"
-#| msgid_plural "%1 tracks (%2)"
+#, kde-format
 msgctxt "%1 is play count and %2 is recent play count"
 msgid "%1 (%2)"
-msgstr "%1 רצועה (%2)"
+msgstr "%1 (%2)"
 
 #: statsyncing/models/CommonModel.cpp:166
 #: statsyncing/models/CommonModel.cpp:187
@@ -15935,25 +15890,20 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: statsyncing/models/CommonModel.cpp:189
-#, fuzzy, kde-format
-#| msgid "Label"
+#, kde-format
 msgid "Ignored labels: %1"
-msgstr "תווית"
+msgstr "תוויות מוחרגות: %1"
 
 #: statsyncing/models/CommonModel.cpp:208
-#, fuzzy, kde-format
-#| msgid "%1 - %2 ( %3 )"
+#, kde-format
 msgid "%1 - %2 - %3"
-msgstr "%1 - %2 ( %3 )"
+msgstr "%1 - %2 - %3"
 
 #: statsyncing/models/ProvidersModel.cpp:67
-#, fuzzy, kde-format
-#| msgctxt "%1 is number of tracks, %2 is time"
-#| msgid "%1 track (%2)"
-#| msgid_plural "%1 tracks (%2)"
+#, kde-format
 msgctxt "%1: name, %2: description"
 msgid "%1 (%2)"
-msgstr "%1 רצועה (%2)"
+msgstr "%1 (%2)"
 
 #: statsyncing/models/ProvidersModel.cpp:72
 #, kde-format
@@ -15963,10 +15913,9 @@ msgid ""
 msgstr ""
 
 #: statsyncing/Process.cpp:48
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgid "Synchronize Statistics"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון סטטיסטיקה"
 
 #: statsyncing/Process.cpp:113
 #, kde-format
@@ -16047,10 +15996,9 @@ msgstr[3] ""
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
-#, fuzzy, kde-format
-#| msgid "Configure Phonon"
+#, kde-format
 msgid "Configure Synchronization..."
-msgstr "הגדר את Phonon"
+msgstr "הגדרת סנכרון…"
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
 #, fuzzy, kde-format
@@ -16079,16 +16027,14 @@ msgid "Select Fields to Synchronize"
 msgstr ""
 
 #: statsyncing/ui/ConfigureProviderDialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure Phonon"
+#, kde-format
 msgid "Configure Synchronization Target"
-msgstr "הגדר את Phonon"
+msgstr "הגדרת יעד סנכרון"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:37
-#, fuzzy, kde-format
-#| msgid "Configure Phonon"
+#, kde-format
 msgid "Add Synchronization Target"
-msgstr "הגדר את Phonon"
+msgstr "הוספת יעד סנכרון"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:47
 #, kde-format
@@ -16099,22 +16045,19 @@ msgid ""
 msgstr ""
 
 #: statsyncing/ui/CreateProviderDialog.cpp:60
-#, fuzzy, kde-format
-#| msgid "Rating"
+#, kde-format
 msgid "Choose Target Type"
-msgstr "דירוג"
+msgstr "סחירת סוג יעד"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:86
-#, fuzzy, kde-format
-#| msgid "Configure Services"
+#, kde-format
 msgid "Configure Target"
-msgstr "הגדר שירותים"
+msgstr "הגדרת יעד"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:138
-#, fuzzy, kde-format
-#| msgid "Track"
+#, kde-format
 msgid "Back"
-msgstr "רצועה"
+msgstr "חזרה"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -16139,10 +16082,9 @@ msgid "Expand Tracks With Conflicts"
 msgstr ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:157
-#, fuzzy, kde-format
-#| msgid "Expand by"
+#, kde-format
 msgid "Expand Updated"
-msgstr "הרחב לפי"
+msgstr "הרחבת העדכניים"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:163
 #, kde-format
@@ -16177,17 +16119,15 @@ msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
 msgstr ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
-#, fuzzy, kde-format
-#| msgid "Tracks"
+#, kde-format
 msgid "All Tracks"
-msgstr "רצועות"
+msgstr "כל הרצועות"
 
 # kde-il: don't translate
 #: statsyncing/ui/MatchedTracksPage.cpp:229
-#, fuzzy, kde-format
-#| msgid "&Update All"
+#, kde-format
 msgid "Updated Tracks"
-msgstr "&עדכן הכול"
+msgstr "רצועות עדכניות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:230
 #, kde-format
@@ -16242,10 +16182,9 @@ msgstr ""
 
 #. i18n: ectx: attribute (title), widget (QWidget, matchedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:21
-#, fuzzy, kde-format
-#| msgid "My Tags"
+#, kde-format
 msgid "Matched Tracks"
-msgstr "התגיות שלי"
+msgstr "רצועות תואמות"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, matchedFilterLine)
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, uniqueFilterLine)
@@ -16253,10 +16192,9 @@ msgstr "התגיות שלי"
 #: statsyncing/ui/MatchedTracksPage.ui:29
 #: statsyncing/ui/MatchedTracksPage.ui:160
 #: statsyncing/ui/MatchedTracksPage.ui:216
-#, fuzzy, kde-format
-#| msgid "&Delete Tracks"
+#, kde-format
 msgid "Filter Tracks..."
-msgstr "&מחק רצועות"
+msgstr "סינון רצועות…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedRatingsButton)
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedLabelsButton)
@@ -16268,17 +16206,15 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
-#, fuzzy, kde-format
-#| msgid "Transferring: %1"
+#, kde-format
 msgid "Take Ratings From"
-msgstr "מעביר: %1"
+msgstr "משיכת דירוגים מתוך"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedExpandButton)
 #: statsyncing/ui/MatchedTracksPage.ui:110
-#, fuzzy, kde-format
-#| msgid "Expand by"
+#, kde-format
 msgid "Expand"
-msgstr "הרחב לפי"
+msgstr "הרחבה"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedCollapseButton)
 #: statsyncing/ui/MatchedTracksPage.ui:126
@@ -16288,17 +16224,15 @@ msgstr ""
 
 #. i18n: ectx: attribute (title), widget (QWidget, uniqueTab)
 #: statsyncing/ui/MatchedTracksPage.ui:152
-#, fuzzy, kde-format
-#| msgid "Dequeue Track"
+#, kde-format
 msgid "Unique Tracks"
-msgstr "הוצא רצועה מהתור"
+msgstr "רצועות ייחודיות"
 
 #. i18n: ectx: attribute (title), widget (QWidget, excludedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:208
-#, fuzzy, kde-format
-#| msgid "Selected Tracks"
+#, kde-format
 msgid "Excluded Tracks"
-msgstr "רצועות מסומנות"
+msgstr "רצועות מוחרגות"
 
 #. i18n: ectx: property (title), widget (QGroupBox, scrobblingGroupBox)
 #: statsyncing/ui/MatchedTracksPage.ui:267
@@ -16313,10 +16247,9 @@ msgid "Abort"
 msgstr "בטל"
 
 #: statusbar/CompoundProgressBar.cpp:69 statusbar/CompoundProgressBar.cpp:206
-#, fuzzy, kde-format
-#| msgid "Multiple background tasks running"
+#, kde-format
 msgid "Multiple background tasks running (click to show)"
-msgstr "מספר פעולות רצות ברקע"
+msgstr "מספר משימות רצות ברקע (תוצגנה בלחיצה)"
 
 #: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
@@ -16340,10 +16273,9 @@ msgstr "סרגל־כלים רזה"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
 #: widgets/Osd.cpp:209
-#, fuzzy, kde-format
-#| msgid "Volume: 100% (muted)"
+#, kde-format
 msgid "Volume: %1% (muted)"
-msgstr "עצמת קול: 100% (מושתק)"
+msgstr "עוצמת שמע: %1% (מושתק)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
 #: widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
@@ -16352,16 +16284,14 @@ msgid "Volume: %1%"
 msgstr "עצמת קול: %1%"
 
 #: transcoding/TranscodingAssistantDialog.cpp:44
-#, fuzzy, kde-format
-#| msgid "Random Tracks"
+#, kde-format
 msgid "Transcode Tracks"
-msgstr "רצועות אקראיות"
+msgstr "התמרת רצועות"
 
 #: transcoding/TranscodingAssistantDialog.cpp:54
-#, fuzzy, kde-format
-#| msgid "&Translucent"
+#, kde-format
 msgid "Transc&ode"
-msgstr "&שקיפות מדומה"
+msgstr "ה&תמרה"
 
 #: transcoding/TranscodingAssistantDialog.cpp:65
 #, kde-format
@@ -16403,11 +16333,10 @@ msgid "Just move the tracks without transcoding them."
 msgstr ""
 
 #: transcoding/TranscodingAssistantDialog.cpp:149
-#, fuzzy, kde-format
-#| msgid "No description available..."
+#, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
-msgstr "אין תיאור זמין..."
+msgstr "לא זמין כרגע במערכת שלך."
 
 #: transcoding/TranscodingAssistantDialog.cpp:156
 #, kde-format
@@ -16416,10 +16345,9 @@ msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: transcoding/TranscodingAssistantDialog.ui:89
-#, fuzzy, kde-format
-#| msgid "&Translucent"
+#, kde-format
 msgid "Transcode"
-msgstr "&שקיפות מדומה"
+msgstr "התמרה"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)
@@ -16431,10 +16359,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeAllRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:229
-#, fuzzy, kde-format
-#| msgid "Random Tracks"
+#, kde-format
 msgid "Transcode all tracks"
-msgstr "רצועות אקראיות"
+msgstr "התמרת כל הרצועות"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
@@ -16491,10 +16418,9 @@ msgid ""
 msgstr ""
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:99
-#, fuzzy, kde-format
-#| msgid "%1's Recommended Radio"
+#, kde-format
 msgid " (recommended)"
-msgstr "הרדיו האהוב על %1"
+msgstr " (מומלץ)"
 
 #: transcoding/TranscodingSelectConfigWidget.cpp:36
 #, kde-format
@@ -16502,48 +16428,39 @@ msgid "Ask before each transfer"
 msgstr ""
 
 #: TrayIcon.cpp:154 widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
-#, fuzzy, kde-format
-#| msgctxt "State, as in, The playback is silent"
-#| msgid "Mute"
+#, kde-format
 msgid "Muted"
 msgstr "מושתק"
 
 #: TrayIcon.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "monthname year"
-#| msgid "%1 %2"
+#, kde-format
 msgid "%1%"
-msgstr "%1 %2"
+msgstr "%1%"
 
 #: TrayIcon.cpp:160
-#, fuzzy, kde-format
-#| msgid "Volume: %1%"
+#, kde-format
 msgid "<i>Volume: %1</i>"
-msgstr "עצמת קול: %1%"
+msgstr "<i>עוצמת שמע: %1</i>"
 
 #: TrayIcon.cpp:166
-#, fuzzy, kde-format
-#| msgid "Score:"
+#, kde-format
 msgid "Score: %1"
-msgstr "ניקוד:"
+msgstr "ניקוד: %1"
 
 #: TrayIcon.cpp:184
-#, fuzzy, kde-format
-#| msgid "Rating:"
+#, kde-format
 msgid "Rating: %1"
-msgstr "דירוג:"
+msgstr "דירוג: %1"
 
 #: TrayIcon.cpp:190
-#, fuzzy, kde-format
-#| msgid "Play count"
+#, kde-format
 msgid "Play count: %1"
-msgstr "מונה השמעות"
+msgstr "מונה נגינות: %1"
 
 #: TrayIcon.cpp:194
-#, fuzzy, kde-format
-#| msgid "Last played"
+#, kde-format
 msgid "Last played: %1"
-msgstr "הושמע לאחרונה"
+msgstr "נגינה אחרונה: %1"
 
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
@@ -16571,10 +16488,9 @@ msgid "Scheme"
 msgstr ""
 
 #: widgets/FilenameLayoutWidget.cpp:84
-#, fuzzy, kde-format
-#| msgid "Presets:"
+#, kde-format
 msgid "Preset:"
-msgstr "אפשרויות קבועות:"
+msgstr "ערכה:"
 
 #: widgets/FilenameLayoutWidget.cpp:88
 #, kde-format
@@ -16582,22 +16498,19 @@ msgid "A list of selectable filename scheme/format presets."
 msgstr ""
 
 #: widgets/FilenameLayoutWidget.cpp:92
-#, fuzzy, kde-format
-#| msgid "Add new preset"
+#, kde-format
 msgid "Add preset"
-msgstr "הוסף אפשרויות קבועות חדשות"
+msgstr "הוספת ערכה"
 
 #: widgets/FilenameLayoutWidget.cpp:93
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Saves the current scheme/format as new preset."
-msgstr "המחיקה נכשלה"
+msgstr "שמירת הערכה/תבנית הנוכחית כערכה חדשה."
 
 #: widgets/FilenameLayoutWidget.cpp:96
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Update preset"
-msgstr "המחיקה נכשלה"
+msgstr "עדכון ערכה"
 
 #: widgets/FilenameLayoutWidget.cpp:97
 #, kde-format
@@ -16605,35 +16518,30 @@ msgid "Updates the preset with the current scheme/format."
 msgstr ""
 
 #: widgets/FilenameLayoutWidget.cpp:100
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Remove preset"
-msgstr "המחיקה נכשלה"
+msgstr "הסרת ערכה"
 
 #: widgets/FilenameLayoutWidget.cpp:101
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Removes the currently selected preset."
-msgstr "המחיקה נכשלה"
+msgstr "הסרת הערכה הנבחרת."
 
 #: widgets/FilenameLayoutWidget.cpp:198
-#, fuzzy, kde-format
-#| msgid "genre"
+#, kde-format
 msgid "Ignore"
-msgstr "סגנון"
+msgstr "התעלמות"
 
 #: widgets/FilenameLayoutWidget.cpp:199
-#, fuzzy, kde-format
-#| msgid "Add Folder"
+#, kde-format
 msgid "Folder"
-msgstr "הוסף תיקייה"
+msgstr "תיקייה"
 
 #: widgets/FilenameLayoutWidget.cpp:200
-#, fuzzy, kde-format
-#| msgid "Uninstall"
+#, kde-format
 msgctxt "Artist's Initial"
 msgid "Initial"
-msgstr "הסר"
+msgstr "התחלתי"
 
 #: widgets/FilenameLayoutWidget.cpp:207
 #, kde-format
@@ -16652,16 +16560,14 @@ msgid "&Advanced..."
 msgstr "&מתקדם"
 
 #: widgets/FilenameLayoutWidget.cpp:434
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "New Preset"
-msgstr "המחיקה נכשלה"
+msgstr "ערכה חדשה"
 
 #: widgets/FilenameLayoutWidget.cpp:434
-#, fuzzy, kde-format
-#| msgid "Enter preset name:"
+#, kde-format
 msgid "Preset Name"
-msgstr "הכנס שם של אפשרות קבועה:"
+msgstr "שם הערכה"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: widgets/MetaQueryWidget.cpp:130
@@ -16764,50 +16670,43 @@ msgid "h:m:ss"
 msgstr ""
 
 #: widgets/MetaQueryWidget.cpp:996
-#, fuzzy, kde-format
-#| msgid "is before"
+#, kde-format
 msgctxt "The date lies before the given fixed date"
 msgid "before"
 msgstr "לפני"
 
 #: widgets/MetaQueryWidget.cpp:998
-#, fuzzy, kde-format
-#| msgid "None"
+#, kde-format
 msgctxt "The date is the same as the given fixed date"
 msgid "on"
-msgstr "ללא"
+msgstr "ב־"
 
 #: widgets/MetaQueryWidget.cpp:1000
-#, fuzzy, kde-format
-#| msgid "is after"
+#, kde-format
 msgctxt "The date is after the given fixed date"
 msgid "after"
 msgstr "אחרי"
 
 #: widgets/MetaQueryWidget.cpp:1002
-#, fuzzy, kde-format
-#| msgid "Between"
+#, kde-format
 msgctxt "The date is between the given fixed dates"
 msgid "between"
 msgstr "בין"
 
 #: widgets/MetaQueryWidget.cpp:1004
-#, fuzzy, kde-format
-#| msgid "Smaller Than"
+#, kde-format
 msgctxt "The date lies before the given time interval"
 msgid "older than"
-msgstr "קטן מ־"
+msgstr "ישן מ־"
 
 #: widgets/MetaQueryWidget.cpp:1006
-#, fuzzy, kde-format
-#| msgid "greater than"
+#, kde-format
 msgctxt "The date lies after the given time interval"
 msgid "newer than"
-msgstr "גדול מ־"
+msgstr "חדש מ־"
 
 #: widgets/MetaQueryWidget.cpp:1022
-#, fuzzy, kde-format
-#| msgid "Between"
+#, kde-format
 msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "בין"
@@ -16832,10 +16731,9 @@ msgstr ""
 "גרור כדי לשנות את המיקום"
 
 #: widgets/Osd.cpp:771
-#, fuzzy, kde-format
-#| msgid "Stop"
+#, kde-format
 msgid "Stopped"
-msgstr "עצור"
+msgstr "נעצר"
 
 # kde-il: don't translatep:67
 #: widgets/Osd.cpp:780
@@ -16850,10 +16748,9 @@ msgstr "נגן"
 
 # kde-il: don't translatep:67
 #: widgets/PlayPauseButton.cpp:82
-#, fuzzy, kde-format
-#| msgid "Paused"
+#, kde-format
 msgid "Pause"
-msgstr "מושהה"
+msgstr "השהיה"
 
 #: widgets/PrettyTreeDelegate.cpp:217
 #, kde-format
@@ -16868,16 +16765,14 @@ msgid "Track Progress"
 msgstr "התקדמות הרצועה"
 
 #: widgets/ProgressWidget.cpp:120
-#, fuzzy, kde-format
-#| msgid "The amount of time elapsed in current song"
+#, kde-format
 msgid "The amount of time elapsed in current track"
-msgstr "הזמן שחלף מתחילת השיר הנוכחי"
+msgstr "כמות הזמן שחלף מתחילת הרצועה הנוכחית"
 
 #: widgets/ProgressWidget.cpp:121
-#, fuzzy, kde-format
-#| msgid "The amount of time remaining in current song"
+#, kde-format
 msgid "The amount of time remaining in current track"
-msgstr "הזמן הנותר לשיר הנוכחי"
+msgstr "כמות הזמן הנותר לרצועה הנוכחית"
 
 #: widgets/SearchWidget.cpp:50
 #, kde-format
@@ -16949,29 +16844,24 @@ msgid "[suffix]"
 msgstr ""
 
 #: widgets/TrackSelectWidget.cpp:68
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgid "Checkpoint: <b>%1</b>"
-msgstr "מתוך <b>%1</b>"
+msgstr "נקודת ביקורת: <b>%1</b>"
 
 #: widgets/TrackSelectWidget.cpp:88
-#, fuzzy, kde-format
-#| msgid "Trac&k:"
+#, kde-format
 msgid "Track: %1"
-msgstr "רצוע&ה:"
+msgstr "רצועה: %1"
 
 #: widgets/TrackSelectWidget.cpp:90
-#, fuzzy, kde-format
-#| msgid "Album \"%1\""
+#, kde-format
 msgid "Album: %1"
-msgstr "אלבום \"%1\""
+msgstr "אלבום: %1"
 
 #: widgets/TrackSelectWidget.cpp:92
-#, fuzzy, kde-format
-#| msgid "Artist \"%1\""
+#, kde-format
 msgid "Artist: %1"
-msgstr "אמן \"%1\""
+msgstr "אומן: %1"
 
 #: widgets/TrackSelectWidget.cpp:96
 #, kde-format
