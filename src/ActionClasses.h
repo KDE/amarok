@@ -25,8 +25,6 @@
 #include <KSelectAction>
 #include <KToggleAction>
 
-#include <phonon/Global>
-
 class KActionCollection;
 class KHelpMenu;
 

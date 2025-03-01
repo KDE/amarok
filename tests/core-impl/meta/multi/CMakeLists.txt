@@ -38,7 +38,6 @@ target_link_libraries( testmetamultitrack
     amarokcore
     amaroklib
     KF${KF_MAJOR_VERSION}::KIOCore
-    Phonon::phonon4qt${QT_MAJOR_VERSION}
 
     KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Test

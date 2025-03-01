@@ -28,8 +28,6 @@
 #include <KMainWindow>
 #include <KToggleAction>
 
-#include <phonon/Global>
-
 class CollectionWidget;
 class SlimToolbar;
 class MainToolbar;

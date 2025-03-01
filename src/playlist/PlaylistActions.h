@@ -28,8 +28,6 @@
 #include <QQueue>
 #include <QModelIndex>
 
-#include <phonon/Global>
-
 namespace Playlist
 {
     class Actions;

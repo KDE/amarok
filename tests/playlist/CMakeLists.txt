@@ -57,7 +57,6 @@ target_link_libraries( testplaylistmodels
     amarokcore
     amaroklib
     KF${KF_MAJOR_VERSION}::KIOCore
-    Phonon::phonon4qt${QT_MAJOR_VERSION}
 
     Qt::Test
     Qt::Core
@@ -89,7 +88,6 @@ target_link_libraries( testplaylistlayout
     amarokcore
     amaroklib
     KF${KF_MAJOR_VERSION}::KIOCore
-    Phonon::phonon4qt${QT_MAJOR_VERSION}
 
     Qt::Test
     Qt::Core

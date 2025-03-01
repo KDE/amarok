@@ -19,8 +19,6 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <phonon/Global>
-
 #include <QHash>
 #include <QWidget>
 
