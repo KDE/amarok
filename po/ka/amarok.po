@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-02-22 00:40+0000\n"
-"PO-Revision-Date: 2025-02-24 07:44+0100\n"
+"PO-Revision-Date: 2025-03-01 01:25+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -1430,6 +1430,7 @@ msgstr "პაროლი გარე მონაცემთა ბაზი
 #, kde-format
 msgid "Keeps a running count to know when run a CHECK."
 msgstr ""
+"გაშვებების რაოდენობა, რომელიც მონაცემთა ბაზის შემოწმებებისთვის გამოიყენება."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:587
@@ -1496,7 +1497,7 @@ msgstr ""
 #: amarokconfig.kcfg:623
 #, kde-format
 msgid "The style to use when painting the moodbar"
-msgstr ""
+msgstr "ტონის დახატვისას გამოყენებული სტილი"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:630
@@ -1541,7 +1542,7 @@ msgstr "სანიშნების გაფილტვრა"
 #: amarokurls/BookmarkManagerWidget.cpp:59
 #, kde-format
 msgid "Start typing to progressively filter the bookmarks"
-msgstr ""
+msgstr "დაიწყეთ კრეფა სანიშნეების თანდათან გასაფილტრად"
 
 #: amarokurls/BookmarkMetaActions.cpp:30
 #, kde-format
@@ -1607,7 +1608,7 @@ msgstr "&წაშლა"
 #: amarokurls/BookmarkTreeView.cpp:121
 #, kde-format
 msgid "&Create timecode track"
-msgstr ""
+msgstr "ტრეკის დროის &კოდის შექმნა"
 
 #: amarokurls/BookmarkTreeView.cpp:370
 #, kde-format
@@ -1747,7 +1748,7 @@ msgstr "დასაკრავი სიის ბოლოში ფაილ
 #: App.cpp:374
 #, kde-format
 msgid "Queue URLs after the currently playing track"
-msgstr ""
+msgstr "ბმულების ჩასმა სიაში ახლა დაკრული ტრეკის შემდეგ"
 
 #: App.cpp:375
 #, kde-format
@@ -2343,7 +2344,7 @@ msgstr "ჩასწორება"
 #: browsers/playlistbrowser/DynamicCategory.cpp:124
 #, kde-format
 msgid "Edit the selected playlist or bias"
-msgstr ""
+msgstr "არჩეული დასაკრავი სიის ან პირობის ჩასწორება"
 
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
 #: browsers/playlistbrowser/DynamicCategory.cpp:128
@@ -2355,7 +2356,7 @@ msgstr "წაშლა"
 #: browsers/playlistbrowser/DynamicCategory.cpp:131
 #, kde-format
 msgid "Delete the selected playlist or bias"
-msgstr ""
+msgstr "არჩეული დასაკრავი სიის ან პირობის წაშლა"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:135
 #, kde-format
@@ -4608,7 +4609,7 @@ msgstr "&მოწყობილობის გამოღება"
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:126
 #, kde-format
 msgid "Re-add orphaned and forget stale tracks"
-msgstr ""
+msgstr "მიტოვებულების თავიდან დამატება და გაჭედილი ტრეკების დავიწყება"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:484
 #, kde-format
@@ -4671,7 +4672,11 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
+"1 ტრეკის დამუშავება შეუძლებელია (მეტი ინფორმაცია ხელმისაწვდომია Amarok-ის "
+"გამართვის ჟურნალში)"
 msgstr[1] ""
+"%1 ტრეკის დამუშავება შეუძლებელია (მეტი ინფორმაცია ხელმისაწვდომია Amarok-ის "
+"გამართვის ჟურნალში)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -4728,7 +4733,9 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
+"1 ტრეკის გადაცემა წარმატებით დასრულდა, მაგრამ რამდენიმე სხვის ჩავარდა."
 msgstr[1] ""
+"%1 ტრეკის გადაცემა წარმატებით დასრულდა, მაგრამ რამდენიმე სხვის ჩავარდა."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
 #, kde-format
@@ -4741,8 +4748,8 @@ msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 ტრეკი არ გადაცემულა, რადგან iPod-ში ადგილი არაა.<br>"
+msgstr[1] "%1 ტრეკი არ გადაცემულა, რადგან iPod-ში ადგილი არაა.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:394
 #, kde-format
@@ -4781,6 +4788,7 @@ msgstr[1] ""
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr ""
+"<i>დეტალების პოვნა Amarok-ის გამართვის შეტყობინებებში შეგიძლიათ.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
@@ -8446,7 +8454,7 @@ msgstr "ჭდე:"
 #: dialogs/TagDialogBase.ui:945
 #, kde-format
 msgid "Insert your custom label here or select one from the list."
-msgstr ""
+msgstr "ჩასვით თქვენი ჭდე აქ ან აირჩიეთ სიიდან."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: dialogs/TagDialogBase.ui:976
@@ -8724,6 +8732,8 @@ msgstr "ალბომების დაკვრა"
 msgctxt "Description of the \"AlbumPlay\" bias"
 msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
 msgstr ""
+"პირობა \"მთელი ალბომის დაკვრა\" ამატებს ტრეკებს, რომლებიც ერთ ალბომს "
+"მიეკუთვნება."
 
 #: dynamic/biases/AlbumPlayBias.cpp:106
 #, kde-format
@@ -9005,7 +9015,7 @@ msgstr ""
 #: dynamic/BiasFactory.cpp:181 dynamic/BiasFactory.cpp:187
 #, kde-format
 msgid "Replacement for bias %1"
-msgstr ""
+msgstr "ჩანაცვლება პირობისთვის %1"
 
 #: dynamic/DynamicModel.cpp:777
 #, kde-format
@@ -9042,7 +9052,7 @@ msgstr "შეფასება"
 #: EngineController.cpp:1082
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
-msgstr ""
+msgstr "აღმოჩენილია მეტისმეტად ბევრი შეცდომა. დაკვრა სეწყვეტილია."
 
 #: EngineController.cpp:1282
 #, kde-format
@@ -9373,7 +9383,7 @@ msgstr ""
 #: main.cpp:76
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
-msgstr ""
+msgstr "ბარტ \"სადაა ჩემი კბილის ჩხირები\" კარნელსი"
 
 #: main.cpp:77
 #, kde-format
@@ -9408,7 +9418,7 @@ msgstr "Matěj Laitl"
 #: main.cpp:89
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
-msgstr ""
+msgstr "iPod-ის კოლექციის თავიდან დაწერა და სხვა (strohel)"
 
 #: main.cpp:92
 #, kde-format
@@ -9648,7 +9658,7 @@ msgstr "Daniel Caleb Jones"
 #: main.cpp:162
 #, kde-format
 msgid "Biased playlists"
-msgstr ""
+msgstr "პირობის მქონე დასაკრავი სიები"
 
 #: main.cpp:164
 #, kde-format
@@ -9658,7 +9668,7 @@ msgstr "Daniel Dewald"
 #: main.cpp:164
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
-msgstr ""
+msgstr "ჭდეების მიხვედრა, ჭდეები, სპექტრის ანალიზი"
 
 #: main.cpp:166
 #, kde-format
@@ -10449,7 +10459,7 @@ msgstr "ტრეკის რიგში ჩაყენება"
 #: MainWindow.cpp:980
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr ""
+msgstr "მიმდინარე ტრეკის შემსრულებლის და სათაურის კოპირება ბუფერში"
 
 #: MainWindow.cpp:985
 #, kde-format
@@ -10563,7 +10573,7 @@ msgstr "MusicDNS-ის დამთხვევის ფარდობა: %1
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
 msgid "Choose Best Matches from This Album"
-msgstr ""
+msgstr "საუკეთესო დამთხვევის არჩევა ამ ალბომიდან"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:91
 #, kde-format
@@ -10755,7 +10765,7 @@ msgstr "დასაკრავი სიის არასწორი გა
 #: playlist/layouts/LayoutEditWidget.cpp:84
 #, kde-format
 msgid "Encountered an unknown element name while reading layout."
-msgstr ""
+msgstr "განლაგების წაკითხვისას აღმოჩენილია უცნობი ელემენტის სახელი."
 
 #: playlist/layouts/LayoutManager.cpp:107
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
@@ -11144,6 +11154,8 @@ msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
+"<a href='%1'>დინამიკური რეჟიმი</a> ჩართულია. <a href='%2'>თავიდან შევსება</"
+"a> | <a href='%3'>გამორთვა</a>"
 
 #: playlist/PlaylistDock.cpp:177
 #, kde-format
@@ -11484,7 +11496,7 @@ msgstr ""
 #: playlistgenerator/ConstraintGroupEditWidget.ui:32
 #, kde-format
 msgid "Match all constraints in the group"
-msgstr ""
+msgstr "დამთხვევა ყველა შეზღუდვასთან ჯგუფში"
 
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, radioButton_MatchAny)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:39
@@ -11499,7 +11511,7 @@ msgstr ""
 #: playlistgenerator/ConstraintGroupEditWidget.ui:42
 #, kde-format
 msgid "Match any constraint in the group"
-msgstr ""
+msgstr "დამთხვევა ნებისმიერ შეზღუდვასთან ჯგუფში"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:58
 #, kde-format
@@ -11555,7 +11567,7 @@ msgstr ""
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:21
 #, kde-format
 msgid "Checkpoint Constraint Settings"
-msgstr ""
+msgstr "საკონტროლო წერტილის შეზღუდვის მორგება"
 
 #. i18n: ectx: property (whatsThis), widget (TrackSelectWidget, trackSelector)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:35
@@ -11698,7 +11710,7 @@ msgstr ""
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:21
 #, kde-format
 msgid "Playlist Duration Constraint Settings"
-msgstr ""
+msgstr "დასაკრავი სიის ხანგრძლივობის შეზღუდვის პარამეტრები"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:32
@@ -11763,7 +11775,7 @@ msgstr "სრული ფაილის ზომა დასაკრავ
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:56
 #, kde-format
 msgid "Sets the preferred total file size of the playlist"
-msgstr ""
+msgstr "აყენებს დასაკრავი სიის სრული ფაილის სასურველ ზომას"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:123
 #, kde-format
@@ -11804,7 +11816,7 @@ msgstr ""
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:21
 #, kde-format
 msgid "Playlist Total Size Constraint Settings"
-msgstr ""
+msgstr "დასაკრავი სიის სრული ზომის შეზღუდვის მორგება"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:32
@@ -11839,7 +11851,7 @@ msgstr "მეტი, ვიდრე"
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:59
 #, kde-format
 msgid "The target total size of all the files in the playlist."
-msgstr ""
+msgstr "დასაკრავი სიის ყველა ფაილის სამიზნე ჯამური ზომა."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:75
@@ -11896,35 +11908,35 @@ msgstr ""
 msgctxt "%1 is a number"
 msgid "Playlist length: 1 track"
 msgid_plural "Playlist length: %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "დასაკრავის სიის სიგრძე: 1 ტრეკი"
+msgstr[1] "დასაკრავის სიის სიგრძე: %1 ტრეკი"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:120
 #, kde-format
 msgctxt "%1 is a number"
 msgid "Playlist length: more than 1 track"
 msgid_plural "Playlist length: more than %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "დასაკრავის სიის სიგრძე: 1-ზე მეტი ტრეკი"
+msgstr[1] "დასაკრავის სიის სიგრძე: %1-ზე მეტი ტრეკი"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:123
 #, kde-format
 msgctxt "%1 is a number"
 msgid "Playlist length: less than 1 track"
 msgid_plural "Playlist length: less than %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "დასაკრავის სიის სიგრძე: 1-ზე ნაკლები ტრეკი"
+msgstr[1] "დასაკრავის სიის სიგრძე: %1-ზე ნაკლები ტრეკი"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:126
 #, kde-format
 msgid "Playlist length: unknown"
-msgstr ""
+msgstr "დასაკრავის სიის სიგრძე: უცნობია"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:21
 #, kde-format
 msgid "Playlist Length Constraint Settings"
-msgstr ""
+msgstr "დასაკრავი სიის სიგრძის შეზღუდვის მორგება"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:32
@@ -11957,28 +11969,29 @@ msgstr ""
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
 #, kde-format
 msgid "Prevent Duplicates"
-msgstr ""
+msgstr "დუბლიკატების თავიდან აცილება"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:52
 #, kde-format
 msgid ""
 "Prevents duplicate tracks, albums, or artists from appearing in the playlist"
 msgstr ""
+"თავიდან აიცილებს დუბლირებულ ტრეკებს, ალბომებს ან შემსრულებლებს დასაკრავ სიაში"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:95
 #, kde-format
 msgid "Prevent duplicate tracks"
-msgstr ""
+msgstr "დუბლირებული ტრეკების თავიდან აცილება"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:97
 #, kde-format
 msgid "Prevent duplicate artists"
-msgstr ""
+msgstr "დუბლირებული შემსრულებლების თავიდან აცილება"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:99
 #, kde-format
 msgid "Prevent duplicate albums"
-msgstr ""
+msgstr "დუბლირებული ალბომების თავიდან აცილება"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, PreventDuplicatesEditWidget)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:15
@@ -11995,7 +12008,7 @@ msgstr ""
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:21
 #, kde-format
 msgid "Prevent Duplicates Constraint Settings"
-msgstr ""
+msgstr "დუბლიკატების აკრძალვის მორგება"
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Field)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Field)
@@ -12011,7 +12024,7 @@ msgstr ""
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:32
 #, kde-format
 msgid "Prevent duplicate"
-msgstr ""
+msgstr "დუბლირების თავიდან აცილება"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:51
@@ -12034,7 +12047,7 @@ msgstr "შემსრულებლები"
 #: playlistgenerator/constraints/TagMatch.cpp:56
 #, kde-format
 msgid "Match Tags"
-msgstr ""
+msgstr "ჭდის პირობები"
 
 #: playlistgenerator/constraints/TagMatch.cpp:57
 #, kde-format
@@ -12215,7 +12228,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:21
 #, kde-format
 msgid "Match Tag Constraint Settings"
-msgstr ""
+msgstr "ჭდის დამთხვევის შეზღუდვის მორგება"
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Match)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Field)
@@ -12506,17 +12519,17 @@ msgstr ""
 #: playlistgenerator/Preset.cpp:44 playlistgenerator/Preset.cpp:57
 #, kde-format
 msgid "New playlist preset"
-msgstr ""
+msgstr "ახალი დასაკრავი სიის პრესეტი"
 
 #: playlistgenerator/Preset.cpp:47 playlistgenerator/Preset.cpp:69
 #, kde-format
 msgid "Unnamed playlist preset"
-msgstr ""
+msgstr "უსახელო დასაკრავი სიის პრესეტი"
 
 #: playlistgenerator/Preset.cpp:131
 #, kde-format
 msgid "Generating a new playlist"
-msgstr ""
+msgstr "ახალი დასაკრავი სიის გენერაცია"
 
 #: playlistgenerator/Preset.cpp:149
 #, kde-format
@@ -12554,7 +12567,7 @@ msgstr "შეზღუდვების ხე"
 #: playlistgenerator/PresetEditDialog.ui:41
 #, kde-format
 msgid "APG Preset Name"
-msgstr ""
+msgstr "APG პრესეტის სახელი"
 
 #: playlistgenerator/PresetModel.cpp:151
 #, kde-format
@@ -12569,67 +12582,67 @@ msgstr "პრესეტის ფაილები"
 #: playlistgenerator/PresetModel.cpp:212
 #, kde-format
 msgid "Preset exported to %1"
-msgstr ""
+msgstr "პრესეტი გატანილია %1-ში"
 
 #: playlistgenerator/PresetModel.cpp:219
 #, kde-format
 msgid "Preset could not be exported to %1"
-msgstr ""
+msgstr "პრესეტის გატანა %1-ში შეუძლებელია"
 
 #: playlistgenerator/PresetModel.cpp:237
 #, kde-format
 msgid "Presets could not be imported from %1"
-msgstr ""
+msgstr "პრესეტების შემოტანა შეუძლებელია %1-დან"
 
 #: playlistgenerator/PresetModel.cpp:244
 #, kde-format
 msgid "%1 could not be opened for preset import"
-msgstr ""
+msgstr "%1-ის გახსნა პრესეტის შემოსატანად შეუძლებელია"
 
 #: playlistgenerator/PresetModel.cpp:249
 #, kde-format
 msgid "Example 1: new tracks added this week"
-msgstr ""
+msgstr "მაგალითი 1: ამ კვირაში დამატებული ტრეკები"
 
 #: playlistgenerator/PresetModel.cpp:250
 #, kde-format
 msgid "Example 2: rock or pop music"
-msgstr ""
+msgstr "მაგალითი 2: როკი ან პოპი"
 
 #: playlistgenerator/PresetModel.cpp:251
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
-msgstr ""
+msgstr "მაგალითი 3: ერთი საათი ტრეკებისა სხვადასხვა შემსრულებლებისგან"
 
 #: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 4: like my favorite radio station"
-msgstr ""
+msgstr "მაგალითი 4: ჩემი საყვარელი რადიოსადგურის მსგავსი"
 
 #: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
-msgstr ""
+msgstr "მაგალითი 5: 80 წუთიანი CD როკმუსიკით, მეტალით ან ინდასტრიალით"
 
 #: playlistgenerator/PresetModel.cpp:293
 #, kde-format
 msgid "Export \"%1\" preset"
-msgstr ""
+msgstr "\"%1\" პრესეტის გატანა"
 
 #: playlistgenerator/PresetModel.cpp:295
 #, kde-format
 msgid "Preset files (*.xml)"
-msgstr ""
+msgstr "პრესეტის ფაილები (*.xml)"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:92
 #, kde-format
 msgid "Playlist Files on Disk"
-msgstr ""
+msgstr "დასაკრავი სიის ფაილები დისკზე"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:283
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
-msgstr ""
+msgstr "დასაკრავი სიის ფაილის \"%1\" ჩატვირთვა შეუძლებელია."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:273
 #, kde-format
@@ -12647,7 +12660,7 @@ msgctxt ""
 "the user's 'database version' is newer and unsupported by this software "
 "version"
 msgid "Future version of Playlist Database?"
-msgstr ""
+msgstr "დასაკრავი სიის ბაზის მონავალი ვერსია?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 #, kde-format
@@ -12657,7 +12670,7 @@ msgstr "Amarok-ის ბაზა"
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 #, kde-format
 msgid "Local playlists stored in the database"
-msgstr ""
+msgstr "მონაცემთა ბაზაში დამახსოვრებული ლოკალური დასაკრავი სიები"
 
 #: playlistmanager/SyncedPlaylist.cpp:43 playlistmanager/SyncedPlaylist.cpp:51
 #, kde-format
@@ -12668,7 +12681,7 @@ msgstr "<ცარიელი>"
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
-msgstr ""
+msgstr "Amarok-მა დამატებები ვერ იპოვა. ეს დაყენების პრობლემაზე მიუთითებს."
 
 #: scanner/AbstractScanResultProcessor.cpp:66
 #, kde-format
@@ -12678,22 +12691,22 @@ msgstr "მუსიკის ძებნა"
 #: scanner/GenericScannerJob.cpp:119
 #, kde-format
 msgid "Abort for scanner requested"
-msgstr ""
+msgstr "მოთხოვნილია სკანერის მუშაობის შეწყვეტა"
 
 #: scanner/GenericScannerJob.cpp:148
 #, kde-format
 msgid "Aborting scanner with error: %1"
-msgstr ""
+msgstr "სკანერის მუშაობა შეწყდა შეცდომით: %1"
 
 #: scanner/GenericScannerJob.cpp:209
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
-msgstr ""
+msgstr "ფაილი amarokcollectionscanner აღმოჩენილი არაა!"
 
 #: scanner/GenericScannerJob.cpp:270
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
-msgstr ""
+msgstr "Amarok-ის კოლექციების სკანერის გაშვება შეუძლებელია."
 
 #: scanner/GenericScannerJob.cpp:319
 #, kde-format
@@ -12769,17 +12782,17 @@ msgstr "&ნახვა"
 #: scripting/scriptconsole/ScriptConsole.cpp:217
 #, kde-format
 msgid "This will stop this script! Continue?"
-msgstr ""
+msgstr "ეს გააჩერებს ამ სკრიპტს! გავაგრძელო?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:229
 #, kde-format
 msgid "Choose where to save your scripts"
-msgstr ""
+msgstr "აირჩიეთ, სად მოხდება თქვენი სკრიპტების შენახვა"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Remove script file from disk?"
-msgstr ""
+msgstr "წავშალო სკრიპტის ფაილი დისკიდან?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
@@ -12801,7 +12814,7 @@ msgstr "არ წაშალო"
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
 msgid "Are you absolutely certain?"
-msgstr ""
+msgstr "დარწმუნებული ბრძანდებით?"
 
 #: scripting/scriptengine/AmarokScript.cpp:68
 #: scripting/scriptengine/AmarokScript.cpp:72
@@ -12829,7 +12842,7 @@ msgstr "შეწყვეტა"
 #: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
-msgstr ""
+msgstr "სკრიპტის %1 შემოწმება უკვე 5 წამზე მეტია, მიმდინარეობს. შევწყვიტო?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
 #, kde-format
@@ -12847,11 +12860,13 @@ msgid ""
 "Script error reported by: %1\n"
 "%2"
 msgstr ""
+"სკრიპტმა გამოიტანა შედომა: %1\n"
+"%2"
 
 #: services/ampache/AddServerDialog.cpp:44
 #, kde-format
 msgid "Add new Ampache server"
-msgstr ""
+msgstr "ახალი Ampache სერვერის დამატება"
 
 #: services/ampache/AddServerDialog.cpp:83
 #, kde-format
@@ -12897,7 +12912,7 @@ msgstr "სერვერის მისამართი"
 #: services/ampache/AmpacheService.cpp:94
 #, kde-format
 msgid "Amarok frontend for your Ampache server"
-msgstr ""
+msgstr "Amarok-ის წინაბოლო თქვენი Ampache-ის სერვერისთვის"
 
 #: services/ampache/AmpacheService.cpp:96
 #, kde-format
@@ -12919,17 +12934,17 @@ msgstr "განახლდა: %1"
 #: services/ampache/LastfmInfoParser.cpp:68
 #, kde-format
 msgid "<p>No information found for this track.</p>"
-msgstr ""
+msgstr "<p>ამ ტრეკისთვის ინფორმაცია აღმოჩენილი არაა.</p>"
 
 #: services/ampache/LastfmInfoParser.cpp:120
 #, kde-format
 msgid "<p>No information found for this album.</p>"
-msgstr ""
+msgstr "<p>ამ ალბომისთვის ინფორმაცია აღმოჩენილი არაა.</p>"
 
 #: services/ampache/LastfmInfoParser.cpp:174
 #, kde-format
 msgid "<p>No information found for this artist.</p>"
-msgstr ""
+msgstr "<p>ამ შემსრულებლისთვის ინფორმაცია აღმოჩენილი არაა.</p>"
 
 #. i18n: ectx: property (text), widget (QPushButton, verifyButton)
 #: services/ampache/NewServerWidget.ui:74
@@ -12941,7 +12956,7 @@ msgstr "შეერთების შემოწმება"
 #: services/gpodder/GpodderConfigWidget.ui:26
 #, kde-format
 msgid "gpodder.net Profile"
-msgstr ""
+msgstr "gpodder.net-ის პროფილი"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/gpodder/GpodderConfigWidget.ui:78
@@ -12959,6 +12974,17 @@ msgid ""
 "gpodder.net/register/\"><span style=\" text-decoration: underline; color:"
 "#0057ae;\">Sign up to gpodder.net</span></a></p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Ubuntu'; font-size:9pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
+"gpodder.net/register/\"><span style=\" text-decoration: underline; color:"
+"#0057ae;\">დარეგისტრირდით საიტზე gpodder.net</span></a></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
@@ -12974,17 +13000,17 @@ msgstr "&სატესტო შესვლა"
 #: services/gpodder/GpodderProvider.cpp:292
 #, kde-format
 msgid "Gpodder Podcasts"
-msgstr ""
+msgstr "Gpodder-ის პოდკასტები"
 
 #: services/gpodder/GpodderProvider.cpp:469
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
-msgstr ""
+msgstr "ვცდილობ სტატუსების სინქრონიზაცისა gpodder.net-თან"
 
 #: services/gpodder/GpodderProvider.cpp:529
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
-msgstr ""
+msgstr "გამოწერების სინქრონიზაციის მცდელობა gpodder.net-თან"
 
 #: services/gpodder/GpodderProvider.cpp:778
 #: services/gpodder/GpodderProvider.cpp:789
@@ -12997,12 +13023,12 @@ msgstr ""
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
-msgstr ""
+msgstr "gpodder.net: პოდკასტების კატალოგის სერვისი"
 
 #: services/gpodder/GpodderService.cpp:119
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
-msgstr ""
+msgstr "gpodder.net ონლაინ პოდკასტების კატალოგისა და სინქრონიზაციის სერვისია."
 
 #: services/gpodder/GpodderService.cpp:225
 #: services/opmldirectory/OpmlDirectoryService.cpp:130
@@ -13013,7 +13039,7 @@ msgstr "ხელმოწერა"
 #: services/gpodder/GpodderServiceConfig.cpp:156
 #, kde-format
 msgid "gpodder.net credentials"
-msgstr ""
+msgstr "Gpodder.net-ის მომხმარებელი და პაროლი"
 
 #: services/gpodder/GpodderServiceConfig.cpp:157
 #, kde-format
@@ -13031,7 +13057,7 @@ msgstr "ტესტირება..."
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
-msgstr ""
+msgstr "მომხმარებლის სახელი ან პაროლი ცარიელია. შეასწორეთ და თავიდან სცადეთ."
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
 #: services/gpodder/GpodderServiceSettings.cpp:179
@@ -13057,12 +13083,12 @@ msgstr "წარმატება"
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
-msgstr ""
+msgstr "მომხმარებლის სახელი ან პაროლი არასწორია. შეასწორეთ და თავიდან სცადეთ"
 
 #: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
-msgstr ""
+msgstr "შეცდომა gpodder.net-თან მიერთებისას, ან სხვა შეცდომა."
 
 #: services/gpodder/GpodderServiceSettings.cpp:204
 #, kde-format
@@ -13075,7 +13101,7 @@ msgstr ""
 #: services/jamendo/JamendoInfoParser.cpp:77
 #, kde-format
 msgid "No description available..."
-msgstr ""
+msgstr "აღწერა ხელმისაწვდომი არაა..."
 
 #: services/jamendo/JamendoInfoParser.cpp:61
 #: services/jamendo/JamendoInfoParser.cpp:93
@@ -13087,12 +13113,12 @@ msgstr "Jamendo.com-დან"
 #: services/jamendo/JamendoMeta.cpp:131
 #, kde-format
 msgid "A site where artists can freely share their music"
-msgstr ""
+msgstr "საიტი, სადაც შემსრულებლებს თავიანთი მუსიკის გაზიარება შეუძლიათ"
 
 #: services/jamendo/JamendoService.cpp:77
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
-msgstr ""
+msgstr "უფასო, Creative Commons ლიცენზიით გავრცელებული მუსიკის არქივი"
 
 #: services/jamendo/JamendoService.cpp:80
 #, kde-format
@@ -13139,12 +13165,12 @@ msgstr "ჟანრი / შემსრულებელი / ალბომ
 #: services/jamendo/JamendoService.cpp:194
 #, kde-format
 msgid "Downloading Jamendo.com database..."
-msgstr ""
+msgstr "მიმდინარეობს Jamendo.com-ის მონაცემთა ბაზის გადმოწერა..."
 
 #: services/jamendo/JamendoService.cpp:216
 #, kde-format
 msgid "Updating the local Jamendo database."
-msgstr ""
+msgstr "ლოკალური Jamendo-ის მონაცემთა ბაზის განახლება."
 
 #: services/jamendo/JamendoXmlParser.cpp:171
 #, kde-format
@@ -13153,8 +13179,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jamendo.com-ის მონაცემთა ბაზა განახლდა. დაემატა 1 ტრეკი "
+msgstr[1] "Jamendo.com-ის მონაცემთა ბაზა განახლდა. დაემატა %1 ტრეკი "
 
 #: services/jamendo/JamendoXmlParser.cpp:172
 #, kde-format
@@ -13163,8 +13189,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 ალბომი საიდან "
+msgstr[1] "%1 ალბომი საიდან "
 
 #: services/jamendo/JamendoXmlParser.cpp:173
 #, kde-format
@@ -13173,14 +13199,14 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 შემსრულებლი."
+msgstr[1] "%1 შემსრულებლი."
 
 #: services/lastfm/biases/LastFmBias.cpp:45
 #, kde-format
 msgctxt "Name of the \"Last.fm\" similar bias"
 msgid "Last.fm similar"
-msgstr ""
+msgstr "Last.fm-ის მსგავსი"
 
 #: services/lastfm/biases/LastFmBias.cpp:54
 #, kde-format
@@ -13217,7 +13243,7 @@ msgstr "წინა ტრეკი"
 #, kde-format
 msgctxt "Name of the \"WeeklyTop\" bias"
 msgid "Last.fm weekly top artist"
-msgstr ""
+msgstr "Last.fm კვირის საუკეთესო შემსრულებელი"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:49
 #, kde-format
@@ -13356,7 +13382,7 @@ msgstr ""
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
 msgid "Last.fm: The social music revolution"
-msgstr ""
+msgstr "Last.fm: სოციალური მუსიკის რევოლუცია"
 
 #: services/lastfm/LastFmService.cpp:102
 #, kde-format
@@ -13409,7 +13435,7 @@ msgstr[1] "დაკვრების რაოდენობა: %1"
 #: services/lastfm/LastFmService.cpp:392
 #, kde-format
 msgid "Create a Custom Last.fm Station"
-msgstr ""
+msgstr "მორგებული Last.fm-ის სადგურის შექმნა"
 
 #: services/lastfm/LastFmService.cpp:395
 #, kde-format
@@ -13434,12 +13460,12 @@ msgstr "გლობალური ჭდეები"
 #: services/lastfm/LastFmServiceCollection.cpp:40
 #, kde-format
 msgid "Friends' Loved Radio"
-msgstr ""
+msgstr "მეგობრის საყვარელი რადიო"
 
 #: services/lastfm/LastFmServiceCollection.cpp:44
 #, kde-format
 msgid "Friends' Personal Radio"
-msgstr ""
+msgstr "მეგობრის პირადი რადიო"
 
 #: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
@@ -13513,38 +13539,38 @@ msgstr "%1 (%2)"
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%2 (%1 დაკვრა)"
+msgstr[1] "%2 (%1 დაკვრა)"
 
 #: services/lastfm/LastFmTreeModel.cpp:197
 #, kde-format
 msgid "Personal Radio"
-msgstr ""
+msgstr "პირადი რადიო"
 
 #: services/lastfm/LastFmTreeModel.cpp:310
 #, kde-format
 msgid "My Recommendations"
-msgstr ""
+msgstr "ჩემი რეკომენდაციები"
 
 #: services/lastfm/LastFmTreeModel.cpp:312
 #, kde-format
 msgid "My Radio Station"
-msgstr ""
+msgstr "ჩემი რადიოსადგური"
 
 #: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Mix Radio"
-msgstr ""
+msgstr "ჩემი მიქს-რადიო"
 
 #: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
 msgid "My Top Artists"
-msgstr ""
+msgstr "ჩემი საუკეთესო შემსრულებლები"
 
 #: services/lastfm/LastFmTreeModel.cpp:318
 #, kde-format
 msgid "My Tags"
-msgstr ""
+msgstr "ჩემი ჭდეები"
 
 #: services/lastfm/LastFmTreeModel.cpp:320
 #, kde-format
@@ -13554,7 +13580,7 @@ msgstr "მეგობრები"
 #: services/lastfm/meta/LastFmMeta.cpp:80
 #, kde-format
 msgid "Last.fm: &Ban"
-msgstr ""
+msgstr "Last.fm: &ბანი"
 
 #: services/lastfm/meta/LastFmMeta.cpp:81
 #, kde-format
@@ -13564,12 +13590,12 @@ msgstr "Ctrl+B"
 #: services/lastfm/meta/LastFmMeta.cpp:82
 #, kde-format
 msgid "Ban this track"
-msgstr ""
+msgstr "ამ ტრეკის დაბანა"
 
 #: services/lastfm/meta/LastFmMeta.cpp:86
 #, kde-format
 msgid "Last.fm: &Skip"
-msgstr ""
+msgstr "Last.fm: &გამოტოვება"
 
 #: services/lastfm/meta/LastFmMeta.cpp:87
 #, kde-format
@@ -13579,47 +13605,47 @@ msgstr "Ctrl+S"
 #: services/lastfm/meta/LastFmMeta.cpp:88
 #, kde-format
 msgid "Skip this track"
-msgstr ""
+msgstr "ამ ტრეკის გამოყოვება"
 
 #: services/lastfm/meta/LastFmMeta.cpp:267
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
-msgstr ""
+msgstr "გლობალური ჭდის რადიო: \"%1\""
 
 #: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
-msgstr ""
+msgstr "მომხმარებლის ჭდის რადიო: \"%1\""
 
 #: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
-msgstr ""
+msgstr "\"%1\"-ის მსგავსი შემსრულებლები"
 
 #: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
-msgstr ""
+msgstr "შემსრულებლის ფანის რადიო: \"%1\""
 
 #: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
 msgid "%1's Neighbor Radio"
-msgstr ""
+msgstr "%1-ის მეზობლის რადიო"
 
 #: services/lastfm/meta/LastFmMeta.cpp:297
 #, kde-format
 msgid "%1's Personal Radio"
-msgstr ""
+msgstr "%1-ის პირადი რადიო"
 
 #: services/lastfm/meta/LastFmMeta.cpp:301
 #, kde-format
 msgid "%1's Mix Radio"
-msgstr ""
+msgstr "%1-ის მიქსის რადიო"
 
 #: services/lastfm/meta/LastFmMeta.cpp:305
 #, kde-format
 msgid "%1's Recommended Radio"
-msgstr ""
+msgstr "%1-ის რეკომენდებული რადიო"
 
 #: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
