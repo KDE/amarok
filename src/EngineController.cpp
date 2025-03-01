@@ -1209,6 +1209,10 @@ EngineController::slotTitleChanged( int titleNumber )
 
 void EngineController::slotVolumeChanged( qreal newVolume )
 {
+    // phonon-vlc tends to change volume to nan when nothing is playing or track is changing
+    // this nan check should prevent unnecessary volume change notifications
+    if( newVolume != newVolume )
+        return;
     int percent = qBound<qreal>( 0, qRound(newVolume * 100), 100 );
 
     if ( !m_ignoreVolumeChangeObserve && m_volume != percent )
