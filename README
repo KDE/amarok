@@ -42,7 +42,7 @@ Required
     * KDE Frameworks 6.0 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
-    * Phonon 4.12.0 (or newer with support for Qt6) and one of the available backends
+    * GStreamer 1.0.0 (or newer)
 
     * Qt 6.7
       https://qt.io/

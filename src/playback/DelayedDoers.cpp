@@ -18,28 +18,21 @@
 
 #include "core/support/Debug.h"
 
-#include <phonon/MediaController>
-#include <phonon/MediaObject>
-
-DelayedDoer::DelayedDoer( Phonon::MediaObject *mediaObject,
-                          const QSet<Phonon::State> &applicableStates )
-    : m_mediaObject( mediaObject )
-    , m_applicableStates( applicableStates )
+DelayedDoer::DelayedDoer( )
 {
-    Q_ASSERT( mediaObject );
-    connect( mediaObject, &Phonon::MediaObject::stateChanged,
+    /*connect( mediaObject, &Phonon::MediaObject::stateChanged,
              this, &DelayedDoer::slotStateChanged );
     connect( mediaObject, &Phonon::MediaObject::destroyed,
-             this, &DelayedDoer::deleteLater );
+             this, &DelayedDoer::deleteLater );*/
 }
 
 void
-DelayedDoer::slotStateChanged( Phonon::State newState )
+DelayedDoer::slotStateChanged( int newState )
 {
-    if( m_applicableStates.contains( newState ) )
+    if( 1) //m_applicableStates.contains( newState ) )
     {
         // don't let be called twice, deleteLater() may fire really LATER
-        disconnect( m_mediaObject, nullptr, this, nullptr );
+        //disconnect( m_mediaObject, nullptr, this, nullptr );
         performAction();
         deleteLater();
     }
@@ -47,10 +40,8 @@ DelayedDoer::slotStateChanged( Phonon::State newState )
         debug() << __PRETTY_FUNCTION__ << "newState" << newState << "not applicable, waiting...";
 }
 
-DelayedSeeker::DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo, bool startPaused )
-    : DelayedDoer( mediaObject, QSet<Phonon::State>() << Phonon::PlayingState
-                                                      << Phonon::BufferingState
-                                                      << Phonon::PausedState )
+DelayedSeeker::DelayedSeeker( qint64 seekTo, bool startPaused )
+    : DelayedDoer( )
     , m_seekTo( seekTo )
     , m_startPaused( startPaused )
 {
@@ -59,35 +50,30 @@ DelayedSeeker::DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo, b
 void
 DelayedSeeker::performAction()
 {
-    m_mediaObject->seek( m_seekTo );
+    // TODO m_mediaObject->seek( m_seekTo );
     Q_EMIT trackPositionChanged( m_seekTo, /* userSeek */ true );
 
-    if( !m_startPaused )
-        m_mediaObject->play();
+  //  if( !m_startPaused )
+//  TODO      m_mediaObject->play();
 }
 
-DelayedTrackChanger::DelayedTrackChanger( Phonon::MediaObject *mediaObject,
-                                          Phonon::MediaController *mediaController,
-                                          int trackNumber, qint64 seekTo, bool startPaused )
-    : DelayedSeeker( mediaObject, seekTo, startPaused )
-    , m_mediaController( mediaController )
+DelayedTrackChanger::DelayedTrackChanger( int trackNumber, qint64 seekTo, bool startPaused )
+    : DelayedSeeker( seekTo, startPaused )
     , m_trackNumber( trackNumber )
 {
-    Q_ASSERT( mediaController );
-    connect( mediaController, &QObject::destroyed, this, &QObject::deleteLater );
     Q_ASSERT( trackNumber > 0 );
 }
 
 void
 DelayedTrackChanger::performAction()
 {
-    m_mediaController->setCurrentTitle( m_trackNumber );
+// TODO    m_mediaController->setCurrentTitle( m_trackNumber );
     if( m_seekTo )
     {
-        m_mediaObject->seek( m_seekTo );
+// TODO        m_mediaObject->seek( m_seekTo );
         Q_EMIT trackPositionChanged( m_seekTo, /* userSeek */ true );
     }
 
-    if( !m_startPaused )
-        m_mediaObject->play();
+/*    if( !m_startPaused )
+        m_mediaObject->play(); */ //TODO
 }

@@ -19,15 +19,8 @@
 
 #include "amarok_export.h"
 
-#include <phonon/Global>
-
 #include <QObject>
 #include <QSet>
-
-namespace Phonon {
-    class MediaObject;
-    class MediaController;
-}
 
 /**
  * Abstract base helper class for helpers that do something with Phonon objects once
@@ -38,8 +31,7 @@ class AMAROK_EXPORT DelayedDoer : public QObject
     Q_OBJECT
 
     public:
-        explicit DelayedDoer( Phonon::MediaObject *mediaObject,
-                              const QSet<Phonon::State> &applicableStates );
+        explicit DelayedDoer( );
 
     protected:
         /**
@@ -48,13 +40,11 @@ class AMAROK_EXPORT DelayedDoer : public QObject
         virtual void performAction() = 0;
 
     private Q_SLOTS:
-        void slotStateChanged( Phonon::State newState );
+        void slotStateChanged( int newState );
 
     protected:
-        Phonon::MediaObject *m_mediaObject;
 
     private:
-        QSet<Phonon::State> m_applicableStates;
 };
 
 /**
@@ -66,7 +56,7 @@ class AMAROK_EXPORT DelayedSeeker : public DelayedDoer
     Q_OBJECT
 
     public:
-        DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo, bool startPaused );
+        DelayedSeeker( qint64 seekTo, bool startPaused );
 
     Q_SIGNALS:
         void trackPositionChanged( qint64 position, bool userSeek );
@@ -83,15 +73,12 @@ class AMAROK_EXPORT DelayedTrackChanger : public DelayedSeeker
     Q_OBJECT
 
     public:
-        explicit DelayedTrackChanger( Phonon::MediaObject *mediaObject,
-                                      Phonon::MediaController *mediaController,
-                                      int trackNumber, qint64 seekTo, bool startPaused );
+        explicit DelayedTrackChanger(  int trackNumber, qint64 seekTo, bool startPaused );
 
     protected:
         void performAction() override;
 
     private:
-        Phonon::MediaController *m_mediaController;
         int m_trackNumber;
 };
 

@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 3.2.82 UNRELEASED
   FEATURES:
+   * Audio engine has been reworked to use gstreamer instead of phonon
 
   CHANGES:
 

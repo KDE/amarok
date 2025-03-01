@@ -73,6 +73,32 @@ find_package(KF${KF_MAJOR_VERSION}StatusNotifierItem ${KF_MIN_VERSION} REQUIRED)
 find_package(KF${KF_MAJOR_VERSION}Kirigami ${KF_MIN_VERSION})
 set_package_properties(KF${KF_MAJOR_VERSION}Kirigami PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
+# GStreamer search adapted from phonon-gstreamer cmake
+find_package(GStreamer 1.0)
+set_package_properties(GSTREAMER PROPERTIES
+    TYPE REQUIRED
+    DESCRIPTION "GStreamer"
+    PURPOSE "gstreamer 1.0 is required for the multimedia backend"
+    URL "http://gstreamer.freedesktop.org/modules/")
+find_package(GStreamerPlugins QUIET 1.0)
+find_package(GSTREAMER_PLUGIN_AUDIO)
+find_package(GSTREAMER_PLUGIN_PBUTILS)
+set_package_properties(GSTREAMER_PLUGIN_AUDIO PROPERTIES
+    TYPE RUNTIME
+    DESCRIPTION "GStreamer audio plugin"
+    PURPOSE "The gstreamer video plugin (part of gstreamer-plugins-base 1.0) is required for the multimedia gstreamer backend"
+    URL "http://gstreamer.freedesktop.org/modules/")
+set_package_properties(GSTREAMER_PLUGIN_PBUTILS PROPERTIES
+    TYPE RUNTIME
+    DESCRIPTION "GStreamer pbutils plugin"
+    PURPOSE "The gstreamer pbutils plugin (part of gstreamer-plugins-base 1.0) is required for the multimedia gstreamer backend"
+    URL "http://gstreamer.freedesktop.org/modules/")
+
+pkg_search_module(GLIB REQUIRED glib-2.0)
+set_package_properties( GLIB2 PROPERTIES DESCRIPTION "GLib 2 is required to compile the gstreamer audio backend" URL "http://www.gtk.org" TYPE REQUIRED )
+
+pkg_search_module( GOBJECT REQUIRED gobject-2.0 )
+set_package_properties( GOBJECT PROPERTIES DESCRIPTION "GObject is required to compile the gstreamer audio backend" URL "http://www.gtk.org" TYPE OPTIONAL )
 
 ###############
 if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
@@ -173,9 +199,6 @@ if(NOT CMAKE_VERSION VERSION_LESS "3.10.0")
 endif()
 
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING -DQT_NO_CAST_TO_ASCII)
-
-find_package(Phonon4Qt${QT_MAJOR_VERSION} 4.12.0 REQUIRED NO_MODULE)
-add_definitions(-DPHONON_LIB_SONAME=\"${PHONON_LIB_SONAME}\")
 
 if( WITH_LASTFM )
     find_package( LibLastFm 1.2.0 )
@@ -291,13 +314,6 @@ if( WITH_PLAYER )
 
         include(CheckQtGlib)
         set_package_properties( QT5_GLIB PROPERTIES DESCRIPTION "Qt5 must be compiled with glib support for mp3tunes" URL "http://www.trolltech.com" TYPE OPTIONAL )
-    endif()
-
-    if( WITH_IPOD OR WITH_MP3Tunes )
-        pkg_search_module( GOBJECT REQUIRED gobject-2.0 )
-        set_package_properties( GOBJECT PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes." URL "http://www.gtk.org" TYPE OPTIONAL )
-        pkg_search_module( GLIB2 glib-2.0 )
-        set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
     endif()
 
     find_package(Python3 COMPONENTS Interpreter)

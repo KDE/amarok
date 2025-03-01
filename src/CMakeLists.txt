@@ -23,6 +23,13 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/core-impl/collections/db/sql/
 )
 
+include_directories(SYSTEM
+    ${GSTREAMER_INCLUDE_DIR}
+    ${GSTREAMER_PLUGIN_AUDIO_INCLUDE_DIR}
+    ${GSTREAMER_PLUGIN_PBUTILS_INCLUDE_DIR}
+    ${GLIB_INCLUDE_DIRS}
+)
+
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
 add_subdirectory( core-impl/storage/sql )
@@ -645,6 +652,7 @@ set(amaroklib_LIB_SRCS
     AmarokMimeData.cpp
     App.cpp
     EngineController.cpp
+    EngineGstPipeline.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
@@ -819,7 +827,6 @@ if(WIN32)
 endif()
 
 target_link_libraries(amaroklib
-    Phonon::phonon4qt${QT_MAJOR_VERSION}
     KF${KF_MAJOR_VERSION}::Archive
     KF${KF_MAJOR_VERSION}::CoreAddons
     KF${KF_MAJOR_VERSION}::ColorScheme
@@ -839,6 +846,13 @@ target_link_libraries(amaroklib
     KF${KF_MAJOR_VERSION}::ThreadWeaver
     KF${KF_MAJOR_VERSION}::WidgetsAddons
     KF${KF_MAJOR_VERSION}::WindowSystem
+    ${GSTREAMER_LIBRARIES}
+    ${GSTREAMER_BASE_LIBRARY}
+    ${GSTREAMER_INTERFACE_LIBRARY}
+    ${GSTREAMER_PLUGIN_AUDIO_LIBRARY}
+    ${GSTREAMER_PLUGIN_PBUTILS_LIBRARY}
+    ${GLIB_LIBRARIES}
+    ${GOBJECT_LIBRARIES}
     Qt::Core5Compat
     Qt::Gui
     Qt::Qml

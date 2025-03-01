@@ -23,8 +23,6 @@
 
 #include "AnalyzerBase.h"
 
-#include <phonon/audiodataoutput.h>
-
 #include <QElapsedTimer>
 #include <QMutex>
 #include <QObject>
@@ -87,7 +85,7 @@ private:
     /**
      * This function is thread-safe.
      */
-    void receiveData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData );
+    void receiveData( ); // TODO const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData );
 
     // None of the following functions are thread-safe. Only connect with queued connections to them.
     void processData();

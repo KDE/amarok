@@ -66,10 +66,10 @@ void Analyzer::Worker::stopTimers()
     m_processTimer->stop();
 }
 
-void Analyzer::Worker::receiveData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData )
+void Analyzer::Worker::receiveData() // TODO const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData )
 {
     const int newDataSize = EngineController::DATAOUTPUT_DATA_SIZE;
-
+/*
     if( newData.isEmpty() || newData[Phonon::AudioDataOutput::LeftChannel].size() != newDataSize )
         return;
 
@@ -89,7 +89,7 @@ void Analyzer::Worker::receiveData( const QMap<Phonon::AudioDataOutput::Channel,
         }
         m_rawIn.last() /= ( 1 << 15 ); // Scale to [0, 1]
     }
-
+*/
     m_rawInMutex.unlock();
 }
 

@@ -17,6 +17,13 @@ include_directories(
 include_directories(SYSTEM
     ${GOOGLEMOCK_INCLUDE_DIR} )
 
+include_directories(SYSTEM
+    ${GSTREAMER_INCLUDE_DIR}
+    ${GSTREAMER_PLUGIN_AUDIO_INCLUDE_DIR}
+    ${GSTREAMER_PLUGIN_PBUTILS_INCLUDE_DIR}
+    ${GLIB_INCLUDE_DIRS}
+)
+
 if( LIBLASTFM_FOUND ) # needed by Last.fm error handler in App.cpp
     include_directories(SYSTEM ${LIBLASTFM_INCLUDE_DIR})
 endif()

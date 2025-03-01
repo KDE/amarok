@@ -23,8 +23,6 @@
 #include <sys/types.h>
 #endif
 
-#include <phonon/audiodataoutput.h>
-
 #include <QMap>
 #include <QQuickFramebufferObject>
 #include <QThread>

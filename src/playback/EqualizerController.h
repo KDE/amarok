@@ -24,10 +24,8 @@
 
 #include "amarok_export.h"
 
+#include <QObject>
 #include <QPointer>
-
-#include <phonon/Path>
-#include <phonon/Effect>
 
 static const int s_equalizerBandsNum = 10; // Number of equalizer parameters excluding Preamp
 
@@ -40,7 +38,7 @@ public:
     explicit EqualizerController( QObject *object );
     ~EqualizerController() override;
 
-    void initialize( const Phonon::Path &path );
+    void initialize( );
 
     /**
      * Phonon equalizer support is required for Amarok to enable equalizer
@@ -115,8 +113,6 @@ Q_SIGNALS:
     void presetsChanged( const QString &name );
 
 private:
-    QPointer<Phonon::Effect>            m_equalizer;
-    Phonon::Path                            m_path;
 };
 
 #endif

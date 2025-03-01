@@ -38,8 +38,6 @@
 #include <QVBoxLayout>
 
 #include <algorithm>
-#include <phonon/pulsesupport.h>
-
 
 
 BackendDescriptor::BackendDescriptor(const QString &path)
@@ -139,9 +137,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
         appletString += QStringLiteral("   ") + applet + QLatin1Char('\n');
     }
 
-    const BackendDescriptor aPhononBackend = getPreferredBackend();
-
-    const bool hasPulse = Phonon::PulseSupport::getInstance()->isActive();
+    const bool hasPulse = false;
     const QString pulse = hasPulse ? i18nc( "Usage", "Yes" ) : i18nc( "Usage", "No" );
 
     return i18n(
@@ -149,17 +145,12 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "   %1 Version: %2\n"
                "   KDE Frameworks Version: %3\n"
                "   Qt Version: %4\n"
-               "   Phonon Version: %5\n"
-               "   Phonon Backend: %6 (%7, %8)\n"
                "   PulseAudio: %9\n\n",
 
                KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
                KCoreAddons::versionString(),                        // KDE Frameworks
                QLatin1String(qVersion()),                           // Qt
-               QLatin1String(Phonon::phononVersion()),              // Phonon
-               aPhononBackend.name,
-               aPhononBackend.version,
-               aPhononBackend.website,                              // & Backend
+               QLatin1String("//TODO"),              // Phonon                           // & Backend
                pulse                                                // PulseAudio
            ) + i18n(
                "Enabled Scripts:\n%1\n"
@@ -167,49 +158,6 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "Enabled Applets:\n%3\n",
                aScriptString, aPluginString, appletString
            );
-}
-
-const BackendDescriptor
-DiagnosticDialog::getPreferredBackend() const
-{
-    QList<QString> iidPreference;
-    QSettings settings(QStringLiteral("kde.org"), QStringLiteral("libphonon"));
-    const int size = settings.beginReadArray(QStringLiteral("Backends"));
-    for (int i = 0; i < size; ++i) {
-        settings.setArrayIndex(i);
-        iidPreference.append(settings.value(QStringLiteral("iid")).toString());
-    }
-    settings.endArray();
-
-    const QLatin1String suffix("/" PHONON_LIB_SONAME "_backend/");
-    const QStringList paths = QCoreApplication::libraryPaths();
-
-    QList<struct BackendDescriptor> backendList;
-
-    for(const QString &path : paths) {
-        const QString libPath = path + suffix;
-        const QDir dir(libPath);
-        if (!dir.exists()) {
-            continue;
-        }
-
-        const QStringList plugins(dir.entryList(QDir::Files));
-
-        for (const QString &plugin : plugins) {
-            BackendDescriptor bd = BackendDescriptor(libPath + plugin);
-            if (bd.isValid) {
-                int preference = iidPreference.indexOf(bd.iid);
-                if (preference != -1) {
-                    bd.preference = preference;
-                }
-                backendList.append(bd);
-            }
-        }
-    }
-
-    std::sort(backendList.begin(), backendList.end());
-
-    return backendList.first();
 }
 
 void

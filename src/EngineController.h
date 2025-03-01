@@ -4,6 +4,7 @@
  * Copyright (c) 2004-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ * Copyright (C) 2025 Tuomas Nurmi <tuomas@norsumanageri.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,26 +29,18 @@
 #include "core/meta/Meta.h"
 
 #include <QRecursiveMutex>
-#include <QObject>
 #include <QPointer>
 #include <QSemaphore>
 #include <QStringList>
 #include <QUrl>
 
-#include <phonon/Path>
-#include <phonon/MediaController>
-#include <phonon/MediaObject>
-#include <phonon/Effect>
-#include <phonon/EffectParameter>
-#include <phonon/audiodataoutput.h>
-
+class EngineGstPipeline;
 class Fadeouter;
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
-namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 class QTimer;
 
 /**
- * A thin wrapper around Phonon that implements Amarok-specific functionality like
+ * A thin wrapper around GStreamer that implements Amarok-specific functionality like
  * replay gain, fade-out on stop and various track capabilities that affect
  * playback.
  */
@@ -166,6 +159,7 @@ public:
      * @param progress whether to include the playing progress (default false)
      */
     QString prettyNowPlaying( bool progress = false ) const;
+
 
 public Q_SLOTS:
     /**
@@ -445,7 +439,7 @@ Q_SIGNALS:
     *   Is emitted when new audio Data is ready
     *   @param audioData The audio data that is available
     */
-    void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
+    //TODO void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
 
     /**
      * A trick to call slotFillInSupportedMimeTypes() in a main thread, not to be used
@@ -463,8 +457,8 @@ private Q_SLOTS:
     */
     void slotFinished();
     void slotAboutToFinish();
-    void slotNewTrackPlaying( const Phonon::MediaSource &source);
-    void slotStateChanged( Phonon::State newState, Phonon::State oldState);
+    void slotNewTrackPlaying( const QUrl &source );
+    void slotStateChanged( int oldState,  int newState );
     void slotPlayableUrlFetched( const QUrl &url );
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
@@ -546,16 +540,13 @@ private:
     Q_DISABLE_COPY( EngineController )
 
     EqualizerController                     *m_equalizerController;
-    QPointer<Phonon::MediaObject>       m_media;
-    QPointer<Phonon::VolumeFaderEffect> m_preamp;
-    QPointer<Phonon::AudioOutput>       m_audio;
-    QPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
-    QPointer<Phonon::MediaController>   m_controller;
-    Phonon::Path                            m_path;
-    Phonon::Path                            m_dataPath;
+
+    EngineGstPipeline *m_pipeline;
+    bool m_seekablePipeline;
 
     QPointer<Fadeouter> m_fadeouter;
-    QPointer<Phonon::VolumeFaderEffect> m_fader;
+    bool m_fader;
+    bool m_preamp;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;

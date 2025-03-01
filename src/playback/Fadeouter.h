@@ -22,11 +22,6 @@
 #include <QObject>
 #include <QPointer>
 
-namespace Phonon {
-    class MediaObject;
-    class VolumeFaderEffect;
-}
-
 /**
  * A RAII approach to fadeout on track stop. Once created, it automatically
  * initiates fadeout. Fadeouter ensures that fadeoutFinished() is signalled when
@@ -40,9 +35,7 @@ class AMAROK_EXPORT Fadeouter : public QObject
     Q_OBJECT
 
     public:
-        Fadeouter( const QPointer<Phonon::MediaObject> &media,
-                   const QPointer<Phonon::VolumeFaderEffect> &fader,
-                   int fadeOutLength );
+        Fadeouter( int fadeOutLength );
 
         /**
          * Destructor ensures that fader volume is set back to normal
@@ -64,7 +57,6 @@ class AMAROK_EXPORT Fadeouter : public QObject
         void slotFinalizeFadeout();
 
     private:
-        QPointer<Phonon::VolumeFaderEffect> m_fader;
 };
 
 #endif // FADEOUTER_H

@@ -101,9 +101,9 @@ Analyzer::Base::connectSignals()
         setWindowFunction( (WindowFunction) config().readEntry( "windowFunction", (int)Hann ) );
         Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate);
     }
-    if( m_worker )
+/*    if( m_worker )
         connect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData,
-                 static_cast<Qt::ConnectionType>( Qt::DirectConnection | Qt::UniqueConnection ) );
+                 static_cast<Qt::ConnectionType>( Qt::DirectConnection | Qt::UniqueConnection ) );*/ //TODO
 }
 
 void
@@ -111,8 +111,8 @@ Analyzer::Base::disconnectSignals()
 {
     DEBUG_BLOCK
 
-    if( m_worker )
-        disconnect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData );
+//    if( m_worker ) //TODO
+  //      disconnect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData );
 }
 
 void
