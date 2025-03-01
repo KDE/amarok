@@ -247,7 +247,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     menu.addAction(  i18n(     "0%" ) )->setData(   0 );
 
     /*
-    // TODO: Phonon
+    // TODO:
     menu.addSeparator();
     menu.addAction( QIcon::fromTheme( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), qApp, &QCoreApplication::slotConfigEqualizer()) )->setData( -1 );
     */

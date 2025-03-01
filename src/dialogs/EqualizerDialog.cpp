@@ -92,7 +92,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     const QStringList equalizerBandFreq = equalizer->eqBandsFreq();
     QStringListIterator i( equalizerBandFreq );
 
-    // Check if preamp is supported by Phonon backend
+    // Check if preamp is supported by audio backend
     if( equalizerBandFreq.size() == s_equalizerBandsNum ) {
         // Preamp not supported, so hide its slider
         eqPreampLabel->hide();

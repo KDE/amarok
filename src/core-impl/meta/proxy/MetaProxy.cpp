@@ -127,7 +127,7 @@ MetaProxy::Track::playableUrl() const
         return d->realTrack->playableUrl();
     else
         /* don't return d->url here, it may be something like
-         * amarok-sqltrackuid://2f9277bb7e49962c1c4c5612811807a1 and Phonon may choke
+         * amarok-sqltrackuid://2f9277bb7e49962c1c4c5612811807a1 and audio backend may choke
          * on such urls trying to find a codec and causing hang (bug 308371) */
         return QUrl();
 }

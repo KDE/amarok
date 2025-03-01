@@ -455,9 +455,9 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     /**
-     * Sets up the Phonon system
+     * Sets up the audio backend
      */
-    void initializePhonon();
+    void initializeBackend();
     /** This slot is connected to the phonon finished signal.
         It is emitted when the queue is empty and the current media come to an end.
     */

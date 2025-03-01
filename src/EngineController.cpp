@@ -123,7 +123,7 @@ EngineController::~EngineController()
 }
 
 void
-EngineController::initializePhonon()
+EngineController::initializeBackend()
 {
     DEBUG_BLOCK
 
@@ -1070,7 +1070,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
            which cause problems: runs StopAfterCurrentTrack mode, force PlayPause button to
            reply the track (can't be paused). So we should reinitiate Phonon after each Error.
         */
-        initializePhonon();
+        initializeBackend();
 
         errorCount++;
         if ( errorCount >= maxErrors )
