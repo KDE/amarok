@@ -56,6 +56,9 @@ public:
     Worker();
     ~Worker() override;
 
+    void playbackStateChanged();
+    void stopTimers();
+
 protected:
     /**
      * @return The current scope data.
@@ -95,7 +98,6 @@ private:
     void setScopeSize( int size );
     void calculateExpFactor( qreal minFreq, qreal maxFreq, int sampleRate );
     void resetDemo() { m_demoT = 201; }
-    void playbackStateChanged();
 
     /**
      * Override this function for your custom idle animation.

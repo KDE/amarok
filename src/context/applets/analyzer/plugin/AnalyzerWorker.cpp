@@ -60,6 +60,12 @@ Analyzer::Worker::~Worker()
     fftw_free( m_out );
 }
 
+void Analyzer::Worker::stopTimers()
+{
+    m_demoTimer->stop();
+    m_processTimer->stop();
+}
+
 void Analyzer::Worker::receiveData( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData )
 {
     const int newDataSize = EngineController::DATAOUTPUT_DATA_SIZE;

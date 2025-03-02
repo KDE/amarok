@@ -122,9 +122,15 @@ Analyzer::Base::drawNeedChanged( const bool drawingNeeded )
     // Don't update the analyzer if Amarok is not on the active virtual desktop or otherwise not visible.
 
     if( drawingNeeded )
+    {
         connectSignals();
+        QTimer::singleShot( 0, m_worker, [=]() { m_worker->playbackStateChanged(); } );
+    }
     else
+    {
         disconnectSignals();
+        QTimer::singleShot( 0, m_worker, [=]() { m_worker->stopTimers(); } );
+    }
 }
 
 void
