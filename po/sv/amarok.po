@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-22 00:40+0000\n"
+"POT-Creation-Date: 2025-03-02 00:40+0000\n"
 "PO-Revision-Date: 2025-01-12 09:03+0100\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -226,7 +226,7 @@ msgstr "Stoppa efter nuvarande spår: På"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
 msgid "No track playing"
 msgstr "Inget spår spelas"
@@ -4773,7 +4773,7 @@ msgstr "Okänd artist"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1292
+#: EngineController.cpp:1296
 #, kde-format
 msgid "Unknown track"
 msgstr "Okänt spår"
@@ -9430,25 +9430,25 @@ msgstr "Betyg"
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "För många fel påträffades i spellistan. Uppspelning stoppad."
 
-#: EngineController.cpp:1282
+#: EngineController.cpp:1286
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
 
-#: EngineController.cpp:1284
+#: EngineController.cpp:1288
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> av <b>%2</b>"
 
-#: EngineController.cpp:1287
+#: EngineController.cpp:1291
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> på <b>%2</b>"
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

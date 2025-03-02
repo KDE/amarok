@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-22 00:40+0000\n"
+"POT-Creation-Date: 2025-03-02 00:40+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -226,7 +226,7 @@ msgstr "หยุดหลังจบแทร็กปัจจุบัน: �
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
 msgid "No track playing"
 msgstr "ยังไม่มีการเล่นแทร็กเสียงใด ๆ"
@@ -4935,7 +4935,7 @@ msgstr "ศิลปินที่ไม่รู้จัก"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1292
+#: EngineController.cpp:1296
 #, kde-format
 msgid "Unknown track"
 msgstr "แทร็กที่ไม่รู้จัก"
@@ -9566,25 +9566,25 @@ msgstr "การจัดอันดับ"
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "มีข้อผิดพลาดต่าง ๆ เกิดขึ้นจำนวนมากในรายการเล่น หยุดทำการเล่นกลับแล้ว"
 
-#: EngineController.cpp:1282
+#: EngineController.cpp:1286
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> โดย <b>%2</b> ในอัลบั้ม <b>%3</b>"
 
-#: EngineController.cpp:1284
+#: EngineController.cpp:1288
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> โดย <b>%2</b>"
 
-#: EngineController.cpp:1287
+#: EngineController.cpp:1291
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> ในอัลบั้ม <b>%2</b>"
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

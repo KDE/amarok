@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-02-22 00:40+0000\n"
-"PO-Revision-Date: 2025-03-01 01:25+0100\n"
+"POT-Creation-Date: 2025-03-02 00:40+0000\n"
+"PO-Revision-Date: 2025-03-01 03:09+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -225,7 +225,7 @@ msgstr "მიმდინარე ტრეკის შემდეგ გა
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1314 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
 #, kde-format
 msgid "No track playing"
 msgstr "ტრეკის დაკვრა არ მიმდინარეობს"
@@ -4658,7 +4658,7 @@ msgstr "უცნობი შემსრულებელი"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1292
+#: EngineController.cpp:1296
 #, kde-format
 msgid "Unknown track"
 msgstr "უცნობი ტრეკი"
@@ -9054,25 +9054,25 @@ msgstr "შეფასება"
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "აღმოჩენილია მეტისმეტად ბევრი შეცდომა. დაკვრა სეწყვეტილია."
 
-#: EngineController.cpp:1282
+#: EngineController.cpp:1286
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ავტორი <b>%2</b> დრო <b>%3</b>"
 
-#: EngineController.cpp:1284
+#: EngineController.cpp:1288
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ავტორი <b>%2</b>"
 
-#: EngineController.cpp:1287
+#: EngineController.cpp:1291
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> <b>%2</b>-ზე"
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -13220,13 +13220,13 @@ msgstr ""
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
-msgstr ""
+msgstr "წინა ტრეკის მსგავსი (Last.fm-ის მიხედვით)"
 
 #: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
-msgstr ""
+msgstr "წინა შემსრულებლის მსგავსი (Last.fm-ის მიხედვით)"
 
 #: services/lastfm/biases/LastFmBias.cpp:142
 #, kde-format
@@ -13302,7 +13302,7 @@ msgstr "დაკავშირებული არაა"
 #: services/lastfm/LastFmConfigWidget.ui:84
 #, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
+msgstr "<a href=\"https://www.last.fm/join\">რეგისტრაცია Last.fm-ზე</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
@@ -13482,12 +13482,12 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "გნებავთ, გათიშოთ Amarok Last.fm-ის ანგარიდან %1?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "გავთიშო Last.fm-ის ანგარიში?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
@@ -13507,13 +13507,13 @@ msgstr "შეცდომა"
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr ""
+msgstr "მიმდინარეობს Last.fm-ის ვებგვერდის წგახსნა"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "ანგარიშის დაკავშირების დასრულება"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -13526,7 +13526,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
 msgid "Unable to connect to Last.fm service."
-msgstr ""
+msgstr "Last.fm-ის სერვისთან მიერთება შეუძლებელია."
 
 #: services/lastfm/LastFmTreeModel.cpp:129
 #, kde-format
@@ -13650,12 +13650,12 @@ msgstr "%1-ის რეკომენდებული რადიო"
 #: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
-msgstr ""
+msgstr "%1-ის რეკომენდებული რადიო (პოპულარობა %2)"
 
 #: services/lastfm/meta/LastFmMeta.cpp:315
 #, kde-format
 msgid "Group Radio: %1"
-msgstr ""
+msgstr "ჯგუფის რადიო: %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:323
 #, kde-format
@@ -13670,7 +13670,7 @@ msgstr "შემსრულებლის რადიო"
 #: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
-msgstr ""
+msgstr "Last.fm საკაიფოა..."
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:98
 #, kde-format
@@ -13684,7 +13684,7 @@ msgstr ""
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:106
 #, kde-format
 msgid "Error starting track from Last.fm radio"
-msgstr ""
+msgstr "ტრეკის დაწყების შეცდომა Last.fm-ის რადიოდან"
 
 #: services/lastfm/ScrobblerAdapter.cpp:158
 #, kde-format
@@ -13720,38 +13720,38 @@ msgstr ""
 #: services/lastfm/SimilarArtistsAction.cpp:27
 #, kde-format
 msgid "Play Similar Artists from Last.fm"
-msgstr ""
+msgstr "მსგავსი შემსრულებლების დაკვრა Last.fm-დან"
 
 #: services/lastfm/SynchronizationAdapter.cpp:61
 #, kde-format
 msgctxt "description of the Last.fm statistics synchronization provider"
 msgid "slows down track matching"
-msgstr ""
+msgstr "შეანელებს ტრეკის დამთხვევას"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
 #, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
-msgstr ""
+msgstr "%2-ის '%1'-ის გადმოწერა Magnatune.com-დან"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:71
 #, kde-format
 msgid "Downloading album from Magnatune.com"
-msgstr ""
+msgstr "ალბომის გადმოწერა Magnatune.com-დან"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:100
 #, kde-format
 msgid "Magnatune download seems to have failed. Cannot read zip file"
-msgstr ""
+msgstr "Magnatune-დან გადმოწერა ჩავარდა. zip ფაილის წაკთხვა შეუძლებელია"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format
 msgid "Uncompressing Magnatune.com download..."
-msgstr ""
+msgstr "Magnatune.com-დან გადმოწერილი ფაილის გაშლა..."
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:133
 #, kde-format
 msgid "Adding album cover to collection"
-msgstr ""
+msgstr "ალბომის ყდის დამატება კოლექციისთვის"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:41
 #, kde-format
@@ -13787,13 +13787,13 @@ msgstr ""
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:32
 #, kde-format
 msgid "Update Magnatune database automatically"
-msgstr ""
+msgstr "Magnatune-ის მონაცემთა ბაზის ავტომატური განახლება"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:43
 #, kde-format
 msgid "Redownloads"
-msgstr ""
+msgstr "თავიდან გადმოწერები"
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: services/magnatune/MagnatuneConfigWidget.ui:49
@@ -13826,7 +13826,7 @@ msgstr "წევრი ვარ"
 #: services/magnatune/MagnatuneConfigWidget.ui:105
 #, kde-format
 msgid "Membership type:"
-msgstr ""
+msgstr "წევრობის ტიპი:"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:116
@@ -13901,7 +13901,7 @@ msgstr "დაბალ ხარისხის mp3"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:13
 #, kde-format
 msgid "Magnatune.com Album Download"
-msgstr ""
+msgstr "Magnatune.com-ის ალბომის გადმოწერა"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox1)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:19
@@ -13933,7 +13933,7 @@ msgstr ""
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:67
 #, kde-format
 msgid "Magnatune info"
-msgstr ""
+msgstr "Magnatune-ის ინფორმაცია"
 
 #. i18n: ectx: property (text), widget (QPushButton, downloadButton)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:83
@@ -13956,7 +13956,7 @@ msgstr ""
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid "Could not process download"
-msgstr ""
+msgstr "გადმოწერას ვერ დავაჭირე"
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:210
 #, kde-format
@@ -13971,17 +13971,17 @@ msgstr ""
 #: services/magnatune/MagnatuneInfoParser.cpp:32
 #, kde-format
 msgid "Loading artist info..."
-msgstr ""
+msgstr "შემსრულებლის ინფორმაციის ჩატვირთვა..."
 
 #: services/magnatune/MagnatuneInfoParser.cpp:42
 #, kde-format
 msgid "Fetching %1 Artist Info"
-msgstr ""
+msgstr "%1 შემსრულებლის ინფორმაციის გამოთხოვა"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:51
 #, kde-format
 msgid "Loading album info..."
-msgstr ""
+msgstr "ალბომის ინფორმაციის ჩატვირთვა..."
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
 #: services/magnatune/MagnatuneInfoParser.cpp:73
@@ -13997,29 +13997,29 @@ msgstr "აღწერა:"
 #: services/magnatune/MagnatuneInfoParser.cpp:82
 #, kde-format
 msgid "From Magnatune.com"
-msgstr ""
+msgstr "Magnatune.com-დან"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:164
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
-msgstr ""
+msgstr "Magnatune.com-ის პირველი გვერდის ჩატვირთვა..."
 
 #: services/magnatune/MagnatuneInfoParser.cpp:167
 #, kde-format
 msgid "Fetching Magnatune.com front page"
-msgstr ""
+msgstr "Magnatune.com-ის პირველი გვერდის გამოთხოვა"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:178
 #: services/magnatune/MagnatuneInfoParser.cpp:192
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
-msgstr ""
+msgstr "თქვენი magnatune.com-ის რჩეული გვერდის ჩატვირთვა...."
 
 #: services/magnatune/MagnatuneInfoParser.cpp:203
 #: services/magnatune/MagnatuneInfoParser.cpp:217
 #, kde-format
 msgid "Loading your personal Magnatune.com recommendations page..."
-msgstr ""
+msgstr "თქვენი პირადი Magnatune.com-ის რეკომენდაციების გვერდის ჩატვირთვა..."
 
 #: services/magnatune/MagnatuneMeta.cpp:214
 #, kde-format
@@ -14030,7 +14030,7 @@ msgstr ""
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:39
 #, kde-format
 msgid "Click this button to download Magnatune database now."
-msgstr ""
+msgstr "დააწკაპუნეთ ამ ღილაკზე Magnatune-ის მონაცემთა ბაზის ახლა გადმოსაწერად."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:49
@@ -14059,13 +14059,13 @@ msgstr "განახლება"
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:13
 #, kde-format
 msgid "Redownload manager"
-msgstr ""
+msgstr "თავიდან გადმოწერების მმართველი"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:19
 #, kde-format
 msgid "These are the albums that you have previously downloaded:"
-msgstr ""
+msgstr "ეს ალბომებია, რომლებიც ახლახან გადმოწერეთ:"
 
 #. i18n: ectx: property (text), widget (QPushButton, redownloadButton)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:29
@@ -14082,13 +14082,13 @@ msgstr "შემსრულებელი - ალბომი"
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:148
 #, kde-format
 msgid "Getting list of previous Magnatune.com purchases"
-msgstr ""
+msgstr "მიმდინარეობს წინა Magnatune.com-ის შეძენების ჩამონათვლის მიღება"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, SignupDialog)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:14
 #, kde-format
 msgid "Magnatune.com member signup"
-msgstr ""
+msgstr "Magnatune.com-ის წევრის რეგისტრაცია"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:32
@@ -14146,7 +14146,7 @@ msgstr "დახურვა"
 #: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
 msgid "\"Fair trade\" online music store"
-msgstr ""
+msgstr "\"Fair trade\" მუსიკის მაღაზია ინტერნეტში"
 
 #: services/magnatune/MagnatuneStore.cpp:109
 #, no-c-format, kde-format
@@ -14191,12 +14191,12 @@ msgstr "რეგისტრაცია"
 #: services/magnatune/MagnatuneStore.cpp:328
 #, kde-format
 msgid "Downloading Magnatune.com database..."
-msgstr ""
+msgstr "მიმდინარეობს Magnatune.com-ის მონაცემთა ბაზის გადმოწერა..."
 
 #: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
 msgid "Updating the local Magnatune database."
-msgstr ""
+msgstr "ლოკალური Magnatune-ის მონაცემთა ბაზის განახლება."
 
 #: services/magnatune/MagnatuneStore.cpp:620
 #, kde-format
@@ -14221,7 +14221,7 @@ msgstr "შეცდომა: addMoodyTracks-სთვის არგუმე
 #: services/magnatune/MagnatuneStore.cpp:646
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
-msgstr ""
+msgstr "შეცდომა: დამუშავების შეცდომა არგუმენტისთვის 2 ( რაოდენობა )"
 
 #: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
@@ -14250,7 +14250,11 @@ msgid "Magnatune.com database update complete. Database contains 1 track on "
 msgid_plural ""
 "Magnatune.com database update complete. Database contains %1 tracks on "
 msgstr[0] ""
+"Magnatune.com-ის მონაცემთა ბაზის განახლება დასრულდა. მონაცემთა ბაზა შეიცავს "
+"1 ტრეკს შემსრულებლისთვის "
 msgstr[1] ""
+"Magnatune.com-ის მონაცემთა ბაზის განახლება დასრულდა. მონაცემთა ბაზა შეიცავს "
+"%1 ტრეკს შემსრულებლისთვის "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:81
 #, kde-format
@@ -14259,8 +14263,8 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 album from "
+msgstr[1] "%1 ალბომს საიდან "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:83
 #, kde-format
@@ -14269,13 +14273,13 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 შემსრულებლი."
+msgstr[1] "%1 შემსრულებლი."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:36
 #, kde-format
 msgid "Amarok's MP3tunes Harmony Daemon"
-msgstr ""
+msgstr "Amarok-ის MP3tunes ჰარმონიის დემონი"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:38
 #, kde-format
@@ -14285,7 +14289,7 @@ msgstr "(C) 2008, Casey Link"
 #: services/mp3tunes/harmonydaemon/main.cpp:39
 #, kde-format
 msgid "Handles AutoSync for the MP3tunes service in Amarok."
-msgstr ""
+msgstr "ამუშავებს ავტოსინქრონიზაციას MP3tunes-ის სერვისისთვის Amarok-ში."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
 #, kde-format
@@ -14296,6 +14300,11 @@ msgid ""
 "Feedback:\n"
 "amarok@kde.org"
 msgstr ""
+"IRC:\n"
+"server: irc.libera.chat / channel: #amarok\n"
+"\n"
+"უკუკავშირი:\n"
+"amarok@kde.org"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:41
 #, kde-format
@@ -14305,17 +14314,17 @@ msgstr "http://amarok.kde.org"
 #: services/mp3tunes/harmonydaemon/main.cpp:48
 #, kde-format
 msgid "The identifier the daemon should use."
-msgstr ""
+msgstr "იდენტიფიკატორი დემონისთვის."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:49
 #, kde-format
 msgid "The email to be used for authentication."
-msgstr ""
+msgstr "ელფოსტა ავთენტიკაციისთვის."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:50
 #, kde-format
 msgid "The pin to be used for authentication."
-msgstr ""
+msgstr "PIN-კოდი ავთენტიკაციისთვის."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:16
@@ -14397,17 +14406,17 @@ msgstr ""
 #: services/mp3tunes/Mp3tunesService.cpp:108
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
-msgstr ""
+msgstr "MP3tunes Locker: თქვენი მუსიკა ყველგან!"
 
 #: services/mp3tunes/Mp3tunesService.cpp:221
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
-msgstr ""
+msgstr "MP3tunes ავტოსინქი ჩართულია"
 
 #: services/mp3tunes/Mp3tunesService.cpp:237
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
-msgstr ""
+msgstr "MP3tunes ავტოსინქი გამორთულია"
 
 #: services/mp3tunes/Mp3tunesService.cpp:257
 #, kde-format
@@ -14417,23 +14426,23 @@ msgstr "აუთენტიკაცია"
 #: services/mp3tunes/Mp3tunesService.cpp:269
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
-msgstr ""
+msgstr "MP3tunes-ის ავთენტიკაცია ჩავარდა."
 
 #: services/mp3tunes/Mp3tunesService.cpp:299
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
-msgstr ""
+msgstr "MP3tunes Harmony: გათიშულია"
 
 #: services/mp3tunes/Mp3tunesService.cpp:306
 #: services/mp3tunes/Mp3tunesService.cpp:319
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
-msgstr ""
+msgstr "MP3tunes Harmony: ველოდები PIN-კოდის შეყვანას"
 
 #: services/mp3tunes/Mp3tunesService.cpp:331
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
-msgstr ""
+msgstr "MP3tunes Harmony: დაკავშირება წარმატებულია"
 
 #: services/mp3tunes/Mp3tunesService.cpp:346
 #, kde-format
@@ -14441,12 +14450,14 @@ msgid ""
 "MP3tunes Harmony Error\n"
 "%1"
 msgstr ""
+"MP3tunes Harmony-ის შეცდომა\n"
+"%1"
 
 #: services/mp3tunes/Mp3tunesServiceCollection.cpp:60
 #: services/mp3tunes/Mp3tunesServiceCollectionLocation.cpp:44
 #, kde-format
 msgid "MP3tunes Locker"
-msgstr ""
+msgstr "MP3tunes-ის დაბლოკვა"
 
 #: services/mp3tunes/Mp3tunesServiceCollectionLocation.cpp:78
 #, kde-format
@@ -14458,34 +14469,34 @@ msgstr ""
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
 msgid "Upload to MP3tunes Initiated"
-msgstr ""
+msgstr "MP3tunes-ზე ატვირთვა დაიწყო"
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:370
 #, kde-format
 msgid "Uploading Track %1/%2"
-msgstr ""
+msgstr "იტვირთება ტრეკი %1/%2"
 
 #. i18n: ectx: property (text), widget (QLabel, instructionsLabel)
 #: services/opmldirectory/AddOpmlWidget.ui:37
 #, kde-format
 msgid "Add a local or remote OPML file to be included in the list."
-msgstr ""
+msgstr "დაამატეთ ლოკალური, ან დაშორებული OPML ფაილი, რომ სიაში იყოს."
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, titleEdit)
 #: services/opmldirectory/AddOpmlWidget.ui:88
 #, kde-format
 msgid "If left blank the title from the OPML will be used."
-msgstr ""
+msgstr "თუ ცარიელს დატოვებთ, გამოყენებული იქნება სათაური OPML ფაილიდან."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr ""
+msgstr "პოდკასტის ინფორმაციის ჩატვირთვა..."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:67
 #, kde-format
 msgid "Fetching Podcast Info"
-msgstr ""
+msgstr "პოდკასტის ინფორმაციის გამოთხოვა"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
 #: services/opmldirectory/OpmlDirectoryService.cpp:139
@@ -14512,7 +14523,7 @@ msgstr "Podcast-ის სია"
 #: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
 msgid "A large listing of podcasts"
-msgstr ""
+msgstr "პოდკასტების დიდი სია"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:76
 #, kde-format
@@ -14524,7 +14535,7 @@ msgstr ""
 #: services/opmldirectory/OpmlDirectoryService.cpp:163
 #, kde-format
 msgid "Add an OPML file to the list."
-msgstr ""
+msgstr "OPML ფაილის დამატება სიაში."
 
 #: services/scriptable/ScriptableServiceInfoParser.cpp:44
 #: services/scriptable/ScriptableServiceInfoParser.cpp:59
@@ -14537,7 +14548,7 @@ msgstr "ინფორმაციის ჩატვირთვა..."
 #: services/ServiceBase.cpp:337
 #, kde-format
 msgid "This service does not accept any messages"
-msgstr ""
+msgstr "ამ სერვისს შეტყობინებების მხარდაჭერა არ გააჩნია"
 
 #: services/ServiceBase.cpp:344
 #, kde-format
@@ -14547,18 +14558,18 @@ msgstr "შეცდომა: უცნობი შეტყობინებ
 #: services/ServiceMetaBase.cpp:249
 #, kde-format
 msgid "Neither playable nor downloadable url specified."
-msgstr ""
+msgstr "მითითებული ბმული არც დაკვრადია, არც გადმოწერადი."
 
 #: services/ServicePluginManager.cpp:147 services/ServicePluginManager.cpp:164
 #: services/ServicePluginManager.cpp:181
 #, kde-format
 msgid "No service named %1 is currently loaded"
-msgstr ""
+msgstr "სერვისი სახელით %1 ამჟამად ჩატვირთული არაა"
 
 #: statsyncing/Config.cpp:100
 #, kde-format
 msgid "This collection is currently offline"
-msgstr ""
+msgstr "ეს კოლექცია ამჟამად გათიშულია"
 
 #: statsyncing/Controller.cpp:112
 #, kde-format
@@ -14580,7 +14591,7 @@ msgstr "სინქრონიზებულად შენარჩუნ�
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "არ მინდა, სინქრონიზებული იყოს"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
@@ -14637,6 +14648,8 @@ msgid ""
 "Can match tracks by: %1\n"
 "Can synchronize: %2"
 msgstr ""
+"არაფერი ემთხვევა ტრეკებს: %1\n"
+"შემიძლია სინქრონიზაცია: %2"
 
 #: statsyncing/Process.cpp:48
 #, kde-format
@@ -14646,7 +14659,7 @@ msgstr "სტატისტიკის სინქრონიზაცი�
 #: statsyncing/Process.cpp:113
 #, kde-format
 msgid "Matching Tracks for Statistics Synchronization"
-msgstr ""
+msgstr "შესაბამისი ტრეკები სტატისტიკის სინქრონიზაციისთვის"
 
 #: statsyncing/Process.cpp:230
 #, kde-format
@@ -14658,15 +14671,15 @@ msgstr "ტრეკის სტატისტიკის სინქრო�
 msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%2-ის სინქრონიზაცია დასრულდა. განახლდა <b>1</b> ტრეკი."
+msgstr[1] "%2-ის სინქრონიზაცია დასრულდა. განახლდა <b>%1</b> ტრეკი."
 
 #: statsyncing/Process.cpp:273
 #, kde-format
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>1</b> ტრეკი ელოდება სინქრონიზაციას %2-სთან."
+msgstr[1] "<b>%1</b> ტრეკი ელოდება სინქრონიზაციას %2-სთან."
 
 #: statsyncing/Process.cpp:280
 #, kde-format
@@ -14715,7 +14728,7 @@ msgstr "სინქრონიზაციის მორგება..."
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
 #, kde-format
 msgid "Tracks matched by: %1"
-msgstr ""
+msgstr "ემთხვევა ტრეკები: %1"
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:165
 #, kde-format
@@ -14724,6 +14737,8 @@ msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
 msgstr ""
+"%1-ის ჩაწერის მხარდაჭერა მონიშნულ კოლექციებს არ აქვთ - მის სინქრონიზაციას "
+"აზრი არ აქვს."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:17
@@ -14740,12 +14755,12 @@ msgstr "აირჩიეთ ველები სინქრონიზა�
 #: statsyncing/ui/ConfigureProviderDialog.cpp:35
 #, kde-format
 msgid "Configure Synchronization Target"
-msgstr ""
+msgstr "სინქრონიზაციის სამიზნის მროგება"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:37
 #, kde-format
 msgid "Add Synchronization Target"
-msgstr ""
+msgstr "სინქრონიზაციის სამიზნის დამატება"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:47
 #, kde-format
@@ -14758,12 +14773,12 @@ msgstr ""
 #: statsyncing/ui/CreateProviderDialog.cpp:60
 #, kde-format
 msgid "Choose Target Type"
-msgstr ""
+msgstr "აირჩიეთ სამიზნის ტიპი"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:86
 #, kde-format
 msgid "Configure Target"
-msgstr ""
+msgstr "სამიზნის მორგება"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:138
 #, kde-format
@@ -14790,44 +14805,44 @@ msgstr ""
 #: statsyncing/ui/MatchedTracksPage.cpp:155
 #, kde-format
 msgid "Expand Tracks With Conflicts"
-msgstr ""
+msgstr "კონფლიქტური ტრეკების ჩამოსლა"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:157
 #, kde-format
 msgid "Expand Updated"
-msgstr ""
+msgstr "განახლებულების ჩამოშლა"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:163
 #, kde-format
 msgid "Collapse Tracks Without Conflicts"
-msgstr ""
+msgstr "უკონფლიქტო ტრეკების აკეცვა"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:165
 #, kde-format
 msgid "Collapse Not Updated"
-msgstr ""
+msgstr "არგანახლებულების აკეცვა"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
 msgid "Reset All Ratings to Undecided"
-msgstr ""
+msgstr "ყველაფრის რეიტინგის გადაუწყვეტელზე დაყენება"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:194
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Include Labels from %1"
-msgstr ""
+msgstr "ჭდეების ჩასმა %1-დან"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:198
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Exclude Labels from %1"
-msgstr ""
+msgstr "ჭდეების ამოღება %1-დან"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
 msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
-msgstr ""
+msgstr "ყველა ჭდის ჩამოყრა გადაუწყვეტელზე (არ დაასინქრონო ისინი)"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
 #, kde-format
@@ -14847,22 +14862,22 @@ msgstr "კონფლიქტის მქონე ტრეკები"
 #: statsyncing/ui/MatchedTracksPage.cpp:239
 #, kde-format
 msgid "There are no tracks with conflicts"
-msgstr ""
+msgstr "კონფლიქტის მქონე ტრეკები აღმოჩენილი არაა"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:245
 #, kde-format
 msgid "There are no tracks going to be updated"
-msgstr ""
+msgstr "გასანახლებელი ტრეკების გარეშე"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:272
 #, kde-format
 msgid "Tracks that are unique to their sources"
-msgstr ""
+msgstr "ტრეკები, რომლებიც უნიკალურია თავისი წყაროებისთვის"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
 msgid "Tracks that have been excluded from synchronization due to ambiguity"
-msgstr ""
+msgstr "ტრეკები, რომლებიც ამოღებულია სინქრონიზაციიდან მათი გაურკვევლობის გამო"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
 #, kde-format
@@ -14876,20 +14891,20 @@ msgstr[1] "<b>%1-ჯერ</b> დაკვრა"
 msgctxt "%2 is the 'X plays message above'"
 msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%2 ტრეკი <b>1-დან></b> სინქრონიზებული იქნება %3-სთან."
+msgstr[1] "%2 ტრეკი <b>%1-დან></b> სინქრონიზებული იქნება %3-სთან."
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
 msgctxt "%2 is the above '%1 track(s)' message"
 msgid "Showing %1 out of %2"
-msgstr ""
+msgstr "ნაჩვენებია %1 %2-დან"
 
 #. i18n: ectx: attribute (title), widget (QWidget, matchedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:21
 #, kde-format
 msgid "Matched Tracks"
-msgstr ""
+msgstr "შესაბამისი ტრეკები"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, matchedFilterLine)
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, uniqueFilterLine)
@@ -14899,7 +14914,7 @@ msgstr ""
 #: statsyncing/ui/MatchedTracksPage.ui:216
 #, kde-format
 msgid "Filter Tracks..."
-msgstr ""
+msgstr "ტრეკების გაფილტვრა..."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedRatingsButton)
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedLabelsButton)
@@ -14907,13 +14922,13 @@ msgstr ""
 #: statsyncing/ui/MatchedTracksPage.ui:84
 #, kde-format
 msgid "Affects all applicable tracks, not just shown ones"
-msgstr ""
+msgstr "ეხება ყველა შესაბამის ტრეკს და არა მხოლოდ ნაჩვენებს"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
 #, kde-format
 msgid "Take Ratings From"
-msgstr ""
+msgstr "რეიტინგების აღება საიდან"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedExpandButton)
 #: statsyncing/ui/MatchedTracksPage.ui:110
@@ -14931,19 +14946,19 @@ msgstr "აკეცვა"
 #: statsyncing/ui/MatchedTracksPage.ui:152
 #, kde-format
 msgid "Unique Tracks"
-msgstr ""
+msgstr "უნიკალური ტრეკები"
 
 #. i18n: ectx: attribute (title), widget (QWidget, excludedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:208
 #, kde-format
 msgid "Excluded Tracks"
-msgstr ""
+msgstr "ამოღებული ტრეკები"
 
 #. i18n: ectx: property (title), widget (QGroupBox, scrobblingGroupBox)
 #: statsyncing/ui/MatchedTracksPage.ui:267
 #, kde-format
 msgid "Scrobbling"
-msgstr ""
+msgstr "სკრობლინგი"
 
 #: statusbar/CompoundProgressBar.cpp:65 statusbar/CompoundProgressBar.cpp:194
 #: statusbar/ProgressBar.cpp:48
@@ -14954,12 +14969,12 @@ msgstr "გაუქმება"
 #: statusbar/CompoundProgressBar.cpp:69 statusbar/CompoundProgressBar.cpp:206
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
-msgstr ""
+msgstr "გაშვებულია ერთზე მეტი ფონური ამოცანა (დააწკაპუნეთ საჩვენებლად)"
 
 #: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Abort all background tasks"
-msgstr ""
+msgstr "ყველა ფონური ამოცანის გაუქმება"
 
 #: toolbar/MainToolbar.cpp:77
 #, kde-format
@@ -14969,12 +14984,12 @@ msgstr "ხელსაწყოთა მთავარი ზოლი"
 #: toolbar/MainToolbar.cpp:84
 #, kde-format
 msgid "Rediscover Your Music"
-msgstr ""
+msgstr "თავიდან აღმოაჩინეთ თქვენი მუსიკა"
 
 #: toolbar/SlimToolbar.cpp:36
 #, kde-format
 msgid "Slim Toolbar"
-msgstr ""
+msgstr "თხელი პანელი"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
 #: widgets/Osd.cpp:209
@@ -14991,12 +15006,12 @@ msgstr "ხმა: %1"
 #: transcoding/TranscodingAssistantDialog.cpp:44
 #, kde-format
 msgid "Transcode Tracks"
-msgstr ""
+msgstr "ტრეკების ტრანსკოდირება"
 
 #: transcoding/TranscodingAssistantDialog.cpp:54
 #, kde-format
 msgid "Transc&ode"
-msgstr ""
+msgstr "&ტრანსკოდირება"
 
 #: transcoding/TranscodingAssistantDialog.cpp:65
 #, kde-format
@@ -15041,12 +15056,13 @@ msgstr ""
 #, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
-msgstr ""
+msgstr "ამჟამად ხელმიუწვდომელია თქვენს სისტემაზე."
 
 #: transcoding/TranscodingAssistantDialog.cpp:156
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
+"სამიზნე კოლექცია მიუთითებს, რომ ეს ფორმატი, შეიძლება, დაკვრადი არ იყოს."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: transcoding/TranscodingAssistantDialog.ui:89
@@ -15060,13 +15076,13 @@ msgstr "გადაყვანა"
 #: transcoding/TranscodingAssistantDialog.ui:226
 #, kde-format
 msgid "Transcode all tracks to the selected format"
-msgstr ""
+msgstr "ყველა ტრეკის ტრანსკოდირება არჩეულ ფორმატში"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeAllRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:229
 #, kde-format
 msgid "Transcode all tracks"
-msgstr ""
+msgstr "ყველა ტრეკის ტრანსკოდირება"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
@@ -15077,12 +15093,14 @@ msgid ""
 "Transcode tracks only when needed for playability in the destination "
 "collection"
 msgstr ""
+"ტრანსკოდირება, მხოლოდ, ტრეკების, როცა ეს საჭიროა, რომ ის დაკვრადი იყოს "
+"სამიზნე კოლექციაში"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:242
 #, kde-format
 msgid "Transcode only when needed for playability"
-msgstr ""
+msgstr "ტრანსკოდირება, მხოლოდ, მაშინ, როცა ეს დასაკრავადააა საჭირო"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
@@ -15130,7 +15148,7 @@ msgstr " (რეკომენდებულია)"
 #: transcoding/TranscodingSelectConfigWidget.cpp:36
 #, kde-format
 msgid "Ask before each transfer"
-msgstr ""
+msgstr "კითხვა თითოეული გადაცემისას"
 
 #: TrayIcon.cpp:154 widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
@@ -15175,7 +15193,7 @@ msgstr "სანიშნი"
 #: widgets/BreadcrumbItemButton.cpp:238
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
-msgstr ""
+msgstr "სანიშნეების ჩამოთვლა და გაშვება, ან ახლების დამატება"
 
 #: widgets/BreadcrumbItemButton.cpp:256
 #, kde-format
@@ -15251,7 +15269,7 @@ msgstr "საწყისი"
 #: widgets/FilenameLayoutWidget.cpp:207
 #, kde-format
 msgid "Collection root"
-msgstr ""
+msgstr "კოლექციის საწყიისი"
 
 #: widgets/FilenameLayoutWidget.cpp:277
 #, kde-format
@@ -15396,12 +15414,12 @@ msgstr "მითითებულ დროის შუალედში"
 #: widgets/Osd.cpp:195
 #, kde-format
 msgid "Rating changed"
-msgstr ""
+msgstr "რეიტინგი შეიცვალა"
 
 #: widgets/Osd.cpp:270
 #, kde-format
 msgid "Volume: 100% (muted)"
-msgstr ""
+msgstr "ხმა: 100% (დადუმებული)"
 
 #: widgets/Osd.cpp:514
 #, kde-format
@@ -15409,6 +15427,8 @@ msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
+"ეკრანზე ჩვენების გადახედვა\n"
+"გადაათრიეთ ადგილის შესაცვლელად"
 
 #: widgets/Osd.cpp:771
 #, kde-format
@@ -15444,12 +15464,12 @@ msgstr "აუდიობილიკის მიმდინარეობ�
 #: widgets/ProgressWidget.cpp:120
 #, kde-format
 msgid "The amount of time elapsed in current track"
-msgstr ""
+msgstr "მიმდინარე ტრეკისთვის გასული დრო"
 
 #: widgets/ProgressWidget.cpp:121
 #, kde-format
 msgid "The amount of time remaining in current track"
-msgstr ""
+msgstr "მიმდინარე ტრეკზე დარჩენილი დრო"
 
 #: widgets/SearchWidget.cpp:50
 #, kde-format
@@ -15523,7 +15543,7 @@ msgstr "[სუფიქსი]"
 #: widgets/TrackSelectWidget.cpp:68
 #, kde-format
 msgid "Checkpoint: <b>%1</b>"
-msgstr ""
+msgstr "საკვაძო წერტილი: <b>%1</b>"
 
 #: widgets/TrackSelectWidget.cpp:88
 #, kde-format
