@@ -44,7 +44,7 @@ Required
 
     * Phonon 4.12.0 (or newer with support for Qt6) and one of the available backends
 
-    * Qt 6.6
+    * Qt 6.7
       https://qt.io/
 
     * TagLib 1.12 (or newer)
@@ -76,7 +76,7 @@ Optional
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
     * gpodder.net Podcast Provider & Service
-      * libmygpo-qt 1.1.0 (or newer)
+      * libmygpo-qt 1.2.0 (or newer)
         * libmygpo needs to be built with Qt6 support, available at
           https://github.com/gpodder/libmygpo-qt/pull/23
 
@@ -93,7 +93,7 @@ Optional
         * wmav2
 
     * CD support requires:
-      * audiocd-kio - https://www.kde.org/ (part of KDE multimedia; NOTE: KF5 version)
+      * audiocd-kio - https://www.kde.org/ (part of KDE multimedia)
 
     * Building tests require:
       * gmock 1.10 (or newer) - https://github.com/google/googletest
