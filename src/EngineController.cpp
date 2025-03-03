@@ -198,10 +198,10 @@ EngineController::initializeBackend()
     connect( m_pipeline, &EngineGstPipeline::durationChanged, this, &EngineController::slotTrackLengthChanged );
     connect( m_pipeline, &EngineGstPipeline::currentSourceChanged, this, &EngineController::slotNewTrackPlaying );
     connect( m_pipeline, &EngineGstPipeline::seekableChanged, this, &EngineController::slotSeekableChanged );
+    connect( m_pipeline, &EngineGstPipeline::volumeChanged, this, &EngineController::slotVolumeChanged );
+    connect( m_pipeline, &EngineGstPipeline::mutedChanged, this, &EngineController::slotMutedChanged );
 
     m_seekablePipeline = m_pipeline->isSeekable();
-    //connect( m_pipeline, &AudioOutput::volumeChanged, this, &EngineController::slotVolumeChanged );
-    //connect( m_pipeline, &AudioOutput::mutedChanged, this, &EngineController::slotMutedChanged );
     //connect( m_audioDataOutput.data(), &AudioDataOutput::dataReady, this, &EngineController::audioDataReady );
     }
 
@@ -693,10 +693,10 @@ EngineController::setVolume( int percent ) //SLOT
     m_volume = percent;
 
     const qreal volume =  percent / 100.0;
-    if ( !m_ignoreVolumeChangeAction ) // TODO && m_audio->volume() != volume )
+    if ( !m_ignoreVolumeChangeAction )
     {
         m_ignoreVolumeChangeObserve = true;
-// TODO        m_audio->setVolume( volume );
+        m_pipeline->setVolume( volume );
 
         AmarokConfig::setMasterVolume( percent );
         Q_EMIT volumeChanged( percent );
@@ -715,13 +715,13 @@ EngineController::volume() const
 bool
 EngineController::isMuted() const
 {
-return false; //TODO    return m_audio->isMuted();
+    return m_pipeline->isMuted();
 }
 
 void
 EngineController::setMuted( bool mute ) //SLOT
 {
-//TODO //    m_audio->setMuted( mute ); // toggle mute
+    m_pipeline->setMuted( mute ); // toggle mute
     if( !isMuted() )
         setVolume( m_volume );
 

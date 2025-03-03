@@ -47,6 +47,8 @@ public:
     qint64 remainingTime() const;
     QUrl currentSource() const;
     TagMap metaData() const;
+    bool isMuted();
+    qreal volume();
 
     // GStreamer callbacks from phonon-gstreamer
     static gboolean cb_eos(GstBus *bus, GstMessage *msg, gpointer data);
@@ -81,6 +83,8 @@ public Q_SLOTS:
     void stop();
     void play();
     void pause();
+    void setMuted(bool status);
+    void setVolume(qreal newVolume);
 Q_SIGNALS:
     void tick(qint64 time);
     void eos();
@@ -98,9 +102,12 @@ Q_SIGNALS:
     void aboutToFinish();
     void finished();
     void streamChanged();
+    void volumeChanged(qreal newVolume);
+    void mutedChanged(bool mute);
 
 private:
     GstPipeline *m_pipeline;
+    GstElement *m_gstVolume;
     //This simply pauses the gst signal handler 'till we get something
     QMutex m_aboutToFinishLock;
     QWaitCondition m_aboutToFinishWait;

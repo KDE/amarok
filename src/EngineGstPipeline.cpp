@@ -23,6 +23,8 @@
 
 #include <QTimer>
 
+#include <gst/audio/streamvolume.h>
+
 EngineGstPipeline::EngineGstPipeline()
     : m_handlingAboutToFinish(false)
     , m_tickTimer(new QTimer(this))
@@ -57,6 +59,10 @@ EngineGstPipeline::EngineGstPipeline()
     g_signal_connect(bus, "sync-message::tag", G_CALLBACK(cb_tag), this);
     gst_object_unref(bus);
 
+    m_gstVolume = gst_bin_get_by_interface( GST_BIN(m_pipeline), GST_TYPE_STREAM_VOLUME);
+    if(m_gstVolume)
+        gst_object_ref(m_gstVolume);
+
     m_tickTimer->setInterval( 100 );
     connect(m_tickTimer, &QTimer::timeout, this, &EngineGstPipeline::emitTick);
     connect(this, &EngineGstPipeline::internalStateChanged, this, &EngineGstPipeline::handleStateChange);
@@ -64,6 +70,8 @@ EngineGstPipeline::EngineGstPipeline()
 
 EngineGstPipeline::~EngineGstPipeline()
 {
+    if(m_gstVolume)
+        gst_object_unref(m_gstVolume);
     g_signal_handlers_disconnect_by_data(m_pipeline, this);
     gst_element_set_state(GST_ELEMENT(m_pipeline), GST_STATE_NULL);
     gst_object_unref(m_pipeline);
@@ -74,6 +82,34 @@ TagMap
 EngineGstPipeline::metaData() const
 {
     return m_metaData;
+}
+
+bool
+EngineGstPipeline::isMuted()
+{
+    if( m_gstVolume )
+        return gst_stream_volume_get_mute(GST_STREAM_VOLUME(m_gstVolume));
+    return false;
+}
+
+qreal
+EngineGstPipeline::volume()
+{
+    return m_gstVolume ? gst_stream_volume_get_volume(GST_STREAM_VOLUME(m_gstVolume), GST_STREAM_VOLUME_FORMAT_CUBIC) : 1;
+}
+
+void
+EngineGstPipeline::setMuted(bool status)
+{
+    if(m_gstVolume)
+        gst_stream_volume_set_mute(GST_STREAM_VOLUME(m_gstVolume), status);
+}
+
+void
+EngineGstPipeline::setVolume(qreal newVolume)
+{
+    if( m_gstVolume )
+        gst_stream_volume_set_volume(GST_STREAM_VOLUME(m_gstVolume), GST_STREAM_VOLUME_FORMAT_CUBIC, newVolume);
 }
 
 void
