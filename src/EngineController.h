@@ -546,7 +546,6 @@ private:
 
     QPointer<Fadeouter> m_fadeouter;
     bool m_fader;
-    bool m_preamp;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;

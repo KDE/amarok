@@ -73,6 +73,8 @@ public:
     bool seekToMSec(qint64 time);
     bool isSeekable() const;
     bool isPlaybackQueueEmpty();
+
+    bool isReplayGainReady();
 public Q_SLOTS:
     void emitTick();
     void handleStateChange(GstState oldState, GstState newState);
@@ -86,6 +88,7 @@ public Q_SLOTS:
     void pause();
     void setMuted(bool status);
     void setVolume(qreal newVolume);
+    void setGain(qreal newGain);
 Q_SIGNALS:
     void tick(qint64 time);
     void eos();
@@ -109,6 +112,7 @@ Q_SIGNALS:
 private:
     GstPipeline *m_pipeline;
     GstElement *m_gstVolume;
+    GstElement *m_replayGainElement;
     //This simply pauses the gst signal handler 'till we get something
     QMutex m_aboutToFinishLock;
     QWaitCondition m_aboutToFinishWait;

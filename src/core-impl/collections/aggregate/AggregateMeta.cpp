@@ -541,6 +541,20 @@ AggregateTrack::type() const
     }
 }
 
+
+qreal
+AggregateTrack::replayGain( ReplayGainTag mode ) const
+{
+    qreal result = 0;
+    for( const Meta::TrackPtr &track : m_tracks )
+    {
+        result = track->replayGain( mode );
+        if( result != 0.0 ) //any non-zero is probably sane & ok
+            return result;
+    }
+    return result;
+}
+
 Collections::Collection*
 AggregateTrack::collection() const
 {

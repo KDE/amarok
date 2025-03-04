@@ -19,6 +19,7 @@
  ****************************************************************************************/
 
 #include "EngineGstPipeline.h"
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 
 #include <QTimer>
@@ -62,6 +63,35 @@ EngineGstPipeline::EngineGstPipeline()
 
     g_object_set(m_pipeline, "video-sink", gst_element_factory_make( "fakesink", "discard_video" ), NULL); // Discard any video
     m_gstVolume = gst_bin_get_by_interface( GST_BIN(m_pipeline), GST_TYPE_STREAM_VOLUME);
+
+    m_replayGainElement = gst_element_factory_make("volume", "replaygain");
+
+    if( m_replayGainElement )
+    {
+        GstElement *rgBin = gst_bin_new("bin-with-replaygain");
+        GstElement *audioSink = gst_element_factory_make("autoaudiosink", "audio-output");
+
+        gst_bin_add_many(GST_BIN(rgBin), m_replayGainElement, audioSink, NULL);
+
+        if ( !gst_element_link( m_replayGainElement, audioSink)) {
+            debug() << "failed to create replaygain bin";
+        }
+
+        GstPad *pad, *ghostPad;
+        pad = gst_element_get_static_pad(m_replayGainElement, "sink");
+        if (!pad) {
+            debug() << "no volume sink pad";
+        }
+        ghostPad = gst_ghost_pad_new("sink", pad);
+        gst_pad_set_active(ghostPad, TRUE);
+        gst_element_add_pad(rgBin, ghostPad);
+        gst_object_unref(pad);
+
+        g_object_set( GST_BIN(m_pipeline), "audio-sink", rgBin, NULL);
+    }
+    else
+        debug() << "failed to create replay gain volume element";
+
     if(m_gstVolume)
         gst_object_ref(m_gstVolume);
 
@@ -78,6 +108,12 @@ EngineGstPipeline::~EngineGstPipeline()
     gst_element_set_state(GST_ELEMENT(m_pipeline), GST_STATE_NULL);
     gst_object_unref(m_pipeline);
     m_pipeline = nullptr;
+}
+
+bool
+EngineGstPipeline::isReplayGainReady()
+{
+    return m_replayGainElement;
 }
 
 TagMap
@@ -112,6 +148,15 @@ EngineGstPipeline::setVolume(qreal newVolume)
 {
     if( m_gstVolume )
         gst_stream_volume_set_volume(GST_STREAM_VOLUME(m_gstVolume), GST_STREAM_VOLUME_FORMAT_CUBIC, newVolume);
+}
+
+static const qreal log10over20 = 0.1151292546497022842; // ln(10) / 20
+
+void
+EngineGstPipeline::setGain(qreal newGain)
+{
+    if( m_replayGainElement )
+        gst_stream_volume_set_volume(GST_STREAM_VOLUME(m_replayGainElement), GST_STREAM_VOLUME_FORMAT_LINEAR, qExp( newGain * log10over20 ) );
 }
 
 void

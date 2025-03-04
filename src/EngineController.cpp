@@ -69,7 +69,6 @@ EngineController::EngineController()
     : m_pipeline( nullptr )
     , m_seekablePipeline( false )
     , m_fader( false )
-    , m_preamp( false )
     , m_boundedPlayback( nullptr )
     , m_multiPlayback( nullptr )
     , m_multiSource( nullptr )
@@ -771,15 +770,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     {
         m_pipeline->clearPlaybackQueue();
         // keep in sync with playUrl(), slotPlayableUrlFetched()
-        // we don't support gapless for CD, bug 305708.
-        // also try to avoid volume spikes: only do gapless if replaygain is not
-        // active or tracks are from the same album, bug 299461
-        if( url.scheme() != QStringLiteral("audiocd") && ( !m_preamp
-            || AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Off
-            || ( track->album() && track->album() == m_currentTrack->album() ) ) )
-        {
-            m_pipeline->enqueuePlayback( url );
-        }
+        m_pipeline->enqueuePlayback( url );
         m_nextTrack = track;
         m_nextUrl = url;
     }
@@ -829,8 +820,7 @@ EngineController::supportsFadeout() const
 
 bool EngineController::supportsGainAdjustments() const
 {
-    return false; //TODO
-// ret    return m_preamp;
+    return m_pipeline && m_pipeline->isReplayGainReady();
 }
 
 bool EngineController::supportsAudioDataOutput() const
@@ -986,8 +976,6 @@ EngineController::slotFinished()
 
     m_mutex.unlock();
 }
-
-static const qreal log10over20 = 0.1151292546497022842; // ln(10) / 20
 
 void
 EngineController::slotNewTrackPlaying( const QUrl &source )
@@ -1391,7 +1379,7 @@ void
 EngineController::updateReplayGainSetting( bool next )
 {
     Meta::TrackPtr track = ( next ? m_nextTrack : m_currentTrack );
-    if( track
+    if( supportsGainAdjustments() && track
         && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
         Meta::ReplayGainTag mode;
@@ -1412,19 +1400,18 @@ EngineController::updateReplayGainSetting( bool next )
             gain -= gain + peak;
         }
 
-/*        if( m_preamp )
+        if( gain == 0.0 && peak == 0.0 )
         {
-            debug() << "Using gain of" << gain << "with relative peak of" << peak;
-            // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
-            // a little confused about minus signs
-            m_preamp->setVolume( qExp( gain * log10over20 ) );
+            debug() << "Replaygain enabled but no gain information for track (type"
+                    << typeid( *track.data() ).name() << "), using fallback -6 dB";
+            gain = -6;
         }
-        else*/ //TODO
-            warning() << "Would use gain of" << gain << ", but current audio backend"
-                      << "doesn't seem to support pre-amplifier";
+        else
+            debug() << "Using gain of" << gain << "with relative peak of" << peak;
+        m_pipeline->setGain ( gain );
     }
-/*    else if( m_preamp )
+    else
     {
-        m_preamp->setVolume( 1.0 );
-    }*/ //TODO
+        m_pipeline->setGain( 0 );
+    }
 }

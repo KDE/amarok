@@ -69,6 +69,7 @@ namespace Meta {
             int trackNumber() const override;
             int discNumber() const override;
             QString type() const override;
+            qreal replayGain( ReplayGainTag mode ) const override;
 
             Collections::Collection* collection() const override;
 
