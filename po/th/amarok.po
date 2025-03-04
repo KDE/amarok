@@ -2,30 +2,31 @@
 #
 # Sahachart Anukulkitch <drrider@gmail.com>, 2005, 2006, 2007.
 # Thanomsub Noppaburana <donga.nb@gmail.com>, 2008, 2009, 2010.
+# SPDX-FileCopyrightText: 2025 Pongsakorn S. <kde@xerusion.me>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2010-03-21 16:32+0700\n"
-"Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
-"Language-Team: Thai <thai-l10n@googlegroups.com>\n"
+"PO-Revision-Date: 2025-03-03 23:31+0700\n"
+"Last-Translator: Pongsakorn S. <kde@xerusion.me>\n"
+"Language-Team: Thai\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 24.12.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "สหชาติ อนุกูลกิจ, ถนอมทรัพย์ นพบูรณ์"
+msgstr "สหชาติ อนุกูลกิจ, ถนอมทรัพย์ นพบูรณ์, Pongsakorn S."
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "drrider@gmail.com, donga.nb@gmail.com"
+msgstr "drrider@gmail.com, donga.nb@gmail.com, kde@xerusion.me"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3
@@ -16355,9 +16356,7 @@ msgid "Paused"
 msgstr "หยุดชั่วคราว"
 
 #: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "state, as in playing"
-#| msgid "Play"
+#, kde-format
 msgid "Play"
 msgstr "เล่น"
 
@@ -16473,22 +16472,20 @@ msgid "Track: %1"
 msgstr "แทร็กที่:"
 
 #: widgets/TrackSelectWidget.cpp:90
-#, fuzzy, kde-format
-#| msgid "Album \"%1\""
+#, kde-format
 msgid "Album: %1"
-msgstr "อัลบั้ม \"%1\""
+msgstr "อัลบั้ม: %1"
 
 #: widgets/TrackSelectWidget.cpp:92
-#, fuzzy, kde-format
-#| msgid "Artist \"%1\""
+#, kde-format
 msgid "Artist: %1"
-msgstr "ศิลปิน \"%1\""
+msgstr "ศิลปิน: %1"
 
 #: widgets/TrackSelectWidget.cpp:96
 #, fuzzy, kde-format
 #| msgid "<empty>"
 msgid "empty"
-msgstr "<empty>"
+msgstr "<empty"
 
 #, fuzzy
 #~| msgid "First Played"
@@ -20534,8 +20531,8 @@ msgstr "<empty>"
 #~ "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p><p>Error "
 #~ "message:<br/><i>%2</i></p>"
 #~ msgstr ""
-#~ "<p>KLibloader ไม่สามารถโหลดส่วนเสริมต่อไปนี้ได้: <br/><i>%1</y></p> "
-#~ "<p>ข้อความแสดงข้อผิดพลาด: <br/><i>%2</y></p> "
+#~ "<p>KLibloader ไม่สามารถโหลดส่วนเสริมต่อไปนี้ได้: <br/><i>%1</i></p> "
+#~ "<p>ข้อความแสดงข้อผิดพลาด: <br/><i>%2</i></p> "
 
 #~ msgid "Enter space-separated terms to search in the albums"
 #~ msgstr "ป้อนคำค้นสำหรับกรองคั่นด้วยวรรค เพื่อค้นหาในอัลบั้ม"
@@ -21575,7 +21572,7 @@ msgstr "<empty>"
 #~ msgstr "กำลังยกเลิกงานทั้งหมด..."
 
 #~ msgid "&nbsp;<br/>&nbsp;<i>Disabled</i>"
-#~ msgstr "&nbsp;<br>&nbsp;<i>ปิด</i>"
+#~ msgstr "&nbsp;<br/>&nbsp;<i>ปิด</i>"
 
 #~ msgctxt "The Operation is complete"
 #~ msgid "Done"
