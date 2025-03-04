@@ -21,7 +21,9 @@
 
 #include <KAboutData>
 #include <KCrash>
+#ifndef Q_OS_HAIKU
 #include <KDBusService>
+#endif
 
 #include <KLocalizedString>
 
@@ -298,6 +300,7 @@ int main( int argc, char *argv[] )
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
+#ifndef Q_OS_HAIKU
     KDBusService::StartupOptions startOptions = parser.isSet( QStringLiteral("multipleinstances") ) ? KDBusService::Multiple
                                                                                     : KDBusService::Unique ;
     // register  the app  to dbus
@@ -305,6 +308,7 @@ int main( int argc, char *argv[] )
 
     QObject::connect(&dbusService, &KDBusService::activateRequested,
                      &app, &App::activateRequested);
+#endif
 
     const bool debugColorsEnabled = !parser.isSet( QStringLiteral("coloroff") );
     const bool debugEnabled = parser.isSet( QStringLiteral("debug") ) || parser.isSet( QStringLiteral("debug-with-lastfm") ); // HACK see App::initCliArgs
@@ -316,6 +320,7 @@ int main( int argc, char *argv[] )
         qputenv( "GST_DEBUG", QByteArray( "4" ) );
     }
 
+#ifndef Q_OS_HAIKU
 #pragma message("PORT KF5: This *if* should be moved to activateRequested() slot")
     if( !dbusService.isRegistered() ) {
         QList<QByteArray> instanceOptions;
@@ -331,6 +336,7 @@ int main( int argc, char *argv[] )
             fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }
+#endif
 
     // Rewrite default SIGINT and SIGTERM handlers
     // to make amarok save current playlists during forced
