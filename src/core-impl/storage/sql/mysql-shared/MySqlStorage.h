@@ -42,6 +42,8 @@ class MySqlStorage: public SqlStorage
         MySqlStorage();
         ~MySqlStorage() override;
 
+        QString databaseName() const override;
+
         QStringList query( const QString &query ) override;
         int insert( const QString &statement, const QString &table = QString() ) override;
 

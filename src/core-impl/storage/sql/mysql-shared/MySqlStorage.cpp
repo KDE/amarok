@@ -98,6 +98,12 @@ MySqlStorage::MySqlStorage()
 MySqlStorage::~MySqlStorage()
 { }
 
+QString
+MySqlStorage::databaseName() const
+{
+    return QStringLiteral("amarok");
+}
+
 QStringList MySqlStorage::query( const QString& statement )
 {
     //DEBUG_BLOCK

@@ -62,7 +62,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
 
     QVector<const char*> mysql_args;
     QByteArray dataDir = QStringLiteral( "--datadir=%1" ).arg( databaseDir ).toLocal8Bit();
-    mysql_args << "amarok"
+    mysql_args << databaseName().toUtf8().constData()
                << dataDir.constData()
                // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
                // functions, such as FULLTEXT indexing.
@@ -122,7 +122,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
         return false;
     }
 
-    if( !sharedInit( QLatin1String("amarok") ) )
+    if( !sharedInit( databaseName() ) )
     {
         // if sharedInit fails then we can usually not switch to the correct database
         // sharedInit already reports errors.

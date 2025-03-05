@@ -41,10 +41,7 @@ public:
     EmptySqlStorage() {}
     ~EmptySqlStorage() override {}
 
-    virtual int sqlDatabasePriority() const
-    { return 10; }
-
-    virtual QString type() const { return QStringLiteral("Empty"); }
+    QString databaseName() const override { return QStringLiteral("Empty"); }
 
     QString escape( const QString &text) const override { return text; }
 

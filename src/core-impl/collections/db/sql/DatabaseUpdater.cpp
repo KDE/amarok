@@ -220,7 +220,7 @@ DatabaseUpdater::upgradeVersion4to5()
     auto storage = m_collection->sqlStorage();
 
     //first the database
-    storage->query( QStringLiteral("ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci") );
+    storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci") );
 
     //now the tables
 
@@ -459,7 +459,7 @@ DatabaseUpdater::upgradeVersion9to10()
     auto storage = m_collection->sqlStorage();
 
     //first the database
-    storage->query( QStringLiteral("ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin") );
+    storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin") );
 
     //now the tables
 

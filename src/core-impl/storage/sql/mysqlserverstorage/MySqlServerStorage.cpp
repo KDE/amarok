@@ -37,6 +37,12 @@ MySqlServerStorage::MySqlServerStorage()
     m_debugIdent = QStringLiteral("MySQL-server");
 }
 
+QString
+MySqlServerStorage::databaseName() const
+{
+    return m_databaseName;
+}
+
 bool
 MySqlServerStorage::init( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName )
 {

@@ -31,6 +31,8 @@ class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlServerStorage: public MySqlStorage
         MySqlServerStorage();
         ~MySqlServerStorage() override;
 
+        virtual QString databaseName() const override;
+
         /** Try to connect to the server indicated by the options.
          *
          *  Error messages are in the store error log.

@@ -32,6 +32,8 @@ public:
     SqlStorage() {}
     virtual ~SqlStorage() {}
 
+    virtual QString databaseName() const = 0;
+
     virtual QString escape( const QString &text ) const = 0;
 
     virtual QStringList query( const QString &query ) = 0;
