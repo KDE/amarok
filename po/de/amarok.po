@@ -27,12 +27,12 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Johannes Obermayr,Thomas Reitelbach"
+msgstr "Deutsches KDE-Übersetzungsteam"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "johannesobermayr@gmx.de,tr@erdfunkstelle.de"
+msgstr "kde-i18n-de@kde.org"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-02-26 10:56+0200\n"
+"PO-Revision-Date: 2025-03-04 08:43+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -40,23 +40,21 @@ msgstr "ברירת מחדל"
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
-#, fuzzy, kde-format
-#| msgid "Groupings"
+#, kde-format
 msgid "No Grouping"
-msgstr "הקבצות"
+msgstr "ללא קיבוץ"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:60
-#, fuzzy, kde-format
-#| msgid "Groupings"
+#, kde-format
 msgid "No Grouping (Single Line)"
-msgstr "הקבצות"
+msgstr "ללא קיבוץ (בשורה אחת)"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:77
 #, kde-format
 msgid "Verbose"
-msgstr ""
+msgstr "פירוט"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:48
 #, kde-format
@@ -1408,7 +1406,7 @@ msgstr ""
 #: amarokconfig.kcfg:549
 #, kde-format
 msgid "The name of the layout that will be loaded on startup"
-msgstr ""
+msgstr "שם הפריסה שתיטען עם העלייה"
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:556
@@ -4078,10 +4076,9 @@ msgstr "הורד מחדש"
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
-#, fuzzy, kde-format
-#| msgid "&Settings"
+#, kde-format
 msgid "Settings"
-msgstr "&הגדרות"
+msgstr "הגדרות"
 
 #: context/applets/labels/LabelsApplet.cpp:199
 #, fuzzy, kde-format
@@ -4827,10 +4824,9 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QPushButton, advancedButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:82
 #: widgets/FilenameLayoutWidget.cpp:147
-#, fuzzy, kde-format
-#| msgid "&Advanced..."
+#, kde-format
 msgid "Advanced"
-msgstr "&מתקדם"
+msgstr "מתקדם"
 
 #: core-impl/collections/daap/DaapCollection.cpp:101
 #, kde-format
@@ -5948,31 +5944,28 @@ msgid "Playlist_%1"
 msgstr "רשימת־השמעה־%1"
 
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:34
-#, fuzzy, kde-format
-#| msgid "Podcast Configuration"
+#, kde-format
 msgctxt "Change filename layout"
 msgid "Podcast Episode Filename Configuration"
-msgstr "הגדרות פוד־קסט"
+msgstr "הגדרות שמות קובצי פרקי הסכתים"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastFilenameLayoutConfigWidget)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
-#, fuzzy, kde-format
-#| msgid "Podcast Configuration"
+#, kde-format
 msgid "Podcast Filename Layout Configuration"
-msgstr "הגדרות פוד־קסט"
+msgstr "הגדרות תבנית שמות קובצי הסכתים"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:48
 #, kde-format
 msgid "Specified by podcast channel"
-msgstr ""
+msgstr "מצוין לפי ערוץ ההסכת"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:67
-#, fuzzy, kde-format
-#| msgid "Custom"
+#, kde-format
 msgid "custom"
-msgstr "מותאם אישית"
+msgstr "מותאמת אישית"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, m_filenameLayoutText)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:92
@@ -5981,6 +5974,8 @@ msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
 "%number%,%album%"
 msgstr ""
+"שדות זמינים: ‎%artist%‎,‏%title%‏,%genre%‏,%year%‏,%composer%‏,%pubdate%,%number%‏,‎"
+"%album%"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastSettingsBase)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
@@ -10864,7 +10859,7 @@ msgstr "Andreas Mair"
 #: main.cpp:230
 #, kde-format
 msgid "MySQL support"
-msgstr ""
+msgstr "תמיכה ב־MySQL"
 
 #: main.cpp:232
 #, kde-format
@@ -10874,7 +10869,7 @@ msgstr "Andrew de Quincey"
 #: main.cpp:232
 #, kde-format
 msgid "Postgresql support"
-msgstr ""
+msgstr "תמיכה ב־Postgres"
 
 #: main.cpp:234
 #, kde-format
@@ -10904,7 +10899,7 @@ msgstr "Derek Nelson"
 #: main.cpp:240
 #, kde-format
 msgid "Graphics, splash-screen"
-msgstr ""
+msgstr "גרפיקה, מסך פתיחה"
 
 #: main.cpp:242
 #, kde-format
@@ -10934,7 +10929,7 @@ msgstr "Gérard Dürrmeyer"
 #: main.cpp:248
 #, kde-format
 msgid "Icons and image work"
-msgstr ""
+msgstr "סמלי ויצירות אומנות"
 
 #: main.cpp:250
 #, kde-format
@@ -10955,7 +10950,7 @@ msgstr "Jarkko Lehti"
 #: main.cpp:252
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
-msgstr ""
+msgstr "בודק, מפעיל ערוץ IRC, הצלפה בשוט"
 
 #: main.cpp:254
 #, kde-format
@@ -11000,7 +10995,7 @@ msgstr "Michael Pyne"
 #: main.cpp:262
 #, kde-format
 msgid "K3b export code"
-msgstr ""
+msgstr "קוד ייצוא ל־K3b"
 
 #: main.cpp:264
 #, kde-format
@@ -11035,7 +11030,7 @@ msgstr "Reigo Reinmets"
 #: main.cpp:272
 #, kde-format
 msgid "Wikipedia support, patches"
-msgstr ""
+msgstr "תמיכה בוויקיפדיה, טלאים"
 
 #: main.cpp:274
 #, kde-format
@@ -11145,13 +11140,12 @@ msgstr "&תצוגה"
 #: MainWindow.cpp:337
 #, kde-format
 msgid "Lock Layout"
-msgstr "נעל סידור"
+msgstr "נעילת פריסה"
 
 #: MainWindow.cpp:374 MainWindow.cpp:1315
-#, fuzzy, kde-format
-#| msgid "Default Layout"
+#, kde-format
 msgid "Reset Layout"
-msgstr "סידור ברירת־מחדל"
+msgstr "איפוס פריסה"
 
 #: MainWindow.cpp:431
 #, kde-format
@@ -11467,7 +11461,7 @@ msgstr "%1 - %2 ::  %3"
 #: MainWindow.cpp:1315
 #, kde-format
 msgid "Apply this layout change?"
-msgstr ""
+msgstr "להחיל את השינויים לפריסה?"
 
 #: musicbrainz/MusicBrainzTagsModel.cpp:161
 #, kde-format
@@ -11589,12 +11583,12 @@ msgstr ""
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
 msgid "Playlist Layouts"
-msgstr "סידורי רשימת־השמעה"
+msgstr "פריסות רשימות נגינה"
 
 #: playlist/layouts/LayoutConfigAction.cpp:66
 #, kde-format
 msgid "Configure Playlist Layouts..."
-msgstr "הגדר סידורי רשימת־השמעה..."
+msgstr "הגדרת פריסות רשימת נגינה…"
 
 #: playlist/layouts/LayoutEditDialog.cpp:74
 #, kde-format
@@ -11605,13 +11599,13 @@ msgstr "הגדרות עבור"
 #, kde-format
 msgctxt "placeholder for a prefix"
 msgid "[prefix]"
-msgstr ""
+msgstr "[קידומת]"
 
 #: playlist/layouts/LayoutEditDialog.cpp:84
 #, kde-format
 msgctxt "placeholder for a suffix"
 msgid "[suffix]"
-msgstr ""
+msgstr "[סיומת]"
 
 #: playlist/layouts/LayoutEditDialog.cpp:97
 #, kde-format
@@ -11627,23 +11621,23 @@ msgstr "מותאם אישית"
 #, kde-format
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
-msgstr ""
+msgstr "ערך קבוע (מוחלט) או ערך יחסי (למשל: 128px או 12%)."
 
 #: playlist/layouts/LayoutEditDialog.cpp:104
 #, kde-format
 msgid "Fit content"
-msgstr ""
+msgstr "התאמה לתוכן"
 
 #: playlist/layouts/LayoutEditDialog.cpp:105
 #, kde-format
 msgid "Fit the element text"
-msgstr ""
+msgstr "התאמה לטקסט הרכיב"
 
 #: playlist/layouts/LayoutEditDialog.cpp:107
 #, kde-format
 msgctxt "automatic width"
 msgid "Automatic"
-msgstr ""
+msgstr "אוטומטי"
 
 #: playlist/layouts/LayoutEditDialog.cpp:108
 #, kde-format
@@ -11655,7 +11649,7 @@ msgstr ""
 #: playlist/layouts/LayoutEditDialog.cpp:143
 #, kde-format
 msgid "Alignment: "
-msgstr ""
+msgstr "יישור: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:152
 #, kde-format
@@ -11665,17 +11659,17 @@ msgstr "גופן:"
 #: playlist/layouts/LayoutEditDialog.cpp:241
 #, kde-format
 msgid "Configuration for '%1'"
-msgstr "הגדרות עבור '%1'"
+msgstr "הגדרות עבור ‚%1’"
 
 #: playlist/layouts/LayoutEditWidget.cpp:43
 #, kde-format
 msgid "Show cover"
-msgstr "הצג עטיפה"
+msgstr "הצגת עטיפה"
 
 #: playlist/layouts/LayoutEditWidget.cpp:83
 #, kde-format
 msgid "Invalid playlist layout."
-msgstr "סידור רשימת־השמעה לא חוקי."
+msgstr "פריסת רשימת הנגינה שגוי."
 
 #: playlist/layouts/LayoutEditWidget.cpp:84
 #, kde-format
@@ -11686,7 +11680,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
 #, kde-format
 msgid "copy of %1"
-msgstr ""
+msgstr "עותק של %1"
 
 #: playlist/layouts/LayoutManager.cpp:115
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
@@ -11737,28 +11731,28 @@ msgstr "סִינְגֶל"
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:118
 #, kde-format
 msgid "New playlist layout"
-msgstr "סידור רשימת־השמעה חדש"
+msgstr "פריסת רשימת נגינה חדשה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:123
 #, kde-format
 msgid "Copy playlist layout"
-msgstr "העתק את סידור רשימת־ההשמעה"
+msgstr "העתקת פריסת רשימת הנגינה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:128
 #, kde-format
 msgid "Delete playlist layout"
-msgstr "מחק את סידור רשימת־ההשמעה"
+msgstr "מחיקת פריסת רשימת הנגינה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:133
 #, kde-format
 msgid "Rename playlist layout"
-msgstr "שנה את שם סידור רשימת־ההשמעה"
+msgstr "שינוי שם פריסת רשימת הנגינה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
 #, kde-format
 msgid "Choose a name for the new playlist layout"
-msgstr "בחר שם עבור סידור רשימת־ההשמעה החדש"
+msgstr "נא לבחור שם עבור פריסת רשימת הנגינה החדשה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
 #, kde-format
@@ -11769,7 +11763,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
 #, kde-format
 msgid "Cannot create a layout with no name."
-msgstr "לא ניתן ליצור סידור ללא שם."
+msgstr "לא ניתן ליצור פריסה ללא שם."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
@@ -11780,18 +11774,18 @@ msgstr "לא ניתן ליצור סידור ללא שם."
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
 msgid "Layout name error"
-msgstr "שגיאה בשם הסידור"
+msgstr "שגיאה בשם הפריסה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
-msgstr "לא ניתן ליצור סידור עם שם של סידור הקיים כבר."
+msgstr "לא ניתן ליצור פריסה עם שם של פריסה שכבר קיים."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
 #, kde-format
 msgid "Cannot create a layout containing '/'."
-msgstr "לא ניתן ליצור סידור המכיל '/'."
+msgstr "לא ניתן ליצור פריסה שמכילה ‚/’."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
 #, kde-format
@@ -11803,7 +11797,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
 #, kde-format
 msgid "Choose a new name for the playlist layout"
-msgstr "בחר שם חדש עבור סידור רשימת־ההשמעה"
+msgstr "נא לבחור שם חדש לפריסת רשימת הנגינה"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
 #, kde-format
@@ -11814,13 +11808,13 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
 #, kde-format
 msgid "Cannot rename a layout to have no name."
-msgstr "לא ניתן להסיר את שם הסידור."
+msgstr "לא ניתן להסיר את שם הפריסה."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr ""
-"לא ניתן לשנות את השם לסידור כך שיהיה לו את אותו השם של סידור הקיים כבר."
+"לא ניתן לשנות את השם לפריסה כך שיהיה לה את אותו השם של פריסה שכבר קיימת."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
 #, kde-format
@@ -11832,57 +11826,51 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
 #, kde-format
 msgid "Default Layout"
-msgstr "סידור ברירת־מחדל"
+msgstr "פריסת ברירת מחדל"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, PlaylistLayoutEditDialog)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:20
-#, fuzzy, kde-format
-#| msgid "Playlist name:"
+#, kde-format
 msgid "Playlist Layout Editor"
-msgstr "שם רשימת־ההשמעה:"
+msgstr "עורך פריסות רשימות נגינה"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:57
-#, fuzzy, kde-format
-#| msgid "Playlist Layouts"
+#, kde-format
 msgid "Available Layouts"
-msgstr "סידורי רשימת־השמעה"
+msgstr "פריסות זמינות"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:249
-#, fuzzy, kde-format
-#| msgid "playcount"
+#, kde-format
 msgid "Layout"
-msgstr "מספור השמעות"
+msgstr "פריסה"
 
 #. i18n: ectx: property (text), widget (QCheckBox, inlineControlsChekbox)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:255
-#, fuzzy, kde-format
-#| msgid "Show &Feedback Icons"
+#, kde-format
 msgid "Show inline playback controls"
-msgstr "הצג סימלוני &משוב"
+msgstr "הצגת פקדי נגינה פנימית"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
 #: services/ServiceBase.cpp:163
 #, kde-format
 msgid "Group By"
-msgstr "קבץ לפי"
+msgstr "קיבוץ לפי"
 
 #. i18n: ectx: property (text), widget (QCheckBox, tooltipsCheckbox)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:279
-#, fuzzy, kde-format
-#| msgid "Show only matches"
+#, kde-format
 msgid "Show tooltips"
-msgstr "הראה רק התאומות"
+msgstr "הצגת חלוניות עצה"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
 #: widgets/Osd.cpp:516
-#, fuzzy, kde-format
-#| msgid "Preview Tracks"
+#, kde-format
 msgid "Preview"
-msgstr "רצועות קודמות"
+msgstr "תצוגה מקדימה"
 
 # kde-il: don't translate
 #: playlist/navigators/NavigatorConfigAction.cpp:34
@@ -11904,17 +11892,17 @@ msgstr "&נקה"
 #: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
 msgid "Repeat Track"
-msgstr "חזור על הרצועה"
+msgstr "חזרה על הרצועה"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:56
 #, kde-format
 msgid "Repeat Album"
-msgstr "חזור על האלבום"
+msgstr "חזרה על האלבום"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
-msgstr "חזור על רשימת־ההשמעה"
+msgstr "חזרה על רשימת הנגינה"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
@@ -11954,7 +11942,7 @@ msgstr ""
 #: playlist/PlaylistBreadcrumbItem.cpp:135
 #, kde-format
 msgid "Add a sorting level to the playlist."
-msgstr "הוספת שלב מיון לרשימת־ההשמעה."
+msgstr "הוספת שלב מיון לרשימת הנגינה."
 
 #: playlist/PlaylistController.cpp:122
 #, fuzzy, kde-format
@@ -11981,7 +11969,7 @@ msgstr "חזור על רשימת־ההשמעה"
 #, kde-format
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
 msgid "Placeholder"
-msgstr ""
+msgstr "ממלא מקום"
 
 #: playlist/PlaylistDefines.cpp:97
 #, kde-format
@@ -12000,7 +11988,7 @@ msgstr "תיקייה"
 msgctxt ""
 "'Divider' token for playlist layouts representing a small visual divider"
 msgid "Divider"
-msgstr ""
+msgstr "מפריד"
 
 #: playlist/PlaylistDefines.cpp:101
 #, kde-format
@@ -12051,11 +12039,10 @@ msgid "Source"
 msgstr "מקור"
 
 #: playlist/PlaylistDefines.cpp:117
-#, fuzzy, kde-format
-#| msgid "Source"
+#, kde-format
 msgctxt "'SourceEmblem' playlist column name and token for playlist layouts"
 msgid "SourceEmblem"
-msgstr "מקור"
+msgstr "סמל מקור"
 
 #: playlist/PlaylistDefines.cpp:118
 #, kde-format
@@ -12082,12 +12069,12 @@ msgstr ""
 #: playlist/PlaylistDock.cpp:177
 #, kde-format
 msgid "&Save Current Playlist"
-msgstr "&שמור רשימת־השמעה נוכחית"
+msgstr "&שמירת רשימת נגינה נוכחית"
 
 #: playlist/PlaylistDock.cpp:268
 #, kde-format
 msgid "&Save playlist to \"%1\""
-msgstr "&שמור רשימת־השמעה אל \"%1\""
+msgstr "&שמירת רשימת הנגינה אל „%1”"
 
 #: playlist/PlaylistInfoWidget.cpp:58
 #, fuzzy, kde-format
@@ -12118,7 +12105,7 @@ msgstr "רצועות"
 #: playlist/PlaylistInfoWidget.cpp:109 playlist/PlaylistInfoWidget.cpp:115
 #, kde-format
 msgid "Total playlist size: %1"
-msgstr "גודל כולל של רשימת־ההשמעה: %1"
+msgstr "גודל כולל של רשימת הנגינה: %1"
 
 #: playlist/PlaylistInfoWidget.cpp:110
 #, kde-format
@@ -12203,7 +12190,7 @@ msgstr "דירוג"
 #, kde-format
 msgctxt "Column name"
 msgid "Last Played"
-msgstr "הושמע לאחרונה"
+msgstr "נגינה אחרונה"
 
 #: playlist/PlaylistModel.cpp:950
 #, kde-format
@@ -12247,7 +12234,7 @@ msgstr "הורדת מדיה"
 #: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Dequeue Track"
-msgstr "הוצא רצועה מהתור"
+msgstr "הוצאת רצועה מהתור"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, clearButton)
 #: playlist/PlaylistQueueEditor.ui:74
@@ -12279,10 +12266,9 @@ msgid "Search %1"
 msgstr "חיפוש %1"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:91
-#, fuzzy, kde-format
-#| msgid " plays"
+#, kde-format
 msgid "%1 layout"
-msgstr "סידור %1"
+msgstr "פריסה %1"
 
 #: playlist/PlaylistViewUrlRunner.cpp:87
 #, kde-format
@@ -12290,7 +12276,7 @@ msgctxt ""
 "A type of command that affects the sorting, layout and filtering int he "
 "Playlist"
 msgid "Playlist"
-msgstr "רשימת־השמעה"
+msgstr "רשימת נגינה"
 
 #: playlist/ProgressiveSearchWidget.cpp:51
 #, kde-format
@@ -12325,7 +12311,7 @@ msgstr "שנים"
 #: playlist/ProgressiveSearchWidget.cpp:123
 #, kde-format
 msgid "Show only matches"
-msgstr "הראה רק התאומות"
+msgstr "להציג התאמות בלבד"
 
 #: playlist/ProgressiveSearchWidget.cpp:135
 #, kde-format
@@ -12335,12 +12321,12 @@ msgstr ""
 #: playlist/UndoCommands.cpp:31
 #, kde-format
 msgid "Tracks Added"
-msgstr "רצועות הוספו"
+msgstr "רצועות נוספו"
 
 #: playlist/UndoCommands.cpp:54
 #, kde-format
 msgid "Tracks Removed"
-msgstr "רצועות נמחקו"
+msgstr "רצועות הוסרו"
 
 #: playlist/UndoCommands.cpp:76
 #, fuzzy, kde-format
@@ -12374,12 +12360,12 @@ msgstr "&בסדר"
 #: playlist/view/PlaylistViewCommon.cpp:158
 #, kde-format
 msgid "Stop Playing After This Track"
-msgstr "הפסק לנגן לאחר רצועה זו"
+msgstr "להפסיק לנגן לאחר רצועה זו"
 
 #: playlist/view/PlaylistViewCommon.cpp:172
 #, kde-format
 msgid "Remove From Playlist"
-msgstr "הסר מתוך רשימת־ההשמעה "
+msgstr "הסרה מתוך רשימת נגינה"
 
 #: playlist/view/PlaylistViewCommon.cpp:246
 #, kde-format
@@ -16485,7 +16471,7 @@ msgstr ""
 #: widgets/FilenameLayoutWidget.cpp:78
 #, kde-format
 msgid "Scheme"
-msgstr ""
+msgstr "סכמה"
 
 #: widgets/FilenameLayoutWidget.cpp:84
 #, kde-format
@@ -16836,12 +16822,12 @@ msgstr ""
 #: widgets/TokenWithLayout.cpp:221
 #, kde-format
 msgid "[prefix]"
-msgstr ""
+msgstr "[קידומת]"
 
 #: widgets/TokenWithLayout.cpp:232
 #, kde-format
 msgid "[suffix]"
-msgstr ""
+msgstr "[סיומת]"
 
 #: widgets/TrackSelectWidget.cpp:68
 #, kde-format
