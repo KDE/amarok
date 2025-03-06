@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-02 05:00+0100\n"
+"PO-Revision-Date: 2025-03-05 13:21+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -12345,6 +12345,7 @@ msgstr "დროის პერიოდი, რომელსაც APG უ�
 msgid ""
 "How strict the APG should be about matching tracks to the specified date."
 msgstr ""
+"რამდენად მკაცრი უნდა იყოს APG მითითებულ თარიღთან ტრეკების დამთხვევისას."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:405
@@ -12405,7 +12406,7 @@ msgstr "დრო, როცა APG უნდა დაემთხვეს."
 #, kde-format
 msgid ""
 "How strict the APG should be about matching tracks to the specified time."
-msgstr ""
+msgstr "რამდენად მკაცრი უნდა იყოს APG ტრეკის მითითებულ დროზე დამთხვევისას."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:597
@@ -12429,6 +12430,7 @@ msgstr "რეიტინგი, რომელსაც APG უნდა დ�
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
+"რამდენაც მკაცრი უნდა იყოს APG ტრეკის მითითებულ რეიტინგთან დამთხვევისას."
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:87
 #, kde-format
@@ -12524,7 +12526,7 @@ msgstr "ჭდე"
 #: playlistgenerator/ConstraintSolver.cpp:230
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
-msgstr ""
+msgstr "დასაკრავი სიის გენერატორმა კოლექციიდან ტრეკები ვერ აირჩია."
 
 #: playlistgenerator/ConstraintSolver.cpp:236
 #, kde-format
@@ -13251,6 +13253,7 @@ msgstr "წინა შემსრულებლის მსგავსი 
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
 msgstr ""
+"<a href=\"http://www.last.fm/\">Last.fm</a> ფიქრობს, რომ ეს ტრეკი ჰგავს ტრეკს"
 
 #: services/lastfm/biases/LastFmBias.cpp:145
 #, kde-format
@@ -13275,7 +13278,7 @@ msgstr ""
 #, kde-format
 msgctxt "WeeklyTopBias bias representation"
 msgid "Tracks from the Last.fm top lists from %1 to %2"
-msgstr ""
+msgstr "ტრეკები Last.fm-ის საუკეთესო სიებიდან %1-დან %2-მდე"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:132
 #, kde-format
@@ -13345,6 +13348,8 @@ msgstr "&ტრეკების გადაცემა"
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
+"Last.fm-ში ხელმისაწვდომი კომპოზიტორის მონაცემების გამოყენება, თუ "
+"ხელმისაწვდომია, შემსრულებლად"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:136
@@ -13373,7 +13378,7 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
-msgstr ""
+msgstr "შესწორების მინიშნებების ჩვენება ტრეკის ჭდეებისთვის"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:158
@@ -13489,6 +13494,7 @@ msgstr "მეგობრის პირადი რადიო"
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
+"KDE-ის საფულის გახსნა last.fm-ის ავტორიზაციის დეტალების წასაკითხად ჩავარდა"
 
 #: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
@@ -13733,7 +13739,7 @@ msgstr "%1 - %2"
 #: services/lastfm/ScrobblerAdapter.cpp:270
 #, kde-format
 msgid "Last.fm suggests that some tags of track <b>%1</b> should be corrected:"
-msgstr ""
+msgstr "Last.fm-ის აზრით ტრეკის <b>%1</b> ზოგიერთი ჭდე უნდა ჩასწორდეს:"
 
 #: services/lastfm/SimilarArtistsAction.cpp:27
 #, kde-format
@@ -14043,6 +14049,7 @@ msgstr "თქვენი პირადი Magnatune.com-ის რეკო�
 #, kde-format
 msgid "The non evil record label that is fair to artists and customers alike"
 msgstr ""
+"ჩამწერი სტუდია, რომელიც შემსრულებლებს და კლიენტებს ერთნაირად კარგად ექცევა"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:39
@@ -14057,6 +14064,8 @@ msgid ""
 "Amarok needs to download Magnatune database in order to enable Magnatune "
 "store."
 msgstr ""
+"Amarok-ს სჭირდება, გადმოწეროს Magnatune-ის მონაცემთა ბაზა, რომ ჩართოს "
+"Magnatune-ის მაღაზია."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:59
@@ -14703,15 +14712,15 @@ msgstr[1] "<b>%1</b> ტრეკი ელოდება სინქრონ
 #, kde-format
 msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>ერთი</b> ტრეკის დაკვრის დრო გადაცემისთვის მეტისმეტად მცირე იყო."
+msgstr[1] "<b>%1</b> ტრეკის დაკვრის დრო გადაცემისთვის მეტისმეტად მცირე იყო."
 
 #: statsyncing/Process.cpp:284
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>ერთ</b> ტრეკს ჰქონდა არასაკმარისი მეტამონაცემები გადასაცემად."
+msgstr[1] "<b>%1</b> ტრეკს ჰქონდა არასაკმარისი მეტამონაცემები გადასაცემად."
 
 #: statsyncing/Process.cpp:288
 #, kde-format
