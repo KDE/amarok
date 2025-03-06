@@ -71,8 +71,7 @@ class GenericScannerJob : public QObject, public ThreadWeaver::Job
         GenericScannerJob( GenericScanManager* manager,
                            const QStringList &scanDirsRequested,
                            GenericScanManager::ScanType type,
-                           bool recursive = true,
-                           bool detectCharset = false );
+                           bool recursive = true );
 
         ~GenericScannerJob() override;
 
@@ -154,7 +153,6 @@ class GenericScannerJob : public QObject, public ThreadWeaver::Job
         QString m_batchfilePath;
         QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
         bool m_recursive;
-        bool m_charsetDetect;
 
         QXmlStreamReader m_reader;
 

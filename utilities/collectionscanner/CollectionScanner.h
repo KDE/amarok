@@ -74,7 +74,6 @@ private:
     /** Displays the help and an optional error message and exits */
     void displayHelp( const QString &error = QString() );
 
-    bool                  m_charset;
     QStringList           m_folders;
 
     uint                  m_newerTime;

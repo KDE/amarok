@@ -178,7 +178,7 @@ static void ensureFileTypeResolvers()
 // ----------------------- reading ------------------------
 
 Meta::FieldHash
-Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
+Meta::Tag::readTags( const QString &path )
 {
     Meta::FieldHash result;
 

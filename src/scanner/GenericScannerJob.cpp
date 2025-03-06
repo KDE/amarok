@@ -43,7 +43,7 @@ static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       const QStringList &scanDirsRequested,
                                       GenericScanManager::ScanType type,
-                                      bool recursive, bool detectCharset )
+                                      bool recursive )
     : QObject()
     , ThreadWeaver::Job( )
     , m_manager( manager )
@@ -55,7 +55,6 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_scanner( nullptr )
     , m_scannerStateMemory( nullptr )
     , m_recursive( recursive )
-    , m_charsetDetect( detectCharset )
 {
 }
 
@@ -72,7 +71,6 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_scanner( nullptr )
     , m_scannerStateMemory( nullptr )
     , m_recursive( true )
-    , m_charsetDetect( false )
 {
 }
 
@@ -247,9 +245,6 @@ GenericScannerJob::createScannerProcess( bool restart )
 
     if( m_recursive )
         *scanner << QStringLiteral("-r");
-
-    if( m_charsetDetect )
-        *scanner << QStringLiteral("-c");
 
     if( restart )
         *scanner << QStringLiteral("-s");

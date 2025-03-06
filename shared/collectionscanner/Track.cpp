@@ -33,8 +33,6 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-bool CollectionScanner::Track::s_useCharsetDetector = false;
-
 
 CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directory* directory )
    : m_valid( true )
@@ -73,7 +71,7 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
         Q_ASSERT( false );
     }
 
-    Meta::FieldHash values = Meta::Tag::readTags( path, s_useCharsetDetector );
+    Meta::FieldHash values = Meta::Tag::readTags( path );
 
     m_valid = !values.empty();
     if( values.contains(Meta::valUniqueId) )
@@ -521,8 +519,3 @@ CollectionScanner::Track::playcount() const
     return m_playcount;
 }
 
-void
-CollectionScanner::Track::setUseCharsetDetector( bool value )
-{
-    s_useCharsetDetector = value;
-}

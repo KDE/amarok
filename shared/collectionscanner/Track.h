@@ -104,11 +104,6 @@ public:
 
     int playcount() const;
 
-    /** Enable or disable the charset detector.
-       TODO: taglib should do that by itself.
-     */
-    static void setUseCharsetDetector( bool value );
-
 private:
     Q_DISABLE_COPY(Track)
 
@@ -152,8 +147,6 @@ private:
     qreal m_rating;
     qreal m_score;
     int m_playcount;
-
-    static bool s_useCharsetDetector;
 };
 
 }

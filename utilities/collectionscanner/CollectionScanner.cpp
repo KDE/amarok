@@ -76,7 +76,6 @@ main( int argc, char *argv[] )
 
 CollectionScanner::Scanner::Scanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )
-        , m_charset( false )
         , m_newerTime(0)
         , m_incremental( false )
         , m_recursively( false )
@@ -333,8 +332,6 @@ CollectionScanner::Scanner::readArgs()
                 m_restart = true;
             else if( myarg == QLatin1String("idlepriority") )
                 m_idlePriority = true;
-            else if( myarg == QLatin1String("charset") )
-                m_charset = true;
             else
                 displayHelp();
 
@@ -351,8 +348,6 @@ CollectionScanner::Scanner::readArgs()
                     displayVersion();
                 else if( myarg[pos] == QLatin1Char( 's' ) )
                     m_restart = true;
-                else if( myarg[pos] == QLatin1Char( 'c' ) )
-                    m_charset = true;
                 else if( myarg[pos] == QLatin1Char( 'i' ) )
                     m_incremental = true;
                 else
@@ -370,9 +365,6 @@ CollectionScanner::Scanner::readArgs()
 
     if( missingArg )
         displayHelp( tr( "Missing argument for option %1" ).arg( argslist.last() ) );
-
-
-    CollectionScanner::Track::setUseCharsetDetector( m_charset );
 
     // Start the actual scanning job
     QTimer::singleShot( 0, this, &Scanner::doJob );

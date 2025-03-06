@@ -29,7 +29,7 @@ namespace Meta
 {
     namespace Tag
     {
-        AMAROKSHARED_EXPORT Meta::FieldHash readTags( const QString &path, bool useCharsetDetector = true );
+        AMAROKSHARED_EXPORT Meta::FieldHash readTags( const QString &path );
 
         /**
          * Writes tags stored in @param changes back to file. Respects
