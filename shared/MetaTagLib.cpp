@@ -29,8 +29,6 @@
 #include "TagsFromFileNameGuesser.h"
 #include <config.h>
 
-#include <KEncodingProber>
-
 #include <QImage>
 #include <QBuffer>
 #include <QDir>
@@ -212,13 +210,6 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
     TagHelper *tagHelper = selectHelper( fileref );
     if( tagHelper )
     {
-        if( 0/* useCharsetDetector */ )
-        {
-            KEncodingProber prober;
-            if( prober.feed( tagHelper->testString() ) != KEncodingProber::NotMe )
-                Meta::Tag::setCodecByName( prober.encoding() );
-        }
-
         result.insert( Meta::valFormat, tagHelper->fileType() );
         result.insert( tagHelper->tags() );
         delete tagHelper;

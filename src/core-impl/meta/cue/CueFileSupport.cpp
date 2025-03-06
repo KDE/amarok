@@ -24,7 +24,6 @@
 
 #include <QDir>
 #include <QFile>
-#include <QTextCodec>
 
 using namespace MetaCue;
 

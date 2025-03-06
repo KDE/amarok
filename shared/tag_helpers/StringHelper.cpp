@@ -15,21 +15,6 @@
  ****************************************************************************************/
 
 #include "StringHelper.h"
-#include <QTextCodec>
-
-static QTextCodec *s_codec = QTextCodec::codecForName( "UTF-8" );
-
-void
-Meta::Tag::setCodec( QTextCodec *codec )
-{
-    s_codec = codec;
-}
-
-void
-Meta::Tag::setCodecByName( const QByteArray &codecName )
-{
-    s_codec = QTextCodec::codecForName( codecName );
-}
 
 TagLib::String
 Meta::Tag::Qt4QStringToTString( const QString &str )
@@ -42,5 +27,5 @@ Meta::Tag::Qt4QStringToTString( const QString &str )
 QString
 Meta::Tag::TStringToQString( const TagLib::String &str )
 {
-    return s_codec->toUnicode( str.toCString( true ) ).trimmed();
+    return QString::fromUtf8( str.toCString( true ) ).trimmed();
 }

@@ -19,7 +19,6 @@
 
 #include <QString>
 #include <tstring.h>
-class QTextCodec;
 
 #ifdef Qt4QStringToTString
     #undef Qt4QStringToTString
@@ -42,12 +41,6 @@ namespace Meta
          * Convert QString to TString and trimmes spaces in the begin and at the end.
          */
         TagLib::String Qt4QStringToTString( const QString &str );
-
-        /**
-         * Set codec for TStringToQString conversion.
-         */
-        void setCodec( QTextCodec *codec );
-        void setCodecByName( const QByteArray &codecName );
     }
 }
 
