@@ -300,8 +300,13 @@ bool
 MySqlStorage::sharedInit( const QString &databaseName )
 {
     QMutexLocker locker( &m_mutex );
-    if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8mb4'" ).toUtf8().constData() ) )
-        reportError( QStringLiteral("SET NAMES 'utf8mb4' died") );
+    //"If you must change the character set of the connection, use the mysql_set_character_set()
+    // function rather than executing a SET NAMES (or SET CHARACTER SET) statement.
+    // mysql_set_character_set() works like SET NAMES but also affects the character set used by
+    // mysql_real_escape_string(), which SET NAMES does not."
+    // https://dev.mysql.com/doc/c-api/9.1/en/mysql-real-escape-string.html
+    if( mysql_set_character_set( m_db, "utf8mb4" ) )
+        reportError( QStringLiteral("mysql_set_character_set failed") );
     if( mysql_query( m_db, QStringLiteral( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin" ).arg( databaseName ).toUtf8().constData() ) )
         reportError( QStringLiteral( "Could not create %1 database" ).arg( databaseName ) );
     if( mysql_query( m_db, QStringLiteral( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin" ).arg( databaseName ).toUtf8().constData() ) )

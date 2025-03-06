@@ -149,9 +149,14 @@ MySqlServerStorage::query( const QString &query )
 
     if( tid != mysql_thread_id( m_db ) )
     {
+        //"If you must change the character set of the connection, use the mysql_set_character_set()
+        // function rather than executing a SET NAMES (or SET CHARACTER SET) statement.
+        // mysql_set_character_set() works like SET NAMES but also affects the character set used by
+        // mysql_real_escape_string(), which SET NAMES does not."
+        // https://dev.mysql.com/doc/c-api/9.1/en/mysql-real-escape-string.html
         debug() << "NOTE: MySQL server had gone away, ping reconnected it";
-        if( mysql_query( m_db, QStringLiteral( "SET NAMES 'utf8mb4'" ).toUtf8().constData() ) )
-            reportError( QStringLiteral("SET NAMES 'utf8mb4' died") );
+        if( mysql_set_character_set( m_db, "utf8mb4" ) )
+            reportError( QStringLiteral("mysql_set_character_set failed") );
         if( mysql_query( m_db, QStringLiteral( "USE %1" ).arg( m_databaseName ).toUtf8().constData() ) )
             reportError( QStringLiteral("Could not select database") );
     }
