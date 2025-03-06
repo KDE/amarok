@@ -736,7 +736,7 @@ DatabaseUpdater::upgradeVersion15to16()
 {
     /* This update solves bugs 426807 and 462268
      * It changes database charset to utf8mb4 (from the deprecated utf8 = utf8mb3)
-     * and directories' changedate from INTEGER to BIGINT
+     * and directories' changedate, and tracks' createdate and modifydate from INTEGER to BIGINT
      * */
 
     auto storage = m_collection->sqlStorage();
@@ -770,6 +770,8 @@ DatabaseUpdater::upgradeVersion15to16()
 
 
     storage->query( QStringLiteral("ALTER TABLE directories MODIFY changedate BIGINT") );
+    storage->query( QStringLiteral("ALTER TABLE tracks MODIFY createdate BIGINT") );
+    storage->query( QStringLiteral("ALTER TABLE tracks MODIFY modifydate BIGINT") );
 }
 
 void
@@ -911,8 +913,8 @@ DatabaseUpdater::createTables() const
                     ",filesize INTEGER"
                     ",filetype INTEGER"     //does this still make sense?
                     ",bpm FLOAT"
-                    ",createdate INTEGER"   // this is the track creation time
-                    ",modifydate INTEGER"   // UNUSED currently
+                    ",createdate BIGINT"   // this is the track creation time
+                    ",modifydate BIGINT"   // UNUSED currently
                     ",albumgain FLOAT"
                     ",albumpeakgain FLOAT" // decibels, relative to albumgain
                     ",trackgain FLOAT"
