@@ -22,7 +22,6 @@
  ***************************************************************************/
 
 #include "Track.h"
-#include "utils.h"
 
 #include "MetaTagLib.h"
 #include "MetaReplayGain.h"
@@ -267,7 +266,7 @@ CollectionScanner::Track::write( QXmlStreamWriter *writer,
                                  const QString &tag, const QString &str ) const
 {
     if( !str.isEmpty() )
-        writer->writeTextElement( tag, escapeXml10(str) );
+        writer->writeTextElement( tag, str );
 }
 
 

@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "Playlist.h"
-#include "utils.h"
 
 #include <QDir>
 #include <QXmlStreamReader>
@@ -67,6 +66,6 @@ CollectionScanner::Playlist::rpath() const
 void
 CollectionScanner::Playlist::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( QStringLiteral("path"), escapeXml10(m_path) );
-    writer->writeTextElement( QStringLiteral("rpath"), escapeXml10(m_rpath) );
+    writer->writeTextElement( QStringLiteral("path"), m_path );
+    writer->writeTextElement( QStringLiteral("rpath"), m_rpath );
 }
