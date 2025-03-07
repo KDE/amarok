@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-05 13:21+0100\n"
+"PO-Revision-Date: 2025-03-06 05:19+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -1010,6 +1010,7 @@ msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr ""
+"ეკრანი, რომელზეც OSD იქნება ნაჩვენები. ერთმონიტორიან გარემოში ეს 0 უნდა იყოს."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:360
@@ -1318,6 +1319,9 @@ msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
+"მოხდება თუ არა Amarok-ის სტატისტიკის სინქრონიზაცია მოწყობილობაზე არსებული "
+"დაკვრების რაოდენობა/რეიტინგებისა და გადაცემული იქნება თუ არა ეს რიცხვები "
+"Last.fm-ზე."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:507
@@ -1488,12 +1492,16 @@ msgid ""
 "Whether to show the moodbar of the current track, if available, in the "
 "progress slider"
 msgstr ""
+"ნაჩვენები იქნება, თუ არა, ტონის პანელი მიმდინარე ტრეკისთვის, თუ "
+"ხელმისაწვდომია, მიმდინარეობის სლაიდერში"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
 #: amarokconfig.kcfg:619
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr ""
+"ტონის ინდიკატორის ჩვენების ჩართვა/გამორთვა, თუ ხელმისაწვდომია, მიმდინარეობის "
+"სლაიდერში."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:623
@@ -1514,6 +1522,8 @@ msgid ""
 "A value between 0 and 10 that controls whether the Automated Playlist "
 "Generator tries to optimize for speed (0) or accuracy (10)."
 msgstr ""
+"მნიშვნელობა შუალედიდან 9-10, რომელიც მართავს, ახდენს ავტომატური დასაკრავი "
+"სიის გენერატორი ოპტიმიზაციას სიჩქარეზე (0) თუ სიზუსტეზე (10)."
 
 #: amarokurls/AmarokUrlHandler.cpp:224
 #, kde-format
@@ -1795,6 +1805,10 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
+"Amarok-ის მონაცემთა ბაზაში აღმოჩენილია შემდეგი სეცდომა:\n"
+"%1\n"
+"უმეტეს შემთხვევაში, აუცილებელია, ეს პრობლემები გადაწყვიტოთ, სანამ Amarok "
+"სწორად გააგრძელებს მუშაობას."
 
 #: App.cpp:588
 #, kde-format
@@ -1823,6 +1837,8 @@ msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
+"მუსიკის ბილიკი, %1, სისტემურ პარამეტრებშია დაყენებული.\n"
+"გნებავთ მისი კოლექციის საქაღალდედ გამოყენება?"
 
 #: App.cpp:676
 #, kde-format
@@ -1868,6 +1884,8 @@ msgid ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and CDs."
 msgstr ""
+"ეს ადგილია, სადაც თქვენს ლოკალურ მუსიკას, მუსიკას მობილური "
+"აუდიოდამკვრელებიდან და CD-ებიდან, ეძებთ."
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
 #, kde-format
@@ -2859,6 +2877,8 @@ msgid ""
 "Whether Amarok should transcode tracks when they are copied or moved to "
 "Local Collection."
 msgstr ""
+"ახდენს, თუ არა Amarok იმ ტრეკების ტრანსკოდირებას, როცა მიმდინარეობს მათი "
+"კოპირება ან გადატანა ლოკალურ კოლექციაში."
 
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #: configdialog/dialogs/CollectionConfig.ui:70
@@ -2884,6 +2904,10 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
+"Amarok-ის მონაცემთა ბაზაში აღმოჩენილია შემდეგი შეცდომები:\n"
+"%1\n"
+"უმეტეს შემთხვევაში, აუცილებელია, ეს პრობლემები გადაწყვიტოთ, სანამ Amarok "
+"სწორად გააგრძელებს მუშაობას."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:135
 #, kde-format
@@ -3296,6 +3320,8 @@ msgid ""
 "Write changed covers back to the file.\n"
 "This will replace existing embedded covers."
 msgstr ""
+"შეცვლილი ყდების ჩაწერა.\n"
+"ეს არსებულ ჩაშენებულ ყდებს ჩაანაცვლებს."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackCover)
 #: configdialog/dialogs/MetadataConfig.ui:53
@@ -3942,6 +3968,8 @@ msgid ""
 "Do not show more than this many labels.\n"
 "Note that personal labels will always be shown."
 msgstr ""
+"ამ რაოდენობაზე მეტი ჭდე ნაჩვენები არ იქნება.\n"
+"დაიმახსოვრეთ, რომ პირადი ჭდეები ყოველთვის ნაჩვენებია."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: context/applets/labels/labelsGeneralSettings.ui:108
@@ -4168,6 +4196,7 @@ msgid ""
 "Songkick was not able to be downloaded. Please check your Internet "
 "connection: %1"
 msgstr ""
+"Songkick-ის გადმოწერა შეუძლებელია. შეამოწმეთ თქვენი ინტერნეტკავშირი: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:202
 #, kde-format
@@ -4539,6 +4568,8 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
+"მიმდინარეობს Amarok-ის მონაცემთა ბაზის სქემის განახლება. არ გამორთოT Amarok "
+"ახლა, რადგან ამას მონაცემთა ბაზის დაზიანება შეუძლია, გამოიწვიოს."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:243
 #, kde-format
@@ -4629,7 +4660,7 @@ msgstr "iTunes-ის მონაცემთა ბაზა წარმა�
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
-msgstr ""
+msgstr "iTunes-ის მონაცემთა ბაზების ჩაწერა %1-ში ჩავარდა შეცდომის გარეშე"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:717
 #, kde-format
@@ -6749,6 +6780,11 @@ msgid ""
 "generally achieves better sound quality than MP3 at similar bit rates. It is "
 "a reasonable choice for the iPod and some other portable music players."
 msgstr ""
+"<a href=http://en.wikipedia.org/wiki/Advanced_Audio_Coding>Advanced Audio "
+"Coding</a> (AAC) დაპატენტებული კოდეკია ციფრული აუდიოსთვის, კარგვებით."
+"<br>AAC, ზოგადად, იგივე ბიტრეიტით, უკეთესი ხმის ხარისხს აღწევს, ვიდრე MP3. "
+"ეს გონიბრული არჩევანია Ipod-სთვის და ზოგიერთი სხვა პორტატული მუსიკის "
+"დამკვრელებისთვის."
 
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
 #, kde-format
@@ -8817,6 +8853,8 @@ msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
 msgstr ""
+"<a href=\"http://the.echonest.com/\">the echonest</a> ფიქრობს, რომ ეს "
+"შემსრულებელი ჰგავს შემსრულებელს"
 
 #: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
@@ -8874,6 +8912,7 @@ msgstr ""
 #, kde-format
 msgid "This controls what portion of the playlist should match the criteria"
 msgstr ""
+"ეს აკონტროლებს, დასაკრავი სიის რომელი ნაწილი უნდა აკმაყოფილებდეს პირობებს"
 
 #: dynamic/biases/PartBias.cpp:396
 #, kde-format
@@ -8925,6 +8964,8 @@ msgid ""
 "Last character of the previous song is\n"
 "the first character of the next song"
 msgstr ""
+"წინა სიმღერის ბოლო სიმბოლო\n"
+"შემდეგი სიმღერის პირველი სიმბოლოა"
 
 #: dynamic/biases/QuizPlayBias.cpp:141
 #, kde-format
@@ -10730,6 +10771,8 @@ msgstr "ხელით"
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
 msgstr ""
+"შეიყვანეთ კონკრეტული (აბსოლუტური), ან ფარდობითი მნიშვნელობა (მაგ: 128px, ან "
+"12%)."
 
 #: playlist/layouts/LayoutEditDialog.cpp:104
 #, kde-format
@@ -10913,6 +10956,8 @@ msgstr "აირჩიეთ ახალი სახელი დასაკ
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
+"შეიყვანეთ ახალი სახელი დასაკრავი სიის განლაგებისთვის, რომლის სახელის "
+"გადარქმევასაც აპირებთ:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
 #, kde-format
@@ -11539,6 +11584,7 @@ msgstr "საკონტროლო წერტილი"
 #, kde-format
 msgid "Fixes a track, album, or artist to a certain position in the playlist"
 msgstr ""
+"აფიქსირებს ტრეკს, ალბომს ან შემსრულებელს დასაკრავი სიის გარკვეულ ადგილას"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:170
 #, kde-format
@@ -11590,7 +11636,7 @@ msgstr "საკონტროლო წერტილის შეზღუ�
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:35
 #, kde-format
 msgid "Select the track that you want to use as the checkpoint."
-msgstr ""
+msgstr "აირჩიეთ ტრეკი, რომელიც საკვანძო წერტილად გსურთ, გამოიყენოთ."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:48
@@ -12279,6 +12325,17 @@ msgid ""
 "tracks that do <span style=\" font-weight:600;\">not</span> match the "
 "specified characteristics.</p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Calibri'; font-size:10pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">APG აირჩიევს ყველა ტრეკს, "
+"რომლებიც მითითებულ მოთხოვნებს <span style=\" font-weight:600;\">არ</span> "
+"აკმაყოფილებენ.</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Invert)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:87
@@ -12873,6 +12930,9 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
+"სკრიპტი %1 მოძველებული სკრიპტინგის API-ის ფუნქციებს იყენებს. დაუკავშირდით "
+"სკრიპტის ავტორებს, %2 და სთხოვეთ მათ, ასწიონ სკრიპტის ვერსია Amarok-ის "
+"შემდეგი ვერსიის გამოსვლამდე."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -12940,6 +13000,9 @@ msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
 "browse and play all the Ampache contents from within Amarok."
 msgstr ""
+"გამოიყენეთ Amarok, როგორც თქვენი Ampache სერვერის შეუფერხებელი წინაბოლო. ეს "
+"საშუალებას გაძლევთ, სრულად იპოვოთ და დაუკრათ Ampache-ის შემცველობა Amarok-ის "
+"შიგიდან."
 
 #: services/ampache/AmpacheServiceCollection.cpp:61
 #, kde-format
@@ -13039,6 +13102,7 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
+"GPodder-ის სერვისმა სერვერიდან მონაცემები ვერ მიიღო. ვცდი თავიდან 10 წამში..."
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
@@ -13067,6 +13131,8 @@ msgid ""
 "No running KWallet found. Would you like Amarok to save your gpodder.net "
 "credentials in plaintext?"
 msgstr ""
+"KWallet გაშვებული არაა. გნებავთ, Amarok-მა gpodder.net-ის ავტორიზაციის "
+"დეტალები უბრალო ტექსტით შეინახოს?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
 #, kde-format
@@ -13116,6 +13182,8 @@ msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
 "report a bug"
 msgstr ""
+"პასუხის დამუშავების შეცდომა. შეამოწმეთ, მუშაობს თუ არა gpodder.net და "
+"მოგვწერეთ შეცდომის შესახებ"
 
 #: services/jamendo/JamendoInfoParser.cpp:46
 #: services/jamendo/JamendoInfoParser.cpp:77
@@ -14651,7 +14719,9 @@ msgid "Played %2 times of which one play is recent and unique to this source"
 msgid_plural ""
 "Played %2 times of which %1 plays are recent and unique to this source"
 msgstr[0] ""
+"დაკრულია %2-ჯერ, საიდანაც 1 დაკვრა ახლახან მოხდა და უნიკალურია ამ წყაროსთვის"
 msgstr[1] ""
+"დაკრულია %2-ჯერ, საიდანაც %1 დაკვრა ახლახან მოხდა და უნიკალურია ამ წყაროსთვის"
 
 #: statsyncing/models/CommonModel.cpp:189
 #, kde-format
@@ -14727,8 +14797,8 @@ msgstr[1] "<b>%1</b> ტრეკს ჰქონდა არასაკმა
 msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>ერთი</b> ტრეკი, ინფორმაციით, მომავალში იქნა დაკრული."
+msgstr[1] "<b>%1</b> ტრეკი, ინფორმაციით, მომავალში იქნა დაკრული."
 
 #: statsyncing/Process.cpp:292
 #, kde-format
