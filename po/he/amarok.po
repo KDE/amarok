@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-04 08:43+0200\n"
+"PO-Revision-Date: 2025-03-05 08:24+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -9296,7 +9296,7 @@ msgstr "נחש תגיות &משמות־הקבצים"
 msgctxt ""
 "Text to represent an empty tag. Braces (<>) are only to clarify emptiness."
 msgid "&lt;empty&gt;"
-msgstr ""
+msgstr "&lt;ריק&gt;"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbCase)
 #: dialogs/TagGuessOptions.ui:23
@@ -9334,7 +9334,7 @@ msgstr "הכל &באותיות קטנות"
 #: dialogs/TagGuessOptions.ui:70
 #, kde-format
 msgid "Remove trailing &spaces in tags"
-msgstr ""
+msgstr "הסרת רווחים ב&סופן של תגיות"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbReplaceUnderscores)
 #: dialogs/TagGuessOptions.ui:80
@@ -9538,7 +9538,7 @@ msgstr "מספר רמות הביטול ברשימת־ההשמעה."
 #, kde-format
 msgctxt "AlbumPlay bias representation"
 msgid "Tracks from the same album"
-msgstr ""
+msgstr "רצועות מאותו האלבום"
 
 #: dynamic/biases/AlbumPlayBias.cpp:122
 #, kde-format
@@ -9606,7 +9606,7 @@ msgstr "מספר רמות הביטול ברשימת־ההשמעה."
 #, kde-format
 msgctxt "Name of the \"IfElse\" bias"
 msgid "If Else"
-msgstr ""
+msgstr "אם אחרת"
 
 #: dynamic/biases/IfElseBias.cpp:44
 #, kde-format
@@ -9802,7 +9802,7 @@ msgstr ""
 #, kde-format
 msgctxt "Name of the \"Or\" bias"
 msgid "Or"
-msgstr ""
+msgstr "או"
 
 #: dynamic/BiasFactory.cpp:92
 #, kde-format
@@ -9829,7 +9829,7 @@ msgstr "סידור רשימת־השמעה חדש"
 #: dynamic/DynamicModel.cpp:914
 #, kde-format
 msgid "Rock and Pop"
-msgstr ""
+msgstr "רוק ופופ"
 
 #: dynamic/DynamicModel.cpp:915 equalizer/EqualizerPresets.cpp:93
 #, fuzzy, kde-format
@@ -9840,7 +9840,7 @@ msgstr "בסדר"
 #: dynamic/DynamicModel.cpp:919 equalizer/EqualizerPresets.cpp:91
 #, kde-format
 msgid "Pop"
-msgstr ""
+msgstr "פופ"
 
 #: dynamic/DynamicModel.cpp:925
 #, fuzzy, kde-format
@@ -9858,7 +9858,7 @@ msgstr "דירוג"
 #: EngineController.cpp:1082
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
-msgstr ""
+msgstr "נצפו יותר מתי שגיאות ברשימת הנגינה. הנגינה נעצרה."
 
 #: EngineController.cpp:1286
 #, kde-format
@@ -9887,17 +9887,17 @@ msgstr "מתוך <b>%1</b>"
 #: equalizer/EqualizerPresets.cpp:80
 #, kde-format
 msgid "Manual"
-msgstr ""
+msgstr "ידני"
 
 #: equalizer/EqualizerPresets.cpp:81
 #, kde-format
 msgid "Classical"
-msgstr ""
+msgstr "קלסי"
 
 #: equalizer/EqualizerPresets.cpp:82
 #, kde-format
 msgid "Club"
-msgstr ""
+msgstr "קלאב"
 
 # kde-il: don't translate
 #: equalizer/EqualizerPresets.cpp:83
@@ -9915,7 +9915,7 @@ msgstr "וגם"
 #: equalizer/EqualizerPresets.cpp:85
 #, kde-format
 msgid "Full Treble"
-msgstr ""
+msgstr "טרבל מלא"
 
 #: equalizer/EqualizerPresets.cpp:86
 #, fuzzy, kde-format
@@ -9926,7 +9926,7 @@ msgstr "וגם"
 #: equalizer/EqualizerPresets.cpp:87
 #, kde-format
 msgid "Laptop/Headphones"
-msgstr ""
+msgstr "מחשב נייד/אוזניות"
 
 #: equalizer/EqualizerPresets.cpp:88
 #, fuzzy, kde-format
@@ -9937,7 +9937,7 @@ msgstr "גדול מ־"
 #: equalizer/EqualizerPresets.cpp:89
 #, kde-format
 msgid "Live"
-msgstr ""
+msgstr "שידור חי"
 
 #: equalizer/EqualizerPresets.cpp:90
 #, fuzzy, kde-format
@@ -9954,27 +9954,27 @@ msgstr "החלף"
 #: equalizer/EqualizerPresets.cpp:94
 #, kde-format
 msgid "Soft"
-msgstr ""
+msgstr "רך"
 
 #: equalizer/EqualizerPresets.cpp:95
 #, kde-format
 msgid "Ska"
-msgstr ""
+msgstr "סקא"
 
 #: equalizer/EqualizerPresets.cpp:96
 #, kde-format
 msgid "Soft Rock"
-msgstr ""
+msgstr "רוק רך"
 
 #: equalizer/EqualizerPresets.cpp:97
 #, kde-format
 msgid "Techno"
-msgstr ""
+msgstr "טכנו"
 
 #: equalizer/EqualizerPresets.cpp:98
 #, kde-format
 msgid "Zero"
-msgstr ""
+msgstr "אפס"
 
 #: importers/amarok/AmarokConfigWidget.cpp:81
 #, fuzzy, kde-format
@@ -9987,7 +9987,7 @@ msgstr "הוספה"
 #, kde-format
 msgctxt "Database type"
 msgid "external"
-msgstr ""
+msgstr "חיצוני"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
@@ -10032,14 +10032,14 @@ msgstr "שם רשימת־ההשמעה:"
 #: importers/fastforward/FastForwardConfigWidget.ui:112
 #, kde-format
 msgid "Hostname"
-msgstr ""
+msgstr "שם מארח"
 
 #. i18n: ectx: property (text), widget (QLabel, m_portLabel)
 #: importers/amarok/AmarokConfigWidget.ui:117
 #: importers/fastforward/FastForwardConfigWidget.ui:125
 #, kde-format
 msgid "Port"
-msgstr ""
+msgstr "פתחה"
 
 #. i18n: ectx: property (text), widget (QLabel, m_databaseNameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:127
@@ -10053,13 +10053,13 @@ msgstr "שם בסיס־נתונים"
 #: importers/amarok/AmarokConfigWidget.ui:163
 #, kde-format
 msgid "MySQL server binary"
-msgstr ""
+msgstr "הקובץ הבינרי של שרת MySQL"
 
 #. i18n: ectx: property (nameFilter), widget (KUrlRequester, m_mysqlBinary)
 #: importers/amarok/AmarokConfigWidget.ui:170
 #, kde-format
 msgid "mysqld"
-msgstr ""
+msgstr "mysqld"
 
 #: importers/amarok/AmarokManager.cpp:39
 #, fuzzy, kde-format
@@ -10070,7 +10070,7 @@ msgstr "Amarok 1.4"
 #: importers/amarok/AmarokManager.cpp:45
 #, kde-format
 msgid "Amarok 2.x Statistics Importer"
-msgstr ""
+msgstr "מייבא סטטיסטיקה מ־Amarok 2.x"
 
 #: importers/banshee/BansheeManager.cpp:27
 #, kde-format
@@ -10080,17 +10080,17 @@ msgstr "Banshee"
 #: importers/banshee/BansheeManager.cpp:28
 #, kde-format
 msgid "Banshee Statistics Importer"
-msgstr ""
+msgstr "מייבא סטטיסטיקה מ־Banshee"
 
 #: importers/clementine/ClementineManager.cpp:27
 #, kde-format
 msgid "Clementine"
-msgstr ""
+msgstr "Clementine"
 
 #: importers/clementine/ClementineManager.cpp:28
 #, kde-format
 msgid "Clementine Statistics Importer"
-msgstr ""
+msgstr "מייבא סטטיסטיקה מ־Clementine"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/fastforward/FastForwardConfigWidget.ui:66
@@ -10102,12 +10102,12 @@ msgstr "חיבור"
 #: importers/fastforward/FastForwardManager.cpp:25
 #, kde-format
 msgid "Amarok 1.4 (FastForward)"
-msgstr ""
+msgstr "Amarok 1.4 (קידום מהיר)"
 
 #: importers/fastforward/FastForwardManager.cpp:26
 #, kde-format
 msgid "Amarok 1.4 Statistics Importer"
-msgstr ""
+msgstr "מייבא סטטיסטיקה מ־Amarok 1.4"
 
 #: importers/itunes/ITunesManager.cpp:27
 #, fuzzy, kde-format
@@ -10118,7 +10118,7 @@ msgstr "iTunes"
 #: importers/itunes/ITunesManager.cpp:28
 #, kde-format
 msgid "iTunes Statistics Importer"
-msgstr ""
+msgstr "מייבא סטטיסטיקה מ־iTunes"
 
 #: importers/rhythmbox/RhythmboxManager.cpp:27
 #, fuzzy, kde-format
@@ -10129,7 +10129,7 @@ msgstr "Rythmbox"
 #: importers/rhythmbox/RhythmboxManager.cpp:28
 #, kde-format
 msgid "Rhythmbox Statistics Importer"
-msgstr ""
+msgstr "מייבא סטטיסטיקה מ־Rhythmbox"
 
 #: importers/SimpleImporterConfigWidget.cpp:48
 #, fuzzy, kde-format
@@ -10152,7 +10152,7 @@ msgstr "אחזר אמנים דומים"
 #: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
-msgstr ""
+msgstr "לא ניתן לפענח את נתוני מילות השירים"
 
 #: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
 #, kde-format
@@ -10206,7 +10206,7 @@ msgstr ""
 #: main.cpp:69
 #, kde-format
 msgid "<i>Inactive authors</i>"
-msgstr ""
+msgstr "<i>יוצרים לא פעילים</i>"
 
 #: main.cpp:70
 #, kde-format
@@ -10486,7 +10486,7 @@ msgstr ""
 #: main.cpp:154
 #, kde-format
 msgid "Windows porting"
-msgstr ""
+msgstr "הסבה ל־Windows"
 
 #: main.cpp:156
 #, kde-format
@@ -10506,7 +10506,7 @@ msgstr "Dan Leinir Turthra Jensen"
 #: main.cpp:158
 #, kde-format
 msgid "Usability"
-msgstr ""
+msgstr "שימושיות"
 
 #: main.cpp:160
 #, kde-format
@@ -10540,7 +10540,7 @@ msgstr "Daniel Winter"
 #: main.cpp:164
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
-msgstr ""
+msgstr "מנחש תגיות, תוויות, מנתח מנעד"
 
 #: main.cpp:166
 #, kde-format
@@ -10572,7 +10572,7 @@ msgstr "Greg Meyer"
 #: main.cpp:170
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
-msgstr ""
+msgstr "תקליטורים חיים, תיקון תקלות (oggb4mp3)"
 
 #: main.cpp:172
 #, kde-format
@@ -10592,7 +10592,7 @@ msgstr ""
 #: main.cpp:174
 #, kde-format
 msgid "Assorted patches"
-msgstr ""
+msgstr "כל מיני טלאים"
 
 #: main.cpp:176
 #, kde-format
@@ -10697,7 +10697,7 @@ msgstr "Olivier Bédard"
 #: main.cpp:196
 #, kde-format
 msgid "Website hosting"
-msgstr ""
+msgstr "אירוח האתר"
 
 #: main.cpp:198
 #, kde-format
@@ -10739,7 +10739,7 @@ msgstr "Scott Wheeler"
 #: main.cpp:204
 #, kde-format
 msgid "TagLib & ktrm code"
-msgstr ""
+msgstr "הקוד של TagLib ושל ktrm"
 
 #: main.cpp:206
 #, kde-format
@@ -10749,7 +10749,7 @@ msgstr "Shane King"
 #: main.cpp:206
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
-msgstr ""
+msgstr "טלאים והסבה ל־Windows (נענועים)"
 
 #: main.cpp:208
 #, kde-format
@@ -10759,7 +10759,7 @@ msgstr ""
 #: main.cpp:208
 #, kde-format
 msgid "Photos & Videos applets, Context View"
-msgstr ""
+msgstr "יישומוני תמונות וסרטונים, תצוגת הקשר"
 
 #: main.cpp:210
 #, kde-format
@@ -10769,12 +10769,12 @@ msgstr "Soren Harward"
 #: main.cpp:210
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
-msgstr ""
+msgstr "מפתח, מחולל רשימות נגינה אוטומטית"
 
 #: main.cpp:212
 #, kde-format
 msgid "Thomas Lübking"
-msgstr ""
+msgstr "תומס ליובקינג"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:212 main.cpp:214 main.cpp:228 main.cpp:238 main.cpp:244

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-06 05:19+0100\n"
+"PO-Revision-Date: 2025-03-07 06:24+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -3306,6 +3306,8 @@ msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the file."
 msgstr ""
+"დაკვრის შემცველი სტატისტიკის (ქულების, ბოლოსდაკრულობა, დაკვრებისრაოდენბა)\n"
+"ფაილში ჭდეების სახით ჩაწერა."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -3608,6 +3610,8 @@ msgid ""
 "If enabled, Amarok will prevent the system from automatically suspending if "
 "it is playing a track"
 msgstr ""
+"თუ ჩართულია, Amarok ხელს შეუშლის სისტემას ავტომატურად დაძინებაში, თუ ის "
+"მუსიკას უკრავს"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_InhibitSuspend)
 #: configdialog/dialogs/PlaybackConfig.ui:165
@@ -4506,6 +4510,8 @@ msgid ""
 "MP3 is the de facto standard in compressed audio compatible with almost all "
 "mobile players. It is however non free and generally not recommended."
 msgstr ""
+"MP3 დეფაქტო სტანდარტულია შეკუმშული ხმისთვის და ის თითქმის ყველა მობილურ "
+"დამკვრელთანაა თავსებადი. მაგრამ ის თავისუფალი არა და ზოგადად არ გირჩევთ."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:114
 #, kde-format
@@ -5425,6 +5431,9 @@ msgid ""
 "File <i>%1</i> suggests that we should use <i>%2</i> as music folder on the "
 "device, but it doesn't exist. Falling back to <i>%3</i> instead"
 msgstr ""
+"ფაილი <i>%1</i> ვარაუდობს, რომ მოწყობილობაზე მუსიკის საქაღალდედ <i>%2</i> "
+"უნდა გამოვიყენოთ, მაგრამ ის არ არსებობს. მის მაგიერ გამოვიყენებ საქაღალდეს "
+"<i>%3</i>"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:387
 #, kde-format
@@ -5659,6 +5668,8 @@ msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
 msgstr ""
+"მედია აშკარად უნდა გადმოწეროთ. წინააღმდეგ შემთხვევაში პოდკასტის დაკვრა "
+"დაშორებული სერვერიდან მოხდება."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:140
@@ -7455,6 +7466,8 @@ msgid ""
 "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
 "community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>."
 msgstr ""
+"შეყვანის ფაილი amarokcollectionscanner-დან.<br>იხილეთ <a href=\"http://"
+"community.kde.org/Amarok/Development/BatchMode\">პაკეტური რეჟიმი</a>."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:43
 #, kde-format
@@ -8044,6 +8057,17 @@ msgid ""
 "files of the same name automatically. <span style=\" font-style:italic;"
 "\">(Warning: Overwriting is not undoable)</span></p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">ჩართეთ, თუ იგივე სახელის "
+"მქონე ფაილებზე ავტომატურად ზედ გადაწერა გნებავთ. <span style=\" font-style:"
+"italic;\">(გაფრთხილება: თავზე გადაწერა შეუქცევადია)</span></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, overwriteCheck)
 #: dialogs/OrganizeCollectionDialogBase.ui:169
@@ -8070,6 +8094,8 @@ msgid ""
 "If checked all spaces will be replaced with underscores in the file names. "
 "If not, spaces will be left as they are."
 msgstr ""
+"თუ ჩართულია, ფაილის სახელებში არსებული ჰარეები ქვედატირეებით ჩანაცვლება. თუ "
+"არა, ჰარეები დარჩება იქ, სადაც იყო."
 
 #. i18n: ectx: property (text), widget (QCheckBox, spaceCheck)
 #: dialogs/OrganizeCollectionOptions.ui:41
@@ -8091,6 +8117,8 @@ msgid ""
 "If checked all artists starting with \"The\" will have it moved to the end. "
 "Example, \"The Beatles\" would become \"Beatles, The\""
 msgstr ""
+"თუ ჩართულია, ყველა სიმბოლო, რომლის სახელიც იწყება არტიკლით \"The\", ბოლოში "
+"იქნება გადატანილი. მაგალითად, \"The Beatles\" გახდება \"Beatles, The\""
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:60
@@ -8834,18 +8862,22 @@ msgid ""
 "The \"EchoNest\" bias looks up tracks on echo nest and only adds similar "
 "tracks."
 msgstr ""
+"ტონი \"EchoNest\" მოძებნის ტრეკებს EchoNest-ზე და, მხოლოდ, მსგავს ტრეკებს "
+"დაამატებს."
 
 #: dynamic/biases/EchoNestBias.cpp:126
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
-msgstr ""
+msgstr "წინა შემსრულებლის მსგავსი (EchoNest-ის აზრით)"
 
 #: dynamic/biases/EchoNestBias.cpp:129
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
 msgstr ""
+"მიმდინარე დასაკრავ სიაში არსებული ნებისმიერი შემსრულებლის მსგავსი (EchoNest-"
+"ის აზრით)"
 
 #: dynamic/biases/EchoNestBias.cpp:142
 #, kde-format
@@ -8906,7 +8938,7 @@ msgstr "დანაყოფი"
 msgctxt "Description of the \"Part\" bias"
 msgid ""
 "The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
+msgstr "ტონი \"ნაწილი\" დასაკრავი სიის ნაწილებს სხვა ქვეტონებიდან ავსებს."
 
 #: dynamic/biases/PartBias.cpp:255
 #, kde-format
@@ -8941,6 +8973,8 @@ msgid ""
 "Tracks whose title start with a\n"
 "character the last track ended with"
 msgstr ""
+"ტრეკები, რომლის სათაურიც ბოლოს\n"
+"დაკრული ტრეკის ბოლო სიმბოლოთი იწყება"
 
 #: dynamic/biases/QuizPlayBias.cpp:120
 #, kde-format
@@ -8949,6 +8983,8 @@ msgid ""
 "Tracks whose artist name start\n"
 "with a character the last track ended with"
 msgstr ""
+"ტრეკები, რომლის შემსრულებლის სახელიც\n"
+"ბოლოს დაკრული ტრეკის ბოლო სიმბოლოთი იწყება"
 
 #: dynamic/biases/QuizPlayBias.cpp:124
 #, kde-format
@@ -8957,6 +8993,8 @@ msgid ""
 "Tracks whose album name start\n"
 "with a character the last track ended with"
 msgstr ""
+"ტრეკები, რომლის ალბომის სახელიც იწყება\n"
+"ბოლოს დაკრული ტრეკის ბოლო სიმბოლოთი"
 
 #: dynamic/biases/QuizPlayBias.cpp:136
 #, kde-format
@@ -8996,6 +9034,9 @@ msgid ""
 "found by a search query. It uses the same search\n"
 "query as the collection browser."
 msgstr ""
+"ტონი \"ძებნა\" ამატებს ტრეკებს, რომლებიც ძიების პირობის\n"
+"მიერაა აღმოჩენილი. ის იყენებს იგივე ძებნის პირობას,\n"
+"რასაც კოლექციების ბრაუზერი."
 
 #: dynamic/biases/SearchQueryBias.cpp:116
 #, kde-format
@@ -9016,6 +9057,8 @@ msgid ""
 "The \"TagMatch\" bias adds tracks that\n"
 "fulfill a specific condition."
 msgstr ""
+"ტონი \"ჭდისდამთხვევა' ამატებს ტრეკებს,\n"
+"რომლებიც მითითებულ მოთხოვნას აკმაყოფილებენ."
 
 #: dynamic/biases/TagMatchBias.cpp:176
 #, kde-format
@@ -9041,6 +9084,8 @@ msgid ""
 "The random bias adds random tracks from the\n"
 "whole collection without any bias."
 msgstr ""
+"შემთხვევითი ტონი დაამატებს შემთხვევით ტრეკებს მთელი კოლექციიდან\n"
+"ყოველგვარი არჩევის წესის მიხედვით."
 
 #: dynamic/BiasFactory.cpp:67
 #, kde-format
@@ -9055,6 +9100,8 @@ msgid ""
 "The \"And\" bias adds tracks that match all\n"
 "of the sub biases."
 msgstr ""
+"ტონი \"და\" დაამატებს ტრეკებს, რომლის ყველა\n"
+"ქვეტონიც ემთხვევა."
 
 #: dynamic/BiasFactory.cpp:85
 #, kde-format
@@ -9069,6 +9116,8 @@ msgid ""
 "The \"Or\" bias adds tracks that match at\n"
 "least one of the sub biases."
 msgstr ""
+"ტონი \"ან\" დაამატებს ტრეკებს, რომლებიც, ქვეტონების,\n"
+"სულ ცოტა, ერთ ქვეტონს ემთხვევა."
 
 #: dynamic/BiasFactory.cpp:181 dynamic/BiasFactory.cpp:187
 #, kde-format
@@ -10796,6 +10845,8 @@ msgid ""
 "Take homogeneous part of the space available to all elements with automatic "
 "width"
 msgstr ""
+"ავტომატური სიგანის მქონე ყველა ელემენტისთვის ხელმისაწვდომი სივრცის "
+"ჰომოგენური ნაწილის აღება"
 
 #: playlist/layouts/LayoutEditDialog.cpp:143
 #, kde-format
@@ -10848,6 +10899,8 @@ msgid ""
 "Current layout '%1' is read only. Creating a new layout '%2' with your "
 "changes and setting this as active"
 msgstr ""
+"მიმდინარე განლაგება '%1' მხოლოდ წაკითხვადია. შეიქმნება ახალი განლაგება '%2' "
+"თქვენი ცვლილებებით და ის აქტიურად მოინიშნება"
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
@@ -10945,6 +10998,8 @@ msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
 msgstr ""
+"შეიყვანეთ სახელი დასაკრავი სიის განლაგებისთვის, რომელსაც აპირებთ, '%1' "
+"განლაგების ასლიდან შექმნათ:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
 #, kde-format
@@ -10978,6 +11033,8 @@ msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Saved as new layout '%2'"
 msgstr ""
+"განლაგება '%1' ნაგულისხმევი განლაგებებიდან ერთ-ერთია და მას თავზე ვერ "
+"გადააწერთ. შენახულია, როგორც ახალი განლაგება '%2'"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
 #, kde-format
@@ -11672,6 +11729,8 @@ msgid ""
 "How strict the APG should be about placing the selected track at the "
 "specified time."
 msgstr ""
+"რა დონეზე მკაცრი უნდა იყოს APG მითითებული ტრეკის მითითებულ დროზე "
+"მოთავსებისას."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Strictness)
 #. i18n: ectx: property (text), widget (QLabel, label_StrictnessInt)
@@ -11829,6 +11888,8 @@ msgid ""
 "How strict the APG should be about matching the playlist duration to the "
 "specified time."
 msgstr ""
+"რამდენად მკაცრი უნდა იყოს APG დასაკრავი სიის ხანგრძლივობის მითითებულ დროსთან "
+"შედარებისას."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
 #, kde-format
@@ -11923,6 +11984,8 @@ msgid ""
 "The file size units used by the constraint.  Note that kB is 1,000 bytes; MB "
 "is 1,000,000 bytes; and so forth."
 msgstr ""
+"შეზღუდვის მიერ გამოყენებული ფაილის ზომის ერთეულები. დაიმახსოვრეთ, რომ კბ "
+"1,000 ბაიტია, მბ 1,000,000 ბაიტია და ა.შ."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:82
@@ -11955,6 +12018,8 @@ msgid ""
 "<html><head/><body><p>How strict the APG should be about matching the total "
 "size of all files in the playlist to the specified size.</p></body></html>"
 msgstr ""
+"<html><head/><body><p>რა დონეზე მკაცრი უნდა იყოს APG დასაკრავ სიაში არსებული "
+"ფაილების ჯამური ზომის მითითებულთან შედარებისას.</p></body></html>"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:51
 #, kde-format
@@ -14806,7 +14871,10 @@ msgid "<b>One</b> track was last played in too distant past to be scrobbled."
 msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
 msgstr[0] ""
+"<b>ერთი<b> ტრეკი, რომელიც წარსულში დაუკარით, გადასაცემად მეტისმეტად ძველი "
+"იყო."
 msgstr[1] ""
+"<b>%1<b> ტრეკი, რომელიც წარსულში დაუკარით, გადასაცემად მეტისმეტად ძველი იყო."
 
 #: statsyncing/Process.cpp:296
 #, kde-format
@@ -14814,7 +14882,11 @@ msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
+"Last.fm-ზე <b>ერთი</b> ტრეკის გადაცემა გამოტოვებულია, როგორც ეს "
+"მომხმარებელმა მიუთითა."
 msgstr[1] ""
+"Last.fm-ზე <b>%1</b> ტრეკის გადაცემა გამოტოვებულია, როგორც ეს მომხმარებელმა "
+"მიუთითა."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
