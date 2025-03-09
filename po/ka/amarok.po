@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-07 06:24+0100\n"
+"PO-Revision-Date: 2025-03-08 06:50+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -996,6 +996,10 @@ msgid ""
 "offset is the space between the bottom part of the OSD and the bottom of the "
 "screen."
 msgstr ""
+"OSD-ის Y მდებარეობა არჩეული ეკრანისა და OSD-ის სწორებასთან შედარებით. თუ "
+"არჩეულია ზედა სწორება, Y წანაცვლება ადგილია OSD-ის ზედა ნაწილსა და ეკრანის "
+"ზედა წიბოს შორის. თუ არჩეულია ქვედა სწორება, Y წანაცვლება ადგილია OSD-ის "
+"ქვედა ნაწილსა და ეკრანის ქვედა წიბოს შორის."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:355
@@ -2160,6 +2164,10 @@ msgid ""
 "of whether these files are part of your local collection. You can then add "
 "these files to the playlist as well as perform basic file operations."
 msgstr ""
+"ფაილის ბრაუზერი საშუალებას გაძლევთ, იპოვოთ ფაილები ყველგან თქვენს სიტემაში, "
+"იმის მიუხედავად, არის თუ არა ეს ფაილები ლოკალური კოლექციის ნაწილი. შემდეგ, "
+"ეს ფაილები შეგიძლიათ, დაამატოთ დასაკრავ სიაში და ასევე შეასრულოთ მასზე "
+"ჩვეულებრივი ფაილის ოპერაციები."
 
 #: browsers/filebrowser/FileView.cpp:398
 #, kde-format
@@ -2281,6 +2289,9 @@ msgid ""
 "which is currently not loaded or deactivated.\n"
 "The original bias name was %1."
 msgstr ""
+"ეს ტონი ანაცვლებს სხვა ტონს, რომელიც\n"
+"ამჟამად ჩატვირთული არაა, ან გათიშულია.\n"
+"ორიგინალ ტონს ერქვა %1."
 
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:195
 #, kde-format
@@ -2303,6 +2314,8 @@ msgid ""
 "With a dynamic playlist, Amarok becomes your own personal dj, automatically "
 "selecting tracks for you, based on a number of parameters that you select."
 msgstr ""
+"დინამიკურ დასაკრავ სიებთან ერთად Amarok ხდება თქვენი პერსონალური dj, "
+"შეუძლია, ტრეკები თქვენთვის აირჩიოს იმ პარამეტრებით, რომელიც თქვენ გნებავთ."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:63
 #, kde-format
@@ -2435,6 +2448,9 @@ msgid ""
 "is also where you can specify powerful dynamic playlists and manage your "
 "podcast subscriptions and episodes."
 msgstr ""
+"დასაკრავი სიის ბრაუზერი თქვენს მიერ შემოტანილ და შენახულ დასაკრავ სიებს "
+"შეიცავს. მას ასევე გააჩნია მძლავრი დინამიკური დასაკრავი სიების შექმნის და "
+"თქვენი პოდკასტებისა და ეპიზოდების გამოწერების მართვის საშუალებაც."
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:75
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
@@ -2940,6 +2956,8 @@ msgid ""
 "Check to enable the use of an external database. By default there is already "
 "an embedded MySQL database running."
 msgstr ""
+"დააწკაპუნეთ გარე მონაცემთა ბაზის გამოყენების ჩასართავად. ნაგულისხმევად MySQL "
+"მონაცემთა ბაზა უკვე გაშვებული უნდა იყოს."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: configdialog/dialogs/DatabaseConfig.ui:23
@@ -3406,6 +3424,8 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
+"დააწკაპუნეთ ეკრანზე ჩვენების ჩასართავად. OSD მოკლედ აჩვენებს ეკრანზე ტრეკის "
+"მონაცემებს, როცა მასზე გადართვა მოხდება."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
@@ -3430,6 +3450,8 @@ msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
+"OSD-ის ჩვენების დრო მილიწამებში. მნიშვნელობა 500მწმ-10000მწმ შუალედიდან უნდა "
+"იყოს."
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
 #: configdialog/dialogs/NotificationsConfig.ui:71
@@ -3545,6 +3567,8 @@ msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
 msgstr ""
+"თუ ჩართულია, Amarok გააგრძელებს<br>დაკვრას იმ ადგილიდან, სადაც ის წინა "
+"სესიაში დატოვეთ -- ზუსტად მაგნიტოფონივით."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
 #: configdialog/dialogs/PlaybackConfig.ui:29
@@ -7964,6 +7988,8 @@ msgid ""
 "If you surround sections of text that contain a token with curly-braces, "
 "that section will be hidden if the token is empty."
 msgstr ""
+"თუ ტექსტის სექციებს, რომლებიც ტოკენს შეიცავს, ფიგურულ ფრცჩხილებში ჩასვამთ, "
+"სექცია დაიმალება, თუ ტოკენი ცარიელია."
 
 #: dialogs/OrganizeCollectionDialog.cpp:316
 #, kde-format
@@ -8020,6 +8046,8 @@ msgid ""
 "<html>Show/hide additional controls to specify destination track paths based "
 "on their metadata.</html>"
 msgstr ""
+"<html>მეტამონაცემებზე დამოკიდებული სამიზნე ტრეკის ბილიკების მისათითებელი "
+"დამატებითი კონტროლის ელემენტების ჩვენება/დამალვა.</html>"
 
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
@@ -8135,6 +8163,10 @@ msgid ""
 "\n"
 "Most people can leave this option enabled."
 msgstr ""
+"MS-DOS/VFAT ფაილურ სისტემებთან შეუთავსებელი სიმბოლოების ქვედატირეებით "
+"ჩანაცვლება.\n"
+"\n"
+"ხალხის უმრავლესობას შეუძლია, ეს პარამეტრი ჩართული დატოვოს."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:80
@@ -9486,6 +9518,8 @@ msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
+"Amarok-ის ავტორობა ჰობი არაა, ის ცხოვრების სტილია. მაგრამ, როცა ხალხი მიდის, "
+"ჩვენ მათ პატივისცემას მათი სახელების ამ სიაში მოხსენებით ვცდილობთ:"
 
 #: main.cpp:76
 #, kde-format
@@ -10646,6 +10680,10 @@ msgid ""
 "\n"
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
+"თქვენ აირჩიეთ, რომ დამალოთ მენიუს ზოლი.\n"
+"\n"
+"დაიმახსოვრეთ, რომ მის დასაბრუნებლად ყოველთვის შეგიძლიათ, მალსახმობი \"%1\" "
+"გამოიყენოთ."
 
 #: MainWindow.cpp:1186
 #, kde-format
@@ -12657,6 +12695,9 @@ msgid ""
 "find the tracks that match best, but you may want to consider loosening the "
 "constraints to find more tracks."
 msgstr ""
+"ტრეკი, რომლებიც ყველა შეზღუდვას აკმაყოფილებს, არ არსებობს. დასაკრავი სიის "
+"გენერატორი იპოვის ტრეკებს, რომლებიც საუკეთესოდ ემთხვევა, მაგრამ უფრო მეტის "
+"საშოვნად, მე მგონი, ფილტრების სიმკაცრე უნდა შეამციროთ."
 
 #: playlistgenerator/Preset.cpp:44 playlistgenerator/Preset.cpp:57
 #, kde-format
