@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-09 05:37+0100\n"
+"PO-Revision-Date: 2025-03-10 02:16+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -106,8 +106,8 @@ msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"შეცდომების შესახებ მოსაწერად გამოიყენეთ ბმული <a href=\"https://bugs.kde."
-"org\">https://bugs.kde.org</a>.\n"
+"შეცდომების შესახებ მოსაწერად გამოიყენეთ ბმული <a href=\"https://bugs.kde.org"
+"\">https://bugs.kde.org</a>.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:222
 #: aboutdialog/ExtendedAboutDialog.cpp:228
@@ -3180,12 +3180,12 @@ msgstr "ტონის ინდიკატორის მორგება"
 #, kde-format
 msgid ""
 "<b>Note</b>: Mood files must be generated manually. For more information, "
-"visit <a href=\"http://userbase.kde.org/Amarok/Manual/Various/"
-"Moodbar\">related article on KDE UserBase</a>."
+"visit <a href=\"http://userbase.kde.org/Amarok/Manual/Various/Moodbar"
+"\">related article on KDE UserBase</a>."
 msgstr ""
 "<b>შენიშვნა</b>: ტონის ფაილები ხელით უნდა შექმნათ. მეტი ინფორმაციისთვის "
-"იხილეთ <a href=\"http://userbase.kde.org/Amarok/Manual/Various/"
-"Moodbar\">შესაბამისი სტატია KDE-ის დოკუმენტაციაში</a>."
+"იხილეთ <a href=\"http://userbase.kde.org/Amarok/Manual/Various/Moodbar"
+"\">შესაბამისი სტატია KDE-ის დოკუმენტაციაში</a>."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: configdialog/dialogs/GeneralConfig.ui:117
@@ -3619,6 +3619,9 @@ msgid ""
 "to the playlist using mouse, pressing Enter or when the playlist is "
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
+"<html>ჩართეთ ეს პარამეტრი, თუ გნებავთ დაკვრის დაწყება, როცა ერთი ან მეტი "
+"ტრეკი დაემატება დასაკრავ სიას თაგუნათი, enter-ის დაჭერით, ან როცა დასაკრავი "
+"სია შეიცვლება. გააკეთებს არაფერს, თუ დაკვრა უკვე მიმდინარეობს.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #: configdialog/dialogs/PlaybackConfig.ui:42
@@ -3734,6 +3737,9 @@ msgid ""
 "Existing Script's Version: %2\n"
 "Selected Script's Version: %3"
 msgstr ""
+"სხვა სკრიპტი სახელით %1 უკვე არსებობს\n"
+"არსებული სკრიპტის ვერსია: %2\n"
+"არჩეული სკრიპტის ვერსია: %3"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:213
 #, kde-format
@@ -4111,6 +4117,9 @@ msgid ""
 "labels according to your preferences.\n"
 "Eg. \"hip hop\" -> \"hip-hop\""
 msgstr ""
+"ეს დაგეხმარებათ, თქვენი ჭდის კოლექცია სუფთად იქონიოთ, გადმოწერილი ჭდეების "
+"თქვენი სასურველით ჩანაცვლების საშუალებით.\n"
+"მაგ: \"hip hop\" -> \"hip-hop\""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
@@ -4543,6 +4552,10 @@ msgid ""
 "quality is slightly better than MP3 at the same bitrate. Note that not all "
 "mobile players support the Ogg Vorbis format."
 msgstr ""
+"Ogg Vorbis სრულად თავისუფალი და დაუპყრობელი შეკუმშული ხმის ფორმატია, რომელიც "
+"იდეალურია თქვენი შეკუმშული მუსიკის თქვენს კომპიუტერზე დასამახსოვრებლად. ხმის "
+"ხარისხი ოდნავ უკეთესია, ვიდრე MP3-ის იგივე ბიტრეიტისას. გაითვალისწინეთ, რომ "
+"Ogg Vorbis ფორმატის მხარდაჭერა ყველა მობილურ დამკვრელს არ გააჩნია."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:69
 #, kde-format
@@ -4552,6 +4565,11 @@ msgid ""
 "about 50%. Because the filesize is much larger than Ogg Vorbis or MP3 it is "
 "not recommended if you want to transfer your music to a mobile player."
 msgstr ""
+"FLAC კარგვისგარეშე შეკუმშული აუდიოფორმატია, რომელიც ლიცენზიებისგან და "
+"პატენტებისგან თავისუფალია. ის ინარჩულებს შესანიშნავ CD ხარისხს ფაილის ზომის "
+"50%-მდე შემცირებით. იმის გამო, რომ ზომა Ogg Vorbis-ზე და MP3-ზე გაცილებით "
+"დიდია, ის რეკომენდებული არაა, თუ მუსიკის მობილურ დამკვრელზე გადატანას "
+"აპირებთ."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:75
 #, kde-format
@@ -4560,6 +4578,10 @@ msgid ""
 "but maintains perfect quality. It is generally not recommended unless you "
 "know what you are doing. If you want perfect quality, use FLAC instead."
 msgstr ""
+"WAV ჩვეულებრივი, შეუკუმშავი აუდიოფაილის ფორმატია. მას ბევრი ადგილი სჭირდება, "
+"მაგრამ სრულყოფილ ხარისხს ინარჩუნებს. ის ზოგადად რეკომენდებული არაა, თუ "
+"ზუსტად არ იცით, რას აკეთებთ. თუ გნებავთ სრულყოფილი ხარისხი, ამის ნაცვლად "
+"FLAC გამოიყენეთ."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:81
 #, kde-format
@@ -4673,6 +4695,11 @@ msgid ""
 "TroubleshootingAndCommonProblems#Duplicate_Tracks'>Amarok Manual</a> for "
 "information about duplicate tracks."
 msgstr ""
+"<ul><li>%1</li></ul>უმეტეს შემთხვევაში ეს ნიშნავს, რომ ყველა თქვენი ტრეკის "
+"შემოტანა არ მომხდარა.<br>გამეორებული ტრეკების შესახებ ინფორმაციისთვის "
+"იხილეთ<a href='http://userbase.kde.org/Amarok/Manual/Various/"
+"TroubleshootingAndCommonProblems#Duplicate_Tracks'>Amarok-ის სახელმძღვანელო</"
+"a>."
 
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:88
 #, kde-format
@@ -4936,6 +4963,9 @@ msgid ""
 "using the <b>%2</b> collection action. You can also view the tracks under "
 "the Saved Playlists tab."
 msgstr ""
+"%1-ზე აღმოჩენილია გაჭედილი ან/და მიტოვებული ტრეკები. ამ სიტუაციის გადაჭრა <b>"
+"%2</b> კოლექციის ქმედებით შეგიძლიათ. ამ ტრეკების ნახვა შენახული დასაკრავი "
+"სიების ჩანართშიც შეგიძლიათ."
 
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 #, kde-format
@@ -5137,6 +5167,10 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
+"<b>%1</b><br><br>უსაფრთხოების მიზნით Amarok will <i>არ ჩაწერს არაფერს</i> "
+"iPod-ში. (iTunes-ის მონაცემთა ბაზის ცვლილებამ შეიძლება, ის დააცარიელოს "
+"მოწყობილობის მხრიდან)<br>მეტი ინფორმაციისთვის იხ. <a href='%2'>README."
+"overview</a> ფაილი libgpod-ის წყაროს რეპოზიტორიიდან."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
 #, kde-format
@@ -5147,6 +5181,12 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
+"<b>%1</b><br><br>ზემო პრობლემა უშლის ხელს Amarok-ს თქვენი iPod-ის "
+"გამოყენებაში. შეგიძლიათ, სცადოთ, თავიდან შექმნათ კრიტიკული iPod-ის "
+"საქაღალდეები და ფაილები (iTunes-ის მონაცემთა ბაზის ჩათვლით) <b>%2</b> "
+"ღილაკით ქვემოთ.<br><br> iPod-ის ინიციალიზაცია ტრეკების და სურათების ბაზას "
+"ანადგურებს</b>, მაგრამ წესით, მან ტრეკები არ უნდა წაშალოს. ტრეკები "
+"მიტოვებულად მოინიშნება."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
 #, kde-format
@@ -5597,6 +5637,9 @@ msgid ""
 "this track on the filesystem or in any of your collections anymore. You may "
 "try plugging in the device this track might be on."
 msgstr ""
+"როცა Amarok ბოლოს დაიხურა, ეს ტრეკი იყო %1-ში, მაგრამ Amarok-ს არ შეუძლია ეს "
+"ტრეკი ფაილურ სისტემაზე ან რომელიმე სხვა კოლექციაში აღმოაჩინოს. შეიძლება, "
+"საჭიროა, შეაერთოთ მოწყობილობა, რომელზეც ეს ტრეკია მოთავსებული."
 
 #: core-impl/meta/stream/Stream.cpp:52
 #, kde-format
@@ -5781,6 +5824,9 @@ msgid ""
 "the same information. Writing the tags ensures the information in the "
 "playlist and on media devices will be the same as in the feed."
 msgstr ""
+"RSS ლენტა და ჭდეები გადმოწერილ ფაილში ხანდახან იგივე ინფორმაციას არ შეიცავს. "
+"ჭდეების ჩაწერა უზრუნველყოფს, რომ ინფორმაცია დასაკრავ სიაში და "
+"მედიამოწყობილობებში იგივე იქნება, რაც ლენტაშია."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:211
@@ -5870,6 +5916,9 @@ msgid ""
 "Downloaded files with this status wouldn't be deleted even if we apply a "
 "purge."
 msgstr ""
+"პოდკასტის ეპიზოდის გადმოწერილი ფაილის სტატუსის \"შენარჩუნებაზე\" გადართვა. "
+"ამ სტატუსის მქონე გადმოწერილი ფაილები მაშინაც კი არ წაიშლება, თუ გაწმენდის "
+"ბრძანებას გაუშვებთ."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
 #, kde-format
@@ -5978,8 +6027,8 @@ msgstr "საბაზისო საქაღალდე:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -5995,6 +6044,24 @@ msgid ""
 "right:0px; -qt-block-indent:0; text-indent:0px;\">This can be changed for "
 "each channel individually.</p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">საბაზისო საქაღალდე ყველა "
+"ახალი პოდკასტის არხებისთვის.</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">როცა პოდკასტის არხი "
+"ემატება, გადმოწერის საქაღალდედ გამოყენებული იქნება <span style=\" font-style:"
+"italic;\">&lt;საბაზისო საქაღალდე&gt;</span>/<span style=\" font-style:italic;"
+"\">&lt;არხის სახელი&gt;</span>.</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">ამისი შეცვლა ყველა "
+"არხისთვის ცალ-ცალკე შეგიძლიათ.</p></body></html>"
 
 #. i18n: ectx: property (whatsThis), widget (KUrlRequester, m_baseDirUrl)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:112
@@ -6005,6 +6072,10 @@ msgid ""
 "the download directory.\n"
 "This can be changed for each channel individually."
 msgstr ""
+"საბაზისო საქაღალდე ახალი პოდკასტის არხებისთვის.\n"
+"როცა ამატებთ პოდკასტის არხს, გადმოსაწერ საქაღალდედ გამოყენებული იქნება "
+"<საბაზისო საქაღალდე>/<არხის სახელი>.\n"
+"ამის შეცვლა თითოეული არხისთვის ცალ-ცალკე შეგიძლიათ."
 
 #: core-impl/storage/StorageManager.cpp:162
 #, kde-format
@@ -6610,6 +6681,8 @@ msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
 "Did you enter the correct URL?"
 msgstr ""
+"%1-ის დამუშავებისას მოველოდი ლენტას, მაგრამ მივიღე HTML გვერდი.\n"
+"სწორად შეიყვანეთ ბმული?"
 
 #: core/podcasts/PodcastReader.cpp:1003
 #, kde-format
@@ -7737,6 +7810,16 @@ msgid ""
 "   PulseAudio: %9\n"
 "\n"
 msgstr ""
+"%1 დიაგნოსტიკა\n"
+"\n"
+"ზოგადი ინფორმაცია:\n"
+"   %1 ვერსია: %2\n"
+"   KDE Framework-ის ვერსია: %3\n"
+"   Qt-ის ვერსია: %4\n"
+"   Phonon-ის ვერსია: %5\n"
+"   Phonon-ის უკანაბოლო: %6 (%7, %8)\n"
+"   PulseAudio: %9\n"
+"\n"
 
 #: dialogs/DiagnosticDialog.cpp:165
 #, kde-format
@@ -8119,8 +8202,8 @@ msgstr ""
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -8131,8 +8214,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -8236,8 +8319,8 @@ msgstr "&VFAT-ისთვის უსაფრთხო სახელებ�
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -8261,8 +8344,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -8290,8 +8373,8 @@ msgstr ""
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -8310,8 +8393,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -8663,20 +8746,20 @@ msgctxt ""
 msgid ""
 "The following tokens can be used to define a filename scheme:"
 "<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font "
-"color=\"%3\">%artist%</font>, <font color=\"%4\">%composer%</"
+"color=\"%2\">%title%</font>,                           <font color=\"%3\">"
+"%artist%</font>, <font color=\"%4\">%composer%</"
 "font>,                           <font color=\"%5\">%year%</font>, <font "
-"color=\"%6\">%album%</font>,                           <font "
-"color=\"%7\">%albumartist%</font>, <font color=\"%8\">%comment%</"
+"color=\"%6\">%album%</font>,                           <font color=\"%7\">"
+"%albumartist%</font>, <font color=\"%8\">%comment%</"
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 msgstr ""
 "ფაილის სახელის სქემის აღსაწერად, შეგიძლიათ, გამოიყენოთ შემდეგი კოდები:"
 "<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font "
-"color=\"%3\">%artist%</font>, <font color=\"%4\">%composer%</"
+"color=\"%2\">%title%</font>,                           <font color=\"%3\">"
+"%artist%</font>, <font color=\"%4\">%composer%</"
 "font>,                           <font color=\"%5\">%year%</font>, <font "
-"color=\"%6\">%album%</font>,                           <font "
-"color=\"%7\">%albumartist%</font>, <font color=\"%8\">%comment%</"
+"color=\"%6\">%album%</font>,                           <font color=\"%7\">"
+"%albumartist%</font>, <font color=\"%8\">%comment%</"
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 
 #: dialogs/TagGuesserDialog.cpp:224
@@ -11671,8 +11754,8 @@ msgstr "უცნობი დამთხვევის ჯგუფი"
 #: playlistgenerator/ConstraintGroupEditWidget.ui:15
 #, kde-format
 msgid ""
-"An editor for Constraint Groups.  You can set the group type to \"match "
-"all\" or \"match any\".  When the group type is set to \"match all\", the "
+"An editor for Constraint Groups.  You can set the group type to \"match all"
+"\" or \"match any\".  When the group type is set to \"match all\", the "
 "Generator will try to have the playlist match all the constraints within the "
 "group.  When the group type is set to \"match any\", the Generator will try "
 "to have the playlist match any of the constraints within the group."
@@ -12466,8 +12549,8 @@ msgstr "ველი:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Calibri'; font-size:10pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -12478,8 +12561,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Calibri'; font-size:10pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -12623,6 +12706,8 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified rating."
 msgstr ""
+"უნდა აირჩიოს თუ არა APG-მა ტრეკები, რომლებიც ნაკლებია, ტოლია ან მეტია "
+"მითითებულ რეიტინგზე."
 
 #. i18n: ectx: property (whatsThis), widget (KRatingWidget, rating_RatingValue)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:624
@@ -12769,6 +12854,9 @@ msgid ""
 "constraints.  If you are not satisfied with the results, try loosening or "
 "removing some constraints and then generating a new playlist."
 msgstr ""
+"დასაკრავი სიის გენერატორმა შექმნა დასაკრავი სია, რომელიც თქვენს ყველა "
+"მოთხოვნას არ აკმაყოფილებს.  თუ შედეგებით კმაყოფილი არ ხართ, სცადეთ, "
+"შეასუსტოთ ან მოაცილოთ ზოგიერთი შეზღუდვა და დასაკრავი სია თავიდან შექმნათ."
 
 #: playlistgenerator/PresetEditDialog.cpp:62
 #, kde-format
@@ -12947,6 +13035,10 @@ msgid ""
 "\n"
 "%2"
 msgstr ""
+"კოლექციის სკანირება შეწყდა. სკანირებისას აღმოჩენილი იყო მეტისმეტად ბევრი "
+"ჩავარდნა (%1). ჩავარდნები გამოიწვია შემდეგმა ფაილებმა:\n"
+"\n"
+"%2"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:65
 #, kde-format
@@ -12954,6 +13046,8 @@ msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
+"KDE-ის ტექსტური რედაქტორის კომპონენტი აღმოჩენილი არაა.\n"
+"შეამოწმეთ KDE-ის ფაილები!.  კონსოლიდან გასვლა!"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
@@ -13201,8 +13295,8 @@ msgstr "gpodder.net-ის პროფილი"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -13213,8 +13307,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -13457,6 +13551,8 @@ msgid ""
 "The \"Last.fm\" similar bias looks up tracks on Last.fm and only adds "
 "similar tracks."
 msgstr ""
+"\"Last.fm\" ეძებს მსგავს მუსიკას Last.fm-ზე და, მხოლოდ, მსგავს ტრეკებს "
+"ამატებს."
 
 #: services/lastfm/biases/LastFmBias.cpp:125
 #, kde-format
@@ -13495,6 +13591,8 @@ msgid ""
 "The \"WeeklyTop\" bias adds tracks that are in the weekly top chart of Last."
 "fm."
 msgstr ""
+"\"კვირის საუკეთესო\" ტონი ამატებს ტრეკებს, რომელიც Last.fm-ზე მიმდინარე "
+"კვირის საუკეთესოებია."
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:123
 #, kde-format
@@ -13580,6 +13678,8 @@ msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
 "during statistics synchronization"
 msgstr ""
+"Last.fm-ის ჭდეების, როგორიცაა <b>7 ვარსკვლავი 10-დან</b> გამოყენება თქვენი "
+"Amarok-ის რეიტინგებისთვის სტატისტიკის სინქრონიზაციისას"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:139
@@ -13609,6 +13709,8 @@ msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
 "updated to Last.fm now playing</html>"
 msgstr ""
+"<html>დასვით ეს თოლია, თუ გნებავთ, ზოგიერთი ტრეკების ან გადაცემა არ მოხდეს, "
+"ან არ განახლდეს Last.fm-ის ახლა დაკრული</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:161
@@ -13623,6 +13725,8 @@ msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
 "will not be scrobbled</html>"
 msgstr ""
+"<html>აირჩიეთ სასურველი ჭდე (ან დაწერეთ ახალი). ამ ჭდის მქონე ჭდეების "
+"გადაცემა არ მოხდება</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -13724,6 +13828,8 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Last.fm-ის მომხმარებლის სახელის KWallet-დან მიგრაციის შეცდომა. თავიდან "
+"დაუკავშირდით Last.fm-ის ანგარიშს დამატების მორგების ფანჯრიდან."
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
@@ -14026,6 +14132,8 @@ msgid ""
 "If you check this box, Amarok will periodically check for Magnatune database "
 "updates and download them automatically."
 msgstr ""
+"თუ ამ თოლიას დასვამთ, Amarok პერიოდულად შეამოწმებს Magnatune-ის მონაცემთა "
+"ბაზის განახლებებს და მათ ავტომატურად გადმოწერს."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdate)
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdateDatabase)
@@ -14048,6 +14156,8 @@ msgid ""
 "Enter your e-mail here to be able to redownload any previous purchase from "
 "Magnatune directly from within Amarok."
 msgstr ""
+"შეიყვანეთ თქვენი ელფოსტა აქ, რომ საშუალება გქონდეთ, ნებისმიერი შეძენილი "
+"ტრეკი თავიდან გადმოწეროთ Magnatune-დან პირდაპირ Amarok-ში."
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: services/magnatune/MagnatuneConfigWidget.ui:59
@@ -14099,8 +14209,8 @@ msgstr "პაროლი:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -14112,6 +14222,20 @@ msgid ""
 "text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
 "compare_plans</span></a></p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
+"font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
+"family:'Sans Serif';\">მეტი ინფორმაციისთვის Magnatune.com-ის წევრობის "
+"შესახებ და როგორ დარეგისტრირდეთ, გადადით გვერდზე  </span><a href=\"http://"
+"magnatune.com/compare_plans?referal_id=amarok\"><span style=\" font-"
+"family:'Sans Serif'; text-decoration: underline; color:#0000ff;\">http://"
+"magnatune.com/compare_plans</span></a></p></body></html>"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: services/magnatune/MagnatuneConfigWidget.ui:183
@@ -14174,6 +14298,8 @@ msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
 msgstr ""
+"თუ გადმოწერთ მდებარეობიდან, რომლის მონიტორინგი Amarok-ის მიერ უკვე "
+"მიმდინარეობს, ალბომი კოლექციაში ავტომატურად ჩაემატება."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:67
@@ -14198,6 +14324,8 @@ msgid ""
 "There seems to be an error in the supplied membership information. Please "
 "correct this and try again."
 msgstr ""
+"როგორც ჩანს, შეყვანილ წევრობის ინფორმაციაში შეცდომაა. შეასწორეთ ეს და "
+"თავიდან სცადეთ."
 
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
@@ -14213,6 +14341,10 @@ msgid ""
 "Username: %3\n"
 "Password: %4\n"
 msgstr ""
+"ნაყიდი ალბომის \"%1\" ავტორი \"%2\" თავიდან გადმოწერა Magnatune.com-დან.\n"
+"\n"
+"მომხმარებლის სახელი: %3\n"
+"პაროლი: %4\n"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:32
 #, kde-format
@@ -14297,6 +14429,9 @@ msgid ""
 "and download them automatically. You can always disable this option later in "
 "Magnatune service configuration."
 msgstr ""
+"თუ ჩართავთ ამ პარამეტრს, Amarok შეამოწმებს Magnatune-ის განახლებებს და მათ "
+"ავტომატურად გადმოწერს. ამის გამორთვა ყოველთვის შეგიძლიათ Magnatune-ის "
+"სერვისის მორგების ფანჯარაში."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -14345,8 +14480,8 @@ msgstr "Magnatune.com-ის წევრის რეგისტრაცი�
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Liberation Sans'; font-size:9pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -14604,6 +14739,8 @@ msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices."
 msgstr ""
+"AutoSync ფუნქციაა MP3tunes-დან, რომელიც საშუალებას გაძლევთ, ავტომატურად "
+"გადაიტანოთ თქვენი მუსიკა კომპიუტერებსა და მოწყობილობებს შორის."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_3)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:52
@@ -14613,6 +14750,9 @@ msgid ""
 "your music between computers and devices. You can upload music from one "
 "location and have it download instantly to other locations."
 msgstr ""
+"AutoSync ფუნქციაა MP3tunes-დან, რომელიც საშუალებას გაძლევთ, ავტომატურად "
+"გადაიტანოთ თქვენი მუსიკა კომპიუტერებსა და მოწყობილობებს შორის. შეგიძლიათ, "
+"ატვირთოთ მუსიკა ერთი ადგილიდან და გადმოწეროთ სხვა ადგილებიდან."
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:55
@@ -14633,8 +14773,8 @@ msgstr "პინ-კოდი:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -14644,6 +14784,18 @@ msgid ""
 "underline; color:#0057ae;\">Get an MP3tunes locker</span></a></p></body></"
 "html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
+"font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
+"mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">MP3tunes-ის საცავის მიღება</span></a></p></"
+"body></html>"
 
 #: services/mp3tunes/Mp3tunesMeta.cpp:48
 #, kde-format
@@ -14651,6 +14803,8 @@ msgid ""
 "Online music locker where you can safely store and access your music: http://"
 "mp3tunes.com"
 msgstr ""
+"ინტერნეტში მუსიკის საცავი, სადაც შეგიძლიათ, უსაფრთხოდ ატვირთოთ და წვდომა "
+"იქონიოთ თქვენს მუსიკასთან: http://mp3tunes.com"
 
 #: services/mp3tunes/Mp3tunesService.cpp:108
 #, kde-format
@@ -14714,6 +14868,8 @@ msgid ""
 "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, "
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
+"MP3tunes-ზე, მხოლოდ, ამ ტიპის ტრეკების ატვირთვა შეგიძლიათ: mp3, mp4, m4a, "
+"m4p, aac, wma, and ogg. "
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
@@ -14780,6 +14936,8 @@ msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
+"ძებნადი პოდკასტების ყოვლისმომცველი სია, რომელიც საშუალებას გაძლევთ, იოლად "
+"გამოიწეროთ ისინი პირდაპირ Amarok-დან."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:163
 #, kde-format
@@ -14848,6 +15006,8 @@ msgid ""
 "You only seem to have the Local Collection. Statistics synchronization only "
 "makes sense if there is more than one collection."
 msgstr ""
+"როგორც ჩანს, მხოლოდ ლოკალური კოლექციები გაქვთ. სტატისტიკის სინქრონიზაციას "
+"აზრი, მხოლოდ, მაშინ აქვს, თუ გაგაჩნიათ ერთზე მეტი კოლექცია."
 
 #: statsyncing/models/CommonModel.cpp:162
 #, kde-format
@@ -15027,6 +15187,9 @@ msgid ""
 "synchronizing tracks with a file-based target always make sure that the "
 "database file is not currently in use!"
 msgstr ""
+"<span style=\"color:red; font-weight:bold;\">მნიშვნელოვანია:</span> ტრეკების "
+"ფაილებზე ბაზირებულ სამიზნეზე სინქრონიზაციისას ყოველთვის დარწმუნდით, რომ "
+"მონაცემთა ბაზის ფაილი ამჟამად არ გამოიყენება!"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:60
 #, kde-format
@@ -15401,6 +15564,8 @@ msgid ""
 "In order to configure the parameters of the transcoding operation, please "
 "pick an encoder from the list."
 msgstr ""
+"იმისათვის, რომ მოირგოთ ტრანსკოდირების ოპერაციის პარამეტრები. ჯერ აირჩიეთ "
+"ენკოდერი სიიდან."
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:99
 #, kde-format
@@ -16058,8 +16223,8 @@ msgstr "ცარიელია"
 #~ "at least one, do not translate install, remove, upgrade nor list"
 #~ msgid "One of install, remove, upgrade or list is required."
 #~ msgstr ""
-#~ "საჭიროა ერთერთი \"install\"(დაყენება), \"upgrade\"(განახლება), "
-#~ "\"remove\"(წაშლა) ან \"list\"(ჩამონათვალი)."
+#~ "საჭიროა ერთერთი \"install\"(დაყენება), \"upgrade\"(განახლება), \"remove"
+#~ "\"(წაშლა) ან \"list\"(ჩამონათვალი)."
 
 #~ msgid "Upcoming Events"
 #~ msgstr "მომავალი ღონისძიებები"
