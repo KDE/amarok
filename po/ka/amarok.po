@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-10 02:16+0100\n"
+"PO-Revision-Date: 2025-03-11 08:26+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -6890,6 +6890,13 @@ msgid ""
 "encoder is transparent at 128kbps for most samples tested with artifacts "
 "only appearing in extreme cases."
 msgstr ""
+"ბიტრეიტი არის მონაცემთა რაოდენობის საზომი, რომელიც გამოიყენება აუდიო ტრეკის "
+"წამის წარმოსადგენად.<br>Amarok- ის მიერ გამოყენებული encoder უკეთესად "
+"მუშაობს მუდმივი ბიტრეიტით.<br>VBR ექსპერიმენტულია და სავარაუდოდ კიდევ უფრო "
+"უარესი შედეგები მიიღებს, ვიდრე CBR.<br>ამ მიზეზით, ამ სლაიდერის ბიტრეიტი "
+"არის დაშიფრული ტრეკის ბიტრეატის საკმაოდ ზუსტი შეფასება.<br>Encoder "
+"გამჭვირვალეა 128 კბ/წმ-ზე, ნიმუშების უმეტესობისთვის, რომლებიც შემოწმებულია "
+"არტეფაქტებით, რომლებიც მხოლოდ ექსტრემალურ შემთხვევებში ჩნდება."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:59
@@ -6954,6 +6961,10 @@ msgid ""
 "<br>Recommended only for Apple music players and players that do not support "
 "FLAC."
 msgstr ""
+"<a href=\"http://en.wikipedia.org/wiki/Apple_Lossless\">Apple Lossless</a> "
+"(ALAC) არის აუდიო კოდეკი ციფრული მუსიკის დაკარგვის გარეშე შეკუმშვისთვის."
+"<br>რეკომენდებულია მხოლოდ Apple მუსიკალური ფლეერები და მოთამაშეებისთვის, "
+"რომლებიც არ უჭერენ მხარს FLAC- ს."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:30
 #, kde-format
@@ -6970,6 +6981,16 @@ msgid ""
 "dramatically increase compression time but create an only slightly smaller "
 "file, and are not recommended."
 msgstr ""
+"<a href=\"http://flac.sourceforge.net/documentation_tools_flac.html"
+"\">შეკუმშვის დონე</a> არის მთელი რიცხვის მნიშვნელობა 0-დან 8-ზე, რომელიც "
+"წარმოადგენს ფაილის ზომასა და შეკუმშვის სიჩქარეს შორის ვაჭრობას <b>FLAC</b>- "
+"ით კოდირებისას.<br/> შეკუმშვის დონის <b>0-მდე</b> დაყენება უმოკლეს შეკუმშვის "
+"დროს იძლევა, მაგრამ შედარებით დიდ ფაილს ქმნის<br/>მეორეს მხრივ, შეკუმშვის "
+"დონე <b>8</b> ხდის შეკუმშვას საკმაოდ ნელა, მაგრამ აწარმოებს ყველაზე პატარა "
+"ფაილს.<br/>გაითვალისწინეთ, რომ მას შემდეგ, რაც FLAC არის უდანაკარგო კოდეკის "
+"განმარტებით, გამომავალი აუდიო ხარისხი ზუსტად იგივეა, მიუხედავად შეკუმშვის "
+"დონისა.<br/>ასევე, <b>5-ზე</b> მეტი დონე მკვეთრად ზრდის შეკუმშვის დროს, "
+"მაგრამ ქმნის მხოლოდ ოდნავ მცირე ფაილს და არ არის რეკომენდებული."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:41
 #, kde-format
@@ -6992,6 +7013,10 @@ msgid ""
 "compression of digital music.<br>If you wish to store your music without "
 "compromising on audio quality, FLAC is an excellent choice."
 msgstr ""
+"<a href=\"http://en.wikipedia.org/wiki/Free_Lossless_Audio_Codec\">უფასო "
+"Lossless Audio Codec</a> (FLAC) არის ღია და ჰონორარის გარეშე კოდეკი ციფრული "
+"მუსიკის დაკარგვის გარეშე.<br>თუ გსურთ შეინახოთ თქვენი მუსიკა აუდიო ხარისხზე "
+"კომპრომისის გარეშე, FLAC შესანიშნავი არჩევანია."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:28
 #, kde-format
@@ -7009,6 +7034,18 @@ msgid ""
 ">Anything below <b>120kb/s</b> might be unsatisfactory for music and "
 "anything above <b>205kb/s</b> is probably overkill."
 msgstr ""
+"ბიტრეიტი არის მონაცემთა რაოდენობის საზომი, რომელიც გამოიყენება აუდიო ტრეკის "
+"წამის წარმოსადგენად.<br>Amarok– ის მიერ გამოყენებული <b>MP3</b> encoder "
+"მხარს უჭერს <a href=\"http://en.wikipedia.org/wiki/MP3#VBR\">ცვლადი ბიტრეიტი "
+"(VBR)</a> პარამეტრს, რაც იმას ნიშნავს, რომ ბიტრეიტი მნიშვნელობა იცვლება "
+"ტრასის გასწვრივ აუდიო შინაარსის სირთულის საფუძველზე. მონაცემთა უფრო რთული "
+"ინტერვალი დაშიფრულია უფრო მაღალი ბიტრეიტით, ვიდრე ნაკლებად რთული; ეს მიდგომა "
+"იძლევა საერთო უკეთეს ხარისხს და უფრო მცირე ფაილს, ვიდრე მუდმივი ბიტრეიტი "
+"მთელ ტრასაზე.<br>ამ მიზეზით, ამ სლაიდერის ბიტრეიტი არის მხოლოდ კოდირებული "
+"ტრეკის საშუალო ბიტრეიტი.<br><b>160 კბ / წმ</b> კარგი არჩევანია პორტატული "
+"პლეერის მუსიკის მოსასმენად.<br/><b>120 კბ / წმ-ზე</b> ქვემოთ ყველაფერი "
+"შეიძლება არადამაკმაყოფილებელი იყოს მუსიკისთვის და <b>205 კბ / წმ-ზე</b> მეტი "
+"რამ ალბათ ზედმეტია."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:55
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:64
@@ -7027,6 +7064,11 @@ msgid ""
 "spite of its shortcomings, it is a common format for consumer audio storage, "
 "and is widely supported on portable music players."
 msgstr ""
+"<a href=\"http://en.wikipedia.org/wiki/MP3\">MPEG Audio Layer 3</a> (MP3) "
+"არის დაპატენტებული ციფრული აუდიო კოდეკი მონაცემთა დაკარგვის ფორმის "
+"გამოყენებით.<br>მიუხედავად მისი ნაკლოვანებებისა, ეს არის საერთო ფორმატი "
+"სამომხმარებლო აუდიო შენახვისთვის და ფართოდ არის მხარდაჭერილი პორტატულ "
+"მუსიკალურ პლეერებზე."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:28
 #, kde-format
@@ -7044,6 +7086,18 @@ msgid ""
 "<br/>Anything below <b>100kb/s</b> might be unsatisfactory for music and "
 "anything above <b>256kb/s</b> is probably overkill."
 msgstr ""
+"ბიტრეიტი არის მონაცემთა რაოდენობის საზომი, რომელიც გამოიყენება აუდიო ტრეკის "
+"წამის წარმოსადგენად.<br>Amarok- ის მიერ გამოყენებული <b>Opus</b> encoder "
+"მხარს უჭერს <a href=\"http://en.wikipedia.org/wiki/Variable_bitrate\">ცვლადი "
+"ბიტრეიტი (VBR)</a> პარამეტრს, რაც იმას ნიშნავს, რომ ბიტრეიტი მნიშვნელობა "
+"იცვლება ტრასის გასწვრივ, აუდიო შინაარსის სირთულის საფუძველზე. მონაცემთა უფრო "
+"რთული ინტერვალი დაშიფრულია უფრო მაღალი ბიტრეიტით, ვიდრე ნაკლებად რთული; ეს "
+"მიდგომა იძლევა საერთო უკეთეს ხარისხს და უფრო მცირე ფაილს, ვიდრე მუდმივი "
+"ბიტრეიტი მთელ ტრასაზე.<br>ამ მიზეზით, ამ სლაიდერის ბიტრეიტი არის მხოლოდ "
+"კოდირებული ტრეკის საშუალო ბიტრეიტი.<br><b>128 კბ / წმ</b> კარგი არჩევანია "
+"პორტატული პლეერის მუსიკის მოსასმენად.<br/><b>100 კბ / წმ-ზე</b> დაბალი "
+"ყველაფერი შეიძლება არადამაკმაყოფილებელი იყოს მუსიკისთვის და <b>256 კბ / წმ-"
+"ზე</b> მეტი რამ ალბათ ზედმეტია."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
 #, kde-format
@@ -7059,6 +7113,8 @@ msgid ""
 "<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> is a "
 "patent-free digital audio codec using a form of lossy data compression."
 msgstr ""
+"<a href=\"http://en.wikipedia.org/wiki/Opus_(audio_format)\">Opus</a> არის "
+"პატენტის გარეშე ციფრული აუდიო კოდეკი მონაცემთა დაკარგვის ფორმის გამოყენებით."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:28
 #, kde-format
@@ -7079,6 +7135,22 @@ msgid ""
 "a portable player.<br/>Anything below <b>-q3</b> might be unsatisfactory for "
 "music and anything above <b>-q8</b> is probably overkill."
 msgstr ""
+"ბიტრეიტი არის მონაცემთა რაოდენობის საზომი, რომელიც გამოიყენება აუდიო ტრეკის "
+"წამის წარმოსადგენად.<br>Amarok– ის მიერ გამოყენებული <b>Vorbis</b> encoder "
+"მხარს უჭერს <a href=\"http://en.wikipedia.org/wiki/Vorbis#Technical_details"
+"\">ცვლადი ბიტრეიტი (VBR)</a> პარამეტრს, რაც იმას ნიშნავს, რომ ბიტრეიტი "
+"მნიშვნელობა იცვლება ტრასის გასწვრივ, აუდიო შინაარსის სირთულის საფუძველზე. "
+"მონაცემთა უფრო რთული ინტერვალი დაშიფრულია უფრო მაღალი ბიტრეიტით, ვიდრე "
+"ნაკლებად რთული; ეს მიდგომა იძლევა საერთო უკეთეს ხარისხს და უფრო მცირე ფაილს, "
+"ვიდრე მუდმივი ბიტრეიტი მთელ ტრასაზე.<br>Vorbis encoder იყენებს ხარისხის "
+"რეიტინგს \"-q პარამეტრი\" -1 და 10 შორის, რათა დადგინდეს გარკვეული "
+"მოსალოდნელი აუდიო ხარისხის დონე. ამ სლაიდერის ბიტრატის ზომა არის მხოლოდ "
+"უხეში შეფასება (Vorbis– ის მიერ მოწოდებული) კოდირებული ტრეკის საშუალო "
+"ბიტრეიტი, q მნიშვნელობის გათვალისწინებით. სინამდვილეში, უფრო ახალი და უფრო "
+"ეფექტური Vorbis ვერსიებით, ფაქტობრივი ბიტრეიტი კიდევ უფრო დაბალია.<br><b>-"
+"q5</b> კარგი არჩევანია პორტატული პლეერზე მუსიკის მოსასმენად.<br/>ყველაფერი "
+"<b>ქვემოთ -q3</b> შეიძლება იყოს არადამაკმაყოფილებელი მუსიკისთვის და "
+"ყველაფერი <b>-q8-</b> ზე მეტი ალბათ ზედმეტია."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:59
 #, kde-format
@@ -7096,6 +7168,11 @@ msgid ""
 "files than MP3 at equivalent or higher quality. Ogg Vorbis is an all-around "
 "excellent choice, especially for portable music players that support it."
 msgstr ""
+"<a href=\"http://en.wikipedia.org/wiki/Vorbis\">Ogg Vorbis</a> არის ღია და "
+"ჰონორარის გარეშე აუდიო კოდეკი აუდიო დაკარგვისთვის.<br>იგი აწარმოებს უფრო "
+"მცირე ფაილებს, ვიდრე MP3 ექვივალენტური ან უფრო მაღალი ხარისხით. Ogg Vorbis "
+"არის ყოვლისმომცველი შესანიშნავი არჩევანი, განსაკუთრებით პორტატული მუსიკალური "
+"მოთამაშეებისთვის, რომლებიც მხარს უჭერენ მას."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:28
 #, kde-format
@@ -7111,6 +7188,16 @@ msgid ""
 "s</b> might be unsatisfactory for music and anything above <b>182kb/s</b> is "
 "probably overkill."
 msgstr ""
+"ბიტრეიტი არის მონაცემთა რაოდენობის საზომი, რომელიც გამოიყენება აუდიო ტრეკის "
+"წამის წარმოსადგენად.<br>საკუთრების <b>WMA</b> ფორმატის შეზღუდვებისა და "
+"საკუთრების ენკოდერის შებრუნების სირთულის გამო, WMA ენკოდერი, რომელსაც "
+"იყენებს Amarok, ადგენს <a href=\"http://en.wikipedia.org/wiki/"
+"Windows_Media_Audio#Windows_Media_Audio\">მუდმივ ბიტრეიტს (CBR)</a> "
+"პარამეტრს.<br>ამ მიზეზით, ამ სლაიდერის ბიტრეიტი არის დაშიფრული ტრეკის "
+"ბიტრეატის საკმაოდ ზუსტი შეფასება.<br><b>136 კბ / წმ</b> კარგი არჩევანია "
+"პორტატული პლეერის მუსიკის მოსასმენად.<br/><b>112 კბ / წმ-ზე</b> ქვემოთ "
+"ყველაფერი შეიძლება არადამაკმაყოფილებელი იყოს მუსიკისთვის და <b>182 კბ / წმ-"
+"ზე</b> მეტი რამ ალბათ ზედმეტია."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:67
 #, kde-format
@@ -7128,6 +7215,10 @@ msgid ""
 "audio compression.<br>Recommended only for portable music players that do "
 "not support Ogg Vorbis."
 msgstr ""
+"<a href=\"http://en.wikipedia.org/wiki/Windows_Media_Audio\">Windows Media "
+"Audio</a> (WMA) არის საკუთრების კოდეკი, რომელიც შემუშავებულია Microsoft- ის "
+"მიერ აუდიო დაკარგვის კომპრესიისთვის.<br>რეკომენდებულია მხოლოდ პორტატული "
+"მუსიკალური ფლეერებისთვის, რომლებიც არ უჭერენ მხარს Ogg Vorbis- ს."
 
 #: core/transcoding/TranscodingConfiguration.cpp:110
 #, kde-format
@@ -7660,6 +7751,8 @@ msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
+"არჩევის შემთხვევაში, კოლექციის საქაღალდეები უყურებენ ცვლილებებს.\n"
+"გუშაგი ვერ შეამჩნევს სიმბოლური ბმულების მიღმა ცვლილებებს."
 
 #: dialogs/CollectionSetup.cpp:190
 #, kde-format
@@ -9072,6 +9165,9 @@ msgid ""
 "It will only check the second sub-bias if the first doesn't return any "
 "results."
 msgstr ""
+"პირობა \"თუარადა\" ამატებს ტრეკებს, რომლებიც ერთ ან მეტ ქვეპირობას "
+"აკმაყოფილებს.\n"
+"ის, მხოლოდ, შეამოწმებს მეორე ქვეპირობას, თუ პირველმა შედეგები არ დააბრუნა."
 
 #: dynamic/biases/IfElseBias.cpp:72
 #, kde-format
@@ -9124,6 +9220,8 @@ msgid ""
 "The \"QuizPlay\" bias adds tracks that start\n"
 "with a character the last track ended with."
 msgstr ""
+"პირობა \"ქვიზისთამაში\" ამატებს ტრეკებს, რომლებიც\n"
+"იწყება სიმბოლოთი, რომლითაც წინა ტრეკი დამთავრდა."
 
 #: dynamic/biases/QuizPlayBias.cpp:116
 #, kde-format
@@ -11760,6 +11858,12 @@ msgid ""
 "group.  When the group type is set to \"match any\", the Generator will try "
 "to have the playlist match any of the constraints within the group."
 msgstr ""
+"რედაქტორი შეზღუდვის ჯგუფებისთვის.  თქვენ შეგიძლიათ დააყენოთ ჯგუფის ტიპი "
+"\"ემთხვევა ყველა\" ან \"ემთხვევა ნებისმიერს\".  როდესაც ჯგუფის ტიპი "
+"დაყენებულია \"ყველას შესატყვისად\", გენერატორი შეეცდება დასაკრავი სიის "
+"შესატყვისი იყოს ჯგუფის ყველა შეზღუდვა.  როდესაც ჯგუფის ტიპი დაყენებულია "
+"\"ემთხვევა ნებისმიერს\", გენერატორი შეეცდება დასაკრავი სიის შესატყვისი იყოს "
+"ჯგუფის რომელიმე შეზღუდვა."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:21
