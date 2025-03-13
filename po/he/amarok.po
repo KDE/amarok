@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-02 00:40+0000\n"
-"PO-Revision-Date: 2025-03-05 08:24+0200\n"
+"PO-Revision-Date: 2025-03-12 12:47+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -10272,7 +10272,7 @@ msgstr ""
 #: main.cpp:95
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
-msgstr ""
+msgstr "ראלף ‚SalsaMaster’ אנגלס"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:96
@@ -10284,12 +10284,12 @@ msgstr "מפתח (jefferai)"
 #: main.cpp:99
 #, kde-format
 msgid "Patrick von Reth"
-msgstr ""
+msgstr "פטריק וון רת"
 
 #: main.cpp:99
 #, kde-format
 msgid "Windows build (TheOneRing)"
-msgstr ""
+msgstr "בנייה ל־Windows ‏(TheOneRing)"
 
 #: main.cpp:103
 #, kde-format
@@ -10624,7 +10624,7 @@ msgstr ""
 #: main.cpp:180
 #, kde-format
 msgid "Rokymoter"
-msgstr ""
+msgstr "Rokymoter"
 
 #: main.cpp:182
 #, kde-format
@@ -10645,7 +10645,7 @@ msgstr "Ljubomir Simin"
 #: main.cpp:184
 #, kde-format
 msgid "Rokymoter (ljubomir)"
-msgstr ""
+msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:186
 #, kde-format
@@ -10707,7 +10707,7 @@ msgstr "Pasi Lalinaho"
 #: main.cpp:198
 #, kde-format
 msgid "Rokymoter (emunkki)"
-msgstr ""
+msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:200
 #, kde-format
@@ -10960,7 +10960,7 @@ msgstr "Jocke Andersson"
 #: main.cpp:254
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
-msgstr ""
+msgstr "Rokymoter, תיקוני תקלות (Firetech)"
 
 #: main.cpp:256
 #, kde-format
@@ -10970,7 +10970,7 @@ msgstr "Marco Gulino"
 #: main.cpp:256
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
-msgstr ""
+msgstr "סרגל הצד של Konqueror, כל מיני מתודות DCOP"
 
 #: main.cpp:258
 #, kde-format
@@ -10985,7 +10985,7 @@ msgstr "Melchior Franz"
 #: main.cpp:260
 #, kde-format
 msgid "FHT routine, bugfixes"
-msgstr ""
+msgstr "שגרות FHT, תיקוני תקלות"
 
 #: main.cpp:262
 #, kde-format
@@ -11015,7 +11015,7 @@ msgstr "Peter C. Ndikuwera"
 #: main.cpp:268
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
-msgstr ""
+msgstr "תיקוני תקלות, תמיכה ב־PostgreSQL"
 
 #: main.cpp:270
 #, kde-format
@@ -11040,7 +11040,7 @@ msgstr "Roman Becker"
 #: main.cpp:274
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
-msgstr ""
+msgstr "הלוגו הקודם של Amarok, מסך הפתיחה הקודם, הסמלים הקודמים"
 
 #: main.cpp:276
 #, kde-format
@@ -11050,7 +11050,7 @@ msgstr "Sami Nieminen"
 #: main.cpp:276
 #, kde-format
 msgid "Audioscrobbler support"
-msgstr ""
+msgstr "תמיכה ב־Audioscrobbler"
 
 #: main.cpp:278
 #, kde-format
@@ -11066,12 +11066,12 @@ msgstr "Stefan Bogner"
 #: main.cpp:280
 #, kde-format
 msgid "Loads of stuff"
-msgstr ""
+msgstr "המון דברים"
 
 #: main.cpp:282
 #, kde-format
 msgid "Tomasz Dudzik"
-msgstr ""
+msgstr "תומאש דודז׳יק"
 
 #: main.cpp:282
 #, fuzzy, kde-format
@@ -11094,17 +11094,17 @@ msgstr "Christie Harris"
 #: main.cpp:289
 #, kde-format
 msgid "ZImin Stanislav"
-msgstr ""
+msgstr "זימין סטניסלב"
 
 #: MainWindow.cpp:263
 #, kde-format
 msgid "Local Music"
-msgstr ""
+msgstr "מוזיקה מקומית"
 
 #: MainWindow.cpp:265
 #, kde-format
 msgid "Local sources of content"
-msgstr ""
+msgstr "מקורות מקומיים של תוכן"
 
 #: MainWindow.cpp:272
 #, kde-format
@@ -11114,7 +11114,7 @@ msgstr "אינטרנט"
 #: MainWindow.cpp:274
 #, kde-format
 msgid "Online sources of content"
-msgstr ""
+msgstr "מקורות מקוונים של תוכן"
 
 #: MainWindow.cpp:280
 #, kde-format
@@ -11129,7 +11129,7 @@ msgstr "סוגים שונים של רשימות־השמעה"
 #: MainWindow.cpp:291
 #, kde-format
 msgid "Browse local hard drive for content"
-msgstr ""
+msgstr "עיון בכונן המקומי לאיתור תוכן"
 
 #: MainWindow.cpp:334
 #, kde-format
@@ -11239,17 +11239,17 @@ msgstr "נגן מדיה..."
 #: MainWindow.cpp:822
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
-msgstr ""
+msgstr "עריכת פרטי הרצועה הנבחרת"
 
 #: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
 #, kde-format
 msgid "Seek Forward by %1 seconds"
-msgstr ""
+msgstr "חתירה של %1 שניות קדימה"
 
 #: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
 #, kde-format
 msgid "Seek Backward by %1 seconds"
-msgstr ""
+msgstr "חתירה של %1 שניות אחורה"
 
 #: MainWindow.cpp:867
 #, kde-format
@@ -11259,7 +11259,7 @@ msgstr "עדכון האוסף"
 #: MainWindow.cpp:871
 #, kde-format
 msgid "Synchronize Statistics..."
-msgstr ""
+msgstr "סנכרון סטטיסטיקה…"
 
 #: MainWindow.cpp:879
 #, kde-format
@@ -11317,7 +11317,7 @@ msgstr ""
 #: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
-msgstr ""
+msgstr "חיפוש ברשימת הנגינה"
 
 #: MainWindow.cpp:946
 #, kde-format
@@ -11389,7 +11389,7 @@ msgstr "דרג את הרצועה הנוכחית: 5"
 #: MainWindow.cpp:1011
 #, kde-format
 msgid "Network Request Viewer"
-msgstr ""
+msgstr "מציג בקשות רשת"
 
 #: MainWindow.cpp:1029
 #, kde-format
@@ -11405,7 +11405,7 @@ msgstr "ס&טטיסטיקה"
 #: MainWindow.cpp:1037
 #, kde-format
 msgid "&Report Bug..."
-msgstr ""
+msgstr "דיווח על &תקלה…"
 
 #: MainWindow.cpp:1084
 #, kde-format
