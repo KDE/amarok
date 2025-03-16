@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-02 00:40+0000\n"
+"POT-Creation-Date: 2025-03-16 00:41+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -6142,7 +6142,7 @@ msgstr ""
 "ウンロードディレクトリとして使用されます。\n"
 "これはチャンネルごとに個別の変更を行なうこともできます。"
 
-#: core-impl/storage/StorageManager.cpp:162
+#: core-impl/storage/StorageManager.cpp:159
 #, fuzzy, kde-format
 #| msgid "The playlist file \"%1\" could not be loaded."
 msgid "The configured database plugin could not be loaded."
@@ -13386,28 +13386,28 @@ msgstr ""
 msgid "Scanning music"
 msgstr "音楽をスキャン"
 
-#: scanner/GenericScannerJob.cpp:119
+#: scanner/GenericScannerJob.cpp:117
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr ""
 
-#: scanner/GenericScannerJob.cpp:148
+#: scanner/GenericScannerJob.cpp:146
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "スキャナがエラー終了しました: %1"
 
-#: scanner/GenericScannerJob.cpp:209
+#: scanner/GenericScannerJob.cpp:207
 #, fuzzy, kde-format
 #| msgid "Amarok collection scanner"
 msgid "Could not find amarokcollectionscanner!"
 msgstr "Amarok コレクションスキャナ"
 
-#: scanner/GenericScannerJob.cpp:270
+#: scanner/GenericScannerJob.cpp:265
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
 msgstr "Amarok コレクションスキャナを開始できませんでした。"
 
-#: scanner/GenericScannerJob.cpp:319
+#: scanner/GenericScannerJob.cpp:314
 #, fuzzy, kde-format
 #| msgid ""
 #| "The collection scan had to be aborted. Too many errors were encountered "

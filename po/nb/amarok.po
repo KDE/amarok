@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-02 00:40+0000\n"
+"POT-Creation-Date: 2025-03-16 00:41+0000\n"
 "PO-Revision-Date: 2013-10-23 10:56+0200\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <l10n-no@lister.huftis.org>\n"
@@ -6036,7 +6036,7 @@ msgstr ""
 "som nedlastingsmappe.\n"
 "Dette kan endres individuelt for hver kanal."
 
-#: core-impl/storage/StorageManager.cpp:162
+#: core-impl/storage/StorageManager.cpp:159
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr ""
@@ -13093,27 +13093,27 @@ msgstr ""
 msgid "Scanning music"
 msgstr "Skanner musikk"
 
-#: scanner/GenericScannerJob.cpp:119
+#: scanner/GenericScannerJob.cpp:117
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr "Det er bedt om å avbryte skanneren"
 
-#: scanner/GenericScannerJob.cpp:148
+#: scanner/GenericScannerJob.cpp:146
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "Avbryter skanner med feil: %1"
 
-#: scanner/GenericScannerJob.cpp:209
+#: scanner/GenericScannerJob.cpp:207
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
 msgstr "Klarte  ikke å finne amarokcollectionscanner!"
 
-#: scanner/GenericScannerJob.cpp:270
+#: scanner/GenericScannerJob.cpp:265
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
 msgstr "Klarte ikke å starte Amarok samlingsskanner."
 
-#: scanner/GenericScannerJob.cpp:319
+#: scanner/GenericScannerJob.cpp:314
 #, kde-format
 msgid ""
 "The collection scan had to be aborted. Too many crashes (%1) were "

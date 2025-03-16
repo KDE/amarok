@@ -18,26 +18,26 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Qt-Contexts: true\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
-#: utilities/collectionscanner/CollectionScanner.cpp:141
+#: utilities/collectionscanner/CollectionScanner.cpp:117
+#: utilities/collectionscanner/CollectionScanner.cpp:140
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
 msgstr "Súbor \"%1\" nenájdený."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:121
+#: utilities/collectionscanner/CollectionScanner.cpp:120
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "Nepodarilo sa otvoriť súbor \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:372
+#: utilities/collectionscanner/CollectionScanner.cpp:367
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr "Chýba argument pre voľbu %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:409
+#: utilities/collectionscanner/CollectionScanner.cpp:401
 msgctxt "CollectionScanner::Scanner|"
 msgid ""
 "Amarok Collection Scanner\n"

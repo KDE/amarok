@@ -18,28 +18,28 @@ msgstr ""
 "3 : 4\n"
 "X-Qt-Contexts: true\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
-#: utilities/collectionscanner/CollectionScanner.cpp:141
+#: utilities/collectionscanner/CollectionScanner.cpp:117
+#: utilities/collectionscanner/CollectionScanner.cpp:140
 #, fuzzy, qt-format
 #| msgid "File \"%1\" not found."
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
 msgstr "Comhad \"%1\" gan aimsiú."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:121
+#: utilities/collectionscanner/CollectionScanner.cpp:120
 #, fuzzy, qt-format
 #| msgid "Could not open file \"%1\"."
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "Ní féidir an comhad \"%1\" a oscailt."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:372
+#: utilities/collectionscanner/CollectionScanner.cpp:367
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr ""
 
-#: utilities/collectionscanner/CollectionScanner.cpp:409
+#: utilities/collectionscanner/CollectionScanner.cpp:401
 msgctxt "CollectionScanner::Scanner|"
 msgid ""
 "Amarok Collection Scanner\n"

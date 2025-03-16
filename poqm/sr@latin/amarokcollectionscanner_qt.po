@@ -23,22 +23,22 @@ msgstr ""
 "X-Wrapping: fine\n"
 "X-Qt-Contexts: true\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
-#: utilities/collectionscanner/CollectionScanner.cpp:141
+#: utilities/collectionscanner/CollectionScanner.cpp:117
+#: utilities/collectionscanner/CollectionScanner.cpp:140
 #, fuzzy, qt-format
 #| msgid "File \"%1\" not found."
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
 msgstr "Fajl „%1“ nije pronađen."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:121
+#: utilities/collectionscanner/CollectionScanner.cpp:120
 #, fuzzy, qt-format
 #| msgid "Could not open file \"%1\"."
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "Ne mogu da otvorim fajl „%1“."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:372
+#: utilities/collectionscanner/CollectionScanner.cpp:367
 #, fuzzy, qt-format
 #| msgid "Missing argument for option %1"
 msgctxt "CollectionScanner::Scanner|"
@@ -46,7 +46,7 @@ msgid "Missing argument for option %1"
 msgstr "Nedostaje argument za opciju „%1“."
 
 # skip-rule: x-markup-q
-#: utilities/collectionscanner/CollectionScanner.cpp:409
+#: utilities/collectionscanner/CollectionScanner.cpp:401
 #, fuzzy
 #| msgid ""
 #| "Amarok Collection Scanner\n"

@@ -19,26 +19,26 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 "X-Qt-Contexts: true\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
-#: utilities/collectionscanner/CollectionScanner.cpp:141
+#: utilities/collectionscanner/CollectionScanner.cpp:117
+#: utilities/collectionscanner/CollectionScanner.cpp:140
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
 msgstr "File \"%1\" not found."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:121
+#: utilities/collectionscanner/CollectionScanner.cpp:120
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "Could not open file \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:372
+#: utilities/collectionscanner/CollectionScanner.cpp:367
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr "Missing argument for option %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:409
+#: utilities/collectionscanner/CollectionScanner.cpp:401
 msgctxt "CollectionScanner::Scanner|"
 msgid ""
 "Amarok Collection Scanner\n"

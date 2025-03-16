@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-02 00:40+0000\n"
+"POT-Creation-Date: 2025-03-16 00:41+0000\n"
 "PO-Revision-Date: 2025-01-13 09:40+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
@@ -6222,7 +6222,7 @@ msgstr ""
 "utilisé comme dossier de téléchargement.\n"
 "Ceci peut être modifié pour chaque chaîne individuellement."
 
-#: core-impl/storage/StorageManager.cpp:162
+#: core-impl/storage/StorageManager.cpp:159
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "Le module de base de données choisi n'a pas pu être chargé."
@@ -13399,29 +13399,29 @@ msgstr ""
 msgid "Scanning music"
 msgstr "Analyse de la musique"
 
-#: scanner/GenericScannerJob.cpp:119
+#: scanner/GenericScannerJob.cpp:117
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr "Annuler l'analyse demandée"
 
-#: scanner/GenericScannerJob.cpp:148
+#: scanner/GenericScannerJob.cpp:146
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "Annulation de l'analyse avec l'erreur : %1"
 
-#: scanner/GenericScannerJob.cpp:209
+#: scanner/GenericScannerJob.cpp:207
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
 msgstr ""
 "Impossible de trouver l'analyseur de collection de Amarok "
 "(amarokcollectionscanner) !"
 
-#: scanner/GenericScannerJob.cpp:270
+#: scanner/GenericScannerJob.cpp:265
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
 msgstr "Impossible de démarrer l'analyseur de collection de Amarok."
 
-#: scanner/GenericScannerJob.cpp:319
+#: scanner/GenericScannerJob.cpp:314
 #, kde-format
 msgid ""
 "The collection scan had to be aborted. Too many crashes (%1) were "

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-02 00:40+0000\n"
+"POT-Creation-Date: 2025-03-16 00:41+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -5857,7 +5857,7 @@ msgstr ""
 "当一个播客频道添加后，<底层目录>/<频道名称> 会被用作为它的下载目录。\n"
 "您也可以单独调整每个频道的设置。"
 
-#: core-impl/storage/StorageManager.cpp:162
+#: core-impl/storage/StorageManager.cpp:159
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "无法加载已配置的数据库插件。"
@@ -12744,27 +12744,27 @@ msgstr "Amarok 无法找到任何插件，说明安装时出了问题。"
 msgid "Scanning music"
 msgstr "正在扫描音乐"
 
-#: scanner/GenericScannerJob.cpp:119
+#: scanner/GenericScannerJob.cpp:117
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr "停止扫描器请求"
 
-#: scanner/GenericScannerJob.cpp:148
+#: scanner/GenericScannerJob.cpp:146
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "扫描器出错并已停止：%1"
 
-#: scanner/GenericScannerJob.cpp:209
+#: scanner/GenericScannerJob.cpp:207
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
 msgstr "无法找到 amarokcollectionscanner！"
 
-#: scanner/GenericScannerJob.cpp:270
+#: scanner/GenericScannerJob.cpp:265
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
 msgstr "无法启动 Amarok 收藏集扫描器。"
 
-#: scanner/GenericScannerJob.cpp:319
+#: scanner/GenericScannerJob.cpp:314
 #, kde-format
 msgid ""
 "The collection scan had to be aborted. Too many crashes (%1) were "

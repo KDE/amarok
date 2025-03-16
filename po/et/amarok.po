@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-02 00:40+0000\n"
+"POT-Creation-Date: 2025-03-16 00:41+0000\n"
 "PO-Revision-Date: 2020-06-05 19:27+0300\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -6069,7 +6069,7 @@ msgstr ""
 "directory>/<channel name>.\n"
 "Seda võib muuta iga kanali puhul eraldi."
 
-#: core-impl/storage/StorageManager.cpp:162
+#: core-impl/storage/StorageManager.cpp:159
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "Seadistatud andmebaasiplugina laadimine nurjus."
@@ -13179,27 +13179,27 @@ msgstr "Amarok ei leidnud ühtegi pluginat. See osutab paigalduse probleemile."
 msgid "Scanning music"
 msgstr "Muusika uurimine"
 
-#: scanner/GenericScannerJob.cpp:119
+#: scanner/GenericScannerJob.cpp:117
 #, kde-format
 msgid "Abort for scanner requested"
 msgstr "Sooviti muusikakogu uurija töö lõpetamist"
 
-#: scanner/GenericScannerJob.cpp:148
+#: scanner/GenericScannerJob.cpp:146
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "Muusikakogu uurija lõpetas töö veaga: %1"
 
-#: scanner/GenericScannerJob.cpp:209
+#: scanner/GenericScannerJob.cpp:207
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
 msgstr "Amaroki muusikakogu uurijat ei leitud!"
 
-#: scanner/GenericScannerJob.cpp:270
+#: scanner/GenericScannerJob.cpp:265
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
 msgstr "Amaroki muusikakogu uurija käivitamine nurjus"
 
-#: scanner/GenericScannerJob.cpp:319
+#: scanner/GenericScannerJob.cpp:314
 #, kde-format
 msgid ""
 "The collection scan had to be aborted. Too many crashes (%1) were "
