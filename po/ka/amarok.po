@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-03-11 08:26+0100\n"
+"PO-Revision-Date: 2025-03-16 05:38+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -8108,6 +8108,10 @@ msgid ""
 "suggestion; it may give even better results because it prevents mixing "
 "different album releases together."
 msgstr ""
+"საუკეთესო შედეგის გამოყენება თითოეული გადაუწყვეტელი ტრეკისთვის. ან, "
+"საუკეთესო შეთავაზების მისაღებად, კონტქსტურ მენიუში შეგიძლიათ, დააწკაპუნოთ "
+"<b>საუკეთესო დამთხვევის მიღება ალბომიდან</b>. მან, შეიძლება, კიდევ უფრო "
+"უკეთესი შედეგი მოგცეთ, რადგან ის არ ურევს სხვასხვა ალბომებს."
 
 #: dialogs/MusicBrainzTagger.cpp:95
 #, kde-format
@@ -8399,6 +8403,12 @@ msgid ""
 "Most people can leave this option enabled as it ensures copying to media "
 "devices will function correctly."
 msgstr ""
+"თუ ჩართულია, სიმბოლოები, რომლებიც არაა თავსებადი MS-DOS/VFAT ფაილურ "
+"სისტემასთან, ქვედატირეთი ჩანაცვლდება. არათავსებადი სიმბოლოებია: |?*<\":>+[] "
+"და უნიკოდის საკონტროლო სიმბოლოებით.\n"
+"\n"
+"ხალხის უმეტესობას შეუძლია, ეს პარამეტრი ჩართული დატოვოს, რომ დარწმუნებული "
+"იყოს, რომ მედიამოწყობილობები სწორად იმუშავებს."
 
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:83
@@ -10628,6 +10638,9 @@ msgid ""
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
 "qt>"
 msgstr ""
+"<qt>მთავარი ფანჯრის დახურვა Amarok-ს სისტემის კუთხეში დატოვებს. აპლიკაციიდან "
+"გასასვლელად გამოიყენეთ <B>გასვლა</B> მენიუდან, ან Amarok-ის სისტემური კუთხის "
+"მენიუდან.</qt>"
 
 #: MainWindow.cpp:433
 #, kde-format
@@ -11879,6 +11892,9 @@ msgid ""
 "constraints within the group are satisfied.  This is analogous to a logical "
 "AND: \"the tracks should match properties A, B, and C\"."
 msgstr ""
+"APG ჩათვლის შეზღუდვების ჯგუფს დაკმაყოფილებულად, მხოლოდ, თუ ჯგუფში ყველა "
+"შეზღუდვა დაკმაყოფილდება.  ეს ლოგიკური და-ს ანალოგია: \"ტრეკები, რომლის "
+"თვისებები აკმაყოფილებს პირობებს A, B და C\"."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAll)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:32
@@ -11894,6 +11910,9 @@ msgid ""
 "constraints within it is satisfied.  This is analogous to a logical OR: "
 "\"the tracks should match properties A, B, or C\"."
 msgstr ""
+"APG ჩათვლის შეზღუდვების ჯგუფს დაკმაყოფილებულად, თუ ჯგუფში ერთი შეზღუდვა "
+"დაკმაყოფილდება.  ეს ლოგიკური ან-ს ანალოგია: \"ტრეკები, რომლის თვისებები "
+"აკმაყოფილებს პირობებს A, B ან C\"."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAny)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:42
@@ -11951,6 +11970,9 @@ msgid ""
 "An editor for a CheckPoint constraint.  The user can set the track, album, "
 "or artist to be placed at a certain position in the playlist."
 msgstr ""
+"რედაქტორი საკვანძო წერტილის შეზღუდვისთვის.  მომხმარებელს შეუძლია, მოირგოს "
+"ტრეკი, ალბომი ან შემსრულებელი, რომ ის დასაკრავი სიის გარკვეულ ადგილას "
+"მოთავსდეს."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:21
@@ -11978,6 +12000,8 @@ msgid ""
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
+"ტრეკის სასურველი მდებარეობა დასაკრავ სიაში საათებში, წუთებში და წამებში.  "
+"შენიშვნა: Qt-ის შეზღუდვის გამო მდებარეობის მაქსიმუმი 24 საათია."
 
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_Duration)
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_TimeValue)
@@ -12096,6 +12120,10 @@ msgid ""
 "than, equal to, or greater than that duration; and the strictness with which "
 "the APG should match that duration."
 msgstr ""
+"რედაქტორი PlaylistDurection შეზღუდვისთვის.   მომხმარებელს შეუძლია, დააყენოს "
+"სახელი ამ შეზღუდვისთვის, სამიზნე ხანგრძლივობა და იქნება თუ არა დასაკრავი სია "
+"ნაკლები, ტოლი ან მეტი ამ ხანგრძლივობაზე და სიმკაცრე, რომლითაც APG-მა ამ "
+"შეზღუდვას უნდა შეხედოს."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:21
@@ -12208,6 +12236,9 @@ msgid ""
 "more than that number of tracks; and the strictness with which the APG "
 "should match the target number of tracks."
 msgstr ""
+"რედაქტორი დასაკრავი სიის სიგრძის შეზღუდვისთვის.   მომხმარებელს შეუძლია, "
+"ტრეკების სასურველი რაოდენობადა იქნება თუ არა დასაკრავი სია ნაკლები, ტოლი ან "
+"მეტი ამ რაოდენობაზე და სიმკაცრე, რომლითაც APG-მა ამ შეზღუდვას უნდა შეხედოს."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:21
@@ -12222,6 +12253,8 @@ msgid ""
 "Whether the total size of all files in the generated playlist should be less "
 "than, equal to, or more than the specified value."
 msgstr ""
+"უნდა იყოს თუ არა ყველა ფაილის საერთო ზომა გენერირებულ დასაკრავ სიაში "
+"მითითებულ მნიშვნელობაზე ნაკლები, ტოლი, ან მეტი."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonTime)
@@ -12346,6 +12379,8 @@ msgid ""
 "Whether the number of tracks in the generated playlist should be less than, "
 "equal to, or more than the specified value."
 msgstr ""
+"უნდა იყოს თუ არა ტრეკების რაოდენობა გენერირებულ დასაკრავ სიაში მითითებულ "
+"მნიშვნელობაზე ნაკლები, ტოლი, ან მეტი."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:39
@@ -12366,6 +12401,8 @@ msgid ""
 "How strict the APG should be about matching the playlist length to the "
 "specified number of tracks."
 msgstr ""
+"რამდენად მკაცრი უნდა იყოს APG მითითებული რაოდენობის მქონე ტრეკებისგან "
+"შექმნილი დასაკრავი სიის დროის შეზღუდვისას."
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
 #, kde-format
@@ -12404,6 +12441,10 @@ msgid ""
 "more than one track from a given album or a given artist from ending up in "
 "the playlist."
 msgstr ""
+"რედაქტორი გამეორებების აკრძალვის შეზღუდვისთვის.  როცა დაყენებულია \"ტრეკზე"
+"\", ის სცდის, თავიდან აიცილოს ამ ტრეკის ერთზე მეტი ასლის არსებობა დასაკრავ "
+"სიაში.  როცა დაყენებულია \"ალბომზე\", ან \"შემსრულებელზე, ის სცდის, დასაკრავ "
+"სიაში მითითებული ალბომიდან ან შემსრულებლისგან ერთ ტრეკზე მეტი არ იყოს."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:21
@@ -12420,6 +12461,9 @@ msgid ""
 "Control which duplicates to prevent.  \"Prevent duplicate tracks\" is the "
 "least restrictive, and \"prevent duplicate artists\" is the most restrictive."
 msgstr ""
+"მართეთ, რისი გამეორებები იქნება თავიდან აცილებული.  \"გამეორებული ტრეკების "
+"თავიდან აცილება\" ყველაზე ნაკლებად მკაცრია და \"გამეორებული შემსრულებლების "
+"თავიდან აცილება\" ყველაზე მეტად."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:32
@@ -12624,6 +12668,10 @@ msgid ""
 "that characteristic.  This functions similarity to the matching attributes "
 "of the smart playlists in Amarok 1.4."
 msgstr ""
+"რედაქტორი TagMatch შეზღუდვისთვის.  მომხმარებელს შეუძლია, მიუთითოს ტრეკის "
+"პირობები და APG შეავსებს დასაკრავ სიას ტრეკებით, რომლებიც ამ თვისებებს "
+"აკმაყოფილებს.  ეს მუშაობს დაახლოებით ისე, როგორც ჭკვიანი დასაკრავი სიების "
+"ატრიბუტების დამთხვევა Amarok 1.4-ში."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:21
@@ -12688,6 +12736,8 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified value."
 msgstr ""
+"უნდა აირჩიოს თუ არა APG-მა ტრეკები, რომელიც მითითებულ მნიშვნელობაზე ნაკლები, "
+"ტოლი ან მეტია."
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_ValueInt)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:133
@@ -12713,6 +12763,8 @@ msgid ""
 "specific date; or whether it should choose tracks that are within a certain "
 "time range."
 msgstr ""
+"უნდა აირჩიოს, თუ არა APG-მა ტრეკები, რომლებიც მითითებულ თარიღზე ახალი, ტოლი "
+"ან ძველია, ან თუ უნდა აირჩიოს ტრეკები, რომლებიც გარკვეული დროის შუალედიდანაა."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:248
@@ -12749,6 +12801,8 @@ msgid ""
 "Whether the APG should match tracks that equal, start with, end with, or "
 "contain the specified string."
 msgstr ""
+"უნდა აირჩიოს თუ არა APG-მა ტრეკები, რომელიც მითითებული სტრიქონით იწყება, "
+"სრულდება, ან შეიცავს."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:409
@@ -12787,6 +12841,8 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified time."
 msgstr ""
+"უნდა აირჩიოს თუ არა APG-მა ტრეკები, რომლის ხანგრძლივობაც მითითებულ დროზე "
+"ნაკლები, ტოლი ან მეტია."
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_TimeValue)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:487
@@ -13076,6 +13132,12 @@ msgid ""
 "operations with them may result in losing them. Perhaps you have started an "
 "older version of Amarok with a database written by newer version?"
 msgstr ""
+"აღმოჩენილია დასაკრავი სიის მონაცემთა ბაზის სქემის ვერსია %1. მაგრამ Amarok-"
+"ის ამ ვერსიას, მხოლოდ %2 ვერსიის (და წინა ვერსიების, %2-დან დაწყებული) "
+"დასაკრავი სიების მხარდაჭერა აქვს. დასაკრავი სიები, რომლებიც Amarok-ის "
+"მონაცემთა ბაზაშია, ალბათ, არ იმუშავებს და მათში ნებისმიერი ჩაწერის მცდელობა, "
+"ალბათ, მათ გააფუჭებს. ალბათ გაუშვით Amarok-ის ძველი ვერსია მაშინ, როცა "
+"მონაცემთა ბაზა ახალში შექმენით?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:280
 #, kde-format
@@ -13568,6 +13630,10 @@ msgid ""
 "users to download all of them for free. Listen to and download all Jamendo."
 "com contents from within Amarok."
 msgstr ""
+"Jamendo.com შემსრულებლებს და მუსიკის მოყვარულებს აკავშირებს. ეს საიტი "
+"საშუალებას აძლევს მუსიკოსებს, ატვირთონ თავიანთი ალბომები, რომ გაუზიარონ "
+"ისინი მომხმარებლებს, გადმოწერის შესაძლებლობით. მოუსმინეთ და გადმოწერეთ "
+"მუსიკა Jamendo.com-დან პირდაპირ Amarok-ის შიგნიდან."
 
 #: services/jamendo/JamendoService.cpp:121
 #, kde-format
@@ -13799,6 +13865,9 @@ msgid ""
 "track tags like artist, album and title. Check this to be notified when this "
 "happens and what the autocorrection was</html>"
 msgstr ""
+"<html>როცა ტრეკები Last.fm-ზე გადაეცემა, ის ავტომატურად ასწორებს გავრცელებულ "
+"შეცდომებს ტრეკის ჭდეებში, როგორიცაა შემსრულებელი, ალბომი და საქაღალდე. "
+"დასვით ეს თოლია, რომ გაგაფრთხილოთ, როცა ეს მოხდება და რა შეიცვალა</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:149
@@ -13847,6 +13916,12 @@ msgid ""
 "particular artist as well as listen to streams from people you have added as "
 "friends"
 msgstr ""
+"Last.fm არის პოპულარული ონლაინ სერვისი, რომელიც უზრუნველყოფს პერსონალურ "
+"რადიოსადგურებს და მუსიკის რეკომენდაციებს. პირადი მოსმენის სადგური მორგებულია "
+"თქვენი მოსმენის ჩვევების საფუძველზე და გთავაზობთ რეკომენდაციებს ახალი "
+"მუსიკისთვის. ასევე შესაძლებელია სადგურების დაკვრა მუსიკით, რომელიც მსგავსია "
+"კონკრეტული მხატვრის მსგავსი, ასევე მოუსმინეთ ნაკადებს იმ ადამიანებისგან, "
+"რომლებიც თქვენ დაამატეთ, როგორც მეგობრები"
 
 #: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
@@ -13978,6 +14053,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Last.fm-ის ანგარიშთან დაკავშირება წარმატებული არ იყო. დარწმუნდით, რომ Amarok-"
+"ს მიანიჭეთ ავტორიზაცია, თქვენი Last.fm-ის ანგარიშს მიუერთდეს ვებგვერდზე, "
+"რომელიც გაიხსნა და თავიდან სცადეთ."
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -14136,6 +14214,10 @@ msgid ""
 "announcements/radio2013'>supported country</a>. All other Last.fm features "
 "work fine."
 msgstr ""
+"იმისათვის, რომ უსმინოთ Last.fm-ის პოდკასტებს და რადიოს, გჭირდებათ, Last.fm-"
+"ის ფასიანი გამომწერი იყოთ და <a href='http://www.last.fm/announcements/"
+"radio2013'>მხარდაჭერილ ქვეყანაში</a> იმყოფებოდეთ. ყველა სხვა Last.fm-ის "
+"ფუნქცია ისედაც იმუშავებს."
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:106
 #, kde-format
@@ -14222,6 +14304,10 @@ msgid ""
 "Remember that when buying from Magnatune the artist gets 50%. Also if you "
 "buy using Amarok, you support the Amarok project with 10%."
 msgstr ""
+"ტრეკები, რომლების კოპირებასაც აპირებთ, Magnatune.com-ის მინიატურული "
+"სტრიმებია. უკეთესი ხარისხისა და ურეკლამო სტრიმებისთვის, სჯობს, შეიძინოთ "
+"ალბომი. დაიმახსოვრეთ, რომ თუ მას Magnatune.com-ზე შეიძენთ, მუსიკოსი 50%-ს "
+"მიიღებს. თუ თქვენ ასევე შეიძენთ Amarok-ში, თქვენ მხარს უჭერთ Amarok-ს 10%-ით."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
@@ -14624,6 +14710,44 @@ msgid ""
 "Magnatune config in \"Settings->Configure Amarok->Plugins\" and enter your "
 "membership information. </p></body></html>"
 msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Liberation Sans'; font-size:9pt; "
+"font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Magnatune.com წევრი "
+"გახდომით, თქვენ მიიღებთ შეუზღუდავი ჩამოტვირთვის წვდომას და შეგიძლიათ "
+"ჩამოტვირთოთ ნებისმიერი ალბომი Amarok– დან მაუსის ერთი დაწკაპუნებით. "
+"გაწევრიანებით, თქვენ ასევე შეგიძლიათ მოუსმინოთ ყველა სტრიმინგ ტრეკს "
+"Magnatune.com განურაცხებლად.</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Amarok გუნდი იღებს 10% of "
+"თქვენი თავდაპირველი წევრობის გადახდა, ასე რომ, გაწევრიანებით, თქვენ ასევე "
+"მხარს უჭერთ Amarok- ის განვითარებას.</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">როგორც ყოველთვის, "
+"მხატვრები იღებენ 50% of თქვენი წევრობის გადახდას (ებ) ს, რომლის საფუძველზეც "
+"თქვენ ჩამოტვირთავთ და გადასცემთ.</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Magnatune.com წევრობის ან "
+"რეგისტრაციის შესახებ მეტი ინფორმაციის მისაღებად დააჭირეთ აქ: <a href="
+"\"http://magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
+"decoration: underline; color:#0057ae;\">წევრობის ინფორმაცია</span></a> </p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">გაწევრიანების შემდეგ, "
+"გადადით Magnatune კონფიგურაციაში \"პარამეტრები->კონფიგურირება Amarok->Plugins"
+"\" და შეიყვანეთ თქვენი წევრობის ინფორმაცია. </p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:45
@@ -14645,6 +14769,11 @@ msgid ""
 "commission. Magnatune.com also offers \"all you can eat\" memberships that "
 "lets you download as much of their music as you like."
 msgstr ""
+"Magnatune.com არის სხვა სახის რეკორდული კომპანია დევიზით \"ჩვენ არ ვართ "
+"ბოროტი!\" 50% of ყველა შენაძენი პირდაპირ მიდის მხატვართან და თუ თქვენ "
+"შეიძენთ ალბომს Amarok– ის საშუალებით, Amarok პროექტი იღებს 10% commission. "
+"Magnatune.com ასევე გთავაზობთ \"ყველაფერს, რაც შეგიძლიათ მიირთვათ\" წევრობა, "
+"რომელიც საშუალებას გაძლევთ ჩამოტვირთოთ იმდენი მათი მუსიკა, რამდენიც გსურთ."
 
 #: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
@@ -14695,6 +14824,11 @@ msgid ""
 "specified mood to the playlist. The mood argument must have spaces escaped "
 "with &#37;20"
 msgstr ""
+"Magnatune.com სერვისი იღებს შემდეგ შეტყობინებებს: \n"
+"\n"
+"addMoodyTracks განწყობის რაოდენობა: ამატებს უამრავ შემთხვევით ტრეკს "
+"მითითებული განწყობით დასაკრავ სიაში. განწყობის არგუმენტი უნდა ჰქონდეს "
+"სივრცეები, რომლებიც გაქცეული უნდა იყოს% 20- ით"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15091,6 +15225,10 @@ msgid ""
 "\n"
 "You can always change the decision in Amarok configuration."
 msgstr ""
+"% 1- ს აქვს ტრეკის მეტა-მონაცემების სინქრონიზაციის შესაძლებლობა, როგორიცაა "
+"დაკვრის რაოდენობა ან რეიტინგი სხვა კოლექციებთან. გსურთ %1 sინქრონიზაცია?\n"
+"\n"
+"თქვენ ყოველთვის შეგიძლიათ შეცვალოთ გადაწყვეტილება Amarok კონფიგურაციაში."
 
 #: statsyncing/Controller.cpp:118
 #, kde-format
@@ -15547,6 +15685,10 @@ msgid ""
 "your files readable by a portable music player or a particular software "
 "program."
 msgstr ""
+"კოპირების დროს, თქვენ შეგიძლიათ აირჩიოთ თქვენი მუსიკალური ფაილების სხვა "
+"ფორმატში გადატანა encoder (კოდეკი). ეს შეიძლება გაკეთდეს სივრცის "
+"დაზოგვისთვის ან თქვენი ფაილების წასაკითხად პორტატული მუსიკალური პლეერით ან "
+"კონკრეტული პროგრამული პროგრამით."
 
 #: transcoding/TranscodingAssistantDialog.cpp:70
 #, kde-format
@@ -15567,6 +15709,11 @@ msgid ""
 "program. Only successfully transcoded files will be removed from their "
 "original location."
 msgstr ""
+"გადაადგილებისას შეგიძლიათ აირჩიოთ თქვენი მუსიკალური ფაილების სხვა ფორმატში "
+"გადატანა encoder (კოდეკი). ეს შეიძლება გაკეთდეს სივრცის დაზოგვისთვის ან "
+"თქვენი ფაილების წასაკითხად პორტატული მუსიკალური პლეერით ან კონკრეტული "
+"პროგრამული პროგრამით. მხოლოდ წარმატებით გადაშიფრული ფაილები წაიშლება მათი "
+"თავდაპირველი მდებარეობიდან."
 
 #: transcoding/TranscodingAssistantDialog.cpp:81
 #, kde-format
@@ -15655,6 +15802,11 @@ msgid ""
 "for the next time</i> option in order to skip this dialog for future "
 "transfers."
 msgstr ""
+"<b>შენიშვნა:</b> არ არის ხელმისაწვდომი encoder. თუ გსურთ ტრეკების "
+"ტრანსკოდაცია, გთხოვთ დააინსტალიროთ <i>ffmpeg</i> ან <i>libav</i> პაკეტი "
+"( <i>ffmpeg</i> შეფუთვით) შესაბამისი შიფრატორებით. წინააღმდეგ შემთხვევაში "
+"შეგიძლიათ <i>შეამოწმოთ გახსოვდეთ ეს არჩევანი შემდეგი დროის ვარიანტისთვის</"
+"i> , რათა გამოტოვოთ ეს დიალოგი მომავალი გადარიცხვებისთვის."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
