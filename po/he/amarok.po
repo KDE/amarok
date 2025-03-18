@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-03-12 12:47+0200\n"
+"PO-Revision-Date: 2025-03-17 10:13+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -8525,7 +8525,7 @@ msgstr "הרחב לפי"
 #: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1402
 #, kde-format
 msgid "MusicBrainz Tagger"
-msgstr ""
+msgstr "מתייג MusicBrainz"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, pushButton_saveAndClose)
 #: dialogs/MusicBrainzTagger.ui:49
@@ -8545,7 +8545,7 @@ msgstr "&עדכן הכול"
 #: dialogs/MusicBrainzTagger.ui:65
 #, kde-format
 msgid "Exit without saving"
-msgstr ""
+msgstr "לצאת בלי לשמור"
 
 # kde-il: don't translate
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
@@ -8607,7 +8607,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionDialog.cpp:316
 #, kde-format
 msgid "Original: %1"
-msgstr ""
+msgstr "מקורי: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:317
 #, fuzzy, kde-format
@@ -9365,7 +9365,7 @@ msgstr "תצוגה מקדימה ליעד"
 #: dialogs/TagGuessOptions.ui:331
 #, kde-format
 msgid "<empty>"
-msgstr ""
+msgstr "<ריק>"
 
 #. i18n: ectx: property (text), widget (QLabel, label_23)
 #: dialogs/TagGuessOptions.ui:153
@@ -9507,11 +9507,10 @@ msgid "Generating playlist..."
 msgstr "יוצר רשימת־השמעה..."
 
 #: dynamic/biases/AlbumPlayBias.cpp:35
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgctxt "Name of the \"AlbumPlay\" bias"
 msgid "Album play"
-msgstr "אלבום"
+msgstr "נגינת אלבום"
 
 #: dynamic/biases/AlbumPlayBias.cpp:44
 #, kde-format
@@ -9624,19 +9623,17 @@ msgid "Match all sequentially"
 msgstr ""
 
 #: dynamic/biases/IfElseBias.cpp:81
-#, fuzzy, kde-format
-#| msgid "Composer"
+#, kde-format
 msgctxt ""
 "Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view"
 msgid "else"
-msgstr "מלחין"
+msgstr "אחרת"
 
 #: dynamic/biases/PartBias.cpp:43
-#, fuzzy, kde-format
-#| msgid "Proportion:"
+#, kde-format
 msgctxt "Name of the \"Part\" bias"
 msgid "Partition"
-msgstr "הצעה:"
+msgstr "מחיצה"
 
 #: dynamic/biases/PartBias.cpp:52
 #, kde-format
@@ -9651,11 +9648,10 @@ msgid "This controls what portion of the playlist should match the criteria"
 msgstr ""
 
 #: dynamic/biases/PartBias.cpp:396
-#, fuzzy, kde-format
-#| msgid "Proportion:"
+#, kde-format
 msgctxt "Part bias representation"
 msgid "Partition"
-msgstr "הצעה:"
+msgstr "מחיצה"
 
 #: dynamic/biases/QuizPlayBias.cpp:42
 #, kde-format
@@ -9718,11 +9714,10 @@ msgid "of the album name (Album quiz)"
 msgstr ""
 
 #: dynamic/biases/SearchQueryBias.cpp:40
-#, fuzzy, kde-format
-#| msgid "&Search"
+#, kde-format
 msgctxt "Name of the \"SearchQuery\" bias"
 msgid "Search"
-msgstr "&חפש"
+msgstr "חיפוש"
 
 #: dynamic/biases/SearchQueryBias.cpp:49
 #, kde-format
@@ -9734,11 +9729,10 @@ msgid ""
 msgstr ""
 
 #: dynamic/biases/SearchQueryBias.cpp:116
-#, fuzzy, kde-format
-#| msgid "&Search"
+#, kde-format
 msgctxt "SearchQuery bias representation"
 msgid "Search for: %1"
-msgstr "חיפוש %1"
+msgstr "חיפוש אחר: %1"
 
 #: dynamic/biases/TagMatchBias.cpp:42
 #, fuzzy, kde-format
@@ -9756,21 +9750,18 @@ msgid ""
 msgstr ""
 
 #: dynamic/biases/TagMatchBias.cpp:176
-#, fuzzy, kde-format
-#| msgid "Invert Condition"
+#, kde-format
 msgid "Invert condition"
-msgstr "תנאי שגוי"
+msgstr "היפוך תנאי"
 
 #: dynamic/biases/TagMatchBias.cpp:285
-#, fuzzy, kde-format
-#| msgid "Album \"%1\""
+#, kde-format
 msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
-msgstr "אלבום \"%1\""
+msgstr "לא %1"
 
 #: dynamic/BiasFactory.cpp:49
-#, fuzzy, kde-format
-#| msgid "Random"
+#, kde-format
 msgctxt "Name of the random bias"
 msgid "Random"
 msgstr "אקראי"
@@ -9784,8 +9775,7 @@ msgid ""
 msgstr ""
 
 #: dynamic/BiasFactory.cpp:67
-#, fuzzy, kde-format
-#| msgid "and"
+#, kde-format
 msgctxt "Name of the \"And\" bias"
 msgid "And"
 msgstr "וגם"
@@ -9820,11 +9810,10 @@ msgid "Replacement for bias %1"
 msgstr "%1 הגדרות"
 
 #: dynamic/DynamicModel.cpp:777
-#, fuzzy, kde-format
-#| msgid "New playlist layout"
+#, kde-format
 msgctxt "Default name for new playlists"
 msgid "New playlist"
-msgstr "סידור רשימת־השמעה חדש"
+msgstr "רשימת נגינה חדשה"
 
 #: dynamic/DynamicModel.cpp:914
 #, kde-format
@@ -9832,10 +9821,9 @@ msgid "Rock and Pop"
 msgstr "רוק ופופ"
 
 #: dynamic/DynamicModel.cpp:915 equalizer/EqualizerPresets.cpp:93
-#, fuzzy, kde-format
-#| msgid "ok"
+#, kde-format
 msgid "Rock"
-msgstr "בסדר"
+msgstr "רוק"
 
 #: dynamic/DynamicModel.cpp:919 equalizer/EqualizerPresets.cpp:91
 #, kde-format
@@ -9843,14 +9831,12 @@ msgid "Pop"
 msgstr "פופ"
 
 #: dynamic/DynamicModel.cpp:925
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgid "Album play"
-msgstr "אלבום"
+msgstr "נגינת אלבום"
 
 #: dynamic/DynamicModel.cpp:935
-#, fuzzy, kde-format
-#| msgid "Rating"
+#, kde-format
 msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "דירוג"
@@ -9901,16 +9887,14 @@ msgstr "קלאב"
 
 # kde-il: don't translate
 #: equalizer/EqualizerPresets.cpp:83
-#, fuzzy, kde-format
-#| msgid "&Cancel"
+#, kde-format
 msgid "Dance"
-msgstr "&ביטול"
+msgstr "דאנס"
 
 #: equalizer/EqualizerPresets.cpp:84
-#, fuzzy, kde-format
-#| msgid "and"
+#, kde-format
 msgid "Full Bass"
-msgstr "וגם"
+msgstr "בס מלא"
 
 #: equalizer/EqualizerPresets.cpp:85
 #, kde-format
@@ -9918,10 +9902,9 @@ msgid "Full Treble"
 msgstr "טרבל מלא"
 
 #: equalizer/EqualizerPresets.cpp:86
-#, fuzzy, kde-format
-#| msgid "and"
+#, kde-format
 msgid "Full Bass + Treble"
-msgstr "וגם"
+msgstr "בס מלא + טרבל"
 
 #: equalizer/EqualizerPresets.cpp:87
 #, kde-format
@@ -9929,10 +9912,9 @@ msgid "Laptop/Headphones"
 msgstr "מחשב נייד/אוזניות"
 
 #: equalizer/EqualizerPresets.cpp:88
-#, fuzzy, kde-format
-#| msgid "Larger Than"
+#, kde-format
 msgid "Large Hall"
-msgstr "גדול מ־"
+msgstr "היכל גדול"
 
 #: equalizer/EqualizerPresets.cpp:89
 #, kde-format
@@ -9940,16 +9922,14 @@ msgid "Live"
 msgstr "שידור חי"
 
 #: equalizer/EqualizerPresets.cpp:90
-#, fuzzy, kde-format
-#| msgid "Play"
+#, kde-format
 msgid "Party"
-msgstr "נגן"
+msgstr "מסיבה"
 
 #: equalizer/EqualizerPresets.cpp:92
-#, fuzzy, kde-format
-#| msgid "Replace"
+#, kde-format
 msgid "Reggae"
-msgstr "החלף"
+msgstr "רגאיי"
 
 #: equalizer/EqualizerPresets.cpp:94
 #, kde-format
@@ -9977,11 +9957,10 @@ msgid "Zero"
 msgstr "אפס"
 
 #: importers/amarok/AmarokConfigWidget.cpp:81
-#, fuzzy, kde-format
-#| msgid "Add"
+#, kde-format
 msgctxt "Database type"
 msgid "embedded"
-msgstr "הוספה"
+msgstr "משובץ"
 
 #: importers/amarok/AmarokConfigWidget.cpp:82
 #, kde-format
@@ -10002,10 +9981,9 @@ msgstr "שם־משתמש"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/amarok/AmarokConfigWidget.ui:58
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database type"
-msgstr "שם בסיס־נתונים"
+msgstr "סוג מסד הנתונים"
 
 #. i18n: ectx: property (text), widget (QLabel, m_databaseLocationLabel)
 #: importers/amarok/AmarokConfigWidget.ui:71
@@ -10014,18 +9992,16 @@ msgstr "שם בסיס־נתונים"
 #: importers/fastforward/FastForwardConfigWidget.ui:79
 #: importers/itunes/ITunesConfigWidget.cpp:30
 #: importers/rhythmbox/RhythmboxConfigWidget.cpp:35
-#, fuzzy, kde-format
-#| msgid "Database Location"
+#, kde-format
 msgid "Database location"
-msgstr "מיקום בסיס־הנתונים"
+msgstr "מקום מסד הנתונים"
 
 #. i18n: ectx: property (text), widget (QLabel, m_targetNameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:91
 #: importers/fastforward/FastForwardConfigWidget.ui:99
-#, fuzzy, kde-format
-#| msgid "Playlist name:"
+#, kde-format
 msgid "Target name"
-msgstr "שם רשימת־ההשמעה:"
+msgstr "שם היעד"
 
 #. i18n: ectx: property (text), widget (QLabel, m_hostnameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:104
@@ -10044,10 +10020,9 @@ msgstr "פתחה"
 #. i18n: ectx: property (text), widget (QLabel, m_databaseNameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:127
 #: importers/fastforward/FastForwardConfigWidget.ui:135
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database name"
-msgstr "שם בסיס־נתונים"
+msgstr "שם מסד הנתונים"
 
 #. i18n: ectx: property (text), widget (QLabel, m_mysqlBinaryLabel)
 #: importers/amarok/AmarokConfigWidget.ui:163
@@ -10062,10 +10037,9 @@ msgid "mysqld"
 msgstr "mysqld"
 
 #: importers/amarok/AmarokManager.cpp:39
-#, fuzzy, kde-format
-#| msgid "Amarok 1.4"
+#, kde-format
 msgid "Amarok 2.x"
-msgstr "Amarok 1.4"
+msgstr "Amarok 2.x"
 
 #: importers/amarok/AmarokManager.cpp:45
 #, kde-format
@@ -10094,10 +10068,9 @@ msgstr "מייבא סטטיסטיקה מ־Clementine"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/fastforward/FastForwardConfigWidget.ui:66
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Connection type"
-msgstr "חיבור"
+msgstr "סוג חיבור"
 
 #: importers/fastforward/FastForwardManager.cpp:25
 #, kde-format
@@ -10110,10 +10083,9 @@ msgid "Amarok 1.4 Statistics Importer"
 msgstr "מייבא סטטיסטיקה מ־Amarok 1.4"
 
 #: importers/itunes/ITunesManager.cpp:27
-#, fuzzy, kde-format
-#| msgid "iTunes"
+#, kde-format
 msgid "Apple iTunes"
-msgstr "iTunes"
+msgstr "Apple iTunes"
 
 #: importers/itunes/ITunesManager.cpp:28
 #, kde-format
@@ -10121,10 +10093,9 @@ msgid "iTunes Statistics Importer"
 msgstr "מייבא סטטיסטיקה מ־iTunes"
 
 #: importers/rhythmbox/RhythmboxManager.cpp:27
-#, fuzzy, kde-format
-#| msgid "Rythmbox"
+#, kde-format
 msgid "Rhythmbox"
-msgstr "Rythmbox"
+msgstr "Rhythmbox"
 
 #: importers/rhythmbox/RhythmboxManager.cpp:28
 #, kde-format
@@ -10132,11 +10103,10 @@ msgid "Rhythmbox Statistics Importer"
 msgstr "מייבא סטטיסטיקה מ־Rhythmbox"
 
 #: importers/SimpleImporterConfigWidget.cpp:48
-#, fuzzy, kde-format
-#| msgid "Playlist name:"
+#, kde-format
 msgctxt "Name of the synchronization target"
 msgid "Target name"
-msgstr "שם רשימת־ההשמעה:"
+msgstr "שם היעד"
 
 #: KNotificationBackend.cpp:132 TrayIcon.cpp:146
 #, kde-format
@@ -10144,10 +10114,9 @@ msgid "Now playing"
 msgstr "מושמע כעת"
 
 #: lyrics/LyricsManager.cpp:75
-#, fuzzy, kde-format
-#| msgid "Retrieve similar artists"
+#, kde-format
 msgid "Retrieved lyrics is empty"
-msgstr "אחזר אמנים דומים"
+msgstr "מילות השיר שהתקבלו ריקות"
 
 #: lyrics/LyricsManager.cpp:111
 #, kde-format
@@ -10160,33 +10129,21 @@ msgid "No information available for this track"
 msgstr "אין מידע זמין עבור רצועה זאת"
 
 #: main.cpp:56
-#, fuzzy, kde-format
-#| msgid "The audio player for KDE"
+#, kde-format
 msgid "The audio player by KDE"
-msgstr "נגן השמע של KDE "
+msgstr "נגן השמע מבית KDE"
 
 #: main.cpp:58
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2009, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
-"(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2009, The Amarok Development Squad"
+"‏(C) 2002‏-2003, מארק קרצ׳מן\n"
+"‏(C) 2003‏-2025, חוליית הפיתוח של Amarok"
 
 #: main.cpp:59
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: "
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -10197,11 +10154,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"שרת: irc.freenode.net ערוצים: #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "משוב:\n"
-"amarok@kde.org \n"
-"(תאריך בנייה: "
+"amarok@kde.org\n"
+"\n"
+"(תאריך ההרכבה: %1)"
 
 #: main.cpp:69
 #, kde-format
@@ -10222,10 +10180,9 @@ msgstr "Bart 'Where are my toothpicks' Cerneels"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:77
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (Stecchino)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (Stecchino)"
 
 #: main.cpp:80
 #, kde-format
@@ -10234,10 +10191,9 @@ msgstr ""
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:81
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (dr_lepper)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (dr_lepper)"
 
 #: main.cpp:84
 #, kde-format
@@ -10276,10 +10232,9 @@ msgstr "ראלף ‚SalsaMaster’ אנגלס"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (rengels)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (rengels)"
 
 #: main.cpp:99
 #, kde-format
@@ -10298,23 +10253,20 @@ msgstr ""
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:104
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (stuffcorpse)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (stuffcorpse)"
 
 #: main.cpp:107
-#, fuzzy, kde-format
-#| msgid "Sample Rate"
+#, kde-format
 msgid "Sam Lade"
-msgstr "קצב דגימה"
+msgstr "סאם לייד"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:107
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (Sentynel)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (Sentynel)"
 
 #: main.cpp:111
 #, kde-format
@@ -10323,23 +10275,21 @@ msgstr "Sven Krohlas"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:111
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Rokymoter, Developer (sven423)"
-msgstr "מפתח (jefferai)"
+msgstr "Rokymoter, מפתח (sven423)"
 
 #: main.cpp:114
 #, fuzzy, kde-format
 #| msgid "Teo Mrnjavac"
 msgid "Téo Mrnjavac"
-msgstr "Teo Mrnjavac"
+msgstr "טאו מרניאבק"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:115
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (Teo`)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (Teo`‎)"
 
 #: main.cpp:118
 #, kde-format
@@ -10358,16 +10308,14 @@ msgstr "Ian 'The Beard' Monroe"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:122
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (eean)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (eean)"
 
 #: main.cpp:125
-#, fuzzy, kde-format
-#| msgid "Jeff 'IROCKSOHARD' Mitchell"
+#, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
-msgstr "Jeff 'IROCKSOHARD' Mitchell"
+msgstr "ג׳ף ‚IROCKSOHARD’ מיטצ׳ל"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:125
@@ -10382,10 +10330,9 @@ msgstr "Leo Franchi"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:128
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (lfranchi)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (lfranchi)"
 
 #: main.cpp:131
 #, kde-format
@@ -10404,10 +10351,9 @@ msgstr "Max Howell"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:134
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer, Vision"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח, חזון"
 
 #: main.cpp:137
 #, kde-format
@@ -10416,10 +10362,9 @@ msgstr "Maximilian Kossick"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:137
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (maxx_k)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (maxx_k)"
 
 #: main.cpp:140
 #, kde-format
@@ -10428,10 +10373,9 @@ msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:140
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (nhn)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (nhn)"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:143
@@ -10441,10 +10385,9 @@ msgstr "Seb 'Surfin' down under' Ruiz"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:143
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (sebr)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (sebr)"
 
 #: main.cpp:148
 #, kde-format
@@ -10453,10 +10396,9 @@ msgstr "Alejandro Wainzinger"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:148
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (xevix)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (xevix)"
 
 #: main.cpp:150
 #, kde-format
@@ -10515,10 +10457,9 @@ msgstr "Dan 'Hey, it compiled...' Meltzer"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:160
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (hydrogen)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (hydrogen)"
 
 #: main.cpp:162
 #, kde-format
@@ -10526,16 +10467,14 @@ msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
 #: main.cpp:162
-#, fuzzy, kde-format
-#| msgid "&Save Playlist"
+#, kde-format
 msgid "Biased playlists"
-msgstr "&שמור רשימת־השמעה"
+msgstr "רשימות השמעה מושפעות"
 
 #: main.cpp:164
-#, fuzzy, kde-format
-#| msgid "Daniel Winter"
+#, kde-format
 msgid "Daniel Dewald"
-msgstr "Daniel Winter"
+msgstr "דניאל דיוואלד"
 
 #: main.cpp:164
 #, kde-format
@@ -10548,10 +10487,9 @@ msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
 #: main.cpp:166
-#, fuzzy, kde-format
-#| msgid "Nepomuk Collection"
+#, kde-format
 msgid "Nepomuk integration"
-msgstr "אוסף Nepomuk "
+msgstr "שילוב מול Nepomuk"
 
 #: main.cpp:168
 #, kde-format
@@ -10559,10 +10497,9 @@ msgid "Frank Meerkötter"
 msgstr ""
 
 #: main.cpp:168 main.cpp:188
-#, fuzzy, kde-format
-#| msgid "Directory"
+#, kde-format
 msgid "Podcast improvements"
-msgstr "תיקייה"
+msgstr "שיפורי הסכתים"
 
 #: main.cpp:170
 #, kde-format
@@ -10601,10 +10538,9 @@ msgstr "Kenneth Wesley Wimer II"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:176
-#, fuzzy, kde-format
-#| msgid "Icon"
+#, kde-format
 msgid "Icons"
-msgstr "צלמית"
+msgstr "סמלים"
 
 #: main.cpp:178
 #, kde-format
@@ -10632,10 +10568,9 @@ msgid "Lee Olson"
 msgstr "Lee Olson"
 
 #: main.cpp:182 main.cpp:194
-#, fuzzy, kde-format
-#| msgid "Amarok"
+#, kde-format
 msgid "Artwork"
-msgstr "Amarok"
+msgstr "עיצוב אומנותי"
 
 #: main.cpp:184
 #, kde-format
@@ -10654,10 +10589,9 @@ msgstr ""
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:186
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer (MaskMaster)"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח (MaskMaster)"
 
 #: main.cpp:188
 #, kde-format
@@ -10715,10 +10649,9 @@ msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
 #: main.cpp:200
-#, fuzzy, kde-format
-#| msgid "Script Manager"
+#, kde-format
 msgid "Scripting interface"
-msgstr "מנהל תסריטים"
+msgstr "ממשק סקריפטים"
 
 #: main.cpp:202
 #, kde-format
@@ -10726,10 +10659,9 @@ msgid "Phalgun Guduthur"
 msgstr ""
 
 #: main.cpp:202
-#, fuzzy, kde-format
-#| msgid "Nepomuk Collection"
+#, kde-format
 msgid "Nepomuk Collection (phalgun)"
-msgstr "אוסף Nepomuk "
+msgstr "אוסף Nepomuk ‏(phalgun)"
 
 #: main.cpp:204
 #, kde-format
@@ -10780,10 +10712,9 @@ msgstr "תומס ליובקינג"
 #: main.cpp:212 main.cpp:214 main.cpp:228 main.cpp:238 main.cpp:244
 #: main.cpp:246 main.cpp:258 main.cpp:264 main.cpp:266 main.cpp:270
 #: main.cpp:278
-#, fuzzy, kde-format
-#| msgid "Developer (jefferai)"
+#, kde-format
 msgid "Developer"
-msgstr "מפתח (jefferai)"
+msgstr "מפתח"
 
 #: main.cpp:214
 #, kde-format
@@ -10791,16 +10722,14 @@ msgid "Valentin Rouet"
 msgstr ""
 
 #: main.cpp:216
-#, fuzzy, kde-format
-#| msgid "Lee Olson"
+#, kde-format
 msgid "Wade Olson"
-msgstr "Lee Olson"
+msgstr "וייד אולסון"
 
 #: main.cpp:216
-#, fuzzy, kde-format
-#| msgid "Sho&w splash-screen on startup"
+#, kde-format
 msgid "Splash screen artist"
-msgstr "ה&צג מסך פתיחה בהפעלה"
+msgstr "אומן מסך הפתיחה"
 
 #: main.cpp:218
 #, kde-format
@@ -10808,10 +10737,9 @@ msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
 #: main.cpp:218
-#, fuzzy, kde-format
-#| msgid "Comment"
+#, kde-format
 msgid "Context view"
-msgstr "הערה"
+msgstr "תצוגת הקשר"
 
 #: main.cpp:222
 #, kde-format
@@ -10840,11 +10768,9 @@ msgstr "Adeodato Simó"
 
 # kde-il: don't translate
 #: main.cpp:226 main.cpp:234
-#, fuzzy, kde-format
-#| msgctxt "Fetch new information from the website"
-#| msgid "Update"
+#, kde-format
 msgid "Patches"
-msgstr "עדכן"
+msgstr "טלאים"
 
 #: main.cpp:228
 #, kde-format
@@ -10937,10 +10863,9 @@ msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
 #: main.cpp:250
-#, fuzzy, kde-format
-#| msgid "List of folders in the Collection"
+#, kde-format
 msgid "Dialog to filter the collection titles"
-msgstr "רשימת התיקיות באוסף"
+msgstr "חלונית לסינון כותרות האוספים"
 
 #: main.cpp:252
 #, kde-format
@@ -11074,22 +10999,19 @@ msgid "Tomasz Dudzik"
 msgstr "תומאש דודז׳יק"
 
 #: main.cpp:282
-#, fuzzy, kde-format
-#| msgid "Sho&w splash-screen on startup"
+#, kde-format
 msgid "Splash screen"
-msgstr "ה&צג מסך פתיחה בהפעלה"
+msgstr "מסך פתיחה"
 
 #: main.cpp:287
-#, fuzzy, kde-format
-#| msgid "Andrew Turner"
+#, kde-format
 msgid "Andrew Browning"
-msgstr "Andrew Turner"
+msgstr "אנדרו בראונינג"
 
 #: main.cpp:288
-#, fuzzy, kde-format
-#| msgid "Christie Harris"
+#, kde-format
 msgid "Chris Wales"
-msgstr "Christie Harris"
+msgstr "כריס ויילס"
 
 #: main.cpp:289
 #, kde-format
@@ -11194,11 +11116,10 @@ msgid "&Clear Playlist"
 msgstr "&נקה רשימת־השמעה"
 
 #: MainWindow.cpp:773
-#, fuzzy, kde-format
-#| msgid "&Queue"
+#, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
-msgstr "&הכנס רצועה לתור"
+msgstr "&עריכת התור"
 
 #: MainWindow.cpp:778
 #, kde-format
@@ -11267,16 +11188,14 @@ msgid "Previous Track"
 msgstr "הרצועה הקודמת"
 
 #: MainWindow.cpp:886
-#, fuzzy, kde-format
-#| msgid "Rate Current Track: 1"
+#, kde-format
 msgid "Restart current track"
-msgstr "דרג את הרצועה הנוכחית: 1"
+msgstr "השמעת הרצועה הנוכחית מחדש"
 
 #: MainWindow.cpp:893
-#, fuzzy, kde-format
-#| msgid "Playlist"
+#, kde-format
 msgid "Shuffle Playlist"
-msgstr "רשימת־השמעה"
+msgstr "ערבוב רשימת נגינה"
 
 #: MainWindow.cpp:899
 #, kde-format
@@ -11284,10 +11203,9 @@ msgid "Repopulate Playlist"
 msgstr "מלא מחדש את רשימת־ההשמעה"
 
 #: MainWindow.cpp:905
-#, fuzzy, kde-format
-#| msgid "Default Dynamic Playlist"
+#, kde-format
 msgid "Disable Dynamic Playlist"
-msgstr "רשימת־השמעה דינמית ברירת־מחדל"
+msgstr "השבתת רשימת נגינה דינמית"
 
 #: MainWindow.cpp:909
 #, kde-format
@@ -11335,16 +11253,14 @@ msgid "Mute Volume"
 msgstr "השתק קול"
 
 #: MainWindow.cpp:960
-#, fuzzy, kde-format
-#| msgid "Love Current Track"
+#, kde-format
 msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: אוהב רצועה נוכחית"
+msgstr "Last.fm: העדפת הרצועה הנוכחית"
 
 #: MainWindow.cpp:965
-#, fuzzy, kde-format
-#| msgid "Love Current Track"
+#, kde-format
 msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: החרם רצועה נוכחית"
+msgstr "Last.fm: חסימת הרצועה הנוכחית"
 
 #: MainWindow.cpp:970
 #, kde-format
@@ -11397,10 +11313,9 @@ msgid "&About Amarok"
 msgstr "&אודות Amarok"
 
 #: MainWindow.cpp:1033
-#, fuzzy, kde-format
-#| msgid "St&atistics"
+#, kde-format
 msgid "&Diagnostics"
-msgstr "ס&טטיסטיקה"
+msgstr "&אבחון"
 
 #: MainWindow.cpp:1037
 #, kde-format
@@ -11442,10 +11357,9 @@ msgid ""
 msgstr ""
 
 #: MainWindow.cpp:1186
-#, fuzzy, kde-format
-#| msgid "Hide menu"
+#, kde-format
 msgid "Hide Menu"
-msgstr "הסתר תפריט"
+msgstr "הסתרת תפריט"
 
 # kde-il: don't translatep:67
 #: MainWindow.cpp:1228
@@ -11474,44 +11388,37 @@ msgid "MusicDNS match ratio: %1%"
 msgstr ""
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
-#, fuzzy, kde-format
-#| msgid "Set custom artwork for this album"
-#| msgid_plural "Set custom artwork for these %1 albums"
+#, kde-format
 msgid "Choose Best Matches from This Album"
-msgstr "קבע עטיפה מותאמת אישית לאלבום הזה"
+msgstr "בחירת ההתאמות המיטביות מהאלבום הזה"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:91
-#, fuzzy, kde-format
-#| msgid "Playlist name:"
+#, kde-format
 msgid "Go to Artist Page"
-msgstr "שם רשימת־ההשמעה:"
+msgstr "מעבר לעמוד האומן/נית"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:112
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgid "Go to Album Page"
-msgstr "אלבום"
+msgstr "מעבר לעמוד האלבום"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:119
-#, fuzzy, kde-format
-#| msgid "Track #"
+#, kde-format
 msgid "Go to Track Page"
-msgstr "רצועה #"
+msgstr "מעבר לעמוד הרצועה"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NetworkRequestsDialog)
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: network/NetworkRequests.ui:14 network/NetworkRequests.ui:20
-#, fuzzy, kde-format
-#| msgid "Framework Version"
+#, kde-format
 msgid "Network Requests"
-msgstr "גרסת מסגרת"
+msgstr "בקשות רשת"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:41
-#, fuzzy, kde-format
-#| msgid "Mood"
+#, kde-format
 msgid "Method"
-msgstr "אווירה"
+msgstr "שיטה"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:51
@@ -11527,17 +11434,15 @@ msgstr "אורך"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:61
-#, fuzzy, kde-format
-#| msgid "Comment"
+#, kde-format
 msgid "Content Type"
-msgstr "הערה"
+msgstr "סוג תוכן"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:66
-#, fuzzy, kde-format
-#| msgid "genre"
+#, kde-format
 msgid "Info"
-msgstr "סגנון"
+msgstr "פרטים"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: network/NetworkRequests.ui:74
@@ -11554,10 +11459,9 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QTreeWidget, requestDetails)
 #. i18n: ectx: property (text), widget (QTreeWidget, responseDetails)
 #: network/NetworkRequests.ui:94 network/NetworkRequests.ui:108
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgid "Value"
-msgstr "אלבום"
+msgstr "ערך"
 
 #: OpmlParser.cpp:128
 #, kde-format
@@ -11884,10 +11788,9 @@ msgid "Standard"
 msgstr ""
 
 #: playlist/navigators/NavigatorConfigAction.cpp:44
-#, fuzzy, kde-format
-#| msgid "&Clear"
+#, kde-format
 msgid "Only Queue"
-msgstr "&נקה"
+msgstr "תור בלבד"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
@@ -11945,25 +11848,22 @@ msgid "Add a sorting level to the playlist."
 msgstr "הוספת שלב מיון לרשימת הנגינה."
 
 #: playlist/PlaylistController.cpp:122
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Add tracks to playlist"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "הוספת רצועות לרשימת נגינה"
 
 #: playlist/PlaylistController.cpp:124
-#, fuzzy, kde-format
-#| msgid "Queue Track"
+#, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Queue tracks"
-msgstr "הכנס רצועה לתור"
+msgstr "הוספת רצועות לתור"
 
 #: playlist/PlaylistController.cpp:126
-#, fuzzy, kde-format
-#| msgid "Repeat Playlist"
+#, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Replace playlist"
-msgstr "חזור על רשימת־ההשמעה"
+msgstr "החלפת רשימת נגינה"
 
 #: playlist/PlaylistDefines.cpp:89
 #, kde-format
@@ -12097,10 +11997,9 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: playlist/PlaylistInfoWidget.cpp:67
-#, fuzzy, kde-format
-#| msgid "tracks"
+#, kde-format
 msgid "No tracks"
-msgstr "רצועות"
+msgstr "אין רצועות"
 
 #: playlist/PlaylistInfoWidget.cpp:109 playlist/PlaylistInfoWidget.cpp:115
 #, kde-format
@@ -12203,32 +12102,28 @@ msgid "File Size"
 msgstr "גודל קובץ"
 
 #: playlist/PlaylistQueueEditor.cpp:69
-#, fuzzy, kde-format
-#| msgid "%1 - %2 ( %3 )"
+#, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
-msgstr "%1 - %2 ( %3 )"
+msgstr "%1: %2 - %3"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PlaylistQueueEditor)
 #: playlist/PlaylistQueueEditor.ui:14
-#, fuzzy, kde-format
-#| msgid "Queue Track"
+#, kde-format
 msgid "Queue Editor"
-msgstr "הכנס רצועה לתור"
+msgstr "עורך תורים"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, upButton)
 #: playlist/PlaylistQueueEditor.ui:32
-#, fuzzy, kde-format
-#| msgid "Media Download"
+#, kde-format
 msgid "Move Up"
-msgstr "הורדת מדיה"
+msgstr "העלאה למעלה"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, downButton)
 #: playlist/PlaylistQueueEditor.ui:48
-#, fuzzy, kde-format
-#| msgid "Media Download"
+#, kde-format
 msgid "Move Down"
-msgstr "הורדת מדיה"
+msgstr "הורדה למטה"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
 #: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:118
@@ -12238,10 +12133,9 @@ msgstr "הוצאת רצועה מהתור"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, clearButton)
 #: playlist/PlaylistQueueEditor.ui:74
-#, fuzzy, kde-format
-#| msgid "&Clear"
+#, kde-format
 msgid "Clear Queue"
-msgstr "&נקה"
+msgstr "פינוי התור"
 
 #: playlist/PlaylistSortWidget.cpp:44
 #, kde-format
@@ -12254,14 +12148,12 @@ msgid "Add a playlist sorting level."
 msgstr ""
 
 #: playlist/PlaylistViewUrlGenerator.cpp:83
-#, fuzzy, kde-format
-#| msgid "Filter Action"
+#, kde-format
 msgid "Filter %1"
-msgstr "פעולת סינון"
+msgstr "סינון %1"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:84
-#, fuzzy, kde-format
-#| msgid "&Search"
+#, kde-format
 msgid "Search %1"
 msgstr "חיפוש %1"
 
@@ -12329,16 +12221,14 @@ msgid "Tracks Removed"
 msgstr "רצועות הוסרו"
 
 #: playlist/UndoCommands.cpp:76
-#, fuzzy, kde-format
-#| msgid "Track moved"
+#, kde-format
 msgid "Tracks moved"
-msgstr "רצועה הועברה"
+msgstr "רצועות הועברו"
 
 #: playlist/view/listview/PrettyListView.cpp:698
-#, fuzzy, kde-format
-#| msgid "Warning: tracks have been hidden in the playlist"
+#, kde-format
 msgid "Tracks have been hidden due to the active search."
-msgstr "אזהרה: רצועות הוחבאו ברשימת־ההשמעה"
+msgstr "רצועות הוסתרו עקב החיפוש הפעיל."
 
 #: playlist/view/listview/PrettyListView.cpp:700
 #, kde-format
@@ -12683,10 +12573,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:39
-#, fuzzy, kde-format
-#| msgid "greater than"
+#, kde-format
 msgid "shorter than"
-msgstr "גדול מ־"
+msgstr "קצר מ־"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
@@ -12704,10 +12593,9 @@ msgstr "שווה ל־"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:49
-#, fuzzy, kde-format
-#| msgid "less than"
+#, kde-format
 msgid "longer than"
-msgstr "קטן מ־"
+msgstr "ארוך מ־"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Duration)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:62
@@ -12731,16 +12619,14 @@ msgid ""
 msgstr ""
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgid "Total File Size of Playlist"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "סך גודל הקבצים של רשימת נגינה"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:56
-#, fuzzy, kde-format
-#| msgid "Add this filter condition to the list"
+#, kde-format
 msgid "Sets the preferred total file size of the playlist"
-msgstr "הוסף את התנאי המסנן לרשימה."
+msgstr "הגדרת גודל הקבצים הכולל המועדף לרשימת הנגינה"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:123
 #, fuzzy, kde-format
@@ -12814,8 +12700,7 @@ msgstr "קטן מ־"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:49
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:49
-#, fuzzy, kde-format
-#| msgid "greater than"
+#, kde-format
 msgid "more than"
 msgstr "גדול מ־"
 
@@ -12867,10 +12752,9 @@ msgid ""
 msgstr ""
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:51
-#, fuzzy, kde-format
-#| msgid "Playlist"
+#, kde-format
 msgid "Playlist Length"
-msgstr "רשימת־השמעה"
+msgstr "אורך רשימת נגינה"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:52
 #, fuzzy, kde-format
@@ -12912,18 +12796,16 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:126
-#, fuzzy, kde-format
-#| msgid "Playlist"
+#, kde-format
 msgid "Playlist length: unknown"
-msgstr "רשימת־השמעה"
+msgstr "אורך רשימת הנגינה: לא ידוע"
 
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:21
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Playlist Length Constraint Settings"
-msgstr "%1 הגדרות"
+msgstr "הגדרות הגבלת אורך רשימות נגינה"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:32
@@ -12935,17 +12817,15 @@ msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:39
-#, fuzzy, kde-format
-#| msgid "greater than"
+#, kde-format
 msgid "fewer than"
-msgstr "גדול מ־"
+msgstr "קטן מ־"
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_Length)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:59
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "The target number of tracks for the generated playlist."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "מספר רצועות היעד לרשימת הנגינה שנוצרת."
 
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:115
@@ -12956,11 +12836,9 @@ msgid ""
 msgstr ""
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
-#, fuzzy, kde-format
-#| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-#| msgid "Re&move Duplicates"
+#, kde-format
 msgid "Prevent Duplicates"
-msgstr "ה&סר כפילויות"
+msgstr "מניעת כפילות"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:52
 #, kde-format
@@ -12969,25 +12847,19 @@ msgid ""
 msgstr ""
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:95
-#, fuzzy, kde-format
-#| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-#| msgid "Re&move Duplicates"
+#, kde-format
 msgid "Prevent duplicate tracks"
-msgstr "ה&סר כפילויות"
+msgstr "מניעת כפילות רצועות"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:97
-#, fuzzy, kde-format
-#| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-#| msgid "Re&move Duplicates"
+#, kde-format
 msgid "Prevent duplicate artists"
-msgstr "ה&סר כפילויות"
+msgstr "מניעת כפילות אומנים"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:99
-#, fuzzy, kde-format
-#| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-#| msgid "Re&move Duplicates"
+#, kde-format
 msgid "Prevent duplicate albums"
-msgstr "ה&סר כפילויות"
+msgstr "מניעת כפילות אלבומים"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, PreventDuplicatesEditWidget)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:15
@@ -13003,10 +12875,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:21
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Prevent Duplicates Constraint Settings"
-msgstr "%1 הגדרות"
+msgstr "הגדרות הגבלת מניעת כפילות"
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Field)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Field)
@@ -13020,11 +12891,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:32
-#, fuzzy, kde-format
-#| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-#| msgid "Re&move Duplicates"
+#, kde-format
 msgid "Prevent duplicate"
-msgstr "ה&סר כפילויות"
+msgstr "מניעת כפילות"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:51
@@ -13034,23 +12903,20 @@ msgstr "רצועות"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:56
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgid "albums"
-msgstr "אלבום"
+msgstr "אלבומים"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:61
-#, fuzzy, kde-format
-#| msgid "artist"
+#, kde-format
 msgid "artists"
-msgstr "אמן"
+msgstr "אומנים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:56
-#, fuzzy, kde-format
-#| msgid "My Tags"
+#, kde-format
 msgid "Match Tags"
-msgstr "התגיות שלי"
+msgstr "לכידת תגיות"
 
 #: playlistgenerator/constraints/TagMatch.cpp:57
 #, kde-format
@@ -13092,8 +12958,7 @@ msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:341
 #: widgets/MetaQueryWidget.cpp:1018
-#, fuzzy, kde-format
-#| msgid "equal to"
+#, kde-format
 msgctxt "a numerical tag (like year or track number) equals a value"
 msgid "equals"
 msgstr "שווה ל־"
@@ -13113,63 +12978,55 @@ msgstr "גדול מ־"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatch.cpp:349
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:233
-#, fuzzy, kde-format
-#| msgid "is before"
+#, kde-format
 msgid "before"
 msgstr "לפני"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatch.cpp:351
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:238
-#, fuzzy, kde-format
-#| msgid "None"
+#, kde-format
 msgid "on"
-msgstr "ללא"
+msgstr "ב־"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatch.cpp:353
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:243
-#, fuzzy, kde-format
-#| msgid "is after"
+#, kde-format
 msgid "after"
 msgstr "אחרי"
 
 #: playlistgenerator/constraints/TagMatch.cpp:355
-#, fuzzy, kde-format
-#| msgid "within"
+#, kde-format
 msgid "within"
-msgstr "לפני"
+msgstr "במהלך"
 
 #: playlistgenerator/constraints/TagMatch.cpp:359
 #: widgets/MetaQueryWidget.cpp:1032
-#, fuzzy, kde-format
-#| msgid "equal to"
+#, kde-format
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
 msgid "equals"
 msgstr "שווה ל־"
 
 #: playlistgenerator/constraints/TagMatch.cpp:361
-#, fuzzy, kde-format
-#| msgid "starts with"
+#, kde-format
 msgctxt ""
 "an alphabetical tag (like title or artist name) starts with some string"
 msgid "starts with"
 msgstr "מתחיל ב־"
 
 #: playlistgenerator/constraints/TagMatch.cpp:363
-#, fuzzy, kde-format
-#| msgid "ends with"
+#, kde-format
 msgctxt "an alphabetical tag (like title or artist name) ends with some string"
 msgid "ends with"
 msgstr "מסתיים ב־"
 
 #: playlistgenerator/constraints/TagMatch.cpp:365
 #: widgets/MetaQueryWidget.cpp:1034
-#, fuzzy, kde-format
-#| msgid "contains"
+#, kde-format
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
-msgstr "כולל"
+msgstr "מכיל"
 
 #: playlistgenerator/constraints/TagMatch.cpp:367
 #, kde-format
@@ -13178,10 +13035,9 @@ msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:370
 #: widgets/MetaQueryWidget.cpp:1039
-#, fuzzy, kde-format
-#| msgid "Unknown Genre"
+#, kde-format
 msgid "unknown comparison"
-msgstr "סגנון לא ידוע"
+msgstr "השוואה לא ידועה"
 
 #: playlistgenerator/constraints/TagMatch.cpp:383
 #, fuzzy, kde-format
@@ -13277,10 +13133,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_Match)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:32
-#, fuzzy, kde-format
-#| msgid "Failed"
+#, kde-format
 msgid "Field:"
-msgstr "נכשל"
+msgstr "שדה:"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, checkBox_Invert)
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Invert)
@@ -13546,10 +13401,9 @@ msgid "length"
 msgstr "אורך"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:98
-#, fuzzy, kde-format
-#| msgid "Move to Collection"
+#, kde-format
 msgid "added to collection"
-msgstr "העבר אל האוסף"
+msgstr "נוסף לאוסף"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:99
 #, kde-format
@@ -13562,26 +13416,22 @@ msgid "rating"
 msgstr "דירוג"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:101
-#, fuzzy, kde-format
-#| msgid "First Played"
+#, kde-format
 msgid "first played"
 msgstr "הושמע לראשונה"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:102
-#, fuzzy, kde-format
-#| msgid "Last played"
+#, kde-format
 msgid "last played"
-msgstr "הושמע לאחרונה"
+msgstr "השמעה אחרונה"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:103
-#, fuzzy, kde-format
-#| msgid "playcount"
+#, kde-format
 msgid "play count"
-msgstr "מספור השמעות"
+msgstr "מונה השמעות"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:104
-#, fuzzy, kde-format
-#| msgid "Label"
+#, kde-format
 msgid "label"
 msgstr "תווית"
 
@@ -13647,10 +13497,9 @@ msgstr "אפשרויות קבועות"
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Tree)
 #: playlistgenerator/PresetEditDialog.ui:23
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Constraint Tree"
-msgstr "%1 הגדרות"
+msgstr "עץ הגבלות"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Title)
 #: playlistgenerator/PresetEditDialog.ui:41
@@ -13660,16 +13509,14 @@ msgid "APG Preset Name"
 msgstr "הכנס שם של אפשרות קבועה:"
 
 #: playlistgenerator/PresetModel.cpp:151
-#, fuzzy, kde-format
-#| msgid "Import Collection"
+#, kde-format
 msgid "Import preset"
-msgstr "ייבא אפשרויות קבועות"
+msgstr "ייבוא ערכה"
 
 #: playlistgenerator/PresetModel.cpp:153
-#, fuzzy, kde-format
-#| msgid "Presets:"
+#, kde-format
 msgid "Preset files"
-msgstr "אפשרויות קבועות:"
+msgstr "קובצי ערכות"
 
 #: playlistgenerator/PresetModel.cpp:212
 #, kde-format
@@ -13677,16 +13524,14 @@ msgid "Preset exported to %1"
 msgstr ""
 
 #: playlistgenerator/PresetModel.cpp:219
-#, fuzzy, kde-format
-#| msgid "The cover could not be retrieved."
+#, kde-format
 msgid "Preset could not be exported to %1"
-msgstr "נכשל הייצוא של האפשרויות הקבועות ל־"
+msgstr "לא ניתן לייצא את הערכה אל %1"
 
 #: playlistgenerator/PresetModel.cpp:237
-#, fuzzy, kde-format
-#| msgid "could not execute %1"
+#, kde-format
 msgid "Presets could not be imported from %1"
-msgstr "אין אפשרות לייבא אפשרויות קבועות מ־%1"
+msgstr "לא ניתן לייבוא ערכות מתוך %1"
 
 #: playlistgenerator/PresetModel.cpp:244
 #, kde-format
@@ -13719,10 +13564,9 @@ msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
 msgstr ""
 
 #: playlistgenerator/PresetModel.cpp:293
-#, fuzzy, kde-format
-#| msgid "Import Collection"
+#, kde-format
 msgid "Export \"%1\" preset"
-msgstr "ייבא אפשרויות קבועות"
+msgstr "ייצוא הערכה „%1”"
 
 #: playlistgenerator/PresetModel.cpp:295
 #, kde-format
@@ -13758,10 +13602,9 @@ msgid "Future version of Playlist Database?"
 msgstr ""
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Amarok Database"
-msgstr "שם בסיס־נתונים"
+msgstr "מסד הנתונים של Amarok"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 #, kde-format
@@ -13795,16 +13638,14 @@ msgid "Aborting scanner with error: %1"
 msgstr ""
 
 #: scanner/GenericScannerJob.cpp:207
-#, fuzzy, kde-format
-#| msgid "Amarok AFT Tagger"
+#, kde-format
 msgid "Could not find amarokcollectionscanner!"
-msgstr "מתייג AFT של Amarok"
+msgstr "לא ניתן למצוא את amarokcollectionscanner!"
 
 #: scanner/GenericScannerJob.cpp:265
-#, fuzzy, kde-format
-#| msgid "Amarok AFT Tagger"
+#, kde-format
 msgid "Unable to start Amarok collection scanner."
-msgstr "מתייג AFT של Amarok"
+msgstr "לא ניתן להפעיל את סורק האוספים של Amarok."
 
 #: scanner/GenericScannerJob.cpp:314
 #, kde-format
@@ -13875,11 +13716,9 @@ msgid "Next Script"
 msgstr "הסקריפט הבא"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:128
-#, fuzzy, kde-format
-#| msgctxt "@item:inmenu"
-#| msgid "&View"
+#, kde-format
 msgid "&View"
-msgstr "&תצוגה"
+msgstr "ת&צוגה"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:217
 #, kde-format
@@ -13969,23 +13808,20 @@ msgid "Add new Ampache server"
 msgstr "הוספת שרת Ampache חדש"
 
 #: services/ampache/AddServerDialog.cpp:83
-#, fuzzy, kde-format
-#| msgid "MP3tunes Harmony: Successfully Connected"
+#, kde-format
 msgid "Successfully connected"
-msgstr "MP3tunes Harmony: התחבר בהצלחה"
+msgstr "החיבור הצליח"
 
 #: services/ampache/AddServerDialog.cpp:88
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Connection failure"
-msgstr "חיבור"
+msgstr "שגיאת חיבור"
 
 # kde-il: don't translate
 #: services/ampache/AmpacheAccountLogin.cpp:173
-#, fuzzy, kde-format
-#| msgid "Authenticating"
+#, kde-format
 msgid "Authentication failed."
-msgstr "וידוא זהות"
+msgstr "האימות נכשל."
 
 # kde-il: don't translate
 #: services/ampache/AmpacheAccountLogin.cpp:174
@@ -13997,32 +13833,28 @@ msgstr "שגיאת אימות"
 # kde-il: don't translate
 #. i18n: ectx: property (text), widget (QPushButton, addButton)
 #: services/ampache/AmpacheConfigWidget.ui:23
-#, fuzzy, kde-format
-#| msgid "Server"
+#, kde-format
 msgid "Add Server"
-msgstr "שרת"
+msgstr "הוספת שרת"
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
 #: services/ampache/AmpacheConfigWidget.ui:30
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Remove Server"
-msgstr "המחיקה נכשלה"
+msgstr "הסרת שרת"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelServerAddress)
 #: services/ampache/AmpacheConfigWidget.ui:58
 #: services/ampache/NewServerWidget.ui:27
-#, fuzzy, kde-format
-#| msgid "Server passwords"
+#, kde-format
 msgid "Server Address"
-msgstr "ססמת השרת"
+msgstr "כתובת שרת"
 
 #: services/ampache/AmpacheService.cpp:94
-#, fuzzy, kde-format
-#| msgid "Add new preset"
+#, kde-format
 msgid "Amarok frontend for your Ampache server"
-msgstr "הוסף אפשרויות קבועות חדשות"
+msgstr "ממשק Amarok לשרת ה־Ampache שלך"
 
 #: services/ampache/AmpacheService.cpp:96
 #, kde-format
@@ -14039,11 +13871,9 @@ msgstr "שרת Ampache  %1"
 
 # kde-il: don't translate
 #: services/ampache/LastfmInfoParser.cpp:66
-#, fuzzy, kde-format
-#| msgctxt "Fetch new information from the website"
-#| msgid "Update"
+#, kde-format
 msgid "Updated: %1"
-msgstr "עדכן"
+msgstr "עודכן: %1"
 
 #: services/ampache/LastfmInfoParser.cpp:68
 #, kde-format
@@ -14062,17 +13892,15 @@ msgstr "<p>לא נמצא מידע עבור אמן זה.</p>"
 
 #. i18n: ectx: property (text), widget (QPushButton, verifyButton)
 #: services/ampache/NewServerWidget.ui:74
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Check Connection"
-msgstr "חיבור"
+msgstr "בדיקת החיבור"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: services/gpodder/GpodderConfigWidget.ui:26
-#, fuzzy, kde-format
-#| msgid "Last.fm Profile"
+#, kde-format
 msgid "gpodder.net Profile"
-msgstr "הפרופיל של Last.fm"
+msgstr "פרופיל ב־gpodder.net"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/gpodder/GpodderConfigWidget.ui:78
@@ -14132,10 +13960,9 @@ msgid "&Test Login"
 msgstr "&ניסיון התחברות "
 
 #: services/gpodder/GpodderProvider.cpp:292
-#, fuzzy, kde-format
-#| msgid "Podcasts"
+#, kde-format
 msgid "Gpodder Podcasts"
-msgstr "פוד־קסטים"
+msgstr "הסכתים מ־Gpodder"
 
 #: services/gpodder/GpodderProvider.cpp:469
 #, kde-format
@@ -14156,10 +13983,9 @@ msgid ""
 msgstr ""
 
 #: services/gpodder/GpodderService.cpp:116
-#, fuzzy, kde-format
-#| msgid "Podcast Directory"
+#, kde-format
 msgid "gpodder.net: Podcast Directory Service"
-msgstr "תיקיית פוד־קסט"
+msgstr "gpodder.net: שירות ספריית הסכתים"
 
 #: services/gpodder/GpodderService.cpp:119
 #, kde-format
@@ -14173,10 +13999,9 @@ msgid "Subscribe"
 msgstr "הירשם"
 
 #: services/gpodder/GpodderServiceConfig.cpp:156
-#, fuzzy, kde-format
-#| msgid "Last.fm Profile"
+#, kde-format
 msgid "gpodder.net credentials"
-msgstr "הפרופיל של Last.fm"
+msgstr "פרטי גישה ל־gpodder.net"
 
 #: services/gpodder/GpodderServiceConfig.cpp:157
 #, kde-format
@@ -14191,13 +14016,10 @@ msgid "Testing..."
 msgstr ""
 
 #: services/gpodder/GpodderServiceSettings.cpp:111
-#, fuzzy, kde-format
-#| msgid ""
-#| "Either the username or the password is incorrect, please correct and try "
-#| "again"
+#, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
-msgstr "שם־המשתמש או הססמה שגויים. יש לתקן ולנסות שנית"
+msgstr "שם המשתמש או הסיסמה ריקים, נא לתקן את זה ולנסות שוב."
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
 #: services/gpodder/GpodderServiceSettings.cpp:179
@@ -14226,10 +14048,9 @@ msgid ""
 msgstr "שם־המשתמש או הססמה שגויים. יש לתקן ולנסות שנית"
 
 #: services/gpodder/GpodderServiceSettings.cpp:187
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
+#, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
-msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
+msgstr "לא ניתן להתחבר לשירות gpodder.net או שאירעה שגיאה אחרת."
 
 #: services/gpodder/GpodderServiceSettings.cpp:204
 #, kde-format
@@ -14306,10 +14127,9 @@ msgid "Genre / Artist / Album"
 msgstr "סגנון / אמן / אלבום"
 
 #: services/jamendo/JamendoService.cpp:194
-#, fuzzy, kde-format
-#| msgid "Downloading Jamendo.com Database"
+#, kde-format
 msgid "Downloading Jamendo.com database..."
-msgstr "מוריד את בסיס־הנתונים של Jamendo.com"
+msgstr "מסד הנתונים של Jamendo.com מתקבל…"
 
 #: services/jamendo/JamendoService.cpp:216
 #, kde-format
@@ -14353,11 +14173,10 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: services/lastfm/biases/LastFmBias.cpp:45
-#, fuzzy, kde-format
-#| msgid "Last.Fm Similar Artists"
+#, kde-format
 msgctxt "Name of the \"Last.fm\" similar bias"
 msgid "Last.fm similar"
-msgstr "אמנים דומים של Last.Fm"
+msgstr "דומים ב־Last.fm"
 
 #: services/lastfm/biases/LastFmBias.cpp:54
 #, kde-format
@@ -14386,17 +14205,15 @@ msgid ""
 msgstr ""
 
 #: services/lastfm/biases/LastFmBias.cpp:145
-#, fuzzy, kde-format
-#| msgid "Previous Track"
+#, kde-format
 msgid "the previous track"
 msgstr "הרצועה הקודמת"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:40
-#, fuzzy, kde-format
-#| msgid "Weekly Top Artists"
+#, kde-format
 msgctxt "Name of the \"WeeklyTop\" bias"
 msgid "Last.fm weekly top artist"
-msgstr "האמנים הכי טובים של השבוע"
+msgstr "האומנים השבועיים המובילים ב־Last.fm"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:49
 #, kde-format
@@ -14685,13 +14502,10 @@ msgid "Unable to connect to Last.fm service."
 msgstr "לא ניתן להתחבר לשירות Last.fm."
 
 #: services/lastfm/LastFmTreeModel.cpp:129
-#, fuzzy, kde-format
-#| msgctxt "%1 is number of tracks, %2 is time"
-#| msgid "%1 track (%2)"
-#| msgid_plural "%1 tracks (%2)"
+#, kde-format
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
-msgstr "%1 רצועה (%2)"
+msgstr "%1 (%2)"
 
 #: services/lastfm/LastFmTreeModel.cpp:180
 #, kde-format
@@ -14849,20 +14663,16 @@ msgid "Error starting track from Last.fm radio"
 msgstr ""
 
 #: services/lastfm/ScrobblerAdapter.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "As in, lastfm"
-#| msgid "Loved Track: %1"
+#, kde-format
 msgctxt "As in Last.fm"
 msgid "Loved Track: %1"
-msgstr "רצועות אהובות: %1"
+msgstr "רצועה אהובה: %1"
 
 #: services/lastfm/ScrobblerAdapter.cpp:170
-#, fuzzy, kde-format
-#| msgctxt "As in, lastfm"
-#| msgid "Loved Track: %1"
+#, kde-format
 msgctxt "As in Last.fm"
 msgid "Banned Track: %1"
-msgstr "רצועות אהובות: %1"
+msgstr "רצועה חסומה: %1"
 
 #: services/lastfm/ScrobblerAdapter.cpp:251
 #, fuzzy, kde-format
@@ -14874,8 +14684,7 @@ msgid "%1 <b>%2</b> should be corrected to <b>%3</b>"
 msgstr "<b>%1</b> מאת <b>%2</b> מתוך <b>%3</b>"
 
 #: services/lastfm/ScrobblerAdapter.cpp:267
-#, fuzzy, kde-format
-#| msgid "%1 - %2"
+#, kde-format
 msgctxt "%1 is artist, %2 is title"
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -14891,11 +14700,10 @@ msgid "Play Similar Artists from Last.fm"
 msgstr "נגן אמנים דומים  מ־Last.fm"
 
 #: services/lastfm/SynchronizationAdapter.cpp:61
-#, fuzzy, kde-format
-#| msgid "No track playing"
+#, kde-format
 msgctxt "description of the Last.fm statistics synchronization provider"
 msgid "slows down track matching"
-msgstr "שום רצועה מושמעת"
+msgstr "מאט התאמת רצועות"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
 #, kde-format
@@ -14955,10 +14763,9 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdateDatabase)
 #: services/magnatune/MagnatuneConfigWidget.ui:33
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:32
-#, fuzzy, kde-format
-#| msgid "Updating the local Magnatune database."
+#, kde-format
 msgid "Update Magnatune database automatically"
-msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
+msgstr "עדכון מסד הנתונים של Magnatune אוטומטית"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:43
