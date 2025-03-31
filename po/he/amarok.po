@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-03-17 10:13+0200\n"
+"PO-Revision-Date: 2025-03-30 08:50+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -10280,8 +10280,7 @@ msgid "Rokymoter, Developer (sven423)"
 msgstr "Rokymoter, מפתח (sven423)"
 
 #: main.cpp:114
-#, fuzzy, kde-format
-#| msgid "Teo Mrnjavac"
+#, kde-format
 msgid "Téo Mrnjavac"
 msgstr "טאו מרניאבק"
 
@@ -12242,10 +12241,9 @@ msgid "The following sources are available for this track:"
 msgstr "המקורות הבאים זמינים עבור רצועה זו:"
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:39
-#, fuzzy, kde-format
-#| msgid "&OK"
+#, kde-format
 msgid "OK"
-msgstr "&בסדר"
+msgstr "אישור"
 
 #: playlist/view/PlaylistViewCommon.cpp:158
 #, kde-format
@@ -12348,11 +12346,9 @@ msgid "Fixes a track, album, or artist to a certain position in the playlist"
 msgstr "אזהרה: רצועות הוחבאו ברשימת־ההשמעה"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:170
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgid "Checkpoint: %1"
-msgstr "מתוך <b>%1</b>"
+msgstr "נקודת ביקורת: %1"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:178
 #: playlistgenerator/constraints/Checkpoint.cpp:186
@@ -12362,35 +12358,24 @@ msgid "unassigned"
 msgstr ""
 
 #: playlistgenerator/constraints/Checkpoint.cpp:180
-#, fuzzy, kde-format
-#| msgctxt "%1 is number of tracks, %2 is time"
-#| msgid "%1 track (%2)"
-#| msgid_plural "%1 tracks (%2)"
+#, kde-format
 msgid "\"%1\" (track) by %2"
-msgstr "%1 רצועה (%2)"
+msgstr "„%1” (רצועה) של %2"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:189
-#, fuzzy, kde-format
-#| msgid "Albums by %1"
+#, kde-format
 msgid "\"%1\" (album) by %2"
-msgstr "אלבומים של %1"
+msgstr "„%1” (אלבום) של %2"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:191
-#, fuzzy, kde-format
-#| msgid "1 album"
-#| msgid_plural "%1 albums"
+#, kde-format
 msgid "\"%1\" (album)"
-msgstr " אלבום אחד"
+msgstr "„%1” (אלבום)"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:200
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "Last part of: Jamendo.com database update complete. Added 3 tracks on 4 "
-#| "albums from 5 artists."
-#| msgid "1 artist."
-#| msgid_plural "%1 artists."
+#, kde-format
 msgid "\"%1\" (artist)"
-msgstr "אמן אחד."
+msgstr "„%1” (אומן/אומנית)"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, CheckpointEditWidget)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:15
@@ -12417,10 +12402,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:48
-#, fuzzy, kde-format
-#| msgid "Proportion:"
+#, kde-format
 msgid "Position:"
-msgstr "הצעה:"
+msgstr "מקום:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
@@ -12504,19 +12488,17 @@ msgstr ""
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgid "exact"
-msgstr "&הבא"
+msgstr "מדויק"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:52
-#, fuzzy, kde-format
-#| msgid "Playlist Options"
+#, kde-format
 msgid "Playlist Duration"
-msgstr "אפשרויות רשימת־השמעה"
+msgstr "משך רשימת נגינה"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:53
-#, fuzzy, kde-format
-#| msgid "Add this filter condition to the list"
+#, kde-format
 msgid "Sets the preferred duration of the playlist"
-msgstr "הוסף את התנאי המסנן לרשימה."
+msgstr "הגדרת משך הזמן המועדף לרשימת הנגינה"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:119
 #, fuzzy, kde-format
@@ -13187,10 +13169,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_Invert)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:87
-#, fuzzy, kde-format
-#| msgid "Internet"
+#, kde-format
 msgid "Invert:"
-msgstr "אינטרנט"
+msgstr "היפוך:"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonInt)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:106
@@ -13338,16 +13319,14 @@ msgid ""
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:87
-#, fuzzy, kde-format
-#| msgid "Url:"
+#, kde-format
 msgid "url"
-msgstr "כתובת:"
+msgstr "כתובת"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:88
-#, fuzzy, kde-format
-#| msgid "Title"
+#, kde-format
 msgid "title"
-msgstr "שם הרצועה"
+msgstr "כותרת"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:89
 #, fuzzy, kde-format
@@ -13356,10 +13335,9 @@ msgid "artist name"
 msgstr "שם רשימת־ההשמעה:"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:90
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgid "album name"
-msgstr "אלבום"
+msgstr "שם אלבום"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:91
 #, kde-format
@@ -13372,8 +13350,7 @@ msgid "composer"
 msgstr "מלחין"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:93
-#, fuzzy, kde-format
-#| msgid "year"
+#, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr "שנה"
@@ -14613,10 +14590,9 @@ msgid "%1's Personal Radio"
 msgstr "הרדיו האישי של %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:301
-#, fuzzy, kde-format
-#| msgid "%1's Loved Radio"
+#, kde-format
 msgid "%1's Mix Radio"
-msgstr "הרדיו האהוב על %1"
+msgstr "רדיו המיקס של %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:305
 #, kde-format
@@ -14675,13 +14651,12 @@ msgid "Banned Track: %1"
 msgstr "רצועה חסומה: %1"
 
 #: services/lastfm/ScrobblerAdapter.cpp:251
-#, fuzzy, kde-format
-#| msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
+#, kde-format
 msgctxt ""
 "%1 is field name such as Album Name; %2 is the original value; %3 is the "
 "corrected value"
 msgid "%1 <b>%2</b> should be corrected to <b>%3</b>"
-msgstr "<b>%1</b> מאת <b>%2</b> מתוך <b>%3</b>"
+msgstr "את %1 <b>%2</b> יש לתקן ל־<b>%3</b>"
 
 #: services/lastfm/ScrobblerAdapter.cpp:267
 #, kde-format
@@ -15026,10 +15001,9 @@ msgstr "חברת ההקלטות הלא מרושעת שהוגנת כלפי האמ
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:39
-#, fuzzy, kde-format
-#| msgid "Updating the local Magnatune database."
+#, kde-format
 msgid "Click this button to download Magnatune database now."
-msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
+msgstr "לחיצה על הכפתור הזה תוריד את מסד הנתונים של Magnatune עכשיו."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:49
@@ -15086,10 +15060,9 @@ msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, SignupDialog)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:14
-#, fuzzy, kde-format
-#| msgid "Magnatune.com Album Download"
+#, kde-format
 msgid "Magnatune.com member signup"
-msgstr "הורדת אלבום מ־Magnatune.com"
+msgstr "הרשמה לחברות ב־Magnatune.com"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:32
@@ -15190,10 +15163,9 @@ msgid "Signup"
 msgstr "הרשמה"
 
 #: services/magnatune/MagnatuneStore.cpp:328
-#, fuzzy, kde-format
-#| msgid "Downloading Magnatune.com Database"
+#, kde-format
 msgid "Downloading Magnatune.com database..."
-msgstr "מוריד את בסיס־הנתונים של Magnatune.com"
+msgstr "הורדת מסד הנתונים של Magnatune.com…"
 
 #: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
@@ -15531,10 +15503,9 @@ msgstr "מעלה רצועות %1/%2"
 
 #. i18n: ectx: property (text), widget (QLabel, instructionsLabel)
 #: services/opmldirectory/AddOpmlWidget.ui:37
-#, fuzzy, kde-format
-#| msgid "Add a sorting level to the playlist."
+#, kde-format
 msgid "Add a local or remote OPML file to be included in the list."
-msgstr "הוספת שלב מיון לרשימת־ההשמעה."
+msgstr "הוספת קובץ OPML מקומי או מרוחק לכלול ברשימה."
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, titleEdit)
 #: services/opmldirectory/AddOpmlWidget.ui:88
