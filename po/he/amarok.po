@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-03-30 08:50+0300\n"
+"PO-Revision-Date: 2025-04-03 21:36+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -10198,22 +10198,22 @@ msgstr "מפתח (dr_lepper)"
 #: main.cpp:84
 #, kde-format
 msgid "Mark Kretschmann"
-msgstr ""
+msgstr "מארק קרצ׳מן"
 
 #: main.cpp:85
 #, kde-format
 msgid "Project founder (markey)"
-msgstr ""
+msgstr "מייסד המיזם (markey)"
 
 #: main.cpp:88
 #, kde-format
 msgid "Matěj Laitl"
-msgstr ""
+msgstr "מאטיי לאייטל"
 
 #: main.cpp:89
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
-msgstr ""
+msgstr "שכתוב אוספים ב־iPod ועוד (strohel)"
 
 #: main.cpp:92
 #, kde-format
@@ -10293,7 +10293,7 @@ msgstr "מפתח (Teo`‎)"
 #: main.cpp:118
 #, kde-format
 msgid "Valorie Zimmerman"
-msgstr ""
+msgstr "ואלורי צימרמן"
 
 #: main.cpp:119
 #, kde-format
@@ -10523,7 +10523,7 @@ msgstr ""
 #: main.cpp:174
 #, kde-format
 msgid "John Atkinson"
-msgstr ""
+msgstr "ג׳ון אטקינסון"
 
 #: main.cpp:174
 #, kde-format
@@ -10549,7 +10549,7 @@ msgstr "Kevin Funk"
 #: main.cpp:178
 #, kde-format
 msgid "Developer, Website theme (KRF)"
-msgstr ""
+msgstr "מפתח, ערכת עיצוב האתר (KRF)"
 
 #: main.cpp:180
 #, kde-format
