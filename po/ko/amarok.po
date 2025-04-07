@@ -1,7 +1,7 @@
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the amarok package.
 # Cho Sung Jae <cho.sungjae@gmail.com>, 2006, 2007.
-# SPDX-FileCopyrightText: 2007, 2008, 2009, 2015, 2019, 2020, 2021, 2022, 2023, 2024 Shinjo Park <kde@peremen.name>
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Shinjo Park <kde@peremen.name>
 # Cho Sangjin <sangjin3901@chol.com>, 2007.
 # 이정희 <daemul72@gmail.com>, 2019, 2020.
 #
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2024-12-09 22:47+0100\n"
+"PO-Revision-Date: 2025-04-06 21:28+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -461,6 +461,7 @@ msgstr "설정하면 콘텍스트 애플릿을 접을 때 애니메이션을 사
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"앨범 아티스트와 트랙 아티스트가 다를 때 모음집 탐색기에 트랙 아티스트 표시"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -469,6 +470,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"앨범 아티스트와 트랙 아티스트가 다른 경우 모음집 탐색기의 여러 아티스트 앨범"
+"과 트랙에 아티스트를 명시적으로 표시합니다."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -724,8 +727,7 @@ msgstr "사용하면 오디오 스트림에 이퀄라이저가 적용됩니다."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "프리앰프가 들어 있는 이퀄라이저 게인 11개입니다. 범위는 -100..100이며, 0은 게"
@@ -1144,17 +1146,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "재생한 노래 전달"
+msgstr "재생한 트랙 제출"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "재생한 노래를 Audioscrobbler로 제출할지 여부"
+msgstr "재생한 트랙을 Audioscrobbler로 제출할지 여부"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1207,10 +1207,9 @@ msgstr "비슷한 아티스트 검색"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Audioscrobbler에서 비슷한 곡을 가져올지 여부"
+msgstr "Audioscrobbler에서 비슷한 트랙을 가져올지 여부"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1784,12 +1783,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Last.fm 세션 키가 잘못되었습니다. 플러그인 설정에서 Last.fm 계정을 다시 연결"
+"하십시오."
 
 #: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Last.fm 세션 키 오류"
 
 #: App.cpp:674
 #, kde-format
@@ -1801,11 +1802,10 @@ msgstr ""
 "니까?"
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "모음집 폴더"
+msgstr "모음집 폴더 선택"
 
 #: App.cpp:677
 #, kde-format
@@ -1817,7 +1817,7 @@ msgstr "사용"
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "사용 안 함"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -1917,11 +1917,10 @@ msgid "Show Track Numbers"
 msgstr "곡 번호 표시"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "여러 아티스트 아래에 표시"
+msgstr "여러 아티스트에서 아티스트 표시"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -2305,11 +2304,10 @@ msgid "Duplicates"
 msgstr "중복"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "결과에 중복된 곡 허용"
+msgstr "결과에 중복된 트랙 허용"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, kde-format
@@ -2504,24 +2502,20 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "%2에서 %1곡 삭제"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "%1의 재생 목록을 삭제합니다."
+msgstr "%2에서 <i>%1</i> 재생 목록을 삭제하시겠습니까?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "%1의 재생 목록을 삭제합니다."
+msgstr "%2에서 재생 목록 %1개를 삭제하시겠습니까?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
@@ -4159,18 +4153,16 @@ msgid "Width"
 msgstr "너비"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "<b>%1</b>에서"
+msgstr "<b>%1</b>와(과) 비슷함|/|<b>%1</b>$[와과 %1] 비슷함"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "청취자 %1명<br>재생 %2회"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4178,7 +4170,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1회 재생함"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4329,11 +4321,10 @@ msgid "Next"
 msgstr "다음"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Magnatune 데이터베이스 자동 업데이트"
+msgstr "자동으로 페이지 전환하지 않음"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4369,20 +4360,16 @@ msgid "No information found..."
 msgstr "정보를 찾을 수 없음..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(아티스트|밴드|가수|음악가).*\\))"
+msgstr ".*\\(.*(아티스트|밴드|가수|음악가).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(작곡가|음악가).*\\))"
+msgstr ".*\\(.*(작곡가|음악가).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
@@ -4413,7 +4400,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "웹 브라우저에서 %1을(를) 열려면 클릭하십시오"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -5338,8 +5325,7 @@ msgid "Remove empty folders?"
 msgstr "빈 폴더를 삭제하시겠습니까?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "삭제"
@@ -5348,7 +5334,7 @@ msgstr "삭제"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "삭제 안 함"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -9537,27 +9523,16 @@ msgid "The audio player by KDE"
 msgstr "KDE의 음악 재생기"
 
 #: main.cpp:58
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, The Amarok Development Squad"
+"(C) 2003-2025, The Amarok Development Squad"
 
 #: main.cpp:59
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9568,7 +9543,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarokde, #amarokes, #amarok.fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "피드백:\n"
 "amarok@kde.org\n"
@@ -10870,18 +10845,17 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
@@ -11632,11 +11606,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "검색이 진행 중이어서 곡을 숨겼습니다."
 
 #: playlist/view/listview/PrettyListView.cpp:700
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "드래그해서 여기에 곡을 추가하십시오."
+msgstr "여기로 드래그해서 트랙을 추가하십시오."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -11811,17 +11784,13 @@ msgstr "순위:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"재생 목록에서 원하는 노래 위치(시간, 분 및 초)입니다.  참고: Qt 제한으로 인"
+"재생 목록에서 원하는 트랙 위치(시간, 분 및 초)입니다.  참고: Qt 제한으로 인"
 "해 지정할 수 있는 최대 위치는 24시간입니다."
 
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_Duration)
@@ -12321,10 +12290,9 @@ msgid "Match tag:%1 %2 %3 %4"
 msgstr "태그 일치: %1 %2 %3 %4"
 
 #: playlistgenerator/constraints/TagMatch.cpp:177
-#, fuzzy, kde-format
-#| msgid "is not"
+#, kde-format
 msgid " not"
-msgstr "다음이 아님"
+msgstr " 아님"
 
 #: playlistgenerator/constraints/TagMatch.cpp:182
 #, kde-format
@@ -12368,9 +12336,9 @@ msgstr "이전"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatch.cpp:351
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:238
-#, fuzzy, kde-format
+#, kde-format
 msgid "on"
-msgstr "on"
+msgstr "다음에"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatch.cpp:353
@@ -13086,8 +13054,7 @@ msgid "Remove Script"
 msgstr "스크립트 삭제"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:422
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "삭제"
@@ -13096,7 +13063,7 @@ msgstr "삭제"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "삭제 안 함"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -13107,9 +13074,7 @@ msgstr "계속 진행하시겠습니까?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "예"
@@ -13118,9 +13083,7 @@ msgstr "예"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "아니요"
@@ -13136,14 +13099,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "%1 스크립트가 5초 이상 연산 중입니다. 끝내시겠습니까?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13151,9 +13107,8 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"스크립트 %1에서 더 이상 사용되지 않는 스크립팅 API 호출을 사용합니다. 스크립"
-"트 작성자 %2 (%3)에게 문의하여 다음 Amarok 릴리스 전에 업그레이드하도록 요청"
-"하십시오."
+"%1 스크립트에서 더 이상 지원하지 않는 API 호출을 사용합니다. 스크립트 작성자"
+"(%2)에게 문의하여 다음 Amarok 릴리스 전에 업그레이드하도록 요청하십시오."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13598,10 +13553,9 @@ msgstr "사용자 이름:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:226
 #: services/lastfm/LastFmServiceSettings.cpp:250
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "연결 실패"
+msgstr "계정에 연결"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
@@ -13612,17 +13566,15 @@ msgstr "연결되지 않음"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href=\"http://www.last.fm:80/signup.php\">Last.fm 가입</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Last.fm 가입</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "장치 연결 끊기(&D)"
+msgstr "계정 연결 끊기"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13804,23 +13756,24 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"KWallet에서 Last.fm 사용자 이름을 이전할 수 없습니다. 플러그인 설정에서 Last."
+"fm 계정을 다시 연결하십시오."
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Amarok과 Last.fm 계정 %1의 연결을 해제하시겠습니까?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Last.fm 계정의 연결을 해제하시겠습니까?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "장치 연결 끊기(&D)"
+msgstr "연결 끊기"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -13831,17 +13784,16 @@ msgid "Failed"
 msgstr "실패"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "이 이벤트의 Last.fm 웹 페이지 열기"
+msgstr "Last.fm 웹 페이지 열기"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "계정 연결됨"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -13850,6 +13802,8 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Last.fm 계정 연결이 실패했습니다. 열린 Last.fm 웹 페이지에서 Amarok에서 Last."
+"fm 계정에 접근할 수 있도록 허용했는지 확인한 후 다시 시도하십시오."
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -14610,13 +14564,7 @@ msgid "Updating the local Magnatune database."
 msgstr "로컬 Magnatune 데이터베이스를 업데이트하는 중."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -14627,7 +14575,7 @@ msgstr ""
 "Magnatune.com 서비스는 다음 메시지를 수락합니다.\n"
 "\n"
 "\taddMoodyTracks mood count: 재생 목록에 지정된 무드와 임의의 곡의 수를 추가"
-"합니다. 무드 인수의 공백 문자는 %%20으로 대체해야 합니다"
+"합니다. 무드 인수의 공백 문자는 &#37;20으로 대체해야 합니다"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -14707,14 +14655,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Amarok과 MP3tunes 서비스의 자동 동기화를 처리합니다."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -14723,7 +14664,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"서버: irc.libera.chat / 채널: #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
+"서버: irc.libera.chat / 채널: #amarok\n"
 "\n"
 "피드백:\n"
 "amarok@kde.org"
@@ -15029,17 +14970,16 @@ msgstr ""
 "Amarok 설정에서 항상 결정을 변경할 수 있습니다."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "동기화"
+msgstr "동기화 유지"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "동기화 유지 안 함"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
