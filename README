@@ -77,8 +77,6 @@ Optional
 
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.2.0 (or newer)
-        * libmygpo needs to be built with Qt6 support, available at
-          https://github.com/gpodder/libmygpo-qt/pull/23
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
