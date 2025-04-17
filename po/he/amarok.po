@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-04-11 11:53+0300\n"
+"PO-Revision-Date: 2025-04-16 09:02+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -11806,28 +11806,28 @@ msgstr "גודל כולל של רשימת הנגינה: %1"
 #: playlist/PlaylistInfoWidget.cpp:110
 #, kde-format
 msgid "Queue size: %1"
-msgstr ""
+msgstr "גודל תור: %1"
 
 #: playlist/PlaylistInfoWidget.cpp:111
 #, kde-format
 msgid "Queue length: %1"
-msgstr ""
+msgstr "אורך תור: %1"
 
 #: playlist/PlaylistModel.cpp:270 playlist/PlaylistModel.cpp:382
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
-msgstr ""
+msgstr "<b>לתשומת ליבך:</b> לא ניתן לנגן את הרצועה הזאת.<br>%1"
 
 #: playlist/PlaylistModel.cpp:305
 #, kde-format
 msgid "(...)"
-msgstr ""
+msgstr "(…)"
 
 #: playlist/PlaylistModel.cpp:334
 #, kde-format
 msgctxt "%1: bitrate"
 msgid "%1 kbps"
-msgstr ""
+msgstr "%1 קסל״ש"
 
 #: playlist/PlaylistModel.cpp:337
 #, kde-format
@@ -12005,7 +12005,7 @@ msgstr "להציג התאמות בלבד"
 #: playlist/ProgressiveSearchWidget.cpp:135
 #, kde-format
 msgid "Search Preferences"
-msgstr ""
+msgstr "העדפות חיפוש"
 
 #: playlist/UndoCommands.cpp:31
 #, kde-format
@@ -12059,25 +12059,22 @@ msgid "Select Source"
 msgstr "בחר מקור"
 
 #: playlistgenerator/ConstraintGroup.cpp:87
-#, fuzzy, kde-format
-#| msgid "Match Any Word"
+#, kde-format
 msgctxt "name of a type of constraint group"
 msgid "\"Match Any\" group"
-msgstr "התאמה לכל מלה"
+msgstr "קבוצת „התאמת כלשהו”"
 
 #: playlistgenerator/ConstraintGroup.cpp:89
-#, fuzzy, kde-format
-#| msgid "Match All Words"
+#, kde-format
 msgctxt "name of a type of constraint group"
 msgid "\"Match All\" group"
-msgstr "התאמה לכל המילים"
+msgstr "קבוצת „התאמה של הכול”"
 
 #: playlistgenerator/ConstraintGroup.cpp:91
-#, fuzzy, kde-format
-#| msgid "Unknown track"
+#, kde-format
 msgctxt "name of a type of constraint group"
 msgid "Unknown match group"
-msgstr "רצועה לא־ידועה"
+msgstr "קבוצת התאמה לא ידועה"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, ConstraintGroupEditWidget)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:15
@@ -12093,10 +12090,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:21
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Constraint Group Settings"
-msgstr "%1 הגדרות"
+msgstr "הגדרות קבוצת הגבלה"
 
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, radioButton_MatchAll)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:29
@@ -12719,22 +12715,20 @@ msgid " not"
 msgstr "אין"
 
 #: playlistgenerator/constraints/TagMatch.cpp:182
-#, fuzzy, kde-format
-#| msgid "%1 track"
-#| msgid_plural "%1 tracks"
+#, kde-format
 msgctxt "number of stars in the rating of a track"
 msgid "%1 star"
 msgid_plural "%1 stars"
-msgstr[0] "%1 רצועה"
-msgstr[1] "%1 רצועה"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "כוכב"
+msgstr[1] "שני כוכבים"
+msgstr[2] "%1 כוכבים"
+msgstr[3] "%1 כוכבים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:188
 #, kde-format
 msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
-msgstr ""
+msgstr "„%1”"
 
 #: playlistgenerator/constraints/TagMatch.cpp:341
 #: widgets/MetaQueryWidget.cpp:1018
@@ -12811,7 +12805,7 @@ msgstr "מכיל"
 #: playlistgenerator/constraints/TagMatch.cpp:367
 #, kde-format
 msgid "regexp"
-msgstr ""
+msgstr "ביטוי רגולרי"
 
 #: playlistgenerator/constraints/TagMatch.cpp:370
 #: widgets/MetaQueryWidget.cpp:1039
@@ -12820,70 +12814,64 @@ msgid "unknown comparison"
 msgstr "השוואה לא ידועה"
 
 #: playlistgenerator/constraints/TagMatch.cpp:383
-#, fuzzy, kde-format
-#| msgid " plays"
+#, kde-format
 msgid "%1 day"
 msgid_plural "%1 days"
-msgstr[0] "סידור %1"
-msgstr[1] "סידור %1"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "יום"
+msgstr[1] "יומיים"
+msgstr[2] "%1 ימים"
+msgstr[3] "%1 ימים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:386
-#, fuzzy, kde-format
-#| msgid "Months"
+#, kde-format
 msgid "%1 month"
 msgid_plural "%1 months"
-msgstr[0] "חודשים"
-msgstr[1] "חודשים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "חודש"
+msgstr[1] "חודשיים"
+msgstr[2] "%1 חודשים"
+msgstr[3] "%1 חודשים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:389
-#, fuzzy, kde-format
-#| msgid "year"
+#, kde-format
 msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "שנה"
-msgstr[1] "שנה"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שנתיים"
+msgstr[2] "%1 שנים"
+msgstr[3] "%1 שנים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:540
 #: playlistgenerator/constraints/TagMatch.cpp:757
-#, fuzzy, kde-format
-#| msgid "Days"
+#, kde-format
 msgctxt "within the last %1 days"
 msgid "day"
 msgid_plural "days"
-msgstr[0] "ימים"
-msgstr[1] "ימים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "יום"
+msgstr[1] "יומיים"
+msgstr[2] "ימים"
+msgstr[3] "ימים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:541
 #: playlistgenerator/constraints/TagMatch.cpp:758
-#, fuzzy, kde-format
-#| msgid "Months"
+#, kde-format
 msgctxt "within the last %1 months"
 msgid "month"
 msgid_plural "months"
-msgstr[0] "חודשים"
-msgstr[1] "חודשים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "חודש"
+msgstr[1] "חודשיים"
+msgstr[2] "חודשים"
+msgstr[3] "חודשים"
 
 #: playlistgenerator/constraints/TagMatch.cpp:542
 #: playlistgenerator/constraints/TagMatch.cpp:759
-#, fuzzy, kde-format
-#| msgid "year"
+#, kde-format
 msgctxt "within the last %1 years"
 msgid "year"
 msgid_plural "years"
 msgstr[0] "שנה"
-msgstr[1] "שנה"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שנתיים"
+msgstr[2] "שנים"
+msgstr[3] "שנים"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, TagMatchEditWidget)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:15
@@ -13127,10 +13115,9 @@ msgid "title"
 msgstr "כותרת"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:89
-#, fuzzy, kde-format
-#| msgid "Playlist name:"
+#, kde-format
 msgid "artist name"
-msgstr "שם רשימת־ההשמעה:"
+msgstr "שם אומן/נית"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:90
 #, kde-format
@@ -13159,14 +13146,12 @@ msgid "comment"
 msgstr "הערה"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:95
-#, fuzzy, kde-format
-#| msgid "tracknumber"
+#, kde-format
 msgid "track number"
-msgstr "מספר הרצועה"
+msgstr "מספר רצועה"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:96
-#, fuzzy, kde-format
-#| msgid "discnumber"
+#, kde-format
 msgid "disc number"
 msgstr "מספר דיסק"
 
@@ -13224,16 +13209,14 @@ msgid ""
 msgstr ""
 
 #: playlistgenerator/Preset.cpp:44 playlistgenerator/Preset.cpp:57
-#, fuzzy, kde-format
-#| msgid "Playlist name:"
+#, kde-format
 msgid "New playlist preset"
-msgstr "שם רשימת־ההשמעה:"
+msgstr "ערכת רשימת נגינה חדשה"
 
 #: playlistgenerator/Preset.cpp:47 playlistgenerator/Preset.cpp:69
-#, fuzzy, kde-format
-#| msgid "&Save Playlist"
+#, kde-format
 msgid "Unnamed playlist preset"
-msgstr "&שמור רשימת־השמעה"
+msgstr "ערכת רשימת נגינה ללא שם"
 
 #: playlistgenerator/Preset.cpp:131
 #, kde-format
@@ -13257,10 +13240,9 @@ msgstr "הוסף חדש"
 #: playlistgenerator/PresetEditDialog.cpp:63
 #: playlistgenerator/PresetEditDialog.cpp:65
 #: playlistgenerator/PresetEditDialog.cpp:93
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Constraint Group"
-msgstr "%1 הגדרות"
+msgstr "קבוצת הגבלה"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, PresetEditDialog)
 #: playlistgenerator/PresetEditDialog.ui:15
