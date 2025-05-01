@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-04-16 09:02+0300\n"
+"PO-Revision-Date: 2025-04-30 10:33+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -5146,11 +5146,10 @@ msgid "Stale tracks"
 msgstr "רצועות מסומנות"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:127
-#, fuzzy, kde-format
-#| msgid "Tracks Added"
+#, kde-format
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr "רצועות הוספו"
+msgstr "רצועות יתומות"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:147
 #, kde-format
@@ -6137,7 +6136,7 @@ msgstr "כבר רשום ל־%1."
 #| msgid "Never"
 msgctxt "prefix to 'x minutes'"
 msgid "every "
-msgstr "אף פעם"
+msgstr "כל "
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
 #, fuzzy, kde-format
@@ -6734,15 +6733,13 @@ msgid "added"
 msgstr "הוספה"
 
 #: core/meta/support/MetaConstants.cpp:242
-#, fuzzy, kde-format
-#| msgid "score"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "score"
 msgstr "ניקוד"
 
 #: core/meta/support/MetaConstants.cpp:243
-#, fuzzy, kde-format
-#| msgid "rating"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "rating"
 msgstr "דירוג"
@@ -6821,11 +6818,10 @@ msgstr "תווית"
 
 # kde-il: don't translate
 #: core/meta/support/MetaConstants.cpp:256
-#, fuzzy, kde-format
-#| msgid "modified"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "modified"
-msgstr "ערוך"
+msgstr "נערכה"
 
 #: core/meta/support/MetaConstants.cpp:257
 #, kde-format
@@ -7131,34 +7127,30 @@ msgid "0"
 msgstr "0"
 
 #: core/support/Amarok.cpp:168
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgctxt ""
 "A saved playlist with the current time (KLocalizedString::Shortdate) added "
 "between                           the parentheses"
 msgid "Empty Playlist (%1)"
-msgstr "רשימת־השמעה־%1"
+msgstr "רשימת נגינה ריקה (%1)"
 
 #: core/support/Amarok.cpp:196
-#, fuzzy, kde-format
-#| msgid "Previous Track"
+#, kde-format
 msgctxt ""
 "A saved playlist with the current time (KLocalizedString::Shortdate) added "
 "between                           the parentheses"
 msgid "Various Tracks (%1)"
-msgstr "הרצועה הקודמת"
+msgstr "מגוון רצועות (%1)"
 
 #: core/support/Amarok.cpp:203
-#, fuzzy, kde-format
-#| msgid "Unknown Artist"
+#, kde-format
 msgid "Unknown Artist(s)"
-msgstr "אמן לא ידוע"
+msgstr "אומן/נית לא ידועים"
 
 #: core/support/Amarok.cpp:219
-#, fuzzy, kde-format
-#| msgid "Unknown Album"
+#, kde-format
 msgid "Unknown Album(s)"
-msgstr "אלבום לא ידוע "
+msgstr "אלבומים לא ידועים"
 
 #: core/support/Amarok.cpp:223
 #, kde-format
@@ -7469,28 +7461,24 @@ msgid "There was an error communicating with cover provider: %1"
 msgstr "אירעה שגיאת תקשות מול ספק העטיפות: %1"
 
 #: covermanager/CoverFetcher.cpp:412
-#, fuzzy, kde-format
-#| msgid "Retrieved cover successfully"
+#, kde-format
 msgid "Retrieved cover successfully for '%1'."
-msgstr "עטיפה אוחזרה בהצלחה"
+msgstr "עטיפה עבור ‚%1’ התקבלה בהצלחה."
 
 #: covermanager/CoverFetcher.cpp:425
-#, fuzzy, kde-format
-#| msgid "Fetching cover for %1..."
+#, kde-format
 msgid "Fetching cover for '%1' failed."
-msgstr "מצרף עטיפה עבור %1..."
+msgstr "הורדת עטיפה עבור ‚%1’ נכשלה."
 
 #: covermanager/CoverFetcher.cpp:438
-#, fuzzy, kde-format
-#| msgid "Fetching cover for %1..."
+#, kde-format
 msgid "Canceled fetching cover for '%1'."
-msgstr "מצרף עטיפה עבור %1..."
+msgstr "בוטלה הורדת עטיפה עבור ‚%1’."
 
 #: covermanager/CoverFetcher.cpp:447
-#, fuzzy, kde-format
-#| msgid "Fetching cover for %1..."
+#, kde-format
 msgid "Unable to find a cover for '%1'."
-msgstr "מצרף עטיפה עבור %1..."
+msgstr "לא ניתן למצוא עטיפה עבור ‚%1’."
 
 #: covermanager/CoverFetchingActions.cpp:44
 #, fuzzy, kde-format
@@ -7575,37 +7563,32 @@ msgid "&Clear"
 msgstr "&נקה"
 
 #: covermanager/CoverFoundDialog.cpp:88
-#, fuzzy, kde-format
-#| msgid "Fetching cover for %1..."
+#, kde-format
 msgid "Finding cover for"
-msgstr "מצרף עטיפה עבור %1..."
+msgstr "איתור עטיפות עבור"
 
 #: covermanager/CoverFoundDialog.cpp:119
-#, fuzzy, kde-format
-#| msgid "Set Custom Cover"
+#, kde-format
 msgid "Enter Custom Search"
-msgstr "קבע עטיפה מותאמת אישית"
+msgstr "נא למלא ביטוי משלך לחיפוש"
 
 #: covermanager/CoverFoundDialog.cpp:136
 #: services/lastfm/LastFmServiceCollection.cpp:115
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
-#, fuzzy, kde-format
-#| msgid "last.fm"
+#, kde-format
 msgid "Last.fm"
-msgstr "last.fm"
+msgstr "Last.fm"
 
 #: covermanager/CoverFoundDialog.cpp:137
-#, fuzzy, kde-format
-#| msgid "Goto"
+#, kde-format
 msgid "Google"
-msgstr "עבור"
+msgstr "Google"
 
 #: covermanager/CoverFoundDialog.cpp:138
-#, fuzzy, kde-format
-#| msgid "Disc #"
+#, kde-format
 msgid "Discogs"
-msgstr "דיסק #"
+msgstr "Discogs"
 
 #: covermanager/CoverFoundDialog.cpp:151
 #, kde-format
@@ -8973,8 +8956,7 @@ msgstr "&סגנון:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2_2)
 #: dialogs/TagDialogBase.ui:739
-#, fuzzy, kde-format
-#| msgid "&Disc Number:"
+#, kde-format
 msgid "&Disc number:"
 msgstr "מספר &דיסק:"
 
@@ -9149,10 +9131,9 @@ msgstr "החלף &קווים־תחתיים ברווחים"
 
 #. i18n: ectx: property (title), widget (QGroupBox, resultGroupBox)
 #: dialogs/TagGuessOptions.ui:95
-#, fuzzy, kde-format
-#| msgid "Destination Preview"
+#, kde-format
 msgid "Result Preview"
-msgstr "תצוגה מקדימה ליעד"
+msgstr "תצוגה מקדימה של התוצאה"
 
 #. i18n: ectx: property (text), widget (QLabel, Title_result)
 #. i18n: ectx: property (text), widget (QLabel, Artist_result)
@@ -9174,10 +9155,9 @@ msgstr "<ריק>"
 
 #. i18n: ectx: property (text), widget (QLabel, label_23)
 #: dialogs/TagGuessOptions.ui:153
-#, fuzzy, kde-format
-#| msgid "&Composer:"
+#, kde-format
 msgid "Composer:"
-msgstr "&מלחין:"
+msgstr "מלחין/נה:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_24)
 #: dialogs/TagGuessOptions.ui:179
@@ -9225,10 +9205,9 @@ msgid "No comments"
 msgstr "אין תגובות"
 
 #: dialogs/TrackOrganizer.cpp:109
-#, fuzzy, kde-format
-#| msgid "Unknown Genre"
+#, kde-format
 msgid "Unknown composer"
-msgstr "סגנון לא ידוע"
+msgstr "מלחין או מלחינה לא ידועים"
 
 #: dialogs/TrackOrganizer.cpp:110
 #, kde-format
@@ -9236,22 +9215,19 @@ msgid "Unknown disc number"
 msgstr "מספר דיסק לא ידוע"
 
 #: dialogs/TrackOrganizer.cpp:111
-#, fuzzy, kde-format
-#| msgid "Unknown Genre"
+#, kde-format
 msgid "Unknown genre"
 msgstr "סגנון לא ידוע"
 
 #: dialogs/TrackOrganizer.cpp:112
-#, fuzzy, kde-format
-#| msgid "Unknown Artist"
+#, kde-format
 msgid "Unknown title"
-msgstr "אמן לא ידוע"
+msgstr "כותרת לא ידועה"
 
 #: dialogs/TrackOrganizer.cpp:113
-#, fuzzy, kde-format
-#| msgid "Unknown Genre"
+#, kde-format
 msgid "Unknown year"
-msgstr "סגנון לא ידוע"
+msgstr "שנה לא ידועה"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:113
 #, fuzzy, kde-format
