@@ -200,7 +200,7 @@ msgstr "Değiştirmek için tıkla"
 #: ActionClasses.cpp:340
 #, kde-format
 msgid "&Replay Gain Mode"
-msgstr "&Yeniden Çalma Kazancı Kipi"
+msgstr "&Ses Düzeyi Dengeleme Kipi"
 
 #: ActionClasses.cpp:342
 #, kde-format
@@ -819,7 +819,7 @@ msgstr ""
 #: amarokconfig.kcfg:245
 #, kde-format
 msgid "Disable Replay Gain"
-msgstr "Yeniden Çalma Kazancını Devre Dışı Bırak"
+msgstr "Ses düzeyini dengelemeyi devre dışı bırak"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:248
@@ -10028,7 +10028,7 @@ msgstr "Alex Merry"
 #: main.cpp:150
 #, kde-format
 msgid "Developer, Replay Gain support"
-msgstr "Geliştirici, yeniden çalma kazancı desteği"
+msgstr "Geliştirici, ses düzeyini dengeleme desteği"
 
 #: main.cpp:152
 #, kde-format
@@ -16306,41 +16306,3 @@ msgstr "Sanatçı: %1"
 #, kde-format
 msgid "empty"
 msgstr "boş"
-
-#~ msgid "Display"
-#~ msgstr "Görüntü"
-
-#~ msgid "Main Script File"
-#~ msgstr "Ana Betik Dosyası"
-
-#~ msgid "Applet Icon File"
-#~ msgstr "Uygulamacık Simgesi Dosyası"
-
-#~ msgid "Images"
-#~ msgstr "Görseller"
-
-#~ msgid "Burn"
-#~ msgstr "Diske Yaz"
-
-#~ msgid "Current Playlist"
-#~ msgstr "Geçerli Çalma Listesi"
-
-#~ msgid "Selected Tracks"
-#~ msgstr "Seçili Parçalar"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "dB"
-#~ msgstr ""
-#~ "%0\n"
-#~ "dB"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%0\n"
-#~ "Hz"
-
-#~ msgid "&Retrieve similar artists"
-#~ msgstr "&Benzer sanatçıları al"
