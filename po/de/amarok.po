@@ -9,20 +9,21 @@
 # Markus Slopianka <markus.s@kdemail.net>, 2009, 2010.
 # Johannes Obermayr <johannesobermayr@gmx.de>, 2009, 2010, 2011.
 # Frank Steinmetzger <dev-kde@felsenfleischer.de>, 2022.
+# SPDX-FileCopyrightText: 2025 Flori G <Renner03@protonmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2024-06-12 22:41+0200\n"
-"Last-Translator: Alois Spitzbart <spitz234@hotmail.com>\n"
+"PO-Revision-Date: 2025-02-22 02:37+0100\n"
+"Last-Translator: Flori G <Renner03@protonmail.com>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.05.0\n"
+"X-Generator: Lokalize 24.12.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -11121,7 +11122,7 @@ msgstr "&Fehlerdiagnose"
 #: MainWindow.cpp:1037
 #, kde-format
 msgid "&Report Bug..."
-msgstr "&Fehler berichten ..."
+msgstr "&Fehler melden …"
 
 #: MainWindow.cpp:1084
 #, kde-format
