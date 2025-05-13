@@ -16379,6 +16379,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "Display"
-#~ msgstr "Zobrazení"
