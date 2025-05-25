@@ -183,7 +183,7 @@ msgstr "Reproduïu o pausa"
 #: ActionClasses.cpp:323
 #, kde-format
 msgid "Click to change"
-msgstr "Feu clic per a canviar"
+msgstr "Cliqueu per a canviar"
 
 #: ActionClasses.cpp:340
 #, kde-format
@@ -2929,8 +2929,8 @@ msgid ""
 "selected:"
 msgstr ""
 "Estes carpetes s'exploraran buscant suports per a confeccionar la "
-"col·lecció. Podeu clicar amb el botó dret en una carpeta per a tornar-la a "
-"explorar individualment, si estava seleccionada anteriorment:"
+"col·lecció. Podeu clicar amb el botó dret damunt d'una carpeta per a tornar-"
+"la a explorar individualment, si estava seleccionada anteriorment:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, importingBox)
 #: configdialog/dialogs/CollectionConfig.ui:58
@@ -3601,7 +3601,7 @@ msgstr "Color del text:"
 #: configdialog/dialogs/NotificationsConfig.ui:188
 #, kde-format
 msgid "Click to select the color of the OSD text."
-msgstr "Feu clic per a seleccionar el color del text d'OSD."
+msgstr "Cliqueu per a seleccionar el color del text d'OSD."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseTranslucency)
 #: configdialog/dialogs/NotificationsConfig.ui:211
@@ -3655,7 +3655,7 @@ msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
 msgstr ""
-"Si està marcada, Amarok<br/>reprendrà la reproducció on la vàreu deixar en "
+"Si està marcada, Amarok<br/>reprendrà la reproducció on la vau deixar en "
 "l'anterior sessió -- tal com passaria amb un reproductor de cintes."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4518,7 +4518,7 @@ msgstr "Es requerix %1 abans de buscar a la Viquipèdia."
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
 #, kde-format
 msgid "Choose Language"
-msgstr "Escolliu l'idioma"
+msgstr "Trieu l'idioma"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
 #, kde-format
@@ -4526,7 +4526,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr "Feu clic per a obrir %1 en un navegador web"
+msgstr "Cliqueu per a obrir %1 en un navegador web"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -8213,10 +8213,10 @@ msgid ""
 "different album releases together."
 msgstr ""
 "Utilitza el resultat superior per a cada peça sense decidir. De manera "
-"alternativa, podeu clicar en <b>Selecciona les millors coincidències per a "
-"este àlbum</b> en el menú contextual d'un suggeriment bo; pot donar millors "
-"resultats perquè evita barrejar conjuntament les diferents publicacions d'un "
-"àlbum."
+"alternativa, podeu clicar damunt <b>Selecciona les millors coincidències per "
+"a este àlbum</b> en el menú contextual d'un suggeriment bo; pot donar "
+"millors resultats perquè evita barrejar conjuntament les diferents "
+"publicacions d'un àlbum."
 
 #: dialogs/MusicBrainzTagger.cpp:95
 #, kde-format
@@ -11238,7 +11238,7 @@ msgid ""
 "Take homogeneous part of the space available to all elements with automatic "
 "width"
 msgstr ""
-"Pren una part homogènia de l'espai disponible a tots els elements amb "
+"Pren una part homogènia de l'espai disponible en tots els elements amb "
 "amplària automàtica"
 
 #: playlist/layouts/LayoutEditDialog.cpp:143
@@ -11349,7 +11349,7 @@ msgstr "Canvia el nom del format de llista de reproducció"
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
 #, kde-format
 msgid "Choose a name for the new playlist layout"
-msgstr "Escolliu un nom pel nou format de llista de reproducció"
+msgstr "Trieu un nom pel nou format de llista de reproducció"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
 #, kde-format
@@ -11397,7 +11397,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
 #, kde-format
 msgid "Choose a new name for the playlist layout"
-msgstr "Escolliu un nom nou per al format de la llista de reproducció"
+msgstr "Trieu un nom nou per al format de la llista de reproducció"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
 #, kde-format
@@ -13355,7 +13355,7 @@ msgid ""
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
 "No s'ha trobat cap component d'edició de text de KDE.\n"
-"Comproveu la instal·lació de KDE. Se ix de la consola!"
+"Comproveu la instal·lació de KDE. S'ix de la consola!"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
@@ -13475,7 +13475,7 @@ msgstr "Finalitza"
 #: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
-msgstr "L'script %1 ha estat calculant durant 5 segons. Voleu finalitzar?"
+msgstr "L'script %1 ha sigut calculant durant 5 segons. Voleu finalitzar?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:338
 #, kde-format
@@ -14761,7 +14761,8 @@ msgstr "El segell de música que és just amb els artistes i amb els clients"
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:39
 #, kde-format
 msgid "Click this button to download Magnatune database now."
-msgstr "Cliqueu este botó per a baixar ara la base de dades de Magnatune."
+msgstr ""
+"Cliqueu damunt d'este botó per a baixar ara la base de dades de Magnatune."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:49
@@ -15617,7 +15618,7 @@ msgstr ""
 #: statsyncing/ui/CreateProviderDialog.cpp:60
 #, kde-format
 msgid "Choose Target Type"
-msgstr "Escolliu el tipus de destinació"
+msgstr "Trieu el tipus de destinació"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:86
 #, kde-format
@@ -15816,7 +15817,7 @@ msgstr "Interromp"
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
 msgstr ""
-"S'estan executant diverses tasques en segon pla (cliqueu per a veure-les)"
+"S'estan executant múltiples tasques en segon pla (cliqueu per a veure-les)"
 
 #: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
@@ -16004,7 +16005,7 @@ msgid ""
 "pick an encoder from the list."
 msgstr ""
 "Per tal de configurar els paràmetres de l'operació de transcodificació, "
-"escolliu un codificador de la llista."
+"trieu un codificador de la llista."
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:99
 #, kde-format
