@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-04-30 10:33+0300\n"
+"PO-Revision-Date: 2025-05-21 13:10+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.12.3\n"
+"X-Generator: Lokalize 25.04.1\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
 
@@ -59,7 +59,7 @@ msgstr "פירוט"
 #: aboutdialog/ExtendedAboutDialog.cpp:48
 #, kde-format
 msgid "License Agreement"
-msgstr ""
+msgstr "הסכם רישוי"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:93
 #, kde-format
@@ -91,7 +91,7 @@ msgstr ""
 #: aboutdialog/ExtendedAboutDialog.cpp:180
 #, kde-format
 msgid "License: %1"
-msgstr ""
+msgstr "רישיון: %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:194
 #, fuzzy, kde-format
@@ -105,12 +105,14 @@ msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
+"נא להשתמש ב־<a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> כדי "
+"לדווח על תקלות.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:222
 #: aboutdialog/ExtendedAboutDialog.cpp:228
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr ""
+msgstr "נא לדווח אל <a href=\"mailto:%1\">%2</a> על תקלות.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:245
 #, fuzzy, kde-format
@@ -151,7 +153,7 @@ msgstr "תורמים מהעבר"
 #: aboutdialog/OcsPersonItem.cpp:90
 #, kde-format
 msgid "Visit contributor's homepage"
-msgstr ""
+msgstr "ביקור באתר הבית של המתנדב"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -2762,29 +2764,25 @@ msgid "Import OPML File"
 msgstr "יבא רשימת־השמעה"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:164
-#, fuzzy, kde-format
-#| msgid "Modify"
+#, kde-format
 msgid "By"
-msgstr "שנה"
+msgstr "מאת"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:203
-#, fuzzy, kde-format
-#| msgid "On"
+#, kde-format
 msgctxt "Podcast published on date"
 msgid "On"
-msgstr "פועל"
+msgstr "ב־"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:221
-#, fuzzy, kde-format
-#| msgid "File Size"
+#, kde-format
 msgid "File Size:"
-msgstr "גודל קובץ"
+msgstr "גודל קובץ:"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:233
-#, fuzzy, kde-format
-#| msgid "Description:"
+#, kde-format
 msgid "Subscription Date:"
-msgstr "תיאור:"
+msgstr "תאריך הרשמה:"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:241
 #, kde-format
@@ -2850,22 +2848,19 @@ msgid "Summary"
 msgstr "תקציר"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:341
-#, fuzzy, kde-format
-#| msgid "&Add Podcast"
+#, kde-format
 msgid "Add Podcast"
-msgstr "&הוסף פוד־קסט"
+msgstr "הוספת הסכת"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:342
-#, fuzzy, kde-format
-#| msgid "Enter Stream URL:"
+#, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
-msgstr "הכנס כתובת זורמת:"
+msgstr "נא למלא כתובת RSS 1.0/2.0 או ערוץ Atom:"
 
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:36
-#, fuzzy, kde-format
-#| msgid "&Save Playlist"
+#, kde-format
 msgid "Saved Playlists"
-msgstr "&שמור רשימת־השמעה"
+msgstr "רשימות נגינה שנשמרו"
 
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:37
 #, kde-format
@@ -2907,10 +2902,9 @@ msgid "Local Collection"
 msgstr "אוסף מקומי"
 
 #: configdialog/ConfigDialog.cpp:60
-#, fuzzy, kde-format
-#| msgid "Configure Collection"
+#, kde-format
 msgid "Configure Local Collection"
-msgstr "הגדר את האוסף"
+msgstr "הגדרת אוסף מקומי"
 
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
@@ -2934,22 +2928,19 @@ msgid "Configure Playback"
 msgstr "הגדר השמעה"
 
 #: configdialog/ConfigDialog.cpp:63
-#, fuzzy, kde-format
-#| msgid "Location:"
+#, kde-format
 msgid "Notifications"
-msgstr "מיקום:"
+msgstr "התראות"
 
 #: configdialog/ConfigDialog.cpp:63
-#, fuzzy, kde-format
-#| msgid "Configure Collection"
+#, kde-format
 msgid "Configure Notifications"
-msgstr "הגדר אוסף"
+msgstr "הגדרת התראות"
 
 #: configdialog/ConfigDialog.cpp:64
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database"
-msgstr "שם בסיס־נתונים"
+msgstr "מסד נתונים"
 
 #: configdialog/ConfigDialog.cpp:64
 #, kde-format
@@ -2957,29 +2948,25 @@ msgid "Configure Database"
 msgstr "הגדר בסיס־נתונים"
 
 #: configdialog/ConfigDialog.cpp:65
-#, fuzzy, kde-format
-#| msgid "album"
+#, kde-format
 msgid "Plugins"
-msgstr "אלבום"
+msgstr "תוספים"
 
 #: configdialog/ConfigDialog.cpp:65
-#, fuzzy, kde-format
-#| msgid "Configure Phonon"
+#, kde-format
 msgid "Configure Plugins"
-msgstr "הגדר את Phonon"
+msgstr "הגדרת תוספים"
 
 #: configdialog/ConfigDialog.cpp:66
 #: scripting/scriptconsole/ScriptConsole.cpp:377
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "Scripts"
-msgstr "מחפש תסריטים"
+msgstr "סקריפטים"
 
 #: configdialog/ConfigDialog.cpp:66
-#, fuzzy, kde-format
-#| msgid "Configure Services"
+#, kde-format
 msgid "Configure Scripts"
-msgstr "הגדר שירותים"
+msgstr "הגדרת סקריפטים"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, CollectionConfig)
 #: configdialog/dialogs/CollectionConfig.ui:14
@@ -3006,10 +2993,9 @@ msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, importingBox)
 #: configdialog/dialogs/CollectionConfig.ui:58
-#, fuzzy, kde-format
-#| msgid "Import Statistics"
+#, kde-format
 msgid "Importing Music"
-msgstr "ייבא סטטיסטיקות"
+msgstr "מוזיקה מיובאת"
 
 #. i18n: ectx: property (toolTip), widget (QLabel, transcodeLabel)
 #. i18n: ectx: property (toolTip), widget (Transcoding::SelectConfigWidget, transcodingConfig)
@@ -3034,9 +3020,7 @@ msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 
 #: configdialog/dialogs/DatabaseConfig.cpp:103
-#, fuzzy, kde-format
-#| msgctxt "The operation completed as expected"
-#| msgid "Success"
+#, kde-format
 msgid "Success"
 msgstr "הצלחה"
 
@@ -3057,19 +3041,17 @@ msgid ""
 msgstr ""
 
 #: configdialog/dialogs/DatabaseConfig.cpp:136
-#, fuzzy, kde-format
-#| msgid "Rating changed"
+#, kde-format
 msgid "Database settings changed"
-msgstr "דירוג השתנה"
+msgstr "הגדרות מסד הנתונים השתנו"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:155
-#, fuzzy, kde-format
-#| msgid "Password"
+#, kde-format
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
 "print the real one). To be manually replaced by the user."
 msgid "password"
-msgstr "ססמה"
+msgstr "סיסמה"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseServer)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_UseServer)
@@ -3161,10 +3143,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
-#, fuzzy, kde-format
-#| msgid "Database Location"
+#, kde-format
 msgid "Test database connection"
-msgstr "מיקום בסיס־הנתונים"
+msgstr "בדיקת החיבור למסד הנתונים"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: configdialog/dialogs/DatabaseConfig.ui:206
@@ -3356,10 +3337,9 @@ msgstr "שמח"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:161
-#, fuzzy, kde-format
-#| msgid "Format:"
+#, kde-format
 msgid "Normal"
-msgstr "תבנית:"
+msgstr "רגיל"
 
 #: configdialog/dialogs/MetadataConfig.cpp:39
 #, kde-format
@@ -3386,11 +3366,10 @@ msgid "Huge (1600 px)"
 msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:104
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Ratings"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון דירוגים"
 
 #: configdialog/dialogs/MetadataConfig.cpp:106
 #, fuzzy, kde-format
@@ -3439,10 +3418,9 @@ msgstr[3] ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_tagsGroup)
 #: configdialog/dialogs/MetadataConfig.ui:17
-#, fuzzy, kde-format
-#| msgid "Files"
+#, kde-format
 msgid "File Tags"
-msgstr "קבצים"
+msgstr "תגיות קובץ"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBack)
 #: configdialog/dialogs/MetadataConfig.ui:26
@@ -4287,10 +4265,9 @@ msgstr "הורד אלבום"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:103
-#, fuzzy, kde-format
-#| msgid "Replace"
+#, kde-format
 msgid "Replacement"
-msgstr "החלף"
+msgstr "החלפה"
 
 #. i18n: ectx: property (text), widget (QPushButton, removePushButton)
 #: context/applets/labels/labelsReplacementSettings.ui:126
@@ -4317,16 +4294,14 @@ msgid "Text alignment:"
 msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Align OSD to"
+#, kde-format
 msgid "Align left"
-msgstr "ישר תצוגה־על־המסך אל"
+msgstr "יישור לשמאל"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Align OSD to"
+#, kde-format
 msgid "Align right"
-msgstr "ישר תצוגה־על־המסך אל"
+msgstr "יישור לימין"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
@@ -4334,8 +4309,7 @@ msgid "Align center"
 msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font:"
 msgstr "גופן:"
 
@@ -4345,16 +4319,14 @@ msgid "Toggle auto scroll"
 msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/main.qml:67
-#, fuzzy, kde-format
-#| msgid "Reload Lyrics"
+#, kde-format
 msgid "Reload lyrics"
-msgstr "טען מחדש מילות־שיר"
+msgstr "רענון מילות שיר"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:111
-#, fuzzy, kde-format
-#| msgid "No cover found"
+#, kde-format
 msgid "No lyrics found"
-msgstr "לא נמצאה עטיפה"
+msgstr "לא נמצאו מילות שיר"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:128
 #, kde-format
@@ -4365,10 +4337,9 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label_21)
 #: context/applets/lyrics/package/contents/ui/main.qml:137
 #: dialogs/TagGuessOptions.ui:101 services/opmldirectory/AddOpmlWidget.ui:78
-#, fuzzy, kde-format
-#| msgid "T&itle:"
+#, kde-format
 msgid "Title:"
-msgstr "שם ה&רצועה:"
+msgstr "כותרת:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_22)
 #: context/applets/lyrics/package/contents/ui/main.qml:140
@@ -5208,10 +5179,9 @@ msgstr "פרטים"
 
 #. i18n: ectx: property (text), widget (QLabel, generationLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:123
-#, fuzzy, kde-format
-#| msgid "General Options"
+#, kde-format
 msgid "Generation:"
-msgstr "אפשרויות כלליות"
+msgstr "דור:"
 
 #. i18n: ectx: property (text), widget (QLabel, videoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
@@ -5326,11 +5296,10 @@ msgid "Not supported"
 msgstr "לא נתמך"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:305
-#, fuzzy, kde-format
-#| msgid "Presets:"
+#, kde-format
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr "אפשרויות קבועות:"
+msgstr "קיים"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:306
 #, kde-format
@@ -5536,10 +5505,9 @@ msgid "Playdar Collection"
 msgstr "אוסף"
 
 #: core-impl/collections/playdarcollection/PlaydarMeta.cpp:121
-#, fuzzy, kde-format
-#| msgid "Rescan Collection"
+#, kde-format
 msgid "Source collection removed"
-msgstr "סריקת האוסף מחדש"
+msgstr "אוסף המקור הוסר"
 
 #: core-impl/collections/support/ArtistHelper.cpp:31
 #, kde-format
@@ -5667,13 +5635,10 @@ msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:138
-#, fuzzy, kde-format
-#| msgctxt "%1 is number of tracks, %2 is time"
-#| msgid "%1 track (%2)"
-#| msgid_plural "%1 tracks (%2)"
+#, kde-format
 msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
-msgstr "%1 רצועה (%2)"
+msgstr "%1 (מאת %2)"
 
 #: core-impl/collections/support/TextualQueryFilter.cpp:291
 #, kde-format
@@ -6131,12 +6096,10 @@ msgid "Already subscribed to %1."
 msgstr "כבר רשום ל־%1."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "When this track was first played"
-#| msgid "Never"
+#, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
-msgstr "כל "
+msgstr "כל"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
 #, fuzzy, kde-format
@@ -7596,10 +7559,9 @@ msgid "Sort by size"
 msgstr ""
 
 #: covermanager/CoverFoundDialog.cpp:405
-#, fuzzy, kde-format
-#| msgid "Save location:"
+#, kde-format
 msgid "Cover Image Save Location"
-msgstr "שמור מיקום:"
+msgstr "מקום שמירת תמונות עטיפות"
 
 #: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
 #, fuzzy, kde-format
@@ -7622,10 +7584,9 @@ msgid "Fetching Large Cover"
 msgstr "צרף עטיפות"
 
 #: covermanager/CoverFoundDialog.cpp:539
-#, fuzzy, kde-format
-#| msgid "Download to:"
+#, kde-format
 msgid "Download Progress"
-msgstr "הורד אל:"
+msgstr "תהליך הורדה"
 
 # kde-il: don't translate
 #: covermanager/CoverFoundDialog.cpp:541
@@ -9230,8 +9191,7 @@ msgid "Unknown year"
 msgstr "שנה לא ידועה"
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:113
-#, fuzzy, kde-format
-#| msgid "Random Tracks"
+#, kde-format
 msgctxt "Random bias representation"
 msgid "Random tracks"
 msgstr "רצועות אקראיות"
@@ -9244,20 +9204,18 @@ msgid "Match all"
 msgstr "התאמה לכל המילים"
 
 #: dynamic/Bias.cpp:251
-#, fuzzy, kde-format
-#| msgid "and"
+#, kde-format
 msgctxt ""
 "Prefix for AndBias. Shown in front of a bias in the dynamic playlist view"
 msgid "and"
 msgstr "וגם"
 
 #: dynamic/Bias.cpp:452
-#, fuzzy, kde-format
-#| msgid "Hours"
+#, kde-format
 msgctxt ""
 "Prefix for OrBias. Shown in front of a bias in the dynamic playlist view"
 msgid "or"
-msgstr "שעות"
+msgstr "או"
 
 #: dynamic/Bias.cpp:460
 #, fuzzy, kde-format
@@ -9267,8 +9225,7 @@ msgid "Match any"
 msgstr "התאמה לכל מלה"
 
 #: dynamic/BiasedPlaylist.cpp:46
-#, fuzzy, kde-format
-#| msgid "Random"
+#, kde-format
 msgctxt ""
 "Title for a default dynamic playlist. The default playlist only returns "
 "random tracks."
@@ -12255,8 +12212,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:375
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:567
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:690
-#, fuzzy, kde-format
-#| msgid "&Next"
+#, kde-format
 msgid "exact"
 msgstr "מדויק"
 
@@ -12969,10 +12925,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:248
-#, fuzzy, kde-format
-#| msgid "is in the last"
+#, kde-format
 msgid "within the last"
-msgstr "בסוף"
+msgstr "במהלך"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, page_DateSpecific)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:266
@@ -13005,8 +12960,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:409
-#, fuzzy, kde-format
-#| msgid "equal to"
+#, kde-format
 msgid "equals"
 msgstr "שווה ל־"
 
