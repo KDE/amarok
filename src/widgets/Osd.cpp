@@ -471,6 +471,7 @@ void
 OSDWidget::setFadeOpacity( qreal value )
 {
     setWindowOpacity( value );
+    update();
 
     if( value == 0.0 )
     {
