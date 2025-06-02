@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-03-16 00:41+0000\n"
-"PO-Revision-Date: 2025-05-21 13:10+0300\n"
+"PO-Revision-Date: 2025-06-01 21:44+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -1542,11 +1542,10 @@ msgid ""
 msgstr ""
 
 #: amarokurls/AmarokUrlHandler.cpp:224
-#, fuzzy, kde-format
-#| msgid "Unknown"
+#, kde-format
 msgctxt "The command type of this url is not known"
 msgid "Unknown"
-msgstr "לא ידוע "
+msgstr "לא ידועה"
 
 #: amarokurls/BookmarkCurrentButton.cpp:32 amarokurls/BookmarkModel.cpp:535
 #, kde-format
@@ -1559,10 +1558,9 @@ msgid "Bookmark Manager"
 msgstr "מנהל סימניות"
 
 #: amarokurls/BookmarkManagerWidget.cpp:44
-#, fuzzy, kde-format
-#| msgid "Group By"
+#, kde-format
 msgid "Add Group"
-msgstr "קבץ לפי"
+msgstr "הוספת קבוצה"
 
 #: amarokurls/BookmarkManagerWidget.cpp:55
 #, kde-format
@@ -1591,10 +1589,9 @@ msgstr ""
 
 #: amarokurls/BookmarkModel.cpp:85
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:398
-#, fuzzy, kde-format
-#| msgid "Group By"
+#, kde-format
 msgid "Group"
-msgstr "קבץ לפי"
+msgstr "קבוצה"
 
 #: amarokurls/BookmarkModel.cpp:258
 #: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:942
@@ -1611,10 +1608,9 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: amarokurls/BookmarkModel.cpp:260
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:63
-#, fuzzy, kde-format
-#| msgid "Description:"
+#, kde-format
 msgid "Description"
-msgstr "תיאור:"
+msgstr "תיאור"
 
 #: amarokurls/BookmarkModel.cpp:510
 #, kde-format
@@ -1622,8 +1618,7 @@ msgid "New Group"
 msgstr "קבוצה חדשה"
 
 #: amarokurls/BookmarkModel.cpp:536
-#, fuzzy, kde-format
-#| msgid "None"
+#, kde-format
 msgid "none"
 msgstr "ללא"
 
@@ -1661,10 +1656,9 @@ msgid "Unknown"
 msgstr "לא ידוע "
 
 #: amarokurls/ContextUrlGenerator.cpp:55
-#, fuzzy, kde-format
-#| msgid "Comment"
+#, kde-format
 msgid "Context: %1"
-msgstr "הערה"
+msgstr "הקשר: %1"
 
 #: amarokurls/ContextUrlGenerator.cpp:63
 #, kde-format
@@ -1672,11 +1666,10 @@ msgid "Bookmark Context View Applets"
 msgstr "סימניית יישומים של תצוגת הקישורים"
 
 #: amarokurls/ContextUrlRunner.cpp:74
-#, fuzzy, kde-format
-#| msgid "Comment"
+#, kde-format
 msgctxt "A type of command that affects the context view"
 msgid "Context"
-msgstr "הערה"
+msgstr "הקשר"
 
 #: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:288
 #, kde-format
@@ -1684,10 +1677,9 @@ msgid "Files"
 msgstr "קבצים"
 
 #: amarokurls/NavigationUrlGenerator.cpp:143
-#, fuzzy, kde-format
-#| msgid "Filter Action"
+#, kde-format
 msgid "Files (%1)"
-msgstr "פעולת סינון"
+msgstr "קבצים (%1)"
 
 #: amarokurls/NavigationUrlGenerator.cpp:191
 #, kde-format
@@ -1715,12 +1707,10 @@ msgid "Bookmark Media Sources View"
 msgstr "סימניית תצוגת מקורות מדיה"
 
 #: amarokurls/NavigationUrlRunner.cpp:131
-#, fuzzy, kde-format
-#| msgctxt "The quality of music"
-#| msgid "Favorite"
+#, kde-format
 msgctxt "A type of command that affects the view in the browser category"
 msgid "Navigate"
-msgstr "מועדפת"
+msgstr "ניווט"
 
 #: amarokurls/PlayUrlGenerator.cpp:103
 #, kde-format
@@ -1728,12 +1718,11 @@ msgid "Bookmark Track Position"
 msgstr "סימניית מיקום רצועה"
 
 #: amarokurls/PlayUrlRunner.cpp:86
-#, fuzzy, kde-format
-#| msgid "&Play"
+#, kde-format
 msgctxt ""
 "A type of command that starts playing at a specific position in a track"
 msgid "Play"
-msgstr "נגן"
+msgstr "נגינה"
 
 #: App.cpp:363
 #, kde-format
@@ -1822,10 +1811,9 @@ msgid "Base for relative filenames/URLs"
 msgstr "הבסיס עבור קבצים/כתובות יחסיים"
 
 #: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database Error"
-msgstr "שם בסיס־נתונים"
+msgstr "שגיאת מסד נתונים"
 
 #: App.cpp:521
 #, kde-format
@@ -1863,11 +1851,10 @@ msgid ""
 msgstr ""
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "תיקיות־האוסף"
+msgstr "בחירת תיקיית אוספים"
 
 #: App.cpp:677
 #, fuzzy, kde-format
@@ -1914,10 +1901,9 @@ msgid ""
 msgstr ""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
-#, fuzzy, kde-format
-#| msgid "Rescan Collection"
+#, kde-format
 msgid "Search collection"
-msgstr "סריקת האוסף מחדש"
+msgstr "חיפוש באוסף"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:170
 #, fuzzy, kde-format
@@ -1985,11 +1971,10 @@ msgid "Show Years"
 msgstr "הראה שנים"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:251
-#, fuzzy, kde-format
-#| msgid "Track Number"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
-msgstr "מספר הרצועה"
+msgstr "הצגת מספרי רצועות"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
 #, fuzzy, kde-format
@@ -2019,11 +2004,10 @@ msgid "Sort Options"
 msgstr "אפשרויות"
 
 #: browsers/CollectionTreeItem.cpp:141
-#, fuzzy, kde-format
-#| msgid "Labels"
+#, kde-format
 msgctxt "No labels are assigned to the given item are any of its subitems"
 msgid "No Labels"
-msgstr "תוויות"
+msgstr "אין תוויות"
 
 #: browsers/CollectionTreeItem.cpp:149
 #, fuzzy, kde-format
@@ -2197,10 +2181,9 @@ msgid "Refresh"
 msgstr ""
 
 #: browsers/filebrowser/FileBrowser.cpp:79
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Filter Files"
-msgstr "המחיקה נכשלה"
+msgstr "סינון קבצים"
 
 #: browsers/filebrowser/FileBrowser.cpp:218
 #, kde-format
@@ -2218,11 +2201,10 @@ msgstr "&העבר לפח האשפה"
 
 #: browsers/filebrowser/FileView.cpp:566
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
-#, fuzzy, kde-format
-#| msgid "Configure Playback"
+#, kde-format
 msgctxt "@title:window"
 msgid "Confirm Delete"
-msgstr "הגדר השמעה"
+msgstr "אישור מחיקה"
 
 #: browsers/filebrowser/FileView.cpp:567
 #, fuzzy, kde-format
@@ -2369,16 +2351,14 @@ msgid ""
 msgstr ""
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:63
-#, fuzzy, kde-format
-#| msgid "&Previous"
+#, kde-format
 msgid "Previous:"
-msgstr "&הקודם"
+msgstr "הקודמת"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:68
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "Number of previous tracks to remain in the playlist."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "מספר הרצועות הקודמות שתישארנה ברשימת הנגינה."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:73
 #, kde-format
@@ -2386,10 +2366,9 @@ msgid "Upcoming:"
 msgstr ""
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:79
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "Number of upcoming tracks to add to the playlist."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "מספר הרצועות הבאות שתתווספנה לרשימת הנגינה."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:101
 #, fuzzy, kde-format
@@ -2404,11 +2383,9 @@ msgid "Turn dynamic mode on."
 msgstr "הדלק מצב דינמי"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:108
-#, fuzzy, kde-format
-#| msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-#| msgid "Re&move Duplicates"
+#, kde-format
 msgid "Duplicates"
-msgstr "ה&סר כפילויות"
+msgstr "כפילויות"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
 #, fuzzy, kde-format
@@ -2418,16 +2395,14 @@ msgid "Allow duplicate tracks in result"
 msgstr "הדלק מצב דינמי"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:116
-#, fuzzy, kde-format
-#| msgid "&Next"
+#, kde-format
 msgid "New"
-msgstr "&הבא"
+msgstr "חדשה"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
-#, fuzzy, kde-format
-#| msgid "New playlist layout"
+#, kde-format
 msgid "New playlist"
-msgstr "סידור רשימת־השמעה חדש"
+msgstr "רשימת נגינה חדשה"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:122
 #, kde-format
@@ -2443,10 +2418,9 @@ msgstr "עמוד למחוק קבצים מסומנים"
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
 #: browsers/playlistbrowser/DynamicCategory.cpp:128
 #: dialogs/EqualizerDialog.ui:76
-#, fuzzy, kde-format
-#| msgid "&Delete"
+#, kde-format
 msgid "Delete"
-msgstr "&מחק"
+msgstr "מחיקה"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:131
 #, fuzzy, kde-format
@@ -2477,17 +2451,14 @@ msgid "&Add new Bias"
 msgstr "הוסף חדש"
 
 #: browsers/playlistbrowser/DynamicView.cpp:227
-#, fuzzy, kde-format
-#| msgctxt "clear playlist"
-#| msgid "&Clear Playlist"
+#, kde-format
 msgid "&Clone Playlist"
-msgstr "&נקה רשימת־השמעה"
+msgstr "&שכפול רשימת נגינה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:231
-#, fuzzy, kde-format
-#| msgid "Delete playlist layout"
+#, kde-format
 msgid "&Delete playlist"
-msgstr "מחק את סידור רשימת־ההשמעה"
+msgstr "מ&חיקת רשימת נגינה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:245
 #, fuzzy, kde-format
@@ -2527,10 +2498,9 @@ msgid "Add Folder"
 msgstr "הוסף תיקייה"
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:80
-#, fuzzy, kde-format
-#| msgid "File Extension of Source"
+#, kde-format
 msgid "Visible Sources"
-msgstr "סיומת שם־הקובץ של המקור"
+msgstr "מקורות גלויים"
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:186
 #, kde-format
@@ -2538,11 +2508,10 @@ msgid "Folders are only shown in <b>merged view</b>."
 msgstr ""
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:282
-#, fuzzy, kde-format
-#| msgid "Add Folder"
+#, kde-format
 msgctxt "default name for new folder"
 msgid "New Folder"
-msgstr "הוסף תיקייה"
+msgstr "תיקייה חדשה"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:119
 #, fuzzy, kde-format
@@ -2556,11 +2525,10 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:124
-#, fuzzy, kde-format
-#| msgid "Rating"
+#, kde-format
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
-msgstr "דירוג"
+msgstr "בטעינה…"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:171
 #, fuzzy, kde-format
@@ -2574,8 +2542,7 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:399
-#, fuzzy, kde-format
-#| msgid "Source"
+#, kde-format
 msgid "Source"
 msgstr "מקור"
 
@@ -2586,11 +2553,10 @@ msgid "Create an Empty Playlist"
 msgstr "צור רשימת־השמעה חכמה"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:77
-#, fuzzy, kde-format
-#| msgid "&Next"
+#, kde-format
 msgctxt "toggle the \"new\" status  of this podcast episode"
 msgid "&New"
-msgstr "&הבא"
+msgstr "&חדשה"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:83
 #, kde-format
@@ -2603,10 +2569,9 @@ msgid "&Delete..."
 msgstr "&מחק..."
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:104
-#, fuzzy, kde-format
-#| msgid "&Export Playlist As..."
+#, kde-format
 msgid "&Export As..."
-msgstr "&יצא רשימת־השמעה כ..."
+msgstr "יי&צוא בתור…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, fuzzy, kde-format
@@ -2622,12 +2587,10 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
-#, fuzzy, kde-format
-#| msgctxt "Remove a track from a saved playlist"
-#| msgid "Remove From \"%1\""
+#, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
-msgstr "הסר מתוך \"%1\""
+msgstr "הסרת %1 מתוך %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
 #, fuzzy, kde-format
@@ -2652,28 +2615,25 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgid "Delete playlist layout"
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "מחק את סידור רשימת־ההשמעה"
+msgstr "למחוק את רשימת הנגינה <i>%1</i> מתוך %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
-#, fuzzy, kde-format
-#| msgid "Delete playlist layout"
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "מחק את סידור רשימת־ההשמעה"
+msgstr "למחוק %1 רשימות נגינה מתוך %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgid "Configure Playback"
+#, kde-format
 msgid "Confirm Playlist Deletion"
-msgstr "הגדר השמעה"
+msgstr "אישור מחיקת רשימת נגינה"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
 #, kde-format
@@ -2687,43 +2647,36 @@ msgid "Save As"
 msgstr "שמירה בשם"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
-#, fuzzy, kde-format
-#| msgid "&Rename"
+#, kde-format
 msgid "&Rename Folder..."
-msgstr "&שנה שם"
+msgstr "&שינוי שם תיקייה…"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:41
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "&Delete Folder"
-msgstr "המחיקה נכשלה"
+msgstr "מ&חיקת תיקייה"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:319
-#, fuzzy, kde-format
-#| msgid "File name"
+#, kde-format
 msgid "New name"
-msgstr "שם קובץ"
+msgstr "שם חדש"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:321
-#, fuzzy, kde-format
-#| msgid "Enter new preset name:"
+#, kde-format
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
-msgstr "הכנס שם חדש לאפשרות קבועה:"
+msgstr "נא למלא שם חדש לתיקייה:"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:338
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:259
-#, fuzzy, kde-format
-#| msgid "Configure Playback"
+#, kde-format
 msgid "Confirm Delete"
-msgstr "הגדר השמעה"
+msgstr "אישור מחיקה"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#, kde-format
 msgid "Are you sure you want to delete this folder and its contents?"
-msgstr "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr "למחוק את התיקייה הזאת על תוכנה?"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_podcastCheckBox)
 #: browsers/playlistbrowser/PodcastCategory.cpp:78
@@ -2758,10 +2711,9 @@ msgstr "&עדכן הכול"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:107
 #: browsers/playlistbrowser/PodcastCategory.cpp:110
-#, fuzzy, kde-format
-#| msgid "Import playlist"
+#, kde-format
 msgid "Import OPML File"
-msgstr "יבא רשימת־השמעה"
+msgstr "ייבוא קובץ OPML"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:164
 #, kde-format
@@ -2912,10 +2864,9 @@ msgid "Metadata"
 msgstr ""
 
 #: configdialog/ConfigDialog.cpp:61
-#, fuzzy, kde-format
-#| msgid "Configure Media Device"
+#, kde-format
 msgid "Configure Metadata Handling"
-msgstr "הגדר התקן מדיה"
+msgstr "הגדרת טיפול בנתוני על"
 
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
@@ -3009,10 +2960,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #: configdialog/dialogs/CollectionConfig.ui:70
-#, fuzzy, kde-format
-#| msgid "Random Tracks"
+#, kde-format
 msgid "Transcode tracks:"
-msgstr "רצועות אקראיות"
+msgstr "התמרת רצועות:"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:102
 #, kde-format
@@ -4097,10 +4047,9 @@ msgstr "&הגדרות"
 
 # kde-il: don't translate
 #: context/applets/labels/LabelsApplet.cpp:759
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Replacement Settings"
-msgstr "%1 הגדרות"
+msgstr "הגדרות החלפה"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: context/applets/labels/labelsBlacklistSettings.ui:17
@@ -4219,10 +4168,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, resetColorsPushButton)
 #: context/applets/labels/labelsGeneralSettings.ui:300
-#, fuzzy, kde-format
-#| msgid "Text color:"
+#, kde-format
 msgid "Reset colors"
-msgstr "צבע טקסט:"
+msgstr "איפוס צבעים"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: context/applets/labels/labelsReplacementSettings.ui:19
@@ -4258,10 +4206,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
-#, fuzzy, kde-format
-#| msgid "Download Album"
+#, kde-format
 msgid "Downloaded label"
-msgstr "הורד אלבום"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:103
@@ -4283,10 +4230,9 @@ msgid "Lyrics config"
 msgstr "&הגדרות"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font size:"
-msgstr "גופן:"
+msgstr "גודל כתב:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, kde-format
@@ -4421,10 +4367,9 @@ msgstr "לא נמצאו מילות־שיר לרצועה זו"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, ReloadEditDialog)
 #: context/applets/tabs/ReloadEditDialog.ui:32
-#, fuzzy, kde-format
-#| msgid "Redownload"
+#, kde-format
 msgid "Reload tabs"
-msgstr "הורד מחדש"
+msgstr "ריענון תווים"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: context/applets/tabs/ReloadEditDialog.ui:61
@@ -4446,11 +4391,10 @@ msgstr "אמן"
 #: context/applets/tabs/TabsApplet.cpp:83
 #: context/applets/tabs/TabsApplet.cpp:133
 #: context/applets/tabs/TabsApplet.cpp:150
-#, fuzzy, kde-format
-#| msgid "Tags"
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs"
-msgstr "תגיות"
+msgstr "תווים"
 
 #: context/applets/tabs/TabsApplet.cpp:99
 #, fuzzy, kde-format
@@ -4460,61 +4404,52 @@ msgid "Reload tabs"
 msgstr "הורד מחדש"
 
 #: context/applets/tabs/TabsApplet.cpp:162
-#, fuzzy, kde-format
-#| msgid "Fetching content.."
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: Fetching..."
-msgstr "מצרף תוכן..."
+msgstr "תווים: מתבצעת משיכה…"
 
 #: context/applets/tabs/TabsApplet.cpp:174
-#, fuzzy, kde-format
-#| msgid "Track Details: %1 by %2"
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "No Tabs for %1 by %2"
-msgstr "מידע על הרצועה: %1 מאת %2"
+msgstr "אין תווים עבור %1 מאת %2"
 
 #: context/applets/tabs/TabsApplet.cpp:180
-#, fuzzy, kde-format
-#| msgid "Fetching content.."
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: Fetch Error"
-msgstr "מצרף תוכן..."
+msgstr "תווים: שגיאת משיכה"
 
 #: context/applets/tabs/TabsApplet.cpp:205
-#, fuzzy, kde-format
-#| msgid "Track Details: %1 by %2"
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: %1 - %2"
-msgstr "מידע על הרצועה: %1 מאת %2"
+msgstr "תווים: %1 - %2"
 
 #: context/applets/tabs/TabsApplet.cpp:280
-#, fuzzy, kde-format
-#| msgid "&Settings"
+#, kde-format
 msgctxt "Guitar tablature settings"
 msgid "Tabs Settings"
-msgstr "&הגדרות"
+msgstr "הגדרות תווים"
 
 #: context/applets/tabs/TabsApplet.cpp:323
-#, fuzzy, kde-format
-#| msgid "Redownload"
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Reload Tabs"
-msgstr "הורד מחדש"
+msgstr "ריענון תווים"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, TabsSettings)
 #: context/applets/tabs/TabsSettings.ui:26
-#, fuzzy, kde-format
-#| msgid "Love Current Track"
+#, kde-format
 msgid "Current Track Settings"
-msgstr "אוהב את הרצועה הנוכחית"
+msgstr "הגדרות הרצועה הנוכחית"
 
 #. i18n: ectx: property (title), widget (QGroupBox, gbFetchTabs)
 #: context/applets/tabs/TabsSettings.ui:38
-#, fuzzy, kde-format
-#| msgid "Fetch Cover"
-#| msgid_plural "Fetch Covers"
+#, kde-format
 msgid "Fetch tabs for"
-msgstr "צרף עטיפה"
+msgstr "משיכת תווים עבור"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbFetchGuitar)
 #: context/applets/tabs/TabsSettings.ui:47
@@ -4524,10 +4459,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbFetchBass)
 #: context/applets/tabs/TabsSettings.ui:60
-#, fuzzy, kde-format
-#| msgid "and"
+#, kde-format
 msgid "Bass"
-msgstr "וגם"
+msgstr "בס"
 
 #: context/applets/tabs/TabsView.cpp:174
 #, kde-format
@@ -4537,25 +4471,22 @@ msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:41
 #: context/applets/wikipedia/package/contents/ui/main.qml:153
-#, fuzzy, kde-format
-#| msgid "&Previous"
+#, kde-format
 msgid "Previous"
-msgstr "&הקודם"
+msgstr "הקודם"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:52
 #: context/applets/wikipedia/package/contents/ui/main.qml:159
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
-#, fuzzy, kde-format
-#| msgid "&Next"
+#, kde-format
 msgid "Next"
-msgstr "&הבא"
+msgstr "הבא"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Updating the local Magnatune database."
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "מעדכן בסיס־נתונים המקומי של Magnatune "
+msgstr "לא לשנות את העמוד אוטומטית"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4565,18 +4496,16 @@ msgid "Track"
 msgstr "רצועה"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Collection"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "העתק אל האוסף"
+msgstr "העתקת קישור ללוח הגזירים"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Collection"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "העתק אל האוסף"
+msgstr "העתקת תמונה ללוח הגזירים"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4623,10 +4552,9 @@ msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
-#, fuzzy, kde-format
-#| msgid "Rating"
+#, kde-format
 msgid "Choose Language"
-msgstr "דירוג"
+msgstr "בחירת שפה"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
 #, kde-format
@@ -4643,10 +4571,9 @@ msgid "Configure Applets..."
 msgstr "הגדרת פוד־קסטים..."
 
 #: context/ContextDock.cpp:27
-#, fuzzy, kde-format
-#| msgid "Context"
+#, kde-format
 msgid "&Context"
-msgstr "קישורים"
+msgstr "ה&קשר"
 
 #: context/engines/labels/LabelsEngine.cpp:133
 #: context/engines/labels/LabelsEngine.cpp:195
