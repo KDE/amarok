@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2025-03-03 23:31+0700\n"
 "Last-Translator: Pongsakorn S. <kde@xerusion.me>\n"
 "Language-Team: Thai\n"
@@ -227,7 +227,7 @@ msgstr "หยุดหลังจบแทร็กปัจจุบัน: �
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "ยังไม่มีการเล่นแทร็กเสียงใด ๆ"
@@ -9863,7 +9863,7 @@ msgstr "ดึงข้อมูลศิลปินเดียวกัน"
 msgid "Lyrics data could not be parsed"
 msgstr "ไม่สามารถวิเคราะห์คำของข้อมูลเนื้อร้องได้"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "ไม่มีข้อมูลของแทร็กเสียงนี้"
@@ -11591,8 +11591,8 @@ msgid "Show tooltips"
 msgstr "แสดงทูลทิป"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "ฟังตัวอย่างแทร็ก"
@@ -16335,7 +16335,7 @@ msgstr "อันดับถูกเปลี่ยนแปลง"
 msgid "Volume: 100% (muted)"
 msgstr "ระดับเสียง: 100% (ตัดเสียง)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16344,13 +16344,13 @@ msgstr ""
 "ตัวอย่างข้อความบนหน้าจอ \n"
 "คลิกแล้วลาก เพื่อเปลี่ยนตำแหน่ง"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "หยุด"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "หยุดชั่วคราว"

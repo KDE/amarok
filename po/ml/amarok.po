@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -223,7 +223,7 @@ msgstr "à´ªà´¾à´àµà´àµà´à´³àµâ à´¨àµ�
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr ""
@@ -9692,7 +9692,7 @@ msgstr ""
 "à´ à´à´¬àµà´àµà´àµà´±àµà´±àµ à´¸àµà´·àµà´à´¿à´àµà´àµà´µà´¾à´¨à´¾à´µà´¿à´²àµà"
 "´²."
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr ""
@@ -11349,8 +11349,8 @@ msgid "Show tooltips"
 msgstr "à´àµà´°à´®àµà´à´°à´£à´àµà´à´³àµâ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, fuzzy, kde-format
 #| msgid "Previous Widget"
 msgid "Preview"
@@ -16032,20 +16032,20 @@ msgstr ""
 msgid "Volume: 100% (muted)"
 msgstr ""
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, fuzzy, kde-format
 #| msgid "%1 - %2"
 msgid "Stopped"
 msgstr "%1 - %2"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr ""

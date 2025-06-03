@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -230,7 +230,7 @@ msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਦੇ ਬਾਅਦ ਰੋਕੋ: ਚਾ
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "ਕੋਈ ਗਾਣਾ ਨਹੀਂ ਚੱਲਦਾ"
@@ -9521,7 +9521,7 @@ msgstr "ਪ੍ਰਾਪਤ ਕੀਤੇ ਬੋਲ ਖਾਲੀ ਹਨ"
 msgid "Lyrics data could not be parsed"
 msgstr "ਬੋਲ ਡਾਟਾ ਪਾਰਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "ਇਸ ਟਰੈਕ ਲਈ ਕੋਈ ਜਾਣਕਾਰੀ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ।"
@@ -11184,8 +11184,8 @@ msgid "Show tooltips"
 msgstr "ਟੂਲ-ਟਿੱਪ ਵੇਖੋ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "ਝਲਕ"
@@ -15840,7 +15840,7 @@ msgstr "ਰੇਟਿੰਗ ਬਦਲੀ"
 msgid "Volume: 100% (muted)"
 msgstr "ਵਾਲੀਅਮ: ੧੦੦% (ਚੁੱਪ)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -15849,12 +15849,12 @@ msgstr ""
 "ਆਨ-ਸਕਰੀਨ-ਡਿਸਪਲੇਅ ਝਲਕ\n"
 "ਸਥਿਤੀ ਬਦਲਣ ਲਈ ਹਿਲਾਉ"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "ਰੋਕੋ"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "ਵਿਰਾਮ"

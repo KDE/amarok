@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -232,7 +232,7 @@ msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ច
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
@@ -9674,7 +9674,7 @@ msgstr "អត្ថបទ​ចម្រៀង​ដែល​បាន​ទទ
 msgid "Lyrics data could not be parsed"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "មិន​មាន​ព័ត៌មាន សម្រាប់​បទ​នេះ​ឡើយ"
@@ -11337,8 +11337,8 @@ msgid "Show tooltips"
 msgstr "បង្ហាញ​ព័ត៌មាន​ជំនួយ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "មើល​​ជា​មុន"
@@ -16095,20 +16095,20 @@ msgstr "បាន​ផ្លាស់ប្ដូរ​ការវាយ​ត
 msgid "Volume: 100% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, fuzzy, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr "ទិដ្ឋភាព OSD - អូស​ដើម្បី​ប្ដូរ​ទីតាំង"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "បញ្ឈប់"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "បាន​ផ្អាក"

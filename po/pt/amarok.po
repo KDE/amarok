@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2021-06-17 23:03+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -355,7 +355,7 @@ msgstr "Parar após a faixa actual: Ligado"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Sem faixas em reprodução"
@@ -9955,7 +9955,7 @@ msgstr "As letras obtidas estão em branco"
 msgid "Lyrics data could not be parsed"
 msgstr "Não foi possível processar os dados das letras musicais"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "Não existem informações disponíveis para esta faixa"
@@ -11616,8 +11616,8 @@ msgid "Show tooltips"
 msgstr "Mostrar as dicas"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "Antevisão"
@@ -16452,7 +16452,7 @@ msgstr "A classificação alterou"
 msgid "Volume: 100% (muted)"
 msgstr "Volume: 100% (mudo)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16461,12 +16461,12 @@ msgstr ""
 "Antevisão OSD\n"
 "Arraste para posicionar"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "Parado"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "Em pausa"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2024-11-01 14:16+0000\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
@@ -224,7 +224,7 @@ msgstr "Stop after current track: On"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "No track playing"
@@ -9653,7 +9653,7 @@ msgstr "Retrieved lyrics is empty"
 msgid "Lyrics data could not be parsed"
 msgstr "Lyrics data could not be parsed"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "No information available for this track"
@@ -11298,8 +11298,8 @@ msgid "Show tooltips"
 msgstr "Show tooltips"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "Preview"
@@ -16044,7 +16044,7 @@ msgstr "Rating changed"
 msgid "Volume: 100% (muted)"
 msgstr "Volume: 100% (muted)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16053,12 +16053,12 @@ msgstr ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "Stopped"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "Paused"

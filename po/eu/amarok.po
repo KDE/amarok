@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -230,7 +230,7 @@ msgstr "Gelditu uneko pistaren ondoren: Piztuta"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ez da pistarik jotzen ari"
@@ -9849,7 +9849,7 @@ msgstr "Eskuratutako hitzak hutsik daude"
 msgid "Lyrics data could not be parsed"
 msgstr "Ezin izan da hitzen datuak analizatu"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "Ez dago pistaren informaziorik erabilgarri"
@@ -11510,8 +11510,8 @@ msgid "Show tooltips"
 msgstr "Erakutsi argibideak"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "Aurrebista"
@@ -16351,7 +16351,7 @@ msgstr "Balorazioa aldatuta"
 msgid "Volume: 100% (muted)"
 msgstr "Bolumena: % 100 (mutututa)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16360,12 +16360,12 @@ msgstr ""
 "OSD aurrebista\n"
 "Arrastatu kokalekua aldatzeko"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "Geldituta"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "Pausatuta"

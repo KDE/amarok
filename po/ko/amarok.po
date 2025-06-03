@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2025-04-06 21:28+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -225,7 +225,7 @@ msgstr "현재 곡 이후 정지: 켜기"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "재생 중인 곡 없음"
@@ -9512,7 +9512,7 @@ msgstr "가져온 가사가 비어 있음"
 msgid "Lyrics data could not be parsed"
 msgstr "가사 데이터를 해석할 수 없음"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "이 곡 정보가 없음"
@@ -11150,8 +11150,8 @@ msgid "Show tooltips"
 msgstr "풍선 도움말 표시"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "미리 보기"
@@ -15811,7 +15811,7 @@ msgstr "별점 변경됨"
 msgid "Volume: 100% (muted)"
 msgstr "음량: 100%(음소거)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -15820,12 +15820,12 @@ msgstr ""
 "OSD 미리 보기\n"
 "위치를 바꿀 곳으로 드래그"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "정지됨"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "일시 정지"

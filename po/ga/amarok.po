@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -229,7 +229,7 @@ msgstr "Stop tar éis an Amhráin reatha: Ann"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Níl aon amhrán ag seinm"
@@ -10051,7 +10051,7 @@ msgstr "Bhí na liricí faighte folamh"
 msgid "Lyrics data could not be parsed"
 msgstr "Níorbh fhéidir na liricí a pharsáil"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "Níl aon fhaisnéis faoin amhrán seo ar fáil"
@@ -11718,8 +11718,8 @@ msgid "Show tooltips"
 msgstr "Taispeáin leideanna uirlisí"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "Réamhamharc"
@@ -16581,7 +16581,7 @@ msgstr "Athraíodh an rátáil"
 msgid "Volume: 100% (muted)"
 msgstr "Airde: 100% (gan fuaim)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16590,12 +16590,12 @@ msgstr ""
 "Réamhamharc ar an Taispeáint ar Scáileán\n"
 "Tarraing chun suíomh nua más mian leat"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "Stadtha"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "Moillithe"

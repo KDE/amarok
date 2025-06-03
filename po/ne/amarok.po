@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -234,7 +234,7 @@ msgstr "हालको ट्रयाक पछि प्ले गर्न �
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "कुनै ट्रयाक प्ले भएको छैन"
@@ -10004,7 +10004,7 @@ msgstr "एकैखालको कलाकार पुन: प्रया�
 msgid "Lyrics data could not be parsed"
 msgstr "रियो कर्म खोल्न सकेन"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "यो ट्रयाकका लागि कुनै सूचना उपलब्ध छैन"
@@ -11788,8 +11788,8 @@ msgid "Show tooltips"
 msgstr "उपकरणपट्टी देखाउनुहोस्"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, fuzzy, kde-format
 #| msgid "Previous Track"
 msgid "Preview"
@@ -16666,7 +16666,7 @@ msgstr "मूल्याङ्कन वजन गरियो"
 msgid "Volume: 100% (muted)"
 msgstr "भोल्युम: १००%"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, fuzzy, kde-format
 #| msgid "OSD Preview - drag to reposition"
 msgid ""
@@ -16674,13 +16674,13 @@ msgid ""
 "Drag to reposition"
 msgstr "ओएसडी पूर्वावलोकन - पुन: स्थिति गर्न तान्नुहोस्"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "रोक्नुहोस्"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "पज गरियो"

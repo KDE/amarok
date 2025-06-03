@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2025-06-01 21:44+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
@@ -231,7 +231,7 @@ msgstr "אוהב את הרצועה הנוכחית"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "אף רצועה לא מושמעת"
@@ -9781,7 +9781,7 @@ msgstr "מילות השיר שהתקבלו ריקות"
 msgid "Lyrics data could not be parsed"
 msgstr "לא ניתן לפענח את נתוני מילות השירים"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "אין מידע זמין עבור רצועה זאת"
@@ -11427,8 +11427,8 @@ msgid "Show tooltips"
 msgstr "הצגת חלוניות עצה"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "תצוגה מקדימה"
@@ -16122,7 +16122,7 @@ msgstr "דירוג השתנה"
 msgid "Volume: 100% (muted)"
 msgstr "עצמת קול: 100% (מושתק)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16131,13 +16131,13 @@ msgstr ""
 "תצוגה מקדימה של תצוגה־על־המסך\n"
 "גרור כדי לשנות את המיקום"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "נעצר"
 
 # kde-il: don't translatep:67
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "מושהה"

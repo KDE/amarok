@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-03-16 00:41+0000\n"
+"POT-Creation-Date: 2025-06-03 00:42+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -233,7 +233,7 @@ msgstr "Σταμάτημα μετά το τρέχον κομμάτι: ενεργ
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:678
+#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Δεν εκτελείται κομμάτι"
@@ -9873,7 +9873,7 @@ msgstr "Οι ανακτημένοι στίχοι είναι κενοί"
 msgid "Lyrics data could not be parsed"
 msgstr "Τα δεδομένα στίχων δεν μπορούν να αναλυθούν"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:705
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:706
 #, kde-format
 msgid "No information available for this track"
 msgstr "Δεν υπάρχουν πληροφορίες διαθέσιμες για αυτό το κομμάτι"
@@ -11535,8 +11535,8 @@ msgid "Show tooltips"
 msgstr "Εμφάνιση συμβουλών"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:514
-#: widgets/Osd.cpp:516
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
+#: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
 msgstr "Προεπισκόπηση"
@@ -16394,7 +16394,7 @@ msgstr "Η αξιολόγηση τροποποιήθηκε"
 msgid "Volume: 100% (muted)"
 msgstr "Ένταση: 100% (χωρίς ήχο)"
 
-#: widgets/Osd.cpp:514
+#: widgets/Osd.cpp:515
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16403,12 +16403,12 @@ msgstr ""
 "Προεπισκόπηση OSD\n"
 "Σύρετε για επανατοποθέτηση"
 
-#: widgets/Osd.cpp:771
+#: widgets/Osd.cpp:772
 #, kde-format
 msgid "Stopped"
 msgstr "Διεκόπη"
 
-#: widgets/Osd.cpp:780
+#: widgets/Osd.cpp:781
 #, kde-format
 msgid "Paused"
 msgstr "Παύση"
