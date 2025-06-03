@@ -71,6 +71,12 @@ AmarokQml.Applet {
                 propagateComposedEvents: true
                 anchors.fill: parent
                 onClicked: (mouse)=> {
+                    if( mouse && mouse.x >= parent.indicator.x && mouse.x <= parent.indicator.x+parent.indicator.width
+                        && mouse.y >= parent.indicator.y && mouse.y <= parent.indicator.y+parent.indicator.height )
+                    {
+                        treeView.toggleExpanded(row)
+                        return;
+                    }
                     let treeIndex = treeView.index(row, column);
                     switch (mouse.modifiers) {
                         case Qt.ControlModifier:
@@ -92,16 +98,9 @@ AmarokQml.Applet {
                             selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
                         break;
                         default:
-                            if( parent.selected || mouse && mouse.x >= parent.indicator.x && mouse.x <= parent.indicator.x+parent.indicator.width
-                                && mouse.y >= parent.indicator.y && mouse.y <= parent.indicator.y+parent.indicator.height )
-                            {
-                                treeView.toggleExpanded(row)
-                            }
-                            else
-                            {
-                                treeView.selectionModel.select(treeIndex, ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Current | ItemSelectionModel.Rows);
-                                selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
-                            }
+                            treeView.toggleExpanded(row)
+                            treeView.selectionModel.select(treeIndex, ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Current | ItemSelectionModel.Rows);
+                            selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
                         break;
                     }
                 }
