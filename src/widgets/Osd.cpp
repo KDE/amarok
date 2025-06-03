@@ -404,7 +404,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     int pos = The::engineController()->trackPositionMs();
 
     // Only show position if the track didn't just start playing
-    if( pos > 3000 )
+    if( pos > m_duration + 500 )
     {
         QTimer::singleShot( 1000, this, [=] () { update(); });
         osdtext.replace( QStringLiteral("%{\eA%}"), QString(Meta::msToPrettyTime( pos ) + QLatin1Char('/') ) );
