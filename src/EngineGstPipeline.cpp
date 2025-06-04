@@ -45,6 +45,7 @@ EngineGstPipeline::EngineGstPipeline()
     gst_object_ref_sink (m_pipeline);
     g_signal_connect(m_pipeline, "audio-tags-changed", G_CALLBACK(cb_audioTagsChanged), this);
     g_signal_connect(m_pipeline, "notify::source", G_CALLBACK(cb_setupSource), this);
+    g_signal_connect(m_pipeline, "notify::volume", G_CALLBACK (cb_volumeChanged), this);
     g_signal_connect(m_pipeline, "about-to-finish", G_CALLBACK(cb_aboutToFinish), this);
 
     GstBus *bus = gst_pipeline_get_bus(m_pipeline);
@@ -415,6 +416,17 @@ EngineGstPipeline::cb_setupSource(GstElement *playbin, GParamSpec *param, gpoint
             g_object_set(phononSrc, "device", that->currentSource().deviceName().toUtf8().constData(), NULL);
         }*/
     }
+}
+
+void
+EngineGstPipeline::cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpointer data)
+{
+    Q_UNUSED(playbin)
+
+    EngineGstPipeline *that = static_cast<EngineGstPipeline *>(data);
+    Q_EMIT that->volumeChanged( that->volume() );
+    Q_UNUSED(spec)
+    Q_UNUSED(data)
 }
 
 void

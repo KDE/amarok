@@ -65,6 +65,7 @@ public:
 
     static void cb_audioTagsChanged(GstElement *playbin, gint stream, gpointer data);
     static void cb_setupSource(GstElement *playbin, GParamSpec *spec, gpointer data);
+    static void cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
     GstState state() const;
     GstStateChangeReturn setState(GstState state);
     void requestState(GstState state);
