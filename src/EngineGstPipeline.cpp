@@ -60,6 +60,7 @@ EngineGstPipeline::EngineGstPipeline()
     g_signal_connect(bus, "sync-message::tag", G_CALLBACK(cb_tag), this);
     gst_object_unref(bus);
 
+    g_object_set(m_pipeline, "video-sink", gst_element_factory_make( "fakesink", "discard_video" ), NULL); // Discard any video
     m_gstVolume = gst_bin_get_by_interface( GST_BIN(m_pipeline), GST_TYPE_STREAM_VOLUME);
     if(m_gstVolume)
         gst_object_ref(m_gstVolume);
@@ -205,35 +206,16 @@ EngineGstPipeline::setSource(const QUrl &source, bool reset)
     debug() << "New source:" << source;
     QByteArray gstUri = source.toEncoded();
     if( source.scheme() == QStringLiteral("audiocd") )
-        debug() << "audiocd";
-   /* switch(source.type()) {
-        case MediaSource::Url:
-        case MediaSource::LocalFile:
-            gstUri = source.mrl().toEncoded();
-            if(source.mrl().scheme() == QLatin1String("http")) {
-                m_isHttpUrl = true;
-            }
-            break;
-        case MediaSource::Invalid:
-            emit errorMessage("Invalid source specified", Phonon::FatalError);
-            return;
-        case MediaSource::Stream:
-            gstUri = "appsrc://";
-            m_isStream = true;
-            break;
-        case MediaSource::Disc:
-            switch(source.discType()) {
-                case Phonon::Cd:
-                    gstUri = "cdda://";
-                    break;
-                case Phonon::NoDisc:
-                    emit errorMessage("Invalid disk source specified", Phonon::FatalError);
-                    return;
-            }
-            break;
-        case MediaSource::Empty:
-            return;
-    }*/ //TODO
+    {
+        QStringList pathItems = source.path().split( QLatin1Char('/'), Qt::KeepEmptyParts );
+        int trackNumber = pathItems.at( 2 ).toInt( );  // path has already been verified to be sane by EngineController
+        if( trackNumber < 1 )
+        {
+            trackNumber = 1;
+            debug() << "Something strange with CD track number, playing track 1";
+        }
+        gstUri = "cdda://" + QByteArray::number(trackNumber);
+    }
 
     //TODO: Test this to make sure that resuming playback after plugin installation
     //when using an abstract stream source doesn't explode.

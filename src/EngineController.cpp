@@ -426,7 +426,6 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
         QString device = QUrlQuery(url).queryItemValue( QStringLiteral("device") );
 
         m_pipeline->setSource( url );
-        //m_media->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) ); //TODO
         m_currentAudioCdTrack = trackNumber;
     }
     else
@@ -439,13 +438,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
 
     if( m_currentAudioCdTrack )
     {
-        // call to play() is asynchronous and ->setCurrentTitle() can be only called on
-        // playing, buffering or paused media.
-        m_pipeline->pause();
-/*        DelayedTrackChanger *trackChanger = new DelayedTrackChanger( m_media.data(),
-                m_controller.data(), m_currentAudioCdTrack, offset, startPaused );  //TODO
-        connect( trackChanger, &DelayedTrackChanger::trackPositionChanged,
-                 this, &EngineController::trackPositionChanged );*/
+        m_pipeline->play();
     }
     else if( offset )
     {
