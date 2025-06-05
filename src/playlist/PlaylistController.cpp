@@ -605,7 +605,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         {
             /*ignore*/
         }
-        else if( MetaFile::TrackPtr::dynamicCast( track ) )
+        else if( track->playableUrl().isLocalFile() )
         {
             QUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
             if( !cuesheet.isEmpty() )

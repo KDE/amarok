@@ -2,6 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
+VERSION 3.2.82 UNRELEASED
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+   * Partially re-enable cue file support
+
 VERSION 3.2.81
   FEATURES:
 
