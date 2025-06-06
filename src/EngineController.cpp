@@ -442,13 +442,22 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
     }
     else if( offset )
     {
+        // the comment below originates from phonon times, but also applies with gstreamer:
         // call to play() is asynchronous and ->seek() can be only called on playing,
         // buffering or paused media. Calling play() would lead to audible glitches,
         // so call pause() that doesn't suffer from such problem.
+        connect( m_pipeline, &EngineGstPipeline::internalStateChanged, this,
+                [offset, m_pipeline = m_pipeline] ( GstState o, GstState n )
+                {
+                    if( n == GST_STATE_PAUSED )
+                    {
+                        m_pipeline->seekToMSec( offset );
+                        m_pipeline->play();
+                    }
+                    else
+                        debug() << "Unexpected state change with offset play: " << o << "to" << n;
+                }, Qt::SingleShotConnection );
         m_pipeline->pause();
-/*        DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset, startPaused );
-        connect( seeker, &DelayedSeeker::trackPositionChanged,
-                 this, &EngineController::trackPositionChanged ); */ //TODO
     }
     else
     {
