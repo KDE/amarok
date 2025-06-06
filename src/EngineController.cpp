@@ -1304,6 +1304,8 @@ EngineController::updateReplayGainSetting( bool next )
     if( supportsGainAdjustments() && track
         && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
+        qreal fallbackGain = -3;
+        qreal preGain = 3;
         Meta::ReplayGainTag mode;
         // gain is usually negative (but may be positive)
         mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
@@ -1316,20 +1318,23 @@ EngineController::updateReplayGainSetting( bool next )
             ? Meta::ReplayGain_Track_Peak
             : Meta::ReplayGain_Album_Peak;
         qreal peak = track->replayGain( mode );
-        if( gain + peak > 0.0 )
+        if( gain + peak + preGain > 0.0 )
         {
-            debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;
-            gain -= gain + peak;
+            debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak + preGain;
+            gain -= gain + peak + preGain;
         }
 
         if( gain == 0.0 && peak == 0.0 )
         {
             debug() << "Replaygain enabled but no gain information for track (type"
-                    << typeid( *track.data() ).name() << "), using fallback -6 dB";
-            gain = -6;
+                    << typeid( *track.data() ).name() << "), using fallback" << fallbackGain <<"dB";
+            gain = fallbackGain;
         }
         else
-            debug() << "Using gain of" << gain << "with relative peak of" << peak;
+        {
+            debug() << "Using pre-gain" << preGain <<" and gain of" << gain << "with relative peak of" << peak;
+            gain+=preGain;
+        }
         m_pipeline->setGain ( gain );
     }
     else
