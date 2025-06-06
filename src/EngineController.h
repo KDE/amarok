@@ -132,19 +132,6 @@ public:
     bool isStopped() const;
 
     /**
-     * Streams sometimes have to be treated specially.
-     * For example, it is typically not possible to rewind a stream (at least,
-     * not without returning to the start of it).
-     * However for rewinding we have isSeekable().
-     * Also for streams usually the meta data received by currentTrack() is only
-     * for the whole stream while the meta data received by currentMetaDataChanged
-     * will be more current (or contain advertisement)
-     *
-     * @return @c true if the current track is a stream, @c false otherwise
-     */
-    bool isStream();
-
-    /**
      * @return @c true if the current track is seekable, @c false otherwise
      */
     bool isSeekable() const;
@@ -298,11 +285,6 @@ public Q_SLOTS:
      * Replay Gain adjustment.
      */
     bool supportsGainAdjustments() const;
-
-    /**
-     * Return true if the current Phonon backend supports visualizations.
-     */
-    bool supportsAudioDataOutput() const;
 
 Q_SIGNALS:
     /**

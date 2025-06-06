@@ -21,6 +21,7 @@
 #include "EngineGstPipeline.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "Version.h"
 
 #include <QTimer>
 
@@ -243,8 +244,6 @@ EngineGstPipeline::setSource(const QUrl &source, bool reset)
 {
     //m_isStream = false;
     m_seeking = false;
-    //m_installer->reset();
-    //m_resumeAfterInstall = false;
     //m_isHttpUrl = false;
     m_metaData.clear();
 
@@ -262,8 +261,6 @@ EngineGstPipeline::setSource(const QUrl &source, bool reset)
         gstUri = "cdda://" + QByteArray::number(trackNumber);
     }
 
-    //TODO: Test this to make sure that resuming playback after plugin installation
-    //when using an abstract stream source doesn't explode.
     m_currentSource = source;
 
     GstState oldState = state();
@@ -353,25 +350,14 @@ EngineGstPipeline::cb_error(GstBus *bus, GstMessage *gstMessage, gpointer data)
 {
     Q_UNUSED(bus)
     EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
-    //PluginInstaller::InstallStatus status = that->m_installer->checkInstalledPlugins();
-    //debug() << status;
 
     GError *err;
     //TODO: Log the error
+    //TODO handle specifically missing codecs/plugins
     gst_message_parse_error (gstMessage, &err, NULL);
     debug()<<err->message;
     g_error_free(err);
 
-   /* if (status == PluginInstaller::Missing) {
-        Phonon::ErrorType type = (that->audioIsAvailable() || that->videoIsAvailable()) ? Phonon::NormalError : Phonon::FatalError;
-        emit that->errorMessage(tr("One or more plugins are missing in your GStreamer installation."), type);
-    } else if (status == PluginInstaller::Installed) {
-        GError *err;
-        //TODO: Log the error
-        gst_message_parse_error (gstMessage, &err, NULL);
-        emit that->errorMessage(err->message, Phonon::FatalError);
-        g_error_free(err);
-    }*/
     return true;
 }
 
@@ -404,44 +390,14 @@ EngineGstPipeline::cb_setupSource(GstElement *playbin, GParamSpec *param, gpoint
     Q_ASSERT(G_IS_OBJECT(that->m_pipeline));
     g_object_get(that->m_pipeline, "source", &src, NULL);
 
-/*    if (that->m_reader) {
-        // Because libphonon stream stuff likes to fail connection asserts
-        // we force a complete reset.
-        that->m_reader->stop();
-        delete that->m_reader;
-        that->m_reader = 0;
-    }*/
-
-    if (0) //that->m_isStream)
+    if ( ( that->currentSource().scheme().startsWith(QLatin1String("http") ) ||
+           that->currentSource().scheme().startsWith(QLatin1String("rt") ) ) // rtp, rtsp
+        // Check whether this property exists.
+        // Setting it on a source other than souphttpsrc (which supports it) may break playback.
+        && g_object_class_find_property(G_OBJECT_GET_CLASS(src), "user-agent") )
     {
-        /*that->m_reader = new StreamReader(that->m_currentSource, that); //TODO
-        that->m_reader->start();
-        if (that->m_reader->streamSize() > 0) {
-            g_object_set(phononSrc, "size", that->m_reader->streamSize(), NULL);
-        }
-        int streamType = 0;
-        if (that->m_reader->streamSeekable()) {
-            streamType = GST_APP_STREAM_TYPE_SEEKABLE;
-        } else {
-            streamType = GST_APP_STREAM_TYPE_STREAM;
-        }
-        g_object_set(phononSrc, "stream-type", streamType, NULL);
-        g_object_set(phononSrc, "block", TRUE, NULL);
-        g_signal_connect(phononSrc, "need-data", G_CALLBACK(cb_feedAppSrc), that->m_reader);
-        g_signal_connect(phononSrc, "seek-data", G_CALLBACK(cb_seekAppSrc), that->m_reader);*/
-    } else {
-        /*if (that->currentSource().type() == MediaSource::Url
-                && that->currentSource().mrl().scheme().startsWith(QLatin1String("http"))
-                // Check whether this property exists.
-                // Setting it on a source other than souphttpsrc (which supports it) may break playback.
-                && g_object_class_find_property(G_OBJECT_GET_CLASS(phononSrc), "user-agent")) {
-            QString userAgent = ( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) );
-            g_object_set(phononSrc, "user-agent", userAgent.toUtf8().constData(), NULL);
-        } else if (that->currentSource().type() == MediaSource::Disc &&
-                   !that->currentSource().deviceName().isEmpty()) {
-            debug() << "setting device prop to" << that->currentSource().deviceName();
-            g_object_set(phononSrc, "device", that->currentSource().deviceName().toUtf8().constData(), NULL);
-        }*/
+        QString userAgent = ( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) );
+        g_object_set(src, "user-agent", userAgent.toUtf8().constData(), NULL);
     }
 }
 
@@ -585,7 +541,8 @@ EngineGstPipeline::cb_tag(GstBus *bus, GstMessage *msg, gpointer data)
     EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
     QMutexLocker lock(&that->m_tagLock);
 
-    bool isStream = false; //TODO that->m_isStream || that->m_isHttpUrl;
+    bool isStream = that->currentSource().scheme().startsWith(QLatin1String("http") ) ||
+                        that->currentSource().scheme().startsWith(QLatin1String("rt") ); // rtp, rtsp
     GstTagList* tag_list = nullptr;
     gst_message_parse_tag(msg, &tag_list);
     if (tag_list) {
@@ -728,10 +685,6 @@ EngineGstPipeline::cb_state(GstBus *bus, GstMessage *gstMessage, gpointer data)
     }
     debug() << "State change";
 
-    if (newState == GST_STATE_READY) {
-// TODO        that->m_installer->checkInstalledPlugins();
-    }
-
     //FIXME: This is a hack until proper state engine is implemented in the pipeline
     // Wait to update stuff until we're at the final requested state
     if (pendingState == GST_STATE_VOID_PENDING && newState > GST_STATE_READY && that->m_resetting) {
@@ -759,13 +712,7 @@ EngineGstPipeline::setState(GstState state)
         debug() << "not reapplying gst state";
         return GST_STATE_CHANGE_SUCCESS;
     }
-    //m_resumeAfterInstall = true;
 //    debug() << "Transitioning to state" << GstHelper::stateName(state);
-
-    /*if (state == GST_STATE_READY && m_reader) {
-        debug() << "forcing stop as we are in ready state and have a reader...";
-        m_reader->stop();
-    }*/
 
     return gst_element_set_state(GST_ELEMENT(m_pipeline), state);
 }
@@ -802,8 +749,6 @@ EngineGstPipeline::handleStreamChange()
     if (m_waitingForPreviousSource) {
         m_waitingForPreviousSource = false;
     } else {
-        //m_source = m_pipeline->currentSource(); //TODO
-        //m_sourceMeta = m_pipeline->metaData();
         m_waitingForNextSource = false;
         Q_EMIT metaDataChanged();
         Q_EMIT currentSourceChanged(currentSource());
@@ -909,6 +854,12 @@ bool
 EngineGstPipeline::isPlaybackQueueEmpty()
 {
     return m_playbackQueue.isEmpty();
+}
+
+int
+EngineGstPipeline::playbackQueueLength()
+{
+    return m_playbackQueue.length();
 }
 
 qint64

@@ -169,14 +169,7 @@ TabsEngine::update()
     Meta::ArtistPtr artistPtr = track->artist();
     QString newArtist;
     if( artistPtr )
-    {
-        if( ( track->playableUrl().protocol() == "lastfm" ) ||
-            ( track->playableUrl().protocol() == "daap" ) ||
-            !The::engineController()->isStream() )
-            newArtist = artistPtr->name();
-        else
-            newArtist = artistPtr->prettyName();
-    }
+        newArtist = artistPtr->prettyName();
 
     QString newTitle = track->name();
     if( newTitle.isEmpty() )

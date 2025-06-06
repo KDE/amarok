@@ -541,12 +541,7 @@ WikipediaEngine::updateEngine()
                 setMessage( notice );
                 return;
             }
-            if( ( currentTrack->playableUrl().scheme() == QLatin1String("lastfm") ) ||
-                ( currentTrack->playableUrl().scheme() == QLatin1String("daap") ) ||
-                !The::engineController()->isStream() )
-                tmpWikiStr = currentTrack->artist()->name();
-            else
-                tmpWikiStr = currentTrack->artist()->prettyName();
+            tmpWikiStr = currentTrack->artist()->prettyName();
         }
         break;
 
@@ -559,12 +554,7 @@ WikipediaEngine::updateEngine()
                 setMessage( notice );
                 return;
             }
-            if( ( currentTrack->playableUrl().scheme() == QLatin1String("lastfm") ) ||
-                ( currentTrack->playableUrl().scheme() == QLatin1String("daap") ) ||
-                !The::engineController()->isStream() )
-                tmpWikiStr = currentTrack->composer()->name();
-            else
-                tmpWikiStr = currentTrack->composer()->prettyName();
+            tmpWikiStr = currentTrack->composer()->prettyName();
         }
         break;
     case Album:
@@ -576,12 +566,7 @@ WikipediaEngine::updateEngine()
                 setMessage( notice );
                 return;
             }
-            if( ( currentTrack->playableUrl().scheme() == QLatin1String("lastfm") ) ||
-                ( currentTrack->playableUrl().scheme() == QLatin1String("daap") ) ||
-                !The::engineController()->isStream() )
-                tmpWikiStr = currentTrack->album()->name();
-            else
-                tmpWikiStr = currentTrack->album()->prettyName();
+            tmpWikiStr = currentTrack->album()->prettyName();
         }
         break;
 

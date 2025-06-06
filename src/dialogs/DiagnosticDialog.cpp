@@ -40,37 +40,6 @@
 #include <algorithm>
 
 
-BackendDescriptor::BackendDescriptor(const QString &path)
-    : isValid(false)
-{
-    QPluginLoader loader(path);
-
-    iid = loader.metaData().value(QStringLiteral("IID")).toString();
-
-    const QJsonObject metaData = loader.metaData().value(QStringLiteral("MetaData")).toObject();
-    name = metaData.value(QStringLiteral("Name")).toString();
-    version = metaData.value(QStringLiteral("Version")).toString();
-    website = metaData.value(QStringLiteral("Website")).toString();
-    preference = metaData.value(QStringLiteral("InitialPreference")).toDouble();
-
-    pluginPath = path;
-
-    if (name.isEmpty())
-        name = QFileInfo(path).baseName();
-
-    if (iid.isEmpty())
-        return; // Not valid.
-
-    isValid = true;
-}
-
-bool BackendDescriptor::operator <(const BackendDescriptor &rhs) const
-{
-    return this->preference < rhs.preference;
-}
-
-
-
 DiagnosticDialog::DiagnosticDialog( const KAboutData &about, QWidget *parent )
     : QDialog( parent )
 {

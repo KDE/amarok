@@ -30,6 +30,4 @@ Dependencies:
     'frameworks/kwindowsystem': '@latest-kf6'
     'frameworks/solid': '@latest-kf6'
     'frameworks/threadweaver': '@latest-kf6'
-    'libraries/qca' : '@latest'
-    'libraries/phonon': '@latest-kf6'
 

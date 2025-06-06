@@ -73,6 +73,7 @@ public:
     bool seekToMSec(qint64 time);
     bool isSeekable() const;
     bool isPlaybackQueueEmpty();
+    int playbackQueueLength();
 
     bool isReplayGainReady();
 public Q_SLOTS:
