@@ -66,11 +66,11 @@ void Analyzer::Worker::stopTimers()
     m_processTimer->stop();
 }
 
-void Analyzer::Worker::receiveData() // TODO const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData )
+void Analyzer::Worker::receiveData( const QMap<int, QVector<qint16> > &newData )
 {
     const int newDataSize = EngineController::DATAOUTPUT_DATA_SIZE;
-/*
-    if( newData.isEmpty() || newData[Phonon::AudioDataOutput::LeftChannel].size() != newDataSize )
+
+    if( newData.isEmpty() || newData[0].size() != newDataSize )
         return;
 
     m_rawInMutex.lock();
@@ -79,17 +79,17 @@ void Analyzer::Worker::receiveData() // TODO const QMap<Phonon::AudioDataOutput:
     {
         if( newData.size() == 1 )  // Mono
         {
-            m_rawIn << double( newData[Phonon::AudioDataOutput::LeftChannel][x] );
+            m_rawIn << double( newData[0][x] );
         }
         else     // Anything > Mono is treated as Stereo
         {
-            m_rawIn << ( double( newData[Phonon::AudioDataOutput::LeftChannel][x] )
-            + double( newData[Phonon::AudioDataOutput::RightChannel][x] ) )
+            m_rawIn << ( double( newData[0][x] )
+            + double( newData[1][x] ) )
             / 2; // Average between the channels
         }
         m_rawIn.last() /= ( 1 << 15 ); // Scale to [0, 1]
     }
-*/
+
     m_rawInMutex.unlock();
 }
 

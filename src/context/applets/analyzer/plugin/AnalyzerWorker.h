@@ -85,7 +85,7 @@ private:
     /**
      * This function is thread-safe.
      */
-    void receiveData( ); // TODO const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &newData );
+    void receiveData( const QMap<int, QVector<qint16> > &newData );
 
     // None of the following functions are thread-safe. Only connect with queued connections to them.
     void processData();

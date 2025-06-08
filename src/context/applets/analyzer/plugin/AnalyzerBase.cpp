@@ -101,9 +101,9 @@ Analyzer::Base::connectSignals()
         setWindowFunction( (WindowFunction) config().readEntry( "windowFunction", (int)Hann ) );
         Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate);
     }
-/*    if( m_worker )
+    if( m_worker )
         connect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData,
-                 static_cast<Qt::ConnectionType>( Qt::DirectConnection | Qt::UniqueConnection ) );*/ //TODO
+                 static_cast<Qt::ConnectionType>( Qt::DirectConnection | Qt::UniqueConnection ) );
 }
 
 void

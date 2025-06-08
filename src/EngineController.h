@@ -421,7 +421,7 @@ Q_SIGNALS:
     *   Is emitted when new audio Data is ready
     *   @param audioData The audio data that is available
     */
-    //TODO void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
+    void audioDataReady( const QMap<int, QVector<qint16> > &audioData );
 
     /**
      * A trick to call slotFillInSupportedMimeTypes() in a main thread, not to be used
