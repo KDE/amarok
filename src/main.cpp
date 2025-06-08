@@ -313,9 +313,7 @@ int main( int argc, char *argv[] )
     Debug::setColoredDebug( debugColorsEnabled );
 
     if ( parser.isSet( QStringLiteral("debug-audio") ) ) {
-        qputenv( "PHONON_DEBUG", QByteArray( "3" ) );
-        qputenv( "PHONON_BACKEND_DEBUG", QByteArray( "3" ) );
-        qputenv( "PHONON_PULSEAUDIO_DEBUG", QByteArray( "3" ) );
+        qputenv( "GST_DEBUG", QByteArray( "4" ) );
     }
 
 #pragma message("PORT KF5: This *if* should be moved to activateRequested() slot")

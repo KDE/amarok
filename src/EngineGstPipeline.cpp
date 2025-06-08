@@ -166,7 +166,7 @@ EngineGstPipeline::handleStateChange(GstState oldState, GstState newState)
     DEBUG_BLOCK;
 
     m_currentState = newState;
-    debug() << "Moving from" << oldState << "to" << newState; //GstHelper::stateName(oldState) << prevPhononState << "to" << GstHelper::stateName(newState) << m_state;
+    debug() << "Moving from" << gst_element_state_get_name( oldState ) << "to" << gst_element_state_get_name( newState );
     if (GST_STATE_TRANSITION(oldState, newState) == GST_STATE_CHANGE_NULL_TO_READY) {
         // TODO loadingComplete();
     }
@@ -349,7 +349,7 @@ gboolean
 EngineGstPipeline::cb_error(GstBus *bus, GstMessage *gstMessage, gpointer data)
 {
     Q_UNUSED(bus)
-    EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
+    Q_UNUSED(data)
 
     GError *err;
     //TODO: Log the error
@@ -663,7 +663,6 @@ EngineGstPipeline::cb_state(GstBus *bus, GstMessage *gstMessage, gpointer data)
     GstState oldState;
     GstState newState;
     GstState pendingState;
-    gchar *transitionName = NULL;
     EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
     gst_message_parse_state_changed(gstMessage, &oldState, &newState, &pendingState);
 
@@ -712,7 +711,7 @@ EngineGstPipeline::setState(GstState state)
         debug() << "not reapplying gst state";
         return GST_STATE_CHANGE_SUCCESS;
     }
-//    debug() << "Transitioning to state" << GstHelper::stateName(state);
+    debug() << "Transitioning to state" << gst_element_state_get_name(state);
 
     return gst_element_set_state(GST_ELEMENT(m_pipeline), state);
 }
@@ -721,6 +720,7 @@ void
 EngineGstPipeline::requestState(GstState state)
 {
     DEBUG_BLOCK
+    debug() << "requested state" << gst_element_state_get_name( state );
     if(m_currentState == state)
     {
         debug() << "not reapplying gst state";
@@ -737,7 +737,6 @@ EngineGstPipeline::requestState(GstState state)
         }
         m_aboutToFinishLock.unlock();
     }
-    debug() << state;
     gst_element_set_state(GST_ELEMENT(m_pipeline), state);
 }
 

@@ -38,6 +38,7 @@
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <gst/gst.h>
 
 
 DiagnosticDialog::DiagnosticDialog( const KAboutData &about, QWidget *parent )
@@ -114,13 +115,12 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "   %1 Version: %2\n"
                "   KDE Frameworks Version: %3\n"
                "   Qt Version: %4\n"
-               "   PulseAudio: %9\n\n",
+               "   GStreamer: %5\n\n",
 
                KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
                KCoreAddons::versionString(),                        // KDE Frameworks
                QLatin1String(qVersion()),                           // Qt
-               QLatin1String("//TODO"),              // Phonon                           // & Backend
-               pulse                                                // PulseAudio
+               QLatin1String(gst_version_string())
            ) + i18n(
                "Enabled Scripts:\n%1\n"
                "Enabled Plugins:\n%2\n"
