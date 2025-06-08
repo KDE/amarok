@@ -77,6 +77,10 @@ public:
     int playbackQueueLength();
 
     bool isReplayGainReady();
+
+    /// callback function for handling new analyzer audio data
+    static void analyzerProcessBuffer(GstElement*, GstBuffer*, GstPad*, gpointer);
+
 public Q_SLOTS:
     void emitTick();
     void handleStateChange(GstState oldState, GstState newState);
@@ -110,12 +114,23 @@ Q_SIGNALS:
     void streamChanged();
     void volumeChanged(qreal newVolume);
     void mutedChanged(bool mute);
+    void analyzerDataReady(const QMap<int, QVector<qint16> > &data);
+    void analyzerEndOfMedia(int remainingSamples);
 
 private:
+    void analyzerFlushPendingData();
+    void analyzerConvertAndEmit(bool isEndOfMedia);
+
     GstPipeline *m_pipeline;
     GstElement *m_gstVolume;
     GstElement *m_replayGainElement;
     GstElement *m_equalizerElement;
+
+    QVector<qint16> m_analyzerPendingData;
+    QVector<QVector<qint16> > m_analyzerChannelBuffers;
+    qint32 m_analyzerDataSize;
+    int m_channels;
+
     //This simply pauses the gst signal handler 'till we get something
     QMutex m_aboutToFinishLock;
     QWaitCondition m_aboutToFinishWait;

@@ -111,8 +111,8 @@ Analyzer::Base::disconnectSignals()
 {
     DEBUG_BLOCK
 
-//    if( m_worker ) //TODO
-  //      disconnect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData );
+    if( m_worker )
+        disconnect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData );
 }
 
 void

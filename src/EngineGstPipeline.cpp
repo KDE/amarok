@@ -26,10 +26,13 @@
 #include <QTimer>
 
 #include <gst/audio/streamvolume.h>
+#include <gst/audio/audio-format.h>
 
 EngineGstPipeline::EngineGstPipeline()
     : m_replayGainElement(nullptr)
     , m_equalizerElement(nullptr)
+    , m_analyzerDataSize(512)
+    , m_channels(1)
     , m_handlingAboutToFinish(false)
     , m_tickTimer(new QTimer(this))
     , m_waitingForNextSource(true)
@@ -45,7 +48,7 @@ EngineGstPipeline::EngineGstPipeline()
 
     DEBUG_BLOCK
     qRegisterMetaType<GstState>("GstState");
-    m_pipeline = GST_PIPELINE(gst_element_factory_make("playbin", NULL));
+    m_pipeline = GST_PIPELINE(gst_element_factory_make("playbin", nullptr));
     gst_object_ref_sink (m_pipeline);
     g_signal_connect(m_pipeline, "audio-tags-changed", G_CALLBACK(cb_audioTagsChanged), this);
     g_signal_connect(m_pipeline, "notify::source", G_CALLBACK(cb_setupSource), this);
@@ -53,7 +56,7 @@ EngineGstPipeline::EngineGstPipeline()
     g_signal_connect(m_pipeline, "about-to-finish", G_CALLBACK(cb_aboutToFinish), this);
 
     GstBus *bus = gst_pipeline_get_bus(m_pipeline);
-    gst_bus_set_sync_handler(bus, gst_bus_sync_signal_handler, NULL, NULL);
+    gst_bus_set_sync_handler(bus, gst_bus_sync_signal_handler, nullptr, nullptr);
     g_signal_connect(bus, "sync-message::eos", G_CALLBACK(cb_eos), this);
     g_signal_connect(bus, "sync-message::warning", G_CALLBACK(cb_warning), this);
     g_signal_connect(bus, "sync-message::duration-changed", G_CALLBACK(cb_duration), this);
@@ -64,43 +67,90 @@ EngineGstPipeline::EngineGstPipeline()
     g_signal_connect(bus, "sync-message::tag", G_CALLBACK(cb_tag), this);
     gst_object_unref(bus);
 
-    g_object_set(m_pipeline, "video-sink", gst_element_factory_make( "fakesink", "discard_video" ), NULL); // Discard any video
+    g_object_set(m_pipeline, "video-sink", gst_element_factory_make( "fakesink", "discard_video" ), nullptr); // Discard any video
     m_gstVolume = gst_bin_get_by_interface( GST_BIN(m_pipeline), GST_TYPE_STREAM_VOLUME);
 
     m_replayGainElement = gst_element_factory_make("volume", "replaygain");
     m_equalizerElement = gst_element_factory_make("equalizer-10bands", "equalizer");
+    GstElement *teeElement = gst_element_factory_make("tee", "tee");
 
     if( !m_replayGainElement )
         debug() << "failed to create replay gain volume element";
     if( !m_replayGainElement )
         debug() << "failed to create equalizer element";
+    if( !teeElement )
+        debug() << "failed to create tee element";
 
-    if( m_equalizerElement || m_replayGainElement )
+    if( m_equalizerElement || m_replayGainElement || teeElement )
     {
         GstElement *bin = gst_bin_new("bin-with-extra");
+
+        GstElement *queue = gst_element_factory_make("queue", "output-queue");
         GstElement *audioSink = gst_element_factory_make("autoaudiosink", "audio-output");
 
+        gst_bin_add_many(GST_BIN(bin), queue, audioSink, NULL);
+        if( !gst_element_link(queue, audioSink) )
+            debug() << "failed to create custom playback bin (queue + sink)";
+
+        //analyzer code somewhat based on phonon-gstreamer AudioDataOutput ctor
+        GstElement* analyzersink = gst_element_factory_make("fakesink", "analyzer-fakesink");
+        GstElement* analyzerqueue = gst_element_factory_make("queue", "analyzer-queue");
+        GstElement* analyzerconvert = gst_element_factory_make("audioconvert", "analyzer-convert");
+        gst_bin_add_many(GST_BIN(bin), analyzersink, analyzerconvert, analyzerqueue, nullptr);
+        if( !analyzersink || !analyzerqueue || !analyzerconvert )
+            debug() << "failed to create custom playback bin (analyzer queue)";
+
+        g_signal_connect(analyzersink, "handoff", G_CALLBACK(analyzerProcessBuffer), this);
+        g_object_set(G_OBJECT(analyzersink), "signal-handoffs", true, nullptr);
+
+        //G_BYTE_ORDER is the host machine's endianness
+        GstCaps *caps = gst_caps_new_simple("audio/x-raw",
+                                            "format", G_TYPE_STRING, GST_AUDIO_NE (S16),
+                                            nullptr);
+
+        gst_element_sync_state_with_parent( analyzerqueue );
+        gst_element_sync_state_with_parent( analyzerconvert );
+        gst_element_sync_state_with_parent( analyzersink );
+
+        gst_element_link(analyzerqueue, analyzerconvert);
+        gst_element_link_filtered(analyzerconvert, analyzersink, caps);
+        gst_caps_unref(caps);
+        g_object_set(G_OBJECT(analyzersink), "sync", true, nullptr);
+
+
+        GstElement *target = queue;
         if( m_replayGainElement )
             gst_bin_add(GST_BIN(bin), m_replayGainElement);
         if( m_equalizerElement )
             gst_bin_add(GST_BIN(bin), m_equalizerElement);
-        gst_bin_add(GST_BIN(bin), audioSink);
+        if( teeElement )
+        {
+            gst_bin_add(GST_BIN(bin), teeElement);
+            target = teeElement;
+        }
 
         if( m_replayGainElement && m_equalizerElement )
         {
             if( !gst_element_link( m_replayGainElement, m_equalizerElement) ||
-                !gst_element_link( m_equalizerElement, audioSink) )
+                !gst_element_link( m_equalizerElement, target) )
                     debug() << "failed to create custom playback bin";
         }
         else if( m_replayGainElement )
         {
-            if( !gst_element_link( m_replayGainElement, audioSink) )
+            if( !gst_element_link( m_replayGainElement, target) )
                 debug() << "failed to create custom playback bin (replaygain)";
         }
-        else
+        else if( m_equalizerElement )
         {
-            if( !gst_element_link( m_equalizerElement, audioSink) )
+            if( !gst_element_link( m_equalizerElement, target) )
                 debug() << "failed to create custom playback bin (equalizer)";
+        }
+        if( teeElement )
+        {
+            if( !gst_element_link( teeElement, queue) )
+                debug() << "failed to create custom playback bin (tee)";
+            if( !gst_element_link( teeElement, analyzerqueue) )
+                debug() << "failed to link analyzer queue";
         }
 
         GstPad *pad, *ghostPad;
@@ -116,13 +166,17 @@ EngineGstPipeline::EngineGstPipeline()
         gst_element_add_pad(bin, ghostPad);
         gst_object_unref(pad);
 
-        g_object_set( GST_BIN(m_pipeline), "audio-sink", bin, NULL);
+        g_object_set( GST_BIN(m_pipeline), "audio-sink", bin, nullptr);
     }
     else
         debug() << "failed to create custom playback bin";
 
     if(m_gstVolume)
         gst_object_ref(m_gstVolume);
+    if(m_replayGainElement)
+        gst_object_ref(m_replayGainElement);
+    if(m_equalizerElement)
+        gst_object_ref(m_equalizerElement);
 
     m_tickTimer->setInterval( 100 );
     connect(m_tickTimer, &QTimer::timeout, this, &EngineGstPipeline::emitTick);
@@ -133,6 +187,10 @@ EngineGstPipeline::~EngineGstPipeline()
 {
     if(m_gstVolume)
         gst_object_unref(m_gstVolume);
+    if(m_replayGainElement)
+        gst_object_unref(m_replayGainElement);
+    if(m_equalizerElement)
+        gst_object_unref(m_equalizerElement);
     g_signal_handlers_disconnect_by_data(m_pipeline, this);
     gst_element_set_state(GST_ELEMENT(m_pipeline), GST_STATE_NULL);
     gst_object_unref(m_pipeline);
@@ -1034,4 +1092,144 @@ EngineGstPipeline::availableMimeTypes()
     }
     availableMimeTypes.sort();
     return availableMimeTypes;
+}
+
+//from phonon-gstreamer AudioDataOutput
+inline void EngineGstPipeline::analyzerConvertAndEmit(bool isEndOfMedia)
+{
+    QMap<int, QVector<qint16> > map;
+
+    for (int i = 0 ; i < m_channels ; ++i) {
+        map.insert(i, m_analyzerChannelBuffers[i]);
+        Q_ASSERT(i == 0 || m_analyzerChannelBuffers[i - 1].size() == m_analyzerChannelBuffers[i].size());
+    }
+
+    if (isEndOfMedia) {
+        Q_EMIT analyzerEndOfMedia(m_analyzerChannelBuffers[0].size());
+    }
+    Q_EMIT analyzerDataReady(map);
+
+
+    for (int j = 0 ; j < m_channels ; ++j) {
+        // QVector::resize doesn't reallocate the buffer
+        m_analyzerChannelBuffers[j].resize(0);
+    }
+}
+
+void EngineGstPipeline::analyzerFlushPendingData()
+{
+    if (m_analyzerPendingData.size() == 0) {
+        return;
+    }
+
+    // Since m_analyzerPendingData is a concatenation of buffers it must share its
+    // attribute of being a multiple of channelCount
+    Q_ASSERT((m_analyzerPendingData.size() % m_channels) == 0);
+    for (int i = 0; i < m_analyzerPendingData.size(); i += m_channels) {
+        for (int j = 0; j < m_channels; ++j) {
+            m_analyzerChannelBuffers[j].append(m_analyzerPendingData[i + j]);
+        }
+    }
+
+    m_analyzerPendingData.resize(0);
+}
+
+void EngineGstPipeline::analyzerProcessBuffer(GstElement*, GstBuffer* buffer, GstPad* pad, gpointer gThat)
+{
+    // TODO emit endOfMedia
+    EngineGstPipeline *that = static_cast<EngineGstPipeline *>(gThat);
+
+    // Copied locally to avoid multithead problems
+    qint32 dataSize = that->m_analyzerDataSize;
+    if (dataSize == 0) {
+        return;
+    }
+
+    int channelsCount = 0;
+
+    // determine the number of channels
+    GstCaps *caps = gst_pad_get_current_caps(GST_PAD(pad));
+    GstStructure *structure = gst_caps_get_structure(caps, 0);
+    gst_structure_get_int(structure, "channels", &channelsCount);
+    gst_caps_unref(caps);
+
+    // Channels count have changed, so emit the pending data that have the old
+    // channels count, before we fill the buffer with new pending data
+    if (that->m_analyzerPendingData.size() > 0 && channelsCount != that->m_channels) {
+        const bool isEndOfMedia = (that->m_analyzerPendingData.size() / that->m_channels) == dataSize;
+        that->analyzerFlushPendingData();
+        that->analyzerConvertAndEmit(isEndOfMedia);
+    }
+
+    // Now update the channels count
+    that->m_channels = channelsCount;
+
+    // Let's get the buffers
+    gint16 *gstBufferData;
+    guint gstBufferSize;
+    GstMapInfo info;
+    gst_buffer_map(buffer, &info, GST_MAP_READ);
+    gstBufferData = reinterpret_cast<gint16 *>(info.data);
+    gstBufferSize = info.size / sizeof(gint16);
+    gst_buffer_unmap(buffer,&info);
+
+    if (gstBufferSize == 0) {
+        qWarning() << Q_FUNC_INFO << ": received a buffer of 0 size ... doing nothing";
+        return;
+    }
+
+    if ((gstBufferSize % that->m_channels) != 0) {
+        qWarning() << Q_FUNC_INFO << ": corrupted data";
+        return;
+    }
+
+    if (that->m_analyzerPendingData.capacity() != dataSize) {
+        that->m_analyzerPendingData.reserve(dataSize);
+    }
+
+    // I set the number of channels
+    if (that->m_analyzerChannelBuffers.size() != that->m_channels) {
+        that->m_analyzerChannelBuffers.resize(that->m_channels);
+    }
+
+    // check how many emits I will perform
+    int nBlockToSend = (that->m_analyzerPendingData.size() + gstBufferSize) / (dataSize * that->m_channels);
+
+    if (nBlockToSend == 0) { // add data to pending buffer
+        const int prevPendingSize = that->m_analyzerPendingData.size();
+        for (quint32 i = 0; i < gstBufferSize ; ++i) {
+            that->m_analyzerPendingData.append(gstBufferData[i]);
+        }
+        Q_ASSERT(int(prevPendingSize + gstBufferSize) == that->m_analyzerPendingData.size());
+        return;
+    }
+
+    // SENDING DATA
+
+    // 1) I write pending data to buffers
+    that->analyzerFlushPendingData();
+
+    // 2) I fill with fresh data and send
+    for (int i = 0 ; i < that->m_channels ; ++i) {
+        if (that->m_analyzerChannelBuffers[i].capacity() != dataSize) {
+            that->m_analyzerChannelBuffers[i].reserve(dataSize);
+        }
+    }
+
+    quint32 bufferPosition = 0;
+    for (int i = 0 ; i < nBlockToSend ; ++i) {
+        for ( ; (that->m_analyzerChannelBuffers[0].size() < dataSize) && (bufferPosition < gstBufferSize) ; bufferPosition += that->m_channels ) {
+            for (int j = 0 ; j < that->m_channels ; ++j) {
+                that->m_analyzerChannelBuffers[j].append(gstBufferData[bufferPosition+j]);
+            }
+        }
+
+        that->analyzerConvertAndEmit(false);
+    }
+
+    // 3) I store the rest of data
+    while (bufferPosition < gstBufferSize) {
+        that->m_analyzerPendingData.append(gstBufferData[bufferPosition]);
+        ++bufferPosition;
+    }
 }
