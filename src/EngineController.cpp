@@ -543,7 +543,10 @@ EngineController::isPaused() const
 bool
 EngineController::isPlaying() const
 {
-    return !isPaused() && !isStopped();
+    if( !m_pipeline )
+        return false;
+    GstState s = m_pipeline->state();
+    return ( s != GST_STATE_PAUSED && ( s == GST_STATE_PLAYING || s == GST_STATE_VOID_PENDING ) );
 }
 
 bool
@@ -551,8 +554,8 @@ EngineController::isStopped() const
 {
     if( !m_pipeline )
         return true;
-    return m_pipeline->state() != GST_STATE_PLAYING &&
-        m_pipeline->state() != GST_STATE_VOID_PENDING;
+    GstState s = m_pipeline->state();
+    return s != GST_STATE_PLAYING && s != GST_STATE_VOID_PENDING;
 }
 
 void
