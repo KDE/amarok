@@ -39,7 +39,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "playback/DelayedDoers.h"
 #include "playback/Fadeouter.h"
 #include "playback/PowerManager.h"
 #include "playlist/PlaylistActions.h"

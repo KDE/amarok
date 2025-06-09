@@ -706,7 +706,6 @@ set(amaroklib_LIB_SRCS
     OpmlWriter.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-    playback/DelayedDoers.cpp
     playback/EqualizerController.cpp
     playback/Fadeouter.cpp
     playback/PowerManager.cpp

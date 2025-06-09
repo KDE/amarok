@@ -1145,16 +1145,6 @@ MainWindow::createMenus()
 
     //TODO use KStandardAction or KXmlGuiWindow
 
-    // the phonon-coreaudio  backend has major issues with either the VolumeFaderEffect itself
-    // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
-    // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
-    // so we disable replaygain on osx
-
-#ifndef Q_OS_APPLE
-    m_settingsMenu->addAction( Amarok::actionCollection()->action(QStringLiteral("replay_gain_mode")) );
-    m_settingsMenu->addSeparator();
-#endif
-
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::KeyBindings ) ) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Preferences ) ) );
     //END Settings menu
