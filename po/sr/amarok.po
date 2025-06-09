@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-03 00:42+0000\n"
+"POT-Creation-Date: 2025-06-09 00:41+0000\n"
 "PO-Revision-Date: 2017-12-03 23:07+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -238,7 +238,7 @@ msgstr "Заустави након текуће нумере: укључено"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ништа није пуштено"
@@ -3665,8 +3665,9 @@ msgstr "Користи &системска обавештења"
 
 # >> @info:tooltip
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, kde-format
-msgid "Current Phonon backend does not support volume fading"
+#, fuzzy, kde-format
+#| msgid "Current Phonon backend does not support volume fading"
+msgid "Current audio backend does not support volume fading"
 msgstr "Тренутна позадина Фонона не подржава утапање звука."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4579,12 +4580,12 @@ msgstr ""
 "роду-броју %1 'потребан је' 'потребна је' 'потребно је' 'потребни су' "
 "'потребне су' 'потребна су'] %1."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, kde-format
 msgid "Choose Language"
 msgstr "Изаберите језик"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:872
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4903,7 +4904,7 @@ msgstr "Непознат извођач"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1296
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "Непозната нумера"
@@ -8246,30 +8247,30 @@ msgid ""
 "been discarded."
 msgstr "Двосмислена одбачена <b><font color='red'>%1</font></b>"
 
-#: dialogs/DiagnosticDialog.cpp:86
+#: dialogs/DiagnosticDialog.cpp:54
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "Копирај у клипборд"
 
-#: dialogs/DiagnosticDialog.cpp:90
+#: dialogs/DiagnosticDialog.cpp:58
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "Дијагностика за %1|/|Дијагностика за $[аку %1]"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "да"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "не"
 
-#: dialogs/DiagnosticDialog.cpp:148
+#: dialogs/DiagnosticDialog.cpp:114
 #, fuzzy, kde-format
 #| msgid ""
 #| "%1 Diagnostics\n"
@@ -8289,9 +8290,7 @@ msgid ""
 "   %1 Version: %2\n"
 "   KDE Frameworks Version: %3\n"
 "   Qt Version: %4\n"
-"   Phonon Version: %5\n"
-"   Phonon Backend: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 msgstr ""
 "Дијагностика за %1\n"
@@ -8315,7 +8314,7 @@ msgstr ""
 "   Пулс‑аудио: %8\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:165
+#: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9817,30 +9816,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Рејтинг"
 
-#: EngineController.cpp:1082
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Сувише грешака у листи нумера. Пуштање заустављено."
 
-#: EngineController.cpp:1286
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> — <b>%2</b> (<b>%3</b>)"
 
-#: EngineController.cpp:1288
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> — <b>%2</b>"
 
-#: EngineController.cpp:1291
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> (<b>%2</b>)"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11476,27 +11475,6 @@ msgstr "вредност"
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Читање ОПМЛ подемисије са %1 пропало уз грешку:\n"
-
-#: playback/EqualizerController.cpp:135
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"Hz"
-msgstr ""
-
-#: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"kHz"
-msgstr ""
-"%0\n"
-"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16838,6 +16816,18 @@ msgstr "Извођач: %1"
 #, kde-format
 msgid "empty"
 msgstr "празно"
+
+#, fuzzy
+#~| msgid ""
+#~| "%0\n"
+#~| "kHz"
+#~ msgctxt "label for equalizer band frequency"
+#~ msgid ""
+#~ "%1\n"
+#~ "kHz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "kHz"
 
 #~ msgid "Get data from openDesktop.org to learn more about the team"
 #~ msgstr "Добавите податке са openDesktop.org да сазнате више о тиму."

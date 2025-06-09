@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-03 00:42+0000\n"
+"POT-Creation-Date: 2025-06-09 00:41+0000\n"
 "PO-Revision-Date: 2023-02-13 17:55+0100\n"
 "Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
 "Language-Team: Slovak <opensuse-translation@opensuse.org>\n"
@@ -233,7 +233,7 @@ msgstr "Zastaviť po aktuálnej skladbe: Zapnuté"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Nie je prehrávaná žiadna skladba"
@@ -3612,8 +3612,9 @@ msgid "Use &system notifications"
 msgstr "Použiť systémové upozornenia"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, kde-format
-msgid "Current Phonon backend does not support volume fading"
+#, fuzzy, kde-format
+#| msgid "Current Phonon backend does not support volume fading"
+msgid "Current audio backend does not support volume fading"
 msgstr "Aktuálny Phonon backend nepodporuje zoslabovanie hlasitosti"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4496,12 +4497,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "%1 je potreba pre vyhľadávanie vo Wikipédii."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, kde-format
 msgid "Choose Language"
 msgstr "Zvoliť jazyk"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:872
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4819,7 +4820,7 @@ msgstr "Neznámy umelec"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1296
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "Neznáma skladba"
@@ -7994,31 +7995,42 @@ msgstr ""
 "Viacero nejednoznačných výsledkov nájdených pre <b><font color='red'>%1</"
 "font></b> bolo zamietnutých."
 
-#: dialogs/DiagnosticDialog.cpp:86
+#: dialogs/DiagnosticDialog.cpp:54
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "Kopírovať do schránky"
 
-#: dialogs/DiagnosticDialog.cpp:90
+#: dialogs/DiagnosticDialog.cpp:58
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "Diagnostika %1"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Áno"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "Nie"
 
-#: dialogs/DiagnosticDialog.cpp:148
-#, kde-format
+#: dialogs/DiagnosticDialog.cpp:114
+#, fuzzy, kde-format
+#| msgid ""
+#| "%1 Diagnostics\n"
+#| "\n"
+#| "General Information:\n"
+#| "   %1 Version: %2\n"
+#| "   KDE Frameworks Version: %3\n"
+#| "   Qt Version: %4\n"
+#| "   Phonon Version: %5\n"
+#| "   Phonon Backend: %6 (%7, %8)\n"
+#| "   PulseAudio: %9\n"
+#| "\n"
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8026,9 +8038,7 @@ msgid ""
 "   %1 Version: %2\n"
 "   KDE Frameworks Version: %3\n"
 "   Qt Version: %4\n"
-"   Phonon Version: %5\n"
-"   Phonon Backend: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 msgstr ""
 "%1 Diagnostika\n"
@@ -8042,7 +8052,7 @@ msgstr ""
 "   PulseAudio: %9\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:165
+#: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9553,30 +9563,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Hodnotenie"
 
-#: EngineController.cpp:1082
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "V zozname skladieb je príliš veľa chýb.Prehrávanie zastavené."
 
-#: EngineController.cpp:1286
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> od <b>%2</b> na <b>%3</b>"
 
-#: EngineController.cpp:1288
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> od <b>%2</b>"
 
-#: EngineController.cpp:1291
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> on <b>%2</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11172,27 +11182,6 @@ msgstr "Hodnota"
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Čítanie OPML podcast položky z %1 zlyhalo s chybou:\n"
-
-#: playback/EqualizerController.cpp:135
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"Hz"
-msgstr ""
-
-#: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"kHz"
-msgstr ""
-"%0\n"
-"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16492,6 +16481,18 @@ msgstr "Umelec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdne"
+
+#, fuzzy
+#~| msgid ""
+#~| "%0\n"
+#~| "kHz"
+#~ msgctxt "label for equalizer band frequency"
+#~ msgid ""
+#~ "%1\n"
+#~ "kHz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "kHz"
 
 #~ msgid "Display"
 #~ msgstr "Zobraziť"

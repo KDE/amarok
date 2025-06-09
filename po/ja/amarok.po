@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-03 00:42+0000\n"
+"POT-Creation-Date: 2025-06-09 00:41+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -241,7 +241,7 @@ msgstr "現在のトラック後に停止: オン"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "再生中のトラックはありません"
@@ -3630,7 +3630,7 @@ msgstr "システム通知を使う(&S)"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
-msgid "Current Phonon backend does not support volume fading"
+msgid "Current audio backend does not support volume fading"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4526,12 +4526,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, kde-format
 msgid "Choose Language"
 msgstr "言語を選択"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:872
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4864,7 +4864,7 @@ msgstr "不明なアーティスト"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1296
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "不明なトラック"
@@ -8024,33 +8024,33 @@ msgstr ""
 "<b><font color='red'>%1</font></b> に対して複数の不明確な該当が見つかりまし"
 "た。これらは破棄されました。"
 
-#: dialogs/DiagnosticDialog.cpp:86
+#: dialogs/DiagnosticDialog.cpp:54
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
 msgid "Copy to Clipboard"
 msgstr "コレクションにコピー"
 
-#: dialogs/DiagnosticDialog.cpp:90
+#: dialogs/DiagnosticDialog.cpp:58
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr ""
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, fuzzy, kde-format
 #| msgid "Years"
 msgctxt "Usage"
 msgid "Yes"
 msgstr "年"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, fuzzy, kde-format
 #| msgid "None"
 msgctxt "Usage"
 msgid "No"
 msgstr "なし"
 
-#: dialogs/DiagnosticDialog.cpp:148
+#: dialogs/DiagnosticDialog.cpp:114
 #, kde-format
 msgid ""
 "%1 Diagnostics\n"
@@ -8059,13 +8059,11 @@ msgid ""
 "   %1 Version: %2\n"
 "   KDE Frameworks Version: %3\n"
 "   Qt Version: %4\n"
-"   Phonon Version: %5\n"
-"   Phonon Backend: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 msgstr ""
 
-#: dialogs/DiagnosticDialog.cpp:165
+#: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9593,30 +9591,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "評価"
 
-#: EngineController.cpp:1082
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "プレイリストに多数のエラーを検出したため再生を停止しました。"
 
-#: EngineController.cpp:1286
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%2</b>: <b>%3</b>: <b>%1</b>"
 
-#: EngineController.cpp:1288
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%2</b>: <b>%1</b>"
 
-#: EngineController.cpp:1291
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%2</b>: <b>%1</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11237,27 +11235,6 @@ msgstr "値"
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "%1 からの OPML ポッドキャストの読み込み時にエラー:\n"
-
-#: playback/EqualizerController.cpp:135
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"Hz"
-msgstr ""
-
-#: playback/EqualizerController.cpp:137
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"kHz"
-msgstr ""
-"%0\n"
-"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16498,6 +16475,18 @@ msgstr "アーティスト: %1"
 #, kde-format
 msgid "empty"
 msgstr "空"
+
+#, fuzzy
+#~| msgid ""
+#~| "%0\n"
+#~| "kHz"
+#~ msgctxt "label for equalizer band frequency"
+#~ msgid ""
+#~ "%1\n"
+#~ "kHz"
+#~ msgstr ""
+#~ "%0\n"
+#~ "kHz"
 
 #, fuzzy
 #~| msgctxt ""

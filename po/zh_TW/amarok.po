@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-03 00:42+0000\n"
+"POT-Creation-Date: 2025-06-09 00:41+0000\n"
 "PO-Revision-Date: 2025-03-05 19:46+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -228,7 +228,7 @@ msgstr "在目前曲目後停止：開啟"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "沒有播放任何曲目"
@@ -3471,8 +3471,9 @@ msgid "Use &system notifications"
 msgstr "使用系統通知(&S)"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, kde-format
-msgid "Current Phonon backend does not support volume fading"
+#, fuzzy, kde-format
+#| msgid "Current Phonon backend does not support volume fading"
+msgid "Current audio backend does not support volume fading"
 msgstr "目前的 Phonon 後端介面不支援音效淡出"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4332,12 +4333,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "搜尋維基百科需要 %1。"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, kde-format
 msgid "Choose Language"
 msgstr "選擇語言"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:872
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4650,7 +4651,7 @@ msgstr "未知的演出者"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1296
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "未知的曲目"
@@ -7599,31 +7600,42 @@ msgid ""
 msgstr ""
 "所找到的多筆不明確符合 <b><font color='red'>%1</font></b> 的資料已被捨棄。"
 
-#: dialogs/DiagnosticDialog.cpp:86
+#: dialogs/DiagnosticDialog.cpp:54
 #, kde-format
 msgid "Copy to Clipboard"
 msgstr "複製到剪貼簿"
 
-#: dialogs/DiagnosticDialog.cpp:90
+#: dialogs/DiagnosticDialog.cpp:58
 #, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "%1 診斷"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, kde-format
 msgctxt "Usage"
 msgid "Yes"
 msgstr "是"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, kde-format
 msgctxt "Usage"
 msgid "No"
 msgstr "否"
 
-#: dialogs/DiagnosticDialog.cpp:148
-#, kde-format
+#: dialogs/DiagnosticDialog.cpp:114
+#, fuzzy, kde-format
+#| msgid ""
+#| "%1 Diagnostics\n"
+#| "\n"
+#| "General Information:\n"
+#| "   %1 Version: %2\n"
+#| "   KDE Frameworks Version: %3\n"
+#| "   Qt Version: %4\n"
+#| "   Phonon Version: %5\n"
+#| "   Phonon Backend: %6 (%7, %8)\n"
+#| "   PulseAudio: %9\n"
+#| "\n"
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -7631,9 +7643,7 @@ msgid ""
 "   %1 Version: %2\n"
 "   KDE Frameworks Version: %3\n"
 "   Qt Version: %4\n"
-"   Phonon Version: %5\n"
-"   Phonon Backend: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 msgstr ""
 "%1 診斷\n"
@@ -7647,7 +7657,7 @@ msgstr ""
 "  PulseAudio：%9\n"
 "\n"
 
-#: dialogs/DiagnosticDialog.cpp:165
+#: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9121,30 +9131,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "評等"
 
-#: EngineController.cpp:1082
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "播放清單遇到太多錯誤。播放已停止。"
 
-#: EngineController.cpp:1286
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> 由 <b>%2</b> 於 <b>%3</b>"
 
-#: EngineController.cpp:1288
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> 由 <b>%2</b>"
 
-#: EngineController.cpp:1291
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> 於 <b>%2</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10727,26 +10737,6 @@ msgstr "數值"
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "從 %1 讀取 podcast 失敗，錯誤為：\n"
-
-#: playback/EqualizerController.cpp:135
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"Hz"
-msgstr ""
-"%1\n"
-"Hz"
-
-#: playback/EqualizerController.cpp:137
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"kHz"
-msgstr ""
-"%1\n"
-"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -15775,6 +15765,22 @@ msgstr "演出者：%1"
 #, kde-format
 msgid "empty"
 msgstr "空白"
+
+#~ msgctxt "label for equalizer band frequency"
+#~ msgid ""
+#~ "%1\n"
+#~ "Hz"
+#~ msgstr ""
+#~ "%1\n"
+#~ "Hz"
+
+#~ msgctxt "label for equalizer band frequency"
+#~ msgid ""
+#~ "%1\n"
+#~ "kHz"
+#~ msgstr ""
+#~ "%1\n"
+#~ "kHz"
 
 #~ msgid "Display"
 #~ msgstr "顯示"

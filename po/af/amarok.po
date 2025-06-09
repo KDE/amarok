@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-03 00:42+0000\n"
+"POT-Creation-Date: 2025-06-09 00:41+0000\n"
 "PO-Revision-Date: 2010-01-30 14:30+0000\n"
 "Last-Translator: Emile Joubert <emile.joubert@gmail.com>\n"
 "Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
@@ -233,7 +233,7 @@ msgstr "Stop na huidige snit: Aan"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1318 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Geen snit speel tans"
@@ -3717,7 +3717,7 @@ msgstr "Gebruik Growl vir kennisgewings"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
-msgid "Current Phonon backend does not support volume fading"
+msgid "Current audio backend does not support volume fading"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4650,13 +4650,13 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:754
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, fuzzy, kde-format
 #| msgid "Cover Manager"
 msgid "Choose Language"
 msgstr "Omslag Bestuurder"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:887
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:872
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -4996,7 +4996,7 @@ msgstr "Onbekende Kunstenaar"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1296
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "Onbekende snit"
@@ -8195,34 +8195,34 @@ msgstr ""
 "Vele dubbelsinnige pasmaats vir <b><font color='red'>%1</font></b> gevind en "
 "verwerp"
 
-#: dialogs/DiagnosticDialog.cpp:86
+#: dialogs/DiagnosticDialog.cpp:54
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
 msgid "Copy to Clipboard"
 msgstr "Kopieer na Versameling"
 
-#: dialogs/DiagnosticDialog.cpp:90
+#: dialogs/DiagnosticDialog.cpp:58
 #, fuzzy, kde-format
 #| msgid "St&atistics"
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr "St&atistieke"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, fuzzy, kde-format
 #| msgid "Years"
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Jare"
 
-#: dialogs/DiagnosticDialog.cpp:145
+#: dialogs/DiagnosticDialog.cpp:111
 #, fuzzy, kde-format
 #| msgid "None"
 msgctxt "Usage"
 msgid "No"
 msgstr "Geen"
 
-#: dialogs/DiagnosticDialog.cpp:148
+#: dialogs/DiagnosticDialog.cpp:114
 #, kde-format
 msgid ""
 "%1 Diagnostics\n"
@@ -8231,13 +8231,11 @@ msgid ""
 "   %1 Version: %2\n"
 "   KDE Frameworks Version: %3\n"
 "   Qt Version: %4\n"
-"   Phonon Version: %5\n"
-"   Phonon Backend: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 msgstr ""
 
-#: dialogs/DiagnosticDialog.cpp:165
+#: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
 msgid ""
 "Enabled Scripts:\n"
@@ -9841,30 +9839,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Keuring"
 
-#: EngineController.cpp:1082
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Te veel foute teëgekom in speellys. Opgehou speel. "
 
-#: EngineController.cpp:1286
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> deur <b>%2</b> op <b>%3</b>"
 
-#: EngineController.cpp:1288
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> deur <b>%2</b>"
 
-#: EngineController.cpp:1291
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> op <b>%2</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11509,22 +11507,6 @@ msgstr "Luidheid"
 #| msgid "Updating podcast from %1 failed with error:\n"
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Opdateer potgooi van %1 het misluk met fout:\n"
-
-#: playback/EqualizerController.cpp:135
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"Hz"
-msgstr ""
-
-#: playback/EqualizerController.cpp:137
-#, kde-format
-msgctxt "label for equalizer band frequency"
-msgid ""
-"%1\n"
-"kHz"
-msgstr ""
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
