@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-09 00:41+0000\n"
-"PO-Revision-Date: 2025-01-12 07:45+0100\n"
+"POT-Creation-Date: 2025-06-10 00:41+0000\n"
+"PO-Revision-Date: 2025-06-09 06:37+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -231,7 +231,7 @@ msgstr "Zaustavi po trenutni skladbi: vključeno"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ne predvaja se nobena skladba"
@@ -239,8 +239,8 @@ msgstr "Ne predvaja se nobena skladba"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:441
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1222 MainWindow.cpp:1228
-#: MainWindow.cpp:1241
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1641,7 +1641,7 @@ msgstr "Nova časovna koda skladbe"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1241
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
 #, kde-format
 msgid "Unknown"
 msgstr "Neznano"
@@ -3609,10 +3609,9 @@ msgid "Use &system notifications"
 msgstr "Uporabi &sistemska obvestila"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Trenutno zaledje Phonon ne podpira pojemanja glasnosti"
+msgstr "Trenutno zaledje zvoka ne podpira pojemanja glasnosti"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4809,7 +4808,7 @@ msgstr "Neznan izvajalec"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1222
 #, kde-format
 msgid "Unknown track"
 msgstr "Neznana skladba"
@@ -8057,18 +8056,7 @@ msgid "No"
 msgstr "Ne"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8079,16 +8067,14 @@ msgid ""
 "   GStreamer: %5\n"
 "\n"
 msgstr ""
-"%1 Diagnostika\n"
-"\n"
-"Splošni podatki:\n"
-"%1 različica: %2\n"
-"Različica KDE Framework: %3\n"
-"Različica Qt: %4\n"
-"Različica Phonon-a: %5\n"
-"Zaledje Phonon: %6 (%7, %8)\n"
-"PulseAudio: %9\n"
-"\n"
+"%1 Diagnostica\r\n"
+"\r\n"
+"Splošne informacije:\r\n"
+"   %1 Različica: %2\r\n"
+"   KDE Frameworks različica: %3\r\n"
+"   Qt različica: %4\r\n"
+"   GStreamer: %5\r\n"
+"\r\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
@@ -9603,31 +9589,31 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Ocena"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:1003
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Na seznamu predvajanja je preveč napak. Predvajanje je bilo zaustavljeno."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> od <b>%2</b> na <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1214
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> od <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1217
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> na <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1229
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10809,7 +10795,7 @@ msgstr "Pogled"
 msgid "Lock Layout"
 msgstr "Zakleni razpored"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1315
+#: MainWindow.cpp:374 MainWindow.cpp:1305
 #, kde-format
 msgid "Reset Layout"
 msgstr "Ponastavi razpored"
@@ -11094,7 +11080,7 @@ msgstr "Orodja"
 msgid "&Settings"
 msgstr "Nastavitve"
 
-#: MainWindow.cpp:1185
+#: MainWindow.cpp:1175
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11105,22 +11091,22 @@ msgstr ""
 "\n"
 "Za njen priklic lahko vedno uporabite bližnjico \"%1\"."
 
-#: MainWindow.cpp:1186
+#: MainWindow.cpp:1176
 #, kde-format
 msgid "Hide Menu"
 msgstr "Skrij meni"
 
-#: MainWindow.cpp:1228
+#: MainWindow.cpp:1218
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "V premoru :: %1"
 
-#: MainWindow.cpp:1241
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1315
+#: MainWindow.cpp:1305
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Uveljavim to spremembo razporeda?"

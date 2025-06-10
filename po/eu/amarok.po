@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-09 00:41+0000\n"
+"POT-Creation-Date: 2025-06-10 00:41+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -230,7 +230,7 @@ msgstr "Gelditu uneko pistaren ondoren: Piztuta"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ez da pistarik jotzen ari"
@@ -238,8 +238,8 @@ msgstr "Ez da pistarik jotzen ari"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:441
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1222 MainWindow.cpp:1228
-#: MainWindow.cpp:1241
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1669,7 +1669,7 @@ msgstr "Denbora-kodearen pista berria"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1241
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
 #, kde-format
 msgid "Unknown"
 msgstr "Ezezaguna"
@@ -4832,7 +4832,7 @@ msgstr "Artista ezezaguna"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1222
 #, kde-format
 msgid "Unknown track"
 msgstr "Pista ezezaguna"
@@ -9578,30 +9578,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Balorazioa"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:1003
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Errore gehiegi aurkitu dira zerrendan. Erreprodukzioa gelditu da."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b>, <b>%2</b>: <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1214
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1217
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1229
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10790,7 +10790,7 @@ msgstr "&Ikusi"
 msgid "Lock Layout"
 msgstr "Blokeatu diseinua"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1315
+#: MainWindow.cpp:374 MainWindow.cpp:1305
 #, kde-format
 msgid "Reset Layout"
 msgstr "Berrezarri antolaera"
@@ -11075,7 +11075,7 @@ msgstr "&Tresnak"
 msgid "&Settings"
 msgstr "&Ezarpenak"
 
-#: MainWindow.cpp:1185
+#: MainWindow.cpp:1175
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11086,22 +11086,22 @@ msgstr ""
 "\n"
 "Gogoratu '%1' lasterbidea erabil dezakezula berriro erakusteko."
 
-#: MainWindow.cpp:1186
+#: MainWindow.cpp:1176
 #, kde-format
 msgid "Hide Menu"
 msgstr "Ezkutatu menua"
 
-#: MainWindow.cpp:1228
+#: MainWindow.cpp:1218
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pausatuta :: %1"
 
-#: MainWindow.cpp:1241
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2 :: %3"
 
-#: MainWindow.cpp:1315
+#: MainWindow.cpp:1305
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Antolaera aldaketa hau ezarri?"

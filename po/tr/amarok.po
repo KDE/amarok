@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-09 00:41+0000\n"
+"POT-Creation-Date: 2025-06-10 00:41+0000\n"
 "PO-Revision-Date: 2025-02-27 21:04+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -241,7 +241,7 @@ msgstr "Geçerli parçadan sonra durdur: Açık"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Çalan parça yok"
@@ -249,8 +249,8 @@ msgstr "Çalan parça yok"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:441
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1222 MainWindow.cpp:1228
-#: MainWindow.cpp:1241
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1671,7 +1671,7 @@ msgstr "Yeni Zaman Kodu Parçası"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1241
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
 #, kde-format
 msgid "Unknown"
 msgstr "Bilinmeyen"
@@ -4823,7 +4823,7 @@ msgstr "Bilinmeyen Sanatçı"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1222
 #, kde-format
 msgid "Unknown track"
 msgstr "Bilinmeyen Parça"
@@ -9486,30 +9486,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Derecelendirme"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:1003
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Çalma listesinde çok fazla hatayla karşılaşıldı. Çalma durduruldu."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b>, <b>%2</b>, <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1214
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1217
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1229
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10690,7 +10690,7 @@ msgstr "&Görünüm"
 msgid "Lock Layout"
 msgstr "Yerleşimi Kilitle"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1315
+#: MainWindow.cpp:374 MainWindow.cpp:1305
 #, kde-format
 msgid "Reset Layout"
 msgstr "Yerleşimi Sıfırla"
@@ -10975,7 +10975,7 @@ msgstr "&Araçlar"
 msgid "&Settings"
 msgstr "Ayar&lar"
 
-#: MainWindow.cpp:1185
+#: MainWindow.cpp:1175
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10987,22 +10987,22 @@ msgstr ""
 "Lütfen onu geri getirmek için her zaman “%1” kısayolunu kullanabileceğinizi "
 "unutmayın."
 
-#: MainWindow.cpp:1186
+#: MainWindow.cpp:1176
 #, kde-format
 msgid "Hide Menu"
 msgstr "Menüyü Gizle"
 
-#: MainWindow.cpp:1228
+#: MainWindow.cpp:1218
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Duraklatıldı  ::  %1"
 
-#: MainWindow.cpp:1241
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 — %2  ::  %3"
 
-#: MainWindow.cpp:1315
+#: MainWindow.cpp:1305
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Bu yerleşim değişikliği uygulansın mı?"

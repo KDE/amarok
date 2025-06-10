@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-09 00:41+0000\n"
+"POT-Creation-Date: 2025-06-10 00:41+0000\n"
 "PO-Revision-Date: 2021-06-20 14:10-0300\n"
 "Last-Translator: Thiago Masato Costa Sueto <herzenschein@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -236,7 +236,7 @@ msgstr "Parar após a faixa atual: ligado"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Nenhuma faixa sendo reproduzida"
@@ -244,8 +244,8 @@ msgstr "Nenhuma faixa sendo reproduzida"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:441
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1222 MainWindow.cpp:1228
-#: MainWindow.cpp:1241
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1670,7 +1670,7 @@ msgstr "Nova faixa de código de tempo"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1241
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
 #, kde-format
 msgid "Unknown"
 msgstr "Desconhecido"
@@ -4852,7 +4852,7 @@ msgstr "Artista desconhecido"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1222
 #, kde-format
 msgid "Unknown track"
 msgstr "Faixa desconhecida"
@@ -9545,32 +9545,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Avaliação"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:1003
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Muitos erros foram encontrados na lista de músicas. A reprodução foi "
 "interrompida."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> por <b>%2</b> em <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1214
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> por <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1217
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> por <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1229
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10763,7 +10763,7 @@ msgstr "E&xibir"
 msgid "Lock Layout"
 msgstr "Bloquear layout"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1315
+#: MainWindow.cpp:374 MainWindow.cpp:1305
 #, kde-format
 msgid "Reset Layout"
 msgstr "Redefinir layout"
@@ -11050,7 +11050,7 @@ msgstr "Ferramen&tas"
 msgid "&Settings"
 msgstr "&Configurações"
 
-#: MainWindow.cpp:1185
+#: MainWindow.cpp:1175
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11062,22 +11062,22 @@ msgstr ""
 "Lembre-se de que você sempre poderá usar o atalho \"%1\" para o voltar a "
 "exibi-la."
 
-#: MainWindow.cpp:1186
+#: MainWindow.cpp:1176
 #, kde-format
 msgid "Hide Menu"
 msgstr "Ocultar menu"
 
-#: MainWindow.cpp:1228
+#: MainWindow.cpp:1218
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pausado  ::  %1"
 
-#: MainWindow.cpp:1241
+#: MainWindow.cpp:1231
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1315
+#: MainWindow.cpp:1305
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Aplicar esta alteração de layout?"
