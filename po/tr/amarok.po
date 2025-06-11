@@ -23,15 +23,15 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-10 00:41+0000\n"
-"PO-Revision-Date: 2025-02-27 21:04+0300\n"
-"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
+"PO-Revision-Date: 2025-06-10 12:40+0300\n"
+"Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.03.70\n"
+"X-Generator: Lokalize 25.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3628,10 +3628,9 @@ msgid "Use &system notifications"
 msgstr "&Sistem bildirimlerini kullan"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Geçerli Phonon arka ucu, ses yumuşak geçişini desteklemiyor"
+msgstr "Geçerli ses arka ucu, yumuşak ses geçişini desteklemiyor"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7948,18 +7947,7 @@ msgid "No"
 msgstr "Hayır"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -7970,16 +7958,13 @@ msgid ""
 "   GStreamer: %5\n"
 "\n"
 msgstr ""
-"%1 Hata Tanılaması\n"
+"%1 Tanılaması\n"
 "\n"
 "Genel bilgi:\n"
 "   %1 sürümü: %2\n"
 "   KDE Frameworks sürümü: %3\n"
 "   Qt sürümü: %4\n"
-"   Phonon sürümü: %5\n"
-"   Phonon arka ucu: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
-"\n"
+"   GStreamer: %5\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
 #, kde-format

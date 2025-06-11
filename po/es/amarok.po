@@ -1,5 +1,6 @@
-# Copyright (C) YEAR This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
+# Spanish translations for amarok.po package.
+# Copyright (C) 2012-2025 This file is copyright:
+# This file is distributed under the same license as the amarok package.
 #
 # SPDX-FileCopyrightText: 2012, 2013, 2014 Javier Viñal <fjvinal@gmail.com>
 # Javier Vinal <fjvinalgmail.com>, 2012, 2014.
@@ -7,10 +8,10 @@
 # SPDX-FileCopyrightText: 2015 Sergio Ahumada <sahumada@texla.cl>
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-10 00:41+0000\n"
-"PO-Revision-Date: 2025-02-22 01:42+0100\n"
+"PO-Revision-Date: 2025-06-09 12:48+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.12.2\n"
+"X-Generator: Lokalize 25.04.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -779,8 +780,8 @@ msgstr ""
 #, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"11 Ganancia del ecualizador incluyendo preamplificación, intervalo "
-"-100...100. Lo normal es 0."
+"11 Ganancia del ecualizador incluyendo preamplificación, intervalo -100…100. "
+"Lo normal es 0."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -2030,7 +2031,7 @@ msgstr "Sin etiquetas"
 #: browsers/CollectionTreeItem.cpp:149
 #, kde-format
 msgid "Counting..."
-msgstr "Contando..."
+msgstr "Contando…"
 
 #: browsers/CollectionTreeItem.cpp:176
 #: playlist/proxymodels/GroupingProxy.cpp:189
@@ -2152,7 +2153,7 @@ msgstr "Borrar pistas"
 #: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
-msgstr "Más..."
+msgstr "Más…"
 
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
@@ -2460,7 +2461,7 @@ msgstr "&Borrar lista de reproducción"
 #: browsers/playlistbrowser/DynamicView.cpp:245
 #, kde-format
 msgid "&Edit bias..."
-msgstr "&Editar sesgo..."
+msgstr "&Editar sesgo…"
 
 #: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
@@ -2522,7 +2523,7 @@ msgstr[1] "%1 listas de reproducción"
 #, kde-format
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
-msgstr "Cargando..."
+msgstr "Cargando…"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:171
 #, kde-format
@@ -2551,17 +2552,17 @@ msgstr "&Nuevo"
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:83
 #, kde-format
 msgid "&Rename..."
-msgstr "Cam&biar nombre..."
+msgstr "Cam&biar nombre…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:90
 #, kde-format
 msgid "&Delete..."
-msgstr "&Borrar..."
+msgstr "&Borrar…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:104
 #, kde-format
 msgid "&Export As..."
-msgstr "&Exportar como..."
+msgstr "&Exportar como…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
 #, kde-format
@@ -2628,7 +2629,7 @@ msgstr "Guardar como"
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
 #, kde-format
 msgid "&Rename Folder..."
-msgstr "Cam&biar nombre de carpeta..."
+msgstr "Cam&biar nombre de carpeta…"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:41
 #, kde-format
@@ -2726,13 +2727,13 @@ msgstr "Palabras clave:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Añadir pódcast..."
+msgstr "Añadir pódcast…"
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #, kde-format
 msgid "add podcast..."
-msgstr "añadir pódcast..."
+msgstr "añadir pódcast…"
 
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
@@ -2746,13 +2747,13 @@ msgstr "Actualizar todos los pódcast"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "Configurar pódcast..."
+msgstr "Configurar pódcast…"
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
 #, kde-format
 msgid "Scan Interval..."
-msgstr "Intervalo de exploración..."
+msgstr "Intervalo de exploración…"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:216
 #: browsers/playlistbrowser/PodcastModel.cpp:268
@@ -3640,10 +3641,9 @@ msgid "Use &system notifications"
 msgstr "Utilizar notificaciones del &sistema"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "El motor actual de Phonon no admite desvanecimiento de volumen"
+msgstr "El motor actual de sonido no admite desvanecimiento de volumen"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4002,7 +4002,7 @@ msgstr "Etiquetas: Ninguna pista en reproducción"
 #: context/applets/labels/LabelsApplet.cpp:520
 #, kde-format
 msgid "Labels: Fetching..."
-msgstr "Etiquetas: Recuperando..."
+msgstr "Etiquetas: Recuperando…"
 
 #: context/applets/labels/LabelsApplet.cpp:530
 #: statsyncing/models/CommonModel.cpp:186
@@ -4373,7 +4373,7 @@ msgstr "Volver a cargar tablaturas"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: Fetching..."
-msgstr "Tablaturas: Recuperando..."
+msgstr "Tablaturas: Recuperando…"
 
 #: context/applets/tabs/TabsApplet.cpp:174
 #, kde-format
@@ -4485,7 +4485,7 @@ msgstr "No es posible obtener información de la Wikipedia: %1"
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:306
 #, kde-format
 msgid "No information found..."
-msgstr "No se ha encontrado información..."
+msgstr "No se ha encontrado información…"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
 #, kde-format
@@ -4533,7 +4533,7 @@ msgstr "Pulse para abrir %1 en un navegador web"
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
 msgid "Configure Applets..."
-msgstr "Configurar las miniaplicaciones..."
+msgstr "Configurar las miniaplicaciones…"
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -7690,19 +7690,19 @@ msgstr[1] " <b>%1</b> carátulas no encontradas"
 #: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
-msgstr "Descargando la carátula de %1 - %2..."
+msgstr "Descargando la carátula de %1 - %2…"
 
 #: covermanager/CoverManager.cpp:644
 #, kde-format
 msgid "Fetching cover for %1..."
-msgstr "Descargando la carátula de %1..."
+msgstr "Descargando la carátula de %1…"
 
 #: covermanager/CoverManager.cpp:650
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "Obteniendo 1 carátula: "
-msgstr[1] "Obteniendo <b>%1</b> carátulas...: "
+msgstr[1] "Obteniendo <b>%1</b> carátulas…: "
 
 #: covermanager/CoverManager.cpp:652
 #, kde-format
@@ -7727,7 +7727,7 @@ msgstr[1] "%1 no encontradas"
 #: services/lastfm/LastFmServiceSettings.cpp:107
 #, kde-format
 msgid "Connecting..."
-msgstr "Conectando..."
+msgstr "Conectando…"
 
 #: covermanager/CoverManager.cpp:683
 #, kde-format
@@ -7816,7 +7816,7 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:72
 #, kde-format
 msgid "Import batch file..."
-msgstr "Importar archivo por lotes..."
+msgstr "Importar archivo por lotes…"
 
 #: dialogs/CollectionSetup.cpp:73
 #, kde-format
@@ -7984,18 +7984,7 @@ msgid "No"
 msgstr "No"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8012,9 +8001,7 @@ msgstr ""
 "   Versión de %1: %2\n"
 "   Versión de KDE Frameworks: %3\n"
 "   Versión de Qt: %4\n"
-"   Versión de Phonon: %5\n"
-"   Motor de Phonon: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -9176,7 +9163,7 @@ msgstr "Aleatorio"
 #: dynamic/BiasedPlaylist.cpp:124
 #, kde-format
 msgid "Generating playlist..."
-msgstr "Creando lista de reproducción..."
+msgstr "Creando lista de reproducción…"
 
 #: dynamic/biases/AlbumPlayBias.cpp:35
 #, kde-format
@@ -10136,7 +10123,7 @@ msgstr "Ergonomía"
 #: main.cpp:160
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
-msgstr "Dan «Oye, compiló... » Meltzer"
+msgstr "Dan «Oye, compiló… » Meltzer"
 
 #: main.cpp:160
 #, kde-format
@@ -10786,7 +10773,7 @@ msgstr "Introducir URL del flujo:"
 #: MainWindow.cpp:763
 #, kde-format
 msgid "&Add Media..."
-msgstr "&Añadir medio..."
+msgstr "&Añadir medio…"
 
 #: MainWindow.cpp:768
 #, kde-format
@@ -10809,12 +10796,12 @@ msgstr "Eli&minar duplicados"
 #: MainWindow.cpp:785
 #, kde-format
 msgid "&Add Stream..."
-msgstr "&Añadir flujo..."
+msgstr "&Añadir flujo…"
 
 #: MainWindow.cpp:789
 #, kde-format
 msgid "&Export Playlist As..."
-msgstr "&Exportar lista de reproducción como..."
+msgstr "&Exportar lista de reproducción como…"
 
 #: MainWindow.cpp:801
 #, kde-format
@@ -10834,7 +10821,7 @@ msgstr "Miniaplicaciones de contexto de marcadores"
 #: MainWindow.cpp:817
 #, kde-format
 msgid "Play Media..."
-msgstr "Reproducir medio..."
+msgstr "Reproducir medio…"
 
 #: MainWindow.cpp:822
 #, kde-format
@@ -10859,7 +10846,7 @@ msgstr "Actualizar colección"
 #: MainWindow.cpp:871
 #, kde-format
 msgid "Synchronize Statistics..."
-msgstr "Sincronizar estadísticas..."
+msgstr "Sincronizar estadísticas…"
 
 #: MainWindow.cpp:879
 #, kde-format
@@ -10999,7 +10986,7 @@ msgstr "&Diagnósticos"
 #: MainWindow.cpp:1037
 #, kde-format
 msgid "&Report Bug..."
-msgstr "Informa&r de fallo..."
+msgstr "Informa&r de fallo…"
 
 #: MainWindow.cpp:1084
 #, kde-format
@@ -11158,7 +11145,7 @@ msgstr "Diseños de listas de reproducción"
 #: playlist/layouts/LayoutConfigAction.cpp:66
 #, kde-format
 msgid "Configure Playlist Layouts..."
-msgstr "Configurar diseños de listas de reproducción..."
+msgstr "Configurar diseños de listas de reproducción…"
 
 #: playlist/layouts/LayoutEditDialog.cpp:74
 #, kde-format
@@ -11700,7 +11687,7 @@ msgstr "<b>Nota:</b> Esta pista no es reproducible.<br>%1"
 #: playlist/PlaylistModel.cpp:305
 #, kde-format
 msgid "(...)"
-msgstr "(...)"
+msgstr "(…)"
 
 #: playlist/PlaylistModel.cpp:334
 #, kde-format
@@ -13641,7 +13628,7 @@ msgid ""
 "seconds..."
 msgstr ""
 "El servicio GPodder falló al obtener datos del servidor. Lo reintentará en "
-"10 segundos..."
+"10 segundos…"
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
@@ -13677,7 +13664,7 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:94
 #, kde-format
 msgid "Testing..."
-msgstr "Probando..."
+msgstr "Probando…"
 
 #: services/gpodder/GpodderServiceSettings.cpp:111
 #, kde-format
@@ -13734,7 +13721,7 @@ msgstr ""
 #: services/jamendo/JamendoInfoParser.cpp:77
 #, kde-format
 msgid "No description available..."
-msgstr "No hay descripción disponible..."
+msgstr "No hay descripción disponible…"
 
 #: services/jamendo/JamendoInfoParser.cpp:61
 #: services/jamendo/JamendoInfoParser.cpp:93
@@ -13802,7 +13789,7 @@ msgstr "Género / Artista / Álbum"
 #: services/jamendo/JamendoService.cpp:194
 #, kde-format
 msgid "Downloading Jamendo.com database..."
-msgstr "Descargando base de datos de Jamendo.com..."
+msgstr "Descargando base de datos de Jamendo.com…"
 
 #: services/jamendo/JamendoService.cpp:216
 #, kde-format
@@ -14337,7 +14324,7 @@ msgstr "Artista de radio"
 #: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
-msgstr "Last.fm está bien..."
+msgstr "Last.fm está bien…"
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:98
 #, kde-format
@@ -14421,7 +14408,7 @@ msgstr ""
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format
 msgid "Uncompressing Magnatune.com download..."
-msgstr "Descomprimiendo la descarga de Magnatune.com..."
+msgstr "Descomprimiendo la descarga de Magnatune.com…"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:133
 #, kde-format
@@ -14678,7 +14665,7 @@ msgstr ""
 #: services/magnatune/MagnatuneInfoParser.cpp:32
 #, kde-format
 msgid "Loading artist info..."
-msgstr "Cargando información del artista..."
+msgstr "Cargando información del artista…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:42
 #, kde-format
@@ -14688,7 +14675,7 @@ msgstr "Obteniendo información del artista %1"
 #: services/magnatune/MagnatuneInfoParser.cpp:51
 #, kde-format
 msgid "Loading album info..."
-msgstr "Cargando información del álbum..."
+msgstr "Cargando información del álbum…"
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
 #: services/magnatune/MagnatuneInfoParser.cpp:73
@@ -14709,7 +14696,7 @@ msgstr "De Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:164
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
-msgstr "Cargando página principal de Magnatune.com..."
+msgstr "Cargando página principal de Magnatune.com…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:167
 #, kde-format
@@ -14720,13 +14707,13 @@ msgstr "Obteniendo página principal de Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:192
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
-msgstr "Cargando su página favorita de Magnatune.com..."
+msgstr "Cargando su página favorita de Magnatune.com…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:203
 #: services/magnatune/MagnatuneInfoParser.cpp:217
 #, kde-format
 msgid "Loading your personal Magnatune.com recommendations page..."
-msgstr "Cargando su página de recomendaciones personales de Magnatune.com..."
+msgstr "Cargando su página de recomendaciones personales de Magnatune.com…"
 
 #: services/magnatune/MagnatuneMeta.cpp:214
 #, kde-format
@@ -14950,7 +14937,7 @@ msgstr "Registro"
 #: services/magnatune/MagnatuneStore.cpp:328
 #, kde-format
 msgid "Downloading Magnatune.com database..."
-msgstr "Descargando base de datos de Magnatune.com..."
+msgstr "Descargando base de datos de Magnatune.com…"
 
 #: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
@@ -15275,7 +15262,7 @@ msgstr "Si se usará el espacio izquierdo del título de OPML."
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr "Cargando información del pódcast..."
+msgstr "Cargando información del pódcast…"
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:67
 #, kde-format
@@ -15329,7 +15316,7 @@ msgstr "Añadir un archivo OPML a la lista."
 #: services/scriptable/ScriptableServiceInfoParser.cpp:88
 #, kde-format
 msgid "Loading info..."
-msgstr "Cargando información..."
+msgstr "Cargando información…"
 
 #: services/ServiceBase.cpp:337
 #, kde-format
@@ -15528,7 +15515,7 @@ msgstr[1] ""
 #: statsyncing/ui/MatchedTracksPage.cpp:135
 #, kde-format
 msgid "Configure Synchronization..."
-msgstr "Configurar sincronización..."
+msgstr "Configurar sincronización…"
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
 #, kde-format
@@ -15724,7 +15711,7 @@ msgstr "Pistas emparejadas"
 #: statsyncing/ui/MatchedTracksPage.ui:216
 #, kde-format
 msgid "Filter Tracks..."
-msgstr "Pistas filtradas..."
+msgstr "Pistas filtradas…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedRatingsButton)
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedLabelsButton)
@@ -16100,12 +16087,12 @@ msgstr "Raíz de la colección"
 #: widgets/FilenameLayoutWidget.cpp:277
 #, kde-format
 msgid "&Basic..."
-msgstr "&Básico..."
+msgstr "&Básico…"
 
 #: widgets/FilenameLayoutWidget.cpp:282
 #, kde-format
 msgid "&Advanced..."
-msgstr "&Avanzado..."
+msgstr "&Avanzado…"
 
 #: widgets/FilenameLayoutWidget.cpp:434
 #, kde-format
@@ -16390,1330 +16377,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "vacío"
-
-#~ msgctxt "label for equalizer band frequency"
-#~ msgid ""
-#~ "%1\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%1\n"
-#~ "Hz"
-
-#~ msgctxt "label for equalizer band frequency"
-#~ msgid ""
-#~ "%1\n"
-#~ "kHz"
-#~ msgstr ""
-#~ "%1\n"
-#~ "kHz"
-
-#~ msgid "Display"
-#~ msgstr "Mostrar"
-
-#~ msgid "Main Script File"
-#~ msgstr "Archivo de guion principal"
-
-#~ msgid "Applet Icon File"
-#~ msgstr "Archivo de icono de la miniaplicación"
-
-#~ msgid "Images"
-#~ msgstr "Imágenes"
-
-#~ msgid "Burn"
-#~ msgstr "Grabar"
-
-#~ msgid "Current Playlist"
-#~ msgstr "Lista de reproducción actual"
-
-#~ msgid "Selected Tracks"
-#~ msgstr "Pistas seleccionadas"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "dB"
-#~ msgstr ""
-#~ "%0\n"
-#~ "dB"
-
-#~ msgid ""
-#~ "%0\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%0\n"
-#~ "Hz"
-
-#~ msgid "&Retrieve similar artists"
-#~ msgstr "Recuperar a&rtistas similares"
-
-#~ msgid "Add Last.fm artist station to the Playlist"
-#~ msgstr "Añadir una emisora de artista Last.fm a la lista de reproducción"
-
-#~ msgid "Add top track to the Playlist"
-#~ msgstr "Añadir pista superior a la lista de reproducción"
-
-#~ msgid "Show Similar Artists to %1"
-#~ msgstr "Mostrar artistas similares a %1"
-
-#~ msgid "Open Last.fm webpage for this artist"
-#~ msgstr "Abrir la página inicial de Last.fm para este artista"
-
-#~ msgid "Match: %1%"
-#~ msgstr "Emparejar: %1%"
-
-#~ msgid "Unable to fetch the picture: %1"
-#~ msgstr "No es posible obtener la imagen: %1"
-
-#~ msgctxt "@info:tooltip Artist biography"
-#~ msgid "Show Biography"
-#~ msgstr "Mostrar biografía"
-
-#~ msgid "No description available."
-#~ msgstr "No hay descripción disponible."
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags: %1"
-#~ msgstr "Etiquetas: %1"
-
-#~ msgid "Top track not found"
-#~ msgstr "Pista superior no encontrada"
-
-#~ msgid "Top track: %1"
-#~ msgstr "Pista superior: %1"
-
-#~ msgid "Similar Artists"
-#~ msgstr "Artistas similares"
-
-#~ msgid "Forward"
-#~ msgstr "Adelante"
-
-#~ msgid "Show Similar Artists for Currently Playing Track"
-#~ msgstr "Mostrar artistas similares para la pista que se está reproduciendo"
-
-#~ msgid "Similar Artists Settings"
-#~ msgstr "Preferencias de artistas similares"
-
-#~ msgid "Similar Artists to %1"
-#~ msgstr "Artistas similares a «%1»"
-
-#~ msgid "Similar Artists: Not Found"
-#~ msgstr "Artistas similares: No encontrado"
-
-#~ msgctxt "@item:intext Artist biography published date"
-#~ msgid "Published: %1"
-#~ msgstr "Publicado: %1"
-
-#~ msgid "Maximum number of artists to show:"
-#~ msgstr "Número máximo de artistas a mostrar:"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Either the username was not recognized, or the password was incorrect."
-#~ msgstr "Bien el usuario no fue reconocido o la contraseña era incorrecta."
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "There was a problem communicating with the Last.fm services. Please try "
-#~ "again later."
-#~ msgstr ""
-#~ "Ha habido un problema al comunicarse con los servicios de Last.fm. "
-#~ "Inténtelo más tarde."
-
-#~ msgid "No running KWallet found."
-#~ msgstr "KWallet no se está ejecutando."
-
-#~ msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
-#~ msgstr ""
-#~ "¿Le gustaría que Amarok guardara sus credenciales de Last.fm en texto sin "
-#~ "formato?"
-
-#~ msgid "Test Login"
-#~ msgstr "Prueba de acceso"
-
-#~ msgid "<b>1</b> file selected."
-#~ msgid_plural "<b>%1</b> files selected."
-#~ msgstr[0] "<b>1</b> archivo seleccionado."
-#~ msgstr[1] "<b>%1</b> archivos seleccionados."
-
-#~ msgid ""
-#~ "<qt>These items will be <b>permanently deleted</b> from your hard disk.</"
-#~ "qt>"
-#~ msgstr ""
-#~ "<qt>Estos elementos serán <b>borrados permanentemente</b> de su disco "
-#~ "duro.</qt>"
-
-#~ msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-#~ msgstr "<qt>Estos elementos serán movidos a la papelera.</qt>"
-
-#~ msgid "&Send to Trash"
-#~ msgstr "&Enviar a la papelera"
-
-#~ msgid "About to delete selected files"
-#~ msgstr "Se dispone a borrar los archivos seleccionados"
-
-#~ msgid "Deleting files"
-#~ msgstr "Borrando los archivos"
-
-#~ msgid "Icon Placeholder, not in GUI"
-#~ msgstr ""
-#~ "Marcador de posición de iconos, no en la interfaz gráfica de usuario"
-
-#~ msgid "Deletion method placeholder, never shown to user."
-#~ msgstr ""
-#~ "Marcador de posición de método de borrado, nunca se muestra al usuario."
-
-#~ msgid "List of files that are about to be deleted."
-#~ msgstr "Lista de archivos que se van a borrar."
-
-#~ msgid "This is the list of items that are about to be deleted."
-#~ msgstr "Esta es la lista de elementos que se van a borrar."
-
-#~ msgid "Placeholder for number of files, not in GUI"
-#~ msgstr ""
-#~ "Marcador de posición para número de archivos, no mostrado en la interfaz "
-#~ "gráfica de usuario"
-
-#~ msgid "&Delete files instead of moving them to the trash"
-#~ msgstr "&Borrar los archivos en lugar de moverlos a la papelera"
-
-#~ msgid ""
-#~ "If checked, files will be permanently removed instead of being placed in "
-#~ "the Trash Bin"
-#~ msgstr ""
-#~ "Si está marcada, los archivos serán eliminados permanentemente en lugar "
-#~ "de ser movidos a la papelera"
-
-#~ msgid ""
-#~ "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
-#~ "instead of being placed in the Trash Bin.</p>\n"
-#~ "\n"
-#~ "<p><em>Use this option with caution</em>: Most filesystems are unable to "
-#~ "reliably undelete deleted files.</p></qt>"
-#~ msgstr ""
-#~ "<qt><p>Si esta casilla está marcada, los archivos serán <b>eliminados "
-#~ "permanentemente</b> en lugar de ser colocados en la papelera.</p>\n"
-#~ "\n"
-#~ "<p><em>Use esta opción con precaución</em>: La mayoría de los sistemas de "
-#~ "archivos son incapaces de deshacer fiablemente la operación de borrado de "
-#~ "archivos.</p></qt>"
-
-#~ msgid "Select Plugin for %1"
-#~ msgstr "Seleccionar complemento para %1"
-
-#~ msgid "Configure Media Device"
-#~ msgstr "Configurar dispositivo de medios"
-
-#~ msgid "Pre-&connect command:"
-#~ msgstr "Orden de pre&conexión:"
-
-#~ msgid "Example: mount %d"
-#~ msgstr "Ejemplo: mount %d"
-
-#~ msgid ""
-#~ "Set a command to be run before connecting to your device (e.g. a mount "
-#~ "command) here.\n"
-#~ "%d is replaced by the device node, %m by the mount point.\n"
-#~ "Empty commands are not executed."
-#~ msgstr ""
-#~ "Establezca una orden a ejecutar antes de conectarse a su dispositivo (por "
-#~ "ejemplo una orden de montaje).\n"
-#~ "%d es remplazado por el nodo del dispositivo, %m por el punto de "
-#~ "montaje.\n"
-#~ "Las órdenes en blanco no se ejecutan."
-
-#~ msgid "Post-&disconnect command:"
-#~ msgstr "Orden de pos &desconexión:"
-
-#~ msgid "Example: eject %d"
-#~ msgstr "Ejemplo: eject %d"
-
-#~ msgid ""
-#~ "Set a command to be run after disconnecting from your device (e.g. an "
-#~ "eject command) here.\n"
-#~ "%d is replaced by the device node, %m by the mount point.\n"
-#~ "Empty commands are not executed."
-#~ msgstr ""
-#~ "Establezca una orden a ejecutar después de desconectarse de su "
-#~ "dispositivo (por ejemplo un orden de expulsión).\n"
-#~ "%d es remplazado por el nodo del dispositivo, %m por el punto de "
-#~ "montaje.\n"
-#~ "Las órdenes en blanco no se ejecutan."
-
-#~ msgid "&Transcode before transferring to device"
-#~ msgstr "&Transformar antes de transferir al dispositivo"
-
-#~ msgid "Transcode to preferred format (%1) for device"
-#~ msgstr "Transformar al formato preferido (%1) para el dispositivo"
-
-#~ msgid "Whenever possible"
-#~ msgstr "Siempre que sea posible"
-
-#~ msgid "When necessary"
-#~ msgstr "Cuando sea necesario"
-
-#~ msgid "Remove transcoded files after transfer"
-#~ msgstr "Eliminar los archivos transformados después de la transferencia"
-
-#~ msgid "For this feature, a script of type \"Transcode\" has to be running"
-#~ msgstr ""
-#~ "Para esta característica, tiene que estar ejecutándose un guion de tipo "
-#~ "«Transformar»"
-
-#~ msgid "Transfer Queue to Device"
-#~ msgstr "Transferir cola al dispositivo"
-
-#~ msgid "Music Location"
-#~ msgstr "Ubicación de música"
-
-#~ msgid ""
-#~ "Your music will be transferred to:\n"
-#~ "%1"
-#~ msgstr ""
-#~ "Su música será transferida a:\n"
-#~ "%1"
-
-#~ msgid ""
-#~ "You can have your music automatically grouped in\n"
-#~ "a variety of ways. Each grouping will create\n"
-#~ "directories based upon the specified criteria.\n"
-#~ msgstr ""
-#~ "Puede agrupar su música automáticamente de\n"
-#~ "varias maneras. Cada agrupamiento creará\n"
-#~ "directorios según un criterio específico.\n"
-
-#~ msgid "Groupings"
-#~ msgstr "Agrupamientos"
-
-#~ msgid "Select first grouping:\n"
-#~ msgstr "Seleccione el primer agrupamiento:\n"
-
-#~ msgid "Select second grouping:\n"
-#~ msgstr "Seleccione el segundo agrupamiento:\n"
-
-#~ msgid "Select third grouping:\n"
-#~ msgstr "Seleccione el tercer agrupamiento:\n"
-
-#~ msgid "Convert spaces to underscores"
-#~ msgstr "Convertir espacios en signos de subrayado"
-
-#~ msgid "Click for more analyzers"
-#~ msgstr "Pulse para más analizadores"
-
-#~ msgid "&Visualizations"
-#~ msgstr "&Visualizaciones"
-
-#~ msgid "Get data from openDesktop.org to learn more about the team"
-#~ msgstr ""
-#~ "Obtener información de openDesktop.org para aprender más sobre el equipo"
-
-#~ msgid "Get data from openDesktop.org to learn more about contributors"
-#~ msgstr ""
-#~ "Obtener información de openDesktop.org para aprender más sobre los "
-#~ "colaboradores"
-
-#~ msgid ""
-#~ "Get data from openDesktop.org to learn more about our generous donors"
-#~ msgstr ""
-#~ "Obtener información de openDesktop.org para aprender más sobre nuestros "
-#~ "generosos donantes"
-
-#~ msgid "Internet connection not available"
-#~ msgstr "Conexión a Internet no disponible"
-
-#~ msgid "Network error"
-#~ msgstr "Error de red"
-
-#~ msgctxt "A person's location: City, Country"
-#~ msgid "%1, %2"
-#~ msgstr "%1, %2"
-
-#~ msgid "IRC channels: "
-#~ msgstr "Canales de IRC: "
-
-#~ msgid "Favorite music: "
-#~ msgstr "Música favorita: "
-
-#~ msgid "Visit %1's openDesktop.org profile"
-#~ msgstr "Visite el perfil %1 de openDesktop.org"
-
-#~ msgid "Visit %1's profile on openDesktop.org"
-#~ msgstr "Visite el perfil %1 de openDesktop.org"
-
-#~ msgid "Visit contributor's blog"
-#~ msgstr "Visite el blog de los colaboradores"
-
-#~ msgid "Visit contributor's del.icio.us profile"
-#~ msgstr "Visite el perfil de los colaboradores en del.icio.us"
-
-#~ msgid "Visit contributor's Digg profile"
-#~ msgstr "Visite el perfil de los colaboradores en Digg"
-
-#~ msgid "Visit contributor's Facebook profile"
-#~ msgstr "Visite el perfil de los colaboradores en Facebook"
-
-#~ msgid "Visit contributor's Last.fm profile"
-#~ msgstr "Visite el perfil de los colaboradores en Last.fm"
-
-#~ msgid "Visit contributor's LinkedIn profile"
-#~ msgstr "Visite el perfil de los colaboradores en LinkedIn"
-
-#~ msgid "Visit contributor's MySpace homepage"
-#~ msgstr "Visite la página inicial de los colaboradores en MySpace"
-
-#~ msgid "Visit contributor's Reddit profile"
-#~ msgstr "Visite el perfil de los colaboradores en Reddit"
-
-#~ msgid "Visit contributor's YouTube profile"
-#~ msgstr "Visite el perfil de los colaboradores en YouTube"
-
-#~ msgid "Visit contributor's Twitter feed"
-#~ msgstr "Visite la fuente de los colaboradores en Twitter"
-
-#~ msgid "Visit contributor's Wikipedia profile"
-#~ msgstr "Visite el perfil de los colaboradores en Wikipedia"
-
-#~ msgid "Visit contributor's Xing profile"
-#~ msgstr "Visite el perfil de los colaboradores en Xing"
-
-#~ msgid "Visit contributor's identi.ca feed"
-#~ msgstr "Visite la fuente de los colaboradores en identi.ca"
-
-#~ msgid "Visit contributor's libre.fm profile"
-#~ msgstr "Visite el perfil de los colaboradores en libre.fm"
-
-#~ msgid "Visit contributor's StackOverflow profile"
-#~ msgstr "Visite el perfil de los colaboradores en StackOverflow"
-
-#~ msgid "Amarok Applet Manager"
-#~ msgstr "Gestor de miniaplicaciones de Amarok"
-
-#~ msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-#~ msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
-
-#~ msgid "Aaron Seigo"
-#~ msgstr "Aaron Seigo"
-
-#~ msgid "Original author"
-#~ msgstr "Autor original"
-
-#~ msgid "For install or remove, operates on applets installed for all users."
-#~ msgstr ""
-#~ "Para instalar o eliminar, funciona en miniaplicaciones instaladas para "
-#~ "todos los usuarios."
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Install the applet at <path>"
-#~ msgstr "Instalar la miniaplicación en <path>"
-
-#~ msgctxt "Do not translate <path>"
-#~ msgid "Upgrade the applet at <path>"
-#~ msgstr "Actualizar la miniaplicación en <path>"
-
-#~ msgid "Most installed applets"
-#~ msgstr "Miniaplicaciones más instaladas"
-
-#~ msgctxt "Do not translate <name>"
-#~ msgid "Remove the applet named <name>"
-#~ msgstr "Eliminar la miniaplicación denominada <name>"
-
-#~ msgid ""
-#~ "Absolute path to the package root. If not supplied, then the standard "
-#~ "data directories for this KDE session will be searched instead."
-#~ msgstr ""
-#~ "Ruta absoluta a la raíz del paquete. Si no se proporciona, se buscará en "
-#~ "los directorios estándar para esta sesión de KDE."
-
-#~ msgid "Successfully removed %1"
-#~ msgstr "%1 eliminado satisfactoriamente"
-
-#~ msgid "Removal of %1 failed."
-#~ msgstr "Fallo al borrar %1."
-
-#~ msgid "Plugin %1 is not installed."
-#~ msgstr "Complemento %1 no está instalado."
-
-#~ msgid "Successfully installed %1"
-#~ msgstr "%1 instalado satisfactoriamente"
-
-#~ msgid "Installation of %1 failed."
-#~ msgstr "La instalación de %1 ha fallado."
-
-#~ msgctxt ""
-#~ "No option was given, this is the error message telling the user he needs "
-#~ "at least one, do not translate install, remove, upgrade nor list"
-#~ msgid "One of install, remove, upgrade or list is required."
-#~ msgstr "Se necesita instalar, eliminar, actualizar o listar."
-
-#~ msgid "Upcoming Events"
-#~ msgstr "Próximos eventos"
-
-#~ msgid "View Events Calendar"
-#~ msgstr "Ver calendario de eventos"
-
-#~ msgctxt "@title:group"
-#~ msgid "No track is currently playing"
-#~ msgstr "Ninguna pista en reproducción actualmente"
-
-#~ msgid "Favorite Venues"
-#~ msgstr "Lugares favoritos"
-
-#~ msgid "No upcoming events"
-#~ msgstr "Sin eventos futuros"
-
-#~ msgid "%1: No upcoming events"
-#~ msgstr "%1: Sin eventos futuros"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "1 event"
-#~ msgid_plural "%1 events"
-#~ msgstr[0] "1 evento"
-#~ msgstr[1] "%1 eventos"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "%1: 1 event"
-#~ msgid_plural "%1: %2 events"
-#~ msgstr[0] "%1: 1 evento"
-#~ msgstr[1] "%1: %2 eventos"
-
-#~ msgid "Upcoming Events Settings"
-#~ msgstr "Preferencias de próximos eventos"
-
-#~ msgctxt "@label:textbox Url label"
-#~ msgid "link"
-#~ msgstr "enlace"
-
-#~ msgid "Map View"
-#~ msgstr "Vista de mapa"
-
-#~ msgid "Events Calendar"
-#~ msgstr "Calendario de eventos"
-
-#~ msgid "This week"
-#~ msgstr "Esta semana"
-
-#~ msgid "This month"
-#~ msgstr "Este mes"
-
-#~ msgid "This year"
-#~ msgstr "Este año"
-
-#~ msgctxt "@title:group"
-#~ msgid "Favorite Venues"
-#~ msgstr "Lugares favoritos"
-
-#~ msgctxt "@info:tooltip Calendar action"
-#~ msgid "Jump to Today"
-#~ msgstr "Saltar a hoy"
-
-#~ msgid "Filter events by date:"
-#~ msgstr "Filtrar eventos por fecha:"
-
-#~ msgid "All events"
-#~ msgstr "Todos los eventos"
-
-#~ msgid "&Group venue events"
-#~ msgstr "A&grupar eventos por lugar"
-
-#~ msgctxt "@label:textbox Title for a canceled upcoming event"
-#~ msgid "<s>%1</s> (Canceled)"
-#~ msgstr "<s>%1</s> (cancelado)"
-
-#~ msgid "Show places as links"
-#~ msgstr "Mostrar lugares como enlaces"
-
-#~ msgid "Maximize"
-#~ msgstr "Maximizar"
-
-#~ msgid "Expand this widget"
-#~ msgstr "Expandir este control"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "Contraer este control"
-
-#~ msgid "Search Venue"
-#~ msgstr "Buscar lugar"
-
-#~ msgid "Restrict venues to a specific country"
-#~ msgstr "Restringir lugares a un país específico"
-
-#~ msgid "Any Country"
-#~ msgstr "Cualquier país"
-
-#~ msgid "Search Results:"
-#~ msgstr "Resultados de la búsqueda:"
-
-#~ msgid "Selected Venues:"
-#~ msgstr "Lugares seleccionados:"
-
-#~ msgid "Photo"
-#~ msgstr "Foto"
-
-#~ msgid "City:"
-#~ msgstr "Ciudad:"
-
-#~ msgid "Website:"
-#~ msgstr "Sitio web:"
-
-#~ msgid "Country:"
-#~ msgstr "País:"
-
-#~ msgid "Street:"
-#~ msgstr "Calle:"
-
-#~ msgid "Loading picture..."
-#~ msgstr "Cargando imagen..."
-
-#~ msgid "View map"
-#~ msgstr "Vista de mapa"
-
-#~ msgctxt "@label:textbox Supporting acts for an event"
-#~ msgid "Supporting:"
-#~ msgstr "Apoyo:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Venue:"
-#~ msgstr "Lugar:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Location:"
-#~ msgstr "Ubicación:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Date:"
-#~ msgstr "Fecha:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Attending:"
-#~ msgstr "Asistente:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags:"
-#~ msgstr "Etiquetas:"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Tags:</strong><nl/>%1"
-#~ msgstr "<strong>Etiquetas:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Supporting artists for an event"
-#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
-#~ msgstr "<strong>Artistas patrocinadores:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Number of days till an event"
-#~ msgid "Tomorrow"
-#~ msgid_plural "In <strong>%1</strong> days"
-#~ msgstr[0] "Mañana"
-#~ msgstr[1] "En <strong>%1</strong> días"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Location:</strong><nl/>%1"
-#~ msgstr "<strong>Ubicación:</strong><nl/>%1"
-
-#~ msgid ""
-#~ "<p>Each year in October the Amarok team organizes a funding drive called "
-#~ "<b>Roktober</b>.</p><p>If you want your name mentioned on this list <a "
-#~ "href=\"http://amarok.kde.org/donations\"> donate during Roktober</a> and "
-#~ "opt-in.</p>"
-#~ msgstr ""
-#~ "<p>Cada año en octubre el equipo de Amarok organiza una financiación "
-#~ "llamada <b>Roktober</b>.</p><p>Si desea que su nombre se mencione en esta "
-#~ "lista <a href=\"http://amarok.kde.org/donations\">, haga un donativo "
-#~ "durante Roktober</a> y apúntese.</p>"
-
-#~ msgid "Update Supported Languages"
-#~ msgstr "Actualizar idiomas reconocidos"
-
-#~ msgid "Get Supported Languages"
-#~ msgstr "Obtener idiomas reconocidos"
-
-#~ msgid "Wikipedia"
-#~ msgstr "Wikipedia"
-
-#~ msgid "Wikipedia: %1"
-#~ msgstr "Wikipedia: %1"
-
-#~ msgid "Wikipedia General Settings"
-#~ msgstr "Preferencias generales de la Wikipedia"
-
-#~ msgid "Wikipedia Language Settings"
-#~ msgstr "Preferencias de idioma de Wikipedia"
-
-#~ msgid ""
-#~ "Automatically download and install updates for the built-in scripts from "
-#~ "the Amarok website if available"
-#~ msgstr ""
-#~ "Descargar e instalar automáticamente las actualizaciones de los guiones "
-#~ "incrustados desde la página web de Amarok cuando estén disponibles"
-
-#~ msgid "Automatically update built-in scripts"
-#~ msgstr "Actualizar automáticamente los guiones incrustados"
-
-#~ msgid "Browse, install, and uninstall scripts"
-#~ msgstr "Navegar, instalar y desinstalar guiones"
-
-#~ msgid "Manage Scripts"
-#~ msgstr "Gestionar guiones"
-
-#~ msgid "Scanning %1"
-#~ msgstr "Escaneando %1"
-
-#~ msgid "UPnP Error: %1"
-#~ msgstr "UPnP Error: %1"
-
-#~ msgid "Sound System - Amarok"
-#~ msgstr "Sistema de sonido - Amarok"
-
-#~ msgid "Sound System Configuration"
-#~ msgstr "Configuración del sistema de sonido"
-
-#~ msgid "Phonon is the audio system used by Amarok."
-#~ msgstr "Phonon es el sistema de audio utilizado por Amarok."
-
-#~ msgid "Configure Phonon"
-#~ msgstr "Configurar Phonon"
-
-#~ msgid ""
-#~ "You are advised to only uninstall manually installed scripts using this "
-#~ "button."
-#~ msgstr ""
-#~ "Se le aconseja solo desinstalar manualmente los guiones instalados usando "
-#~ "este botón."
-
-#~ msgid "Loaded Scripts"
-#~ msgstr "Scripts cargados"
-
-#~ msgid "Breakpoints"
-#~ msgstr "Puntos de ruptura"
-
-#~ msgid "Stack"
-#~ msgstr "Pila"
-
-#~ msgid "Locals"
-#~ msgstr "Locales"
-
-#~ msgid ""
-#~ "Syntax error at line %1, continue anyway?\n"
-#~ "Error: %2"
-#~ msgstr ""
-#~ "Error de sintaxis en la línea %1, ¿continuar de todos modos?\n"
-#~ "Error: %2"
-
-#~ msgid "Syntax Error"
-#~ msgstr "Error de sintaxis"
-
-#~ msgctxt "do not translate 'DataDownloader' or 'qt.core'"
-#~ msgid "qt.core must be loaded to use DataDownloader"
-#~ msgstr "qt.core debe cargarse para usar DataDownloader"
-
-#~ msgid "Invalid URL"
-#~ msgstr "URL inválida"
-
-#~ msgid "Nepomuk Collection"
-#~ msgstr "Colección de Nepomuk"
-
-#~ msgid ""
-#~ "Couldn't initialize Nepomuk Collection. Check if 'Nepomuk Semantic "
-#~ "Desktop' is enabled in System Settings -> Desktop Search. Nepomuk Plugin "
-#~ "won't be loaded unless Nepomuk is enabled."
-#~ msgstr ""
-#~ "No se pudo inicializar la colección de Nepomuk. Compruebe si el "
-#~ "escritorio semántico Nepomuk está activado en preferencias del sistema -> "
-#~ "búsqueda de escritorio. El complemento de Nepomuk no se cargará, salvo "
-#~ "que Nepomuk esté activado."
-
-#~ msgid ""
-#~ "Why not join the <a href=\"http://www.last.fm:80/group/Amarok+Users"
-#~ "\">Amarok Last.fm group</a> and share your musical tastes with other "
-#~ "Amarok users?"
-#~ msgstr ""
-#~ "¿Por qué no unirse al <a href=\"http://www.last.fm:80/group/Amarok+Users"
-#~ "\">grupo en Last.fm de Amarok</a> y compartir sus gustos musicales con "
-#~ "otros usuarios de Amarok?"
-
-#~ msgid "Neighbors' Loved Radio"
-#~ msgstr "Radio preferida de los vecinos"
-
-#~ msgid "Neighbors' Personal Radio"
-#~ msgstr "Radio personal de los vecinos"
-
-#~ msgid "Neighborhood"
-#~ msgstr "Vecindad"
-
-#~ msgid "My Neighborhood"
-#~ msgstr "Mi vecindad"
-
-#~ msgid "Neighbors"
-#~ msgstr "Vecinos"
-
-#~ msgid "Unable to parse avatar image data."
-#~ msgstr "No es posible analizar los datos de la imagen del avatar."
-
-#~ msgid "Are you sure you want to delete this playlist?"
-#~ msgid_plural "Are you sure you want to delete these %1 playlists?"
-#~ msgstr[0] "¿Seguro qué desea borrar esta lista de reproducción?"
-#~ msgstr[1] "¿Seguro qué desea borrar estas «%1» listas de reproducción?"
-
-#~ msgctxt "%1 is playlist provider pretty name"
-#~ msgid "Yes, delete from %1."
-#~ msgstr "Sí, borrar de %1."
-
-#~ msgid "Yes, delete folder."
-#~ msgstr "Sí, borrar la carpeta."
-
-#~ msgid "Recently Added Albums"
-#~ msgstr "Álbumes añadidos recientemente"
-
-#~ msgid "Filter Albums"
-#~ msgstr "Filtrar álbumes"
-
-#~ msgid "Right align track lengths"
-#~ msgstr "Alinear a la derecha las longitudes de pista"
-
-#~ msgid "Number of recently added albums:"
-#~ msgstr "Número de álbumes añadidos recientemente:"
-
-#~ msgid "Albums Applet Settings"
-#~ msgstr "Preferencias de miniaplicación de álbumes"
-
-#~ msgctxt "Analyzer name"
-#~ msgid "Balls"
-#~ msgstr "Bolas"
-
-#~ msgctxt "Analyzer name"
-#~ msgid "Blocky"
-#~ msgstr "Bloque"
-
-#~ msgctxt "Analyzer name"
-#~ msgid "Disco"
-#~ msgstr "Disco"
-
-#~ msgctxt "Analyzer name"
-#~ msgid "ASCII"
-#~ msgstr "ASCII"
-
-#~ msgid "Height"
-#~ msgstr "Altura"
-
-#~ msgctxt "Height of the Analyzer applet"
-#~ msgid "Tiny"
-#~ msgstr "Pequeño"
-
-#~ msgctxt "Height of the Analyzer applet"
-#~ msgid "Small"
-#~ msgstr "Pequeño"
-
-#~ msgctxt "Height of the Analyzer applet"
-#~ msgid "Medium"
-#~ msgstr "Medio"
-
-#~ msgctxt "Height of the Analyzer applet"
-#~ msgid "Tall"
-#~ msgstr "Alto"
-
-#~ msgid "Right-click to configure"
-#~ msgstr "Clic derecho para configurar"
-
-#~ msgctxt "What artist is this track by"
-#~ msgid "By"
-#~ msgstr "Por"
-
-#~ msgctxt "What album is this track on"
-#~ msgid "On"
-#~ msgstr "En"
-
-#~ msgid "Recently Played Tracks"
-#~ msgstr "Pistas reproducidas recientemente"
-
-#~ msgid "Last Played"
-#~ msgstr "Última reproducción"
-
-#~ msgid "Show Album in Media Sources"
-#~ msgstr "Mostrar álbum en las fuentes de medios"
-
-#~ msgid "Show Artist in Media Sources"
-#~ msgstr "Mostrar artista en las fuentes de medios"
-
-#~ msgid "Search for Artist in the MP3 Music Store"
-#~ msgstr "Buscar artista en la tienda de música MP3"
-
-#~ msgid "Show Composer in Media Sources"
-#~ msgstr "Mostrar compositor en las fuentes de medios"
-
-#~ msgid "Show Genre in Media Sources"
-#~ msgstr "Mostrar género en las fuentes de medios"
-
-#~ msgid "Show Year in Media Sources"
-#~ msgstr "Mostrar año en las fuentes de medios"
-
-#~ msgid "Show Actions"
-#~ msgstr "Mostrar acciones"
-
-#~ msgid "Fonts"
-#~ msgstr "Tipos de letra"
-
-#~ msgctxt "Used if the current track has no artist."
-#~ msgid "Unknown"
-#~ msgstr "Desconocido"
-
-#~ msgid ""
-#~ "While you were editing the lyrics of <b>%1 - %2</b> the track has "
-#~ "changed. Do you want to save your changes?"
-#~ msgstr ""
-#~ "Mientras usted estaba editando las letras de <b>%1 - %2</b> la pista ha "
-#~ "cambiado. ¿Quiere guardar los cambios?"
-
-#~ msgid ""
-#~ "The lyrics of <b>%1 - %2</b> changed while you were editing them. Do you "
-#~ "want to save your changes?"
-#~ msgstr ""
-#~ "Las letras de <b>%1 - %2</b> cambiaron mientras usted estaba editándolas. "
-#~ "¿Quiere guardar los cambios?"
-
-#~ msgid "Edit Lyrics"
-#~ msgstr "Editar letras"
-
-#~ msgid "Save Lyrics"
-#~ msgstr "Guardar letras"
-
-#~ msgid "Scroll automatically"
-#~ msgstr "Desplazar automáticamente"
-
-#~ msgid "Lyrics: No script is running"
-#~ msgstr "Letras: No se está ejecutando ningún guion"
-
-#~ msgid "Lyrics: Fetching ..."
-#~ msgstr "Letras: Recuperando..."
-
-#~ msgid "Lyrics: Fetch error"
-#~ msgstr "Letras: Error de obtención"
-
-#~ msgid "Lyrics: Suggested URLs"
-#~ msgstr "Letras; URL sugeridas"
-
-#~ msgctxt "Lyrics: <artist> - <title>"
-#~ msgid "Lyrics: %1 - %2"
-#~ msgstr "Letras: %1 - %2"
-
-#~ msgctxt "@info"
-#~ msgid ""
-#~ "Do you really want to refetch lyrics for this track? All changes you may "
-#~ "have made will be lost."
-#~ msgstr ""
-#~ "¿Realmente quiere volver a obtener las letras de esta pista? Se perderán "
-#~ "todos los cambios que haya hecho."
-
-#~ msgid "Font"
-#~ msgstr "Tipo de letra"
-
-#~ msgctxt "Left alignment"
-#~ msgid "Left"
-#~ msgstr "Izquierda"
-
-#~ msgctxt "Center alignment"
-#~ msgid "Center"
-#~ msgstr "Centro"
-
-#~ msgid "Right"
-#~ msgstr "Derecha"
-
-#~ msgid "artist: %1"
-#~ msgstr "artista: %1"
-
-#~ msgid "Photos"
-#~ msgstr "Fotos"
-
-#~ msgctxt "animation type"
-#~ msgid "Automatic"
-#~ msgstr "Automático"
-
-#~ msgid "Interactive"
-#~ msgstr "Interactivo"
-
-#~ msgid "Photos: No Track Playing"
-#~ msgstr "Fotos: Ninguna pista en reproducción"
-
-#~ msgctxt "@title:window Number of photos of artist"
-#~ msgid "1 Photo: %2"
-#~ msgid_plural "%1 Photos: %2"
-#~ msgstr[0] "1 Foto: %2"
-#~ msgstr[1] "%1 Fotos: %2"
-
-#~ msgid "Photos: %1"
-#~ msgstr "Fotos: %1"
-
-#~ msgid "Photos Settings"
-#~ msgstr "Preferencias de fotos"
-
-#~ msgid "Animation"
-#~ msgstr "Animación"
-
-#~ msgid "Fading"
-#~ msgstr "Desvanecimiento"
-
-#~ msgid "Number of photos"
-#~ msgstr "Número de fotos"
-
-#~ msgid "Additional key words:"
-#~ msgstr "Palabras clave adicionales:"
-
-#~ msgid "Ex: band live 1977"
-#~ msgstr "Ex: banda en vivo 1977"
-
-#~ msgid ""
-#~ "Add some more key words to the Flickr.com\n"
-#~ "query, with a space separator. \n"
-#~ "For example: band live 1977 "
-#~ msgstr ""
-#~ "Añada algunas palabras clave a la consulta en Flickr.com\n"
-#~ "separadas por un espacio. \n"
-#~ "Por ejemplo: banda en vivo 1977 "
-
-#~ msgid "Use Wikipedia &mobile version"
-#~ msgstr "Emplear la versión &móvil de la Wikipedia"
-
-#~ msgid ""
-#~ "Error: Visualizations are not supported by your current Phonon backend."
-#~ msgstr ""
-#~ "Error: Las visualizaciones no están implementadas por el motor actual de "
-#~ "Phonon."
-
-#~ msgid ""
-#~ "Please add some applets from the toolbar at the bottom of the context "
-#~ "view."
-#~ msgstr ""
-#~ "Por favor añada algunas miniaplicaciones de la barra de herramientas en "
-#~ "la parte inferior de la vista de contexto."
-
-#~ msgid "Albums by %1"
-#~ msgstr "Álbumes de %1"
-
-#~ msgctxt "Header text for current album applet"
-#~ msgid "Albums"
-#~ msgstr "Álbumes"
-
-#~ msgid "Unable to retrieve from Flickr.com: %1"
-#~ msgstr "No es posible obtener información de Flickr.com: %1"
-
-#~ msgid "Remove Applet"
-#~ msgstr "Eliminar la miniaplicación"
-
-#~ msgid "Add Applets..."
-#~ msgstr "Añadir miniaplicaciones..."
-
-#~ msgid "Add Applet..."
-#~ msgstr "Añadir miniaplicación..."
-
-#~ msgid "no applet name"
-#~ msgstr "sin nombre de miniaplicación"
-
-#~ msgid "Install, list, remove Amarok applets"
-#~ msgstr "Instalar, listar y eliminar miniaplicaciones de Amarok"
-
-#~ msgid "Hide menu"
-#~ msgstr "Ocultar menú"
-
-#~ msgid "<strong>Applet Explorer</strong>"
-#~ msgstr "<strong>Explorador de miniaplicaciones</strong>"
-
-#~ msgid "Containments"
-#~ msgstr "Contenedores"
-
-#~ msgid "Context Applet"
-#~ msgstr "Miniaplicación de contexto"
-
-#~ msgid "Zoom In"
-#~ msgstr "Acercar"
-
-#~ msgid "Track rating: %1"
-#~ msgstr "Valoración de la pista: %1"
-
-#~ msgid "Unsubscribe"
-#~ msgstr "Darse de baja"
-
-#~ msgid "Waiting for Podcast Downloads to Finish"
-#~ msgstr "Esperando que termine la descarga de los podcasts"
-
-#~ msgctxt "monthname year"
-#~ msgid "%1 %2"
-#~ msgstr "%1 %2"
-
-#~ msgid "Amarok is currently playing a track"
-#~ msgstr "Amarok está reproduciendo una pista en la actualidad"
-
-#~ msgid ""
-#~ "Scripts have been disabled since you are missing the QtScriptQtBindings "
-#~ "package. Please install the package and restart Amarok for scripts to "
-#~ "work."
-#~ msgstr ""
-#~ "Los guiones se han desactivado dado que usted no dispone del paquete "
-#~ "QtScriptQtBindings. Por favor, instale el paquete y reinicie Amarok para "
-#~ "que los guiones funcionen."
-
-#~ msgid "Scripts Disabled!"
-#~ msgstr "¡Guiones desactivados!"
-
-#~ msgid "Select Your Country"
-#~ msgstr "Seleccione su país"
-
-#~ msgid "Country"
-#~ msgstr "País"
-
-#~ msgid ""
-#~ "The Amazon MP3 Store offers different items depending on your location. "
-#~ "Please select the country you are located in. Note that changing the "
-#~ "country also invalidates your shopping cart. Countries not in this list "
-#~ "are not yet supported by the store, you can only buy items if you live in "
-#~ "one of the listed countries."
-#~ msgstr ""
-#~ "La tienda MP3 Amazon ofrece diferentes elementos en función de su "
-#~ "ubicación. Por favor, seleccione el país en el que usted está ubicado. "
-#~ "Tenga en cuenta que el cambio de país también invalida su carro de la "
-#~ "compra. Los países que no están en esta lista no están todavía aceptados "
-#~ "por la tienda, usted solo puede comprar elementos si vive en uno de los "
-#~ "países listados."
-
-#~ msgid "France"
-#~ msgstr "Francia"
-
-#~ msgid "Austria, Germany, Switzerland"
-#~ msgstr "Austria, Alemania, Suiza"
-
-#~ msgid "Japan"
-#~ msgstr "Japón"
-
-#~ msgid "United Kingdom"
-#~ msgstr "Reino Unido"
-
-#~ msgid "United States"
-#~ msgstr "Estados Unidos"
-
-#~ msgid "Italy"
-#~ msgstr "Italia"
-
-#~ msgid "Spain"
-#~ msgstr "España"
-
-#~ msgid "none of the above (store won't work)"
-#~ msgstr "ninguno de los anteriores (el almacenamiento no funcionará)"
-
-#~ msgid ""
-#~ "<b>MP3 Music Store</b><br/><br/>Error: Unable to write temporary file. :-("
-#~ msgstr ""
-#~ "<b>Tienda de música MP3</b><br/><br/>Error: No se pudo escribir en el "
-#~ "archivo temporal. :-("
-
-#~ msgid ""
-#~ "<b>MP3 Music Store</b><br/><br/>Error: Querying MP3 Music Store database "
-#~ "failed. :-("
-#~ msgstr ""
-#~ "<b>Tienda de música MP3</b><br/><br/>Error: La consulta a la base de "
-#~ "datos de la tienda de música MP3 falló. :-("
-
-#~ msgid "Add album to cart"
-#~ msgstr "Añadir álbum al carro"
-
-#~ msgid "Add to cart"
-#~ msgstr "Añadir al carro"
-
-#~ msgid "<b>Artist:</b> "
-#~ msgstr "<b>Artista:</b> "
-
-#~ msgid "<b>Album:</b> "
-#~ msgstr "<b>Álbum:</b> "
-
-#~ msgid "<b>Price:</b> "
-#~ msgstr "<b>Precio:</b> "
-
-#~ msgid "<b>Track:</b> "
-#~ msgstr "<b>Pista:</b> "
-
-#~ msgid "Price"
-#~ msgstr "Precio"
-
-#~ msgid "Add to Cart"
-#~ msgstr "Añadir al carro"
-
-#~ msgid "Add Preview to Playlist"
-#~ msgstr "Añadir vista previa a lista de reproducción"
-
-#~ msgid "Load Details..."
-#~ msgstr "Cargar detalles..."
-
-#~ msgid "Direct Checkout"
-#~ msgstr "Comprobación directa"
-
-#~ msgid "Search for Album..."
-#~ msgstr "Buscar álbum..."
-
-#~ msgid "Snippet taken from the Amazon MP3 store"
-#~ msgstr "Fragmento tomado de la tienda de MP3 Amazon"
-
-#~ msgid ""
-#~ "<b>MP3 Music Store</b><br/><br/><em>%1</em> has been added to your "
-#~ "shopping cart."
-#~ msgstr ""
-#~ "<b>Tienda de música MP3</b><br/><br/><em>%1</em> se ha añadido a su carro "
-#~ "de compra."
-
-#~ msgid "Shopping cart value: %1"
-#~ msgstr "Valor del carro de la compra: %1"
-
-#~ msgid ""
-#~ "When clicking checkout you are being redirected to Amazon for the "
-#~ "checkout process. To simplify that process please click <a href="
-#~ "\"%1\">this link</a> to tell Amazon that you have a downloader "
-#~ "application for their MP3s installed."
-#~ msgstr ""
-#~ "Cuando pulsa comprobación, se le redirige a usted a Amazon para el "
-#~ "proceso de comprobación. Para simplificar ese proceso, por favor, pulse "
-#~ "<a href=\"%1\">este enlace</a> para decirle a Amazon que usted dispone de "
-#~ "una aplicación de descarga de MP3 instalada."
-
-#~ msgid "Amarok - Your Shopping Cart"
-#~ msgstr "Amarok - Su carro de compra"
-
-#~ msgid "Checkout"
-#~ msgstr "Comprobación"
-
-#~ msgid "Remove from Cart"
-#~ msgstr "Eliminar del carro"
-
-#~ msgid "Access the Amazon MP3 Store directly from Amarok"
-#~ msgstr "Acceder a la tienda MP3 Amazon directamente desde Amarok"
-
-#~ msgid ""
-#~ "This plugin allows searching and purchasing songs and albums from the "
-#~ "Amazon MP3 store. Amarok gets a share of the profits made by this service."
-#~ msgstr ""
-#~ "Este complemento permite buscar y comprar canciones y álbumes de la "
-#~ "tienda MP3 Amazon. Amarok obtiene una parte de los beneficios obtenidos "
-#~ "por este servicio."
-
-#~ msgid ""
-#~ "<b>MP3 Music Store</b><br/><br/>You are now being redirected to Amazon "
-#~ "for the checkout process.<br/>To simplify that process please click <a "
-#~ "href=\"%1\">this link</a> to tell Amazon that you have a downloader "
-#~ "application for their MP3s installed."
-#~ msgstr ""
-#~ "<b>Tienda de música MP3</b><br/><br/>Ahora se le está redireccionando a "
-#~ "Amazon para el proceso de comprobación.<br/>Para simplificar ese proceso, "
-#~ "por favor pulse <a href=\"%1\">este enlace</a> para decirle a Amazon que "
-#~ "usted dispone de una aplicación para descarga de sus MP3 instalada."
-
-#~ msgid ""
-#~ "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the "
-#~ "settings to make the store work."
-#~ msgstr ""
-#~ "<b>Tienda de música MP3</b><br/><br/> Por favor, seleccione un país "
-#~ "válido en las preferencias para hacer que la tienda funcione."
-
-#~ msgid "Select results page to show"
-#~ msgstr "Seleccione la página de resultados a mostrar"
-
-#~ msgctxt "Add selected item to your shopping cart"
-#~ msgid "Add to Cart"
-#~ msgstr "Añadir al carro"
-
-#~ msgid "Add selected item to your shopping cart"
-#~ msgstr "Añadir el elemento seleccionado a su carro de la compra"
-
-#~ msgctxt "View your shopping cart contents"
-#~ msgid "View Cart"
-#~ msgstr "Ver carro"
-
-#~ msgid "View your shopping cart contents"
-#~ msgstr "Ver los contenidos de su carro de la compra"
-
-#~ msgctxt "Checkout your shopping cart"
-#~ msgid "Checkout"
-#~ msgstr "Comprobación"
-
-#~ msgid "Checkout your shopping cart"
-#~ msgstr "Comprobar su carro de la compra"
-
-#~ msgid ""
-#~ "<b>MP3 Music Store</b><br/><br/>Error: Received an invalid reply. :-("
-#~ msgstr ""
-#~ "<b>Tienda de música MP3</b><br/><br/>Error: Recibida una respuesta "
-#~ "inválida. :-("
-
-#~ msgctxt ""
-#~ "A type of command that triggers an action in the integrated MP3 Music "
-#~ "Store service"
-#~ msgid "Amazon"
-#~ msgstr "Amazon"
-
-#~ msgid "Select Country"
-#~ msgstr "Seleccione país"
-
-#~ msgid ""
-#~ "In order to buy tracks from Amazon Store, you need to select your country "
-#~ "of residence."
-#~ msgstr ""
-#~ "Para comprar pistas de la tienda Amazon, usted necesita seleccionar un "
-#~ "país de residencia."
-
-#~ msgid ""
-#~ "If you do not want Amarok to send this data to Amazon, select \"none\" in "
-#~ "the box below. In this case Amazon Store will not work."
-#~ msgstr ""
-#~ "Si usted no quiere que Amarok envíe estos datos a Amazon, seleccione "
-#~ "«ninguno» en la casilla de abajo. En este caso la tienda de Amazon no "
-#~ "funcionará."
-
-#~ msgid "Select your country in the box below:"
-#~ msgstr "Seleccione su país en la casilla de abajo:"
-
-#~ msgid ""
-#~ "Press this button to save your preferred settings, and log on to Amazon "
-#~ "Store using the provided data:"
-#~ msgstr ""
-#~ "Pulse este botón para guardar sus preferencias preferidas e inicie sesión "
-#~ "en la tienda de Amazon usando los datos proporcionados:"
-
-#~ msgid "Save and Log on to Amazon Store"
-#~ msgstr "Guardar y acceder a la tienda Amazon"
-
-#~ msgid "Last.fm credentials"
-#~ msgstr "Credenciales de Last.fm"
-
-#~ msgid ""
-#~ "The bitrate is a measure of the quantity of data used to represent a "
-#~ "second of the audio track.<br>The <b>AAC</b> encoder used by Amarok "
-#~ "supports a <a href=http://en.wikipedia.org/wiki/"
-#~ "Variable_bitrate#Advantages_and_disadvantages_of_VBR>variable bitrate "
-#~ "(VBR)</a> setting, which means that the bitrate value fluctuates along "
-#~ "the track based on the complexity of the audio content. More complex "
-#~ "intervals of data are encoded with a higher bitrate than less complex "
-#~ "ones; this approach yields overall better quality and a smaller file than "
-#~ "having a constant bitrate throughout the track.<br>For this reason, the "
-#~ "bitrate measure in this slider is just an estimate of the <a href=http://"
-#~ "www.ffmpeg.org/faq.html#SEC21>average bitrate</a> of the encoded track."
-#~ "<br><b>150kb/s</b> is a good choice for music listening on a portable "
-#~ "player.<br/>Anything below <b>120kb/s</b> might be unsatisfactory for "
-#~ "music and anything above <b>200kb/s</b> is probably overkill."
-#~ msgstr ""
-#~ "La tasa de bits es una medida de la cantidad de datos usados para "
-#~ "representar un segundo de la pista de audio. <br>El codificador <b>AAC</"
-#~ "b> utilizado por Amarok admite una configuración de <a href=http://en."
-#~ "wikipedia.org/wiki/"
-#~ "Variable_bitrate#Advantages_and_disadvantages_of_VBR>tasa de bits "
-#~ "variable (VBR)</a>, lo que significa que el valor de la tasa de bits "
-#~ "varía a lo largo de la pista en función de la complejidad del contenido "
-#~ "del audio. Los intervalos más complejos de datos se codifican con una "
-#~ "tasa de bits más elevada que los menos complejos; esta aproximación "
-#~ "proporciona sobre todo una mejor calidad y un archivo más pequeño que una "
-#~ "tasa de bits constante a lo largo de la pista. <br>Por este motivo, la "
-#~ "medida de la tasa de bits en este deslizador es solo una estimación de la "
-#~ "<a href=http://www.ffmpeg.org/faq.html#SEC21>tasa media de bits</a> de la "
-#~ "pista codificada. <br><b>150 kb/s</b> es una buena elección para escuchar "
-#~ "música en un reproductor portátil. <br/>Cualquier cosa inferior a <b>120 "
-#~ "kb/s</b> podría no ser satisfactorio para música y cualquiera superior a "
-#~ "<b>200 kb/s</b> es probablemente exagerado."
-
-#~ msgid "AAC (Non-Free)"
-#~ msgstr "AAC (no-libre)"
-
-#~ msgid "New Format Preset"
-#~ msgstr "Nueva predefinición de formato"
-
-#~ msgid "Use &SSL"
-#~ msgstr "Usar &SSL"

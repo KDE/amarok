@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-10 00:41+0000\n"
-"PO-Revision-Date: 2025-06-01 21:44+0300\n"
+"PO-Revision-Date: 2025-06-10 05:12+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -3350,12 +3350,11 @@ msgid "Synchronize Labels"
 msgstr "נתונים סטטיסטים"
 
 #: configdialog/dialogs/MetadataConfig.cpp:120
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt ""
 "%1 is field name such as Play Count (this string is only used as a fallback)"
 msgid "Synchronize %1"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון %1"
 
 #: configdialog/dialogs/MetadataConfig.cpp:231
 #, kde-format
@@ -3445,10 +3444,9 @@ msgstr "אפ&שר זיהוי קידוד תווים בתגי ID3"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_statSyncingGroup)
 #: configdialog/dialogs/MetadataConfig.ui:97
-#, fuzzy, kde-format
-#| msgid "Configure Phonon"
+#, kde-format
 msgid "Statistics Synchronization"
-msgstr "הגדר את Phonon"
+msgstr "סנכרון סטטיסטיקה"
 
 #. i18n: ectx: property (text), widget (QLabel, m_syncedCollectionsLabel)
 #: configdialog/dialogs/MetadataConfig.ui:103
@@ -3466,10 +3464,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, m_configureTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:138
-#, fuzzy, kde-format
-#| msgid "&Configure"
+#, kde-format
 msgid "Configure…"
-msgstr "&הגדר"
+msgstr "הגדרה…"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_addTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:145
@@ -3479,17 +3476,14 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, m_synchronizeButton)
 #: configdialog/dialogs/MetadataConfig.ui:155
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgid "Synchronize…"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון…"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: configdialog/dialogs/NotificationsConfig.ui:17
 #: configdialog/dialogs/PlaybackConfig.ui:17
-#, fuzzy, kde-format
-#| msgctxt "Miscellaneous settings"
-#| msgid "General"
+#, kde-format
 msgid "General"
 msgstr "כללי"
 
@@ -3610,31 +3604,27 @@ msgstr "&שקיפות מדומה"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: configdialog/dialogs/NotificationsConfig.ui:226
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font scale:"
-msgstr "גופן:"
+msgstr "קנה מידה גופן:"
 
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_OsdFontScaling)
 #: configdialog/dialogs/NotificationsConfig.ui:233
-#, fuzzy, no-c-format, kde-format
-#| msgid "0%"
+#, no-c-format, kde-format
 msgid "%"
-msgstr "0%"
+msgstr "%"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:274
-#, fuzzy, kde-format
-#| msgid "Location:"
+#, kde-format
 msgid "Check to use the system notification."
-msgstr "מיקום:"
+msgstr "יש לסמן כדי להשתמש בהתראות המערכת."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:277
-#, fuzzy, kde-format
-#| msgid "Location:"
+#, kde-format
 msgid "Use &system notifications"
-msgstr "מיקום:"
+msgstr "לה&שתמש בהתראות מערכת"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
@@ -3709,10 +3699,9 @@ msgstr "אורך ההחלשה, באלפיות־שנייה."
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: configdialog/dialogs/PlaybackConfig.ui:153
-#, fuzzy, kde-format
-#| msgid "Stream Options"
+#, kde-format
 msgid "System Suspend Options"
-msgstr "אפשרויות זרימה"
+msgstr "אפשרויות השהיית מערכת"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_InhibitSuspend)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_InhibitSuspend)
@@ -3734,10 +3723,9 @@ msgstr ""
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_PauseOnSuspend)
 #: configdialog/dialogs/PlaybackConfig.ui:172
 #: configdialog/dialogs/PlaybackConfig.ui:175
-#, fuzzy, kde-format
-#| msgid "Queue URLs after the currently playing track"
+#, kde-format
 msgid "If enabled, Amarok will pause the currently playing track on suspend"
-msgstr "הכנס כתובות לתור לאחר הרצועה הנוכחית המתנגנת"
+msgstr "אם האפשרות פעילה, Amarok ישהה את הרצועה המתנגנת בעת יציאה להשהיה"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_PauseOnSuspend)
 #: configdialog/dialogs/PlaybackConfig.ui:178
@@ -3747,10 +3735,9 @@ msgid "&Pause playback on suspend"
 msgstr "השהה את ההשמעה"
 
 #: configdialog/dialogs/PluginsConfig.cpp:44
-#, fuzzy, kde-format
-#| msgid "Collection"
+#, kde-format
 msgid "Collections"
-msgstr "אוסף"
+msgstr "אוספים"
 
 #: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
@@ -3758,10 +3745,9 @@ msgid "Internet Services"
 msgstr "שירותי אינטרנט"
 
 #: configdialog/dialogs/PluginsConfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgid "Statistics importers"
-msgstr "נתונים סטטיסטים"
+msgstr "מייבאי סטטיסטיקה"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
@@ -3781,10 +3767,9 @@ msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
 #: configdialog/dialogs/ScriptsConfig.cpp:188
-#, fuzzy, kde-format
-#| msgid "&Install Script"
+#, kde-format
 msgid "Invalid Script File"
-msgstr "&התקן תסריטים"
+msgstr "קובץ סקריפט שגוי"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
@@ -3795,15 +3780,12 @@ msgid ""
 msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:213
-#, fuzzy, kde-format
-#| msgid "Device successfully disconnected"
+#, kde-format
 msgid "The script %1 was successfully installed"
-msgstr "ההתקן נותק בהצלחה"
+msgstr "הסקריפט %1 הותקן בהצלחה"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:225
-#, fuzzy, kde-format
-#| msgctxt "Miscellaneous settings"
-#| msgid "General"
+#, kde-format
 msgid "Generic"
 msgstr "כללי"
 
@@ -3826,18 +3808,16 @@ msgstr "הסר תסריט"
 
 #. i18n: ectx: property (text), widget (QPushButton, installButton)
 #: configdialog/dialogs/ScriptsConfig.ui:43
-#, fuzzy, kde-format
-#| msgid "&Install Script"
+#, kde-format
 msgid "Install Local Script"
-msgstr "&התקן תסריטים"
+msgstr "התקנת סקריפט מקומי"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:72
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "Script Console"
-msgstr "מחפש תסריטים"
+msgstr "מסוף סקריפטים"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
@@ -3849,10 +3829,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
 #: configdialog/dialogs/ScriptsConfig.ui:67
-#, fuzzy, kde-format
-#| msgid "&Get More Scripts"
+#, kde-format
 msgid "Enable Script Console"
-msgstr "&השג תסריטים נוספים"
+msgstr "הפעלת מסוף סקריפטים"
 
 #: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
@@ -3906,10 +3885,9 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show fadebars:"
-msgstr "הראה שנים"
+msgstr "הצגת סרגלי עמעום:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
 #, kde-format
@@ -3928,10 +3906,9 @@ msgid "%1 Hz"
 msgstr ""
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
-#, fuzzy, kde-format
-#| msgid "Samplerate:"
+#, kde-format
 msgid "Sample size:"
-msgstr "קצב דגימה:"
+msgstr "גודל דגימה:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:948
@@ -3952,36 +3929,30 @@ msgstr "הושמע לאחרונה"
 
 #: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
-#, fuzzy, kde-format
-#| msgctxt "The amount of time since last played"
-#| msgid "Never"
+#, kde-format
 msgid "Never"
 msgstr "אף פעם"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:64
-#, fuzzy, kde-format
-#| msgid "Label"
+#, kde-format
 msgid "Add label"
-msgstr "תווית"
+msgstr "הוספת תווית"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:69
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgid "Remove label"
-msgstr "הסר"
+msgstr "הסרת תווית"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
 #: playlist/view/PlaylistViewCommon.cpp:203
-#, fuzzy, kde-format
-#| msgid "File Extension of Source"
+#, kde-format
 msgid "Show in Media Sources"
-msgstr "סיומת שם־הקובץ של המקור"
+msgstr "הצגה במקורות המדיה"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:79
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgid "Add to blacklist"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "הוספה לרשימת חסומים"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedLabelsButton)
 #: context/applets/labels/LabelsApplet.cpp:94
@@ -3992,10 +3963,9 @@ msgid "Labels"
 msgstr "תוויות"
 
 #: context/applets/labels/LabelsApplet.cpp:104
-#, fuzzy, kde-format
-#| msgid "Redownload"
+#, kde-format
 msgid "Reload"
-msgstr "הורד מחדש"
+msgstr "ריענון"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
@@ -4267,7 +4237,7 @@ msgstr ""
 #: context/applets/lyrics/package/contents/ui/main.qml:67
 #, kde-format
 msgid "Reload lyrics"
-msgstr "רענון מילות שיר"
+msgstr "ריענון מילות שיר"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:111
 #, kde-format
@@ -4290,7 +4260,7 @@ msgstr "כותרת:"
 #. i18n: ectx: property (text), widget (QLabel, label_22)
 #: context/applets/lyrics/package/contents/ui/main.qml:140
 #: dialogs/TagGuessOptions.ui:127
-#, kde-format
+#, fuzzy, kde-format
 msgid "Artist:"
 msgstr "אמן:"
 
@@ -4384,7 +4354,7 @@ msgstr ""
 #: services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
-#, kde-format
+#, fuzzy, kde-format
 msgid "Artist"
 msgstr "אמן"
 
@@ -5780,7 +5750,7 @@ msgstr "מבנה רשימת הנגינה לא מוכר"
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:148
 #, kde-format
 msgid "Playlist_%1"
-msgstr "רשימת־השמעה־%1"
+msgstr "רשימת־נגינה־%1"
 
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:34
 #, kde-format
@@ -5820,7 +5790,7 @@ msgstr ""
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
 #, kde-format
 msgid "Podcast Configuration"
-msgstr "הגדרות פוד־קסט"
+msgstr "הגדרות הסכת"
 
 #. i18n: ectx: property (text), widget (QLabel, UrlLabel)
 #. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
@@ -5976,12 +5946,12 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
 #, kde-format
 msgid "&Configure"
-msgstr "&הגדר"
+msgstr "ה&גדרה"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
 #, kde-format
 msgid "&Remove Subscription"
-msgstr "&הסר מנוי"
+msgstr "ה&סרת מנוי"
 
 # kde-il: don't translate
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
@@ -5992,12 +5962,12 @@ msgstr "&עדכון הערוץ"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
 #, kde-format
 msgid "&Download Episode"
-msgstr "&הורד פרק"
+msgstr "הורדת &פרק"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
 #, kde-format
 msgid "&Delete Downloaded Episode"
-msgstr "&מחק את הפרק שהורד"
+msgstr "&מחיקת הפרק שירד"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
 #, kde-format
@@ -6020,7 +5990,7 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
 #, kde-format
 msgid "Already subscribed to %1."
-msgstr "כבר רשום ל־%1."
+msgstr "כבר נרשמת ל־%1."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, kde-format
@@ -6091,17 +6061,17 @@ msgstr "אין אפשרות לשמור קובץ של פרק פוד־קסט ל־%
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
 #, kde-format
 msgid "Downloading Podcast Media"
-msgstr "מוריד מדיית פוד־קסט"
+msgstr "מוריד מדיית הסכת"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
 #, kde-format
 msgid "Downloading Podcast \"%1\""
-msgstr "מוריד כעת פוד־קסט \"%1\""
+msgstr "מוריד כעת את ההסכת „%1”"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:56
 #, kde-format
 msgid "Local Podcasts"
-msgstr "פוד־קסטים מקומיים"
+msgstr "הסכתים מקומיים"
 
 #. i18n: ectx: property (text), widget (QLabel, m_intervalLabel)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:32
@@ -7301,12 +7271,12 @@ msgstr ""
 #: core/transcoding/TranscodingConfiguration.cpp:110
 #, kde-format
 msgid "Invalid"
-msgstr ""
+msgstr "שגוי"
 
 #: core/transcoding/TranscodingConfiguration.cpp:112
 #, kde-format
 msgid "Just Copy"
-msgstr ""
+msgstr "רק להעתיק"
 
 #: core/transcoding/TranscodingConfiguration.cpp:136
 #, kde-format
@@ -7483,7 +7453,7 @@ msgstr "Discogs"
 #: covermanager/CoverFoundDialog.cpp:151
 #, kde-format
 msgid "Sort by size"
-msgstr ""
+msgstr "סידור לפי גודל"
 
 #: covermanager/CoverFoundDialog.cpp:405
 #, kde-format
@@ -7529,7 +7499,7 @@ msgstr "חיפוש"
 #: covermanager/CoverFoundDialog.cpp:702
 #, kde-format
 msgid "Search For More Results"
-msgstr ""
+msgstr "חיפוש תוצאות נוספות"
 
 #: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
@@ -7540,10 +7510,10 @@ msgstr "לא נמצאו תמונות"
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "נמצאה תמונה"
+msgstr[1] "נמצאו שתי תמונות"
+msgstr[2] "נמצאו %1 תמונות"
+msgstr[3] "נמצאו %1 תמונות"
 
 #: covermanager/CoverFoundDialog.cpp:744
 #, kde-format
@@ -7578,7 +7548,7 @@ msgstr "תבנית"
 #, kde-format
 msgctxt "@item::intable Image Height"
 msgid "Height"
-msgstr ""
+msgstr "גובה"
 
 #: covermanager/CoverFoundDialog.cpp:821 covermanager/CoverFoundDialog.cpp:826
 #, kde-format
@@ -7620,13 +7590,13 @@ msgstr "רוחב"
 #, kde-format
 msgctxt "@item::intable URL"
 msgid "link"
-msgstr ""
+msgstr "קישור"
 
 #: covermanager/CoverFoundDialog.cpp:867
 #, kde-format
 msgctxt "@item::intable"
 msgid "URL"
-msgstr ""
+msgstr "כתובת"
 
 #: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
 #, kde-format
@@ -10063,7 +10033,7 @@ msgstr "Alex Merry"
 #: main.cpp:150
 #, kde-format
 msgid "Developer, Replay Gain support"
-msgstr ""
+msgstr "מפתח, תמיכה באיזון עוצמת שמע רצועות"
 
 #: main.cpp:152
 #, kde-format
@@ -10240,7 +10210,7 @@ msgstr "Rokymoter (ljubomir)"
 #: main.cpp:186
 #, kde-format
 msgid "Lucas Gomes"
-msgstr ""
+msgstr "לוקאס גומז"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:186
@@ -10261,7 +10231,7 @@ msgstr ""
 #: main.cpp:190
 #, kde-format
 msgid "Bug triaging and sanitizing"
-msgstr ""
+msgstr "אימות תקלות וניקיון"
 
 #: main.cpp:192
 #, kde-format
@@ -10271,7 +10241,7 @@ msgstr ""
 #: main.cpp:192
 #, kde-format
 msgid "UPnP support and patches (nsm)"
-msgstr ""
+msgstr "תמיכה ב־UPnP וטלאים (nsm)"
 
 #: main.cpp:194
 #, kde-format
@@ -10341,7 +10311,7 @@ msgstr "טלאים והסבה ל־Windows (נענועים)"
 #: main.cpp:208
 #, kde-format
 msgid "Simon Esneault"
-msgstr ""
+msgstr "סיימון אסנולט"
 
 #: main.cpp:208
 #, kde-format
