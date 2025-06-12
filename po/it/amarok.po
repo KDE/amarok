@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-10 00:41+0000\n"
-"PO-Revision-Date: 2025-01-12 18:54+0100\n"
+"PO-Revision-Date: 2025-06-10 08:31+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.12.1\n"
+"X-Generator: Lokalize 25.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3624,10 +3624,9 @@ msgid "Use &system notifications"
 msgstr "Utilizza le notifiche di &sistema"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Il motore Phonon attuale non supporta la dissolvenza del volume"
+msgstr "Il motore audio attuale non supporta la dissolvenza del volume"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7978,18 +7977,7 @@ msgid "No"
 msgstr "No"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8006,9 +7994,7 @@ msgstr ""
 "   Versione di %1: %2\n"
 "   Versione di KDE Frameworks: %3\n"
 "   Versione di Qt: %4\n"
-"   Versione di Phonon: %5\n"
-"   Motore di Phonon: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
