@@ -651,12 +651,12 @@ TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem_data()
                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
                                   << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 
-    QTest::newRow( "Add some 1" ) << "title4" << "testStatisticsNotSet"
+    QTest::newRow( "Add some 2" ) << "title4" << "testStatisticsNotSet"
                                   << QDateTime::fromSecsSinceEpoch( now - 100 )
                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
                                   << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
 
-    QTest::newRow( "Add some 1" ) << "title6" << "testStatisticsNotSet"
+    QTest::newRow( "Add some 3" ) << "title6" << "testStatisticsNotSet"
                                   << QDateTime::fromSecsSinceEpoch( now - 100 )
                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
                                   << 9 << 25 << ( QStringList() << QStringLiteral("teh") << QStringLiteral("lab'ls") );
