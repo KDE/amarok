@@ -146,6 +146,7 @@ EngineController::initializeBackend()
         connect( m_pipeline, &EngineGstPipeline::mutedChanged, this, &EngineController::slotMutedChanged );
 
         m_seekablePipeline = m_pipeline->isSeekable();
+        m_equalizerController->setEqElement( m_pipeline->eqElement() );
         //connect( m_audioDataOutput.data(), &AudioDataOutput::dataReady, this, &EngineController::audioDataReady ); //TODO analyzer
     }
 

@@ -49,6 +49,7 @@ public:
     TagMap metaData() const;
     bool isMuted();
     qreal volume();
+    GstElement *eqElement();
 
     // GStreamer callbacks from phonon-gstreamer
     static gboolean cb_eos(GstBus *bus, GstMessage *msg, gpointer data);
@@ -114,6 +115,7 @@ private:
     GstPipeline *m_pipeline;
     GstElement *m_gstVolume;
     GstElement *m_replayGainElement;
+    GstElement *m_equalizerElement;
     //This simply pauses the gst signal handler 'till we get something
     QMutex m_aboutToFinishLock;
     QWaitCondition m_aboutToFinishWait;

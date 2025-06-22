@@ -34,50 +34,16 @@
 
 EqualizerController::EqualizerController( QObject *object )
 : QObject( object )
-{}
+, m_equalizer( nullptr )
+{} // initialization done during gst pipeline inititialization
 
 EqualizerController::~EqualizerController()
 {}
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC
-//////////////////////////////////////////////////////////////////////////////////////////
-
 void
-EqualizerController::initialize( )
+EqualizerController::setEqElement( GstElement *eqElement)
 {
-    DEBUG_BLOCK
-
-
-    /*// Add an equalizer effect if available
-    const QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
-    QRegularExpression equalizerRegExp( QStringLiteral( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
-                             QRegularExpression::CaseInsensitiveOption );
-    for( auto const &description : effects )
-    {
-        if( !description.name().contains( equalizerRegExp ) )
-            continue;
-
-        QScopedPointer<Effect> equalizer( new Effect( description, this ) );
-        int parameterCount = equalizer->parameters().count();
-        if( parameterCount == s_equalizerBandsNum || parameterCount == s_equalizerBandsNum + 1 )
-        {
-            debug() << "Established equalizer effect with" << parameterCount
-                    << "parameters.";
-            m_equalizer = equalizer.take(); // accept the effect
-            eqUpdate();
-            break;
-        }
-        else
-        {
-            QStringList paramNames;
-            for( const EffectParameter &param : equalizer->parameters() )
-                paramNames << param.name();
-            warning() << "Equalizer effect" << description.name() << "with description"
-                      << description.description() << "has" << parameterCount << "parameters ("
-                      << paramNames << ") - which is unexpected. Trying other effects.";
-        }
-    }*/ //TODO
+    m_equalizer = eqElement;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -88,52 +54,36 @@ bool
 EqualizerController::isEqSupported() const
 {
     // If effect was created it means we have equalizer support
-    return false; //TODO m_equalizer;
+    return m_equalizer;
 }
 
 double
 EqualizerController::eqMaxGain() const
 {
-//TODO    if( !m_equalizer )
+    if( !m_equalizer )
        return 100;
-   //QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
-   // TODO if( equalizerParameters.isEmpty() )
-       return 100.0;
    double mScale;
-   mScale = 100; /*( qAbs(equalizerParameters.at(0).maximumValue().toDouble() ) //TODO
-              + qAbs( equalizerParameters.at(0).minimumValue().toDouble() ) ); */
-   mScale /= 2.0;
+   mScale = 12; // gstreamer-specific
    return mScale;
 }
 
 QStringList
 EqualizerController::eqBandsFreq() const
 {
-    // This will extract the bands frequency values from effect parameter name
-    // as long as they follow the rules:
-    // eq-preamp parameter will contain 'pre-amp' string
-    // bands parameters are described using schema 'xxxHz'
     QStringList bandFrequencies;
-// TODO    if( !m_equalizer )
+    if( !m_equalizer )
         return bandFrequencies;
-    //QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters(); //TODO
-//    if( equalizerParameters.isEmpty() )
-        return bandFrequencies;
-  /*  QRegularExpression rx( QStringLiteral("\\d+(?=Hz)") );
-    for( const Phonon::EffectParameter &mParam : equalizerParameters )
+    // frequencies of the gstreamer equalizer-10bands effect
+    QList<int> freqs;
+    freqs << 29 << 59 << 119 << 237 << 474 << 947 << 1889 << 3770 << 7523 << 15011;
+    for( const auto &freq: freqs )
     {
-        if( mParam.name().contains( rx ) )
-        {
-            QRegularExpressionMatch rmatch = rx.match( mParam.name() );
-            if( rmatch.captured( 0 ).toInt() < 1000 )
-                bandFrequencies << i18nc( "label for equalizer band frequency", "%1\nHz", rmatch.captured( 0 ) );
-            else
-                bandFrequencies << i18nc( "label for equalizer band frequency", "%1\nkHz", QString::number( rmatch.captured( 0 ).toInt()/1000 ) );
-        }
+        if( freq < 1000 )
+            bandFrequencies << i18nc( "label for equalizer band frequency", "%1\nHz", freq );
         else
-            bandFrequencies << mParam.name();
+            bandFrequencies << i18nc( "label for equalizer band frequency", "%1\nkHz", QString::number( freq/1000 ) );
     }
-    return bandFrequencies;*/ //TODO
+    return bandFrequencies;
 }
 
 void
@@ -141,51 +91,31 @@ EqualizerController::eqUpdate()
 {
     DEBUG_BLOCK
     // if equalizer not present simply return
-// TODO    if( !m_equalizer )
+    if( !m_equalizer )
         return;
     // check if equalizer should be disabled ??
     QList<int> equalizerParametersCfg;
     if( AmarokConfig::equalizerMode() <= 0 )
     {
-        // Remove effect from path
-/*        if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
-            m_path.removeEffect( m_equalizer.data() ); */ //TODO
+        for(int i=0; i < 10; i++)
+        {
+            g_object_set( m_equalizer, QString(QStringLiteral("band") + QString::number( i )).toLocal8Bit().data(), 0, NULL);
+        }
     }
     else
     {
         // Set equalizer parameter according to the gains from settings
-        //QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
         equalizerParametersCfg = AmarokConfig::equalizerGains();
 
         QListIterator<int> equalizerParametersIt( equalizerParametersCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        // Checking if preamp is present in equalizer parameters
-        /*if( equalizerParameters.size() == s_equalizerBandsNum )
-        {
-            // If pre-amp is not present then skip the first element of equalizer gain
-            if( equalizerParametersIt.hasNext() )
-                equalizerParametersIt.next();
-        }
-        for( const Phonon::EffectParameter &mParam : equalizerParameters )
+        for(int i=0; i < 10; i++)
         {
             scaledVal = equalizerParametersIt.hasNext() ? equalizerParametersIt.next() : 0;
-            scaledVal *= qAbs(mParam.maximumValue().toDouble() )
-                         + qAbs( mParam.minimumValue().toDouble() );
+            scaledVal *= 24;
             scaledVal /= 200.0;
-            m_equalizer->setParameterValue( mParam, scaledVal );
-        }*/ //TODO
-        // Insert effect into path if needed
-/*        if( m_path.effects().indexOf( m_equalizer.data() ) == -1 )
-        {
-            if( !m_path.effects().isEmpty() )
-            {
-                m_path.insertEffect( m_equalizer.data(), m_path.effects().first() );
-            }
-            else
-            {
-                m_path.insertEffect( m_equalizer.data() );
-            }
-        }*/ //TODO
+            g_object_set( m_equalizer, QString(QStringLiteral("band") + QString::number( i )).toLocal8Bit().data(), scaledVal, NULL);
+        }
     }
     Q_EMIT gainsChanged( equalizerParametersCfg );
 }

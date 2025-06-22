@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <gst/gst.h>
 
 static const int s_equalizerBandsNum = 10; // Number of equalizer parameters excluding Preamp
 
@@ -38,14 +39,8 @@ public:
     explicit EqualizerController( QObject *object );
     ~EqualizerController() override;
 
-    void initialize( );
+    void setEqElement( GstElement *eqElement);
 
-    /**
-     * Phonon equalizer support is required for Amarok to enable equalizer
-     * this method return whatever phonon support equalizer effect.
-     *
-     * @return @c true if the phonon support equalizer effect, @c false otherwise
-     */
     bool isEqSupported() const;
 
     /**
@@ -113,6 +108,7 @@ Q_SIGNALS:
     void presetsChanged( const QString &name );
 
 private:
+    GstElement *m_equalizer; //built during pipeline init
 };
 
 #endif

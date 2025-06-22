@@ -28,7 +28,9 @@
 #include <gst/audio/streamvolume.h>
 
 EngineGstPipeline::EngineGstPipeline()
-    : m_handlingAboutToFinish(false)
+    : m_replayGainElement(nullptr)
+    , m_equalizerElement(nullptr)
+    , m_handlingAboutToFinish(false)
     , m_tickTimer(new QTimer(this))
     , m_waitingForNextSource(true)
     , m_waitingForPreviousSource(false)
@@ -66,32 +68,58 @@ EngineGstPipeline::EngineGstPipeline()
     m_gstVolume = gst_bin_get_by_interface( GST_BIN(m_pipeline), GST_TYPE_STREAM_VOLUME);
 
     m_replayGainElement = gst_element_factory_make("volume", "replaygain");
+    m_equalizerElement = gst_element_factory_make("equalizer-10bands", "equalizer");
 
-    if( m_replayGainElement )
+    if( !m_replayGainElement )
+        debug() << "failed to create replay gain volume element";
+    if( !m_replayGainElement )
+        debug() << "failed to create equalizer element";
+
+    if( m_equalizerElement || m_replayGainElement )
     {
-        GstElement *rgBin = gst_bin_new("bin-with-replaygain");
+        GstElement *bin = gst_bin_new("bin-with-extra");
         GstElement *audioSink = gst_element_factory_make("autoaudiosink", "audio-output");
 
-        gst_bin_add_many(GST_BIN(rgBin), m_replayGainElement, audioSink, NULL);
+        if( m_replayGainElement )
+            gst_bin_add(GST_BIN(bin), m_replayGainElement);
+        if( m_equalizerElement )
+            gst_bin_add(GST_BIN(bin), m_equalizerElement);
+        gst_bin_add(GST_BIN(bin), audioSink);
 
-        if ( !gst_element_link( m_replayGainElement, audioSink)) {
-            debug() << "failed to create replaygain bin";
+        if( m_replayGainElement && m_equalizerElement )
+        {
+            if( !gst_element_link( m_replayGainElement, m_equalizerElement) ||
+                !gst_element_link( m_equalizerElement, audioSink) )
+                    debug() << "failed to create custom playback bin";
+        }
+        else if( m_replayGainElement )
+        {
+            if( !gst_element_link( m_replayGainElement, audioSink) )
+                debug() << "failed to create custom playback bin (replaygain)";
+        }
+        else
+        {
+            if( !gst_element_link( m_equalizerElement, audioSink) )
+                debug() << "failed to create custom playback bin (equalizer)";
         }
 
         GstPad *pad, *ghostPad;
-        pad = gst_element_get_static_pad(m_replayGainElement, "sink");
+        if( m_replayGainElement )
+            pad = gst_element_get_static_pad(m_replayGainElement, "sink");
+        else
+            pad = gst_element_get_static_pad(m_equalizerElement, "sink");
         if (!pad) {
-            debug() << "no volume sink pad";
+            debug() << "no sink pad";
         }
         ghostPad = gst_ghost_pad_new("sink", pad);
         gst_pad_set_active(ghostPad, TRUE);
-        gst_element_add_pad(rgBin, ghostPad);
+        gst_element_add_pad(bin, ghostPad);
         gst_object_unref(pad);
 
-        g_object_set( GST_BIN(m_pipeline), "audio-sink", rgBin, NULL);
+        g_object_set( GST_BIN(m_pipeline), "audio-sink", bin, NULL);
     }
     else
-        debug() << "failed to create replay gain volume element";
+        debug() << "failed to create custom playback bin";
 
     if(m_gstVolume)
         gst_object_ref(m_gstVolume);
@@ -135,6 +163,12 @@ qreal
 EngineGstPipeline::volume()
 {
     return m_gstVolume ? gst_stream_volume_get_volume(GST_STREAM_VOLUME(m_gstVolume), GST_STREAM_VOLUME_FORMAT_CUBIC) : 1;
+}
+
+GstElement*
+EngineGstPipeline::eqElement()
+{
+    return m_equalizerElement;
 }
 
 void
