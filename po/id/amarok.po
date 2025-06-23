@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4 Applications\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-10 00:41+0000\n"
+"POT-Creation-Date: 2025-06-23 00:41+0000\n"
 "PO-Revision-Date: 2022-09-27 18:12+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -225,7 +225,7 @@ msgstr "Hentikan setelah trek saat ini: On"
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Tidak ada trek yang diputar"
@@ -4810,7 +4810,7 @@ msgstr "Artis tidak diketahui"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1222
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "Track tidak diketahui"
@@ -9475,32 +9475,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Peringkat"
 
-#: EngineController.cpp:1003
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Terlalu banyak kesalahan yang ditemui di dalam playlist. Pemutaran "
 "dihentikan."
 
-#: EngineController.cpp:1212
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> oleh <b>%2</b> album <b>%3</b>"
 
-#: EngineController.cpp:1214
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> oleh <b>%2</b>"
 
-#: EngineController.cpp:1217
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> album <b>%2</b>"
 
-#: EngineController.cpp:1229
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11099,6 +11099,27 @@ msgstr "Nilai"
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Membaca OPML siniar dari %1 gagal karena error: \n"
+
+#: playback/EqualizerController.cpp:82
+#, kde-format
+msgctxt "label for equalizer band frequency"
+msgid ""
+"%1\n"
+"Hz"
+msgstr ""
+
+#: playback/EqualizerController.cpp:84
+#, fuzzy, kde-format
+#| msgid ""
+#| "%0\n"
+#| "kHz"
+msgctxt "label for equalizer band frequency"
+msgid ""
+"%1\n"
+"kHz"
+msgstr ""
+"%0\n"
+"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16354,18 +16375,6 @@ msgstr "Artis: %1"
 #, kde-format
 msgid "empty"
 msgstr "kosong"
-
-#, fuzzy
-#~| msgid ""
-#~| "%0\n"
-#~| "kHz"
-#~ msgctxt "label for equalizer band frequency"
-#~ msgid ""
-#~ "%1\n"
-#~ "kHz"
-#~ msgstr ""
-#~ "%0\n"
-#~ "kHz"
 
 #~ msgid "Display"
 #~ msgstr "Display"

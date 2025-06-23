@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-10 00:41+0000\n"
+"POT-Creation-Date: 2025-06-23 00:41+0000\n"
 "PO-Revision-Date: 2025-06-09 05:01+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -225,7 +225,7 @@ msgstr "მიმდინარე ტრეკის შემდეგ გა
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "ტრეკის დაკვრა არ მიმდინარეობს"
@@ -4781,7 +4781,7 @@ msgstr "უცნობი შემსრულებელი"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1222
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "უცნობი ტრეკი"
@@ -9419,30 +9419,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "შეფასება"
 
-#: EngineController.cpp:1003
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "აღმოჩენილია მეტისმეტად ბევრი შეცდომა. დაკვრა სეწყვეტილია."
 
-#: EngineController.cpp:1212
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ავტორი <b>%2</b> დრო <b>%3</b>"
 
-#: EngineController.cpp:1214
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ავტორი <b>%2</b>"
 
-#: EngineController.cpp:1217
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> <b>%2</b>-ზე"
 
-#: EngineController.cpp:1229
+#: EngineController.cpp:1230
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11029,6 +11029,26 @@ msgstr "მნიშვნელობა"
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "%1-დან OPML პოდკასტის წაკითხვა ჩავარდა შეცდომით:\n"
+
+#: playback/EqualizerController.cpp:82
+#, kde-format
+msgctxt "label for equalizer band frequency"
+msgid ""
+"%1\n"
+"Hz"
+msgstr ""
+"%1\n"
+"ჰც"
+
+#: playback/EqualizerController.cpp:84
+#, kde-format
+msgctxt "label for equalizer band frequency"
+msgid ""
+"%1\n"
+"kHz"
+msgstr ""
+"%1\n"
+"კჰც"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16223,22 +16243,6 @@ msgstr "შემსრულებელი: %1"
 #, kde-format
 msgid "empty"
 msgstr "ცარიელია"
-
-#~ msgctxt "label for equalizer band frequency"
-#~ msgid ""
-#~ "%1\n"
-#~ "Hz"
-#~ msgstr ""
-#~ "%1\n"
-#~ "ჰც"
-
-#~ msgctxt "label for equalizer band frequency"
-#~ msgid ""
-#~ "%1\n"
-#~ "kHz"
-#~ msgstr ""
-#~ "%1\n"
-#~ "კჰც"
 
 #~ msgid "Display"
 #~ msgstr "ეკრანი"

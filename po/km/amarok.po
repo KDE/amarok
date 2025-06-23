@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-10 00:41+0000\n"
+"POT-Creation-Date: 2025-06-23 00:41+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -232,7 +232,7 @@ msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ច
 
 #: ActionClasses.cpp:437
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1244 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
@@ -4779,7 +4779,7 @@ msgstr "មិន​ស្គាល់​សិល្បករ"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1222
+#: EngineController.cpp:1223
 #, kde-format
 msgid "Unknown track"
 msgstr "មិន​ស្គាល់​បទ"
@@ -9383,30 +9383,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "កម្រិត​គុណភាព​"
 
-#: EngineController.cpp:1003
+#: EngineController.cpp:1004
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "បាន​ជួប​ប្រទះ​កំហុស​​ច្រើន​ពេក​នៅ​ក្នុង​បញ្ជី​ចាក់ ។ បាន​បញ្ឈប់​ការ​ចាក់​ឡើង​វិញ ។"
 
-#: EngineController.cpp:1212
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b> នៅ <b>%3</b>"
 
-#: EngineController.cpp:1214
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b>"
 
-#: EngineController.cpp:1217
+#: EngineController.cpp:1218
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> នៅ <b>%2</b>"
 
-#: EngineController.cpp:1229
+#: EngineController.cpp:1230
 #, fuzzy, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11026,6 +11026,22 @@ msgstr "កម្រិត​សំឡេង"
 #, fuzzy, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "បា​នបរាជ័យ​ជាមួយកំហុស​ការ​ធ្វើ​ឲ្យ​ទាន់សម័យ​ផតខាស់​ពី​ %1 ៖\n"
+
+#: playback/EqualizerController.cpp:82
+#, kde-format
+msgctxt "label for equalizer band frequency"
+msgid ""
+"%1\n"
+"Hz"
+msgstr ""
+
+#: playback/EqualizerController.cpp:84
+#, kde-format
+msgctxt "label for equalizer band frequency"
+msgid ""
+"%1\n"
+"kHz"
+msgstr ""
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, fuzzy, kde-format
