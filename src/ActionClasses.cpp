@@ -344,15 +344,7 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
                             << i18n( "&Album" ) );
     EngineController *engine = EngineController::instance();
     Q_ASSERT( engine );
-    if( engine->supportsGainAdjustments() )
-        setCurrentItem( AmarokConfig::replayGainMode() );
-    else
-    {
-        // Note: it would be nice to set a tooltip that would explain why this is disabled
-        // to users, but tooltips aren't shown in menu anyway :-(
-        actions().at( 1 )->setEnabled( false );
-        actions().at( 2 )->setEnabled( false );
-    }
+    setCurrentItem( AmarokConfig::replayGainMode() );
 }
 
 

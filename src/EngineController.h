@@ -280,12 +280,6 @@ public Q_SLOTS:
      */
     bool supportsFadeout() const;
 
-    /**
-     * Return true if current Phonon back-end supports our implementation of
-     * Replay Gain adjustment.
-     */
-    bool supportsGainAdjustments() const;
-
 Q_SIGNALS:
     /**
      * Emitted when the playback stops while playing a track.

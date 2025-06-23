@@ -1144,6 +1144,8 @@ MainWindow::createMenus()
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::ShowMenubar ) ) );
 
     //TODO use KStandardAction or KXmlGuiWindow
+    m_settingsMenu->addAction( Amarok::actionCollection()->action(QStringLiteral("replay_gain_mode")) );
+    m_settingsMenu->addSeparator();
 
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::KeyBindings ) ) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Preferences ) ) );

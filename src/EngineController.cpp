@@ -125,9 +125,6 @@ EngineController::initializeBackend()
     PERF_LOG( "EngineController: loading gst objects" )
     gst_init (nullptr, nullptr);
 
-    /*
-    m_equalizerController->initialize( m_path );*/ //TODO equalizer
-
     //debug() << "Tick Interval (actual): " << m_tickInterval;
     PERF_LOG( "EngineController: loaded gst objects" )
     if( !m_pipeline )
@@ -750,11 +747,6 @@ EngineController::supportsFadeout() const
     return m_fader;
 }
 
-bool EngineController::supportsGainAdjustments() const
-{
-    return m_pipeline && m_pipeline->isReplayGainReady();
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1304,8 +1296,7 @@ void
 EngineController::updateReplayGainSetting( bool next )
 {
     Meta::TrackPtr track = ( next ? m_nextTrack : m_currentTrack );
-    if( supportsGainAdjustments() && track
-        && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
+    if( track && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
         qreal fallbackGain = -3;
         qreal preGain = 3;
