@@ -118,7 +118,7 @@ CurrentEngine::update( Meta::AlbumPtr album )
 QString
 CurrentEngine::artist() const
 {
-    if( !m_currentTrack )
+    if( !m_currentTrack || !m_currentTrack->artist() )
         return QString();
 
     return m_currentTrack->artist()->prettyName();
@@ -136,7 +136,7 @@ CurrentEngine::track() const
 QString
 CurrentEngine::album() const
 {
-    if( !m_currentTrack )
+    if( !m_currentTrack || !m_currentTrack->album() )
         return QString();
 
     return m_currentTrack->album()->prettyName();
