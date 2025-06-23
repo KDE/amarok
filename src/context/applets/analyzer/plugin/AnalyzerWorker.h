@@ -56,6 +56,7 @@ public:
 
     void playbackStateChanged();
     void stopTimers();
+    void setHibernate( bool state );
 
 protected:
     /**
@@ -118,6 +119,7 @@ private:
     QElapsedTimer m_lastUpdate;
     QTimer *m_demoTimer;
     QTimer *m_processTimer;
+    bool m_hibernate;
 };
 
 }

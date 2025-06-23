@@ -36,6 +36,7 @@ Analyzer::Worker::Worker()
     , m_lastUpdate()
     , m_demoTimer( new QTimer( this ) )
     , m_processTimer( new QTimer( this ) )
+    , m_hibernate( false )
 {
     m_in = (double*) fftw_malloc( m_size * sizeof( double ) );
     m_out = (std::complex<double>*) fftw_malloc( ( m_size / 2 + 1 ) * sizeof( std::complex<double> ) );
@@ -64,6 +65,15 @@ void Analyzer::Worker::stopTimers()
 {
     m_demoTimer->stop();
     m_processTimer->stop();
+}
+
+void Analyzer::Worker::setHibernate( bool state )
+{
+    m_hibernate = state;
+    if( m_hibernate )
+        stopTimers();
+    else
+        playbackStateChanged();
 }
 
 void Analyzer::Worker::receiveData( const QMap<int, QVector<qint16> > &newData )
@@ -370,6 +380,8 @@ void Analyzer::Worker::demo()
 
 void Analyzer::Worker::playbackStateChanged()
 {
+    if( m_hibernate )
+        return;
     bool playing = EngineController::instance()->isPlaying();
     playing ? m_demoTimer->stop() : m_demoTimer->start();
     playing ? m_processTimer->start() : m_processTimer->stop();

@@ -95,7 +95,8 @@ void BlockWorker::analyze()
     {
         // determine y
         int y = 0;
-        while( y < m_yscale.size() && scopeData.at(x) > m_yscale.at(y) )
+        const int yscaleSize=m_yscale.size();
+        while( y < yscaleSize && scopeData.at(x) > m_yscale.at(y) )
             y++;
 
         auto &fadebars = m_fadebars[x];
