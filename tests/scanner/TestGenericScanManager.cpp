@@ -211,6 +211,7 @@ TestGenericScanManager::slotSucceeded()
     QVERIFY( m_started );
     QVERIFY( !m_finished );
 
+    m_scanManager->resultsProcessed();
     m_finished = true;
 }
 
@@ -222,6 +223,7 @@ TestGenericScanManager::slotFailed( const QString& message )
     QVERIFY( m_started );
     QVERIFY( !m_finished );
 
+    m_scanManager->resultsProcessed();
     m_finished = true;
 }
 

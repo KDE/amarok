@@ -71,6 +71,12 @@ GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
         return;
     }
 
+    if( !m_scanRunningMutex.tryLock() )
+    {
+        error() << "Another scan result processing is already running. Not starting a new scan.";
+        return;
+    }
+
     QSet<QString> scanDirsSet;
     for( const QUrl &url : directories )
     {
@@ -111,11 +117,22 @@ GenericScanManager::requestImport( QIODevice *input, ScanType type )
         error() << "Scanner already running";
         return;
     }
+    if( !m_scanRunningMutex.tryLock() )
+    {
+        error() << "Another scan result processing is already running. Not starting a new scan.";
+        return;
+    }
 
     auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, input, type ) );
     m_scannerJob = scannerJob.toWeakRef();
     connectSignalsToJob();
     ThreadWeaver::Queue::instance()->enqueue( scannerJob );
+}
+
+void
+GenericScanManager::resultsProcessed()
+{
+    m_scanRunningMutex.unlock();
 }
 
 void
@@ -125,7 +142,10 @@ GenericScanManager::abort()
 
     auto scannerJob = m_scannerJob.toStrongRef();
     if( scannerJob )
+    {
         scannerJob->abort();
+        m_scanRunningMutex.unlock();
+    }
 }
 
 void

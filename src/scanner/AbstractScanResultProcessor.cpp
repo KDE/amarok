@@ -213,6 +213,7 @@ AbstractScanResultProcessor::scanSucceeded()
     deleteDeletedDirectories();
 
     cleanupMembers();
+    m_manager->resultsProcessed();
     Q_EMIT endProgressOperation( this );
 }
 
@@ -222,6 +223,7 @@ AbstractScanResultProcessor::scanFailed( const QString& text )
     message( text );
 
     cleanupMembers();
+    m_manager->resultsProcessed();
     Q_EMIT endProgressOperation( this );
 }
 

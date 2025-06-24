@@ -114,6 +114,8 @@ class AMAROK_EXPORT GenericScanManager : public QObject
          */
         virtual void abort();
 
+        virtual void resultsProcessed();
+
     Q_SIGNALS:
         // the following signals are created by the scanner job and just
         // routed through
@@ -152,6 +154,8 @@ class AMAROK_EXPORT GenericScanManager : public QObject
          * m_scannerJob
          */
         QMutex m_mutex;
+
+        QMutex m_scanRunningMutex;
 };
 
 Q_DECLARE_METATYPE(GenericScanManager::ScanType);
