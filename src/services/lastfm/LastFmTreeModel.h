@@ -106,8 +106,6 @@ private:
     QIcon avatar( const QString &username, const QUrl &avatarUrl ) const;
     QString mapTypeToUrl( LastFm::Type type, const QString &key = QStringLiteral("") );
 
-    void appendUserStations( LastFmTreeItem* item, const QString& user );
-
     lastfm::User m_user;
 
     LastFmTreeItem *m_rootItem;

@@ -89,7 +89,6 @@ LastFmTreeModel::slotAddFriends()
                 afriend->setAvatarUrl( avatarUrl );
 
             m_myFriends->appendChild( afriend );
-            // appendUserStations( afriend, name ); // last.fm radio was discontinued in 2014, hide some related functionality
         }
 
         endInsertRows();
@@ -186,16 +185,6 @@ LastFmTreeModel::slotAddTopArtists()
 
     endInsertRows();
     Q_EMIT dataChanged( parent, parent );
-}
-
-void
-LastFmTreeModel::appendUserStations( LastFmTreeItem* item, const QString &user )
-{
-    // no need to call begin/endInsertRows() or dataChanged(), we're being called inside
-    // beginInsertRows().
-    LastFmTreeItem* personal = new LastFmTreeItem( mapTypeToUrl( LastFm::UserChildPersonal, user ),
-                                                   LastFm::UserChildPersonal, i18n( "Personal Radio" ), item );
-    item->appendChild( personal );
 }
 
 void
@@ -415,20 +404,6 @@ LastFmTreeModel::flags( const QModelIndex &index ) const
         break;
     }
 
-    switch( i->type() )
-    {
-    case UserChildPersonal:
-    case MyTagsChild:
-    case ArtistsChild:
-    case MyRecommendations:
-    case PersonalRadio:
-    case MixRadio:
-        //flags |= Qt::ItemIsDragEnabled; // last.fm radio was discontinued in 2014, hide some related functionality
-
-    default:
-        break;
-    }
-
     return flags;
 }
 
@@ -487,10 +462,6 @@ void
 LastFmTreeModel::setupModelData( LastFmTreeItem *parent )
 {
     // no need to call beginInsertRows() here, this is only called from constructor
-    // last.fm radio was discontinued in 2014, hide some related functionality
-    // parent->appendChild( new LastFmTreeItem( mapTypeToUrl( LastFm::MyRecommendations ), LastFm::MyRecommendations, parent ) );
-    // parent->appendChild( new LastFmTreeItem( mapTypeToUrl( LastFm::PersonalRadio ), LastFm::PersonalRadio, parent ) );
-    // parent->appendChild( new LastFmTreeItem( mapTypeToUrl( LastFm::MixRadio ), LastFm::MixRadio, parent ) );
 
     m_myTopArtists = new LastFmTreeItem( LastFm::TopArtists, parent );
     parent->appendChild( m_myTopArtists );

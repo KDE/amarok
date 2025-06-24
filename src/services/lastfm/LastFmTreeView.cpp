@@ -22,7 +22,6 @@
 #include "context/ContextView.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
-#include "services/lastfm/LastFmTreeModel.h" // FIXME just for enums
 
 #include <QContextMenuEvent>
 #include <QHeaderView>
@@ -35,10 +34,7 @@
 
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )
-        , m_timer ( nullptr )
         , m_pd( nullptr )
-        , m_appendAction ( nullptr )
-        , m_loadAction ( nullptr )
         , m_dragMutex()
         , m_ongoingDrag( false )
 {
@@ -80,39 +76,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
 {
     Q_UNUSED( indices )
     QActionList actions;
-    QModelIndex index = currentIndex();
-    QVariant type = model()->data(index, LastFm::TypeRole);
-    switch ( type.toInt() )
-    {
-        case LastFm::MyRecommendations:
-        case LastFm::PersonalRadio:
-        case LastFm::MixRadio:
-        case LastFm::FriendsChild:
-        case LastFm::MyTagsChild:
-        case LastFm::ArtistsChild:
-        case LastFm::UserChildPersonal:
-        if(0) // last.fm radio was discontinued in 2014, hide some related functionality
-        {
-            if ( m_appendAction == nullptr )
-            {
-                m_appendAction = new QAction ( QIcon::fromTheme( QStringLiteral("media-track-add-amarok") ), i18n ( "&Add to Playlist" ), this );
-                m_appendAction->setProperty( "popupdropper_svg_id", QStringLiteral("append") );
-                connect ( m_appendAction, &QAction::triggered, this, &LastFmTreeView::slotAppendChildTracks );
-            }
-
-            actions.append ( m_appendAction );
-
-            if ( m_loadAction == nullptr )
-            {
-                m_loadAction = new QAction ( QIcon::fromTheme( QStringLiteral("folder-open") ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-                m_appendAction->setProperty( "popupdropper_svg_id", QStringLiteral("load") );
-                connect ( m_loadAction, &QAction::triggered, this, &LastFmTreeView::slotReplacePlaylistByChildTracks );
-            }
-            actions.append ( m_loadAction );
-        }
-        default:
-            break;
-    }
+    // last.fm radio was discontinued in 2014, no relevant functionality anymore here
     return actions;
 }
 
@@ -123,8 +87,8 @@ void LastFmTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() && index.internalPointer() )
     {
-        playChildTracks( index, Playlist::OnDoubleClickOnSelectedItems );
     }
+    Q_UNUSED( event )
 }
 
 void
@@ -208,36 +172,6 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
 }
 
 void
-LastFmTreeView::slotReplacePlaylistByChildTracks()
-{
-    playChildTracks( m_currentItems, Playlist::OnReplacePlaylistAction );
-}
-
-void
 LastFmTreeView::slotAppendChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::OnAppendToPlaylistAction );
-}
-
-void
-LastFmTreeView::playChildTracks( const QModelIndex &item, Playlist::AddOptions insertMode)
-{
-    QModelIndexList items;
-    items << item;
-
-    playChildTracks( items, insertMode );
-}
-void
-LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOptions insertMode )
-{
-    debug() << "LASTFM current items : " << items.size();
-    Meta::TrackList list;
-    for ( const QModelIndex &item : items )
-    {
-        Meta::TrackPtr track = model()->data(item, LastFm::TrackRole).value< Meta::TrackPtr >();
-        if ( track )
-            list << track;
-    }
-    std::stable_sort ( list.begin(), list.end(), Meta::Track::lessThan );
-    The::playlistController()->insertOptioned( list, insertMode );
 }

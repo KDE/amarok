@@ -43,13 +43,8 @@ public:
     explicit LastFmTreeView ( QWidget* parent = nullptr );
     ~LastFmTreeView() override;
 
-Q_SIGNALS:
-    void statusMessage ( const QString& message );
-    void plsShowRestState();
-    void plsShowNowPlaying();
 
 private Q_SLOTS:
-    void slotReplacePlaylistByChildTracks();
     void slotAppendChildTracks();
 
 protected:
@@ -58,16 +53,10 @@ protected:
     void startDrag( Qt::DropActions supportedActions ) override;
 
 private:
-    enum ContextMenuActionType { ExecQMenu, DoQMenuDefaultAction };
-    void playChildTracks ( const QModelIndex &item, Playlist::AddOptions insertMode );
-    void playChildTracks ( const QModelIndexList &items, Playlist::AddOptions insertMode );
     QActionList createBasicActions( const QModelIndexList &indices );
 
-    QTimer* m_timer;
     LastFmTreeModel* m_model;
     PopupDropper* m_pd;
-    QAction* m_appendAction;
-    QAction* m_loadAction;
     QModelIndexList m_currentItems;
     QMutex m_dragMutex;
     bool m_ongoingDrag;

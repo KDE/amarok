@@ -122,8 +122,6 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     m_biasFactories << new Dynamic::WeeklyTopBiasFactory();
     Dynamic::BiasFactory::instance()->registerNewBiasFactory( m_biasFactories.last() );
 
-    // add the "play similar artists" action to all artist
-    // The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) ); // last.fm radio was discontinued in 2014, hide some related functionality
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
     QAction *loveAction = new QAction( QIcon::fromTheme( QStringLiteral("love-amarok") ), i18n( "Last.fm: Love" ), this );
@@ -311,27 +309,6 @@ LastFmService::onAvatarDownloaded( const QString &username, QPixmap avatar )
     }
 }
 
-void
-LastFmService::updateEditHint( int index )
-{
-    if( !m_customStationEdit )
-        return;
-    QString hint;
-    switch ( index ) {
-        case 0:
-            hint = i18n( "Enter an artist name" );
-            break;
-        case 1:
-            hint = i18n( "Enter a tag" );
-            break;
-        case 2:
-            hint = i18n( "Enter a Last.fm user name" );
-            break;
-        default:
-            return;
-    }
-    m_customStationEdit->setPlaceholderText( hint );
-}
 
 void
 LastFmService::updateProfileInfo()
@@ -389,29 +366,6 @@ LastFmService::polish()
         updateProfileInfo();
 
 
-        // last.fm radio was discontinued in 2014, hide some related functionality
-        // QGroupBox *customStation = new QGroupBox( i18n( "Create a Custom Last.fm Station" ), m_topPanel );
-        // m_customStationCombo = new QComboBox;
-        // QStringList choices;
-        // choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
-        // m_customStationCombo->insertItems(0, choices);
-        // m_customStationEdit = new QLineEdit;
-        // m_customStationEdit->setClearButtonEnabled( true );
-        // updateEditHint( m_customStationCombo->currentIndex() );
-        // m_customStationButton = new QPushButton;
-        // m_customStationButton->setObjectName( QStringLiteral("customButton") );
-        // m_customStationButton->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-start-amarok") ) );
-        // QHBoxLayout *hbox = new QHBoxLayout();
-        // hbox->addWidget(m_customStationCombo);
-        // hbox->addWidget(m_customStationEdit);
-        // hbox->addWidget(m_customStationButton);
-        // customStation->setLayout(hbox);
-        //
-        // connect( m_customStationEdit, &QLineEdit::returnPressed, this, &LastFmService::playCustomStation );
-        // connect( m_customStationButton, &QPushButton::clicked, this, &LastFmService::playCustomStation );
-        // connect( m_customStationCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-        //          this, &LastFmService::updateEditHint);
-
         QList<int> levels;
         levels << CategoryId::Genre << CategoryId::Album;
         m_polished = true;
@@ -429,37 +383,6 @@ LastFmService::love( Meta::TrackPtr track )
 {
     if( m_scrobbler )
         m_scrobbler->loveTrack( track );
-}
-
-void LastFmService::playCustomStation()
-{
-    DEBUG_BLOCK
-    QString text = m_customStationEdit->text();
-    QString station;
-    debug() << "Selected combo " <<m_customStationCombo->currentIndex();
-    switch ( m_customStationCombo->currentIndex() ) {
-        case 0:
-            station = QStringLiteral("lastfm://artist/") + text + QStringLiteral("/similarartists");
-            break;
-        case 1:
-            station = QStringLiteral("lastfm://globaltags/") + text;
-            break;
-        case 2:
-            station = QStringLiteral("lastfm://user/") + text + QStringLiteral("/personal");
-            break;
-        default:
-            return;
-    }
-
-    if ( !station.isEmpty() ) {
-        playLastFmStation( QUrl( station ) );
-    }
-}
-
-void LastFmService::playLastFmStation( const QUrl &url )
-{
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-    The::playlistController()->insertOptioned( track, Playlist::OnPlayMediaAction );
 }
 
 Collections::Collection * LastFmService::collection()

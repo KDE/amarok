@@ -70,16 +70,12 @@ public:
 private Q_SLOTS:
     void loveCurrentTrack();
 
-    void playCustomStation();
-    void updateEditHint( int index );
-
     void slotReconfigure();
     void onGetUserInfo();
     void onAvatarDownloaded( const QString& username, QPixmap avatar );
 
 private:
     void continueReconfiguring();
-    void playLastFmStation( const QUrl &url );
     void updateProfileInfo();
 
     QSharedPointer<ScrobblerAdapter> m_scrobbler;
@@ -92,10 +88,6 @@ private:
     QLabel *m_avatarLabel;
     QLabel *m_profile;
     QLabel *m_userinfo;
-    QComboBox *m_globalComboBox;
-    QLineEdit *m_customStationEdit;
-    QPushButton *m_customStationButton;
-    QComboBox *m_customStationCombo;
 
     QString m_station;
     QString m_age;
