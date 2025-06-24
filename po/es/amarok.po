@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-23 00:41+0000\n"
-"PO-Revision-Date: 2025-06-09 12:48+0100\n"
+"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"PO-Revision-Date: 2025-06-23 18:43+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.04.1\n"
+"X-Generator: Lokalize 25.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -206,38 +206,38 @@ msgstr "Pis&ta"
 msgid "&Album"
 msgstr "Ál&bum"
 
-#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:359 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Detener"
 
-#: ActionClasses.cpp:411
+#: ActionClasses.cpp:403
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Detener después de la pista actual"
 
-#: ActionClasses.cpp:428
+#: ActionClasses.cpp:420
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Detener después de la pista actual: Desactivado"
 
-#: ActionClasses.cpp:433
+#: ActionClasses.cpp:425
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Detener después de la pista actual: Activado"
 
-#: ActionClasses.cpp:437
+#: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ninguna pista en reproducción"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
-#: MainWindow.cpp:1231
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1675,7 +1675,7 @@ msgstr "Nueva pista de código de tiempo"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
 #, kde-format
 msgid "Unknown"
 msgstr "Desconocido"
@@ -4843,7 +4843,7 @@ msgstr "Artista desconocido"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1215
 #, kde-format
 msgid "Unknown track"
 msgstr "Pista desconocida"
@@ -9525,32 +9525,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Valoración"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:996
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Se encontraron demasiados errores en la lista de reproducción. Reproducción "
 "parada."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1205
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> de <b>%2</b> en <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1207
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> de <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> en <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1222
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10729,7 +10729,7 @@ msgstr "&Ver"
 msgid "Lock Layout"
 msgstr "Bloquear diseño"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1305
+#: MainWindow.cpp:374 MainWindow.cpp:1307
 #, kde-format
 msgid "Reset Layout"
 msgstr "Reiniciar diseño"
@@ -11014,7 +11014,7 @@ msgstr "Herramien&tas"
 msgid "&Settings"
 msgstr "&Preferencias"
 
-#: MainWindow.cpp:1175
+#: MainWindow.cpp:1177
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11026,22 +11026,22 @@ msgstr ""
 "Recuerde que siempre podrá usar el atajo de teclado «%1» para mostrarla de "
 "nuevo."
 
-#: MainWindow.cpp:1176
+#: MainWindow.cpp:1178
 #, kde-format
 msgid "Hide Menu"
 msgstr "Ocultar el menú"
 
-#: MainWindow.cpp:1218
+#: MainWindow.cpp:1220
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "En pausa  ::  %1"
 
-#: MainWindow.cpp:1231
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1305
+#: MainWindow.cpp:1307
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "¿Aplicar este cambio de diseño?"
@@ -11144,6 +11144,8 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
 #, kde-format
@@ -11152,6 +11154,8 @@ msgid ""
 "%1\n"
 "kHz"
 msgstr ""
+"%1\n"
+"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format

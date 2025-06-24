@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-23 00:41+0000\n"
+"POT-Creation-Date: 2025-06-24 00:41+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -214,38 +214,38 @@ msgstr "&Numera"
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:359 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Zaustavi"
 
-#: ActionClasses.cpp:411
+#: ActionClasses.cpp:403
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Zaustavi nakon tekuće numere"
 
-#: ActionClasses.cpp:428
+#: ActionClasses.cpp:420
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Zaustavi nakon tekuće numere: isključeno"
 
-#: ActionClasses.cpp:433
+#: ActionClasses.cpp:425
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Zaustavi nakon tekuće numere: uključeno"
 
-#: ActionClasses.cpp:437
+#: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ništa nije pušteno"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
-#: MainWindow.cpp:1231
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1657,7 +1657,7 @@ msgstr "Novi vremenski kôd numere"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
 #, kde-format
 msgid "Unknown"
 msgstr "Nepoznat"
@@ -4866,7 +4866,7 @@ msgstr "Nepoznat izvođač"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1215
 #, kde-format
 msgid "Unknown track"
 msgstr "Nepoznata numera"
@@ -9574,30 +9574,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Rejting"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:996
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Suviše grešaka u listi numera. Puštanje zaustavljeno."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1205
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> izvodi <b>%2</b> sa <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1207
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> izvodi <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> sa <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1222
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10795,7 +10795,7 @@ msgstr "&Prikaz"
 msgid "Lock Layout"
 msgstr "Zaključaj raspored"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1305
+#: MainWindow.cpp:374 MainWindow.cpp:1307
 #, kde-format
 msgid "Reset Layout"
 msgstr "Resetiraj izgled"
@@ -11082,7 +11082,7 @@ msgstr "Ala&tke"
 msgid "&Settings"
 msgstr "&Podešavanje"
 
-#: MainWindow.cpp:1175
+#: MainWindow.cpp:1177
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11093,22 +11093,22 @@ msgstr ""
 "\n"
 "Ne zaboravite da uvijek možete koristiti kraticu \"%1\" da ga vratite."
 
-#: MainWindow.cpp:1176
+#: MainWindow.cpp:1178
 #, kde-format
 msgid "Hide Menu"
 msgstr "Sakeij meni"
 
-#: MainWindow.cpp:1218
+#: MainWindow.cpp:1220
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pauzirano  ::  %1"
 
-#: MainWindow.cpp:1231
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 — %2 ::  %3"
 
-#: MainWindow.cpp:1305
+#: MainWindow.cpp:1307
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Primijenite ovu promjenu izgleda?"

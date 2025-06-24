@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-23 00:41+0000\n"
+"POT-Creation-Date: 2025-06-24 00:41+0000\n"
 "PO-Revision-Date: 2025-06-09 09:32+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -205,38 +205,38 @@ msgstr "Компо&зиція"
 msgid "&Album"
 msgstr "&Альбом"
 
-#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:359 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Зупинити"
 
-#: ActionClasses.cpp:411
+#: ActionClasses.cpp:403
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Зупинитися після поточної композиції"
 
-#: ActionClasses.cpp:428
+#: ActionClasses.cpp:420
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Зупинка після поточної композиції: Вимкнено"
 
-#: ActionClasses.cpp:433
+#: ActionClasses.cpp:425
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Зупинка після поточної композиції: Увімкнено"
 
-#: ActionClasses.cpp:437
+#: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Жодна композиція не відтворюється"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
-#: MainWindow.cpp:1231
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1666,7 +1666,7 @@ msgstr "Створити доріжку часових кодів"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
 #, kde-format
 msgid "Unknown"
 msgstr "Невідомо"
@@ -4857,7 +4857,7 @@ msgstr "Невідомий виконавець"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1215
 #, kde-format
 msgid "Unknown track"
 msgstr "Невідома композиція"
@@ -9700,30 +9700,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "За оцінкою"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:996
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "У списку відтворення забагато помилок. Відтворення зупинено."
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1205
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> — <b>%2</b> на <b>%3</b>"
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1207
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> — <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> на <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1222
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10904,7 +10904,7 @@ msgstr "П&ерегляд"
 msgid "Lock Layout"
 msgstr "Заблокувати компонування"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1305
+#: MainWindow.cpp:374 MainWindow.cpp:1307
 #, kde-format
 msgid "Reset Layout"
 msgstr "Відновити типове компонування"
@@ -11191,7 +11191,7 @@ msgstr "&Інструменти"
 msgid "&Settings"
 msgstr "П&араметри"
 
-#: MainWindow.cpp:1175
+#: MainWindow.cpp:1177
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11203,22 +11203,22 @@ msgstr ""
 "Ви можете повернути смужку на місце натисканням клавіатурного скорочення "
 "«%1»."
 
-#: MainWindow.cpp:1176
+#: MainWindow.cpp:1178
 #, kde-format
 msgid "Hide Menu"
 msgstr "Сховати меню"
 
-#: MainWindow.cpp:1218
+#: MainWindow.cpp:1220
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Призупинено  ::  %1"
 
-#: MainWindow.cpp:1231
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1305
+#: MainWindow.cpp:1307
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Застосувати цю зміну компонування?"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-23 00:41+0000\n"
+"POT-Creation-Date: 2025-06-24 00:41+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -205,41 +205,41 @@ msgstr "&Дарожка"
 msgid "&Album"
 msgstr "Альбом"
 
-#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:359 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Спыніць"
 
-#: ActionClasses.cpp:411
+#: ActionClasses.cpp:403
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "Stop after current Track"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:428
+#: ActionClasses.cpp:420
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "Stop after current track: Off"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:433
+#: ActionClasses.cpp:425
 #, fuzzy, kde-format
 #| msgid "Track"
 msgid "Stop after current track: On"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:437
+#: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
-#: MainWindow.cpp:1231
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
+#: MainWindow.cpp:1233
 #, fuzzy, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1579,7 +1579,7 @@ msgstr "Любімыя запісы"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
 #, kde-format
 msgid "Unknown"
 msgstr "Невядомы"
@@ -4850,7 +4850,7 @@ msgstr "Невядомы выканаўца"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1215
 #, kde-format
 msgid "Unknown track"
 msgstr "Невядомая дарожка"
@@ -9539,30 +9539,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Адзнака"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:996
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1205
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr ""
 
-#: EngineController.cpp:1215
+#: EngineController.cpp:1207
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr ""
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1210
 #, fuzzy, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "%1 на %2"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1222
 #, fuzzy, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10775,7 +10775,7 @@ msgstr "&Паказаць"
 msgid "Lock Layout"
 msgstr "Колькасць прайграванняў:"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1305
+#: MainWindow.cpp:374 MainWindow.cpp:1307
 #, fuzzy, kde-format
 #| msgid "&Playlist"
 msgid "Reset Layout"
@@ -11079,7 +11079,7 @@ msgstr "Н&ачынне"
 msgid "&Settings"
 msgstr "&Настаўленні"
 
-#: MainWindow.cpp:1175
+#: MainWindow.cpp:1177
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11087,25 +11087,25 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1176
+#: MainWindow.cpp:1178
 #, fuzzy, kde-format
 #| msgid "Forbidden"
 msgid "Hide Menu"
 msgstr "Забаронена"
 
-#: MainWindow.cpp:1218
+#: MainWindow.cpp:1220
 #, fuzzy, kde-format
 #| msgid "Paused"
 msgid "Paused  ::  %1"
 msgstr " (паўза) "
 
-#: MainWindow.cpp:1231
+#: MainWindow.cpp:1233
 #, fuzzy, kde-format
 #| msgid "%1. %2 - %3"
 msgid "%1 - %2  ::  %3"
 msgstr "%1. %2 - %3"
 
-#: MainWindow.cpp:1305
+#: MainWindow.cpp:1307
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""

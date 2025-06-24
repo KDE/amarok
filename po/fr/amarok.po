@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-23 00:41+0000\n"
+"POT-Creation-Date: 2025-06-24 00:41+0000\n"
 "PO-Revision-Date: 2025-01-13 09:40+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
@@ -230,38 +230,38 @@ msgstr "Pis&te"
 msgid "&Album"
 msgstr "&Album"
 
-#: ActionClasses.cpp:367 scripting/scriptconsole/ScriptConsole.cpp:98
+#: ActionClasses.cpp:359 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
 msgid "Stop"
 msgstr "Arrêter"
 
-#: ActionClasses.cpp:411
+#: ActionClasses.cpp:403
 #, kde-format
 msgid "Stop after current Track"
 msgstr "Arrêt après la piste actuelle"
 
-#: ActionClasses.cpp:428
+#: ActionClasses.cpp:420
 #, kde-format
 msgid "Stop after current track: Off"
 msgstr "Arrêt après la piste actuelle : désactivé"
 
-#: ActionClasses.cpp:433
+#: ActionClasses.cpp:425
 #, kde-format
 msgid "Stop after current track: On"
 msgstr "Arrêt après la piste actuelle : activé"
 
-#: ActionClasses.cpp:437
+#: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1245 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Aucune piste n'est en cours de lecture"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: ActionClasses.cpp:441
+#: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1212 MainWindow.cpp:1218
-#: MainWindow.cpp:1231
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1698,7 +1698,7 @@ msgstr "Nouveau code temporel de la piste"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1231
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
 #, kde-format
 msgid "Unknown"
 msgstr "Inconnu"
@@ -4887,7 +4887,7 @@ msgstr "Artiste inconnu"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1223
+#: EngineController.cpp:1215
 #, kde-format
 msgid "Unknown track"
 msgstr "Piste inconnue"
@@ -9612,32 +9612,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Note"
 
-#: EngineController.cpp:1004
+#: EngineController.cpp:996
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Trop d'erreurs rencontrées dans la liste de lecture. Lecture arrêtée."
 
 # unreviewed-context
-#: EngineController.cpp:1213
+#: EngineController.cpp:1205
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> par <b>%2</b> sur <b>%3</b>"
 
 # unreviewed-context
-#: EngineController.cpp:1215
+#: EngineController.cpp:1207
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> par <b>%2</b>"
 
-#: EngineController.cpp:1218
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> sur <b>%2</b>"
 
-#: EngineController.cpp:1230
+#: EngineController.cpp:1222
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10821,7 +10821,7 @@ msgstr "&Vue"
 msgid "Lock Layout"
 msgstr "Verrouiller la disposition"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1305
+#: MainWindow.cpp:374 MainWindow.cpp:1307
 #, kde-format
 msgid "Reset Layout"
 msgstr "Réinitialiser la disposition"
@@ -11106,7 +11106,7 @@ msgstr "Ou&tils"
 msgid "&Settings"
 msgstr "&Configuration"
 
-#: MainWindow.cpp:1175
+#: MainWindow.cpp:1177
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11118,22 +11118,22 @@ msgstr ""
 "Veuillez vous rappeler que vous pouvez toujours utiliser le raccourci « %1 » "
 "pour la restaurer."
 
-#: MainWindow.cpp:1176
+#: MainWindow.cpp:1178
 #, kde-format
 msgid "Hide Menu"
 msgstr "Cacher le menu"
 
-#: MainWindow.cpp:1218
+#: MainWindow.cpp:1220
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "En pause :: %1"
 
-#: MainWindow.cpp:1231
+#: MainWindow.cpp:1233
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2 :: %3"
 
-#: MainWindow.cpp:1305
+#: MainWindow.cpp:1307
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Appliquer cette modification de la disposition ?"
@@ -11230,7 +11230,11 @@ msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "La lecture du podcast OPML depuis %1 a échoué avec l'erreur : \n"
 
 #: playback/EqualizerController.cpp:82
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "label for equalizer band frequency"
+#| msgid ""
+#| "%1\n"
+#| "Hz"
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
@@ -11240,7 +11244,11 @@ msgstr ""
 " Hz"
 
 #: playback/EqualizerController.cpp:84
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "label for equalizer band frequency"
+#| msgid ""
+#| "%1\n"
+#| "kHz"
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
@@ -11570,7 +11578,7 @@ msgstr "Standard"
 #: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
 msgid "Only Queue"
-msgstr "Mettre en file d'attente seulement"
+msgstr "File d'attente seulement"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:52
 #, kde-format
