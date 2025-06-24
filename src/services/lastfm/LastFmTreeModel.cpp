@@ -373,6 +373,19 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
     if( role == LastFm::TypeRole )
         return i->type();
 
+    if( role == LastFm::UrlRole)
+    {
+        switch( i->type() )
+        {
+            case LastFm::FriendsChild:
+            case LastFm::MyTagsChild:
+            case LastFm::ArtistsChild:
+                return i->url();
+            default:
+                break;
+        }
+    }
+
     return QVariant();
 }
 
@@ -480,20 +493,12 @@ LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
     QString const encoded_username = QString::fromLatin1( QUrl::toPercentEncoding( m_user.name() ) );
     switch( type )
     {
-    case MyRecommendations:
-        return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/recommended");
-    case PersonalRadio:
-        return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/personal");
-    case MixRadio:
-        return QStringLiteral("lastfm://user/") + encoded_username + QStringLiteral("/mix");
     case MyTagsChild:
-        return QStringLiteral("lastfm://usertags/") + encoded_username + QStringLiteral("/") + QLatin1String( QUrl::toPercentEncoding( key ) );
+        return QStringLiteral("https://www.last.fm/user/") + encoded_username + QStringLiteral("/tags/") + QLatin1String( QUrl::toPercentEncoding( key ) );
     case FriendsChild:
-        return QStringLiteral("lastfm://user/") + QLatin1String( QUrl::toPercentEncoding( key ) ) + QStringLiteral("/personal");
+        return QStringLiteral("https://www.last.fm/user/") + QLatin1String( QUrl::toPercentEncoding( key ) );
     case ArtistsChild:
-        return QStringLiteral("lastfm://artist/") + QLatin1String( QUrl::toPercentEncoding( key ) ) + QStringLiteral("/similarartists");
-    case UserChildPersonal:
-        return QStringLiteral("lastfm://user/") + QLatin1String( QUrl::toPercentEncoding( key ) ) + QStringLiteral("/personal");
+        return QStringLiteral("https://www.last.fm/music/") + QLatin1String( QUrl::toPercentEncoding( key ) );
     default:
         return QStringLiteral("");
     }

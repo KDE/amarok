@@ -22,8 +22,10 @@
 #include "context/ContextView.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
+#include "services/lastfm/LastFmTreeModel.h"
 
 #include <QContextMenuEvent>
+#include <QDesktopServices>
 #include <QHeaderView>
 #include <QMenu>
 
@@ -87,6 +89,9 @@ void LastFmTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() && index.internalPointer() )
     {
+        QString url = model()->data(index, LastFm::UrlRole).toString();
+        if( url.length() > 18 ) //at least protocol + domain - seems valid
+            QDesktopServices::openUrl( QUrl( url ) );
     }
     Q_UNUSED( event )
 }

@@ -141,6 +141,10 @@ public:
     {
         return avatar;
     }
+    QString url() const
+    {
+        return mUrl;
+    }
     void setAvatarUrl( const QUrl &url )
     {
         avatar = url;
