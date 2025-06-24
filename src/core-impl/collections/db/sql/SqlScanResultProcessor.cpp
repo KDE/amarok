@@ -667,7 +667,8 @@ SqlScanResultProcessor::urlsCacheInit()
 
         urlsCacheInsert( entry );
 
-        QAbstractEventDispatcher::instance()->processEvents( QEventLoop::AllEvents );
+        if( i % 500 == 495 )
+            QAbstractEventDispatcher::instance()->processEvents( QEventLoop::AllEvents );
     }
 }
 
