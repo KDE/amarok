@@ -117,7 +117,7 @@ OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrackPtr track )
                           + QString::number( 1 ) + ", '"
                           + sqlDb->escape( track->uidUrl() ) + "' );";
 
-    int trackId = sqlDb->insert( queryString, NULL );
+    int trackId = sqlDb->insert( queryString, nullptr );
 
     return trackId;
 }

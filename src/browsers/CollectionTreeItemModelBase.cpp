@@ -843,8 +843,6 @@ CollectionTreeItemModelBase::queryDone()
     qm->deleteLater();
 }
 
-// TODO
-
 /** Small helper function to convert a list of e.g. tracks to a list of DataPtr */
 template<class PointerType>
 static Meta::DataList

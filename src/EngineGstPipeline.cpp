@@ -88,7 +88,7 @@ EngineGstPipeline::EngineGstPipeline()
         GstElement *queue = gst_element_factory_make("queue", "output-queue");
         GstElement *audioSink = gst_element_factory_make("autoaudiosink", "audio-output");
 
-        gst_bin_add_many(GST_BIN(bin), queue, audioSink, NULL);
+        gst_bin_add_many(GST_BIN(bin), queue, audioSink, nullptr);
         if( !gst_element_link(queue, audioSink) )
             debug() << "failed to create custom playback bin (queue + sink)";
 
@@ -365,7 +365,7 @@ EngineGstPipeline::setSource(const QUrl &source, bool reset)
     }
 
     debug() << "uri" << gstUri;
-    g_object_set(m_pipeline, "uri", gstUri.constData(), NULL);
+    g_object_set(m_pipeline, "uri", gstUri.constData(), nullptr);
 
     if (reset && oldState > GST_STATE_READY) {
         gst_element_set_state(GST_ELEMENT(m_pipeline), oldState);
@@ -407,7 +407,7 @@ GstState
 EngineGstPipeline::state() const
 {
     GstState state;
-    gst_element_get_state(GST_ELEMENT(m_pipeline), &state, NULL, 1000);
+    gst_element_get_state(GST_ELEMENT(m_pipeline), &state, nullptr, 1000);
     return state;
 }
 
@@ -446,7 +446,7 @@ EngineGstPipeline::cb_error(GstBus *bus, GstMessage *gstMessage, gpointer data)
     GError *err;
     //TODO: Log the error
     //TODO handle specifically missing codecs/plugins
-    gst_message_parse_error (gstMessage, &err, NULL);
+    gst_message_parse_error (gstMessage, &err, nullptr);
     debug()<<err->message;
     g_error_free(err);
 
@@ -480,7 +480,7 @@ EngineGstPipeline::cb_setupSource(GstElement *playbin, GParamSpec *param, gpoint
     EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
     Q_ASSERT(that->m_pipeline);
     Q_ASSERT(G_IS_OBJECT(that->m_pipeline));
-    g_object_get(that->m_pipeline, "source", &src, NULL);
+    g_object_get(that->m_pipeline, "source", &src, nullptr);
 
     if ( ( that->currentSource().scheme().startsWith(QLatin1String("http") ) ||
            that->currentSource().scheme().startsWith(QLatin1String("rt") ) ) // rtp, rtsp
@@ -489,7 +489,7 @@ EngineGstPipeline::cb_setupSource(GstElement *playbin, GParamSpec *param, gpoint
         && g_object_class_find_property(G_OBJECT_GET_CLASS(src), "user-agent") )
     {
         QString userAgent = ( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) );
-        g_object_set(src, "user-agent", userAgent.toUtf8().constData(), NULL);
+        g_object_set(src, "user-agent", userAgent.toUtf8().constData(), nullptr);
     }
 }
 
@@ -552,7 +552,7 @@ EngineGstPipeline::cb_streamStart(GstBus *bus, GstMessage *msg, gpointer data)
     Q_UNUSED(msg)
     EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
     gchar *uri;
-    g_object_get(that->m_pipeline, "uri", &uri, NULL);
+    g_object_get(that->m_pipeline, "uri", &uri, nullptr);
     debug() << "Stream changed to" << uri;
     g_free(uri);
     if (!that->m_resetting) {
@@ -1040,7 +1040,7 @@ EngineGstPipeline::availableMimeTypes()
     // Iterate over all audio and video decoders and extract mime types from sink caps
     GList* factoryList;
     factoryList = gst_registry_get_feature_list(gst_registry_get(), GST_TYPE_ELEMENT_FACTORY);
-    for (GList* iter = g_list_first(factoryList) ; iter != NULL ; iter = g_list_next(iter)) {
+    for (GList* iter = g_list_first(factoryList) ; iter != nullptr ; iter = g_list_next(iter)) {
         GstPluginFeature *feature = GST_PLUGIN_FEATURE(iter->data);
         QString klass = QLatin1String( gst_element_factory_get_klass(GST_ELEMENT_FACTORY(feature)) );
 
@@ -1058,7 +1058,7 @@ EngineGstPipeline::availableMimeTypes()
             GstElementFactory *factory = GST_ELEMENT_FACTORY(feature);
             static_templates = gst_element_factory_get_static_pad_templates(factory);
 
-            for (; static_templates != NULL ; static_templates = static_templates->next) {
+            for (; static_templates != nullptr ; static_templates = static_templates->next) {
                 GstStaticPadTemplate *padTemplate = (GstStaticPadTemplate *) static_templates->data;
                 if (padTemplate && padTemplate->direction == GST_PAD_SINK) {
                     GstCaps *caps = gst_static_pad_template_get_caps(padTemplate);

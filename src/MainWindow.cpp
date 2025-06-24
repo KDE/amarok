@@ -377,13 +377,6 @@ MainWindow::addViewMenuItems(QMenu* menu)
 }
 
 void
-MainWindow::showBrowser( const QString &name )
-{
-    Q_UNUSED( name );
-    // showBrowser( index ); // FIXME
-}
-
-void
 MainWindow::showDock( AmarokDockId dockId )
 {
     QString name;

@@ -552,8 +552,6 @@ private:
 
     QRecursiveMutex m_mutex;
 
-    // FIXME: this variable should be updated when
-    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
     QStringList m_supportedMimeTypes;
     QSemaphore m_supportedMimeTypesSemaphore;
 };

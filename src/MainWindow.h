@@ -74,9 +74,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
         void activate();
 
-        //allows us to switch browsers from within other browsers etc
-        void showBrowser( const QString& name );
-
         //ensures the dock widget is visible in case it is tabbed
         void showDock( AmarokDockId dockId );
 
