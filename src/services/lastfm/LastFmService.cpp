@@ -123,7 +123,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     Dynamic::BiasFactory::instance()->registerNewBiasFactory( m_biasFactories.last() );
 
     // add the "play similar artists" action to all artist
-    The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
+    // The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) ); // last.fm radio was discontinued in 2014, hide some related functionality
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
     QAction *loveAction = new QAction( QIcon::fromTheme( QStringLiteral("love-amarok") ), i18n( "Last.fm: Love" ), this );
@@ -389,27 +389,28 @@ LastFmService::polish()
         updateProfileInfo();
 
 
-        QGroupBox *customStation = new QGroupBox( i18n( "Create a Custom Last.fm Station" ), m_topPanel );
-        m_customStationCombo = new QComboBox;
-        QStringList choices;
-        choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
-        m_customStationCombo->insertItems(0, choices);
-        m_customStationEdit = new QLineEdit;
-        m_customStationEdit->setClearButtonEnabled( true );
-        updateEditHint( m_customStationCombo->currentIndex() );
-        m_customStationButton = new QPushButton;
-        m_customStationButton->setObjectName( QStringLiteral("customButton") );
-        m_customStationButton->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-start-amarok") ) );
-        QHBoxLayout *hbox = new QHBoxLayout();
-        hbox->addWidget(m_customStationCombo);
-        hbox->addWidget(m_customStationEdit);
-        hbox->addWidget(m_customStationButton);
-        customStation->setLayout(hbox);
-
-        connect( m_customStationEdit, &QLineEdit::returnPressed, this, &LastFmService::playCustomStation );
-        connect( m_customStationButton, &QPushButton::clicked, this, &LastFmService::playCustomStation );
-        connect( m_customStationCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                 this, &LastFmService::updateEditHint);
+        // last.fm radio was discontinued in 2014, hide some related functionality
+        // QGroupBox *customStation = new QGroupBox( i18n( "Create a Custom Last.fm Station" ), m_topPanel );
+        // m_customStationCombo = new QComboBox;
+        // QStringList choices;
+        // choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
+        // m_customStationCombo->insertItems(0, choices);
+        // m_customStationEdit = new QLineEdit;
+        // m_customStationEdit->setClearButtonEnabled( true );
+        // updateEditHint( m_customStationCombo->currentIndex() );
+        // m_customStationButton = new QPushButton;
+        // m_customStationButton->setObjectName( QStringLiteral("customButton") );
+        // m_customStationButton->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-start-amarok") ) );
+        // QHBoxLayout *hbox = new QHBoxLayout();
+        // hbox->addWidget(m_customStationCombo);
+        // hbox->addWidget(m_customStationEdit);
+        // hbox->addWidget(m_customStationButton);
+        // customStation->setLayout(hbox);
+        //
+        // connect( m_customStationEdit, &QLineEdit::returnPressed, this, &LastFmService::playCustomStation );
+        // connect( m_customStationButton, &QPushButton::clicked, this, &LastFmService::playCustomStation );
+        // connect( m_customStationCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+        //          this, &LastFmService::updateEditHint);
 
         QList<int> levels;
         levels << CategoryId::Genre << CategoryId::Album;

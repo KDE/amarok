@@ -91,6 +91,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
         case LastFm::MyTagsChild:
         case LastFm::ArtistsChild:
         case LastFm::UserChildPersonal:
+        if(0) // last.fm radio was discontinued in 2014, hide some related functionality
         {
             if ( m_appendAction == nullptr )
             {

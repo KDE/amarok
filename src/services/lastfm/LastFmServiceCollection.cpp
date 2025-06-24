@@ -77,7 +77,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
     params[ QStringLiteral("user") ] = userName;
     m_jobs[ QStringLiteral("user.getFriends") ] = lastfm::ws::post( params );
 
-    connect( m_jobs[ QStringLiteral("user.getFriends") ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsLoved );
+    //connect( m_jobs[ QStringLiteral("user.getFriends") ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsLoved );
     //connect( m_jobs[ "user.getFriends" ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsPersonal );
 
     //TODO Automatically add similar artist streams for the users favorite artists.

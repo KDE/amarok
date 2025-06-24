@@ -9,6 +9,7 @@ VERSION 3.2.82 UNRELEASED
   CHANGES:
    * Apply default pre-gain when ReplayGain is active and use fallback value
      if no ReplayGain data is available for a track
+   * Clear out some of the now-discontinued last.fm functionalities
 
   BUGFIXES:
    * Partially re-enable cue file support
