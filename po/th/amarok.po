@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"POT-Creation-Date: 2025-06-25 00:42+0000\n"
 "PO-Revision-Date: 2025-03-03 23:31+0700\n"
 "Last-Translator: Pongsakorn S. <kde@xerusion.me>\n"
 "Language-Team: Thai\n"
@@ -235,8 +235,8 @@ msgstr "ยังไม่มีการเล่นแทร็กเสีย
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
-#: MainWindow.cpp:1233
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "Amarok"
 msgstr "แอมอะร็อก"
@@ -1546,7 +1546,7 @@ msgstr "ไม่ทราบ"
 msgid "New Bookmark"
 msgstr "คั่นหน้าใหม่"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "เครื่องมือจัดการที่คั่นหน้า"
@@ -1645,7 +1645,7 @@ msgstr "แทร็กที่เลือกไว้"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "ไม่ทราบ"
@@ -1698,7 +1698,7 @@ msgstr "ศิลปิน \"%1\" จาก %2"
 msgid "Artist \"%1\""
 msgstr "ศิลปิน \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "มุมมองที่คั่นหน้าแหล่งจัดเก็บสื่อ"
@@ -1904,7 +1904,7 @@ msgid ""
 "audio players and CDs."
 msgstr "ที่นี่เป็นที่ที่คุณจะพบกับดนตรีที่เก็บไว้ในเครื่อง, ดนตรีที่อยู่ในเครื่องเล่นพกพาและ CD"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "ค้นคลังสื่อ"
@@ -2044,7 +2044,7 @@ msgstr "ไม่ทราบ"
 msgid "Various Artists"
 msgstr "หลากหลายศิลปิน"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
@@ -2056,49 +2056,49 @@ msgstr "หลากหลายศิลปิน"
 msgid "Album"
 msgstr "อัลบั้ม"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
 msgstr "ปี - อัลบั้ม"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1169
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, fuzzy, kde-format
 #| msgid "Tracks by this Artist"
 msgid "Track Artist"
 msgstr "จำนวนแทร็กต่าง ๆ ของศิลปินนี้"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "อัลบั้มของศิลปินนี้"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1173
+#: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "ผู้ประพันธ์"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
+#: browsers/CollectionTreeItemModelBase.cpp:1173 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "ประเภท"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: browsers/CollectionTreeItemModelBase.cpp:1175
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "ปี"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1179
+#: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
 msgstr "ป้าย"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1181
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2136,7 +2136,7 @@ msgstr "ทิ้งแฟ้มลงถังขยะ"
 msgid "Delete Tracks"
 msgstr "ลบแทร็กเสียงต่าง ๆ"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "เพิ่มเติม..."
@@ -2144,7 +2144,6 @@ msgstr "เพิ่มเติม..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "เพิ่มไปยังรายการเล่น"
@@ -2152,7 +2151,6 @@ msgstr "เพิ่มไปยังรายการเล่น"
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2635,13 +2633,13 @@ msgstr "ลบการจัดวางรายการเล่น"
 msgid "Confirm Playlist Deletion"
 msgstr "ปรับแต่งแอพเพล็ตข้อมูลรายการเล่น"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ใช้พาธแบบสัมพัทธ์สำหรับใช้กับการ&บันทึก"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "บันทึกเป็น"
@@ -4404,7 +4402,6 @@ msgstr ""
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
@@ -7520,7 +7517,7 @@ msgid "Enter Custom Search"
 msgstr "ป้อนการค้นหาด้วยตัวเอง"
 
 #: covermanager/CoverFoundDialog.cpp:136
-#: services/lastfm/LastFmServiceCollection.cpp:115
+#: services/lastfm/LastFmServiceCollection.cpp:111
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
@@ -7694,7 +7691,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "ที่อยู่ URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "เครื่องมือจัดการหน้าปก"
@@ -10811,13 +10808,13 @@ msgstr "&มุมมอง"
 msgid "Lock Layout"
 msgstr "ล็อคการจัดมุมมอง"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1307
+#: MainWindow.cpp:374 MainWindow.cpp:1300
 #, fuzzy, kde-format
 #| msgid "Default Layout"
 msgid "Reset Layout"
 msgstr "การแสดงแบบปริยาย"
 
-#: MainWindow.cpp:431
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10829,290 +10826,290 @@ msgstr ""
 "ให้เรียกใช้คำสั่ง <B> ออก</B> ได้จากเมนูของหน้าต่างหลัก "
 "หรือที่เมนูของไอคอนแอมอะร็อกในถาดระบบแทน</qt>"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "พักโปรแกรมไว้ในถาดระบบ"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "เล่นสื่อ (แฟ้มหรือที่อยู่ URL)"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "เพิ่มสื่อ (แฟ้มหรือที่อยู่ URL)"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "เพิ่มสายข้อมูล"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "ป้อนที่อยู่ URL ของสายข้อมูล:"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "เ&พิ่มสื่อ..."
 
-#: MainWindow.cpp:768
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&ล้างรายการเล่น"
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:766
 #, fuzzy, kde-format
 #| msgid "&Queue"
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "เพิ่มไปยัง&คิว"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "เ&อารายการที่ซ้ำกันออก"
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "เ&พิ่มสายข้อมูล..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&ส่งออกรายการเล่น..."
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "อิควอไลเซอร์"
 
-#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, fuzzy, kde-format
 #| msgid "Smart Playlist"
 msgid "Bookmark Playlist Setup"
 msgstr "รายการเล่นอัจฉริยะ"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "ทำคั่นหน้าแอพเพล็ตส่วนเกี่ยวพันกับสื่อ"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "เล่นสื่อ..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:815
 #, fuzzy, kde-format
 #| msgid "Save changes of currently selected preset"
 msgid "Edit Details of Currently Selected Track"
 msgstr "บันทึกความเปลี่ยนแปลงของชุดสำเร็จปัจจุบันที่เลือกไว้"
 
-#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "&ค้นหาไปข้างหน้า"
 
-#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "&ค้นหาย้อนกลับ"
 
-#: MainWindow.cpp:867
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "ปรับปรุงคลังสื่อ"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:864
 #, fuzzy, kde-format
 #| msgid "Collection Statistics"
 msgid "Synchronize Statistics..."
 msgstr "สถิติของคลังดนตรี"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "แทร็กก่อนหน้า"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:879
 #, fuzzy, kde-format
 #| msgid "Rate Current Track: 1"
 msgid "Restart current track"
 msgstr "จัดอันดับให้แทร็กปัจจุบันเป็นระดับ: 1"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:886
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "Shuffle Playlist"
 msgstr "&บันทึกรายการเล่น"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:892
 #, fuzzy, kde-format
 #| msgid "Repeat Playlist"
 msgid "Repopulate Playlist"
 msgstr "เล่นรายการเล่นซ้ำ"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:898
 #, fuzzy, kde-format
 #| msgid "Default Dynamic Playlist"
 msgid "Disable Dynamic Playlist"
 msgstr "รายการเล่นปรับอัตโนมัติปริยาย"
 
-#: MainWindow.cpp:909
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "แทร็กถัดไป"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "เพิ่มระดับเสียง"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "ลดระดับเสียง"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "แสดง/ซ่อนหน้าต่างหลัก"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "เปิด/ปิดโหมดเต็มหน้าจอ"
 
-#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "ค้นในรายการเล่น"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "แสดงแทร็กเสียงที่ใช้อยู่"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "แสดงหน้าต่างผุดของการแจ้งให้ทราบ"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "ตัดเสียง"
 
-#: MainWindow.cpp:960
+#: MainWindow.cpp:953
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Love Current Track"
 msgstr "หลังจบเพลงที่เล่นอยู่"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:958
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Ban Current Track"
 msgstr "หลังจบเพลงที่เล่นอยู่"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:963
 #, fuzzy, kde-format
 #| msgid "Love Current Track"
 msgid "Last.fm: Skip Current Track"
 msgstr "หลังจบเพลงที่เล่นอยู่"
 
-#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "ส่งแทร็กเข้าคิวรอเล่น"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "จัดอันดับให้แทร็กปัจจุบันเป็นระดับ: 1"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "จัดอันดับให้แทร็กปัจจุบันเป็นระดับ: 2"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "จัดอันดับให้แทร็กปัจจุบันเป็นระดับ: 3"
 
-#: MainWindow.cpp:1000
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "จัดอันดับให้แทร็กปัจจุบันเป็นระดับ: 4"
 
-#: MainWindow.cpp:1005
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "จัดอันดับให้แทร็กปัจจุบันเป็นระดับ: 5"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr ""
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "เกี่ยวกับแ&อมอะร็อก"
 
-#: MainWindow.cpp:1033
+#: MainWindow.cpp:1026
 #, fuzzy, kde-format
 #| msgid "St&atistics"
 msgid "&Diagnostics"
 msgstr "ส&ถิติ"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&รายงานข้อผิดพลาด..."
 
-#: MainWindow.cpp:1084
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "&ดนตรี"
 
-#: MainWindow.cpp:1086
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "แ&อมอะร็อก"
 
-#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&รายการเล่น"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1120
 #, kde-format
 msgid "&Tools"
 msgstr "เ&ครื่องมือ"
 
-#: MainWindow.cpp:1142
+#: MainWindow.cpp:1135
 #, kde-format
 msgid "&Settings"
 msgstr "&ตั้งค่า"
 
-#: MainWindow.cpp:1177
+#: MainWindow.cpp:1170
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11120,23 +11117,23 @@ msgid ""
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
 
-#: MainWindow.cpp:1178
+#: MainWindow.cpp:1171
 #, fuzzy, kde-format
 #| msgid "Hide menu"
 msgid "Hide Menu"
 msgstr "ซ่อนเมนู"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1213
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "หยุดชั่วคราว  ::  %1"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1307
+#: MainWindow.cpp:1300
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -14185,58 +14182,27 @@ msgid ""
 "friends"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: รัก"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:322
-#, kde-format
-msgid "Enter an artist name"
-msgstr "ป้อนชื่อของศิลปิน"
-
-#: services/lastfm/LastFmService.cpp:325
-#, kde-format
-msgid "Enter a tag"
-msgstr "ป้อนป้ายกำกับ"
-
-#: services/lastfm/LastFmService.cpp:328
-#, fuzzy, kde-format
-#| msgid "Enter a last.fm user name"
-msgid "Enter a Last.fm user name"
-msgstr "ป้อนชื่อผู้ใช้ของบริการ last.fm"
-
-#: services/lastfm/LastFmService.cpp:341
+#: services/lastfm/LastFmService.cpp:318
 #, fuzzy, kde-format
 #| msgid "Username: "
 msgid "Username: %1"
 msgstr "ชื่อผู้ใช้:"
 
-#: services/lastfm/LastFmService.cpp:346
+#: services/lastfm/LastFmService.cpp:323
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "จำนวนครั้งที่เล่น: %1 ครั้ง"
-
-#: services/lastfm/LastFmService.cpp:392
-#, kde-format
-msgid "Create a Custom Last.fm Station"
-msgstr "สร้างสถานี Last.fm ที่ปรับแต่งเอง"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "Tag"
-msgstr "ป้ายกำกับ"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "User"
-msgstr "ผู้ใช้"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -14321,51 +14287,46 @@ msgstr ""
 msgid "Unable to connect to Last.fm service."
 msgstr "ไม่สามารถติดต่อกับอุปกรณ์ Nomad ได้"
 
-#: services/lastfm/LastFmTreeModel.cpp:129
+#: services/lastfm/LastFmTreeModel.cpp:128
 #, fuzzy, kde-format
 #| msgid "%1 (x%2)"
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (x%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:179
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] ""
 
-#: services/lastfm/LastFmTreeModel.cpp:197
-#, kde-format
-msgid "Personal Radio"
-msgstr "รายการวิทยุส่วนตัว"
-
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
 msgid "My Recommendations"
 msgstr "รายการแนะนำของฉัน"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:301
 #, kde-format
 msgid "My Radio Station"
 msgstr "สถานีวิทุของฉัน"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:303
 #, kde-format
 msgid "My Mix Radio"
 msgstr ""
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
 msgstr "ศิลปินสุดโปรดของฉัน"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
 msgid "My Tags"
 msgstr "ป้ายกำกับของฉัน"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:309
 #, kde-format
 msgid "Friends"
 msgstr "เพื่อน ๆ ของฉัน"
@@ -16484,6 +16445,29 @@ msgstr "ศิลปิน: %1"
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty"
+
+#~ msgid "Enter an artist name"
+#~ msgstr "ป้อนชื่อของศิลปิน"
+
+#~ msgid "Enter a tag"
+#~ msgstr "ป้อนป้ายกำกับ"
+
+#, fuzzy
+#~| msgid "Enter a last.fm user name"
+#~ msgid "Enter a Last.fm user name"
+#~ msgstr "ป้อนชื่อผู้ใช้ของบริการ last.fm"
+
+#~ msgid "Create a Custom Last.fm Station"
+#~ msgstr "สร้างสถานี Last.fm ที่ปรับแต่งเอง"
+
+#~ msgid "Tag"
+#~ msgstr "ป้ายกำกับ"
+
+#~ msgid "User"
+#~ msgstr "ผู้ใช้"
+
+#~ msgid "Personal Radio"
+#~ msgstr "รายการวิทยุส่วนตัว"
 
 #, fuzzy
 #~| msgid "First Played"

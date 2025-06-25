@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"POT-Creation-Date: 2025-06-25 00:42+0000\n"
 "PO-Revision-Date: 2025-06-09 21:57+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -236,8 +236,8 @@ msgstr "沒有播放任何曲目"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
-#: MainWindow.cpp:1233
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1465,7 +1465,7 @@ msgstr "未知"
 msgid "New Bookmark"
 msgstr "新增書籤"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "書籤管理員"
@@ -1562,7 +1562,7 @@ msgstr "新增時間碼軌道"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "未知"
@@ -1613,7 +1613,7 @@ msgstr "從 %2 來的演出者「%1」"
 msgid "Artist \"%1\""
 msgstr "演出者「%1」"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "將媒體來源檢視加入書籤"
@@ -1812,7 +1812,7 @@ msgid ""
 "audio players and CDs."
 msgstr "在這裡您會找到您的本地端音樂，以及可攜式音樂播放器與 CD 上的音樂。"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "搜尋收藏"
@@ -1942,7 +1942,7 @@ msgstr "未知"
 msgid "Various Artists"
 msgstr "多名演出者"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
@@ -1954,48 +1954,48 @@ msgstr "多名演出者"
 msgid "Album"
 msgstr "專輯"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
 msgstr "年份 - 專輯"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1169
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Track Artist"
 msgstr "曲目演出者"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "專輯的演出者"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1173
+#: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "作曲家"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
+#: browsers/CollectionTreeItemModelBase.cpp:1173 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "風格"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: browsers/CollectionTreeItemModelBase.cpp:1175
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "年份"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1179
+#: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
 msgstr "標記"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1181
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2032,7 +2032,7 @@ msgstr "把曲目移至垃圾桶"
 msgid "Delete Tracks"
 msgstr "刪除曲目"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "更多..."
@@ -2040,7 +2040,6 @@ msgstr "更多..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "新增到播放清單(&A)"
@@ -2048,7 +2047,6 @@ msgstr "新增到播放清單(&A)"
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2485,13 +2483,13 @@ msgstr "要從 %2 刪除 %1 個播放清單嗎？"
 msgid "Confirm Playlist Deletion"
 msgstr "確認刪除播放清單"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "儲存時使用相對路徑(&S)"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "另存為"
@@ -4164,7 +4162,6 @@ msgstr "重新載入下列標題與演出者的樂譜"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
@@ -7127,7 +7124,7 @@ msgid "Enter Custom Search"
 msgstr "輸入自訂搜尋"
 
 #: covermanager/CoverFoundDialog.cpp:136
-#: services/lastfm/LastFmServiceCollection.cpp:115
+#: services/lastfm/LastFmServiceCollection.cpp:111
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
@@ -7283,7 +7280,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "網址"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "封面管理員"
@@ -10318,12 +10315,12 @@ msgstr "檢視(&V)"
 msgid "Lock Layout"
 msgstr "鎖定配置"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1307
+#: MainWindow.cpp:374 MainWindow.cpp:1300
 #, kde-format
 msgid "Reset Layout"
 msgstr "重設佈局"
 
-#: MainWindow.cpp:431
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10333,276 +10330,276 @@ msgstr ""
 "<qt>關閉主視窗不等於關閉 Amarok，它仍會在系統列繼續運作。要完全關閉，您可以在"
 "選單中按<B>離開</B>，或用系統匣圖示來結束應用程式。</qt>"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "停駐在系統列中"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "播放媒體 (檔案或 URL)"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "加入媒體 (檔案或 URL)"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "加入串流"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "請輸入串流網址："
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "加入媒體(&A)..."
 
-#: MainWindow.cpp:768
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "清除播放清單(&C)"
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:766
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "編輯佇列(&Q)"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "移除重複曲目(&M)"
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "加入串流(&A)..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "將播放清單匯出為(&E)..."
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "等化器"
 
-#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "將播放清單設定加入書籤"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "將情境小程式加入書籤"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "播放媒體..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "編輯目前選取的曲目詳情"
 
-#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "往前搜尋 %1 秒"
 
-#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "往後搜尋 %1 秒"
 
-#: MainWindow.cpp:867
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "更新收藏"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "同步統計..."
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "上一曲目"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Restart current track"
 msgstr "重新開始目前的曲目"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "播放清單洗牌"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "重新安排播放清單"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "關閉動態播放清單"
 
-#: MainWindow.cpp:909
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "下一曲目"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "增大音量"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "減少音量"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "切換主視窗"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "切換全螢幕"
 
-#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "搜尋播放清單"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "顯示目前的曲目"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "顯示通知彈出式視窗"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "靜止音量"
 
-#: MainWindow.cpp:960
+#: MainWindow.cpp:953
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm：喜愛目前的曲目"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm：禁止目前的曲目"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm：跳過目前的曲目"
 
-#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "把曲目放入佇列"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "將目前曲目的「演出者 - 標題」放入剪貼簿"
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "將目前曲目評等為：1"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "將目前曲目評等為：2"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "將目前曲目評等為：3"
 
-#: MainWindow.cpp:1000
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "將目前曲目評等為：4"
 
-#: MainWindow.cpp:1005
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "將目前曲目評等為：5"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "網路請求檢視器"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "關於 Amarok(&A)"
 
-#: MainWindow.cpp:1033
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr "診斷(&D)"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "報告問題(&R)..."
 
-#: MainWindow.cpp:1084
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "音樂(&M)"
 
-#: MainWindow.cpp:1086
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok(&A)"
 
-#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "播放清單(&P)"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1120
 #, kde-format
 msgid "&Tools"
 msgstr "工具(&T)"
 
-#: MainWindow.cpp:1142
+#: MainWindow.cpp:1135
 #, kde-format
 msgid "&Settings"
 msgstr "設定(&S)"
 
-#: MainWindow.cpp:1177
+#: MainWindow.cpp:1170
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10613,22 +10610,22 @@ msgstr ""
 "\n"
 "請記得您可以用 %1 來把選單列叫回來。"
 
-#: MainWindow.cpp:1178
+#: MainWindow.cpp:1171
 #, kde-format
 msgid "Hide Menu"
 msgstr "隱藏選單"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1213
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "暫停 :: %1"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1307
+#: MainWindow.cpp:1300
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "要套用此佈局變更嗎？"
@@ -13522,56 +13519,26 @@ msgstr ""
 "您的收聽習慣量身打造，並提供您最新的音樂。它也可以播放與某特定演出者風格相似"
 "的音樂，以及讓您聆聽您加為好友的人提供的串流。"
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm：喜愛"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:322
-#, kde-format
-msgid "Enter an artist name"
-msgstr "請輸入演出者名稱"
-
-#: services/lastfm/LastFmService.cpp:325
-#, kde-format
-msgid "Enter a tag"
-msgstr "請輸入標籤"
-
-#: services/lastfm/LastFmService.cpp:328
-#, kde-format
-msgid "Enter a Last.fm user name"
-msgstr "請輸入 Last.fm 的使用者名稱"
-
-#: services/lastfm/LastFmService.cpp:341
+#: services/lastfm/LastFmService.cpp:318
 #, kde-format
 msgid "Username: %1"
 msgstr "使用者名稱：%1"
 
-#: services/lastfm/LastFmService.cpp:346
+#: services/lastfm/LastFmService.cpp:323
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "播放次數：%1 次播放"
-
-#: services/lastfm/LastFmService.cpp:392
-#, kde-format
-msgid "Create a Custom Last.fm Station"
-msgstr "建立自訂的 Last.fm 廣播站台"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "Tag"
-msgstr "標籤"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "User"
-msgstr "使用者"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -13658,50 +13625,45 @@ msgstr ""
 msgid "Unable to connect to Last.fm service."
 msgstr "無法連線到 Last.fm 服務。"
 
-#: services/lastfm/LastFmTreeModel.cpp:129
+#: services/lastfm/LastFmTreeModel.cpp:128
 #, kde-format
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:179
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2（%1 次播放）"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
-#, kde-format
-msgid "Personal Radio"
-msgstr "個人頻道"
-
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
 msgid "My Recommendations"
 msgstr "我推薦的電台"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:301
 #, kde-format
 msgid "My Radio Station"
 msgstr "我的廣播站"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:303
 #, kde-format
 msgid "My Mix Radio"
 msgstr "我的特製電台"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
 msgstr "我最愛的演出者"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
 msgid "My Tags"
 msgstr "我的標籤"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:309
 #, kde-format
 msgid "Friends"
 msgstr "好友"
@@ -15771,6 +15733,27 @@ msgstr "演出者：%1"
 #, kde-format
 msgid "empty"
 msgstr "空白"
+
+#~ msgid "Enter an artist name"
+#~ msgstr "請輸入演出者名稱"
+
+#~ msgid "Enter a tag"
+#~ msgstr "請輸入標籤"
+
+#~ msgid "Enter a Last.fm user name"
+#~ msgstr "請輸入 Last.fm 的使用者名稱"
+
+#~ msgid "Create a Custom Last.fm Station"
+#~ msgstr "建立自訂的 Last.fm 廣播站台"
+
+#~ msgid "Tag"
+#~ msgstr "標籤"
+
+#~ msgid "User"
+#~ msgstr "使用者"
+
+#~ msgid "Personal Radio"
+#~ msgstr "個人頻道"
 
 #~ msgid "Display"
 #~ msgstr "顯示"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"POT-Creation-Date: 2025-06-25 00:42+0000\n"
 "PO-Revision-Date: 2024-11-01 14:16+0000\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
@@ -232,8 +232,8 @@ msgstr "No track playing"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
-#: MainWindow.cpp:1233
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1516,7 +1516,7 @@ msgstr "Unknown"
 msgid "New Bookmark"
 msgstr "New Bookmark"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Bookmark Manager"
@@ -1613,7 +1613,7 @@ msgstr "New Timecode Track"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "Unknown"
@@ -1664,7 +1664,7 @@ msgstr "Artist \"%1\" from %2"
 msgid "Artist \"%1\""
 msgstr "Artist \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Bookmark Media Sources View"
@@ -1867,7 +1867,7 @@ msgstr ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and CDs."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "Search collection"
@@ -1998,7 +1998,7 @@ msgstr "Unknown"
 msgid "Various Artists"
 msgstr "Various Artists"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
@@ -2010,48 +2010,48 @@ msgstr "Various Artists"
 msgid "Album"
 msgstr "Album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
 msgstr "Year - Album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1169
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Track Artist"
 msgstr "Track Artist"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "Album Artist"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1173
+#: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "Composer"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
+#: browsers/CollectionTreeItemModelBase.cpp:1173 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Genre"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: browsers/CollectionTreeItemModelBase.cpp:1175
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "Year"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1179
+#: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
 msgstr "Label"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1181
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2088,7 +2088,7 @@ msgstr "Move Tracks to Wastebin"
 msgid "Delete Tracks"
 msgstr "Delete Tracks"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "More..."
@@ -2096,7 +2096,6 @@ msgstr "More..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Add to Playlist"
@@ -2104,7 +2103,6 @@ msgstr "&Add to Playlist"
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2551,13 +2549,13 @@ msgstr "Delete %1 playlists from %2?"
 msgid "Confirm Playlist Deletion"
 msgstr "Confirm Playlist Deletion"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Use relative path for &saving"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "Save As"
@@ -4259,7 +4257,6 @@ msgstr "Reload tabs with the following title and artist"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
@@ -7336,7 +7333,7 @@ msgid "Enter Custom Search"
 msgstr "Enter Custom Search"
 
 #: covermanager/CoverFoundDialog.cpp:136
-#: services/lastfm/LastFmServiceCollection.cpp:115
+#: services/lastfm/LastFmServiceCollection.cpp:111
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
@@ -7493,7 +7490,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "Cover Manager"
@@ -10586,12 +10583,12 @@ msgstr "&View"
 msgid "Lock Layout"
 msgstr "Lock Layout"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1307
+#: MainWindow.cpp:374 MainWindow.cpp:1300
 #, kde-format
 msgid "Reset Layout"
 msgstr "Reset Layout"
 
-#: MainWindow.cpp:431
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10602,276 +10599,276 @@ msgstr ""
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
 "qt>"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Docking in System Tray"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Play Media (Files or URLs)"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Add Media (Files or URLs)"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "Add Stream"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Enter Stream URL:"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Add Media..."
 
-#: MainWindow.cpp:768
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Clear Playlist"
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:766
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Edit &Queue"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Re&move Duplicates"
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Add Stream..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Export Playlist As..."
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "Equaliser"
 
-#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Bookmark Playlist Setup"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Bookmark Context Applets"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "Play Media..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Edit Details of Currently Selected Track"
 
-#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Seek Forward by %1 seconds"
 
-#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Seek Backward by %1 seconds"
 
-#: MainWindow.cpp:867
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "Update Collection"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Synchronise Statistics..."
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "Previous Track"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Restart current track"
 msgstr "Restart current track"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Shuffle Playlist"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Repopulate Playlist"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Disable Dynamic Playlist"
 
-#: MainWindow.cpp:909
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "Next Track"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "Increase Volume"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Decrease Volume"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Toggle Main Window"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Toggle Full Screen"
 
-#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Search playlist"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "Show active track"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Show Notification Popup"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "Mute Volume"
 
-#: MainWindow.cpp:960
+#: MainWindow.cpp:953
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Love Current Track"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Ban Current Track"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Skip Current Track"
 
-#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Queue Track"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Put Artist - Title of the current track to the clipboard"
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Rate Current Track: 1"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Rate Current Track: 2"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Rate Current Track: 3"
 
-#: MainWindow.cpp:1000
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Rate Current Track: 4"
 
-#: MainWindow.cpp:1005
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Rate Current Track: 5"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Network Request Viewer"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "&About Amarok"
 
-#: MainWindow.cpp:1033
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnostics"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Report Bug..."
 
-#: MainWindow.cpp:1084
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "&Music"
 
-#: MainWindow.cpp:1086
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Playlist"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1120
 #, kde-format
 msgid "&Tools"
 msgstr "&Tools"
 
-#: MainWindow.cpp:1142
+#: MainWindow.cpp:1135
 #, kde-format
 msgid "&Settings"
 msgstr "&Settings"
 
-#: MainWindow.cpp:1177
+#: MainWindow.cpp:1170
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10882,22 +10879,22 @@ msgstr ""
 "\n"
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 
-#: MainWindow.cpp:1178
+#: MainWindow.cpp:1171
 #, kde-format
 msgid "Hide Menu"
 msgstr "Hide Menu"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1213
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Paused  ::  %1"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1307
+#: MainWindow.cpp:1300
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Apply this layout change?"
@@ -13878,57 +13875,27 @@ msgstr ""
 "particular artist as well as listen to streams from people you have added as "
 "friends"
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: Love"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:322
-#, kde-format
-msgid "Enter an artist name"
-msgstr "Enter an artist name"
-
-#: services/lastfm/LastFmService.cpp:325
-#, kde-format
-msgid "Enter a tag"
-msgstr "Enter a tag"
-
-#: services/lastfm/LastFmService.cpp:328
-#, kde-format
-msgid "Enter a Last.fm user name"
-msgstr "Enter a Last.fm user name"
-
-#: services/lastfm/LastFmService.cpp:341
+#: services/lastfm/LastFmService.cpp:318
 #, kde-format
 msgid "Username: %1"
 msgstr "Username: %1"
 
-#: services/lastfm/LastFmService.cpp:346
+#: services/lastfm/LastFmService.cpp:323
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "Play Count: %1 play"
 msgstr[1] "Play Count: %1 plays"
-
-#: services/lastfm/LastFmService.cpp:392
-#, kde-format
-msgid "Create a Custom Last.fm Station"
-msgstr "Create a Custom Last.fm Station"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "Tag"
-msgstr "Tag"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "User"
-msgstr "User"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -14016,13 +13983,13 @@ msgstr ""
 msgid "Unable to connect to Last.fm service."
 msgstr "Unable to connect to Last.fm service."
 
-#: services/lastfm/LastFmTreeModel.cpp:129
+#: services/lastfm/LastFmTreeModel.cpp:128
 #, kde-format
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:179
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -14030,37 +13997,32 @@ msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2 (%1 play)"
 msgstr[1] "%2 (%1 plays)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
-#, kde-format
-msgid "Personal Radio"
-msgstr "Personal Radio"
-
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
 msgid "My Recommendations"
 msgstr "My Recommendations"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:301
 #, kde-format
 msgid "My Radio Station"
 msgstr "My Radio Station"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:303
 #, kde-format
 msgid "My Mix Radio"
 msgstr "My Mix Radio"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
 msgstr "My Top Artists"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
 msgid "My Tags"
 msgstr "My Tags"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:309
 #, kde-format
 msgid "Friends"
 msgstr "Friends"
@@ -16197,6 +16159,27 @@ msgstr "Artist: %1"
 #, kde-format
 msgid "empty"
 msgstr "empty"
+
+#~ msgid "Enter an artist name"
+#~ msgstr "Enter an artist name"
+
+#~ msgid "Enter a tag"
+#~ msgstr "Enter a tag"
+
+#~ msgid "Enter a Last.fm user name"
+#~ msgstr "Enter a Last.fm user name"
+
+#~ msgid "Create a Custom Last.fm Station"
+#~ msgstr "Create a Custom Last.fm Station"
+
+#~ msgid "Tag"
+#~ msgstr "Tag"
+
+#~ msgid "User"
+#~ msgstr "User"
+
+#~ msgid "Personal Radio"
+#~ msgstr "Personal Radio"
 
 #~ msgid "Display"
 #~ msgstr "Display"

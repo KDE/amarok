@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"POT-Creation-Date: 2025-06-25 00:42+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -238,8 +238,8 @@ msgstr "ਕੋਈ ਗਾਣਾ ਨਹੀਂ ਚੱਲਦਾ"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
-#: MainWindow.cpp:1233
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "Amarok"
 msgstr "ਅਮਰੋਕ"
@@ -1514,7 +1514,7 @@ msgstr "ਅਣਜਾਣ"
 msgid "New Bookmark"
 msgstr "ਨਵਾਂ ਬੁੱਕਮਾਰਕ"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "ਬੁੱਕਮਾਰਕ ਮੈਨੇਜਰ"
@@ -1611,7 +1611,7 @@ msgstr "ਨਵਾਂ ਟਾਈਮਕੋਡ ਟਰੈਕ"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "ਅਣਜਾਣ"
@@ -1662,7 +1662,7 @@ msgstr "%2 ਤੋਂ ਕਲਾਕਾਰ \"%1\""
 msgid "Artist \"%1\""
 msgstr "ਕਲਾਕਾਰ \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "ਬੁੱਕਮਾਰਕ ਮੀਡਿਆ ਸਰੋਤ ਝਲਕ"
@@ -1861,7 +1861,7 @@ msgid ""
 "audio players and CDs."
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "ਭੰਡਾਰ ਖੋਜ"
@@ -1995,7 +1995,7 @@ msgstr "ਅਣਜਾਣ"
 msgid "Various Artists"
 msgstr "ਕਈ ਕਲਾਕਾਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
@@ -2007,48 +2007,48 @@ msgstr "ਕਈ ਕਲਾਕਾਰ"
 msgid "Album"
 msgstr "ਐਲਬਮ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
 msgstr "ਸਾਲ - ਐਲਬਮ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1169
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Track Artist"
 msgstr "ਟਰੈਕ ਕਲਾਕਾਰ"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "ਐਲਬਮ ਕਲਾਕਾਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1173
+#: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "ਸੰਗੀਤਕਾਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
+#: browsers/CollectionTreeItemModelBase.cpp:1173 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "ਧੁਨ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: browsers/CollectionTreeItemModelBase.cpp:1175
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "ਸਾਲ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1179
+#: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
 msgstr "ਲੇਬਲ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1181
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2085,7 +2085,7 @@ msgstr "ਟਰੈਕ ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ"
 msgid "Delete Tracks"
 msgstr "ਟਰੈਕ ਹਟਾਓ"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "ਹੋਰ..."
@@ -2093,7 +2093,6 @@ msgstr "ਹੋਰ..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "ਪਲੇਅਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਲ(&A)"
@@ -2101,7 +2100,6 @@ msgstr "ਪਲੇਅਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਲ(&A)"
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2557,13 +2555,13 @@ msgstr "ਪਲੇਅਲਿਸਟ ਹਟਾਓ(&D)"
 msgid "Confirm Playlist Deletion"
 msgstr "ਪਲੇਅਲਿਸਟ ਹਟਾਉਣ ਪੁਸ਼ਟੀ"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ਸੰਭਾਲਣ ਲਈ ਅਨੁਸਾਰੀ ਪਾਥ ਵਰਤੋਂ(&s)"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "ਇੰਝ ਸੰਭਾਲੋ"
@@ -4246,7 +4244,6 @@ msgstr ""
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
@@ -7217,7 +7214,7 @@ msgid "Enter Custom Search"
 msgstr "ਪਸੰਦੀਦਾ ਖੋਜ ਦਿਓ"
 
 #: covermanager/CoverFoundDialog.cpp:136
-#: services/lastfm/LastFmServiceCollection.cpp:115
+#: services/lastfm/LastFmServiceCollection.cpp:111
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
@@ -7377,7 +7374,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "ਕਵਰ ਮੈਨੇਜਰ"
@@ -10458,12 +10455,12 @@ msgstr "ਵੇਖੋ(&V)"
 msgid "Lock Layout"
 msgstr "ਲੇਆਉਟ ਲਾਕ ਕਰੋ"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1307
+#: MainWindow.cpp:374 MainWindow.cpp:1300
 #, kde-format
 msgid "Reset Layout"
 msgstr "ਲੇਆਉਟ ਮੁੜ-ਸੈੱਟ"
 
-#: MainWindow.cpp:431
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10473,278 +10470,278 @@ msgstr ""
 "<qt>ਮੁੱਖ ਵਿੰਡੋ ਨੂੰ ਬੰਦ ਕਰਨ ਉੱਤੇ ਵੀ ਅਮੋਰਕ ਸਿਸਟਮ ਟਰੇ 'ਚ ਚੱਲਦਾ ਰਹੇਗਾ। ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ "
 "ਅਮਰੋਕ ਟਰੇ ਆਈਕਾਨ ਵਿੱਚ ਬਾਹਰ ਜਾਂ ਮੇਨੂ ਵਿੱਚੋਂ <B>ਬਾਹਰ</B> ਦੀ ਚੋਣ ਕਰੋ।</qt>"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "ਸਿਸਟਮ ਟਰੇ ਵਿੱਚ ਡੌਕ ਕਰੋ"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "ਮੀਡਿਆ ਚਲਾਓ (ਫਾਇਲਾਂ ਜਾਂ URL)"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "ਮੀਡਿਆ ਸ਼ਾਮਲ (ਫਾਇਲਾਂ ਜਾਂ URL)"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "ਸਟਰੀਮ ਸ਼ਾਮਲ"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "ਸਟਰੀਮ URL ਦਿਓ:"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "ਮੀਡਿਆ ਸ਼ਾਮਲ(&A)..."
 
-#: MainWindow.cpp:768
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ਪਲੇਅਲਿਸਟ ਸਾਫ਼ ਕਰੋ(&C)"
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:766
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "ਕਤਾਰ ਸੋਧ(&Q)"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "ਡੁਪਲੀਕੇਟ ਹਟਾਓ(&m)"
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "ਸਟਰੀਮ ਸ਼ਾਮਲ(&A)..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਇੰਝ ਐਕਸਪੋਰਟ(&E)..."
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "ਸਮਤੋਲ"
 
-#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "ਬੁੱਕਮਾਰਕ ਪਲੇਅਲਿਸਟ ਸੈੱਟਅੱਪ"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "ਪਰਸੰਗ ਐਪਲਿਟ ਬੁੱਕਮਾਰਕ"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "ਮੀਡਿਆ ਚਲਾਓ..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "ਮੌਜੂਦਾ ਚੁਣੇ ਟਰੈਕ ਦੇ ਵੇਰਵੇ ਦਾ ਸੋਧ"
 
-#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, fuzzy, kde-format
 #| msgid "&Seek Forward"
 msgid "Seek Forward by %1 seconds"
 msgstr "ਅੱਗੇ ਕਰੋ(&S)"
 
-#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, fuzzy, kde-format
 #| msgid "&Seek Backward"
 msgid "Seek Backward by %1 seconds"
 msgstr "ਪਿੱਛੇ ਕਰੋ(&S)"
 
-#: MainWindow.cpp:867
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "ਭੰਡਾਰ ਅੱਪਡੇਟ ਕਰੋ"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr ""
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "ਪਿਛਲਾ ਟਰੈਕ"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Restart current track"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਮੁੜ-ਚਲਾਓ"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "ਪਲੇਅਲਿਸਟ ਰਲਾਉ"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "ਪਲੇਅਲਿਸਟ ਮੁੜ-ਤਿਆਰ"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "ਡਾਇਨੈਮਿਕ ਪਲੇਅ-ਲਿਸਟ ਬੰਦ"
 
-#: MainWindow.cpp:909
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "ਅਗਲਾ ਟਰੈਕ"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "ਆਵਾਜ਼ ਵਧਾਓ"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "ਆਵਾਜ਼ ਘਟਾਓ"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਵਿੰਡੋ ਬਦਲੋ"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "ਪੂਰੀ ਸਕਰੀਨ ਬਦਲੋ"
 
-#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਖੋਜ"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "ਐਕਟਿਵ ਟਰੈਕ ਵੇਖੋ"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "ਨੋਟੀਫਿਕੇਸ਼ਨ ਪੋਪਅੱਪ ਵੇਖੋ"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "ਆਵਾਜ਼ ਬੰਦ"
 
-#: MainWindow.cpp:960
+#: MainWindow.cpp:953
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: ਮੌਜੂਦਾ ਟਰੈਕ ਲਵ"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: ਮੌਜੂਦਾ ਟਰੈਕ ਪਾਬੰਦੀ"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: ਮੌਜੂਦਾ ਟਰੈਕ ਛੱਡੋ"
 
-#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "ਟਰੈਕ ਕਤਾਰ ਵਿੱਚ ਲਾਓ"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੧"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੨"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੩"
 
-#: MainWindow.cpp:1000
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੪"
 
-#: MainWindow.cpp:1005
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੫"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "ਨੈੱਟਵਰਕ ਮੰਗ ਦਰਸ਼ਕ"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "ਅਮਰੋਕ ਬਾਰੇ(&A)"
 
-#: MainWindow.cpp:1033
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr "ਜਾਂਚ ਅੰਕੜੇ(&D)"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "ਬੱਗ ਰਿਪੋਰਟ ਦਿਓ(&R)..."
 
-#: MainWindow.cpp:1084
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "ਸੰਗੀਤ(&M)"
 
-#: MainWindow.cpp:1086
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "ਅਮਰੋਕ(&A)"
 
-#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "ਪਲੇਅ-ਲਿਸਟ(&P)"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1120
 #, kde-format
 msgid "&Tools"
 msgstr "ਟੂਲ(&T)"
 
-#: MainWindow.cpp:1142
+#: MainWindow.cpp:1135
 #, kde-format
 msgid "&Settings"
 msgstr "ਸੈਟਿੰਗ(&S)"
 
-#: MainWindow.cpp:1177
+#: MainWindow.cpp:1170
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10755,22 +10752,22 @@ msgstr ""
 "\n"
 "ਯਾਦ ਰੱਖੋ ਕਿ ਤੁਸੀਂ ਇਸ ਨੂੰ \"%1\" ਸ਼ਾਰਟਕੱਟ ਨਾਲ ਵਾਪਸ ਲੈ ਸਕਦੇ ਹੋ।"
 
-#: MainWindow.cpp:1178
+#: MainWindow.cpp:1171
 #, kde-format
 msgid "Hide Menu"
 msgstr "ਮੇਨੂ ਓਹਲੇ"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1213
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "ਵਿਰਾਮ  ::  %1"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1307
+#: MainWindow.cpp:1300
 #, kde-format
 msgid "Apply this layout change?"
 msgstr ""
@@ -13723,57 +13720,27 @@ msgid ""
 "friends"
 msgstr ""
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: ਪਿਆਰ"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:322
-#, kde-format
-msgid "Enter an artist name"
-msgstr "ਕਲਾਕਾਰ ਨਾਂ ਦਿਓ"
-
-#: services/lastfm/LastFmService.cpp:325
-#, kde-format
-msgid "Enter a tag"
-msgstr "ਇੱਕ ਟੈਗ ਦਿਓ"
-
-#: services/lastfm/LastFmService.cpp:328
-#, kde-format
-msgid "Enter a Last.fm user name"
-msgstr "Last.fm ਯੂਜ਼ਰ ਨਾਂ ਦਿਓ"
-
-#: services/lastfm/LastFmService.cpp:341
+#: services/lastfm/LastFmService.cpp:318
 #, kde-format
 msgid "Username: %1"
 msgstr "ਯੂਜ਼ਰ ਨਾਂ: %1"
 
-#: services/lastfm/LastFmService.cpp:346
+#: services/lastfm/LastFmService.cpp:323
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "ਚੱਲਣ ਗਿਣਤੀ: %1 ਚਲਾਇਆ"
 msgstr[1] "ਚੱਲਣ ਗਿਣਤੀ: %1 ਚੱਲਿਆ"
-
-#: services/lastfm/LastFmService.cpp:392
-#, kde-format
-msgid "Create a Custom Last.fm Station"
-msgstr "ਪਸੰਦੀਦਾ Last.fm ਸਟੇਸ਼ਨ ਬਣਾਓ"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "Tag"
-msgstr "ਟੈਗ"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "User"
-msgstr "ਯੂਜ਼ਰ"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -13858,13 +13825,13 @@ msgstr ""
 msgid "Unable to connect to Last.fm service."
 msgstr "Last.fm ਸਰਵਿਸ ਨਾਲ ਕੁਨੈਕਟ ਕਰਨ ਲਈ ਅਸਮਰੱਥ ਹੈ।"
 
-#: services/lastfm/LastFmTreeModel.cpp:129
+#: services/lastfm/LastFmTreeModel.cpp:128
 #, kde-format
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:179
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -13872,37 +13839,32 @@ msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2 (%1 ਚੱਲਿਆ)"
 msgstr[1] "%2 (%1 ਚੱਲਿਆ)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
-#, kde-format
-msgid "Personal Radio"
-msgstr "ਨਿੱਜੀ ਰੇਡੀਓ"
-
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
 msgid "My Recommendations"
 msgstr "ਮੇਰੀਆਂ ਸਿਫਾਰਸ਼ੀ"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:301
 #, kde-format
 msgid "My Radio Station"
 msgstr "ਮੇਰਾ ਰੇਡੀਓ ਸਟੇਸ਼ਨ"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:303
 #, kde-format
 msgid "My Mix Radio"
 msgstr "ਮੇਰਾ ਮਿਕਸ ਰੇਡੀਓ"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
 msgstr "ਮੇਰ ਟਾਪ ਕਲਾਕਾਰ"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
 msgid "My Tags"
 msgstr "ਮੇਰੇ ਟੈਗ"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:309
 #, kde-format
 msgid "Friends"
 msgstr "ਦੋਸਤ"
@@ -15983,6 +15945,27 @@ msgstr "ਕਲਾਕਾਰ: %1"
 #, kde-format
 msgid "empty"
 msgstr "ਖਾਲੀ"
+
+#~ msgid "Enter an artist name"
+#~ msgstr "ਕਲਾਕਾਰ ਨਾਂ ਦਿਓ"
+
+#~ msgid "Enter a tag"
+#~ msgstr "ਇੱਕ ਟੈਗ ਦਿਓ"
+
+#~ msgid "Enter a Last.fm user name"
+#~ msgstr "Last.fm ਯੂਜ਼ਰ ਨਾਂ ਦਿਓ"
+
+#~ msgid "Create a Custom Last.fm Station"
+#~ msgstr "ਪਸੰਦੀਦਾ Last.fm ਸਟੇਸ਼ਨ ਬਣਾਓ"
+
+#~ msgid "Tag"
+#~ msgstr "ਟੈਗ"
+
+#~ msgid "User"
+#~ msgstr "ਯੂਜ਼ਰ"
+
+#~ msgid "Personal Radio"
+#~ msgstr "ਨਿੱਜੀ ਰੇਡੀਓ"
 
 #, fuzzy
 #~| msgid "Display Cover"

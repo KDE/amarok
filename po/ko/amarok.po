@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"POT-Creation-Date: 2025-06-25 00:42+0000\n"
 "PO-Revision-Date: 2025-04-06 21:28+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -233,8 +233,8 @@ msgstr "재생 중인 곡 없음"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
-#: MainWindow.cpp:1233
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1498,7 +1498,7 @@ msgstr "알 수 없음"
 msgid "New Bookmark"
 msgstr "새 책갈피"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "책갈피 관리자"
@@ -1595,7 +1595,7 @@ msgstr "새 타임코드 곡"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "알 수 없음"
@@ -1646,7 +1646,7 @@ msgstr "%2의 아티스트 \"%1\""
 msgid "Artist \"%1\""
 msgstr "아티스트 \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "미디어 원본 보기 책갈피에 추가"
@@ -1847,7 +1847,7 @@ msgid ""
 msgstr ""
 "로컬 음악, 모바일 오디오 재생기, CD에 있는 음악을 찾을 수 있는 곳입니다."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "모음집 검색"
@@ -1977,7 +1977,7 @@ msgstr "알 수 없음"
 msgid "Various Artists"
 msgstr "여러 아티스트"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
@@ -1989,48 +1989,48 @@ msgstr "여러 아티스트"
 msgid "Album"
 msgstr "앨범"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
 msgstr "연도 - 앨범"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1169
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Track Artist"
 msgstr "곡 아티스트"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "앨범 아티스트"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1173
+#: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "작곡가"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
+#: browsers/CollectionTreeItemModelBase.cpp:1173 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "장르"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: browsers/CollectionTreeItemModelBase.cpp:1175
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "연도"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1179
+#: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
 msgstr "레이블"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1181
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2067,7 +2067,7 @@ msgstr "곡을 휴지통으로 이동"
 msgid "Delete Tracks"
 msgstr "곡 삭제"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "더 보기..."
@@ -2075,7 +2075,6 @@ msgstr "더 보기..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "재생 목록에 추가(&A)"
@@ -2083,7 +2082,6 @@ msgstr "재생 목록에 추가(&A)"
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2522,13 +2520,13 @@ msgstr "%2에서 재생 목록 %1개를 삭제하시겠습니까?"
 msgid "Confirm Playlist Deletion"
 msgstr "재생 목록 삭제 확인"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "저장할 때 상대 경로 사용하기(&S)"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "다른 이름으로 저장"
@@ -4222,7 +4220,6 @@ msgstr "다음 제목과 아티스트로 탭 새로 고침"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
@@ -7210,7 +7207,7 @@ msgid "Enter Custom Search"
 msgstr "사용자 정의 검색어 입력"
 
 #: covermanager/CoverFoundDialog.cpp:136
-#: services/lastfm/LastFmServiceCollection.cpp:115
+#: services/lastfm/LastFmServiceCollection.cpp:111
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
@@ -7366,7 +7363,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "앨범 커버 관리자"
@@ -10442,12 +10439,12 @@ msgstr "보기(&V)"
 msgid "Lock Layout"
 msgstr "레이아웃 잠금"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1307
+#: MainWindow.cpp:374 MainWindow.cpp:1300
 #, kde-format
 msgid "Reset Layout"
 msgstr "레이아웃 초기화"
 
-#: MainWindow.cpp:431
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10457,276 +10454,276 @@ msgstr ""
 "<qt>주 창을 닫아도 시스템 트레이에서 Amarok이 실행됩니다. 앱을 끝내려면 파일 "
 "메뉴의 <B>끝내기</B> 항목 또는 시스템 트레이 아이콘을 사용하십시오.</qt>"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "시스템 트레이에 놓기"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "미디어 재생(파일이나 URL)"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "미디어 추가(파일이나 URL)"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "스트림 추가"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "스트림 URL을 입력하십시오:"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "미디어 추가(&A)..."
 
-#: MainWindow.cpp:768
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "재생 목록 지우기(&C)"
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:766
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "대기열 편집(&Q)"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "중복 삭제(&M)"
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "스트림 추가(&A)..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "재생 목록 내보내기(&E)..."
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "이퀼라이저"
 
-#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "책갈피 재생 목록 설정"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "콘텍스트 애플릿 책갈피"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "미디어 재생..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "현재 선택된 곡의 세부 사항 편집"
 
-#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "%1초 앞으로 탐색"
 
-#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "%1초 뒤로 탐색"
 
-#: MainWindow.cpp:867
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "모음집 업데이트"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "통계 동기화 중..."
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "이전 곡"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Restart current track"
 msgstr "현재 곡 다시 시작"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "재생 목록 순서 섞기"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "재생 목록 다시 채우기"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "동적 재생 목록 사용 중지"
 
-#: MainWindow.cpp:909
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "다음 곡"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "음량 증가"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "음량 감소"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "주 창 표시/숨기기"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "전체 화면 전환"
 
-#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "재생 목록 검색"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "활성 곡 표시"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "알림 팝업 표시"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "볼륨 음소거"
 
-#: MainWindow.cpp:960
+#: MainWindow.cpp:953
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: 현재 곡 좋아하기"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: 현재 곡 금지하기"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: 현재 곡 건너뛰기"
 
-#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "곡 대기열에 추가"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "아티스트 넣기 - 클립보드에 대한 현재 곡의 제목"
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "현재 곡 별점: 1"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "현재 곡 별점: 2"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "현재 곡 별점: 3"
 
-#: MainWindow.cpp:1000
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "현재 곡 별점: 4"
 
-#: MainWindow.cpp:1005
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "현재 곡 별점: 5"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "네트워크 요청 보기 도구"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "Amarok 소개(&A)"
 
-#: MainWindow.cpp:1033
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr "진단(&D)"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "버그 보고(&R)..."
 
-#: MainWindow.cpp:1084
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "음악(&M)"
 
-#: MainWindow.cpp:1086
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "Amarok(&A)"
 
-#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "재생 목록(&P)"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1120
 #, kde-format
 msgid "&Tools"
 msgstr "도구(&T)"
 
-#: MainWindow.cpp:1142
+#: MainWindow.cpp:1135
 #, kde-format
 msgid "&Settings"
 msgstr "설정(&S)"
 
-#: MainWindow.cpp:1177
+#: MainWindow.cpp:1170
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10737,22 +10734,22 @@ msgstr ""
 "\n"
 "메뉴 표시줄을 다시 표시하려면 단축키 \"%1\"을(를) 누르십시오."
 
-#: MainWindow.cpp:1178
+#: MainWindow.cpp:1171
 #, kde-format
 msgid "Hide Menu"
 msgstr "메뉴 숨기기"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1213
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "일시 정지됨 :: %1"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1307
+#: MainWindow.cpp:1300
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "이 레이아웃 변경을 적용하시겠습니까?"
@@ -13684,56 +13681,26 @@ msgstr ""
 "또한 특정 아티스트와 유사한 음악으로 방송국을 재생하고 친구로 추가한 사람들"
 "의 스트림을 들을 수도 있습니다"
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: 현재 곡 좋아함"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: services/lastfm/LastFmService.cpp:322
-#, kde-format
-msgid "Enter an artist name"
-msgstr "아티스트 이름 입력"
-
-#: services/lastfm/LastFmService.cpp:325
-#, kde-format
-msgid "Enter a tag"
-msgstr "태그 입력"
-
-#: services/lastfm/LastFmService.cpp:328
-#, kde-format
-msgid "Enter a Last.fm user name"
-msgstr "Last.fm 사용자 이름 입력"
-
-#: services/lastfm/LastFmService.cpp:341
+#: services/lastfm/LastFmService.cpp:318
 #, kde-format
 msgid "Username: %1"
 msgstr "사용자 이름: %1"
 
-#: services/lastfm/LastFmService.cpp:346
+#: services/lastfm/LastFmService.cpp:323
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "재생 횟수: %1회 재생"
-
-#: services/lastfm/LastFmService.cpp:392
-#, kde-format
-msgid "Create a Custom Last.fm Station"
-msgstr "사용자 정의 Last.fm 스테이션 만들기"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "Tag"
-msgstr "태그"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "User"
-msgstr "사용자"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -13820,50 +13787,45 @@ msgstr ""
 msgid "Unable to connect to Last.fm service."
 msgstr "Last.fm 서비스에 연결할 수 없습니다."
 
-#: services/lastfm/LastFmTreeModel.cpp:129
+#: services/lastfm/LastFmTreeModel.cpp:128
 #, kde-format
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1(%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:179
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2(%1회 재생)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
-#, kde-format
-msgid "Personal Radio"
-msgstr "개인 라디오"
-
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
 msgid "My Recommendations"
 msgstr "내 추천"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:301
 #, kde-format
 msgid "My Radio Station"
 msgstr "내 라디오 스테이션"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:303
 #, kde-format
 msgid "My Mix Radio"
 msgstr "내 믹스 라디오"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
 msgstr "내 상위 아티스트"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
 msgid "My Tags"
 msgstr "내 태그"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:309
 #, kde-format
 msgid "Friends"
 msgstr "친구"
@@ -15964,6 +15926,27 @@ msgstr "아티스트: %1"
 #, kde-format
 msgid "empty"
 msgstr "비어 있음"
+
+#~ msgid "Enter an artist name"
+#~ msgstr "아티스트 이름 입력"
+
+#~ msgid "Enter a tag"
+#~ msgstr "태그 입력"
+
+#~ msgid "Enter a Last.fm user name"
+#~ msgstr "Last.fm 사용자 이름 입력"
+
+#~ msgid "Create a Custom Last.fm Station"
+#~ msgstr "사용자 정의 Last.fm 스테이션 만들기"
+
+#~ msgid "Tag"
+#~ msgstr "태그"
+
+#~ msgid "User"
+#~ msgstr "사용자"
+
+#~ msgid "Personal Radio"
+#~ msgstr "개인 라디오"
 
 #~ msgid "Display"
 #~ msgstr "디스플레이"

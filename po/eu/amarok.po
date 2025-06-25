@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-24 00:41+0000\n"
+"POT-Creation-Date: 2025-06-25 00:42+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -238,8 +238,8 @@ msgstr "Ez da pistarik jotzen ari"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:45
-#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1214 MainWindow.cpp:1220
-#: MainWindow.cpp:1233
+#: main.cpp:54 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1572,7 +1572,7 @@ msgstr "Ezezaguna"
 msgid "New Bookmark"
 msgstr "Laster-marka berria"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:797
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:790
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Laster-marken kudeatzailea"
@@ -1669,7 +1669,7 @@ msgstr "Denbora-kodearen pista berria"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1233
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "Ezezaguna"
@@ -1720,7 +1720,7 @@ msgstr "\"%1\" artista %2(e)ndik"
 msgid "Artist \"%1\""
 msgstr "\"%1\" artista"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:793
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Sortu multimediaren iturburuko ikuspegiaren laster-marka"
@@ -1923,7 +1923,7 @@ msgstr ""
 "Hemen aurkituko duzu zure lokaleko musika, baita audio erreproduzigailu "
 "eramangarri eta CDetakoak ere."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:941
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
 #, kde-format
 msgid "Search collection"
 msgstr "Bilatu bilduma"
@@ -2057,7 +2057,7 @@ msgstr "Ezezaguna"
 msgid "Various Artists"
 msgstr "Hainbat artista"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
 #: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
@@ -2069,48 +2069,48 @@ msgstr "Hainbat artista"
 msgid "Album"
 msgstr "Albuma"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1167
+#: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
 msgstr "Urtea - Albuma"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1169
+#: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
 msgid "Track Artist"
 msgstr "Pistako artista"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1171 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
 msgstr "Albuma Artista"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1173
+#: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:933
 #, kde-format
 msgid "Composer"
 msgstr "Konpositorea"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1175 playlist/PlaylistModel.cpp:939
+#: browsers/CollectionTreeItemModelBase.cpp:1173 playlist/PlaylistModel.cpp:939
 #: playlist/ProgressiveSearchWidget.cpp:93
 #, kde-format
 msgid "Genre"
 msgstr "Generoa"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1177
+#: browsers/CollectionTreeItemModelBase.cpp:1175
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:934
 #, kde-format
 msgid "Year"
 msgstr "Urtea"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1179
+#: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
 msgstr "Etiketa"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1181
+#: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
 #, kde-format
 msgid "None"
@@ -2147,7 +2147,7 @@ msgstr "Eraman pistak zakarrontzira"
 msgid "Delete Tracks"
 msgstr "Ezabatu pistak"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "Gehiago..."
@@ -2155,7 +2155,6 @@ msgstr "Gehiago..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Gehitu zerrendari"
@@ -2163,7 +2162,6 @@ msgstr "&Gehitu zerrendari"
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2617,13 +2615,13 @@ msgstr "Ezabatu jotze-zerrenda %1(e)tik."
 msgid "Confirm Playlist Deletion"
 msgstr "Berretsi jotze-zerrenda ezabatzea"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:454
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Erabili bide-izen erlatiboak gordetzean"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:467
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "Gorde honela"
@@ -4331,7 +4329,6 @@ msgstr "Birkargatu fitxak honako titulu eta artistarekin"
 #: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:395
 #: services/magnatune/MagnatuneStore.cpp:216
 #, kde-format
 msgid "Artist"
@@ -7490,7 +7487,7 @@ msgid "Enter Custom Search"
 msgstr "Sartu bilaketa pertsonalizatua"
 
 #: covermanager/CoverFoundDialog.cpp:136
-#: services/lastfm/LastFmServiceCollection.cpp:115
+#: services/lastfm/LastFmServiceCollection.cpp:111
 #: services/lastfm/ScrobblerAdapter.cpp:73
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
@@ -7647,7 +7644,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URLa"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:813
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
 msgid "Cover Manager"
 msgstr "Azal kudeatzailea"
@@ -10790,12 +10787,12 @@ msgstr "&Ikusi"
 msgid "Lock Layout"
 msgstr "Blokeatu diseinua"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1307
+#: MainWindow.cpp:374 MainWindow.cpp:1300
 #, kde-format
 msgid "Reset Layout"
 msgstr "Berrezarri antolaera"
 
-#: MainWindow.cpp:431
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -10806,276 +10803,276 @@ msgstr ""
 "da. Erabili <B>Irten</B> menua edo Amarok-en erretiluko ikonoa aplikaziotik "
 "irtetzeko.</qt>"
 
-#: MainWindow.cpp:433
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Sistemaren erretiluan atrakatzea"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Erreproduzitu multimedia (fitxategiak edo URLak)"
 
-#: MainWindow.cpp:533
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Gehitu multimedia (fitxategiak edo URLak)"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "Gehitu korrontea"
 
-#: MainWindow.cpp:553
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Sartu korrontearen URLa:"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
 msgstr "Gehitu &multimedia..."
 
-#: MainWindow.cpp:768
+#: MainWindow.cpp:761
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Garbitu zerrenda"
 
-#: MainWindow.cpp:773
+#: MainWindow.cpp:766
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Editatu &ilara"
 
-#: MainWindow.cpp:778
+#: MainWindow.cpp:771
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "&Kendu bikoiztuak"
 
-#: MainWindow.cpp:785
+#: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Gehitu korrontea..."
 
-#: MainWindow.cpp:789
+#: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Esportatu zerrenda honela..."
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:794
 #, kde-format
 msgid "Equalizer"
 msgstr "Ekualizadorea"
 
-#: MainWindow.cpp:805 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Sortu zerrendaren konfigurazioaren laster-marka"
 
-#: MainWindow.cpp:809
+#: MainWindow.cpp:802
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Sortu testuinguruko miniaplikazioen laster-marka"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
 msgstr "Erreproduzitu multimedia..."
 
-#: MainWindow.cpp:822
+#: MainWindow.cpp:815
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Editatu unean hautatutako pistaren xehetasunak"
 
-#: MainWindow.cpp:828 MainWindow.cpp:834 MainWindow.cpp:841
+#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Bilatu aurrerantz %1 segundo"
 
-#: MainWindow.cpp:848 MainWindow.cpp:854 MainWindow.cpp:861
+#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Bilatu atzerantz %1 segundo"
 
-#: MainWindow.cpp:867
+#: MainWindow.cpp:860
 #, kde-format
 msgid "Update Collection"
 msgstr "Eguneratu bilduma"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:864
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Sinkronizatu estatistikak..."
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Previous Track"
 msgstr "Aurreko pista"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Restart current track"
 msgstr "Berrabiarazi uneko pista"
 
-#: MainWindow.cpp:893
+#: MainWindow.cpp:886
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Nahastu jotze-zerrenda"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Bete berriro zerrenda"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Desgaitu zerrenda dinamikoa"
 
-#: MainWindow.cpp:909
+#: MainWindow.cpp:902
 #, kde-format
 msgid "Next Track"
 msgstr "Hurrengo pista"
 
-#: MainWindow.cpp:914
+#: MainWindow.cpp:907
 #, kde-format
 msgid "Increase Volume"
 msgstr "Igo bolumena"
 
-#: MainWindow.cpp:920
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Jaitsi bolumena"
 
-#: MainWindow.cpp:926
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Txandakatu leiho nagusia"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:924
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Txandakatu pantaila osoa"
 
-#: MainWindow.cpp:936 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Bilatu zerrendan"
 
-#: MainWindow.cpp:946
+#: MainWindow.cpp:939
 #, kde-format
 msgid "Show active track"
 msgstr "Erakutsi pista aktiboa"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:943
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Erakutsi jakinarazpenaren laster-leihoa"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:948
 #, kde-format
 msgid "Mute Volume"
 msgstr "Mututu bolumena"
 
-#: MainWindow.cpp:960
+#: MainWindow.cpp:953
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: hobetsi uneko pista"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:958
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: debekatu uneko pista"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:963
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: saltatu uneko pista"
 
-#: MainWindow.cpp:975 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Ilaratu pista"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:973
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr ""
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:978
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Uneko pistaren balioa: 1"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:983
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Uneko pistaren balioa: 2"
 
-#: MainWindow.cpp:995
+#: MainWindow.cpp:988
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Uneko pistaren balioa: 3"
 
-#: MainWindow.cpp:1000
+#: MainWindow.cpp:993
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Uneko pistaren balioa: 4"
 
-#: MainWindow.cpp:1005
+#: MainWindow.cpp:998
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Uneko pistaren balioa: 5"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Sareko eskaeren ikustailea"
 
-#: MainWindow.cpp:1029
+#: MainWindow.cpp:1022
 #, kde-format
 msgid "&About Amarok"
 msgstr "&Amarok-i buruz"
 
-#: MainWindow.cpp:1033
+#: MainWindow.cpp:1026
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnostikoa"
 
-#: MainWindow.cpp:1037
+#: MainWindow.cpp:1030
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Akatsen berri eman..."
 
-#: MainWindow.cpp:1084
+#: MainWindow.cpp:1077
 #, kde-format
 msgid "&Music"
 msgstr "&Musika"
 
-#: MainWindow.cpp:1086
+#: MainWindow.cpp:1079
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1110 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Zerrenda"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1120
 #, kde-format
 msgid "&Tools"
 msgstr "&Tresnak"
 
-#: MainWindow.cpp:1142
+#: MainWindow.cpp:1135
 #, kde-format
 msgid "&Settings"
 msgstr "&Ezarpenak"
 
-#: MainWindow.cpp:1177
+#: MainWindow.cpp:1170
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11086,22 +11083,22 @@ msgstr ""
 "\n"
 "Gogoratu '%1' lasterbidea erabil dezakezula berriro erakusteko."
 
-#: MainWindow.cpp:1178
+#: MainWindow.cpp:1171
 #, kde-format
 msgid "Hide Menu"
 msgstr "Ezkutatu menua"
 
-#: MainWindow.cpp:1220
+#: MainWindow.cpp:1213
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pausatuta :: %1"
 
-#: MainWindow.cpp:1233
+#: MainWindow.cpp:1226
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2 :: %3"
 
-#: MainWindow.cpp:1307
+#: MainWindow.cpp:1300
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Antolaera aldaketa hau ezarri?"
@@ -14130,57 +14127,27 @@ msgstr ""
 "edo baita zuk lagun gisa gehituta dituzun edo Last.fm webgunean 'auzokotzat' "
 "hartzen den jendearen korronteak entzun ere."
 
-#: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
+#: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
 msgstr "Last.fm: gogokoa"
 
-#: services/lastfm/LastFmService.cpp:131
+#: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
 msgstr "Ktrl+L"
 
-#: services/lastfm/LastFmService.cpp:322
-#, kde-format
-msgid "Enter an artist name"
-msgstr "Sartu artistaren izena"
-
-#: services/lastfm/LastFmService.cpp:325
-#, kde-format
-msgid "Enter a tag"
-msgstr "Sartu etiketa"
-
-#: services/lastfm/LastFmService.cpp:328
-#, kde-format
-msgid "Enter a Last.fm user name"
-msgstr "Sartu Last.fm guneko erabiltzaile-izena"
-
-#: services/lastfm/LastFmService.cpp:341
+#: services/lastfm/LastFmService.cpp:318
 #, kde-format
 msgid "Username: %1"
 msgstr "Erabiltzaile-izena: %1"
 
-#: services/lastfm/LastFmService.cpp:346
+#: services/lastfm/LastFmService.cpp:323
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "Erreprodukzio kopurua: erreprodukzio %1"
 msgstr[1] "Erreprodukzio kopurua: %1 erreprodukzio"
-
-#: services/lastfm/LastFmService.cpp:392
-#, kde-format
-msgid "Create a Custom Last.fm Station"
-msgstr "Sortu Last.fm irrati pertsonalizatua"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "Tag"
-msgstr "Etiketa"
-
-#: services/lastfm/LastFmService.cpp:395
-#, kde-format
-msgid "User"
-msgstr "Erabiltzailea"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
@@ -14265,13 +14232,13 @@ msgstr ""
 msgid "Unable to connect to Last.fm service."
 msgstr "Ezin da Last.fm-ren zerbitzuarekin konektatu."
 
-#: services/lastfm/LastFmTreeModel.cpp:129
+#: services/lastfm/LastFmTreeModel.cpp:128
 #, kde-format
 msgctxt "%1 is Last.fm tag name, %2 is its usage count"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: services/lastfm/LastFmTreeModel.cpp:180
+#: services/lastfm/LastFmTreeModel.cpp:179
 #, kde-format
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
@@ -14279,37 +14246,32 @@ msgid_plural "%2 (%1 plays)"
 msgstr[0] "%2 (joaldi %1)"
 msgstr[1] "%2 (%1 joaldi)"
 
-#: services/lastfm/LastFmTreeModel.cpp:197
-#, kde-format
-msgid "Personal Radio"
-msgstr "Irrati pertsonala"
-
-#: services/lastfm/LastFmTreeModel.cpp:310
+#: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
 msgid "My Recommendations"
 msgstr "Nire gomendioak"
 
-#: services/lastfm/LastFmTreeModel.cpp:312
+#: services/lastfm/LastFmTreeModel.cpp:301
 #, kde-format
 msgid "My Radio Station"
 msgstr "Nire irratia"
 
-#: services/lastfm/LastFmTreeModel.cpp:314
+#: services/lastfm/LastFmTreeModel.cpp:303
 #, kde-format
 msgid "My Mix Radio"
 msgstr "Nire nahasketa-irratia"
 
-#: services/lastfm/LastFmTreeModel.cpp:316
+#: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
 msgstr "Nire artista onenak"
 
-#: services/lastfm/LastFmTreeModel.cpp:318
+#: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
 msgid "My Tags"
 msgstr "Nire etiketak"
 
-#: services/lastfm/LastFmTreeModel.cpp:320
+#: services/lastfm/LastFmTreeModel.cpp:309
 #, kde-format
 msgid "Friends"
 msgstr "Lagunak"
@@ -16504,6 +16466,27 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "hutsik"
+
+#~ msgid "Enter an artist name"
+#~ msgstr "Sartu artistaren izena"
+
+#~ msgid "Enter a tag"
+#~ msgstr "Sartu etiketa"
+
+#~ msgid "Enter a Last.fm user name"
+#~ msgstr "Sartu Last.fm guneko erabiltzaile-izena"
+
+#~ msgid "Create a Custom Last.fm Station"
+#~ msgstr "Sortu Last.fm irrati pertsonalizatua"
+
+#~ msgid "Tag"
+#~ msgstr "Etiketa"
+
+#~ msgid "User"
+#~ msgstr "Erabiltzailea"
+
+#~ msgid "Personal Radio"
+#~ msgstr "Irrati pertsonala"
 
 #~ msgid "Display"
 #~ msgstr "Azaldu"
