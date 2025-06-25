@@ -2,7 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
-VERSION 3.2.82 UNRELEASED
+VERSION 3.2.82
   FEATURES:
    * Audio engine has been reworked to use gstreamer instead of phonon
 

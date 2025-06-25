@@ -537,6 +537,7 @@
   <content_rating type="oars-1.1"/>
   <project_group>KDE</project_group>
   <releases>
+    <release version="3.2.82" date="2025-06-25" type="development"/>
     <release version="3.2.81" date="2025-04-12" type="development"/>
     <release version="3.2.2" date="2025-02-15" type="stable"/>
     <release version="3.2.1" date="2025-01-11" type="stable"/>
