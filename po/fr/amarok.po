@@ -29,7 +29,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-25 00:42+0000\n"
-"PO-Revision-Date: 2025-01-13 09:40+0100\n"
+"PO-Revision-Date: 2025-06-23 14:22+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -39,7 +39,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Accelerator-Marker: &\n"
 "X-Environment: kde\n"
-"X-Generator: Lokalize 24.12.1\n"
+"X-Generator: Lokalize 25.04.2\n"
 "X-Text-Markup: kde4\n"
 
 #, kde-format
@@ -3671,10 +3671,9 @@ msgid "Use &system notifications"
 msgstr "Utiliser les notifications du &système"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Le moteur Phonon actuel ne prend pas en charge le volume de fondu"
+msgstr "Le moteur audio actuel ne prend pas en charge le fondu de volume"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -8044,18 +8043,7 @@ msgid "No"
 msgstr "Non"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8068,13 +8056,11 @@ msgid ""
 msgstr ""
 "Diagnostiques de %1\n"
 "\n"
-"Information générale :\n"
+"Informations générales :\n"
 "   Version de %1 : %2\n"
-"   Version de KDE Frameworks : %3\n"
+"   Version de l'environnement de développement de KDE : %3\n"
 "   Version de Qt : %4\n"
-"   Version de Phonon : %5\n"
-"   Moteur de Phonon : %6 (%7, %8)\n"
-"   PulseAudio : %9\n"
+"   GStreamer : %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
