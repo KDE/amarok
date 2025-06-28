@@ -11153,6 +11153,8 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
 #, kde-format
@@ -11161,6 +11163,8 @@ msgid ""
 "%1\n"
 "kHz"
 msgstr ""
+"%1\n"
+"kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -16388,24 +16392,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "Enter an artist name"
-#~ msgstr "Introduïu el nom d'algun artista"
-
-#~ msgid "Enter a tag"
-#~ msgstr "Introduïu una etiqueta"
-
-#~ msgid "Enter a Last.fm user name"
-#~ msgstr "Introduïu el nom d'usuari de Last.fm"
-
-#~ msgid "Create a Custom Last.fm Station"
-#~ msgstr "Crea una emissora personalitzada a Last.fm"
-
-#~ msgid "Tag"
-#~ msgstr "Etiqueta"
-
-#~ msgid "User"
-#~ msgstr "Usuari"
-
-#~ msgid "Personal Radio"
-#~ msgstr "Ràdio personal"
