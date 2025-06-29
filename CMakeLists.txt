@@ -232,15 +232,17 @@ if( WITH_PLAYER )
         find_package(MariaDB REQUIRED)
     endif()
 
-    find_package(MySQLe)
-    if( MySQLe_FOUND )
+    if( WITHOUT_EMBEDDED_DB )
+        add_definitions( "-DNO_MYSQL_EMBEDDED" )
+        message("Building without embedded MariaDB/MySQL as requested")
+    else()
+        find_package(MySQLe REQUIRED)
         set( BUILD_MYSQLE_COLLECTION TRUE )
         # zlib is required for mysql embedded
         find_package(ZLIB REQUIRED)
         set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
-    else()
-        add_definitions( "-DNO_MYSQL_EMBEDDED" )
     endif()
+
 
     # Qt6 support is currently only available in liblastfm forks
     set( LIBLASTFM_MIN_VERSION "1.2.0" )

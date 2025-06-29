@@ -8,6 +8,7 @@ VERSION 3.2.83 UNRELEASED
   CHANGES:
 
   BUGFIXES:
+   * Default to not allow compiling without embedded database (BR 502777)
 
 VERSION 3.2.82
   FEATURES:
