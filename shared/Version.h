@@ -18,6 +18,6 @@
 #define AMAROK_VERSION_H
 
 /// Update this when necessary
-#define AMAROK_VERSION "3.2.82"
+#define AMAROK_VERSION "3.2.82-git"
 
 #endif  // End include guard
