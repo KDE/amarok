@@ -1,5 +1,5 @@
 # translation of amarok.po to
-# SPDX-FileCopyrightText: 2024 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 # محمد سعد  Mohamed SAAD <metehyi@free.fr>, 2006.
 # Ahmad Farghal <ahmad.farghal@gmail.com>, 2007.
 # Youssef Chahibi <chahibi@gmail.com>, 2007, 2008.
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-25 00:42+0000\n"
-"PO-Revision-Date: 2024-11-28 13:49+0400\n"
+"PO-Revision-Date: 2025-06-28 17:20+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -2073,7 +2073,7 @@ msgstr "&حرّر تفاصيل المقطوعة"
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
-msgstr "أنعش"
+msgstr "حدّث"
 
 #: browsers/filebrowser/FileBrowser.cpp:79
 #, kde-format
@@ -2649,7 +2649,7 @@ msgstr "أضف نشرةً..."
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
 #, kde-format
 msgid "Refresh All Podcasts"
-msgstr "أنعش كلّ النّشرات"
+msgstr "حدّث كلّ النّشرات"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, configurePodcastsButton)
 #. i18n: ectx: property (text), widget (QToolButton, configurePodcastsButton)
