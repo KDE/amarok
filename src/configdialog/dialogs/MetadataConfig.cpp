@@ -143,7 +143,7 @@ MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
         }
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setProperty( "field", field );
-        connect( checkBox, &QCheckBox::stateChanged, this, &MetadataConfig::changed );
+        connect( checkBox, &QCheckBox::checkStateChanged, this, &MetadataConfig::changed );
     }
 }
 

@@ -44,11 +44,11 @@ LastFmServiceSettings::LastFmServiceSettings( QObject *parent, const QVariantLis
 
     connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmServiceSettings::onConfigUpdated );
 
-    connect( m_configDialog->kcfg_SubmitPlayedSongs, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_ScrobbleComposer, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_UseFancyRatingTags, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_AnnounceCorrections, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_FilterByLabel, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_SubmitPlayedSongs, &QCheckBox::checkStateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_ScrobbleComposer, &QCheckBox::checkStateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_UseFancyRatingTags, &QCheckBox::checkStateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_AnnounceCorrections, &QCheckBox::checkStateChanged, this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_FilterByLabel, &QCheckBox::checkStateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_FilteredLabel, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &LastFmServiceSettings::settingsChanged );
 
     connect( m_configDialog->connectToAccount, &QPushButton::clicked, this, &LastFmServiceSettings::initiateTokenAuth );

@@ -36,9 +36,9 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QObject *parent, const QVarian
     connect ( m_configDialog->passwordEdit, &QLineEdit::textChanged, this, &MagnatuneSettingsModule::settingsChanged );
     connect ( m_configDialog->emailEdit, &QLineEdit::textChanged, this, &MagnatuneSettingsModule::settingsChanged );
     connect ( m_configDialog->typeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MagnatuneSettingsModule::settingsChanged );
-    connect ( m_configDialog->isMemberCheckbox, &QCheckBox::stateChanged, this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->isMemberCheckbox, &QCheckBox::checkStateChanged, this, &MagnatuneSettingsModule::settingsChanged );
     connect ( m_configDialog->streamTypeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MagnatuneSettingsModule::settingsChanged );
-    connect ( m_configDialog->autoUpdateDatabase, &QCheckBox::stateChanged, this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->autoUpdateDatabase, &QCheckBox::checkStateChanged, this, &MagnatuneSettingsModule::settingsChanged );
 
     load();
 }

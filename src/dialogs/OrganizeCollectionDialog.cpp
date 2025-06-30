@@ -197,7 +197,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->organizeCollectionWidget, &OrganizeCollectionWidget::schemeChanged, this, &OrganizeCollectionDialog::slotUpdatePreview );
     connect( ui->optionsWidget, &OrganizeCollectionOptionWidget::optionsChanged, this, &OrganizeCollectionDialog::slotUpdatePreview);
     // to show the conflict error
-    connect( ui->overwriteCheck, &QCheckBox::stateChanged, this, &OrganizeCollectionDialog::slotOverwriteModeChanged );
+    connect( ui->overwriteCheck, &QCheckBox::checkStateChanged, this, &OrganizeCollectionDialog::slotOverwriteModeChanged );
 
     connect( this, &OrganizeCollectionDialog::accepted, ui->organizeCollectionWidget, &OrganizeCollectionWidget::onAccept );
     connect( this, &OrganizeCollectionDialog::accepted, this, &OrganizeCollectionDialog::slotDialogAccepted );

@@ -139,8 +139,8 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     for( int part = 0; part < PlaylistLayout::NumParts; part++ )
         connect( m_partsEdit[part], &Playlist::LayoutEditWidget::changed, this, &PlaylistLayoutEditDialog::setLayoutChanged );
 
-    connect( inlineControlsChekbox, &QCheckBox::stateChanged, this, &PlaylistLayoutEditDialog::setLayoutChanged );
-    connect( tooltipsCheckbox, &QCheckBox::stateChanged, this, &PlaylistLayoutEditDialog::setLayoutChanged );
+    connect( inlineControlsChekbox, &QCheckBox::checkStateChanged, this, &PlaylistLayoutEditDialog::setLayoutChanged );
+    connect( tooltipsCheckbox, &QCheckBox::checkStateChanged, this, &PlaylistLayoutEditDialog::setLayoutChanged );
     connect( groupByComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &PlaylistLayoutEditDialog::setLayoutChanged );
 }

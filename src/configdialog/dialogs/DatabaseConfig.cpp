@@ -51,7 +51,7 @@ DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton
     button_Test->setEnabled( testFunctionAvailable );
 
     // connect slots
-    connect( kcfg_UseServer, &QCheckBox::stateChanged, this, &DatabaseConfig::toggleExternalConfigAvailable );
+    connect( kcfg_UseServer, &QCheckBox::checkStateChanged, this, &DatabaseConfig::toggleExternalConfigAvailable );
 
     connect( kcfg_Database, &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
     connect( kcfg_User,     &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );

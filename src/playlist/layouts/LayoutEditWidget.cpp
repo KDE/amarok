@@ -41,7 +41,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     connect ( m_dragstack, &TokenDropTarget::changed, this, &LayoutEditWidget::changed );
 
     m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ), this );
-    connect ( m_showCoverCheckBox, &QCheckBox::stateChanged, this, &LayoutEditWidget::changed );
+    connect ( m_showCoverCheckBox, &QCheckBox::checkStateChanged, this, &LayoutEditWidget::changed );
     mainLayout->addWidget( m_showCoverCheckBox, 0 );
 }
 
@@ -54,9 +54,9 @@ void LayoutEditWidget::readLayout( const Playlist::LayoutItemConfig &config )
     DEBUG_BLOCK
     int rowCount = config.rows();
 
-    disconnect ( m_showCoverCheckBox, &QCheckBox::stateChanged, this, &LayoutEditWidget::changed );
+    disconnect ( m_showCoverCheckBox, &QCheckBox::checkStateChanged, this, &LayoutEditWidget::changed );
     m_showCoverCheckBox->setChecked( config.showCover() );
-    connect ( m_showCoverCheckBox, &QCheckBox::stateChanged, this, &LayoutEditWidget::changed );
+    connect ( m_showCoverCheckBox, &QCheckBox::checkStateChanged, this, &LayoutEditWidget::changed );
 
     m_dragstack->clear();
 

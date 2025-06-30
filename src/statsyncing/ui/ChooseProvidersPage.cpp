@@ -55,7 +55,7 @@ ChooseProvidersPage::setFields( const QList<qint64> &fields, qint64 checkedField
         fieldsLayout->addWidget( checkBox );
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setProperty( "field", field );
-        connect( checkBox, &QCheckBox::stateChanged, this, &ChooseProvidersPage::checkedFieldsChanged );
+        connect( checkBox, &QCheckBox::checkStateChanged, this, &ChooseProvidersPage::checkedFieldsChanged );
     }
     fieldsLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
 
