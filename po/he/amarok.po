@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-06-25 00:42+0000\n"
-"PO-Revision-Date: 2025-06-10 05:12+0300\n"
+"PO-Revision-Date: 2025-06-29 13:45+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.04.1\n"
+"X-Generator: Lokalize 25.04.2\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
 
@@ -76,10 +76,9 @@ msgid ""
 msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:115
-#, fuzzy, kde-format
-#| msgid "Album \"%1\""
+#, kde-format
 msgid "About %1"
-msgstr "אלבום \"%1\""
+msgstr "על %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:141
 #, kde-format
@@ -94,10 +93,9 @@ msgid "License: %1"
 msgstr "רישיון: %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:194
-#, fuzzy, kde-format
-#| msgid "Abort"
+#, kde-format
 msgid "&About"
-msgstr "בטל"
+msgstr "על &אודות"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:217
 #, kde-format
@@ -115,22 +113,19 @@ msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "נא לדווח אל <a href=\"mailto:%1\">%2</a> על תקלות.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:245
-#, fuzzy, kde-format
-#| msgid "Authors"
+#, kde-format
 msgid "A&uthor"
-msgstr "יוצרים"
+msgstr "יו&צר/ת"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:245
-#, fuzzy, kde-format
-#| msgid "Authors"
+#, kde-format
 msgid "A&uthors"
-msgstr "יוצרים"
+msgstr "יו&צרים"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:264
-#, fuzzy, kde-format
-#| msgid "Former contributors"
+#, kde-format
 msgid "&Contributors"
-msgstr "תורמים מהעבר"
+msgstr "&תורמים"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:288
 #, fuzzy, kde-format
@@ -907,17 +902,15 @@ msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:316
-#, fuzzy, kde-format
-#| msgid "Enable/Disable tray icon animation."
+#, kde-format
 msgid "Enable/Disable use of Growl for notifications."
-msgstr "הפעל/בטל את האנימציה של הסמל במגש המערכת."
+msgstr "הפעלת/השבתת השימוש ב־Growl להתראות."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:320
-#, fuzzy, kde-format
-#| msgid "&Translucent"
+#, kde-format
 msgid "Translucency Toggle"
-msgstr "&שקיפות מדומה"
+msgstr "החלפת מצב שקיפות"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:321
@@ -972,10 +965,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:342
-#, fuzzy, kde-format
-#| msgid "How many milliseconds the text should be displayed"
+#, kde-format
 msgid "How many milliseconds the text should be displayed for"
-msgstr "לכמה אלפיות־שנייה הטקסט יוצג על המסך"
+msgstr "למשך כמה מילישניות הטקסט יוצג על המסך"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:343
@@ -1168,37 +1160,31 @@ msgstr "רשימת התיקיות באוסף"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:441
-#, fuzzy, kde-format
-#| msgid "List of folders in the Collection"
+#, kde-format
 msgid "Whether years are shown in the collection browser."
-msgstr "רשימת התיקיות באוסף"
+msgstr "האם שנים תופענה בדפדפן האוספים."
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:445
-#, fuzzy, kde-format
-#| msgid ""
-#| "If selected, Amarok will use Mozilla's Character Set Detector to attempt "
-#| "to automatically guess the character sets used in ID3 tags."
+#, kde-format
 msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
 "encodings."
 msgstr ""
-"אם סומן, Amarok ישתמש במזהה קידוד התווים של מוזילה כדי לזהות באופן אוטומטי "
-"את קידוד התווים של תגי ה-ID3."
+"האם להשתמש במזהה מערכות התווים של Mozilla כדי לנסות לזהות את קידוד תגיות ה־"
+"ID3."
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "שלח שירים שנוגנו"
+msgstr "שליחת רצועות שנוגנו"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "האם שירים שהושמעו נשלחים ל-Audioscrobbler"
+msgstr "האם רצועות שהושמעו נשלחות ל־Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1233,10 +1219,9 @@ msgstr "הססמה עבור חיבור ל-Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:467
-#, fuzzy, kde-format
-#| msgid "composer"
+#, kde-format
 msgid "Send composer data"
-msgstr "מלחין"
+msgstr "שליחת נתוני הלחנה"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:468
@@ -1252,10 +1237,9 @@ msgstr "אחזר אמנים דומים"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "האם שירים דומים יאוחזרו מ-Audioscrobbler"
+msgstr "האם רצועות דומות יאוחזרו מ־Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1369,10 +1353,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playlist Search)
 #: amarokconfig.kcfg:518
-#, fuzzy, kde-format
-#| msgid "No track playing"
+#, kde-format
 msgid "Include track names in matching"
-msgstr "שום רצועה מושמעת"
+msgstr "לכלול את שמות הרצועות בתוצאות"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
 #: amarokconfig.kcfg:522
@@ -1420,10 +1403,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:560
-#, fuzzy, kde-format
-#| msgid "Filename of the external web browser to be invoked by Amarok."
+#, kde-format
 msgid "The hostname of the external server to connect to."
-msgstr "שם־הקובץ של דפדפן הרשת החיצוני שיופעל על־ידי Amarok."
+msgstr "שם המארח של השרת החיצוני אליו להתחבר."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:564
@@ -1465,32 +1447,28 @@ msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:588
-#, fuzzy, kde-format
-#| msgid "Enable/Disable splashscreen during Amarok startup."
+#, kde-format
 msgid "Enable/Disable Amarok's scripting module."
-msgstr "הצג/בטל הצגת מסך פתיחה בעת הפעלת Amarok."
+msgstr "הפעלת/השבתת מודול הסקריפטים של Amarok"
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:592
-#, fuzzy, kde-format
-#| msgid "Automatically scan for updates"
+#, kde-format
 msgid "Whether to automatically update built-in scripts"
-msgstr "סרוק עדכונים אוטומטית"
+msgstr "האם לעדכן סקריפטים מובנים אוטומטית"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:593
-#, fuzzy, kde-format
-#| msgid "Automatically scan for updates"
+#, kde-format
 msgid "Enable/Disable automatic update for built-in scripts."
-msgstr "סרוק עדכונים אוטומטית"
+msgstr "הפעלת/השבתת עדכונים אוטומטיים לסקריפטים מובנים."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:597 amarokconfig.kcfg:598
-#, fuzzy, kde-format
-#| msgid "Whether to animate the systray icon"
+#, kde-format
 msgid "Whether to enable the script console."
-msgstr "האם להנפיש את הסמל במגש המערכת"
+msgstr "האם להפעיל את מסוף הסקריפטים."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -1502,10 +1480,9 @@ msgstr ""
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
 #: amarokconfig.kcfg:610 amarokconfig.kcfg:611
-#, fuzzy, kde-format
-#| msgid "Whether to animate the systray icon"
+#, kde-format
 msgid "Whether to save the current session on exit."
-msgstr "האם להנפיש את הסמל במגש המערכת"
+msgstr "האם לשמור את ההפעלה הנוכחית ביציאה."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:618
@@ -1790,10 +1767,9 @@ msgid "Print verbose debugging information"
 msgstr ""
 
 #: App.cpp:379
-#, fuzzy, kde-format
-#| msgid "Enter login information for Last.fm"
+#, kde-format
 msgid "Print verbose debugging information from the audio system"
-msgstr "הכנס פרטי כניסה ל-Last.fm"
+msgstr "הצגת פרטי ניפוי שגיאות מפורטים ממערכת השמע"
 
 #: App.cpp:380
 #, kde-format
@@ -1857,11 +1833,10 @@ msgid "Select collection folder"
 msgstr "בחירת תיקיית אוספים"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "משתמש"
+msgstr "להשתמש"
 
 #: App.cpp:678
 #, kde-format
@@ -1870,28 +1845,24 @@ msgid "Don't use"
 msgstr ""
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
-#, fuzzy, kde-format
-#| msgid "File Extension of Source"
+#, kde-format
 msgid "Media Sources Home"
-msgstr "סיומת שם־הקובץ של המקור"
+msgstr "בית מקורות מדיה"
 
 #: browsers/BrowserCategoryList.cpp:52
-#, fuzzy, kde-format
-#| msgid "File Extension of Source"
+#, kde-format
 msgid "Filter Music Sources"
-msgstr "סיומת שם־הקובץ של המקור"
+msgstr "סינון מקורות מדיה"
 
 #: browsers/BrowserDock.cpp:33
-#, fuzzy, kde-format
-#| msgid "Media Sources"
+#, kde-format
 msgid "&Media Sources"
-msgstr "מקורות מדיה"
+msgstr "מ&קורות מדיה"
 
 #: browsers/BrowserDock.cpp:73
-#, fuzzy, kde-format
-#| msgid "File Extension of Source"
+#, kde-format
 msgid "Go Up in Media Sources Pane"
-msgstr "סיומת שם־הקובץ של המקור"
+msgstr "עלייה מעלה בחלונית מקורות המדיה"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:144
 #, kde-format
@@ -1906,48 +1877,42 @@ msgid "Search collection"
 msgstr "חיפוש באוסף"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:170
-#, fuzzy, kde-format
-#| msgid "Play Count"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Hour"
-msgstr "מונה השמעות"
+msgstr "נוספו השעה"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:172
-#, fuzzy, kde-format
-#| msgid "&Add Podcast"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added Today"
-msgstr "&הוסף פוד־קסט"
+msgstr "נוספו היום"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:174
-#, fuzzy, kde-format
-#| msgid "is between"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Week"
-msgstr "בין"
+msgstr "נוספו השבוע"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:176
-#, fuzzy, kde-format
-#| msgid "Play Count"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
-msgstr "מונה השמעות"
+msgstr "נוספו החודש"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "הושמע לראשונה"
+msgstr "מעולם לא הושמע"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
-#, fuzzy, kde-format
-#| msgid " - "
+#, kde-format
 msgctxt ""
 "separator between collection browser level categories, i.e. the ' / ' in "
 "'Artist / Album'"
 msgid " / "
-msgstr " - "
+msgstr " / "
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:210
 #, kde-format
@@ -1998,10 +1963,9 @@ msgstr ""
 #: browsers/collectionbrowser/CollectionWidget.cpp:275
 #: services/jamendo/JamendoService.cpp:162
 #: services/magnatune/MagnatuneStore.cpp:231
-#, fuzzy, kde-format
-#| msgid "Options"
+#, kde-format
 msgid "Sort Options"
-msgstr "אפשרויות"
+msgstr "אפשרויות מיון"
 
 #: browsers/CollectionTreeItem.cpp:141
 #, kde-format
@@ -2010,10 +1974,9 @@ msgid "No Labels"
 msgstr "אין תוויות"
 
 #: browsers/CollectionTreeItem.cpp:149
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Counting..."
-msgstr "חיבור"
+msgstr "נספרים…"
 
 #: browsers/CollectionTreeItem.cpp:176
 #: playlist/proxymodels/GroupingProxy.cpp:189
@@ -2133,10 +2096,9 @@ msgid "Move Tracks to Trash"
 msgstr "העבר רצועות אל פה האשפה"
 
 #: browsers/CollectionTreeView.cpp:445
-#, fuzzy, kde-format
-#| msgid "&Delete Tracks"
+#, kde-format
 msgid "Delete Tracks"
-msgstr "&מחק רצועות"
+msgstr "מחיקת רצועות"
 
 #: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
@@ -2146,19 +2108,17 @@ msgstr "עוד..."
 #: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgid "&Add to Playlist"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "הוס&פה לרשימת נגינה"
 
 #: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
-#, fuzzy, kde-format
-#| msgid "Repeat Playlist"
+#, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
-msgstr "חזור על רשימת־ההשמעה"
+msgstr "ה&חלפת רשימת נגינה"
 
 #: browsers/CollectionTreeView.cpp:1166
 #, kde-format
@@ -2192,10 +2152,9 @@ msgid ""
 msgstr ""
 
 #: browsers/filebrowser/FileView.cpp:398
-#, fuzzy, kde-format
-#| msgid "&Send to Trash"
+#, kde-format
 msgid "&Move to Trash"
-msgstr "&העבר לפח האשפה"
+msgstr "ה&עברה לאשפה"
 
 #: browsers/filebrowser/FileView.cpp:566
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
@@ -15756,7 +15715,7 @@ msgstr " (מומלץ)"
 #: transcoding/TranscodingSelectConfigWidget.cpp:36
 #, kde-format
 msgid "Ask before each transfer"
-msgstr ""
+msgstr "לשאול לפני כל העברה"
 
 #: TrayIcon.cpp:154 widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
@@ -15980,13 +15939,13 @@ msgstr "חיפוש פשוט"
 #, kde-format
 msgctxt "Unit for data rate kilo bit per seconds"
 msgid "kbps"
-msgstr ""
+msgstr "קסל״ש"
 
 #: widgets/MetaQueryWidget.cpp:685
 #, kde-format
 msgctxt "Unit for sample rate"
 msgid "Hz"
-msgstr ""
+msgstr "הרץ"
 
 #: widgets/MetaQueryWidget.cpp:687
 #, kde-format
@@ -16087,7 +16046,7 @@ msgstr "השהיה"
 #, kde-format
 msgctxt "Example: 3.5 GB free (unit is part of %1)"
 msgid "%1 free"
-msgstr ""
+msgstr "%1 פנויים"
 
 # kde-il: don't translate
 #: widgets/ProgressWidget.cpp:44
@@ -16162,7 +16121,7 @@ msgstr "קפוץ אל: %1"
 #: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
-msgstr ""
+msgstr "אפשר לגרור פריטים פנימה והחוצה מהאזור שלעיל."
 
 #: widgets/TokenWithLayout.cpp:221
 #, kde-format
@@ -16197,7 +16156,7 @@ msgstr "אומן: %1"
 #: widgets/TrackSelectWidget.cpp:96
 #, kde-format
 msgid "empty"
-msgstr ""
+msgstr "ריק"
 
 #~ msgid "Enter an artist name"
 #~ msgstr "הכנס שם אמן"

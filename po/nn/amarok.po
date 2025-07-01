@@ -15373,9 +15373,3 @@ msgstr "Artist: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
-
-#~ msgid "User"
-#~ msgstr "Brukarnamn"
-
-#~ msgid "Personal Radio"
-#~ msgstr "Personleg radio"

@@ -15290,9 +15290,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "guorus"
-
-#~ msgid "Enter an artist name"
-#~ msgstr "Čális muhtin artistta nama"
-
-#~ msgid "Enter a tag"
-#~ msgstr "Čális gilkora"

@@ -16087,24 +16087,3 @@ msgstr "Kunstner: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
-
-#~ msgid "Enter an artist name"
-#~ msgstr "Skriv inn et artistnavn"
-
-#~ msgid "Enter a tag"
-#~ msgstr "Oppgi en tagg"
-
-#~ msgid "Enter a Last.fm user name"
-#~ msgstr "Oppgi et brukernavn for Last.fm"
-
-#~ msgid "Create a Custom Last.fm Station"
-#~ msgstr "Lag egen Last.fm-stasjon"
-
-#~ msgid "Tag"
-#~ msgstr "Tagg"
-
-#~ msgid "User"
-#~ msgstr "Bruker"
-
-#~ msgid "Personal Radio"
-#~ msgstr "Personlig radio"
