@@ -68,7 +68,6 @@ public:
     static void cb_setupSource(GstElement *playbin, GParamSpec *spec, gpointer data);
     static void cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
     GstState state() const;
-    GstStateChangeReturn setState(GstState state);
     void requestState(GstState state);
 
     bool seekToMSec(qint64 time);
@@ -82,6 +81,7 @@ public:
     static void analyzerProcessBuffer(GstElement*, GstBuffer*, GstPad*, gpointer);
 
 public Q_SLOTS:
+    GstStateChangeReturn setState(GstState state);
     void emitTick();
     void handleStateChange(GstState oldState, GstState newState);
     void handleStreamChange();

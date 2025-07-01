@@ -857,8 +857,9 @@ EngineGstPipeline::handleEndOfStream()
         { // When working on EOS we do not want signals emitted to avoid bogus UI updates.
             Q_EMIT stateChanged(m_currentState, GST_STATE_READY);
             m_aboutToFinishWait.wakeAll();
-            //setState(GST_STATE_READY);
             Q_EMIT finished();
+            QMetaObject::invokeMethod(this, "setState", Qt::QueuedConnection, Q_ARG(GstState, GST_STATE_READY));
+
         }
         m_doingEOS = false;
     } else {
