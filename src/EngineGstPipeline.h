@@ -61,12 +61,15 @@ public:
     static gboolean cb_tag(GstBus *bus, GstMessage *msg, gpointer data);
     static gboolean cb_streamStart(GstBus *bus, GstMessage *msg, gpointer data);
 
+    static void cb_sinkElementAdded(GstChildProxy *self, GObject *object, gchar *name, gpointer data);
+    static void cb_sinkElementRemoved(GstChildProxy *self, GObject *object, gchar *name, gpointer data);
     static void cb_aboutToFinish(GstElement *appSrc, gpointer data);
     static void cb_endOfPads(GstElement *playbin, gpointer data);
 
     static void cb_audioTagsChanged(GstElement *playbin, gint stream, gpointer data);
     static void cb_setupSource(GstElement *playbin, GParamSpec *spec, gpointer data);
     static void cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
+    static void cb_muteChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
     GstState state() const;
     void requestState(GstState state);
 
@@ -122,7 +125,7 @@ private:
     void analyzerConvertAndEmit(bool isEndOfMedia);
 
     GstPipeline *m_pipeline;
-    GstElement *m_gstVolume;
+    GstElement *m_currentSinkElement;
     GstElement *m_replayGainElement;
     GstElement *m_equalizerElement;
 

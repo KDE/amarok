@@ -9,6 +9,7 @@ VERSION 3.2.83 UNRELEASED
 
   BUGFIXES:
    * Default to not allow compiling without embedded database (BR 502777)
+   * Handle volume better and avoid resets on track changes (BR 506427)
 
 VERSION 3.2.82
   FEATURES:

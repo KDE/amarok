@@ -1150,8 +1150,11 @@ void EngineController::slotVolumeChanged( qreal newVolume )
 
 void EngineController::slotMutedChanged( bool mute )
 {
-    AmarokConfig::setMuteState( mute );
-    Q_EMIT muteStateChanged( mute );
+    if( mute != AmarokConfig::muteState() )
+    {
+        AmarokConfig::setMuteState( mute );
+        Q_EMIT muteStateChanged( mute );
+    }
 }
 
 void

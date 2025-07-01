@@ -29,7 +29,8 @@
 #include <gst/audio/audio-format.h>
 
 EngineGstPipeline::EngineGstPipeline()
-    : m_replayGainElement(nullptr)
+    : m_currentSinkElement(nullptr)
+    , m_replayGainElement(nullptr)
     , m_equalizerElement(nullptr)
     , m_analyzerDataSize(512)
     , m_channels(1)
@@ -52,7 +53,6 @@ EngineGstPipeline::EngineGstPipeline()
     gst_object_ref_sink (m_pipeline);
     g_signal_connect(m_pipeline, "audio-tags-changed", G_CALLBACK(cb_audioTagsChanged), this);
     g_signal_connect(m_pipeline, "notify::source", G_CALLBACK(cb_setupSource), this);
-    g_signal_connect(m_pipeline, "notify::volume", G_CALLBACK (cb_volumeChanged), this);
     g_signal_connect(m_pipeline, "about-to-finish", G_CALLBACK(cb_aboutToFinish), this);
 
     GstBus *bus = gst_pipeline_get_bus(m_pipeline);
@@ -68,7 +68,6 @@ EngineGstPipeline::EngineGstPipeline()
     gst_object_unref(bus);
 
     g_object_set(m_pipeline, "video-sink", gst_element_factory_make( "fakesink", "discard_video" ), nullptr); // Discard any video
-    m_gstVolume = gst_bin_get_by_interface( GST_BIN(m_pipeline), GST_TYPE_STREAM_VOLUME);
 
     m_replayGainElement = gst_element_factory_make("volume", "replaygain");
     m_equalizerElement = gst_element_factory_make("equalizer-10bands", "equalizer");
@@ -87,6 +86,8 @@ EngineGstPipeline::EngineGstPipeline()
 
         GstElement *queue = gst_element_factory_make("queue", "output-queue");
         GstElement *audioSink = gst_element_factory_make("autoaudiosink", "audio-output");
+        g_signal_connect(audioSink, "child-added", G_CALLBACK(cb_sinkElementAdded), this);
+        g_signal_connect(audioSink, "child-removed", G_CALLBACK(cb_sinkElementRemoved), this);
 
         gst_bin_add_many(GST_BIN(bin), queue, audioSink, nullptr);
         if( !gst_element_link(queue, audioSink) )
@@ -169,10 +170,12 @@ EngineGstPipeline::EngineGstPipeline()
         g_object_set( GST_BIN(m_pipeline), "audio-sink", bin, nullptr);
     }
     else
+    {
         debug() << "failed to create custom playback bin";
+        g_signal_connect( m_pipeline, "notify::volume", G_CALLBACK (cb_volumeChanged), this);
+        g_signal_connect( m_pipeline, "notify::mute", G_CALLBACK (cb_muteChanged), this);
+    }
 
-    if(m_gstVolume)
-        gst_object_ref(m_gstVolume);
     if(m_replayGainElement)
         gst_object_ref(m_replayGainElement);
     if(m_equalizerElement)
@@ -185,8 +188,6 @@ EngineGstPipeline::EngineGstPipeline()
 
 EngineGstPipeline::~EngineGstPipeline()
 {
-    if(m_gstVolume)
-        gst_object_unref(m_gstVolume);
     if(m_replayGainElement)
         gst_object_unref(m_replayGainElement);
     if(m_equalizerElement)
@@ -212,15 +213,23 @@ EngineGstPipeline::metaData() const
 bool
 EngineGstPipeline::isMuted()
 {
-    if( m_gstVolume )
-        return gst_stream_volume_get_mute(GST_STREAM_VOLUME(m_gstVolume));
-    return false;
+    gboolean mute;
+    if( !m_currentSinkElement )
+        g_object_get(GST_BIN(m_pipeline), "mute", &mute, nullptr);
+    else
+        g_object_get(G_OBJECT(m_currentSinkElement), "mute", &mute, nullptr);
+    return mute;
 }
 
 qreal
 EngineGstPipeline::volume()
 {
-    return m_gstVolume ? gst_stream_volume_get_volume(GST_STREAM_VOLUME(m_gstVolume), GST_STREAM_VOLUME_FORMAT_CUBIC) : 1;
+    gdouble vol;
+    if( !m_currentSinkElement )
+        g_object_get(GST_BIN(m_pipeline), "volume", &vol, nullptr);
+    else
+        g_object_get(G_OBJECT(m_currentSinkElement), "volume", &vol, nullptr);
+    return gst_stream_volume_convert_volume(GST_STREAM_VOLUME_FORMAT_LINEAR, GST_STREAM_VOLUME_FORMAT_CUBIC, vol);
 }
 
 GstElement*
@@ -232,15 +241,19 @@ EngineGstPipeline::eqElement()
 void
 EngineGstPipeline::setMuted(bool status)
 {
-    if(m_gstVolume)
-        gst_stream_volume_set_mute(GST_STREAM_VOLUME(m_gstVolume), status);
+    if( m_currentSinkElement )
+        g_object_set( G_OBJECT(m_currentSinkElement), "mute", status, nullptr);
+    else
+        g_object_set( GST_BIN(m_pipeline), "mute", status, nullptr);
 }
 
 void
 EngineGstPipeline::setVolume(qreal newVolume)
 {
-    if( m_gstVolume )
-        gst_stream_volume_set_volume(GST_STREAM_VOLUME(m_gstVolume), GST_STREAM_VOLUME_FORMAT_CUBIC, newVolume);
+    if( m_currentSinkElement )
+        g_object_set( G_OBJECT(m_currentSinkElement), "volume", gst_stream_volume_convert_volume(GST_STREAM_VOLUME_FORMAT_CUBIC, GST_STREAM_VOLUME_FORMAT_LINEAR, newVolume), nullptr);
+    else
+        g_object_set( GST_BIN(m_pipeline), "volume", gst_stream_volume_convert_volume(GST_STREAM_VOLUME_FORMAT_CUBIC, GST_STREAM_VOLUME_FORMAT_LINEAR, newVolume), nullptr);
 }
 
 static const qreal log10over20 = 0.1151292546497022842; // ln(10) / 20
@@ -411,6 +424,32 @@ EngineGstPipeline::state() const
     return state;
 }
 
+void
+EngineGstPipeline::cb_sinkElementAdded(GstChildProxy *self, GObject *object, gchar *name, gpointer data)
+{
+    Q_UNUSED(self)
+    Q_UNUSED(name)
+    if( !g_object_class_find_property(G_OBJECT_GET_CLASS(object), "volume") )
+        return;
+    EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
+    that->m_currentSinkElement = GST_ELEMENT(object);
+    g_object_set(G_OBJECT(that->m_currentSinkElement), "mute", AmarokConfig::muteState(), NULL);
+    g_object_set(G_OBJECT(that->m_currentSinkElement), "volume", gst_stream_volume_convert_volume(GST_STREAM_VOLUME_FORMAT_CUBIC, GST_STREAM_VOLUME_FORMAT_LINEAR, AmarokConfig::masterVolume()/100.0), NULL);
+    g_signal_connect(that->m_currentSinkElement, "notify::volume", G_CALLBACK (cb_volumeChanged), that);
+    g_signal_connect(that->m_currentSinkElement, "notify::mute", G_CALLBACK (cb_muteChanged), that);
+}
+
+
+void
+EngineGstPipeline::cb_sinkElementRemoved(GstChildProxy *self, GObject *object, gchar *name, gpointer data)
+{
+    Q_UNUSED(self)
+    Q_UNUSED(name)
+    EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
+    if(GST_ELEMENT(object) == that->m_currentSinkElement)
+        that->m_currentSinkElement = nullptr;
+}
+
 gboolean
 EngineGstPipeline::cb_eos(GstBus *bus, GstMessage *gstMessage, gpointer data)
 {
@@ -500,6 +539,17 @@ EngineGstPipeline::cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpoin
 
     EngineGstPipeline *that = static_cast<EngineGstPipeline *>(data);
     Q_EMIT that->volumeChanged( that->volume() );
+    Q_UNUSED(spec)
+    Q_UNUSED(data)
+}
+
+void
+EngineGstPipeline::cb_muteChanged(GstElement *playbin, GParamSpec *spec, gpointer data)
+{
+    Q_UNUSED(playbin)
+
+    EngineGstPipeline *that = static_cast<EngineGstPipeline *>(data);
+    Q_EMIT that->mutedChanged( that->isMuted() );
     Q_UNUSED(spec)
     Q_UNUSED(data)
 }
@@ -790,7 +840,13 @@ EngineGstPipeline::cb_state(GstBus *bus, GstMessage *gstMessage, gpointer data)
     }
 
     Q_EMIT that->internalStateChanged(oldState, newState);
-
+    if( oldState < GST_STATE_PAUSED && newState > GST_STATE_READY ) // apply any changes that were done when playback was stopped
+    {
+        if( int( ( that->volume() + 0.005 ) * 100) != AmarokConfig::masterVolume()  )
+            that->setVolume( AmarokConfig::masterVolume() / 100.0 );
+        if( that->isMuted() != AmarokConfig::muteState() )
+            that->setMuted( AmarokConfig::muteState() );
+    }
     return true;
 }
 
