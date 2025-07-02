@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-25 00:42+0000\n"
+"POT-Creation-Date: 2025-07-02 07:04+0000\n"
 "PO-Revision-Date: 2025-06-09 05:01+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -225,7 +225,7 @@ msgstr "მიმდინარე ტრეკის შემდეგ გა
 
 #: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1240 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "ტრეკის დაკვრა არ მიმდინარეობს"
@@ -4778,7 +4778,7 @@ msgstr "უცნობი შემსრულებელი"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1215
+#: EngineController.cpp:1218
 #, kde-format
 msgid "Unknown track"
 msgstr "უცნობი ტრეკი"
@@ -9421,25 +9421,25 @@ msgstr "შეფასება"
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "აღმოჩენილია მეტისმეტად ბევრი შეცდომა. დაკვრა სეწყვეტილია."
 
-#: EngineController.cpp:1205
+#: EngineController.cpp:1208
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ავტორი <b>%2</b> დრო <b>%3</b>"
 
-#: EngineController.cpp:1207
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ავტორი <b>%2</b>"
 
-#: EngineController.cpp:1210
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> <b>%2</b>-ზე"
 
-#: EngineController.cpp:1222
+#: EngineController.cpp:1225
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

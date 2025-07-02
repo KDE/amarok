@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-06-25 00:42+0000\n"
+"POT-Creation-Date: 2025-07-02 07:04+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -233,7 +233,7 @@ msgstr "Σταμάτημα μετά το τρέχον κομμάτι: ενεργ
 
 #: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1237 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1240 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Δεν εκτελείται κομμάτι"
@@ -4882,7 +4882,7 @@ msgstr "Άγνωστος καλλιτέχνης"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1215
+#: EngineController.cpp:1218
 #, kde-format
 msgid "Unknown track"
 msgstr "Άγνωστο κομμάτι"
@@ -9604,25 +9604,25 @@ msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Εμφάνιση πολλών σφαλμάτων στη λίστα αναπαραγωγής. Η αναπαραγωγή σταμάτησε."
 
-#: EngineController.cpp:1205
+#: EngineController.cpp:1208
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> από <b>%2</b> στο <b>%3</b>"
 
-#: EngineController.cpp:1207
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> από <b>%2</b>"
 
-#: EngineController.cpp:1210
+#: EngineController.cpp:1213
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> στο <b>%2</b>"
 
-#: EngineController.cpp:1222
+#: EngineController.cpp:1225
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
