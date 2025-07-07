@@ -495,43 +495,8 @@
       <image>https://cdn.kde.org/screenshots/amarok/amarok31.png</image>
     </screenshot>
     <screenshot>
-      <caption>Amarok windows</caption>
-      <caption xml:lang="bg">Прозорци на Amarok</caption>
-      <caption xml:lang="ca">Finestres de l'Amarok</caption>
-      <caption xml:lang="ca-valencia">Finestres d'Amarok</caption>
-      <caption xml:lang="cs">Okna Amaroku</caption>
-      <caption xml:lang="da">Amarok-vinduer</caption>
-      <caption xml:lang="de">Amarok-Fenster</caption>
-      <caption xml:lang="el">Amarok παράθυρα</caption>
-      <caption xml:lang="en-GB">Amarok windows</caption>
-      <caption xml:lang="eo">Amarok-fenestroj</caption>
-      <caption xml:lang="es">Ventanas de Amarok</caption>
-      <caption xml:lang="et">Amaroki aknad</caption>
-      <caption xml:lang="eu">Amarokeko leihoak</caption>
-      <caption xml:lang="fi">Amarok-ikkunat</caption>
-      <caption xml:lang="fr">Fenêtres Amarok</caption>
-      <caption xml:lang="gl">Xanelas de Amarok.</caption>
-      <caption xml:lang="he">חלונות Amarok</caption>
-      <caption xml:lang="hu">Az Amarok ablaka</caption>
-      <caption xml:lang="ia">Fenestras de Amarok</caption>
-      <caption xml:lang="id">Jendela Amarok</caption>
-      <caption xml:lang="it">Finestre di Amarok</caption>
-      <caption xml:lang="ka">Amarok Windows-ზე</caption>
-      <caption xml:lang="ko">Amarok 창</caption>
-      <caption xml:lang="lv">„Amarok“ logi</caption>
-      <caption xml:lang="nl">Vensters in Amarok</caption>
-      <caption xml:lang="pl">Okna Amaroka</caption>
-      <caption xml:lang="pt">Janelas do Amarok</caption>
-      <caption xml:lang="pt-BR">Janela do Amarok</caption>
-      <caption xml:lang="sk">Okná Amarok</caption>
-      <caption xml:lang="sl">Amarokova okna</caption>
-      <caption xml:lang="sv">Fönster i Amarok</caption>
-      <caption xml:lang="tr">Amarok pencereleri</caption>
-      <caption xml:lang="uk">Вікна Amarok</caption>
-      <caption xml:lang="x-test">xxAmarok windowsxx</caption>
-      <caption xml:lang="zh-CN">Amarok 的窗口界面</caption>
-      <caption xml:lang="zh-TW">Amarok 的視窗樣貌</caption>
-      <image>https://amarok.kde.org/files/Amarok2.7screenie.png</image>
+      <caption>Amarok 3.3 player window</caption>
+      <image>https://cdn.kde.org/screenshots/amarok/amarok33.png</image>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1"/>
