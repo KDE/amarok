@@ -24,6 +24,7 @@
 #include <KConfigDialogManager>
 #include <KMessageBox>
 
+#include <QTimer>
 
 DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton *config )
     : ConfigDialogBase( parent )
@@ -131,9 +132,11 @@ void
 DatabaseConfig::updateSettings()
 {
     if( m_configManager->hasChanged() )
-        KMessageBox::information( nullptr,
+        QTimer::singleShot( 0, []() {
+                KMessageBox::information( nullptr,
                  i18n( "Changes to database settings only take\neffect after Amarok is restarted." ),
                  i18n( "Database settings changed" ) );
+        });
 }
 
 
