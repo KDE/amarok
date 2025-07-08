@@ -200,7 +200,6 @@
   <tabstop>connectToAccount</tabstop>
   <tabstop>disconnectAccount</tabstop>
   <tabstop>kcfg_SubmitPlayedSongs</tabstop>
-  <tabstop>kcfg_RetrieveSimilarArtists</tabstop>
   <tabstop>kcfg_ScrobbleComposer</tabstop>
   <tabstop>kcfg_UseFancyRatingTags</tabstop>
   <tabstop>kcfg_AnnounceCorrections</tabstop>
