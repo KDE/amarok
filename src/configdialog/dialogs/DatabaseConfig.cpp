@@ -154,10 +154,13 @@ DatabaseConfig::updateSQLQuery() //SLOT
         // Query template:
         // GRANT ALL ON amarokdb.* TO 'amarokuser'@'localhost' IDENTIFIED BY 'mypassword'; FLUSH PRIVILEGES;
 
+        // Granting 'user'@'%' doesn't work if anonymous users exist in db. Assume that 'localhost' users
+        // haven't removed those and remote db users have / know what to do to make the command work.
+        const QString domain = kcfg_Host->text() == QStringLiteral( "localhost" ) ? QStringLiteral( "localhost" ) : QStringLiteral( "%" );
         // Don't print the actual password!
         const QString examplePassword = i18nc( "A default password for insertion into an example SQL command (so as not to print the real one). To be manually replaced by the user.", "password" );
-        query = QStringLiteral( "CREATE DATABASE %1;\nGRANT ALL PRIVILEGES ON %1.* TO '%2' IDENTIFIED BY '%3'; FLUSH PRIVILEGES;" )
-                   .arg( kcfg_Database->text(), kcfg_User->text(), examplePassword );
+        query = QStringLiteral( "CREATE DATABASE %1;\nGRANT ALL PRIVILEGES ON %1.* TO '%2'@'%3' IDENTIFIED BY '%4'; FLUSH PRIVILEGES;" )
+                   .arg( kcfg_Database->text(), kcfg_User->text(), domain, examplePassword );
     }
     text_SQL->setPlainText( query );
 }

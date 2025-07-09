@@ -8,6 +8,7 @@ VERSION 3.3.1 UNRELEASED
   CHANGES:
 
   BUGFIXES:
+   * Fix example permission grant command in database settings (BR 386004)
 
 VERSION 3.3.0
   FEATURES:
