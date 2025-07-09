@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-02 07:04+0000\n"
+"POT-Creation-Date: 2025-07-09 00:42+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -1847,7 +1847,7 @@ msgstr ""
 msgid "Base for relative filenames/URLs"
 msgstr "सापेक्षित फाइलनाम/यूआरएलका लागि आधार"
 
-#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:110
 #, fuzzy, kde-format
 #| msgid "Database:"
 msgid "Database Error"
@@ -3050,18 +3050,18 @@ msgstr ""
 msgid "Transcode tracks:"
 msgstr "प्ले सूचीमा थप्नुहोस्"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:102
+#: configdialog/dialogs/DatabaseConfig.cpp:103
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:103
+#: configdialog/dialogs/DatabaseConfig.cpp:104
 #, fuzzy, kde-format
 #| msgid "Autocfg Success"
 msgid "Success"
 msgstr "स्वत: कन्फिगर सफल भयो"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:105
+#: configdialog/dialogs/DatabaseConfig.cpp:106
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -3070,20 +3070,20 @@ msgid ""
 "properly."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:135
+#: configdialog/dialogs/DatabaseConfig.cpp:137
 #, kde-format
 msgid ""
 "Changes to database settings only take\n"
 "effect after Amarok is restarted."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:136
+#: configdialog/dialogs/DatabaseConfig.cpp:138
 #, fuzzy, kde-format
 #| msgid "Rating changed"
 msgid "Database settings changed"
 msgstr "मूल्याङ्कन वजन गरियो"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:155
+#: configdialog/dialogs/DatabaseConfig.cpp:158
 #, fuzzy, kde-format
 #| msgid "Password:"
 msgctxt ""

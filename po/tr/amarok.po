@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-02 07:04+0000\n"
+"POT-Creation-Date: 2025-07-09 00:42+0000\n"
 "PO-Revision-Date: 2025-06-10 12:40+0300\n"
 "Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -1830,7 +1830,7 @@ msgstr "Birden çok Amarok örneğinin çalışmasına izin ver"
 msgid "Base for relative filenames/URLs"
 msgstr "Göreceli dosya adları/URL’ler için temel"
 
-#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Veritabanı Hatası"
@@ -2944,17 +2944,17 @@ msgstr ""
 msgid "Transcode tracks:"
 msgstr "Parçaları arakodla:"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:102
+#: configdialog/dialogs/DatabaseConfig.cpp:103
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
 msgstr "Amarok veritabanına başarılı bir bağlantı kurmayı başardı."
 
-#: configdialog/dialogs/DatabaseConfig.cpp:103
+#: configdialog/dialogs/DatabaseConfig.cpp:104
 #, kde-format
 msgid "Success"
 msgstr "Başarılı"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:105
+#: configdialog/dialogs/DatabaseConfig.cpp:106
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -2967,7 +2967,7 @@ msgstr ""
 "Çoğu durumda Amarok’un düzgün çalışması için bu hataları çözmeniz "
 "gerekecektir."
 
-#: configdialog/dialogs/DatabaseConfig.cpp:135
+#: configdialog/dialogs/DatabaseConfig.cpp:137
 #, kde-format
 msgid ""
 "Changes to database settings only take\n"
@@ -2976,12 +2976,12 @@ msgstr ""
 "Veritabanı ayarlarında yapılan değişiklikler;\n"
 "ancak Amarok yeniden başlatıldıktan sonra geçerli olur."
 
-#: configdialog/dialogs/DatabaseConfig.cpp:136
+#: configdialog/dialogs/DatabaseConfig.cpp:138
 #, kde-format
 msgid "Database settings changed"
 msgstr "Veritabanı ayarları değişti"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:155
+#: configdialog/dialogs/DatabaseConfig.cpp:158
 #, kde-format
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "

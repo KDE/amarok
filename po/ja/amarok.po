@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-02 07:04+0000\n"
+"POT-Creation-Date: 2025-07-09 00:42+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -1804,7 +1804,7 @@ msgstr "Amarok を複数インスタンス実行することを許可"
 msgid "Base for relative filenames/URLs"
 msgstr "ファイル名/URL の相対パスのベース"
 
-#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "データベースエラー"
@@ -2942,19 +2942,19 @@ msgstr ""
 msgid "Transcode tracks:"
 msgstr "トラックのトランスコード:"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:102
+#: configdialog/dialogs/DatabaseConfig.cpp:103
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:103
+#: configdialog/dialogs/DatabaseConfig.cpp:104
 #, fuzzy, kde-format
 #| msgctxt "The operation completed as expected"
 #| msgid "Success"
 msgid "Success"
 msgstr "成功"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:105
+#: configdialog/dialogs/DatabaseConfig.cpp:106
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -2967,20 +2967,20 @@ msgstr ""
 "多くの場合、Amarok を正しく動作させるため、上記のエラーを解決する必要がありま"
 "す。"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:135
+#: configdialog/dialogs/DatabaseConfig.cpp:137
 #, kde-format
 msgid ""
 "Changes to database settings only take\n"
 "effect after Amarok is restarted."
 msgstr ""
 
-#: configdialog/dialogs/DatabaseConfig.cpp:136
+#: configdialog/dialogs/DatabaseConfig.cpp:138
 #, fuzzy, kde-format
 #| msgid "Rating changed"
 msgid "Database settings changed"
 msgstr "評価が変わりました"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:155
+#: configdialog/dialogs/DatabaseConfig.cpp:158
 #, kde-format
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "

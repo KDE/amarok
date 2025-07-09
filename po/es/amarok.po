@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-02 07:04+0000\n"
+"POT-Creation-Date: 2025-07-09 00:42+0000\n"
 "PO-Revision-Date: 2025-06-29 13:48+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
@@ -1833,7 +1833,7 @@ msgstr "Permite ejecutar múltiples instancias de Amarok"
 msgid "Base for relative filenames/URLs"
 msgstr "Base para nombres de archivo/URL relativos"
 
-#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:109
+#: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Error de base de datos"
@@ -2949,18 +2949,18 @@ msgstr ""
 msgid "Transcode tracks:"
 msgstr "Transformar pistas:"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:102
+#: configdialog/dialogs/DatabaseConfig.cpp:103
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 "Amarok ha podido establecer con éxito una conexión con la base de datos."
 
-#: configdialog/dialogs/DatabaseConfig.cpp:103
+#: configdialog/dialogs/DatabaseConfig.cpp:104
 #, kde-format
 msgid "Success"
 msgstr "Éxito"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:105
+#: configdialog/dialogs/DatabaseConfig.cpp:106
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -2973,7 +2973,7 @@ msgstr ""
 "en la mayor parte de los casos, tendrá que corregir estos errores antes de "
 "que Amarok se ejecute adecuadamente."
 
-#: configdialog/dialogs/DatabaseConfig.cpp:135
+#: configdialog/dialogs/DatabaseConfig.cpp:137
 #, kde-format
 msgid ""
 "Changes to database settings only take\n"
@@ -2982,12 +2982,12 @@ msgstr ""
 "Los cambios en las preferencias de la base\n"
 "de datos tendrán efecto tras reiniciar Amarok."
 
-#: configdialog/dialogs/DatabaseConfig.cpp:136
+#: configdialog/dialogs/DatabaseConfig.cpp:138
 #, kde-format
 msgid "Database settings changed"
 msgstr "Las preferencias de la base de datos han cambiado"
 
-#: configdialog/dialogs/DatabaseConfig.cpp:155
+#: configdialog/dialogs/DatabaseConfig.cpp:158
 #, kde-format
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
