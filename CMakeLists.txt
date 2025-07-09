@@ -110,6 +110,7 @@ option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_GPODDER "Enable gpodder.net support" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_LASTFM "Enable last.fm support" ON)
+option(WITH_EMBEDDED_DB "Build the embedded database library" ON)
 
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.12")
@@ -232,15 +233,15 @@ if( WITH_PLAYER )
         find_package(MariaDB REQUIRED)
     endif()
 
-    if( WITHOUT_EMBEDDED_DB )
-        add_definitions( "-DNO_MYSQL_EMBEDDED" )
-        message("Building without embedded MariaDB/MySQL as requested")
-    else()
-        find_package(MySQLe REQUIRED)
+    if( WITH_EMBEDDED_DB )
+        find_package(MariaDBd REQUIRED)
         set( BUILD_MYSQLE_COLLECTION TRUE )
         # zlib is required for mysql embedded
         find_package(ZLIB REQUIRED)
         set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
+    else()
+        add_definitions( "-DNO_MYSQL_EMBEDDED" )
+        message("Building without embedded MariaDB/MySQL as requested")
     endif()
 
 

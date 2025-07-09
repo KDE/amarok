@@ -24,7 +24,7 @@ target_link_libraries(amarok_collection-mysqlcollection
 )
 
 if(BUILD_MYSQLE_COLLECTION)
-    target_link_libraries( amarok_collection-mysqlcollection ${MYSQLE_LIBRARIES} )
+    target_link_libraries( amarok_collection-mysqlcollection ${MARIADBD_LIBRARIES} )
 endif()
 
 if(APPLE)

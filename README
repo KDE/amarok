@@ -50,8 +50,9 @@ Required
     * TagLib 1.12 (or newer)
       (Metadata tagging library)
 
-    * MySQL 5.0 (or newer) / MariaDB (external database support) or MariaDB
-      Embedded (In-process database support)
+    * MariaDB Embedded (libmariadbd). Building with external database support
+      only (MySQL 5.0 or newer / MariaDB) is also possible, but requires the
+      user to manually set up the external database.
 
 Optional
     * iPod support requires:

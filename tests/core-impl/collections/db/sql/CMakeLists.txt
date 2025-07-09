@@ -24,7 +24,7 @@ macro(add_database_test test_target test_sources)
         KF${KF_MAJOR_VERSION}::ThreadWeaver
         Qt::Test
         Qt::Core
-        ${MYSQLE_LIBRARIES}
+        ${MARIADBD_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${GOOGLEMOCK_LIBRARIES}
     )

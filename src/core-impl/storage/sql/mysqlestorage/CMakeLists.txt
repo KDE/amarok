@@ -26,7 +26,7 @@ target_link_libraries(amarok_storage-mysqlestorage
     amaroklib
     Qt::Core
     Qt::Gui
-    ${MYSQLE_LIBRARIES}
+    ${MARIADBD_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
 )
