@@ -496,6 +496,7 @@
     </screenshot>
     <screenshot>
       <caption>Amarok 3.3 player window</caption>
+      <caption xml:lang="x-test">xxAmarok 3.3 player windowxx</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok33.png</image>
     </screenshot>
   </screenshots>
