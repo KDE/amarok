@@ -253,6 +253,8 @@ ScriptConsole::getScriptListDockWidget()
 
 ScriptConsole::~ScriptConsole()
 {
+    // avoid changing active script when all have already been deleted
+    disconnect( m_scriptListDock, &ScriptListDockWidget::currentItemChanged, this, &ScriptConsole::setCurrentScriptItem );
     //m_debugger->detach();
 }
 
@@ -453,7 +455,10 @@ ScriptListDockWidget::clear()
     if( sender() && KMessageBox::warningContinueCancel( nullptr, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
         return;
     for( int i = 0; i<m_scriptListWidget->count(); ++i )
-        qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) )->deleteLater();
+    {
+        if( qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) ) )
+            qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) )->deleteLater();
+    }
     m_scriptListWidget->clear();
 
 }
