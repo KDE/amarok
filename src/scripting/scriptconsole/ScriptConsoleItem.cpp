@@ -114,11 +114,11 @@ ScriptConsoleItem::start( bool silent )
 {
     if( running() )
         return false;
-    if( !info().isValid() )
+    /*if( !info().isValid() )
     {
         debug() << "Invalid spec";
         return false;
-    }
+    }*/
     m_viewFactory->save();
     Q_ASSERT( engine() );
     //engine()->pushContext();
