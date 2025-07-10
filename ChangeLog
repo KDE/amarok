@@ -11,6 +11,7 @@ VERSION 3.3.1 UNRELEASED
   BUGFIXES:
    * Fix example permission grant command in database settings (BR 386004)
    * Fix equalizer gains not updating when selecting some presets (BR 463908)
+   * Fix continuing playback after timecoded tracks (cue files etc, BR 270003)
 
 VERSION 3.3.0
   FEATURES:

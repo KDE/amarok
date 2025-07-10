@@ -833,7 +833,7 @@ EngineController::slotAboutToFinish()
 
         //stop this track, now, as the source track might go on and on, and
         //there might not be any more tracks in the playlist...
-        stop( true );
+        stop( true, true );
         The::playlistActions()->requestNextTrack();
     }
     else if( m_pipeline->isPlaybackQueueEmpty() )
