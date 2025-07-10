@@ -496,6 +496,13 @@
     </screenshot>
     <screenshot>
       <caption>Amarok 3.3 player window</caption>
+      <caption xml:lang="ca">Finestra del reproductor Amarok 3.3</caption>
+      <caption xml:lang="es">Ventana del reproductor Amarok 3.3</caption>
+      <caption xml:lang="ka">Amarok 3.3 დამკვრელის ფანჯარა</caption>
+      <caption xml:lang="nl">Amarok 3.3 spelersvenster</caption>
+      <caption xml:lang="sl">Okno predvajalnika Amarok 3.3</caption>
+      <caption xml:lang="tr">Amarok 3.3 çalar penceresi</caption>
+      <caption xml:lang="uk">Вікно програвача Amarok 3.3</caption>
       <caption xml:lang="x-test">xxAmarok 3.3 player windowxx</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok33.png</image>
     </screenshot>
