@@ -104,7 +104,7 @@ ViewUrlGenerator::description()
 
 QIcon ViewUrlGenerator::icon()
 {
-    return QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/playlist-bookmark-16.png") ) ) );
+    return QIcon::fromTheme( QStringLiteral("bookmarks-bookmarked") );
 }
 
 } //namespace Playlist

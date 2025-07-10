@@ -272,7 +272,7 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 
     if( !m_copyToClipboardAction )
     {
-        m_copyToClipboardAction = new QAction( QIcon::fromTheme( QStringLiteral("klipper") ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
+        m_copyToClipboardAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-copy") ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
         connect( m_copyToClipboardAction, &QAction::triggered, this, &BreadcrumbUrlMenuButton::copyCurrentToClipboard );
     }
 

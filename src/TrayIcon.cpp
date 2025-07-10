@@ -171,15 +171,9 @@ Amarok::TrayIcon::updateToolTip()
         {
             QString stars;
             for( int i = 0; i < rating / 2; ++i )
-                stars += QStringLiteral( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/star.png") ) )
-                        .arg( QFontMetrics( QToolTip::font() ).height() )
-                        .arg( QFontMetrics( QToolTip::font() ).height() );
+                stars += QStringLiteral("★");
             if( rating % 2 )
-                stars += QStringLiteral( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/smallstar.png") ) )
-                        .arg( QFontMetrics( QToolTip::font() ).height() )
-                        .arg( QFontMetrics( QToolTip::font() ).height() );
+                stars += QStringLiteral("<font size=\"1\">★</font>");
 
             tooltip << i18n( "Rating: %1", stars );
         }

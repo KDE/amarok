@@ -6,6 +6,7 @@ VERSION 3.3.1 UNRELEASED
   FEATURES:
 
   CHANGES:
+   * Convert the remaining main UI toolbuttons to use icons from theme
 
   BUGFIXES:
    * Fix example permission grant command in database settings (BR 386004)

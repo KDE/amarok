@@ -193,12 +193,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
 
     tabWidget->addTab(aboutWidget, i18n("&About"));
 
-
-    //Stuff needed by both Authors and Credits pages:
-    QPixmap openDesktopPixmap = QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/opendesktop-22.png") ) );
-    QIcon openDesktopIcon = QIcon( openDesktopPixmap );
-
-
     //And now, the Authors page:
     const int authorCount = d->aboutData->authors().count();
 
