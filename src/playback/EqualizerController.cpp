@@ -136,7 +136,7 @@ EqualizerController::applyEqualizerPresetByIndex( int index )
     if( index > -1 )
     {
         AmarokConfig::setEqualizerMode( index + 1 );
-        AmarokConfig::setEqualizerGains( EqualizerPresets::eqCfgGetPresetVal( EqualizerPresets::eqGlobalTranslatedList().value( index ) ) );
+        AmarokConfig::setEqualizerGains( EqualizerPresets::eqCfgGetPresetVal( EqualizerPresets::eqGlobalList().value( index ) ) );
     }
     else
         AmarokConfig::setEqualizerMode( 0 );

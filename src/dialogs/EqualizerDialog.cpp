@@ -118,7 +118,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
 
     // Configure signal and slots to handle presets
     connect( activeCheckBox, &QCheckBox::toggled, this, &EqualizerDialog::toggleEqualizer );
-    connect( eqPresets, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect( eqPresets, &QComboBox::currentIndexChanged,
              equalizer, &EqualizerController::applyEqualizerPresetByIndex );
     connect( eqPresets, &QComboBox::editTextChanged, this, &EqualizerDialog::updateUi );
     for( QSlider* mSlider : m_bands )
