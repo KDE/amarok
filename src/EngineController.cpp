@@ -1063,8 +1063,10 @@ EngineController::slotMetaDataChanged()
 {
     QVariantMap meta;
     meta.insert( Meta::Field::URL, m_pipeline->currentSource() );
-    for (const auto &key : m_pipeline->metaData().keys()) {
-        const QStringList values = m_pipeline->metaData().values( key );
+    // metadata might be changed by pipeline during for, so take a copy
+    const QMultiMap<QString, QString> metadata = m_pipeline->metaData();
+    for (const auto &key : metadata.keys()) {
+        const QStringList values = metadata.values( key );
         if( values.isEmpty() )
             continue;
         else if( key == QLatin1String("ARTIST") )
