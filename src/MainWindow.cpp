@@ -818,40 +818,46 @@ MainWindow::createActions()
     connect( action, &QAction::triggered, this, &MainWindow::slotEditTrackInfo );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
-                          i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
+                          i18nc( "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is automatically included in %1.",
+                                 "Seek Forward by %1", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000, 1 ) ), this );
     ac->addAction( QStringLiteral("seek_forward_short"), action );
     action->setShortcut( Qt::CTRL | Qt::Key_Right );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardShort );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
-                          i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
+                          i18nc( "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is automatically included in %1.",
+                                 "Seek Forward by %1", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000, 1 ) ), this );
     ac->addAction( QStringLiteral("seek_forward_medium"), action );
     action->setShortcut( Qt::Key_Right );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::SHIFT | Qt::Key_Plus ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardMedium );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
-                          i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
+                          i18nc( "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is automatically included in %1.",
+                                 "Seek Forward by %1", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000, 1 ) ), this );
     ac->addAction( QStringLiteral("seek_forward_long"), action );
     action->setShortcut( Qt::SHIFT | Qt::Key_Right );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardLong );
 
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
-                          i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
+                          i18nc( "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is automatically included in %1.",
+                                 "Seek Backward by %1", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000, 1 ) ), this );
     ac->addAction( QStringLiteral("seek_backward_short"), action );
     action->setShortcut( Qt::CTRL | Qt::Key_Left );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardShort );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
-                          i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
+                          i18nc( "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is automatically included in %1.",
+                                 "Seek Backward by %1", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000, 1 ) ), this );
     ac->addAction( QStringLiteral("seek_backward_medium"), action );
     action->setShortcut( Qt::Key_Left );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META | Qt::SHIFT | Qt::Key_Minus ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardMedium );
 
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
-                          i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
+                          i18nc( "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is automatically included in %1.",
+                                 "Seek Backward by %1", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000, 1 ) ), this );
     ac->addAction( QStringLiteral("seek_backward_long"), action );
     action->setShortcut( Qt::SHIFT | Qt::Key_Left );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardLong );
