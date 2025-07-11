@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 3.3.1 UNRELEASED
   FEATURES:
+   * Enable saving and loading script console items, and re-enable some more
+     scripting functionality
 
   CHANGES:
    * Convert the remaining main UI toolbuttons to use icons from theme

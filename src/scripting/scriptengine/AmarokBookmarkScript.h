@@ -42,22 +42,22 @@ namespace AmarokScript
             /**
              * @return bookmark for the current context view.
              */
-            Q_INVOKABLE AmarokUrlPtr contextView();
+            Q_INVOKABLE QJSValue contextView();
 
             /**
              * @return bookmark for the current playlist view.
              */
-            Q_INVOKABLE AmarokUrlPtr currentPlaylistView();
+            Q_INVOKABLE QJSValue currentPlaylistView();
 
             /**
              * * @return bookmark for the current browser view.
              */
-            Q_INVOKABLE AmarokUrlPtr browserView();
+            Q_INVOKABLE QJSValue browserView();
 
             /**
              * Bookmark the current track at the current position.
              */
-            Q_INVOKABLE AmarokUrlPtr createCurrentTrackBookmark();
+            Q_INVOKABLE QJSValue createCurrentTrackBookmark();
 
             /**
              * Wraps the invocation to BookmarkPrototype::bookmarkCtor so it can bind to a QJSEngine

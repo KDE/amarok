@@ -23,6 +23,7 @@
 #include "core/meta/Meta.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
+#include "exporters/MetaTypeExporter.h"
 
 #include <QJSEngine>
 
@@ -153,11 +154,10 @@ AmarokEngineScript::engineState() const
         return Stopped;
 }
 
-Meta::TrackPtr
+QJSValue
 AmarokEngineScript::currentTrack() const
 {
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    return track;
+    return dynamic_cast<QJSEngine*>(parent())->newQObject( new MetaTrackPrototype( Meta::TrackPtr( The::engineController()->currentTrack() ) ) );
 }
 
 void

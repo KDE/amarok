@@ -70,36 +70,6 @@ void
 MetaTrackPrototype::init( QJSEngine *engine )
 {
     qRegisterMetaType<Meta::TrackPtr>();
-    QMetaType::registerConverter<Meta::TrackPtr, QJSValue>( [=] (Meta::TrackPtr trackPtr) { return toScriptValue<Meta::TrackPtr, MetaTrackPrototype>( engine, trackPtr ); } );
-    QMetaType::registerConverter<QJSValue, Meta::TrackPtr>( [] (QJSValue jsValue) {
-        Meta::TrackPtr trackPtr;
-        fromScriptValue<Meta::TrackPtr, MetaTrackPrototype>( jsValue, trackPtr );
-        return trackPtr;
-    } );
-
-    qRegisterMetaType<Meta::TrackList>();
-    QMetaType::registerConverter<Meta::TrackList,QJSValue>( [=] (Meta::TrackList trackList) { return toScriptArray<Meta::TrackList>( engine, trackList); } );
-    QMetaType::registerConverter<QJSValue,Meta::TrackList>( [] (QJSValue jsValue) {
-        Meta::TrackList trackList;
-        fromScriptArray<Meta::TrackList>( jsValue, trackList );
-        return trackList;
-    } );
-
-    qRegisterMetaType<StringMap>();
-    QMetaType::registerConverter<StringMap,QJSValue>( [=] (StringMap stringMap) { return toScriptMap<StringMap>( engine, stringMap); } );
-    QMetaType::registerConverter<QJSValue,StringMap>( [] (QJSValue jsValue) {
-        StringMap stringMap;
-        fromScriptMap<StringMap>( jsValue, stringMap );
-        return stringMap;
-    } );
-
-    qRegisterMetaType<Meta::FieldHash>();
-    QMetaType::registerConverter<Meta::FieldHash,QJSValue>( [=] (Meta::FieldHash fieldHash) { return toScriptTagMap( engine, fieldHash); } );
-    QMetaType::registerConverter<QJSValue,Meta::FieldHash>( [] (QJSValue jsValue) {
-        Meta::FieldHash fieldHash;
-        fromScriptTagMap( jsValue, fieldHash );
-        return fieldHash;
-    } );
 
     QJSValue scriptObj = engine->newQObject( new MetaTrackPrototypeWrapper( engine ) );
 

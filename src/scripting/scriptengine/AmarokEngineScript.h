@@ -23,6 +23,7 @@
 #include <QObject>
 
 class QJSEngine;
+class QJSValue;
 
 namespace AmarokScript
 {
@@ -72,7 +73,7 @@ namespace AmarokScript
             /** This function returns the current track.
                 The current track might even be valid when not in playing state.
             */
-            Q_INVOKABLE Meta::TrackPtr currentTrack() const;
+            Q_INVOKABLE QJSValue currentTrack() const;
 
         Q_SIGNALS:
             void trackFinished(); // when playback stops altogether

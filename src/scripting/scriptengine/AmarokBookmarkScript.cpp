@@ -39,22 +39,6 @@ AmarokBookmarkScript::AmarokBookmarkScript( QJSEngine *engine )
     QJSValue scriptObject = m_engine->newQObject( this );
     m_engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Bookmark"), scriptObject );
 
-    qRegisterMetaType<BookmarkGroupPtr>();
-    QMetaType::registerConverter<BookmarkGroupPtr,QJSValue>( [=] (BookmarkGroupPtr bGroup) { return toScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype>( m_engine, bGroup ); } );
-    QMetaType::registerConverter<QJSValue,BookmarkGroupPtr>( [] (QJSValue jsValue) {
-            BookmarkGroupPtr bGroup;
-            fromScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype>( jsValue, bGroup );
-            return bGroup;
-        } );
-
-    qRegisterMetaType<AmarokUrlPtr>();
-    QMetaType::registerConverter<AmarokUrlPtr, QJSValue>( [=] (AmarokUrlPtr url) { return toScriptValue<AmarokUrlPtr, BookmarkPrototype>( m_engine, url ); } );
-    QMetaType::registerConverter<QJSValue, AmarokUrlPtr>( [] (QJSValue jsValue) {
-        AmarokUrlPtr url;
-        fromScriptValue<AmarokUrlPtr, BookmarkPrototype>( jsValue, url );
-        return url;
-    } );
-
     QJSValue bookmarkGroupCtor = scriptObject.property(QStringLiteral("bookmarkGroupCtorWrapper"));
     m_engine->globalObject().setProperty( QStringLiteral("BookmarkGroup"), bookmarkGroupCtor );
 
@@ -78,28 +62,28 @@ AmarokBookmarkScript::AmarokBookmarkScript( QJSEngine *engine )
     } );
 }
 
-AmarokUrlPtr
+QJSValue
 AmarokBookmarkScript::contextView()
 {
-    return AmarokUrlPtr( new AmarokUrl( ContextUrlGenerator::instance()->createContextBookmark() ) );
+    return m_engine->newQObject( new BookmarkPrototype( AmarokUrlPtr( new AmarokUrl( ContextUrlGenerator::instance()->createContextBookmark() ) ) ) );
 }
 
-AmarokUrlPtr
+QJSValue
 AmarokBookmarkScript::currentPlaylistView()
 {
-    return AmarokUrlPtr( new AmarokUrl( Playlist::ViewUrlGenerator::instance()->createUrl() ) );
+    return m_engine->newQObject( new BookmarkPrototype( AmarokUrlPtr( new AmarokUrl( Playlist::ViewUrlGenerator::instance()->createUrl() ) ) ) );
 }
 
-AmarokUrlPtr
+QJSValue
 AmarokBookmarkScript::browserView()
 {
-    return AmarokUrlPtr( new AmarokUrl( NavigationUrlGenerator::instance()->CreateAmarokUrl() ) );
+    return m_engine->newQObject( new BookmarkPrototype( AmarokUrlPtr( new AmarokUrl( NavigationUrlGenerator::instance()->CreateAmarokUrl() ) ) ) );
 }
 
-AmarokUrlPtr
+QJSValue
 AmarokBookmarkScript::createCurrentTrackBookmark()
 {
-    return AmarokUrlPtr( new AmarokUrl( PlayUrlGenerator::instance()->createCurrentTrackBookmark() ) );
+    return m_engine->newQObject( new BookmarkPrototype( AmarokUrlPtr( new AmarokUrl( PlayUrlGenerator::instance()->createCurrentTrackBookmark() ) ) ) );
 }
 
 QJSValue
