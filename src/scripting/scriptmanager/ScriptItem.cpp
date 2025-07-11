@@ -318,7 +318,8 @@ void
 ScriptItem::stop()
 {
     pause();
-    m_engine->deleteLater();
+    if( m_engine )
+        m_engine->deleteLater();
 }
 
 

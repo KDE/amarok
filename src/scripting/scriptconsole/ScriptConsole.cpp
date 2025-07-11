@@ -157,7 +157,8 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     if( m_savePath.isEmpty() )
         m_savePath = Amarok::saveLocation(QStringLiteral("scriptconsole"));
 
-    slotNewScript();
+    if( !loadScripts() )
+        slotNewScript();
     show();
     raise();
 
@@ -220,6 +221,39 @@ ScriptConsole::slotEditScript( ScriptConsoleItem *item )
 
     item->pause();
     setCurrentScriptItem( item );
+}
+
+bool
+ScriptConsole::loadScripts()
+{
+    if( m_savePath.isEmpty() || !QDir( m_savePath ).exists() )
+        return false;
+    ScriptConsoleItem *scriptItem = nullptr;
+    const QStringList maybeExisting = QDir( m_savePath ).entryList( QStringList(), QDir::Dirs | QDir::NoDotAndDotDot | QDir::Writable, QDir::NoSort );
+    debug() << "Loading existing script console scripts, checking "<< maybeExisting.length() << "directories";
+    int i = 0;
+    for( const auto &dir : maybeExisting )
+    {
+        QString scriptPath = QStringLiteral( "%1%2/" ).arg( m_savePath, dir );
+        if( QDir( scriptPath ).entryList( QStringList( QStringLiteral("main.js") ), QDir::Files | QDir::Writable, QDir::NoSort ).length() == 1 )
+        {
+            i++;
+            ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( nullptr ) );
+            QFile scriptText = QFile( scriptPath + QStringLiteral("/main.js") );
+            scriptText.open( QIODevice::ReadOnly );
+            document->setText( QString::fromUtf8( scriptText.readAll() ) );
+            scriptText.close();
+            scriptItem = new ScriptConsoleItem( this, dir, QStringLiteral("Generic"), scriptPath, document );
+            m_scriptListDock->addScript( scriptItem );
+        }
+    }
+    debug() << "Loaded "<< i << "scripts";
+    if( scriptItem )
+    {
+        setCurrentScriptItem( scriptItem );
+        return true;
+    }
+    return false;
 }
 
 ScriptConsoleItem*
@@ -419,7 +453,7 @@ ScriptListDockWidget::getScript( const QString &scriptName)
 void
 ScriptListDockWidget::removeCurrentScript()
 {
-    QListWidgetItem *item = m_scriptListWidget->takeItem( m_scriptListWidget->currentRow() );
+    QListWidgetItem *item = m_scriptListWidget->item( m_scriptListWidget->currentRow() );
     ScriptConsoleItem *scriptItem = qvariant_cast<ScriptConsoleItem*>( item->data( ScriptRole ) );
     switch( KMessageBox::warningTwoActionsCancel( this, i18n( "Remove script file from disk?" ), i18n( "Remove Script" ), KGuiItem(i18nc( "Confirm if script file should be removed", "Remove")),
         KGuiItem(i18nc( "Confirm if script file should be removed", "Don't remove") ) ) )

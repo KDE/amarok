@@ -60,6 +60,7 @@ class ScriptListDockWidget;
             void closeEvent( QCloseEvent *event ) override;
             ScriptConsoleItem* createScriptItem( const QString &script );
             ScriptListDockWidget *getScriptListDockWidget();
+            bool loadScripts();
 
             QPointer<ScriptConsoleItem> m_scriptItem;
             QDockWidget *m_consoleWidget;

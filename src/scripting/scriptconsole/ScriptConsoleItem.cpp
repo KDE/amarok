@@ -60,14 +60,14 @@ ScriptConsoleItem::~ScriptConsoleItem()
 {
     if( running() )
         stop();
-    if( m_clearOnDelete || !AmarokConfig::saveSession() ) // TODO: implement session restore + user config option, export button
+    if( m_clearOnDelete || !AmarokConfig::saveSession() ) // NOTE: saveSession hardcoded to true
     {
         QFileInfo info( url().path() );
         QDir dir( info.path() );
         if( !dir.exists() )
             return;
         dir.remove( QStringLiteral("main.js") );
-        dir.remove( QStringLiteral("script.spec") );
+        dir.remove( QStringLiteral("script.desktop") );
         if( !dir.rmdir( dir.absolutePath() ) )
             debug() << "Directory %1 not removed, contains other files";
     }
