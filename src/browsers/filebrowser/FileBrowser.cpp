@@ -42,7 +42,6 @@
 
 #include <KDirLister>
 #include <KLocalizedString>
-#include <KIO/StatJob>
 #include <KStandardAction>
 #include <KToolBar>
 
@@ -98,15 +97,6 @@ FileBrowser::Private::readConfig()
         QDir dir( savedUrl.path() );
         if( dir.exists() )
             useHome = false;
-    }
-    else
-    {
-        KIO::StatJob *statJob = KIO::stat( savedUrl, KIO::StatJob::DestinationSide);
-        statJob->exec();
-        if( statJob->statResult().isDir() )
-        {
-            useHome = false;
-        }
     }
     currentPath = useHome ? homeUrl : savedUrl;
 }
