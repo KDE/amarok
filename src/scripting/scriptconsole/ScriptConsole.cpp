@@ -100,7 +100,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     connect( action, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
     toolBar->addAction( action );
     action = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-start") ), i18n("Execute Script"), this );
-    action->setShortcut( Qt::CTRL | Qt::Key_Enter );
+    action->setShortcut( QKeyCombination( Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_R ) );
     connect( action, &QAction::triggered, this, &ScriptConsole::slotExecuteNewScript );
     toolBar->addAction( action );
     action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&New Script" ), this );
