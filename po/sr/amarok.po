@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-10 00:41+0000\n"
+"POT-Creation-Date: 2025-07-11 00:42+0000\n"
 "PO-Revision-Date: 2017-12-03 23:07+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -110,7 +110,7 @@ msgstr "Лиценца: %1"
 msgid "&About"
 msgstr "&О програму"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
+#: aboutdialog/ExtendedAboutDialog.cpp:211
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -122,33 +122,33 @@ msgstr ""
 "Користите <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> за "
 "пријављивање грешака.\n"
 
+#: aboutdialog/ExtendedAboutDialog.cpp:216
 #: aboutdialog/ExtendedAboutDialog.cpp:222
-#: aboutdialog/ExtendedAboutDialog.cpp:228
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Грешке пријављујте на <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:245
+#: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
 msgid "A&uthor"
 msgstr "&Аутор"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:245
+#: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
 msgid "A&uthors"
 msgstr "&Аутори"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:264
+#: aboutdialog/ExtendedAboutDialog.cpp:258
 #, kde-format
 msgid "&Contributors"
 msgstr "&Доприносиоци"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:288
+#: aboutdialog/ExtendedAboutDialog.cpp:282
 #, kde-format
 msgid "&Donors"
 msgstr "&Донатори"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:317
+#: aboutdialog/ExtendedAboutDialog.cpp:311
 #, kde-format
 msgid "T&ranslation"
 msgstr "&Превод"
@@ -238,7 +238,7 @@ msgstr "Заустави након текуће нумере: укључено"
 
 #: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1240 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1242 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Ништа није пуштено"
@@ -246,8 +246,8 @@ msgstr "Ништа није пуштено"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:47
-#: main.cpp:56 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
-#: MainWindow.cpp:1226
+#: main.cpp:56 MainWindow.cpp:154 MainWindow.cpp:1213 MainWindow.cpp:1219
+#: MainWindow.cpp:1232
 #, kde-format
 msgid "Amarok"
 msgstr "Амарок"
@@ -1649,7 +1649,7 @@ msgstr "Нови временски ко̂д нумере"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1232
 #, kde-format
 msgid "Unknown"
 msgstr "Непознато"
@@ -1912,7 +1912,7 @@ msgstr ""
 "Овде ћете пронаћи локалну музику, као и музику са преносних аудио плејера и "
 "ЦД‑ова."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:940
 #, kde-format
 msgid "Search collection"
 msgstr "Претражи збирку"
@@ -2918,7 +2918,7 @@ msgid "Configure Plugins"
 msgstr "Подеси прикључке"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:377
+#: scripting/scriptconsole/ScriptConsole.cpp:379
 #, kde-format
 msgid "Scripts"
 msgstr "Скрипте"
@@ -4901,7 +4901,7 @@ msgstr "Непознат извођач"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1218
+#: EngineController.cpp:1220
 #, kde-format
 msgid "Unknown track"
 msgstr "Непозната нумера"
@@ -9818,25 +9818,25 @@ msgstr "Рејтинг"
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Сувише грешака у листи нумера. Пуштање заустављено."
 
-#: EngineController.cpp:1208
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> — <b>%2</b> (<b>%3</b>)"
 
-#: EngineController.cpp:1210
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> — <b>%2</b>"
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> (<b>%2</b>)"
 
-#: EngineController.cpp:1225
+#: EngineController.cpp:1227
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11055,7 +11055,7 @@ msgstr "&Приказ"
 msgid "Lock Layout"
 msgstr "Закључај распоред"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1300
+#: MainWindow.cpp:374 MainWindow.cpp:1306
 #, kde-format
 msgid "Reset Layout"
 msgstr "Ресетуј распоред"
@@ -11156,195 +11156,201 @@ msgstr "Пусти медијум..."
 msgid "Edit Details of Currently Selected Track"
 msgstr "Уреди детаље тренутно изабране нумере"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
+#: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
 #, fuzzy, kde-format
 #| msgid "Seek Forward by %1"
-msgid "Seek Forward by %1 seconds"
+msgctxt ""
+"Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
+"automatically included in %1."
+msgid "Seek Forward by %1"
 msgstr "Тражи унапред %1"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
+#: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
 #, fuzzy, kde-format
 #| msgid "Seek Backward by %1"
-msgid "Seek Backward by %1 seconds"
+msgctxt ""
+"Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
+"automatically included in %1."
+msgid "Seek Backward by %1"
 msgstr "Тражи уназад %1"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:866
 #, kde-format
 msgid "Update Collection"
 msgstr "Ажурирај збирку"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:870
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Синхронизуј статистику..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Previous Track"
 msgstr "Претходна нумера"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Restart current track"
 msgstr "Поново покрени текућу нумеру"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Промешај листу нумера"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Поново попуни листу нумера"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:904
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Искључи динамичку листу нумера"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:908
 #, kde-format
 msgid "Next Track"
 msgstr "Следећа нумера"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Increase Volume"
 msgstr "Повећај јачину"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Смањи јачину"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:925
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Укључи/искључи главни прозор"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Преко целог екрана"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:935 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Претражи листу нумера"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:945
 #, kde-format
 msgid "Show active track"
 msgstr "Прикажи текућу нумеру"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:949
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Приказуј искачућа обавештења"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Mute Volume"
 msgstr "Утишај звук"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:959
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "ЛастФМ: воли текућу нумеру"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:964
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "ЛастФМ: забрани текућу нумеру"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:969
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "ЛастФМ: прескочи текућу нумеру"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:974 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Стави у ред"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Стави „извођач — наслов“ текуће нумере у клипборд"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:984
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Оцени текућу нумеру: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:989
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Оцени текућу нумеру: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:994
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Оцени текућу нумеру: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:999
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Оцени текућу нумеру: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Оцени текућу нумеру: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1010
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Приказивач мрежних захтева"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1028
 #, kde-format
 msgid "&About Amarok"
 msgstr "&О Амароку"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1032
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Дијагностика"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1036
 #, kde-format
 msgid "&Report Bug..."
 msgstr "П&ријави грешку..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1083
 #, kde-format
 msgid "&Music"
 msgstr "&Музика"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1085
 #, kde-format
 msgid "&Amarok"
 msgstr "&Амарок"
 
-#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1109 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Листа нумера"
 
-#: MainWindow.cpp:1120
+#: MainWindow.cpp:1126
 #, kde-format
 msgid "&Tools"
 msgstr "Ала&тке"
 
-#: MainWindow.cpp:1135
+#: MainWindow.cpp:1141
 #, kde-format
 msgid "&Settings"
 msgstr "&Подешавање"
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1176
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11356,22 +11362,22 @@ msgstr ""
 "У сваком тренутку можете је вратити пречицом „%1“."
 
 # >> @title:window
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1177
 #, kde-format
 msgid "Hide Menu"
 msgstr "Сакривање менија"
 
-#: MainWindow.cpp:1213
+#: MainWindow.cpp:1219
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Паузирано  ::  %1"
 
-#: MainWindow.cpp:1226
+#: MainWindow.cpp:1232
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 — %2 ::  %3"
 
-#: MainWindow.cpp:1300
+#: MainWindow.cpp:1306
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Применити измену распореда?"
@@ -13787,31 +13793,31 @@ msgstr "Ово ће зауставити скрипту. Наставити?"
 msgid "Choose where to save your scripts"
 msgstr "Где желите да сачувате скрипту"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Уклонити фајл скрипте са диска?"
 
 # >> @title:window
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Remove Script"
 msgstr "Уклањање скрипте"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Уклони"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:425
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:453
+#: scripting/scriptconsole/ScriptConsole.cpp:455
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Јесте ли потпуно сигурни?"
@@ -16382,17 +16388,17 @@ msgstr "<i>Јачина: %1</i>"
 msgid "Score: %1"
 msgstr "Резултат: %1"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:178
 #, kde-format
 msgid "Rating: %1"
 msgstr "Рејтинг: %1"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Play count: %1"
 msgstr "Број пуштања: %1"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:188
 #, kde-format
 msgid "Last played: %1"
 msgstr "Последње пуштање: %1"

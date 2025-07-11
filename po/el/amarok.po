@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-10 00:41+0000\n"
+"POT-Creation-Date: 2025-07-11 00:42+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -109,7 +109,7 @@ msgstr "Άδεια χρήσης: %1"
 msgid "&About"
 msgstr "&Σχετικά"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
+#: aboutdialog/ExtendedAboutDialog.cpp:211
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
@@ -118,33 +118,33 @@ msgstr ""
 "Χρησιμοποιήστε το <a href=\"https//bugs.kde.org\">https://bugs.kde.org</a> "
 "για να αναφέρετε σφάλματα.\n"
 
+#: aboutdialog/ExtendedAboutDialog.cpp:216
 #: aboutdialog/ExtendedAboutDialog.cpp:222
-#: aboutdialog/ExtendedAboutDialog.cpp:228
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Παρακαλώ αναφέρετε σφάλματα στο <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:245
+#: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
 msgid "A&uthor"
 msgstr "Συγγραφέας"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:245
+#: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
 msgid "A&uthors"
 msgstr "Συγγραφείς"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:264
+#: aboutdialog/ExtendedAboutDialog.cpp:258
 #, kde-format
 msgid "&Contributors"
 msgstr "&Συντελεστές"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:288
+#: aboutdialog/ExtendedAboutDialog.cpp:282
 #, kde-format
 msgid "&Donors"
 msgstr "&Δωρητές"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:317
+#: aboutdialog/ExtendedAboutDialog.cpp:311
 #, kde-format
 msgid "T&ranslation"
 msgstr "Μετάφ&ραση"
@@ -233,7 +233,7 @@ msgstr "Σταμάτημα μετά το τρέχον κομμάτι: ενεργ
 
 #: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1240 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1242 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Δεν εκτελείται κομμάτι"
@@ -241,8 +241,8 @@ msgstr "Δεν εκτελείται κομμάτι"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:47
-#: main.cpp:56 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
-#: MainWindow.cpp:1226
+#: main.cpp:56 MainWindow.cpp:154 MainWindow.cpp:1213 MainWindow.cpp:1219
+#: MainWindow.cpp:1232
 #, kde-format
 msgid "Amarok"
 msgstr "AmaroK"
@@ -1691,7 +1691,7 @@ msgstr "Νέος χρονοδείκτης κομματιού"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1232
 #, kde-format
 msgid "Unknown"
 msgstr "&Εξαγωγή"
@@ -1946,7 +1946,7 @@ msgstr ""
 "Εδώ θα βρείτε την τοπική σας μουσική καθώς και αυτή των κινητών συσκευών σας "
 "και των CD."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:940
 #, kde-format
 msgid "Search collection"
 msgstr "Αναζήτηση συλλογής"
@@ -2927,7 +2927,7 @@ msgid "Configure Plugins"
 msgstr "Διαμόρφωση προσθέτων"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:377
+#: scripting/scriptconsole/ScriptConsole.cpp:379
 #, kde-format
 msgid "Scripts"
 msgstr "Σενάρια"
@@ -4882,7 +4882,7 @@ msgstr "Άγνωστος καλλιτέχνης"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1218
+#: EngineController.cpp:1220
 #, kde-format
 msgid "Unknown track"
 msgstr "Άγνωστο κομμάτι"
@@ -9604,25 +9604,25 @@ msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Εμφάνιση πολλών σφαλμάτων στη λίστα αναπαραγωγής. Η αναπαραγωγή σταμάτησε."
 
-#: EngineController.cpp:1208
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> από <b>%2</b> στο <b>%3</b>"
 
-#: EngineController.cpp:1210
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> από <b>%2</b>"
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> στο <b>%2</b>"
 
-#: EngineController.cpp:1225
+#: EngineController.cpp:1227
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10814,7 +10814,7 @@ msgstr "&Προβολή"
 msgid "Lock Layout"
 msgstr "Κλείδωμα διάταξης"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1300
+#: MainWindow.cpp:374 MainWindow.cpp:1306
 #, kde-format
 msgid "Reset Layout"
 msgstr "Επαναφορά διάταξης"
@@ -10914,193 +10914,201 @@ msgstr "Αναπαραγωγή πολυμέσου..."
 msgid "Edit Details of Currently Selected Track"
 msgstr "Επεξεργασία λεπτομερειών του τρέχοντος επιλεγμένου κομματιού"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
-#, kde-format
-msgid "Seek Forward by %1 seconds"
+#: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
+#, fuzzy, kde-format
+#| msgid "Seek Forward by %1 seconds"
+msgctxt ""
+"Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
+"automatically included in %1."
+msgid "Seek Forward by %1"
 msgstr "Αναζήτηση μπροστά %1 δευτερόλεπτα"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
-#, kde-format
-msgid "Seek Backward by %1 seconds"
+#: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
+#, fuzzy, kde-format
+#| msgid "Seek Backward by %1 seconds"
+msgctxt ""
+"Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
+"automatically included in %1."
+msgid "Seek Backward by %1"
 msgstr "Αναζήτηση πίσω %1 δευτερόλεπτα"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:866
 #, kde-format
 msgid "Update Collection"
 msgstr "Ενημέρωση συλλογής"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:870
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Συγχρονισμός στατιστικών..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Previous Track"
 msgstr "Προηγούμενο κομμάτι"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Restart current track"
 msgstr "Επανεκκίνηση τρέχοντος κομματιού"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Λίστα με τυχαία σειρά"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Επανασυμπλήρωση της λίστας αναπαραγωγής"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:904
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Απενεργοποίηση δυναμικής λίστας"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:908
 #, kde-format
 msgid "Next Track"
 msgstr "Επόμενο κομμάτι"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Increase Volume"
 msgstr "Αύξηση έντασης"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Μείωση έντασης"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:925
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Εναλλαγή κύριου παραθύρου"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Εναλλαγή λειτουργίας πλήρους οθόνης"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:935 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Αναζήτηση λίστας αναπαραγωγής"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:945
 #, kde-format
 msgid "Show active track"
 msgstr "Εμφάνιση ενεργού κομματιού"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:949
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Εμφάνιση ανάδυσης ειδοποιήσεων"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Mute Volume"
 msgstr "Σίγαση ήχου"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:959
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Μ' αρέσει το τρέχον κομμάτι"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:964
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Αποκλεισμός του τρέχοντος κομματιού"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:969
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Παράλειψη τρέχοντος κομματιού"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:974 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Κομμάτι στην αναμονή"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Τοποθέτηση καλλιτέχνη-τίτλου του τρέχοντος κομματιού στο πρόχειρο"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:984
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Αξιολόγηση τρέχοντος κομματιού: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:989
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Αξιολόγηση τρέχοντος κομματιού: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:994
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Αξιολόγηση τρέχοντος κομματιού: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:999
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Αξιολόγηση τρέχοντος κομματιού: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Αξιολόγηση τρέχοντος κομματιού: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1010
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Προβολή αιτήματος δικτύου"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1028
 #, kde-format
 msgid "&About Amarok"
 msgstr "Σχετικά με το &Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1032
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Διαγνωστικά"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1036
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Αναφορά σ&φάλματος..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1083
 #, kde-format
 msgid "&Music"
 msgstr "&Μουσική"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1085
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1109 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Λίστα"
 
-#: MainWindow.cpp:1120
+#: MainWindow.cpp:1126
 #, kde-format
 msgid "&Tools"
 msgstr "Ερ&γαλεία"
 
-#: MainWindow.cpp:1135
+#: MainWindow.cpp:1141
 #, kde-format
 msgid "&Settings"
 msgstr "Ρ&υθμίσεις"
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1176
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11112,22 +11120,22 @@ msgstr ""
 "Θυμηθείτε ότι μπορείτε πάντα να χρησιμοποιήσετε τη συντόμευση \"%1\" για να "
 "την επαναφέρετε."
 
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1177
 #, kde-format
 msgid "Hide Menu"
 msgstr "Απόκρυψη μενού"
 
-#: MainWindow.cpp:1213
+#: MainWindow.cpp:1219
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Παύση  ::  %1"
 
-#: MainWindow.cpp:1226
+#: MainWindow.cpp:1232
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1300
+#: MainWindow.cpp:1306
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Εφαρμογή αυτής της τροποποίησης της διάταξης;"
@@ -13497,30 +13505,30 @@ msgstr "Αυτή η ενέργεια θα σταματήσει αυτό το σ�
 msgid "Choose where to save your scripts"
 msgstr "Επιλέξτε που θέλετε να αποθηκεύονται τα σενάριά σας"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Αφαίρεση του αρχείου σεναρίου από τον δίσκο;"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Remove Script"
 msgstr "Αφαίρεση σεναρίου"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Αφαίρεση"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:425
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:453
+#: scripting/scriptconsole/ScriptConsole.cpp:455
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Είστε εντελώς σίγουρος/η;"
@@ -16115,17 +16123,17 @@ msgstr "<i>Ένταση: %1</i>"
 msgid "Score: %1"
 msgstr "Βαθμολογία: %1"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:178
 #, kde-format
 msgid "Rating: %1"
 msgstr "Αξιολόγηση: %1"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Play count: %1"
 msgstr "Μετρητής εκτελέσεων: %1"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:188
 #, kde-format
 msgid "Last played: %1"
 msgstr "Τελευταία εκτέλεση: %1"

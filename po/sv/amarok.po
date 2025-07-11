@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-10 00:41+0000\n"
+"POT-Creation-Date: 2025-07-11 00:42+0000\n"
 "PO-Revision-Date: 2025-06-09 21:27+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -102,7 +102,7 @@ msgstr "Licens: %1"
 msgid "&About"
 msgstr "&Om"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:217
+#: aboutdialog/ExtendedAboutDialog.cpp:211
 #, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
@@ -111,33 +111,33 @@ msgstr ""
 "Använd <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> för att "
 "rapportera fel.\n"
 
+#: aboutdialog/ExtendedAboutDialog.cpp:216
 #: aboutdialog/ExtendedAboutDialog.cpp:222
-#: aboutdialog/ExtendedAboutDialog.cpp:228
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Rapportera fel till <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:245
+#: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
 msgid "A&uthor"
 msgstr "&Upphovsman"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:245
+#: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
 msgid "A&uthors"
 msgstr "&Upphovsmän"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:264
+#: aboutdialog/ExtendedAboutDialog.cpp:258
 #, kde-format
 msgid "&Contributors"
 msgstr "&Bidragsgivare"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:288
+#: aboutdialog/ExtendedAboutDialog.cpp:282
 #, kde-format
 msgid "&Donors"
 msgstr "&Bidragsgivare"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:317
+#: aboutdialog/ExtendedAboutDialog.cpp:311
 #, kde-format
 msgid "T&ranslation"
 msgstr "Ö&versättning"
@@ -226,7 +226,7 @@ msgstr "Stoppa efter nuvarande spår: På"
 
 #: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1240 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
+#: EngineController.cpp:1242 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:679
 #, kde-format
 msgid "No track playing"
 msgstr "Inget spår spelas"
@@ -234,8 +234,8 @@ msgstr "Inget spår spelas"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:433
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:47
-#: main.cpp:56 MainWindow.cpp:154 MainWindow.cpp:1207 MainWindow.cpp:1213
-#: MainWindow.cpp:1226
+#: main.cpp:56 MainWindow.cpp:154 MainWindow.cpp:1213 MainWindow.cpp:1219
+#: MainWindow.cpp:1232
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1631,7 +1631,7 @@ msgstr "Nytt tidskodsspår"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:496
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:497
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:498
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1232
 #, kde-format
 msgid "Unknown"
 msgstr "Okänd"
@@ -1884,7 +1884,7 @@ msgstr ""
 "Här hittar du den lokala musiken, samt musik från bärbara musikspelare och "
 "cd-skivor."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:934
+#: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:940
 #, kde-format
 msgid "Search collection"
 msgstr "Sök i samling"
@@ -2846,7 +2846,7 @@ msgid "Configure Plugins"
 msgstr "Anpassa insticksprogram"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:377
+#: scripting/scriptconsole/ScriptConsole.cpp:379
 #, kde-format
 msgid "Scripts"
 msgstr "Skript"
@@ -4770,7 +4770,7 @@ msgstr "Okänd artist"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#: EngineController.cpp:1218
+#: EngineController.cpp:1220
 #, kde-format
 msgid "Unknown track"
 msgstr "Okänt spår"
@@ -9423,25 +9423,25 @@ msgstr "Betyg"
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "För många fel påträffades i spellistan. Uppspelning stoppad."
 
-#: EngineController.cpp:1208
+#: EngineController.cpp:1210
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
 
-#: EngineController.cpp:1210
+#: EngineController.cpp:1212
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> av <b>%2</b>"
 
-#: EngineController.cpp:1213
+#: EngineController.cpp:1215
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> på <b>%2</b>"
 
-#: EngineController.cpp:1225
+#: EngineController.cpp:1227
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10620,7 +10620,7 @@ msgstr "&Visa"
 msgid "Lock Layout"
 msgstr "Lås layout"
 
-#: MainWindow.cpp:374 MainWindow.cpp:1300
+#: MainWindow.cpp:374 MainWindow.cpp:1306
 #, kde-format
 msgid "Reset Layout"
 msgstr "Återställ layout"
@@ -10719,193 +10719,201 @@ msgstr "Spela media..."
 msgid "Edit Details of Currently Selected Track"
 msgstr "Redigera det aktuella markerade spårets information"
 
-#: MainWindow.cpp:821 MainWindow.cpp:827 MainWindow.cpp:834
-#, kde-format
-msgid "Seek Forward by %1 seconds"
+#: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
+#, fuzzy, kde-format
+#| msgid "Seek Forward by %1 seconds"
+msgctxt ""
+"Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
+"automatically included in %1."
+msgid "Seek Forward by %1"
 msgstr "Sök framåt %1 sekunder"
 
-#: MainWindow.cpp:841 MainWindow.cpp:847 MainWindow.cpp:854
-#, kde-format
-msgid "Seek Backward by %1 seconds"
+#: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
+#, fuzzy, kde-format
+#| msgid "Seek Backward by %1 seconds"
+msgctxt ""
+"Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
+"automatically included in %1."
+msgid "Seek Backward by %1"
 msgstr "Sök bakåt %1 sekunder"
 
-#: MainWindow.cpp:860
+#: MainWindow.cpp:866
 #, kde-format
 msgid "Update Collection"
 msgstr "Uppdatera samling"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:870
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Synkronisera statistik..."
 
-#: MainWindow.cpp:872
+#: MainWindow.cpp:878
 #, kde-format
 msgid "Previous Track"
 msgstr "Föregående spår"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Restart current track"
 msgstr "Starta om aktuellt spår"
 
-#: MainWindow.cpp:886
+#: MainWindow.cpp:892
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Blanda spellista"
 
-#: MainWindow.cpp:892
+#: MainWindow.cpp:898
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Fyll i spellista igen"
 
-#: MainWindow.cpp:898
+#: MainWindow.cpp:904
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Inaktivera dynamisk spellista"
 
-#: MainWindow.cpp:902
+#: MainWindow.cpp:908
 #, kde-format
 msgid "Next Track"
 msgstr "Nästa spår"
 
-#: MainWindow.cpp:907
+#: MainWindow.cpp:913
 #, kde-format
 msgid "Increase Volume"
 msgstr "Öka volym"
 
-#: MainWindow.cpp:913
+#: MainWindow.cpp:919
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Minska volym"
 
-#: MainWindow.cpp:919
+#: MainWindow.cpp:925
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Växla huvudfönster"
 
-#: MainWindow.cpp:924
+#: MainWindow.cpp:930
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Växla fullskärmsläge"
 
-#: MainWindow.cpp:929 playlist/ProgressiveSearchWidget.cpp:47
+#: MainWindow.cpp:935 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
 msgid "Search playlist"
 msgstr "Sök spellista"
 
-#: MainWindow.cpp:939
+#: MainWindow.cpp:945
 #, kde-format
 msgid "Show active track"
 msgstr "Visa aktivt spår"
 
-#: MainWindow.cpp:943
+#: MainWindow.cpp:949
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Visa meddelande med underrättelser"
 
-#: MainWindow.cpp:948
+#: MainWindow.cpp:954
 #, kde-format
 msgid "Mute Volume"
 msgstr "Tysta volym"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:959
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Gillar aktuellt spår"
 
-#: MainWindow.cpp:958
+#: MainWindow.cpp:964
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Förbjud aktuellt spår"
 
-#: MainWindow.cpp:963
+#: MainWindow.cpp:969
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Hoppa över aktuellt spår"
 
-#: MainWindow.cpp:968 playlist/view/PlaylistViewCommon.cpp:118
+#: MainWindow.cpp:974 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
 msgstr "Köa spår"
 
-#: MainWindow.cpp:973
+#: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Lägg Artist - Titel för aktuellt spår på klippbordet"
 
-#: MainWindow.cpp:978
+#: MainWindow.cpp:984
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Betygsätt aktuellt spår: 1"
 
-#: MainWindow.cpp:983
+#: MainWindow.cpp:989
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Betygsätt aktuellt spår: 2"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:994
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Betygsätt aktuellt spår: 3"
 
-#: MainWindow.cpp:993
+#: MainWindow.cpp:999
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Betygsätt aktuellt spår: 4"
 
-#: MainWindow.cpp:998
+#: MainWindow.cpp:1004
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Betygsätt aktuellt spår: 5"
 
-#: MainWindow.cpp:1004
+#: MainWindow.cpp:1010
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Visning av nätverksbegäran"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1028
 #, kde-format
 msgid "&About Amarok"
 msgstr "&Om Amarok"
 
-#: MainWindow.cpp:1026
+#: MainWindow.cpp:1032
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnostik"
 
-#: MainWindow.cpp:1030
+#: MainWindow.cpp:1036
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Rapportera fel..."
 
-#: MainWindow.cpp:1077
+#: MainWindow.cpp:1083
 #, kde-format
 msgid "&Music"
 msgstr "&Musik"
 
-#: MainWindow.cpp:1079
+#: MainWindow.cpp:1085
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1103 playlist/PlaylistDock.cpp:57
+#: MainWindow.cpp:1109 playlist/PlaylistDock.cpp:57
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "S&pellista"
 
-#: MainWindow.cpp:1120
+#: MainWindow.cpp:1126
 #, kde-format
 msgid "&Tools"
 msgstr "Verk&tyg"
 
-#: MainWindow.cpp:1135
+#: MainWindow.cpp:1141
 #, kde-format
 msgid "&Settings"
 msgstr "In&ställningar"
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1176
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -10917,22 +10925,22 @@ msgstr ""
 "Kom ihåg att du kan alltid använda snabbtangenten \"%1\" för att få tillbaka "
 "den."
 
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1177
 #, kde-format
 msgid "Hide Menu"
 msgstr "Dölj meny"
 
-#: MainWindow.cpp:1213
+#: MainWindow.cpp:1219
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Paus  ::  %1"
 
-#: MainWindow.cpp:1226
+#: MainWindow.cpp:1232
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1300
+#: MainWindow.cpp:1306
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Utför denna layoutändring?"
@@ -13285,29 +13293,29 @@ msgstr "Detta stoppar skriptet. Fortsätt?"
 msgid "Choose where to save your scripts"
 msgstr "Välj var dina skript ska sparas"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Ta bort skriptfil från disk?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Remove Script"
 msgstr "Ta bort skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Ta bort"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:423
+#: scripting/scriptconsole/ScriptConsole.cpp:425
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "Ta inte bort"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:453
+#: scripting/scriptconsole/ScriptConsole.cpp:455
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Är du helt säker?"
@@ -15822,17 +15830,17 @@ msgstr "<i>Volym: %1</i>"
 msgid "Score: %1"
 msgstr "Poäng: %1"
 
-#: TrayIcon.cpp:184
+#: TrayIcon.cpp:178
 #, kde-format
 msgid "Rating: %1"
 msgstr "Betyg: %1"
 
-#: TrayIcon.cpp:190
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Play count: %1"
 msgstr "Uppspelningsräknare: %1"
 
-#: TrayIcon.cpp:194
+#: TrayIcon.cpp:188
 #, kde-format
 msgid "Last played: %1"
 msgstr "Senast spelad: %1"
