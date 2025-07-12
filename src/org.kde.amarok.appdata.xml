@@ -497,7 +497,9 @@
     <screenshot>
       <caption>Amarok 3.3 player window</caption>
       <caption xml:lang="ca">Finestra del reproductor Amarok 3.3</caption>
+      <caption xml:lang="ca-valencia">Finestra del reproductor Amarok 3.3</caption>
       <caption xml:lang="es">Ventana del reproductor Amarok 3.3</caption>
+      <caption xml:lang="it">Finestre del lettore di Amarok 3.3</caption>
       <caption xml:lang="ka">Amarok 3.3 დამკვრელის ფანჯარა</caption>
       <caption xml:lang="nl">Amarok 3.3 spelersvenster</caption>
       <caption xml:lang="sl">Okno predvajalnika Amarok 3.3</caption>
