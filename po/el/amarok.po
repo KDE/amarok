@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-11 00:42+0000\n"
+"POT-Creation-Date: 2025-07-12 00:42+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -2201,19 +2201,19 @@ msgstr "Οργάνωση αρχείων"
 msgid "&Edit Track Details"
 msgstr "&Επεξεργασία λεπτομερειών κομματιού"
 
-#: browsers/filebrowser/FileBrowser.cpp:69
+#: browsers/filebrowser/FileBrowser.cpp:68
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr "Ανανέωση"
 
-#: browsers/filebrowser/FileBrowser.cpp:79
+#: browsers/filebrowser/FileBrowser.cpp:78
 #, kde-format
 msgid "Filter Files"
 msgstr "Φιλτράρισμα αρχείων"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:208
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2927,7 +2927,7 @@ msgid "Configure Plugins"
 msgstr "Διαμόρφωση προσθέτων"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:379
+#: scripting/scriptconsole/ScriptConsole.cpp:413
 #, kde-format
 msgid "Scripts"
 msgstr "Σενάρια"
@@ -13495,40 +13495,40 @@ msgstr "Επόμενο σενάριο"
 msgid "&View"
 msgstr "&Προβολή"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:217
+#: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Αυτή η ενέργεια θα σταματήσει αυτό το σενάριο. Συνέχεια;"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:229
+#: scripting/scriptconsole/ScriptConsole.cpp:263
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Επιλέξτε που θέλετε να αποθηκεύονται τα σενάριά σας"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Αφαίρεση του αρχείου σεναρίου από τον δίσκο;"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove Script"
 msgstr "Αφαίρεση σεναρίου"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Αφαίρεση"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:425
+#: scripting/scriptconsole/ScriptConsole.cpp:459
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:455
+#: scripting/scriptconsole/ScriptConsole.cpp:489
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Είστε εντελώς σίγουρος/η;"
@@ -13567,7 +13567,7 @@ msgstr ""
 "Το σενάριο %1 εκτελεί υπολογισμούς εδώ και πάνω από 5 δευτερόλεπτα, να "
 "τερματιστεί;"
 
-#: scripting/scriptmanager/ScriptItem.cpp:338
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "%1 is the name of the offending script, %2 the name of the script author, "

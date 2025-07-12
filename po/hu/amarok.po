@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-11 00:42+0000\n"
+"POT-Creation-Date: 2025-07-12 00:42+0000\n"
 "PO-Revision-Date: 2021-11-08 08:52+0100\n"
 "Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -2176,19 +2176,19 @@ msgstr "Fájlok rendszerezése"
 msgid "&Edit Track Details"
 msgstr "Számok &adatainak módosítása"
 
-#: browsers/filebrowser/FileBrowser.cpp:69
+#: browsers/filebrowser/FileBrowser.cpp:68
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr "Frissítés"
 
-#: browsers/filebrowser/FileBrowser.cpp:79
+#: browsers/filebrowser/FileBrowser.cpp:78
 #, kde-format
 msgid "Filter Files"
 msgstr "Fájlok szűrése"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:208
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2892,7 +2892,7 @@ msgid "Configure Plugins"
 msgstr "Bővítménybeállítások"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:379
+#: scripting/scriptconsole/ScriptConsole.cpp:413
 #, kde-format
 msgid "Scripts"
 msgstr "Parancsfájlok"
@@ -13403,40 +13403,40 @@ msgstr "Következő parancsfájl"
 msgid "&View"
 msgstr "&Nézet"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:217
+#: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Ez le fogja állítani ezt a parancsfájlt! Folytatja?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:229
+#: scripting/scriptconsole/ScriptConsole.cpp:263
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Válassza ki, hova mentse a parancsfájlokat"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Eltávolítja a parancsfájlt a lemezről?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove Script"
 msgstr "Parancsfájl eltávolítása"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:425
+#: scripting/scriptconsole/ScriptConsole.cpp:459
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:455
+#: scripting/scriptconsole/ScriptConsole.cpp:489
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Teljesen biztos benne?"
@@ -13474,7 +13474,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 "A(z) „%1” parancsfájl több mint 5 másodperce értékelődik ki, megszakítja?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:338
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "%1 is the name of the offending script, %2 the name of the script author, "

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-11 00:42+0000\n"
+"POT-Creation-Date: 2025-07-12 00:42+0000\n"
 "PO-Revision-Date: 2025-06-09 21:27+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -2136,19 +2136,19 @@ msgstr "Organisera filer"
 msgid "&Edit Track Details"
 msgstr "&Redigera spårinformation"
 
-#: browsers/filebrowser/FileBrowser.cpp:69
+#: browsers/filebrowser/FileBrowser.cpp:68
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr "Uppdatera"
 
-#: browsers/filebrowser/FileBrowser.cpp:79
+#: browsers/filebrowser/FileBrowser.cpp:78
 #, kde-format
 msgid "Filter Files"
 msgstr "Filtrera filer"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:208
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2846,7 +2846,7 @@ msgid "Configure Plugins"
 msgstr "Anpassa insticksprogram"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:379
+#: scripting/scriptconsole/ScriptConsole.cpp:413
 #, kde-format
 msgid "Scripts"
 msgstr "Skript"
@@ -13283,39 +13283,39 @@ msgstr "Nästa skript"
 msgid "&View"
 msgstr "&Visa"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:217
+#: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Detta stoppar skriptet. Fortsätt?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:229
+#: scripting/scriptconsole/ScriptConsole.cpp:263
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Välj var dina skript ska sparas"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Ta bort skriptfil från disk?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove Script"
 msgstr "Ta bort skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Ta bort"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:425
+#: scripting/scriptconsole/ScriptConsole.cpp:459
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "Ta inte bort"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:455
+#: scripting/scriptconsole/ScriptConsole.cpp:489
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Är du helt säker?"
@@ -13348,7 +13348,7 @@ msgstr "Avsluta"
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Skriptet %1 har kört mer än 5 sekunder nu. Avsluta det?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:338
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "

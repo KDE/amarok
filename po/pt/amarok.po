@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-11 00:42+0000\n"
+"POT-Creation-Date: 2025-07-12 00:42+0000\n"
 "PO-Revision-Date: 2021-06-17 23:03+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -2300,19 +2300,19 @@ msgstr "Organizar os Ficheiros"
 msgid "&Edit Track Details"
 msgstr "&Editar os Detalhes da Faixa"
 
-#: browsers/filebrowser/FileBrowser.cpp:69
+#: browsers/filebrowser/FileBrowser.cpp:68
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr "Actualizar"
 
-#: browsers/filebrowser/FileBrowser.cpp:79
+#: browsers/filebrowser/FileBrowser.cpp:78
 #, kde-format
 msgid "Filter Files"
 msgstr "Filtrar os Ficheiros"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:208
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -3015,7 +3015,7 @@ msgid "Configure Plugins"
 msgstr "Configurar os 'Plugins'"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:379
+#: scripting/scriptconsole/ScriptConsole.cpp:413
 #, kde-format
 msgid "Scripts"
 msgstr "Programas"
@@ -13569,40 +13569,40 @@ msgstr "Programa Seguinte"
 msgid "&View"
 msgstr "&Ver"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:217
+#: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Isto irá interromper este programa! Deseja continuar?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:229
+#: scripting/scriptconsole/ScriptConsole.cpp:263
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Escolha onde gravar os seus programas"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Deseja remover o ficheiro do programa do disco?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove Script"
 msgstr "Remover o Programa"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Remover"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:425
+#: scripting/scriptconsole/ScriptConsole.cpp:459
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:455
+#: scripting/scriptconsole/ScriptConsole.cpp:489
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Tem a certeza absoluta?"
@@ -13640,7 +13640,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 "O programa %1 está em avaliação há mais de 5 segundos; deseja terminá-lo?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:338
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "%1 is the name of the offending script, %2 the name of the script author, "

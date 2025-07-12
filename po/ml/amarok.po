@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-11 00:42+0000\n"
+"POT-Creation-Date: 2025-07-12 00:42+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -2089,20 +2089,20 @@ msgstr ""
 msgid "&Edit Track Details"
 msgstr ""
 
-#: browsers/filebrowser/FileBrowser.cpp:69
+#: browsers/filebrowser/FileBrowser.cpp:68
 #: context/applets/wikipedia/package/contents/ui/main.qml:63
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr ""
 
-#: browsers/filebrowser/FileBrowser.cpp:79
+#: browsers/filebrowser/FileBrowser.cpp:78
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "Filter Files"
 msgstr "à´¨àµà´àµà´à´à´àµà´¯àµà´¯àµà´µà´¾à´¨à´¾à´¯à´¿à´²àµà´²"
 
-#: browsers/filebrowser/FileBrowser.cpp:218
+#: browsers/filebrowser/FileBrowser.cpp:208
 #, kde-format
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
@@ -2841,7 +2841,7 @@ msgid "Configure Plugins"
 msgstr "à´àµà´°à´®àµà´à´°à´¿à´àµà´àµ...."
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:379
+#: scripting/scriptconsole/ScriptConsole.cpp:413
 #, kde-format
 msgid "Scripts"
 msgstr ""
@@ -13313,41 +13313,41 @@ msgstr "à´®àµà´àµà´¯ à´¸àµà´àµà´°à´¿à´�
 msgid "&View"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:217
+#: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:229
+#: scripting/scriptconsole/ScriptConsole.cpp:263
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgid "Remove Script"
 msgstr "à´¨àµà´àµà´à´à´àµà´¯àµà´¯àµà´µà´¾à´¨à´¾à´¯à´¿à´²àµà´²"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:424
+#: scripting/scriptconsole/ScriptConsole.cpp:458
 #, fuzzy, kde-format
 #| msgid "Delete failed"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "à´¨àµà´àµà´à´à´àµà´¯àµà´¯àµà´µà´¾à´¨à´¾à´¯à´¿à´²àµà´²"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:425
+#: scripting/scriptconsole/ScriptConsole.cpp:459
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:455
+#: scripting/scriptconsole/ScriptConsole.cpp:489
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -13380,7 +13380,7 @@ msgstr ""
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:338
+#: scripting/scriptmanager/ScriptItem.cpp:339
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
