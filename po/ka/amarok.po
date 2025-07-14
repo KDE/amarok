@@ -32,7 +32,7 @@ msgstr "Temuri.doghonadze@gmail.com"
 #: ../data/DefaultPlaylistLayouts.xml:3
 #, kde-format
 msgid "Default"
-msgstr "ნაგულისხმები"
+msgstr "ნაგულისხმევი"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
@@ -3003,7 +3003,7 @@ msgstr "&პორტი:"
 #: configdialog/dialogs/DatabaseConfig.ui:91
 #, kde-format
 msgid "Enter the port number to access the server. Default is port 3306.\n"
-msgstr "შეიყვანეთ სერვერის პორტი. ნაგულისხმებია პორტი 3306.\n"
+msgstr "შეიყვანეთ სერვერის პორტი. ნაგულისხმევია პორტი 3306.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -3017,7 +3017,7 @@ msgstr "&მომხმარებლის სახელი:"
 #: configdialog/dialogs/DatabaseConfig.ui:118
 #, kde-format
 msgid "Enter the password for the default user.\n"
-msgstr "შეიყვანეთ ნაგულისხმები მომხმარებლის პაროლი.\n"
+msgstr "შეიყვანეთ ნაგულისხმევი მომხმარებლის პაროლი.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
@@ -3045,7 +3045,7 @@ msgstr "&მონაცემთა ბაზა:"
 #: configdialog/dialogs/DatabaseConfig.ui:178
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
-msgstr "შეიყვანეთ ბაზის სახელი. ნაგულისხმები სახელია amarokdb.\n"
+msgstr "შეიყვანეთ ბაზის სახელი. ნაგულისხმევი სახელია amarokdb.\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
@@ -3220,7 +3220,7 @@ msgstr "აირჩიეთ განწყობის ჩვენები�
 #: configdialog/dialogs/GeneralConfig.ui:141
 #, kde-format
 msgid "Default (System colours)"
-msgstr "ნაგულისხმები (სისტემის ფერები)"
+msgstr "ნაგულისხმევი (სისტემის ფერები)"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:146
@@ -8037,7 +8037,7 @@ msgstr ""
 #: dialogs/EqualizerDialog.ui:92
 #, kde-format
 msgid "Reset to Default"
-msgstr "ნაგულისხმებ მნიშვნელობაზე დაბრუნება"
+msgstr "ნაგულისხმევ მნიშვნელობაზე დაბრუნება"
 
 #. i18n: ectx: property (title), widget (QGroupBox, eqBandsGroupBox)
 #: dialogs/EqualizerDialog.ui:102
@@ -11314,7 +11314,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
 #, kde-format
 msgid "Default Layout"
-msgstr "ნაგულისხმები განლაგება"
+msgstr "ნაგულისხმევი განლაგება"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, PlaylistLayoutEditDialog)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:20

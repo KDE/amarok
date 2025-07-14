@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
@@ -11,11 +12,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Crowdin-Project: kdeorg\n"
-"X-Crowdin-Project-ID: 269464\n"
-"X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /kf6-trunk/messages/amarok/amarok.pot\n"
 "X-Crowdin-File-ID: 57196\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-Project: kdeorg\n"
+"X-Crowdin-Project-ID: 269464\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3449,7 +3450,7 @@ msgstr "使用系统通知(&S)"
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr ""
+msgstr "当前音频后端不支持淡入淡出效果"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7606,6 +7607,13 @@ msgid ""
 "   GStreamer: %5\n"
 "\n"
 msgstr ""
+"%1 Diagnostics\n"
+"\n"
+"General Information:\n"
+"   %1 Version: %2\n"
+"   KDE Frameworks Version: %3\n"
+"   Qt Version: %4\n"
+"   GStreamer: %5\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
@@ -10360,22 +10368,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "编辑所选歌曲的详情"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "快进 %1 秒"
+msgstr ""
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "快退 %1 秒"
+msgstr ""
 
 #: MainWindow.cpp:866
 #, kde-format
