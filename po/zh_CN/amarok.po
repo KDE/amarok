@@ -10373,7 +10373,7 @@ msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr ""
+msgstr "快进 %1"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
 #, kde-format
@@ -10381,7 +10381,7 @@ msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr ""
+msgstr "快退 %1"
 
 #: MainWindow.cpp:866
 #, kde-format
