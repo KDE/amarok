@@ -67,6 +67,8 @@ class ScriptListDockWidget;
             QDockWidget *m_codeWidget;
             QDockWidget *m_outputWidget;
             QDockWidget *m_errorWidget;
+            QAction *m_startAction;
+            QAction *m_stopAction;
             QString m_savePath;
             KTextEditor::Editor *m_editor;
             ScriptListDockWidget *m_scriptListDock;

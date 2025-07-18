@@ -95,15 +95,15 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     QMenuBar *bar = new QMenuBar( this );
     setMenuBar( bar );
     QToolBar *toolBar = new QToolBar( this );
-    QAction *action = new QAction( i18n( "Stop" ), this );
-    action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
-    connect( action, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
-    toolBar->addAction( action );
-    action = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-start") ), i18n("Execute Script"), this );
-    action->setShortcut( QKeyCombination( Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_R ) );
-    connect( action, &QAction::triggered, this, &ScriptConsole::slotExecuteNewScript );
-    toolBar->addAction( action );
-    action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&New Script" ), this );
+    m_stopAction = new QAction( i18n( "Stop" ), this );
+    m_stopAction->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
+    connect( m_stopAction, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
+    toolBar->addAction( m_stopAction );
+    m_startAction = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-start") ), i18n("Execute Script"), this );
+    m_startAction->setShortcut( QKeyCombination( Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_R ) );
+    connect( m_startAction, &QAction::triggered, this, &ScriptConsole::slotExecuteNewScript );
+    toolBar->addAction( m_startAction );
+    QAction *action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&New Script" ), this );
     action->setShortcut( Qt::CTRL | Qt::Key_N );
     toolBar->addAction( action );
     connect( action, &QAction::triggered, this, &ScriptConsole::slotNewScript );
@@ -197,7 +197,16 @@ ScriptConsole::slotExecuteNewScript()
         return;
 
     m_scriptItem->document()->save();
+    m_scriptItem->document()->setReadWrite( false );
+    m_startAction->setDisabled( true );
+    m_stopAction->setDisabled( false );
     m_scriptItem->start( false );
+
+    // Currently running scripts is synchronous, so this doesn't have that much point, but
+    // it's nice to have it already here in case scripts start running async again some day
+    m_scriptItem->document()->setReadWrite( true );
+    m_startAction->setDisabled( false );
+    m_stopAction->setDisabled( true );
 }
 
 void
@@ -330,6 +339,9 @@ void
 ScriptConsole::slotAbortEvaluation()
 {
     m_scriptItem->pause();
+    m_scriptItem->document()->setReadWrite( true );
+    m_startAction->setDisabled( false );
+    m_stopAction->setDisabled( true );
 }
 
 
@@ -367,17 +379,18 @@ ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
     m_errorWidget->setWidget( error );
     error->show();
 
-    /* TODO - install filters
     if( item->engine() && item->running() )
     {
         view->document()->setReadWrite( false );
+        m_startAction->setDisabled( true );
+        m_stopAction->setDisabled( false );
     }
     else
     {
         view->document()->setReadWrite( true );
-        view->installEventFilter( this );
+        m_startAction->setDisabled( false );
+        m_stopAction->setDisabled( true );
     }
-    */
 }
 
 void
