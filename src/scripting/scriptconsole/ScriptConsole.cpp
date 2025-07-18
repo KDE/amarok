@@ -114,11 +114,9 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     toolBar->addAction( action );
     connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::clear );
     action = new QAction( i18n("Previous Script"), this );
-    action->setShortcut( QKeySequence::MoveToPreviousPage );
     connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::prev );
     toolBar->addAction( action );
     action = new QAction( i18n("Next Script"), this );
-    action->setShortcut( QKeySequence::MoveToNextPage );
     connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::next );
     toolBar->addAction( action );
 
@@ -138,12 +136,10 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     connect( m_scriptListDock, &ScriptListDockWidget::edit, this, &ScriptConsole::slotEditScript );
     connect( m_scriptListDock, &ScriptListDockWidget::currentItemChanged, this, &ScriptConsole::setCurrentScriptItem );
 
-    QListWidgetItem *item = new QListWidgetItem( QStringLiteral( "The Amarok Script Console allows you to easily execute"
-                                                "JavaScript with access to all functions\nand methods you would"
-                                                "have in an Amarok script.\nInformation on scripting for Amarok is"
-                                                "available at:\nhttp://community.kde.org/Amarok/Development#Scripting"
-                                                "\nExecute code: CTRL-Enter\nBack in code history: Page Up"
-                                                "\nForward in code history: Page Down")
+    QListWidgetItem *item = new QListWidgetItem( QStringLiteral( "The Amarok Script Console allows you to easily execute\n"
+                                                "JavaScript with access to all functions\nand methods you would "
+                                                "have in an Amarok script.\nInformation on scripting for Amarok is "
+                                                "available at:\nhttps://community.kde.org/Amarok/Development#Scripting")
                                                , nullptr );
     item->setFlags( Qt::NoItemFlags );
     m_scriptListDock->addItem( item );
