@@ -51,8 +51,8 @@ AmarokScriptCodeCompletionModel::completionInvoked( KTextEditor::View *view, con
     const QString &currentText = view->document()->text( range );
     for( const QString &completionItem : m_autoCompleteStrings )
     {
-        int index = completionItem.indexOf( currentText, Qt::CaseInsensitive ) + currentText.length();
-        if( index != -1 && !completionItem.mid(index, completionItem.size()-index ).contains( QLatin1Char('.') ) && completionItem != currentText )
+        int index = completionItem.indexOf( currentText, Qt::CaseInsensitive );
+        if( index != -1 && !completionItem.mid( index + currentText.length() + 1 ).contains( QLatin1Char('.') ) && completionItem != currentText )
             m_completionList << completionItem;
     }
     setRowCount( m_completionList.count() );
@@ -72,23 +72,20 @@ KTextEditor::Range
 AmarokScriptCodeCompletionModel::completionRange(KTextEditor::View* view, const KTextEditor::Cursor& position)
 {
     const QString& line = view->document()->line(position.line());
-    KTextEditor::Range range(position, position);
     // include everything non-space before
-    for( int i = position.column() - 1; i >= 0; --i )
+    int i, j;
+    for( i = position.column() - 1; i > 0; --i )
     {
         if( line.at( i ).isSpace() )
             break;
-        else
-            range.start().setColumn( i );
     }
     // include everything non-space after
-    for( int i = position.column() + 1; i < line.length(); ++i )
+    for( j = position.column() + 1; j < line.length() - 1; ++j )
     {
-        if( line.at( i ).isSpace() )
+        if( line.at( j ).isSpace() )
             break;
-        else
-            range.end().setColumn( i );
     }
+    KTextEditor::Range range(position.line(), i, position.line(), j);
     return range;
 }
 

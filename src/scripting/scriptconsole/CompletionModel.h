@@ -26,9 +26,11 @@ namespace KTextEditor {
 
 namespace ScriptConsoleNS
 {
-    class AmarokScriptCodeCompletionModel : public KTextEditor::CodeCompletionModelControllerInterface
-                                          , public KTextEditor::CodeCompletionModel
+    class AmarokScriptCodeCompletionModel : public KTextEditor::CodeCompletionModel
+                                          , public KTextEditor::CodeCompletionModelControllerInterface
     {
+            Q_OBJECT
+            Q_INTERFACES(KTextEditor::CodeCompletionModelControllerInterface)
         public:
             explicit AmarokScriptCodeCompletionModel( QObject *parent );
             ~AmarokScriptCodeCompletionModel() override;
