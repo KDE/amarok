@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-12 00:42+0000\n"
-"PO-Revision-Date: 2025-06-29 13:45+0300\n"
+"PO-Revision-Date: 2025-07-17 09:55+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.04.2\n"
+"X-Generator: Lokalize 25.04.3\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
 
@@ -3961,10 +3961,9 @@ msgid "Labels for %1 by %2"
 msgstr "מידע על הרצועה: %1 מאת %2"
 
 #: context/applets/labels/LabelsApplet.cpp:757
-#, fuzzy, kde-format
-#| msgid "General Options"
+#, kde-format
 msgid "General Settings"
-msgstr "אפשרויות כלליות"
+msgstr "הגדרות כלליות"
 
 #: context/applets/labels/LabelsApplet.cpp:758
 #, fuzzy, kde-format
@@ -4260,10 +4259,9 @@ msgid "Songkick Concert Information"
 msgstr "מידע אודות התוסף"
 
 #: context/applets/songkick/SongkickApplet.cpp:63
-#, fuzzy, kde-format
-#| msgid "Comment"
+#, kde-format
 msgid "Concerts"
-msgstr "הערה"
+msgstr "הופעות"
 
 #: context/applets/songkick/SongkickApplet.cpp:70
 #, fuzzy, kde-format
@@ -4859,11 +4857,10 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to MTP Device"
+#, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "העברת רצועות אל התקן MTP"
+msgstr "רצועות הועברו אל %1"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:377
 #, kde-format
@@ -5018,10 +5015,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
-#, fuzzy, kde-format
-#| msgid "Uninstall"
+#, kde-format
 msgid "&Initialize iPod"
-msgstr "הסר"
+msgstr "&אתחול iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
@@ -5250,11 +5246,9 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:561
-#, fuzzy, kde-format
-#| msgid "One track already on media device"
-#| msgid_plural "%1 tracks already on media device"
+#, kde-format
 msgid "The track failed to copy to the device"
-msgstr "רצועה אחת כבר קיימת על התקן־המדיה"
+msgstr "העתקת הרצועה למכשיר נכשלה"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:571
 #, fuzzy, kde-format
@@ -5576,10 +5570,9 @@ msgid "%1 (not activated)"
 msgstr ""
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:629
-#, fuzzy, kde-format
-#| msgid "Configure Media Device"
+#, kde-format
 msgid "Configure USB Mass Storage Device"
-msgstr "הגדר התקן מדיה"
+msgstr "הגדר התקן אחסון עתק דרך USB"
 
 #: core-impl/collections/umscollection/UmsCollectionLocation.cpp:126
 #, fuzzy, kde-format
@@ -5593,10 +5586,9 @@ msgstr[3] ""
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:14
-#, fuzzy, kde-format
-#| msgid "Podcast Configuration"
+#, kde-format
 msgid "USB Mass Storage device configuration"
-msgstr "הגדרות פוד־קסט"
+msgstr "הגדרת התקן אחסון עתק דרך USB"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:22
@@ -7417,11 +7409,9 @@ msgid "Cover Image Save Location"
 msgstr "מקום שמירת תמונות עטיפות"
 
 #: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
-#, fuzzy, kde-format
-#| msgid ""
-#| "Determines which Amazon server cover images should be retrieved from."
+#, kde-format
 msgid "Sorry, the cover could not be saved."
-msgstr "קובע מאיזה שרת של Amazon יימשכו עטיפות האלבומים."
+msgstr "אי אפשר לשמור את העטיפה, עמך הסליחה."
 
 #: covermanager/CoverFoundDialog.cpp:518
 #, fuzzy, kde-format
@@ -7601,10 +7591,9 @@ msgid "Fetching"
 msgstr "מצרף תוכן..."
 
 #: covermanager/CoverManager.cpp:407
-#, fuzzy, kde-format
-#| msgid "Rating"
+#, kde-format
 msgid "Loading"
-msgstr "דירוג"
+msgstr "בטעינה"
 
 #: covermanager/CoverManager.cpp:618
 #, kde-format
@@ -7852,11 +7841,10 @@ msgid "Imported <b>%1 - %2 (%3)</b>"
 msgstr "Imported <b>%1 - %2 (%3)</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:160
-#, fuzzy, kde-format
-#| msgid "<b><font color='red'>Error:</font></b> %1"
+#, kde-format
 msgctxt "Track has been discarded, format: Url"
 msgid "Discarded <b><font color='gray'>%1</font></b>"
-msgstr "<b><font color='red'>שגיאה:</font></b> %1"
+msgstr "<b><font color='gray'>%1</font></b> הושלך"
 
 #: dialogs/DatabaseImporterDialog.cpp:175
 #, kde-format
@@ -8419,8 +8407,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:83
-#, fuzzy, kde-format
-#| msgid "VFAT Safe &Names"
+#, kde-format
 msgid "&VFAT safe names"
 msgstr "שמות VFAT &בטוחים"
 
