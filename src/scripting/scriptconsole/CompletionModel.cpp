@@ -52,7 +52,8 @@ AmarokScriptCodeCompletionModel::completionInvoked( KTextEditor::View *view, con
     for( const QString &completionItem : m_autoCompleteStrings )
     {
         int index = completionItem.indexOf( currentText, Qt::CaseInsensitive );
-        if( index != -1 && !completionItem.mid( index + currentText.length() + 1 ).contains( QLatin1Char('.') ) && completionItem != currentText )
+        if( index != -1 && !completionItem.mid( index + currentText.length() + 1 ).contains( QLatin1Char('.') )
+            && !completionItem.left( index ).contains( QLatin1Char('(') ) && completionItem != currentText )
             m_completionList << completionItem;
     }
     setRowCount( m_completionList.count() );

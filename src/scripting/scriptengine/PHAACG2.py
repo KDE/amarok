@@ -50,6 +50,8 @@ def generatePseudoHeader( rootDir, fileName ):
             prototype[ s[1] ] = className
         else:
             className = s[0].strip()
+            if( className == 'exclude' ):
+                return
             autoComplete.append( className )
         addElement( scriptMap, className )#, classDoc )
         classBeg = contents.index(match.group(0))
@@ -59,16 +61,21 @@ def generatePseudoHeader( rootDir, fileName ):
                 if 'PROTOTYPE' not in s:
                     autoComplete.append( className + "." + qProperty[1] )
                 scriptMap[className].append( qProperty[0] )
+            invokables = re.findall( r"(Q_INVOKABLE\s\w*\s([A-Za-z0-9]+)+\((.*)\))", contents, re.MULTILINE )
+            for invokable in invokables:
+                if 'PROTOTYPE' not in s:
+                    autoComplete.append( className + "." + invokable[1] + "(" + invokable[2] + ")" )
+                scriptMap[className].append( invokable[0] )
             #re.findall( r"public slots:[\s\n]*(.*)[\n\s]*(protected|private|public|slots|};|signals):" #huh, works without |signals?!
             #            , contents, re.MULTILINE|re.DOTALL )
             accessMap = {}
-            for access in ( 'private slots:', 'protected slots:', 'public slots:', 'private:', 'public:', 'protected:', 'signals:', '};' ):
+            for access in ( 'private Q_SLOTS:', 'protected Q_SLOTS:', 'public Q_SLOTS:', 'private:', 'public:', 'protected:', 'Q_SIGNALS:', '};' ):
                 indexFromBeg = contents[classBeg:].find( access ) + classBeg
                 if indexFromBeg != -1:
                     accessMap[ indexFromBeg ] = access
 
             sortedKeys = sorted( accessMap.keys() )
-            for access in ('public slots:', 'signals:'):
+            for access in ('public Q_SLOTS:', 'Q_SIGNALS:'):
                 if( access in contents ):
                     accessIndex = contents[classBeg:].find( access ) + classBeg
                     selections = contents[ accessIndex : sortedKeys[sortedKeys.index(accessIndex)] ]
