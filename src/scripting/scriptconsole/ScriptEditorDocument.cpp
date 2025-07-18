@@ -83,23 +83,3 @@ ScriptEditorDocument::setReadWrite( bool readWrite )
     m_document->setReadWrite( readWrite );
 }
 
-void
-ScriptEditorDocument::highlight( KTextEditor::View *view, int line, const QColor &color )
-{
-/*
-    KTextEditor::MovingInterface *movingIf = qobject_cast<KTextEditor::MovingInterface*>( view->document() );
-    if( !movingIf )
-      return;
-
-    KTextEditor::MovingRange *movingRange = movingIf->newMovingRange( KTextEditor::Range( line, 0, line, 500 ) );
-    movingRange->setView( view );
-    movingRange->setZDepth( -999 );
-    //use highlightinterface::default styles?
-    KTextEditor::Attribute::Ptr attrb( new KTextEditor::Attribute() );
-    attrb->setBackground( color );
-    movingRange->setAttribute( attrb );
-*/
-    Q_UNUSED(view) //TODO highlight Qt6
-    Q_UNUSED(line)
-    Q_UNUSED(color)
-}

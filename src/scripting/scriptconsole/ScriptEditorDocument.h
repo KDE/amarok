@@ -48,7 +48,6 @@ namespace ScriptConsoleNS
             void save( const QUrl &url );
             void save();
             void setReadWrite( bool readWrite );
-            static void highlight( KTextEditor::View *view, int line, const QColor &color );
 
         private:
             KTextEditor::Document *m_document;
