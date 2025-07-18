@@ -29,8 +29,8 @@ using namespace ScriptConsoleNS;
 AmarokScriptCodeCompletionModel::AmarokScriptCodeCompletionModel( QObject *parent )
     : CodeCompletionModel( parent )
 {
-    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/scriptconsole/") ) );
-    QFile file( url.path() + QStringLiteral("AutoComplete.txt") );
+    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/scriptconsole/AutoComplete.txt") ) );
+    QFile file( url.path() );
     if( file.open( QFile::ReadOnly ) )
     {
         QTextStream in( &file );

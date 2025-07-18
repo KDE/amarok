@@ -40,19 +40,13 @@ KTextEditor::View*
 ScriptEditorDocument::createView( QWidget* parent )
 {
     KTextEditor::View *view = m_document->createView( parent );
-    //TODO completion Qt6
-/*    KTextEditor::CodeCompletionInterface *codeCompletionIf = qobject_cast<KTextEditor::CodeCompletionInterface*>( view );
-    if( codeCompletionIf )
-    {
-        if( !s_completionModel )
-            s_completionModel = new AmarokScriptCodeCompletionModel( parent );
-        codeCompletionIf->registerCompletionModel( s_completionModel.data() );
-        codeCompletionIf->setAutomaticInvocationEnabled( true );
-    }
-    KTextEditor::ConfigInterface *configIface = qobject_cast<KTextEditor::ConfigInterface*>( view );
-    if( configIface )
-        configIface->setConfigValue( QStringLiteral("line-numbers"), true );
-*/
+    if( !s_completionModel )
+        s_completionModel = new AmarokScriptCodeCompletionModel( parent );
+    view->registerCompletionModel( s_completionModel.data() );
+    view->setAutomaticInvocationEnabled( true );
+
+    view->setConfigValue( QStringLiteral("line-numbers"), true );
+
     return view;
 }
 
