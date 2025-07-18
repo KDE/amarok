@@ -77,6 +77,13 @@ void TestCueFileSupport::testUtf8Cue()
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).artist(), QStringLiteral( "Die Toten Hosen" ) );
 }
 
+void TestCueFileSupport::testDontCrashOnBrokenCueLines()
+{
+    QString testUrl = dataPath( QStringLiteral("data/cue/testsheet01-utf8-broken.cue") );
+    QVERIFY( !CueFileSupport::validateCueSheet( testUrl ) );
+}
+
+
 QString TestCueFileSupport::dataPath( const QString &relPath )
 {
     return QDir::toNativeSeparators( QStringLiteral( AMAROK_TEST_DIR ) + QLatin1Char('/') + relPath );

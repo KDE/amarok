@@ -150,7 +150,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                         {
                             QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
-                            index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
+                            index = time.value(0).toLong() *60*1000 + time.value(1).toLong() *1000 + time.value(2).toLong() *1000/75; //75 frames per second
 
                             if ( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
                             {
@@ -168,7 +168,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                         {
                             QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
-                            length = time[0].toLong() * 60 * 1000 + time[1].toLong() * 1000 + time[2].toLong() *1000/75; //75 frames per second
+                            length = time.value(0).toLong() * 60 * 1000 + time.value(1).toLong() * 1000 + time.value(2).toLong() *1000/75; //75 frames per second
 
                             if ( prevIndex != -1 )
                             {
@@ -377,7 +377,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
                     {
                         QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
-                        index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
+                        index = time.value(0).toLong() *60*1000 + time.value(1).toLong() *1000 + time.value(2).toLong() *1000/75; //75 frames per second
 
                         if ( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
                         {
@@ -393,7 +393,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
                     {
                         QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
-                        length = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
+                        length = time.value(0).toLong() *60*1000 + time.value(1).toLong() *1000 + time.value(2).toLong() *1000/75; //75 frames per second
 
                         if ( prevIndex != -1 )
                         {

@@ -31,6 +31,7 @@ private Q_SLOTS:
     void testLocateCueFile();
     void testIso88591Cue();
     void testUtf8Cue();
+    void testDontCrashOnBrokenCueLines();
 
 private:
     QString dataPath( const QString &relPath );
