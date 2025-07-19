@@ -207,7 +207,7 @@ RatingItem::mousePressEvent( QMouseEvent* e )
     if ( e->button() == Qt::LeftButton )
     {
         QRect rect( 0, 0, width(), height() );
-        int ratingFromPos = m_ratingPainter->ratingFromPosition( rect, e->pos() );
+        int ratingFromPos = m_ratingPainter->ratingFromPosition( rect, e->position().toPoint() );
         debug() << "Rating item clicked. New rating:" << ratingFromPos;
 
         if ( ratingFromPos >= 0 )
@@ -219,7 +219,7 @@ void
 RatingItem::hoverMoveEvent( QHoverEvent* e )
 {
     QRect rect( 0, 0, width(), height() );
-    m_hoverRating = m_ratingPainter->ratingFromPosition( rect, e->pos() );
+    m_hoverRating = m_ratingPainter->ratingFromPosition( rect, e->position().toPoint() );
 
     update();
 }
@@ -228,7 +228,7 @@ void
 RatingItem::hoverEnterEvent( QHoverEvent* e )
 {
     QRect rect( 0, 0, width(), height() );
-    m_hoverRating = m_ratingPainter->ratingFromPosition( rect, e->pos() );
+    m_hoverRating = m_ratingPainter->ratingFromPosition( rect, e->position().toPoint() );
 
     update();
 }

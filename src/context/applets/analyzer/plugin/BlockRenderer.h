@@ -73,7 +73,7 @@ protected:
         for(uint x = 0; x < (uint)store.size(); ++x)
         {
             // Draw fade bars
-            for(const auto &fadebar : qAsConst(fadebars.at(x)))
+            for(const auto &fadebar : std::as_const(fadebars.at(x)))
             {
                 if(fadebar.intensity > 0)
                 {

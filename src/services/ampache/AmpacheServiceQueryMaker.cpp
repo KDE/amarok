@@ -207,7 +207,7 @@ AmpacheServiceQueryMaker::fetchArtists()
     // first try the cache
     if( !d->parentArtistIds.isEmpty() )
     {
-        for( int artistId : qAsConst(d->parentArtistIds) )
+        for( int artistId : std::as_const(d->parentArtistIds) )
             artists << d->collection->artistById( artistId );
     }
 

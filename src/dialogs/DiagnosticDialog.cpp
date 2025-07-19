@@ -92,7 +92,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Importer ) );
 
     QString aPluginString;
-    for( const auto &aInfo : qAsConst(aPlugins) )
+    for( const auto &aInfo : std::as_const(aPlugins) )
     {
         aPluginString += QStringLiteral("   ") + aInfo.name() + QStringLiteral(" (") + aInfo.version() + QStringLiteral(")\n");
     }

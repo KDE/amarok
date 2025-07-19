@@ -317,7 +317,7 @@ TokenDropTarget::dropEvent( QDropEvent *event )
     }
 
         if( token )
-            drop( token, event->pos() );
+            drop( token, event->position().toPoint() );
     }
 }
 

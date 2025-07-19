@@ -922,7 +922,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         if( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             setCurrentTrackActionsVisible( false );
-            const int x = mev->globalPos().x();
+            const int x = mev->globalPosition().x();
             int d = x - m_drag.lastX;
             m_drag.lastX = x;
             const int globalDist = qAbs( x - m_drag.startX );
@@ -945,7 +945,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         {
             static_cast<QWidget*>(o)->setCursor( Qt::SizeHorCursor );
             m_drag.max = 0;
-            m_drag.lastX = m_drag.startX = mev->globalPos().x();
+            m_drag.lastX = m_drag.startX = mev->globalPosition().x();
         }
         return false;
     }
@@ -955,7 +955,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         if( mev->button() == Qt::LeftButton )
         if( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
-            const int x = mev->globalPos().x();
+            const int x = mev->globalPosition().x();
             const int d = m_drag.startX - x;
             QRect r = m_trackBarSpacer->geometry();
             const int limit = r.width()/5; // 1/3 is too much, 1/6 to few
@@ -970,7 +970,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
             {   // this is a drag, release secretly
                 o->blockSignals( true );
                 o->removeEventFilter( this );
-                QMouseEvent mre( QEvent::MouseButtonRelease, mev->pos(), mev->globalPos(),
+                QMouseEvent mre( QEvent::MouseButtonRelease, mev->pos(), mev->globalPosition(),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
                 QCoreApplication::sendEvent( o, &mre );
                 o->installEventFilter( this );

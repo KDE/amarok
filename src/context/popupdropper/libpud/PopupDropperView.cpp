@@ -59,7 +59,7 @@ PopupDropperView::~PopupDropperView()
 void PopupDropperView::dragMoveEvent( QDragMoveEvent *event )
 {
     //qDebug() << "PopupDropperView::dragMoveEvent";
-    QGraphicsItem* item = itemAt( event->pos() );
+    QGraphicsItem* item = itemAt( event->position().toPoint() );
 
     #define svgitem(x) dynamic_cast<QGraphicsSvgItem*>(x)
     #define textitem(x) dynamic_cast<QGraphicsTextItem*>(x)
@@ -136,7 +136,7 @@ void PopupDropperView::dropEvent( QDropEvent *event )
         return;
     }
 
-    QGraphicsItem* item = itemAt( event->pos() );
+    QGraphicsItem* item = itemAt( event->position().toPoint() );
 
     if( QGraphicsSvgItem *svgItem = dynamic_cast<QGraphicsSvgItem*>(item) )
     {

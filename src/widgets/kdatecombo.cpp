@@ -119,7 +119,7 @@ bool KDateCombo::eventFilter (QObject*, QEvent* e)
   if ( e->type() == QEvent::MouseButtonPress )
   {
       QMouseEvent *me = (QMouseEvent *)e;
-      QPoint p = mapFromGlobal( me->globalPos() );
+      QPoint p = mapFromGlobal( me->globalPosition().toPoint() );
       if (rect().contains( p ) )
       {
           QTimer::singleShot(10, this, &KDateCombo::nullDateEnteredEvent);
