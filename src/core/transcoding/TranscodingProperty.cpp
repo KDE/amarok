@@ -51,15 +51,15 @@ Property::Tradeoff(const QByteArray &name,
                      QStringList() << leftText << rightText );
 }
 
-QVariant::Type
-Property::variantType() const
+QMetaType::Type
+Property::metaType() const
 {
     switch( m_type )
     {
         case TRADEOFF:
-            return QVariant::Int;
+            return QMetaType::Int;
     }
-    return QVariant::Invalid;
+    return QMetaType::UnknownType;
 }
 
 Property::Property( const QByteArray &name,

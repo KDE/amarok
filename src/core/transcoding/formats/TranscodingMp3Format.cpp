@@ -88,7 +88,7 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
     for( const Property &property : m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
-            && configuration.property( property.name() ).type() == property.variantType() )
+            && configuration.property( property.name() ).typeId() == property.metaType() )
         {
             if( property.name() == "quality" )
             {

@@ -63,7 +63,7 @@ public:
 
     Type type() const { return m_type; }
 
-    QVariant::Type variantType() const;
+    QMetaType::Type metaType() const;
 
     int min() const { return m_min; }
 

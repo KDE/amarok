@@ -71,7 +71,7 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
 
         if( !value.isValid() )
             return invalid;
-        if( !value.canConvert( property.variantType() ) )
+        if( !value.canConvert( QMetaType( property.metaType() ) ) )
             return invalid;
         switch( property.type() )
         {
@@ -119,7 +119,7 @@ Configuration::prettyName() const
     const Property &property = format->propertyList().first();
     QByteArray name = property.name();
     Q_ASSERT( m_values.contains( name ) );
-    Q_ASSERT( m_values.value( name ).type() == property.variantType() );
+    Q_ASSERT( m_values.value( name ).typeId() == property.metaType() );
     QString propertyText;
     switch( property.type() )
     {
