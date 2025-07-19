@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-12 00:42+0000\n"
+"POT-Creation-Date: 2025-07-19 05:21+0000\n"
 "PO-Revision-Date: 2013-09-08 07:04+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -2723,7 +2723,7 @@ msgid "Configure Plugins"
 msgstr "قىستۇرمىلارنى سەپلەش"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:413
+#: scripting/scriptconsole/ScriptConsole.cpp:426
 #, kde-format
 msgid "Scripts"
 msgstr "قوليازما"
@@ -12562,41 +12562,41 @@ msgstr "قوليازما"
 msgid "&View"
 msgstr "كۆرۈنۈش(&V)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:263
+#: scripting/scriptconsole/ScriptConsole.cpp:272
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, fuzzy, kde-format
 #| msgid "Remove selected"
 msgid "Remove Script"
 msgstr "تاللىغاننى چىقىرىۋەت"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "چىقىرىۋەت"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:459
+#: scripting/scriptconsole/ScriptConsole.cpp:472
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:489
+#: scripting/scriptconsole/ScriptConsole.cpp:502
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""

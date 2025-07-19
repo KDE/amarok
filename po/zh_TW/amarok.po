@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-12 00:42+0000\n"
+"POT-Creation-Date: 2025-07-19 05:21+0000\n"
 "PO-Revision-Date: 2025-06-09 21:57+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -2757,7 +2757,7 @@ msgid "Configure Plugins"
 msgstr "設定外掛程式"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:413
+#: scripting/scriptconsole/ScriptConsole.cpp:426
 #, kde-format
 msgid "Scripts"
 msgstr "文稿"
@@ -12894,39 +12894,39 @@ msgstr "下一個文稿"
 msgid "&View"
 msgstr "檢視(&V)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "這樣會將文稿停止執行。要繼續嗎？"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:263
+#: scripting/scriptconsole/ScriptConsole.cpp:272
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "選擇要在哪裡儲存您的文稿"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "要從磁碟中移除文稿檔嗎？"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove Script"
 msgstr "移除文稿"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "移除"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:459
+#: scripting/scriptconsole/ScriptConsole.cpp:472
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "不要移除"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:489
+#: scripting/scriptconsole/ScriptConsole.cpp:502
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "您完全確定嗎？"

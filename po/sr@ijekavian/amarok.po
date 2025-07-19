@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-12 00:42+0000\n"
+"POT-Creation-Date: 2025-07-19 05:21+0000\n"
 "PO-Revision-Date: 2017-12-03 23:07+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -2917,7 +2917,7 @@ msgid "Configure Plugins"
 msgstr "Подеси прикључке"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:413
+#: scripting/scriptconsole/ScriptConsole.cpp:426
 #, kde-format
 msgid "Scripts"
 msgstr "Скрипте"
@@ -13782,42 +13782,42 @@ msgstr "Следећа скрипта"
 msgid "&View"
 msgstr "&Приказ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Ово ће зауставити скрипту. Наставити?"
 
 # >> @title:window
-#: scripting/scriptconsole/ScriptConsole.cpp:263
+#: scripting/scriptconsole/ScriptConsole.cpp:272
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Где желите да сачувате скрипту"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Уклонити фајл скрипте са диска?"
 
 # >> @title:window
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove Script"
 msgstr "Уклањање скрипте"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Уклони"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:459
+#: scripting/scriptconsole/ScriptConsole.cpp:472
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:489
+#: scripting/scriptconsole/ScriptConsole.cpp:502
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Јесте ли потпуно сигурни?"

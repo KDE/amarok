@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-12 00:42+0000\n"
+"POT-Creation-Date: 2025-07-19 05:21+0000\n"
 "PO-Revision-Date: 2025-07-14 13:04+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-i18n-doc@kde.org>\n"
@@ -2886,7 +2886,7 @@ msgid "Configure Plugins"
 msgstr "Eklentileri Yapılandır"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:413
+#: scripting/scriptconsole/ScriptConsole.cpp:426
 #, kde-format
 msgid "Scripts"
 msgstr "Betikler"
@@ -13332,39 +13332,39 @@ msgstr "Sonraki Betik"
 msgid "&View"
 msgstr "&Görünüm"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Bu, betiği durduracaktır! Sürdürülsün mü?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:263
+#: scripting/scriptconsole/ScriptConsole.cpp:272
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Betiklerinizi nereye kaydedeceğinizi seçin"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Betik diskten kaldırılsın mı?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgid "Remove Script"
 msgstr "Betiği Kaldır"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Kaldır"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:459
+#: scripting/scriptconsole/ScriptConsole.cpp:472
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "Kaldırma"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:489
+#: scripting/scriptconsole/ScriptConsole.cpp:502
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Kesin emin misiniz?"

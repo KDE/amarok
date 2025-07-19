@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-12 00:42+0000\n"
+"POT-Creation-Date: 2025-07-19 05:21+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -2826,7 +2826,7 @@ msgid "Configure Plugins"
 msgstr "ਪਲੱਗਇਨ ਸੰਰਚਨਾ"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:413
+#: scripting/scriptconsole/ScriptConsole.cpp:426
 #, kde-format
 msgid "Scripts"
 msgstr "ਸਕ੍ਰਿਪਟਾਂ"
@@ -13075,42 +13075,42 @@ msgstr "ਸਕ੍ਰਿਪਟਾਂ"
 msgid "&View"
 msgstr "ਵੇਖੋ(&V)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:218
+#: scripting/scriptconsole/ScriptConsole.cpp:227
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:263
+#: scripting/scriptconsole/ScriptConsole.cpp:272
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, fuzzy, kde-format
 #| msgid "Remove empty folders?"
 msgid "Remove script file from disk?"
 msgstr "ਖਾਲੀ ਫੋਲਡਰ ਹਟਾਉਣੇ ਹਨ?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "ਮੈਂਬਰੀ ਹਟਾਓ(&R)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:458
+#: scripting/scriptconsole/ScriptConsole.cpp:471
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "ਹਟਾਓ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:459
+#: scripting/scriptconsole/ScriptConsole.cpp:472
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:489
+#: scripting/scriptconsole/ScriptConsole.cpp:502
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
