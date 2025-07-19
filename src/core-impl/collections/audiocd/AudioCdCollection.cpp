@@ -350,8 +350,8 @@ AudioCdCollection::checkForStartPlayRequest()
     //be nice and check if MainWindow is just aching for an audio cd to start playing
     if( The::mainWindow()->isWaitingForCd() )
     {
-        debug() << "Tell MainWindow to start playing us immediately.";
-        The::mainWindow()->playAudioCd();
+        debug() << "Tell MainWindow to start playing us almost immediately.";
+        QTimer::singleShot( 500, []() { The::mainWindow()->playAudioCd(); } );
     }
 }
 
