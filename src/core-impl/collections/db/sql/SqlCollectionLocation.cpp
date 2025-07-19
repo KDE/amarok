@@ -544,12 +544,14 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
         }
 
         KIO::JobFlags flags;
+        KIO::JobFlags moodjobFlags = KIO::HideProgressInfo;
         if( isJustCopy )
         {
             flags = KIO::HideProgressInfo;
             if( m_overwriteFiles )
             {
                 flags |= KIO::Overwrite;
+                moodjobFlags |= KIO::Overwrite;
             }
         }
 
@@ -572,7 +574,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
             {
                 QUrl moodSrc = moodFile( src );
                 QUrl moodDest = moodFile( dest );
-                moodJob = KIO::file_move( moodSrc, moodDest, -1, flags );
+                moodJob = KIO::file_move( moodSrc, moodDest, -1, moodjobFlags );
             }
         }
         else
@@ -595,7 +597,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
             {
                 QUrl moodSrc = moodFile( src );
                 QUrl moodDest = moodFile( dest );
-                moodJob = KIO::file_copy( moodSrc, moodDest, -1, flags );
+                moodJob = KIO::file_copy( moodSrc, moodDest, -1, moodjobFlags );
             }
         }
         if( job )   //just to be safe
