@@ -407,10 +407,10 @@ OSDWidget::paintEvent( QPaintEvent *e )
     if( pos > m_duration + 500 )
     {
         QTimer::singleShot( 1000, this, [=] () { update(); });
-        osdtext.replace( QStringLiteral("%{\eA%}"), QString(Meta::msToPrettyTime( pos ) + QLatin1Char('/') ) );
+        osdtext.replace( QStringLiteral("%{\033A%}"), QString(Meta::msToPrettyTime( pos ) + QLatin1Char('/') ) );
     }
     else
-        osdtext.replace( QStringLiteral("%{\eA%}"), QStringLiteral("") );
+        osdtext.replace( QStringLiteral("%{\033A%}"), QStringLiteral("") );
 
     QPainter p2( &pixmap );
     p2.setFont( font() );
@@ -691,7 +691,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
             text += QLatin1Char('\n');
         if( track->length() > 0 )
         {
-            text += QStringLiteral("%{\eA%}"); // Add a tag to be replaced later
+            text += QStringLiteral("%{\033A%}"); // Add a tag to be replaced later
             text += Meta::msToPrettyTime( track->length() );
         }
     }
