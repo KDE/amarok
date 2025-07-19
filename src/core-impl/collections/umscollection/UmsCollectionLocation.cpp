@@ -226,8 +226,8 @@ UmsTransferJob::startNextJob()
         return;
     }
 
-    connect( job, SIGNAL(percent(KJob*,ulong)),
-             SLOT(slotChildJobPercent(KJob*,ulong)) );
+    connect( job, &KJob::percentChanged, this, &UmsTransferJob::slotChildJobPercent );
+
     addSubjob( job );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }

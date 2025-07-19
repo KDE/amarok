@@ -128,7 +128,7 @@ class Track::Private : public QObject
 
                 m_userFetch = lastfm::ws::post( params );
 
-                connect( m_userFetch, SIGNAL( finished() ), SLOT( requestResult() ) );
+                connect( m_userFetch, &QNetworkReply::finished, this, &Track::Private::requestResult );
             }
         }
 
@@ -153,7 +153,7 @@ class Track::Private : public QObject
                     if( !imageUrl.isEmpty() )
                     {
                         KIO::Job* job = KIO::storedGet( QUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
-                        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
+                        connect( job, &KJob::result, this, &Track::Private::fetchImageFinished );
                     }
                 }
                 else

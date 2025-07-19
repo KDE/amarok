@@ -692,8 +692,8 @@ TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::C
 
 bool TransferJob::addSubjob( KJob* job )
 {
-    connect( job, SIGNAL(processedAmount(KJob*, KJob::Unit, qulonglong)),
-             this, SLOT(propagateProcessedAmount(KJob*, KJob::Unit, qulonglong)) );
+    connect( job, &KJob::processedAmountChanged,
+             this, &TransferJob::propagateProcessedAmount );
     //KCompositeJob::addSubjob doesn't handle progress reporting.
     return KCompositeJob::addSubjob( job );
 }

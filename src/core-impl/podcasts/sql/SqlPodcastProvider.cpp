@@ -989,9 +989,7 @@ SqlPodcastProvider::completePodcastDownloads()
         m_completedDownloads = 0;
         for( KJob *job : m_downloadJobMap.keys() )
         {
-            connect( job, SIGNAL(percent(KJob*,ulong)),
-                     this, SLOT(slotDownloadProgress(KJob*,ulong))
-                   );
+            connect( job, &KJob::percentChanged, this, &SqlPodcastProvider::slotDownloadProgress );
         }
         connect( this, &SqlPodcastProvider::totalPodcastDownloadProgress,
                  &progressDialog, &QProgressDialog::setValue );
