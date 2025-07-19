@@ -36,12 +36,12 @@ namespace QtBindings
         public:
             Q_INVOKABLE Locale();
             Q_INVOKABLE Locale(const QString &name);
-            Q_INVOKABLE Locale(Language language, Country country = AnyCountry);
-            Q_INVOKABLE Locale(Language language, Script script, Country country);
+            Q_INVOKABLE Locale(Language language, Territory territory = AnyCountry);
+            Q_INVOKABLE Locale(Language language, Script script, Territory territory);
             Q_INVOKABLE Locale(const QLocale &other);
             Q_INVOKABLE Locale(const Locale &other);
             Q_INVOKABLE static QLocale c();
-            Q_INVOKABLE static QString countryToString(Country country);
+            Q_INVOKABLE static QString territoryToString(Territory territory);
             Q_INVOKABLE static QString languageToString(Language language);
             Q_INVOKABLE static QString scriptToString(Script script);
             Q_INVOKABLE static void setDefault(const QLocale &locale);
@@ -50,7 +50,7 @@ namespace QtBindings
         public Q_SLOTS:
             QString amText() const;
             QString bcp47Name() const;
-            Country country() const;
+            Territory territory() const;
             QString createSeparatedList(const QStringList &strl) const;
             QString currencySymbol(CurrencySymbolFormat format = CurrencySymbol) const;
             QString dateFormat(FormatType format = LongFormat) const;
@@ -64,7 +64,7 @@ namespace QtBindings
             MeasurementSystem measurementSystem() const;
             QString monthName(int month, FormatType format = LongFormat) const;
             QString name() const;
-            QString nativeCountryName() const;
+            QString nativeTerritoryName() const;
             QString nativeLanguageName() const;
             QString negativeSign() const;
             NumberOptions numberOptions() const;
@@ -131,8 +131,7 @@ namespace QtBindings
             QStringList uiLanguages() const;
             QList<Qt::DayOfWeek> weekdays() const;
             QString zeroDigit() const;
-            QList<Country> countriesForLanguage(Language lang);
-            QList<QLocale> matchingLocales(QLocale::Language language, QLocale::Script script, QLocale::Country country);
+            QList<QLocale> matchingLocales(QLocale::Language language, QLocale::Script script, QLocale::Territory territory);
         };
     }
 }

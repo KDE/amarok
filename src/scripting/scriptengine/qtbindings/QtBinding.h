@@ -42,7 +42,7 @@ namespace QtBindings {
             if (!engine) return;
 
             // Install type only once along program execution
-            if ( !QMetaType::isRegistered( QMetaType::type( typeName ) ) ) {
+            if ( !QMetaType::isRegistered( type.id() ) ) {
                 qRegisterMetaType<T>( typeName.constData() );
                 qRegisterMetaType<T>( typeNameRef.constData() );
                 qRegisterMetaType<T*>( typeNamePtr.constData() );
@@ -87,6 +87,7 @@ namespace QtBindings {
         }
 
     protected:
+        static const QMetaType type;
         static const QByteArray typeName;
         static const QByteArray typeNamePtr;
         static const QByteArray typeNameRef;
@@ -112,6 +113,7 @@ namespace QtBindings {
     };
 
     // Remove namespace
+    template<class T> const QMetaType Base<T>::type = T::staticMetaObject.metaType();
     template<class T> const QByteArray Base<T>::typeName = QString( QLatin1String( T::staticMetaObject.className() ) )
         .remove(  QRegularExpression( QStringLiteral("^.*::") ) ).toLatin1();
     template<class T> const QByteArray Base<T>::typeNamePtr = typeName + "*";

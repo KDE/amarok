@@ -32,12 +32,12 @@ Locale::Locale(const QString &name) : QLocale(name)
 {
 }
 
-Locale::Locale(QLocale::Language language, QLocale::Country country) : QLocale(language, country)
+Locale::Locale(QLocale::Language language, QLocale::Territory territory) : QLocale(language, territory)
 {
 }
 
 Locale::Locale(QLocale::Language language, QLocale::Script script,
-                                 QLocale::Country country) : QLocale(language, script, country)
+                                 QLocale::Territory territory) : QLocale(language, script, territory)
 {
 }
 
@@ -59,9 +59,9 @@ QString Locale::bcp47Name() const
     return QLocale::bcp47Name();
 }
 
-QLocale::Country Locale::country() const
+QLocale::Territory Locale::territory() const
 {
-    return QLocale::country();
+    return QLocale::territory();
 }
 
 QString Locale::createSeparatedList(const QStringList &strl) const
@@ -129,9 +129,9 @@ QString Locale::name() const
     return QLocale::name();
 }
 
-QString Locale::nativeCountryName() const
+QString Locale::nativeTerritoryName() const
 {
-    return QLocale::nativeCountryName();
+    return QLocale::nativeTerritoryName();
 }
 
 QString Locale::nativeLanguageName() const
@@ -464,15 +464,10 @@ QString Locale::zeroDigit() const
     return QLocale::zeroDigit();
 }
 
-QList<QLocale::Country> Locale::countriesForLanguage(QLocale::Language lang)
-{
-    return QLocale::countriesForLanguage(lang);
-}
-
 QList<QLocale>
-Locale::matchingLocales(QLocale::Language language, QLocale::Script script, QLocale::Country country)
+Locale::matchingLocales(QLocale::Language language, QLocale::Script script, QLocale::Territory territory)
 {
-    return QLocale::matchingLocales(language,script,country);
+    return QLocale::matchingLocales(language,script,territory);
 }
 
 QLocale Locale::c()
@@ -485,9 +480,9 @@ Locale Locale::system()
     return Locale(QLocale::system());
 }
 
-QString Locale::countryToString(QLocale::Country country)
+QString Locale::territoryToString(QLocale::Territory territory)
 {
-    return QLocale::countryToString(country);
+    return QLocale::territoryToString(territory);
 }
 
 QString Locale::languageToString(QLocale::Language language)
