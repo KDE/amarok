@@ -17,6 +17,7 @@
 #include "ITunesTrack.h"
 
 #include <QReadLocker>
+#include <QTimeZone>
 #include <QWriteLocker>
 
 using namespace StatSyncing;
@@ -55,7 +56,7 @@ ITunesTrack::lastPlayed() const
                                 m_statistics.value( Meta::valLastPlayed ).toString(),
                                 QStringLiteral("yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'") );
     if( date.isValid() )
-        date.setTimeSpec( Qt::UTC );
+        date.setTimeZone( QTimeZone::utc() );
 
     return date;
 }
