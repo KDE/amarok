@@ -762,32 +762,6 @@ if( LIBLASTFM_FOUND )
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif()
 
-if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
-    add_definitions(
-        ${AVCODEC_DEFINITIONS}
-        ${AVFORMAT_DEFINITIONS}
-        ${AVUTIL_DEFINITIONS}
-    )
-    include_directories(SYSTEM
-        ${AVCODEC_INCLUDE_DIRS}
-        ${AVFORMAT_INCLUDE_DIRS}
-        ${AVUTIL_INCLUDE_DIRS}
-    )
-    set( EXTRA_LIBS
-        ${EXTRA_LIBS}
-        ${LIBOFA_LIBRARY}
-        ${AVFORMAT_LIBRARIES}
-        ${AVCODEC_LIBRARIES}
-        ${AVUTIL_LIBRARIES}
-    )
-    set( amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        musicbrainz/MusicDNSAudioDecoder.cpp
-        musicbrainz/MusicDNSFinder.cpp
-        musicbrainz/MusicDNSXmlParser.cpp
-            )
-endif()
-
 qt_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/org.kde.amarok.Collection.xml

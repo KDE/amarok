@@ -71,11 +71,6 @@ Optional
       originally https://github.com/lastfm/liblastfm
       a version with Qt6 support available at e.g. https://github.com/drfiemost/liblastfm
 
-    * MusicBrainz-based audio fingerprint tag lookup requires:
-      * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
-        * libavcodec & libavformat specifically
-      * LibOFA - http://code.google.com/p/musicip-libofa/
-
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.2.0 (or newer)
 

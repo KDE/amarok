@@ -9,6 +9,7 @@ VERSION 3.3.1 UNRELEASED
 
   CHANGES:
    * Convert the remaining main UI toolbuttons to use icons from theme
+   * Clear out remnants of the now-discontinued MusicDNS service
 
   BUGFIXES:
    * Fix example permission grant command in database settings (BR 386004)

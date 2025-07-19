@@ -132,8 +132,7 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
     else if( role == Qt::BackgroundRole &&
              item->dataContains( MusicBrainz::SIMILARITY ) )
     {
-        if( item->dataContains( MusicBrainz::MUSICBRAINZ ) &&
-            item->dataContains( MusicBrainz::MUSICDNS ) )
+        if( item->dataContains( MusicBrainz::MUSICBRAINZ ) )
             return QColor( Qt::green );
 
         float sim = ( item->dataValue( MusicBrainz::SIMILARITY ).toFloat() - MusicBrainz::MINSIMILARITY ) /
@@ -145,10 +144,7 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
         else
             c1 = ( 255 - 170 * ( sim - 0.5 ) );
 
-        if( item->dataContains( MusicBrainz::MUSICDNS ) )
-            return QColor( 0, c2, c1 );
-        else
-            return QColor( c1, c2, 0 );
+        return QColor( c1, c2, 0 );
     }
     else if( role == Qt::ToolTipRole )
     {
@@ -160,9 +156,6 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
             if( item->dataContains( MusicBrainz::MUSICBRAINZ ) )
                 toolTip.append( i18n( "MusicBrainz match ratio: %1%",
                                       100 * item->dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() ) );
-            if( item->dataContains( MusicBrainz::MUSICDNS ) )
-                toolTip.append( i18n( "MusicDNS match ratio: %1%",
-                                      100 * item->dataValue( MusicBrainz::MUSICDNS ).toFloat() ) );
         }
 
         return toolTip.join( QStringLiteral("\n") );
@@ -327,7 +320,6 @@ MusicBrainzTagsModel::chosenItems() const
             QVariantMap data = item->data();
             data.remove( MusicBrainz::ARTISTID );
             data.remove( MusicBrainz::MUSICBRAINZ );
-            data.remove( MusicBrainz::MUSICDNS );
             data.remove( MusicBrainz::RELEASEID );
             data.remove( MusicBrainz::SIMILARITY );
             data.remove( MusicBrainz::TRACKCOUNT );

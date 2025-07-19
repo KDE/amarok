@@ -47,8 +47,6 @@ class MusicBrainzFinder : public QObject
     public Q_SLOTS:
         void run( const Meta::TrackList &tracks );
 
-        void lookUpByPUID( const Meta::TrackPtr &track, const QString &puid );
-
     private Q_SLOTS:
         void sendNewRequest();
         void gotAuthenticationRequest( const QNetworkReply *reply, QAuthenticator *authenticator );
@@ -62,7 +60,6 @@ class MusicBrainzFinder : public QObject
 
         QNetworkRequest compileRequest( QUrl &url );
         QNetworkRequest compileTrackRequest( const Meta::TrackPtr &track );
-        QNetworkRequest compilePUIDRequest( const QString &puid );
         QNetworkRequest compileReleaseGroupRequest( const QString &releaseGroupID );
 
         void sendTrack( const Meta::TrackPtr &track, QVariantMap tags );

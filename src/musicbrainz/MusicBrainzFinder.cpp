@@ -107,14 +107,6 @@ MusicBrainzFinder::run( const Meta::TrackList &tracks )
     m_timer->start();
 }
 
-void
-MusicBrainzFinder::lookUpByPUID( const Meta::TrackPtr &track, const QString &puid )
-{
-    m_requests.append( qMakePair( track, compilePUIDRequest( puid ) ) );
-
-    if( !m_timer->isActive() )
-        m_timer->start();
-}
 
 void
 MusicBrainzFinder::sendNewRequest()
@@ -219,13 +211,6 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
             QString scoreType = MusicBrainz::MUSICBRAINZ;
             // Maximum allowed error in track length (seconds).
             qlonglong lengthTolerance = 30;
-
-            // If there is no parsed metadata, a fingerprint lookup was done.
-            if( !m_parsedMetadata.contains( trackPtr ) )
-            {
-                scoreType = MusicBrainz::MUSICDNS;
-                lengthTolerance = 10;
-            }
 
             lengthTolerance *= 1000;
             for( QVariantMap track : parser->tracks.values() )
@@ -615,18 +600,6 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
     url.setPath( mb_pathPrefix + QStringLiteral("/recording") );
     query.addQueryItem( QStringLiteral("limit"), QStringLiteral("10") );
     query.addQueryItem( QStringLiteral("query"), queryString );
-    url.setQuery( query );
-
-    return compileRequest( url );
-}
-
-QNetworkRequest
-MusicBrainzFinder::compilePUIDRequest( const QString &puid )
-{
-    QUrl url;
-    QUrlQuery query;
-    url.setPath( mb_pathPrefix + QStringLiteral("/recording") );
-    query.addQueryItem( QStringLiteral("query"), QStringLiteral("puid:") + puid );
     url.setQuery( query );
 
     return compileRequest( url );

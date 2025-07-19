@@ -31,7 +31,6 @@ namespace MusicBrainz
     static const QString TRACKINFO      = QStringLiteral("mb:TrackInfo");
 
     static const QString MUSICBRAINZ    = QStringLiteral("mb:musicbrainz");
-    static const QString MUSICDNS       = QStringLiteral("mb:musicdns");
 
     static const QString SIMILARITY     = QStringLiteral("mb:similarity");
     static const qreal   MINSIMILARITY  = 0.6;

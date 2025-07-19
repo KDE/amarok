@@ -95,9 +95,6 @@ MusicBrainzTagsItem::mergeData( const QVariantMap &tags )
     if( !fakeItem.dataContains( MusicBrainz::MUSICBRAINZ ) && dataContains( MusicBrainz::MUSICBRAINZ ) )
         fakeItem.dataInsert( MusicBrainz::MUSICBRAINZ, dataValue( MusicBrainz::MUSICBRAINZ ) );
 
-    if( !fakeItem.dataContains( MusicBrainz::MUSICDNS ) && dataContains( MusicBrainz::MUSICDNS ) )
-        fakeItem.dataInsert( MusicBrainz::MUSICDNS, dataValue( MusicBrainz::MUSICDNS ) );
-
     fakeItem.recalcSimilarityRate();
 
     QVariantList trackList = dataValue( MusicBrainz::TRACKID ).toList();
@@ -108,9 +105,6 @@ MusicBrainzTagsItem::mergeData( const QVariantMap &tags )
         // Update the score.
         if( fakeItem.dataContains( MusicBrainz::MUSICBRAINZ ) )
             dataInsert( MusicBrainz::MUSICBRAINZ, fakeItem.dataValue( MusicBrainz::MUSICBRAINZ ) );
-
-        if( fakeItem.dataContains( MusicBrainz::MUSICDNS ) )
-            dataInsert( MusicBrainz::MUSICDNS, fakeItem.dataValue( MusicBrainz::MUSICDNS ) );
 
         recalcSimilarityRate();
 
@@ -443,5 +437,5 @@ MusicBrainzTagsItem::operator==( const Meta::TrackPtr &track) const
 void
 MusicBrainzTagsItem::recalcSimilarityRate()
 {
-    dataInsert( MusicBrainz::SIMILARITY, dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() + dataValue( MusicBrainz::MUSICDNS ).toFloat() );
+    dataInsert( MusicBrainz::SIMILARITY, dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() );
 }

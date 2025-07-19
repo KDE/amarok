@@ -31,9 +31,6 @@ namespace Ui
 class MusicBrainzFinder;
 class MusicBrainzTagsModel;
 class MusicBrainzTagsModelDelegate;
-#ifdef HAVE_LIBOFA
-class MusicDNSFinder;
-#endif
 
 class QSortFilterProxyModel;
 
@@ -56,9 +53,6 @@ class MusicBrainzTagger : public QDialog
         void search();
         void progressStep();
         void searchDone();
-#ifdef HAVE_LIBOFA
-        void mdnsSearchDone();
-#endif
         void saveAndExit();
 
     private:
@@ -69,10 +63,6 @@ class MusicBrainzTagger : public QDialog
         Meta::TrackList m_tracks;
 
         MusicBrainzFinder *mb_finder;
-#ifdef HAVE_LIBOFA
-        MusicDNSFinder *mdns_finder;
-        bool mdns_searchDone;
-#endif
         MusicBrainzTagsModel *m_resultsModel;
         MusicBrainzTagsModelDelegate *m_resultsModelDelegate;
         QSortFilterProxyModel *m_resultsProxyModel;

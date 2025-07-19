@@ -249,21 +249,6 @@ if( WITH_PLAYER )
     set( LIBLASTFM_MIN_VERSION "1.2.0" )
     set_package_properties( LibLastFm PROPERTIES DESCRIPTION "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" URL "https://github.com/Mazhoon/liblastfm/" TYPE OPTIONAL )
 
-    find_package(FFmpeg)
-    set_package_properties(FFmpeg PROPERTIES
-        DESCRIPTION "Libraries and tools for handling multimedia data"
-        URL "https://www.ffmpeg.org/"
-        TYPE OPTIONAL
-        PURPOSE "Enable MusicDNS service"
-    )
-
-    find_package(LibOFA)
-    set_package_properties(LibOFA PROPERTIES
-        DESCRIPTION "Open-source audio fingerprint by MusicIP"
-        URL "http://code.google.com/p/musicip-libofa/"
-        TYPE OPTIONAL
-        PURPOSE "Enable MusicDNS service"
-    )
 
     if( WITH_GPODDER )
         ## gpodder Service

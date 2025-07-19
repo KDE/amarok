@@ -27,9 +27,6 @@
 #include "musicbrainz/MusicBrainzFinder.h"
 #include "musicbrainz/MusicBrainzTagsModel.h"
 #include "musicbrainz/MusicBrainzTagsModelDelegate.h"
-#ifdef HAVE_LIBOFA
-#include "musicbrainz/MusicDNSFinder.h"
-#endif
 #include "ui_MusicBrainzTagger.h"
 
 #include <QIcon>
@@ -125,13 +122,7 @@ MusicBrainzTagger::init()
     ui->progressBar->hide();
 
     mb_finder = new MusicBrainzFinder( this );
-#ifdef HAVE_LIBOFA
-    mdns_finder = new MusicDNSFinder( this );
-    connect( mdns_finder, &MusicDNSFinder::trackFound,
-             mb_finder, &MusicBrainzFinder::lookUpByPUID );
-    connect( mdns_finder, &MusicDNSFinder::progressStep, this, &MusicBrainzTagger::progressStep );
-    connect( mdns_finder, &MusicDNSFinder::done, this, &MusicBrainzTagger::mdnsSearchDone );
-#endif
+
     connect( mb_finder, &MusicBrainzFinder::done, this, &MusicBrainzTagger::searchDone );
     connect( mb_finder, &MusicBrainzFinder::trackFound,
              m_resultsModel, &MusicBrainzTagsModel::addTrack );
@@ -145,11 +136,6 @@ MusicBrainzTagger::search()
 {
     int barSize = m_tracks.count();
     mb_finder->run( m_tracks );
-#ifdef HAVE_LIBOFA
-    barSize *= 2;
-    mdns_searchDone = false;
-    mdns_finder->run( m_tracks );
-#endif
     ui->progressBar->setRange( 0, barSize );
     ui->progressBar->setValue( 0 );
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Ignored );
@@ -171,26 +157,12 @@ void
 MusicBrainzTagger::searchDone()
 {
     DEBUG_BLOCK
-#ifdef HAVE_LIBOFA
-    if( !mdns_searchDone )
-        return;
-#endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();
     ui->resultsView->expandAll();
     ui->resultsView->header()->resizeSections( QHeaderView::ResizeToContents );
 }
 
-#ifdef HAVE_LIBOFA
-void
-MusicBrainzTagger::mdnsSearchDone()
-{
-    DEBUG_BLOCK
-    mdns_searchDone = true;
-    if( !mb_finder->isRunning() )
-        searchDone();
-}
-#endif
 
 void
 MusicBrainzTagger::progressStep()
