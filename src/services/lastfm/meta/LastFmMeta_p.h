@@ -174,9 +174,7 @@ class Track::Private : public QObject
                 QImage img = QImage::fromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
                 if( !img.isNull() )
                 {
-                    img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-
-                    albumArt = img;
+                    albumArt = img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
                 }
                 else
                     albumArt = QImage();
