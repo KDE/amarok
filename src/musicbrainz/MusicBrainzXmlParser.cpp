@@ -139,7 +139,12 @@ MusicBrainzXmlParser::parseRecording( const QDomElement &e )
     if( track.isEmpty() )
         return id;
 
-    if( e.hasAttribute( QStringLiteral("ext:score") ) )
+    // The score attribute has apparently changed at some point. The MusicBrainz documentation still
+    // lists the ext:score and I can't find a reference for the change, so leaving the olid one as
+    // fallback, too.
+    if( e.hasAttribute( QStringLiteral("ns2:score") ) )
+        track.insert( Meta::Field::SCORE, e.attribute( QStringLiteral("ns2:score") ).toInt() );
+    else if( e.hasAttribute( QStringLiteral("ext:score") ) )
         track.insert( Meta::Field::SCORE, e.attribute( QStringLiteral("ext:score") ).toInt() );
 
     QDomNode dNode = e.firstChild();

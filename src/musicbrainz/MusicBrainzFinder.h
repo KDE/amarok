@@ -32,7 +32,7 @@ class MusicBrainzFinder : public QObject
     public:
         explicit MusicBrainzFinder( QObject *parent = nullptr,
                                     const QString &host = QStringLiteral("musicbrainz.org"),
-                                    const int port = 80,
+                                    const int port = 443,
                                     const QString &pathPrefix = QStringLiteral("/ws/2"),
                                     const QString &username = QString(),
                                     const QString &password = QString() );
