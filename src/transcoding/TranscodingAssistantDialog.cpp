@@ -121,6 +121,8 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.transcodeAllRadioButton->setEnabled( false );
     ui.transcodeUnlessSameTypeRadioButton->setEnabled( false );
     ui.transcodeOnlyIfNeededRadioButton->setEnabled( false );
+
+    addPage(uiBase, i18n("Transcode") );
 }
 
 void
