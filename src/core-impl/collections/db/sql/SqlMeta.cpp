@@ -1643,7 +1643,13 @@ SqlAlbum::imageLocation( int size )
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     if( size <= 1 )
-        return QUrl::fromLocalFile( m_imagePath );
+    {
+        QUrl url = QUrl::fromLocalFile( m_imagePath );
+        // don't hand out embedded cover urls that start with file:amarok-sqltrackuid://
+        if( m_imagePath.startsWith( QStringLiteral( "amarok-sqltrackuid" ) ) )
+            url.setScheme( QStringLiteral( "amarok-sqltrackuid" ) );
+        return url;
+    }
 
     QString cachedImagePath = scaledDiskCachePath( size );
 

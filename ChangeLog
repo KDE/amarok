@@ -17,6 +17,7 @@ VERSION 3.3.1 UNRELEASED
    * Fix continuing playback after timecoded tracks (cue files etc, BR 270003)
    * Fix MusicBrainz search
    * Properly start CD playback if Amarok is not already running (BR 503310)
+   * Also transmit embedded cover art through MPRIS (BR 357620)
 
 VERSION 3.3.0
   FEATURES:
