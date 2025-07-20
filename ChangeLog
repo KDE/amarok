@@ -18,6 +18,7 @@ VERSION 3.3.1 UNRELEASED
    * Fix MusicBrainz search
    * Properly start CD playback if Amarok is not already running (BR 503310)
    * Also transmit embedded cover art through MPRIS (BR 357620)
+   * Don't show transcoding dialog after canceling download (BR 275840)
 
 VERSION 3.3.0
   FEATURES:

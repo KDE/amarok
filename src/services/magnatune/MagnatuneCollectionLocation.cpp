@@ -61,6 +61,6 @@ void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList &track
 
     if ( dialog.result() == QDialog::Rejected )
         abort();
-
-    CollectionLocation::showSourceDialog( tracks, removeSources ); // to get transcoding dialog
+    else
+        CollectionLocation::showSourceDialog( tracks, removeSources ); // to get transcoding dialog
 }
