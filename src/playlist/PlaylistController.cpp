@@ -561,7 +561,7 @@ Controller::slotLoaderWithRowFinished( const Meta::TrackList &tracks )
         return;
     }
     QVariant topModelRow = loader->property( "topModelRow" );
-    if( !topModelRow.isValid() || topModelRow.type() != QVariant::Int )
+    if( !topModelRow.isValid() || topModelRow.typeId() != QMetaType::Int )
     {
         error() << __PRETTY_FUNCTION__ << "loader property 'topModelRow' is not a valid integer";
         return;

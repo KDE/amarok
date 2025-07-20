@@ -44,7 +44,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
     QVariant data = index.data();
     // display the icon even for label conflicts:
     if( ( field == Meta::valRating || field == Meta::valLabel ) &&
-        data.type() == QVariant::Int )
+        data.typeId() == QMetaType::Int )
     {
         // following is largely inspired by QStyledItemDelegate::paint()
         QStyleOptionViewItem opt = option;
@@ -86,7 +86,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
 QString
 TrackDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
-    if( value.type() == QVariant::DateTime )
+    if( value.typeId() == QMetaType::QDateTime )
     {
         QDateTime date = value.toDateTime();
         return date.isValid() ? QLocale().toString( date, QLocale::ShortFormat ) : QString();

@@ -57,7 +57,7 @@ class GenericNumberMemoryFilter : public NumberMemoryFilter
         qint64 value( const Meta::TrackPtr &track ) const override
         {
             QVariant v = Meta::valueForField( m_value, track );
-            if( v.type() == QVariant::DateTime )
+            if( v.typeId() == QMetaType::QDateTime )
                 return v.toDateTime().toSecsSinceEpoch();
             else
                 return v.toLongLong();

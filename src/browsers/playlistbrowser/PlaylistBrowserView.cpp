@@ -310,7 +310,7 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
         }
 
         QVariant episodeIsNew = idx.data( PlaylistBrowserModel::EpisodeIsNewRole );
-        if( episodeIsNew.type() == QVariant::Bool )
+        if( episodeIsNew.typeId() == QMetaType::Bool )
         {
             if( episodeIsNew.toBool() )
                 newPodcastEpisodes << idx;

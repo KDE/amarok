@@ -251,7 +251,7 @@ BookmarkPrototype::bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engi
             else
             {
                 Meta::TrackPtr track = engine->fromScriptValue<Meta::TrackPtr>( arg0 );
-                if( track && arg1.toVariant().canConvert( QVariant::LongLong ) )
+                if( track && arg1.toVariant().canConvert( QMetaType( QMetaType::LongLong ) ) )
                     url = new AmarokUrl( PlayUrlGenerator::instance()->createTrackBookmark( track, arg1.toVariant().toLongLong() ) );
             }
     }
