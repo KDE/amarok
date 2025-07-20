@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-19 05:21+0000\n"
+"POT-Creation-Date: 2025-07-20 00:42+0000\n"
 "PO-Revision-Date: 2025-06-29 20:25+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
@@ -2101,7 +2101,7 @@ msgstr "Етикет"
 msgid "None"
 msgstr "Без"
 
-#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:102
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
@@ -2875,7 +2875,7 @@ msgid "Configure Plugins"
 msgstr "Настройки на приставките"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:426
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Scripts"
 msgstr "Скриптове"
@@ -4707,17 +4707,17 @@ msgstr "Източникът не съществува: %1"
 msgid "Could not create directory: %1"
 msgstr "Невъзможно създаване на директория: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Прехвърляне: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Транскодиране: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, kde-format
 msgid "Removing: %1"
@@ -6042,18 +6042,18 @@ msgstr[1] "Все още се свалят %1 подкаста"
 msgid "Cancel Download and Quit."
 msgstr "Прекратяване на изтеглянето и изход."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Епизодът на подкаста не може да бъде записан в %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Сваляне на подкаст"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Сваляне на подкаст \"%1\""
@@ -8150,12 +8150,12 @@ msgstr "Предусилвател"
 msgid "Hz"
 msgstr "Хц"
 
-#: dialogs/MusicBrainzTagger.cpp:93
+#: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
 msgstr "Избиране на най-добрите съвпадения"
 
-#: dialogs/MusicBrainzTagger.cpp:94
+#: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
 msgid ""
 "Use the top result for each undecided track. Alternatively, you can click on "
@@ -8168,27 +8168,27 @@ msgstr ""
 "контекстното меню. Това дори може да ви даде по-добри резултати, тъй като по "
 "този начин няма смесване между различни албуми."
 
-#: dialogs/MusicBrainzTagger.cpp:95
+#: dialogs/MusicBrainzTagger.cpp:92
 #, kde-format
 msgid "Clear Choices"
 msgstr "Изчистване на филтрите"
 
-#: dialogs/MusicBrainzTagger.cpp:96
+#: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
 msgstr "Изчистване на всички избори, дори ръчно направените."
 
-#: dialogs/MusicBrainzTagger.cpp:101
+#: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
 msgid "Collapse Chosen"
 msgstr "Свиване на избраните"
 
-#: dialogs/MusicBrainzTagger.cpp:112
+#: dialogs/MusicBrainzTagger.cpp:109
 #, kde-format
 msgid "Expand Unchosen"
 msgstr "Разгъване на неизбраните"
 
-#: dialogs/MusicBrainzTagger.cpp:116 statsyncing/ui/MatchedTracksPage.cpp:159
+#: dialogs/MusicBrainzTagger.cpp:113 statsyncing/ui/MatchedTracksPage.cpp:159
 #, kde-format
 msgid "Expand All"
 msgstr "Разгъване на всичко"
@@ -11018,15 +11018,10 @@ msgstr "%1 - %2  ::  %3"
 msgid "Apply this layout change?"
 msgstr "Прилагане на промяната в оформлението?"
 
-#: musicbrainz/MusicBrainzTagsModel.cpp:161
+#: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, kde-format
 msgid "MusicBrainz match ratio: %1%"
 msgstr "Коефициент на съвпадение в MusicBrainz: %1%"
-
-#: musicbrainz/MusicBrainzTagsModel.cpp:164
-#, kde-format
-msgid "MusicDNS match ratio: %1%"
-msgstr "Съотношение на съвпадение на MusicDNS: %1%"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -13354,49 +13349,49 @@ msgstr "И&зчистване на всички скриптове"
 msgid "Previous Script"
 msgstr "Предишен скрипт"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:120
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, kde-format
 msgid "Next Script"
 msgstr "Следващ скрипт"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:128
+#: scripting/scriptconsole/ScriptConsole.cpp:126
 #, kde-format
 msgid "&View"
 msgstr "&Изглед"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "Това ще спре скрипта! Продължаване?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:272
+#: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Изберете къде да се запазват скриптовете"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Премахване на скрипта от диска?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove Script"
 msgstr "Премахване на скрипт"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Премахване"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:472
+#: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "Да не се премества"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:502
+#: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Напълно сигурни ли сте?"
@@ -16333,6 +16328,9 @@ msgstr "Изпълнител: %1"
 #, kde-format
 msgid "empty"
 msgstr "празно"
+
+#~ msgid "MusicDNS match ratio: %1%"
+#~ msgstr "Съотношение на съвпадение на MusicDNS: %1%"
 
 #~ msgid "Enter an artist name"
 #~ msgstr "Въведете името на изпълнителя"

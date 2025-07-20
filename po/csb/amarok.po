@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-19 05:21+0000\n"
+"POT-Creation-Date: 2025-07-20 00:42+0000\n"
 "PO-Revision-Date: 2009-12-21 00:36+0100\n"
 "Last-Translator: Mark Kwidzińśczi <mark@linuxcsb.org>\n"
 "Language-Team: Kaszëbsczi <i18n-csb@linuxcsb.org>\n"
@@ -2060,7 +2060,7 @@ msgstr "Eticzéta"
 msgid "None"
 msgstr "Felënk"
 
-#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:102
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
@@ -2899,7 +2899,7 @@ msgid "Configure Plugins"
 msgstr "Kònfigùracëjô kòlekcëji"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:426
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Scripts"
@@ -4764,18 +4764,18 @@ msgstr ""
 msgid "Could not create directory: %1"
 msgstr "ni mòże zrëszëc %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Przenoszenié: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, fuzzy, kde-format
 #| msgid "Transcoding"
 msgid "Transcoding: %1"
 msgstr "Kònwersëjô"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, fuzzy, kde-format
 #| msgid "Remove this %1"
@@ -6150,18 +6150,18 @@ msgstr[2] ""
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Ladowanié mediów podcastu"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Ladowanié podcastu \"%1\""
@@ -8366,12 +8366,12 @@ msgstr "Strëga"
 msgid "Hz"
 msgstr "Hz"
 
-#: dialogs/MusicBrainzTagger.cpp:93
+#: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:94
+#: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
 msgid ""
 "Use the top result for each undecided track. Alternatively, you can click on "
@@ -8380,28 +8380,28 @@ msgid ""
 "different album releases together."
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:95
+#: dialogs/MusicBrainzTagger.cpp:92
 #, fuzzy, kde-format
 #| msgid "Clear the filter"
 msgid "Clear Choices"
 msgstr "Wëczëszczë filter"
 
-#: dialogs/MusicBrainzTagger.cpp:96
+#: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:101
+#: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
 msgid "Collapse Chosen"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:112
+#: dialogs/MusicBrainzTagger.cpp:109
 #, kde-format
 msgid "Expand Unchosen"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:116 statsyncing/ui/MatchedTracksPage.cpp:159
+#: dialogs/MusicBrainzTagger.cpp:113 statsyncing/ui/MatchedTracksPage.cpp:159
 #, fuzzy, kde-format
 #| msgid "Expand by"
 msgid "Expand All"
@@ -11334,17 +11334,11 @@ msgstr "%1 - %2  ::  %3"
 msgid "Apply this layout change?"
 msgstr ""
 
-#: musicbrainz/MusicBrainzTagsModel.cpp:161
+#: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, fuzzy, kde-format
 #| msgid "MusicBrainz Lookup"
 msgid "MusicBrainz match ratio: %1%"
 msgstr "Sprôwdzanié w MusicBraiz"
-
-#: musicbrainz/MusicBrainzTagsModel.cpp:164
-#, fuzzy, kde-format
-#| msgid "Music share at %1"
-msgid "MusicDNS match ratio: %1%"
-msgstr "Wespółdzélonô mùzyka na %1"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, fuzzy, kde-format
@@ -13753,55 +13747,55 @@ msgstr "Szëkôj w skriptach"
 msgid "Previous Script"
 msgstr "Pòprzédnô grëpa"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:120
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Next Script"
 msgstr "Szëkôj w skriptach"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:128
+#: scripting/scriptconsole/ScriptConsole.cpp:126
 #, fuzzy, kde-format
 #| msgctxt "@title buttontext for popup-menu"
 #| msgid "View"
 msgid "&View"
 msgstr "Òbezdrzë"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:272
+#: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove script file from disk?"
 msgstr "&Rëmôj subskripcëjã"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "&Rëmôj subskripcëjã"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Rëmôj"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:472
+#: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:502
+#: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -16824,6 +16818,11 @@ msgstr "Artista \"%1\""
 #, kde-format
 msgid "empty"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Music share at %1"
+#~ msgid "MusicDNS match ratio: %1%"
+#~ msgstr "Wespółdzélonô mùzyka na %1"
 
 #~ msgid "Enter an artist name"
 #~ msgstr "Wpiszë miono artistë"

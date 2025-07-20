@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-19 05:21+0000\n"
+"POT-Creation-Date: 2025-07-20 00:42+0000\n"
 "PO-Revision-Date: 2025-07-11 03:47+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -2081,7 +2081,7 @@ msgstr "იარლიყი"
 msgid "None"
 msgstr "არცერთი"
 
-#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:102
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
@@ -2854,7 +2854,7 @@ msgid "Configure Plugins"
 msgstr "დამატებების მორგება"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:426
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Scripts"
 msgstr "სკრიპტები"
@@ -4668,17 +4668,17 @@ msgstr "წყარო ტრეკი არ არსებობს: %1"
 msgid "Could not create directory: %1"
 msgstr "ვერ შევქმენი საქაღალდე: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "გადაწერა: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "კოდირება: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, kde-format
 msgid "Removing: %1"
@@ -5978,18 +5978,18 @@ msgstr[1] "ჯერ კიდევ მიმდინარეობს %1 პ
 msgid "Cancel Download and Quit."
 msgstr "გადმოწერის გაუქმება და წაშლა."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "პოდკასტის ეპიზოდის ფაილის შენახვა შეუძლებელია %1-ში"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "პოდკასტის მედიის გადმოწერა"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "ვიწერ პოდკასტს \"%1\""
@@ -8088,12 +8088,12 @@ msgstr "გაძლიერება"
 msgid "Hz"
 msgstr "ჰც"
 
-#: dialogs/MusicBrainzTagger.cpp:93
+#: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
 msgstr "აირჩიეთ საუკეთესო დამთხვევები"
 
-#: dialogs/MusicBrainzTagger.cpp:94
+#: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
 msgid ""
 "Use the top result for each undecided track. Alternatively, you can click on "
@@ -8106,27 +8106,27 @@ msgstr ""
 "<b>საუკეთესო დამთხვევის მიღება ალბომიდან</b>. მან, შეიძლება, კიდევ უფრო "
 "უკეთესი შედეგი მოგცეთ, რადგან ის არ ურევს სხვასხვა ალბომებს."
 
-#: dialogs/MusicBrainzTagger.cpp:95
+#: dialogs/MusicBrainzTagger.cpp:92
 #, kde-format
 msgid "Clear Choices"
 msgstr "არჩევნების გასუფთავება"
 
-#: dialogs/MusicBrainzTagger.cpp:96
+#: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
 msgstr "ყველა ცვლილების გასუფთავება, ხელით არჩეულების ჩათვლით."
 
-#: dialogs/MusicBrainzTagger.cpp:101
+#: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
 msgid "Collapse Chosen"
 msgstr "მონიშნულის აკეცვა"
 
-#: dialogs/MusicBrainzTagger.cpp:112
+#: dialogs/MusicBrainzTagger.cpp:109
 #, kde-format
 msgid "Expand Unchosen"
 msgstr "მოუნიშნავის ჩამოშლა"
 
-#: dialogs/MusicBrainzTagger.cpp:116 statsyncing/ui/MatchedTracksPage.cpp:159
+#: dialogs/MusicBrainzTagger.cpp:113 statsyncing/ui/MatchedTracksPage.cpp:159
 #, kde-format
 msgid "Expand All"
 msgstr "ყველას ამოკეცვა"
@@ -10942,15 +10942,10 @@ msgstr "%1 - %2  ::  %3"
 msgid "Apply this layout change?"
 msgstr "გადავატარო განლაგების ცვლილება?"
 
-#: musicbrainz/MusicBrainzTagsModel.cpp:161
+#: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, kde-format
 msgid "MusicBrainz match ratio: %1%"
 msgstr "MusicBrainz-ის დამთხვევის ფარდობა: %1%"
-
-#: musicbrainz/MusicBrainzTagsModel.cpp:164
-#, kde-format
-msgid "MusicDNS match ratio: %1%"
-msgstr "MusicDNS-ის დამთხვევის ფარდობა: %1%"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -13259,49 +13254,49 @@ msgstr "&ყველა სკრიპტის გასუფთავებ
 msgid "Previous Script"
 msgstr "წინა სკრიპტი"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:120
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, kde-format
 msgid "Next Script"
 msgstr "შემდეგი სკრიპტი"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:128
+#: scripting/scriptconsole/ScriptConsole.cpp:126
 #, kde-format
 msgid "&View"
 msgstr "&ნახვა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "ეს გააჩერებს ამ სკრიპტს! გავაგრძელო?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:272
+#: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "აირჩიეთ, სად მოხდება თქვენი სკრიპტების შენახვა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "წავშალო სკრიპტის ფაილი დისკიდან?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove Script"
 msgstr "სკრიპტის წაშლა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "წაშლა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:472
+#: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "არ წაშალო"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:502
+#: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "დარწმუნებული ბრძანდებით?"
@@ -16211,6 +16206,9 @@ msgstr "შემსრულებელი: %1"
 #, kde-format
 msgid "empty"
 msgstr "ცარიელია"
+
+#~ msgid "MusicDNS match ratio: %1%"
+#~ msgstr "MusicDNS-ის დამთხვევის ფარდობა: %1%"
 
 #~ msgid "Enter an artist name"
 #~ msgstr "შეიყვანეთ შემსრულებლის სახელი"

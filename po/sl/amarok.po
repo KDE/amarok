@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-19 05:21+0000\n"
+"POT-Creation-Date: 2025-07-20 00:42+0000\n"
 "PO-Revision-Date: 2025-07-11 07:29+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -2087,7 +2087,7 @@ msgstr "Oznaka"
 msgid "None"
 msgstr "Brez"
 
-#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:102
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
@@ -2873,7 +2873,7 @@ msgid "Configure Plugins"
 msgstr "Nastavi vstavke"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:426
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Scripts"
 msgstr "Skripti"
@@ -4695,17 +4695,17 @@ msgstr "Izvorna skladba ne obstaja: %1"
 msgid "Could not create directory: %1"
 msgstr "Ni bilo mogoče ustvariti mape: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Prenašanje: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Prekodiranje: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, kde-format
 msgid "Removing: %1"
@@ -6087,18 +6087,18 @@ msgstr[3] "Še vedno se prejema %1 podcastov"
 msgid "Cancel Download and Quit."
 msgstr "Prekliči prejemanje in končaj."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Ni bilo mogoče shraniti datoteke epizode podcasta v %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Prejemanje vsebine podcasta"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Prejemanje podcasta »%1«"
@@ -8256,12 +8256,12 @@ msgstr "Predojačanje"
 msgid "Hz"
 msgstr "Hz"
 
-#: dialogs/MusicBrainzTagger.cpp:93
+#: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
 msgstr "Izberi najboljša ujemanja"
 
-#: dialogs/MusicBrainzTagger.cpp:94
+#: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
 msgid ""
 "Use the top result for each undecided track. Alternatively, you can click on "
@@ -8274,27 +8274,27 @@ msgstr ""
 "meniju za dober predlog; lahko da celo boljše rezultate, saj preprečuje "
 "mešanje različnih izdaj albumov."
 
-#: dialogs/MusicBrainzTagger.cpp:95
+#: dialogs/MusicBrainzTagger.cpp:92
 #, kde-format
 msgid "Clear Choices"
 msgstr "Počisti izbire"
 
-#: dialogs/MusicBrainzTagger.cpp:96
+#: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
 msgstr "Počisti vse izbire, tudi ročne."
 
-#: dialogs/MusicBrainzTagger.cpp:101
+#: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
 msgid "Collapse Chosen"
 msgstr "Zloži neizbrano"
 
-#: dialogs/MusicBrainzTagger.cpp:112
+#: dialogs/MusicBrainzTagger.cpp:109
 #, kde-format
 msgid "Expand Unchosen"
 msgstr "Razširi neizbrano"
 
-#: dialogs/MusicBrainzTagger.cpp:116 statsyncing/ui/MatchedTracksPage.cpp:159
+#: dialogs/MusicBrainzTagger.cpp:113 statsyncing/ui/MatchedTracksPage.cpp:159
 #, kde-format
 msgid "Expand All"
 msgstr "Razširi vse"
@@ -11114,15 +11114,10 @@ msgstr "%1 - %2  ::  %3"
 msgid "Apply this layout change?"
 msgstr "Uveljavim to spremembo razporeda?"
 
-#: musicbrainz/MusicBrainzTagsModel.cpp:161
+#: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, kde-format
 msgid "MusicBrainz match ratio: %1%"
 msgstr "Razmerje ujemanja MusicBrainz: %1%"
-
-#: musicbrainz/MusicBrainzTagsModel.cpp:164
-#, kde-format
-msgid "MusicDNS match ratio: %1%"
-msgstr "Razmerje ujemanja MusicDNS: %1%"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -13452,49 +13447,49 @@ msgstr "Počisti vse skripte"
 msgid "Previous Script"
 msgstr "Predhoden skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:120
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, kde-format
 msgid "Next Script"
 msgstr "Naslednji skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:128
+#: scripting/scriptconsole/ScriptConsole.cpp:126
 #, kde-format
 msgid "&View"
 msgstr "Pogled"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "To bo zaustavilo skript! Nadaljujem?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:272
+#: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Izberite kam želite shraniti vaše skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Odstranim skriptno datoteko iz diska?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove Script"
 msgstr "Odstrani skript"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Odstrani"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:472
+#: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "Ne odstrani"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:502
+#: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Ali ste povsem prepričani?"
@@ -16495,6 +16490,9 @@ msgstr "Izvajalec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prazno"
+
+#~ msgid "MusicDNS match ratio: %1%"
+#~ msgstr "Razmerje ujemanja MusicDNS: %1%"
 
 #~ msgid "Enter an artist name"
 #~ msgstr "Vnesite ime izvajalca"

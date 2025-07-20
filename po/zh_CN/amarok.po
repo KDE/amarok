@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-19 05:21+0000\n"
+"POT-Creation-Date: 2025-07-20 00:42+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -1984,7 +1984,7 @@ msgstr "标记"
 msgid "None"
 msgstr "无"
 
-#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:102
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
@@ -2739,7 +2739,7 @@ msgid "Configure Plugins"
 msgstr "配置插件"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:426
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, kde-format
 msgid "Scripts"
 msgstr "脚本"
@@ -4515,17 +4515,17 @@ msgstr "源歌曲不存在：%1"
 msgid "Could not create directory: %1"
 msgstr "无法创建目录：%1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "正在传输：%1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "正在转码：%1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, kde-format
 msgid "Removing: %1"
@@ -5761,18 +5761,18 @@ msgstr[0] "仍有 %1 个播客正在下载"
 msgid "Cancel Download and Quit."
 msgstr "取消下载并退出。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "无法将播客单集文件保存至 %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "正在下载播客"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "正在下载播客“%1”"
@@ -7792,12 +7792,12 @@ msgstr "前级功放"
 msgid "Hz"
 msgstr "Hz"
 
-#: dialogs/MusicBrainzTagger.cpp:93
+#: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
 msgstr "选择最佳匹配结果"
 
-#: dialogs/MusicBrainzTagger.cpp:94
+#: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
 msgid ""
 "Use the top result for each undecided track. Alternatively, you can click on "
@@ -7809,27 +7809,27 @@ msgstr ""
 "匹配结果</b>查找优秀建议，此选项不会混合不同专辑的版本，故可以提供更好的结"
 "果。"
 
-#: dialogs/MusicBrainzTagger.cpp:95
+#: dialogs/MusicBrainzTagger.cpp:92
 #, kde-format
 msgid "Clear Choices"
 msgstr "清空选择"
 
-#: dialogs/MusicBrainzTagger.cpp:96
+#: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
 msgstr "清空包含手动选择在内的所有选择"
 
-#: dialogs/MusicBrainzTagger.cpp:101
+#: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
 msgid "Collapse Chosen"
 msgstr "折叠已选择的项"
 
-#: dialogs/MusicBrainzTagger.cpp:112
+#: dialogs/MusicBrainzTagger.cpp:109
 #, kde-format
 msgid "Expand Unchosen"
 msgstr "展开未选择的项"
 
-#: dialogs/MusicBrainzTagger.cpp:116 statsyncing/ui/MatchedTracksPage.cpp:159
+#: dialogs/MusicBrainzTagger.cpp:113 statsyncing/ui/MatchedTracksPage.cpp:159
 #, kde-format
 msgid "Expand All"
 msgstr "全部展开"
@@ -10590,15 +10590,10 @@ msgstr "%1 - %2  ::  %3"
 msgid "Apply this layout change?"
 msgstr "应用布局更改？"
 
-#: musicbrainz/MusicBrainzTagsModel.cpp:161
+#: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, kde-format
 msgid "MusicBrainz match ratio: %1%"
 msgstr "MusicBrainz 匹配率：%1%"
-
-#: musicbrainz/MusicBrainzTagsModel.cpp:164
-#, kde-format
-msgid "MusicDNS match ratio: %1%"
-msgstr "MusicDNS 匹配率：%1%"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -12829,49 +12824,49 @@ msgstr "清除所有脚本(&C)"
 msgid "Previous Script"
 msgstr "上一个脚本"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:120
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, kde-format
 msgid "Next Script"
 msgstr "下一个脚本"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:128
+#: scripting/scriptconsole/ScriptConsole.cpp:126
 #, kde-format
 msgid "&View"
 msgstr "视图(&V)"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr "此操作会停止该脚本，确认要继续吗？"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:272
+#: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "选择保存脚本的位置"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "要从磁盘中删除此脚本文件吗？"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgid "Remove Script"
 msgstr "删除脚本"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:472
+#: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:502
+#: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "您完全确定吗？"
@@ -15660,3 +15655,6 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
+
+#~ msgid "MusicDNS match ratio: %1%"
+#~ msgstr "MusicDNS 匹配率：%1%"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-19 05:21+0000\n"
+"POT-Creation-Date: 2025-07-20 00:42+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -2149,7 +2149,7 @@ msgstr "लेबुल"
 msgid "None"
 msgstr "कुनै पनि होइन"
 
-#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:105
+#: browsers/CollectionTreeView.cpp:354 dialogs/MusicBrainzTagger.cpp:102
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
@@ -2993,7 +2993,7 @@ msgid "Configure Plugins"
 msgstr "सङ्कलन कन्फिगर गर्नुहोस्"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:426
+#: scripting/scriptconsole/ScriptConsole.cpp:422
 #, fuzzy, kde-format
 #| msgid "Scripts"
 msgid "Scripts"
@@ -4891,19 +4891,19 @@ msgstr "फाइल अवस्थित छैन: '%1'"
 msgid "Could not create directory: %1"
 msgstr "डाइरेक्टरी प्रविष्ट गर्न सकिँदैन: '%1'"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, fuzzy, kde-format
 #| msgid "Transfer"
 msgid "Transferring: %1"
 msgstr "स्थानान्तर गर्नुहोस्"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, fuzzy, kde-format
 #| msgid "Transcoding"
 msgid "Transcoding: %1"
 msgstr "ट्रान्सकोडिङ"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:664
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
 #, fuzzy, kde-format
 #| msgid "Remove Playlist"
@@ -6242,19 +6242,19 @@ msgstr[1] ""
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1163
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1411
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
 #, fuzzy, kde-format
 #| msgid "Setting iPod model to %1 GB %2 (x%3)"
 msgid "Unable to save podcast episode file to %1"
 msgstr "%1 GB %2 (x%3) मा आईपोड नमूना सेट गर्दै"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1173
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "पोडकास्ट मिडिया डाउनलोड गर्दै"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1174
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "पोडकास्ट \"%1\" डाउनलोड गर्दै"
@@ -8392,12 +8392,12 @@ msgstr "Pre-amp"
 msgid "Hz"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:93
+#: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:94
+#: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
 msgid ""
 "Use the top result for each undecided track. Alternatively, you can click on "
@@ -8406,28 +8406,28 @@ msgid ""
 "different album releases together."
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:95
+#: dialogs/MusicBrainzTagger.cpp:92
 #, fuzzy, kde-format
 #| msgid "Clear the filter"
 msgid "Clear Choices"
 msgstr "फिल्टर खाली गर्नुहोस्"
 
-#: dialogs/MusicBrainzTagger.cpp:96
+#: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:101
+#: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
 msgid "Collapse Chosen"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:112
+#: dialogs/MusicBrainzTagger.cpp:109
 #, kde-format
 msgid "Expand Unchosen"
 msgstr ""
 
-#: dialogs/MusicBrainzTagger.cpp:116 statsyncing/ui/MatchedTracksPage.cpp:159
+#: dialogs/MusicBrainzTagger.cpp:113 statsyncing/ui/MatchedTracksPage.cpp:159
 #, fuzzy, kde-format
 #| msgid "Expand by"
 msgid "Expand All"
@@ -11330,16 +11330,11 @@ msgstr "%1. %2 - %3"
 msgid "Apply this layout change?"
 msgstr ""
 
-#: musicbrainz/MusicBrainzTagsModel.cpp:161
+#: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, fuzzy, kde-format
 #| msgid "MusicBrainz Lookup"
 msgid "MusicBrainz match ratio: %1%"
 msgstr "सङ्गीतब्रेन्च खोजी"
-
-#: musicbrainz/MusicBrainzTagsModel.cpp:164
-#, kde-format
-msgid "MusicDNS match ratio: %1%"
-msgstr ""
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -13784,54 +13779,54 @@ msgstr "स्क्रिप्टहरू"
 msgid "Previous Script"
 msgstr "अघिल्लो ट्रयाक"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:120
+#: scripting/scriptconsole/ScriptConsole.cpp:119
 #, fuzzy, kde-format
 #| msgid "Scripts"
 msgid "Next Script"
 msgstr "स्क्रिप्टहरू"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:128
+#: scripting/scriptconsole/ScriptConsole.cpp:126
 #, fuzzy, kde-format
 #| msgid "View"
 msgid "&View"
 msgstr "दृश्य"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:227
+#: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:272
+#: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
 #| msgid "&Remove Computer"
 msgid "Remove script file from disk?"
 msgstr "कम्प्युटर हटाउनुहोस्"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
 #| msgid "Description"
 msgid "Remove Script"
 msgstr "वर्णन"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:471
+#: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "हटाउनुहोस्"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:472
+#: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:502
+#: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
