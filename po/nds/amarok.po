@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -15997,24 +15997,25 @@ msgstr "Na baven"
 msgid "Just move the tracks without transcoding them."
 msgstr ", een Stück wöör nich ümkodeert"
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
+#: transcoding/TranscodingAssistantDialog.ui:89
+#, fuzzy, kde-format
+#| msgid "Transcoding"
+msgid "Transcode"
+msgstr "Ümkoderen"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
 #, fuzzy, kde-format
 #| msgid "No description available in your language"
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr "Keen Beschrieven in Dien Spraak verföögbor..."
 
-#: transcoding/TranscodingAssistantDialog.cpp:156
+#: transcoding/TranscodingAssistantDialog.cpp:158
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
-
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: transcoding/TranscodingAssistantDialog.ui:89
-#, fuzzy, kde-format
-#| msgid "Transcoding"
-msgid "Transcode"
-msgstr "Ümkoderen"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)

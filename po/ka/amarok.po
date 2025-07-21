@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
 "PO-Revision-Date: 2025-07-11 03:47+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -15684,23 +15684,24 @@ msgstr "&გადატანა"
 msgid "Just move the tracks without transcoding them."
 msgstr "ტრეკების უბრალოდ გადატანა მათი ტრანსკოდირების გარეშე."
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
+#: transcoding/TranscodingAssistantDialog.ui:89
+#, kde-format
+msgid "Transcode"
+msgstr "გადაყვანა"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
 #, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr "ამჟამად ხელმიუწვდომელია თქვენს სისტემაზე."
 
-#: transcoding/TranscodingAssistantDialog.cpp:156
+#: transcoding/TranscodingAssistantDialog.cpp:158
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
 "სამიზნე კოლექცია მიუთითებს, რომ ეს ფორმატი, შეიძლება, დაკვრადი არ იყოს."
-
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: transcoding/TranscodingAssistantDialog.ui:89
-#, kde-format
-msgid "Transcode"
-msgstr "გადაყვანა"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
 "PO-Revision-Date: 2013-03-23 14:30+0530\n"
 "Last-Translator: Chetan Khona <chetan@kompkin.com>\n"
 "Language-Team: Marathi <kde-i18n-doc@kde.org>\n"
@@ -14832,21 +14832,22 @@ msgstr "हलवा (&M)"
 msgid "Just move the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
+#: transcoding/TranscodingAssistantDialog.ui:89
+#, kde-format
+msgid "Transcode"
+msgstr ""
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
 #, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:156
+#: transcoding/TranscodingAssistantDialog.cpp:158
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
-msgstr ""
-
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: transcoding/TranscodingAssistantDialog.ui:89
-#, kde-format
-msgid "Transcode"
 msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)

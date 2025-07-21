@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -15606,23 +15606,24 @@ msgstr ""
 msgid "Just move the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
-#, kde-format
-msgctxt "Tooltip of a disabled transcoding encoder option"
-msgid "Not currently available on your system."
-msgstr ""
-
-#: transcoding/TranscodingAssistantDialog.cpp:156
-#, kde-format
-msgid "Target collection indicates this format would not be playable."
-msgstr ""
-
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
 #: transcoding/TranscodingAssistantDialog.ui:89
 #, fuzzy, kde-format
 #| msgid "&Delete Tracks"
 msgid "Transcode"
 msgstr "à´ªà´¾à´àµà´àµà´à´³àµâ à´¨àµà´àµà´à´ à´àµà´¯àµà´¯àµà´¨àµà´¨àµ"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
+#, kde-format
+msgctxt "Tooltip of a disabled transcoding encoder option"
+msgid "Not currently available on your system."
+msgstr ""
+
+#: transcoding/TranscodingAssistantDialog.cpp:158
+#, kde-format
+msgid "Target collection indicates this format would not be playable."
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)

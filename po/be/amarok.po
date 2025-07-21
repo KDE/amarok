@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -15876,23 +15876,24 @@ msgstr "Пасунуць угору"
 msgid "Just move the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
-#, fuzzy, kde-format
-msgctxt "Tooltip of a disabled transcoding encoder option"
-msgid "Not currently available on your system."
-msgstr "Апісання няма"
-
-#: transcoding/TranscodingAssistantDialog.cpp:156
-#, kde-format
-msgid "Target collection indicates this format would not be playable."
-msgstr ""
-
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
 #: transcoding/TranscodingAssistantDialog.ui:89
 #, fuzzy, kde-format
 #| msgid "France"
 msgid "Transcode"
 msgstr "Францыя"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
+#, fuzzy, kde-format
+msgctxt "Tooltip of a disabled transcoding encoder option"
+msgid "Not currently available on your system."
+msgstr "Апісання няма"
+
+#: transcoding/TranscodingAssistantDialog.cpp:158
+#, kde-format
+msgid "Target collection indicates this format would not be playable."
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
-"PO-Revision-Date: 2025-06-29 20:25+0200\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
+"PO-Revision-Date: 2025-07-20 23:58+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -10793,22 +10793,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "Редактиране на подробностите за текущо избраната песен"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "Превъртане напред с %1 секунди"
+msgstr "Търсене напред с %1"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "Превъртане назад с %1 секунди"
+msgstr "Търсене назад с %1"
 
 #: MainWindow.cpp:866
 #, kde-format
@@ -15804,23 +15802,24 @@ msgstr "&Преместване"
 msgid "Just move the tracks without transcoding them."
 msgstr "Просто преместете песните, без да ги прекодирате."
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
+#: transcoding/TranscodingAssistantDialog.ui:89
+#, kde-format
+msgid "Transcode"
+msgstr "Транскодиране"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
 #, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr "Понастоящем не е наличен във вашата система."
 
-#: transcoding/TranscodingAssistantDialog.cpp:156
+#: transcoding/TranscodingAssistantDialog.cpp:158
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
 "Целевата колекция показва, че този формат няма да може да се възпроизвежда."
-
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: transcoding/TranscodingAssistantDialog.ui:89
-#, kde-format
-msgid "Transcode"
-msgstr "Транскодиране"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)

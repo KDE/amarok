@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
 "PO-Revision-Date: 2010-09-24 12:22+0530\n"
 "Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Maithili <bhashaghar@googlegroups.com>\n"
@@ -15275,23 +15275,24 @@ msgstr ""
 msgid "Just move the tracks without transcoding them."
 msgstr ""
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
-#, kde-format
-msgctxt "Tooltip of a disabled transcoding encoder option"
-msgid "Not currently available on your system."
-msgstr ""
-
-#: transcoding/TranscodingAssistantDialog.cpp:156
-#, kde-format
-msgid "Target collection indicates this format would not be playable."
-msgstr ""
-
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
 #: transcoding/TranscodingAssistantDialog.ui:89
 #, fuzzy, kde-format
 #| msgid "&Thanks To"
 msgid "Transcode"
 msgstr "हिनका धन्यवाद (&T)"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
+#, kde-format
+msgctxt "Tooltip of a disabled transcoding encoder option"
+msgid "Not currently available on your system."
+msgstr ""
+
+#: transcoding/TranscodingAssistantDialog.cpp:158
+#, kde-format
+msgid "Target collection indicates this format would not be playable."
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)

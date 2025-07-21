@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-20 00:42+0000\n"
-"PO-Revision-Date: 2025-04-06 21:28+0200\n"
+"POT-Creation-Date: 2025-07-21 00:41+0000\n"
+"PO-Revision-Date: 2025-07-21 00:34+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3519,10 +3519,9 @@ msgid "Use &system notifications"
 msgstr "시스템 알림 사용(&S)"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "현재 Phonon 백엔드에서 음량 페이드 효과를 지원하지 않습니다"
+msgstr "현재 오디오 백엔드에서 음량 페이드 효과를 지원하지 않습니다"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7709,18 +7708,7 @@ msgid "No"
 msgstr "아니요"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -7737,10 +7725,7 @@ msgstr ""
 "   %1 버전: %2\n"
 "   KDE 프레임워크 버전: %3\n"
 "   Qt 버전: %4\n"
-"   Phonon 버전: %5\n"
-"   Phonon 백엔드: %6 (%7, %8)\n"
-"\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -10538,22 +10523,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "현재 선택된 곡의 세부 사항 편집"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "%1초 앞으로 탐색"
+msgstr "%1 앞으로 탐색"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "%1초 뒤로 탐색"
+msgstr "%1 뒤로 탐색"
 
 #: MainWindow.cpp:866
 #, kde-format
@@ -15423,22 +15406,23 @@ msgstr "이동(&M)"
 msgid "Just move the tracks without transcoding them."
 msgstr "곡을 형식 변환하지 않고 그냥 이동만 합니다."
 
-#: transcoding/TranscodingAssistantDialog.cpp:149
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: transcoding/TranscodingAssistantDialog.cpp:125
+#: transcoding/TranscodingAssistantDialog.ui:89
+#, kde-format
+msgid "Transcode"
+msgstr "형식 변환"
+
+#: transcoding/TranscodingAssistantDialog.cpp:151
 #, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
 msgstr "현재 시스템에서 사용할 수 없습니다."
 
-#: transcoding/TranscodingAssistantDialog.cpp:156
+#: transcoding/TranscodingAssistantDialog.cpp:158
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr "대상 모음집은 이 형식을 재생할 수 없습니다."
-
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: transcoding/TranscodingAssistantDialog.ui:89
-#, kde-format
-msgid "Transcode"
-msgstr "형식 변환"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)
