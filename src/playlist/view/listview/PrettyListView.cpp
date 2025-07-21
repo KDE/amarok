@@ -484,7 +484,7 @@ Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
     if( !(ModelStack::instance()->sortProxy()->isSorted() && qobject_cast<PrettyListView*>( event->source() ) == this) )
     {
-        QModelIndex index = indexAt( event->pos() );
+        QModelIndex index = indexAt( event->position().toPoint() );
         if ( index.isValid() )
         {
             m_dropIndicator = visualRect( index );
@@ -509,7 +509,7 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
     if ( qobject_cast<PrettyListView*>( event->source() ) == this )
     {
         QAbstractItemModel* plModel = model();
-        int targetRow = indexAt( event->pos() ).row();
+        int targetRow = indexAt( event->position().toPoint() ).row();
         targetRow = ( targetRow < 0 ) ? plModel->rowCount() : targetRow; // target of < 0 means we dropped on the end of the playlist
         QList<int> sr = selectedRows();
         int realtarget = The::playlistController()->moveRows( sr, targetRow );
@@ -561,14 +561,14 @@ void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
     //get the item that was clicked
-    QModelIndex index = indexAt( event->pos() );
+    QModelIndex index = indexAt( event->position().toPoint() );
 
     //first of all, if a left click, check if the delegate wants to do something about this click
     if( event->button() == Qt::LeftButton )
     {
         //we need to translate the position of the click into something relative to the item that was clicked.
         QRect itemRect = visualRect( index );
-        QPoint relPos =  event->pos() - itemRect.topLeft();
+        QPoint relPos =  event->position().toPoint() - itemRect.topLeft();
 
         if( m_prettyDelegate->clicked( relPos, itemRect, index ) )
         {
@@ -641,7 +641,7 @@ Playlist::PrettyListView::mouseReleaseEvent( QMouseEvent* event )
 {
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) && m_mousePressInHeader && m_headerPressIndex.isValid() )
     {
-        QModelIndex index = indexAt( event->pos() );
+        QModelIndex index = indexAt( event->position().toPoint() );
         if ( index == m_headerPressIndex )
         {
             int rows = index.data( GroupedTracksRole ).toInt();
@@ -662,10 +662,10 @@ Playlist::PrettyListView::mouseReleaseEvent( QMouseEvent* event )
 bool
 Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 {
-    QModelIndex index = indexAt( event->pos() );
+    QModelIndex index = indexAt( event->position().toPoint() );
     if ( index.data( GroupRole ).toInt() == Grouping::Head )
     {
-        QPoint mousePressPos = event->pos();
+        QPoint mousePressPos = event->position().toPoint();
         mousePressPos.rx() += horizontalOffset();
         mousePressPos.ry() += verticalOffset();
         return m_prettyDelegate->insideItemHeader( mousePressPos, rectForIndex( index ) );
