@@ -1,27 +1,27 @@
 # Translation for amarok.po to Euskara/Basque (eu).
 # Copyright (C) 2004, 2005, 2006, 2008, 2009 Free Software Foundation, Inc.
-# Copyright (C) 2010-2022, This file is copyright:
+# Copyright (C) 2010-2025 This file is copyright:
 # This file is distributed under the same license as the amarok package.
-# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
+# SPDX-FileCopyrightText: 2025 KDE euskaratzeko proiektuaren arduraduna <xalba@ni.eus>
 #
 # Translators:
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2006, 2009, 2011.
 # marcos <marcos@euskalgnu.org>, 2008.
 # Julen Landa Alustiza <julen@mundurat.net>, 2009.
-# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2010, 2020, 2021, 2022, 2023.
+# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2010, 2020, 2021, 2022, 2023, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2023-04-22 19:08+0200\n"
+"PO-Revision-Date: 2025-07-28 18:38+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.04.0\n"
+"X-Generator: Lokalize 25.04.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, kde-format
@@ -438,14 +438,11 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
-"Jotze-zerrenda automatikoki kiribildu jotzen ari den abestia ikusgai egoteko"
+"Jotze-zerrenda automatikoki kiribildu jotzen ari den abestia ikusarazteko"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -486,6 +483,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Pistaren artista Bilduma arakatzailean erakusten du albumekoaren ezberdina "
+"bada"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -1875,24 +1874,22 @@ msgstr ""
 "Nahi duzu hori bildumaren karpeta gisa erabiltzea?"
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Bildumaren karpetak"
+msgstr "Hautatu bildumaren karpeta"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Erabiltzailea"
+msgstr "Erabili"
 
 #: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Ez erabili"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -2587,28 +2584,24 @@ msgstr[1] "%1 jotze-zerrenda"
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
 msgid_plural "Remove %1 Tracks From %2"
-msgstr[0] "Kendu pista bat %1(e)tik"
-msgstr[1] "Kendu %1 Pista %2(e)tik"
+msgstr[0] "Kendu %2(e)ko pista bat"
+msgstr[1] "Kendu %2(e)ko %1 pista"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Ezabatu jotze-zerrenda %1(e)tik."
+msgstr "%2(e)ko <i>%1</i> jotze-zerrenda ezabatu?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Ezabatu jotze-zerrenda %1(e)tik."
+msgstr "%2(e)ko %1 jotze zerrenda ezabatu?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
@@ -4442,18 +4435,16 @@ msgid "Track"
 msgstr "Pista"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Kopiatu arbelera"
+msgstr "Kopiatu esteka arbelera"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Kopiatu arbelera"
+msgstr "Kopiatu irudia arbelera"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4470,20 +4461,16 @@ msgid "No information found..."
 msgstr "Ez da informaziorik aurkitu..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artista|banda).*\\))"
+msgstr ".*\\(.*(artista|banda).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(konposatzailea|musikaria).*\\))"
+msgstr ".*\\(.*(konposatzailea|musikaria).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
@@ -4514,7 +4501,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Egin klik %1 web-arakatzaile batean irekitzeko"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -4964,29 +4951,26 @@ msgstr ""
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
-msgstr ""
+msgstr "Gainerako ez da transferitu iPod bilduma desagertu delako.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:429
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
-msgstr ""
+msgstr "Errorearen arrazoiak: %1<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodDeleteTracksJob.cpp:44
-#, fuzzy, kde-format
-#| msgid "Removing Track from Device"
-#| msgid_plural "Removing Tracks from Device"
+#, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "Pista gailutik kentzen"
-msgstr[1] "Pistak gailutik kentzen"
+msgstr[0] "iPod-eko pista bat kentzea"
+msgstr[1] "iPod-eko %1 pista bat kentzea"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
-#, fuzzy, kde-format
-#| msgid "Moving tracks"
+#, kde-format
 msgctxt "operation when iPod is connected"
 msgid "Reading iPod tracks"
-msgstr "Pistak lekuz aldatzen"
+msgstr "iPod pistak irakurtzen"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:118
 #, fuzzy, kde-format
@@ -4996,11 +4980,10 @@ msgid "Stale tracks"
 msgstr "Pista zaharrak"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:127
-#, fuzzy, kde-format
-#| msgid "Find Orphaned Tracks"
+#, kde-format
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr "Bilatu pista zurtzak"
+msgstr "Pista umezurtzak"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:147
 #, kde-format
@@ -5013,22 +4996,19 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 #, kde-format
 msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr ""
+msgstr "iPhone, iPad edo iPod touch-era konektatzea huts egin du."
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
-#, fuzzy, kde-format
-#| msgid "Podcast Configuration"
+#, kde-format
 msgid "iPod device configuration"
-msgstr "Podcast-en konfigurazioa"
+msgstr "iPod-gailuaren konfigurazioa"
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:26
-#, fuzzy, kde-format
-#| msgctxt "'File name' playlist column name and token for playlist layouts"
-#| msgid "File name"
+#, kde-format
 msgid "iPod name:"
-msgstr "Fitxategi-izena"
+msgstr "iPod-izena:"
 
 #. i18n: ectx: property (text), widget (QLabel, m_transcodeLabel)
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
@@ -5043,16 +5023,15 @@ msgstr "&Kodetu"
 #. i18n: ectx: property (text), widget (QLabel, modelLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:50
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:109
-#, fuzzy, kde-format
+#, kde-format
 msgid "Model:"
-msgstr "Modeloa:"
+msgstr "Eredua:"
 
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
-#, fuzzy, kde-format
-#| msgid "Initialize iPod"
+#, kde-format
 msgid "&Initialize iPod"
-msgstr "Hasieratu iPod-a"
+msgstr "&Hasieratu iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
@@ -5070,17 +5049,15 @@ msgstr "Aukera orokorrak"
 
 #. i18n: ectx: property (text), widget (QLabel, videoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
-#, fuzzy, kde-format
-#| msgid "Video Clip"
+#, kde-format
 msgid "Video:"
-msgstr "Bideoa"
+msgstr "Bideoa:"
 
 #. i18n: ectx: property (text), widget (QLabel, albumArtworkLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
-#, fuzzy, kde-format
-#| msgid "Album artist:"
+#, kde-format
 msgid "Album artwork:"
-msgstr "Albumaren artista:"
+msgstr "Albumeko artelana:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, troubleshootingGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
@@ -5119,13 +5096,13 @@ msgctxt ""
 "Name of the iPod collection; %1 is iPod name, %2 is iPod model; example: My "
 "iPod: Nano (Blue)"
 msgid "%1: %2"
-msgstr ""
+msgstr "%1: %2"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:69
 #, kde-format
 msgctxt "default iPod name (when user-set name is empty)"
 msgid "iPod"
-msgstr ""
+msgstr "iPod"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:214
 #, fuzzy, kde-format
@@ -5160,18 +5137,12 @@ msgid "Autodetect (%1 file(s) present)"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:286
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 = empty string or \"not\"; %2 = a metadata field, like \"title\" or "
-#| "\"artist name\"; %3 = a predicate, can be equals, starts with, ends with "
-#| "or contains; %4 = a string to match; Example: Match tag: not title "
-#| "contains \"foo\""
-#| msgid "Match tag:%1 %2 %3 %4"
+#, kde-format
 msgctxt ""
 "Examples: %1: Nano with camera (5th Gen.); [generation]%2: 16 GiB; "
 "[capacity]%3: Nano (Orange); [model name]%4: A123 [model number]"
 msgid "%1: %2 %3 [%4]"
-msgstr "Parekatu etiketak:%1 %2 %3 %4"
+msgstr "%1: %2 %3 [%4]"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:302
 #, kde-format
@@ -5203,10 +5174,10 @@ msgid "Present"
 msgstr "Aurrezarpenak:"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:306
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "In a dialog: Some file: Not found"
 msgid "<b>Not found</b>"
-msgstr "Ez da aurkitu"
+msgstr "<b>Ez da aurkitu</b>"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:307
 #, fuzzy, kde-format
@@ -5393,10 +5364,9 @@ msgid "Playdar Collection"
 msgstr "Playdar-eko bilduma"
 
 #: core-impl/collections/playdarcollection/PlaydarMeta.cpp:121
-#, fuzzy, kde-format
-#| msgid "Search collection"
+#, kde-format
 msgid "Source collection removed"
-msgstr "Bilatu bilduma"
+msgstr "Sorburu bilduma kendu da"
 
 #: core-impl/collections/support/ArtistHelper.cpp:31
 #, kde-format
@@ -5428,14 +5398,7 @@ msgstr[1] ""
 "bildumatik kenduko dira."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to move this track to the trash? It will be removed "
-#| "from disk as well as your collection."
-#| msgid_plural ""
-#| "Do you really want to move these %1 tracks to the trash? They will be "
-#| "removed from disk as well as your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to move this track to the trash? It will be removed from "
@@ -5444,11 +5407,10 @@ msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
 msgstr[0] ""
-"Ziur zaude pista hau zakarrontzira bota nahi duzula? Bai diskotik bai zure "
-"bildumatik kenduko da."
+"Ziur zaude pista hau zakarrontzira bota nahi duzula? %2(e)tik kenduko da."
 msgstr[1] ""
-"Ziur zaude %1 pista hauek zakarrontzira bota nahi dituzula? Bai diskotik bai "
-"zure bildumatik kenduko da."
+"Ziur zaude %1 pista hauek zakarrontzira bota nahi duzula? %2(e)tik kenduko "
+"dira."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -5517,8 +5479,7 @@ msgid "Remove empty folders?"
 msgstr "Kendu karpeta hutsak?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Kendu"
@@ -5527,7 +5488,7 @@ msgstr "Kendu"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ez kendu"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -6155,10 +6116,9 @@ msgstr ""
 "Hau kanal bakoitzeko alda daiteke."
 
 #: core-impl/storage/StorageManager.cpp:159
-#, fuzzy, kde-format
-#| msgid "The playlist file \"%1\" could not be loaded."
+#, kde-format
 msgid "The configured database plugin could not be loaded."
-msgstr "Ezin izan da  '%1' zerrendaren fitxategia kargatu."
+msgstr "Konfiguratuta dagoen datu-base plugina ezin izan da zamatu."
 
 #: core/collections/CollectionLocation.cpp:381
 #, kde-format
@@ -6198,44 +6158,39 @@ msgstr[0] "Pista bat antolatzen"
 msgstr[1] "%1 pista antolatzen"
 
 #: core/collections/CollectionLocation.cpp:413
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
-msgstr[0] "Pistak transkodetzen"
-msgstr[1] "Pistak transkodetzen"
+msgstr[0] "Pista bat transkodetu eta antolatzen"
+msgstr[1] "%1 pista transkodetu eta antolatzen"
 
 #: core/collections/CollectionLocation.cpp:419
-#, fuzzy, kde-format
-#| msgid "Copying tracks"
+#, kde-format
 msgid "Moving one track to %2"
 msgid_plural "Moving %1 tracks to %2"
-msgstr[0] "Pistak kopiatzen"
-msgstr[1] "Pistak kopiatzen"
+msgstr[0] "Pista bat %2(e)ra eramaten"
+msgstr[1] "%1 pista %2(e)ra eramaten"
 
 #: core/collections/CollectionLocation.cpp:422
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
-msgstr[0] "Pistak transkodetzen"
-msgstr[1] "Pistak transkodetzen"
+msgstr[0] "Pista bat transkodetu eta %2(e)ra eramaten"
+msgstr[1] "%1 pista transkodetu eta %2(e)ra eramaten"
 
 #: core/collections/CollectionLocation.cpp:428
-#, fuzzy, kde-format
-#| msgid "Copying tracks"
+#, kde-format
 msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
-msgstr[0] "Pistak kopiatzen"
-msgstr[1] "Pistak kopiatzen"
+msgstr[0] "Pista bat %2(e)ra kopiatzen"
+msgstr[1] "%1 pista %2(e)ra kopiatzen"
 
 #: core/collections/CollectionLocation.cpp:431
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
-msgstr[0] "Pistak transkodetzen"
-msgstr[1] "Pistak transkodetzen"
+msgstr[0] "Pista bat transkodetu eta %2(e)ra kopiatzen"
+msgstr[1] "%1 Pista transkodetu eta %2(e)ra kopiatzen"
 
 #: core/meta/Meta.cpp:206
 #, kde-format
@@ -6409,29 +6364,25 @@ msgid "Unique Id"
 msgstr "ID bakarra"
 
 #: core/meta/support/MetaConstants.cpp:205
-#, fuzzy, kde-format
-#| msgid "Track Gain"
+#, kde-format
 msgctxt "Track field name"
 msgid "Track Gain"
 msgstr "Pistaren irabazia"
 
 #: core/meta/support/MetaConstants.cpp:206
-#, fuzzy, kde-format
-#| msgid "Track Gain Peak"
+#, kde-format
 msgctxt "Track field name"
 msgid "Track Gain Peak"
 msgstr "Pistaren irabaziaren gailurra"
 
 #: core/meta/support/MetaConstants.cpp:207
-#, fuzzy, kde-format
-#| msgid "Album Gain"
+#, kde-format
 msgctxt "Track field name"
 msgid "Album Gain"
-msgstr "Albumaren gailurra"
+msgstr "Albumaren irabazia"
 
 #: core/meta/support/MetaConstants.cpp:208
-#, fuzzy, kde-format
-#| msgid "Album Gain Peak"
+#, kde-format
 msgctxt "Track field name"
 msgid "Album Gain Peak"
 msgstr "Albumaren irabaziaren gailurra"
@@ -8009,18 +7960,7 @@ msgid "No"
 msgstr "Ez"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8037,9 +7977,7 @@ msgstr ""
 "   %1 bertsioa: %2\n"
 "   KDE Frameworks bertsioa: %3\n"
 "   Qt bertsioa: %4\n"
-"   Phonon bertsioa: %5\n"
-"   Phonon bizkarraldekoa: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -8121,6 +8059,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -9867,27 +9807,16 @@ msgid "The audio player by KDE"
 msgstr "KDEk eginiko audio-jotzailea"
 
 #: main.cpp:60
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, Amarok-en garapen taldea"
+"(C) 2003-2025, Amaroken garapen taldea"
 
 #: main.cpp:61
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9898,7 +9827,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
 "Erreakzioak:\n"
 "amarok@kde.org\n"
@@ -11124,22 +11053,19 @@ msgid "Choose Best Matches from This Album"
 msgstr "Albumeko hurrengo pista"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:91
-#, fuzzy, kde-format
-#| msgid "Artist page"
+#, kde-format
 msgid "Go to Artist Page"
-msgstr "Artistaren orrialdea"
+msgstr "Joan Artista orrira"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:112
-#, fuzzy, kde-format
-#| msgid "Album page"
+#, kde-format
 msgid "Go to Album Page"
-msgstr "Albumaren orrialdea"
+msgstr "Joan Album orrira"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:119
-#, fuzzy, kde-format
-#| msgid "Track page"
+#, kde-format
 msgid "Go to Track Page"
-msgstr "Pistaren orrialdea"
+msgstr "Joan Pista orrira"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NetworkRequestsDialog)
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -11209,18 +11135,17 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
@@ -11597,26 +11522,22 @@ msgid "Add a sorting level to the playlist."
 msgstr "Gehitu ordenatze-maila zerrendari."
 
 #: playlist/PlaylistController.cpp:122
-#, fuzzy, kde-format
-#| msgid "&Add to playlist"
+#, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Add tracks to playlist"
-msgstr "&Gehitu zerrendari"
+msgstr "Gehitu pistak jotze-zerrendara"
 
 #: playlist/PlaylistController.cpp:124
-#, fuzzy, kde-format
-#| msgid "Queue Track"
+#, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Queue tracks"
-msgstr "Ilaratu pista"
+msgstr "Pistak ilaran ipini"
 
 #: playlist/PlaylistController.cpp:126
-#, fuzzy, kde-format
-#| msgctxt "Replace the currently loaded tracks with these"
-#| msgid "&Replace Playlist"
+#, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Replace playlist"
-msgstr "&Ordeztu zerrenda"
+msgstr "Ordeztu jotze-zerrenda"
 
 #: playlist/PlaylistDefines.cpp:89
 #, kde-format
@@ -12527,15 +12448,12 @@ msgstr[0] "Jotze-zerrendaren luzera: pista 1"
 msgstr[1] "Jotze-zerrendaren luzera: %1 pista"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:120
-#, fuzzy, kde-format
-#| msgctxt "%2 is e.g. 'more than' or 'less than' or 'equals'"
-#| msgid "Playlist length: %2 1 track"
-#| msgid_plural "Playlist length: %2 %1 tracks"
+#, kde-format
 msgctxt "%1 is a number"
 msgid "Playlist length: more than 1 track"
 msgid_plural "Playlist length: more than %1 tracks"
-msgstr[0] "Zerrendaren luzera: pista 1 %2"
-msgstr[1] "Zerrendaren luzera: pista 1 %2"
+msgstr[0] "Jotze-zerrendaren luzera: pista 1 baino gehiago"
+msgstr[1] "Jotze-zerrendaren luzera: %1 pista baino gehiago"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:123
 #, kde-format
@@ -13371,18 +13289,17 @@ msgid "Unable to start Amarok collection scanner."
 msgstr "Ezin da Amarok-eko bildumen aztertzailea abiarazi."
 
 #: scanner/GenericScannerJob.cpp:314
-#, fuzzy, kde-format
-#| msgid ""
-#| "The collection scan had to be aborted. Too many errors were encountered "
-#| "during the scan."
+#, kde-format
 msgid ""
 "The collection scan had to be aborted. Too many crashes (%1) were "
 "encountered during the scan. Following files caused the crashes:\n"
 "\n"
 "%2"
 msgstr ""
-"Abortatu egin behar da bildumaren azterketa. Errore gehiegi aurkitu dira "
-"aztertzean."
+"Bildumaren azterketa galarazi egin behar izan da. Aztertzean kraskadura "
+"gehiegi (%1) izan dira. Ondoko fitxategiek eragin dituzte kraskadurak:\n"
+"\n"
+"%2"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:65
 #, kde-format
@@ -13469,8 +13386,7 @@ msgid "Remove Script"
 msgstr "Kendu gidoia"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Kendu"
@@ -13479,7 +13395,7 @@ msgstr "Kendu"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Ez kendu"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
@@ -13490,9 +13406,7 @@ msgstr "Erabat ziur zaude?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Bai"
@@ -13501,9 +13415,7 @@ msgstr "Bai"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Ez"
@@ -13630,27 +13542,13 @@ msgstr "Egiaztatu konexioa"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: services/gpodder/GpodderConfigWidget.ui:26
-#, fuzzy, kde-format
-#| msgid "Last.fm credentials"
+#, kde-format
 msgid "gpodder.net Profile"
 msgstr "gpodder.net profila"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/gpodder/GpodderConfigWidget.ui:78
-#, fuzzy, kde-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
-#| "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-#| "underline; color:#0057ae;\">Get an MP3tunes locker</span></a></p></body></"
-#| "html>"
+#, kde-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -13674,7 +13572,7 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
 "gpodder.net/register/\"><span style=\" text-decoration: underline; color:"
-"#0057ae;\">Sign up to gpodder.net</span></a></p></body></html>"
+"#0057ae;\">gpodder.net-en izena eman</span></a></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
@@ -13695,12 +13593,12 @@ msgstr "Gpodder Podcastak"
 #: services/gpodder/GpodderProvider.cpp:469
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
-msgstr ""
+msgstr "Egoerak gpodder.net-ekin sinkronizatzen saiatzen"
 
 #: services/gpodder/GpodderProvider.cpp:529
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
-msgstr ""
+msgstr "Harpidetzak gpodder.net-ekin sinkronizatzen saiatzen"
 
 #: services/gpodder/GpodderProvider.cpp:778
 #: services/gpodder/GpodderProvider.cpp:789
@@ -13992,9 +13890,7 @@ msgstr "Last.fm profila"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
 
@@ -14002,32 +13898,28 @@ msgstr "Erabiltzaile-izena:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:226
 #: services/lastfm/LastFmServiceSettings.cpp:250
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Konexioaren hutsegitea"
+msgstr "Konektatu kontura"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:278
-#, fuzzy, kde-format
-#| msgid "Not Mounted"
+#, kde-format
 msgid "Not connected"
-msgstr "Muntatu gabe"
+msgstr "Konektatu gabe"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr "<a href='http://www.last.fm:80/signup.php'>Erregistratu Last.fm-en</a>"
+msgstr "<a href='http://www.last.fm:80/signup.php'>Last.fm(e)n izena eman</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Deskonektatu gailua"
+msgstr "Deskonektatu kontua"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14061,7 +13953,7 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
-msgstr ""
+msgstr "Erabili etiketa dotoreak balorazioak irudikatzeko"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:146
@@ -14187,19 +14079,18 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Amarok %1 Last.fm kontutik deskonektatu nahi duzu?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Last.fm kontua deskonektatu?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Deskonektatu gailua"
+msgstr "Deskonektatu"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14210,11 +14101,10 @@ msgid "Failed"
 msgstr "Huts egin du"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Ireki Last.fm webgunea gertaera honentzako"
+msgstr "Last.fm webgunea irekitzen"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
@@ -15035,13 +14925,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Magnatune-ren datu-base lokala eguneratzen."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -15051,9 +14935,9 @@ msgid ""
 msgstr ""
 "Magnatune.com zerbitzuak honako mezuak onartzen ditu:\n"
 "\n"
-"\taddMoodyTracks gogaldia kopurua: zehaztu gogaldiko ausazko pista kopurua "
-"gehitzen du jotze-zerrendara. Gogaldi argumentuaren zuriuneek %%20 ihes-"
-"karakterea erabili behar dute."
+"\taddMoodyTracks gogaldia kopurua: Adierazitako gogaldia duten ausazko pista-"
+"kopuru bat gehitzen du jotze-zerrendara. Gogaldi argumentuaren zuriuneak "
+"&#37;20 ihes karaktereekin ordeztu behar dira."
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15137,14 +15021,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "MP3Tunes-en sinkronizazio automatikoa kudeatzen du Amarok-etik"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15153,8 +15030,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"zerbitzaria: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-"#amarok-fr\n"
+"zerbitzaria: irc.libera.chat / kanala: #amarok\n"
 "\n"
 "Erreakzioak:\n"
 "amarok@kde.org"
@@ -15757,7 +15633,7 @@ msgstr "Ez dago eguneratzeko dagoen pistarik"
 #: statsyncing/ui/MatchedTracksPage.cpp:272
 #, kde-format
 msgid "Tracks that are unique to their sources"
-msgstr "Haien sorburuetan bakarrik dauden pistak"
+msgstr "Haien sorburuetan bakarrak diren pistak"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
@@ -15809,13 +15685,13 @@ msgstr "Iragazi pistak..."
 #, kde-format
 msgid "Affects all applicable tracks, not just shown ones"
 msgstr ""
+"Aplikagarri zaien pista guztiei eragiten die, ez erakusten direnei bakarrik"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
-#, fuzzy, kde-format
-#| msgid "Track rating: %1"
+#, kde-format
 msgid "Take Ratings From"
-msgstr "Pistaren balorazioa: %1"
+msgstr "Hartu balorazioak hemendik"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedExpandButton)
 #: statsyncing/ui/MatchedTracksPage.ui:110
