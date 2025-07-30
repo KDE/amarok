@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-07-17 09:55+0300\n"
+"PO-Revision-Date: 2025-07-29 10:48+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -321,7 +321,7 @@ msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
 msgstr ""
-"אם סומן, מצב דינמי יופעל, ורצועות יוספו לפי רשימת־ההשמעה הדינמית שתיבחר."
+"אם סומן, מצב דינמי יופעל, ורצועות יתווספו לפי רשימת הנגינה הדינמית שתיבחר."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:53
@@ -416,14 +416,14 @@ msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr ""
-"אם סומן, רשימות־השמעה הנשמרות ידניות של Amarok יכילו נתיב יחסי אל הרצועות, "
-"לא נתיב מלא."
+"אם הוגדר, רשימות נגינה ידניות שנשמרות על ידי Amarok יכילו נתיב יחסי אל "
+"הרצועות, במקום נתיב מלא."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:88
 #, kde-format
 msgid "Filename of the external web browser to be invoked by Amarok."
-msgstr "שם־הקובץ של דפדפן הרשת החיצוני שיופעל על־ידי Amarok."
+msgstr "שם הקובץ של דפדפן הרשת החיצוני שיופעל על־ידי Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:92
@@ -504,7 +504,7 @@ msgstr "האם ארגון קבצים ישכתב קבצים קיימים."
 #: amarokconfig.kcfg:130
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
-msgstr "אם נקבע, ארגון קבצים ישכתב כל יעד קיים."
+msgstr "אם הוגדר, ארגון קבצים ישכתב כל יעד קיים."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:134
@@ -544,13 +544,13 @@ msgstr "אם נקבע, ארגון קבצים יחליף רווחים בשמות�
 #: amarokconfig.kcfg:144
 #, kde-format
 msgid "Whether organize files will use cover art as folder icons."
-msgstr "האם ארגון קבצים יעשה שימוש בתמונת־העטיפה כצלמית לתיקייה."
+msgstr "האם ארגון קבצים ישתמש בתמונת העטיפה כסמל לתיקייה."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:145
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
-msgstr "אם נקבע, ארגון קבצים יעשה שימוש בתמונת־העטיפה כצלמית לתיקייה."
+msgstr "אם הוגדר, ארגון קבצים ישתמש בתמונת העטיפה כסמל לתיקייה."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:149
@@ -572,7 +572,7 @@ msgstr "המספר המזהה של יעד תיקיית אוסף עבור ארג�
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
 "filesystems."
-msgstr "האם ארגון קבצים ישנה את שמם, באופן שיהיה תואם את מערכת־הקבצים vfat."
+msgstr "האם ארגון קבצים ישנה את שמם, באופן שיהיה תואם את מערכת הקבצים vfat."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:155
@@ -581,8 +581,8 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
-"אם נקבע, ארגון קבצים יחליף תווים שאינם תואמים את מערכת־הקבצים vfat  (כמו "
-"':', '*' ו־ '?')."
+"אם הוגדר, ארגון קבצים יחליף תווים שאינם תואמים את מערכת הקבצים vfat (כמו "
+"‚:’, ‚*’ ו־‚?’)."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:159
@@ -605,7 +605,7 @@ msgstr ""
 #: amarokconfig.kcfg:164
 #, kde-format
 msgid "Whether organize files will use a custom file naming scheme."
-msgstr "האם ניהול קבצים יעשה שימוש, בסכמה מותאמת־אישית למתן שמות־קבצים."
+msgstr "האם ניהול קבצים ישתמש בסכמה מותאמת אישית למתן שמות קבצים."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:165
@@ -619,7 +619,7 @@ msgstr "אם נקבע, ניהול קבצים ישנה את שמם לפי מחר�
 #, kde-format
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr ""
-"מחרוזת תבנית המותאמת באופן אישי עבור ניהול קבצים, אם נעשה שימוש בסכמת מותאמת "
+"מחרוזת תבנית המותאמת באופן אישי עבור ניהול קבצים, אם נעשה שימוש בסכמה מותאמת "
 "אישית למתן שמות."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
@@ -630,7 +630,7 @@ msgid ""
 "files according to this format string."
 msgstr ""
 "אם סכמת מתן השמות המותאמת אישית פעילה, אז ניהול הקבצים ישנה את שמם לפי "
-"מחרוזת תבנית המותאמת באופן אישי הזאת."
+"מחרוזת התבנית הזאת המותאמת באופן אישי."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:174
@@ -1048,25 +1048,25 @@ msgstr ""
 #: amarokconfig.kcfg:380
 #, kde-format
 msgid "Resume playback of last played track on startup"
-msgstr "חדש השמעה של רצועה מושמעת אחרונה בהפעלה חדשה"
+msgstr "חידוש השמעה של הרצועה האחרונה שהושמעה בהפעלה חדשה"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: amarokconfig.kcfg:381
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
-msgstr "אם סומן, Amarok יחדש השמעה של הרצועה האחרונה בהפעלה מחדש."
+msgstr "אם הוגדר, Amarok יחדש השמעה של הרצועה האחרונה לאחר הפעלה מחדש."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:385
 #, kde-format
 msgid "Track URL to resume upon startup"
-msgstr "כתובת הרצועה עבור חידוש ההשמעה בעת הפעלה מחדש"
+msgstr "כתובת הרצועה לחידוש ההשמעה לאחר הפעלה מחדש"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: amarokconfig.kcfg:386
 #, kde-format
 msgid "Internal: URL of the track to resume on startup."
-msgstr "פנימי: כתובת הרצועה עבור חידוש ההשמעה בעת הפעלה חדשה."
+msgstr "פנימי: כתובת הרצועה לחידוש ההשמעה לאחר הפעלה חדשה."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:389
@@ -1079,13 +1079,13 @@ msgstr "&חדש השמעה בהפעלה"
 #: amarokconfig.kcfg:393
 #, kde-format
 msgid "Time to resume at, in milliseconds"
-msgstr "הזמן שבו תחודש ההשמעה, באלפיות־שנייה"
+msgstr "נקודת הזמן שממנה תחודש ההשמעה, באלפיות־שנייה"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: amarokconfig.kcfg:394
 #, kde-format
 msgid "Internal: Playback position in the track to resume on startup."
-msgstr "פנימי: המיקום ברצועה שבה תחודש ההשמעה בהפעלה מחדש."
+msgstr "פנימי: הנקודה ברצועה שממנה תחודש ההשמעה לאחר הפעלה מחדש."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:397
@@ -1562,7 +1562,7 @@ msgstr "סמן אמן זה"
 #: amarokurls/BookmarkMetaActions.cpp:61
 #, kde-format
 msgid "Add Position Marker"
-msgstr ""
+msgstr "הוספת סמן מקום"
 
 #: amarokurls/BookmarkModel.cpp:85
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:398
@@ -1580,7 +1580,7 @@ msgstr "סוג"
 #: amarokurls/BookmarkModel.cpp:259 network/NetworkRequests.ui:46
 #, kde-format
 msgid "URL"
-msgstr ""
+msgstr "כתובת"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: amarokurls/BookmarkModel.cpp:260
@@ -1714,12 +1714,12 @@ msgstr ""
 #: App.cpp:365
 #, kde-format
 msgid "Skip backwards in playlist"
-msgstr "דלג אחורה ברשימת־ההשמעה"
+msgstr "דילוג אחורה ברשימת הנגינה"
 
 #: App.cpp:366
 #, kde-format
 msgid "Start playing current playlist"
-msgstr "התחל לנגן את רשימת־ההשמעה הנוכחית"
+msgstr "התחלת ניגון רשימת הנגינה הנוכחית"
 
 #: App.cpp:367
 #, kde-format
@@ -1729,17 +1729,17 @@ msgstr "נגן במידה שמושהה, השהה במידה שמנגן"
 #: App.cpp:368
 #, kde-format
 msgid "Pause playback"
-msgstr "השהה את ההשמעה"
+msgstr "השהיית ההשמעה"
 
 #: App.cpp:369
 #, kde-format
 msgid "Stop playback"
-msgstr "עצור את ההשמעה"
+msgstr "עצירת ההשמעה"
 
 #: App.cpp:370
 #, kde-format
 msgid "Skip forwards in playlist"
-msgstr "דלג קדימה ברשימת־ההשמעה"
+msgstr "דילוג קדימה ברשימת הנגינה"
 
 #: App.cpp:372
 #, kde-format
@@ -1749,7 +1749,7 @@ msgstr "אפשרויות נוספות:"
 #: App.cpp:373
 #, kde-format
 msgid "Append files/URLs to playlist"
-msgstr "הוסף קבצים/כתובות אל רשימת־ההשמעה"
+msgstr "הוספת קבצים/כתובות אל רשימת הנגינה"
 
 #: App.cpp:374
 #, kde-format
@@ -1759,7 +1759,7 @@ msgstr "הכנס כתובות לתור לאחר הרצועה הנוכחית המ
 #: App.cpp:375
 #, kde-format
 msgid "Load URLs, replacing current playlist"
-msgstr "טען כתובת אשר תחליף את רשימת־ההשמעה הנוכחית"
+msgstr "טעינת כתובת שתחליף את רשימת הנגינה הנוכחית"
 
 #: App.cpp:376 App.cpp:378
 #, kde-format
@@ -1842,7 +1842,7 @@ msgstr "להשתמש"
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "לא להשתמש"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -1917,18 +1917,18 @@ msgstr " / "
 #: browsers/collectionbrowser/CollectionWidget.cpp:210
 #, kde-format
 msgid "First Level"
-msgstr ""
+msgstr "רמה ראשונה"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: browsers/collectionbrowser/CollectionWidget.cpp:211
 #, kde-format
 msgid "Second Level"
-msgstr ""
+msgstr "רמה שנייה"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:212
 #, kde-format
 msgid "Third Level"
-msgstr ""
+msgstr "רמה שלישית"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:246
 #, kde-format
@@ -1958,7 +1958,7 @@ msgstr "הראה שנים"
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:85
 #, kde-format
 msgid "Merged View"
-msgstr ""
+msgstr "תצוגה ממוזגת"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:275
 #: services/jamendo/JamendoService.cpp:162
@@ -1980,15 +1980,13 @@ msgstr "נספרים…"
 
 #: browsers/CollectionTreeItem.cpp:176
 #: playlist/proxymodels/GroupingProxy.cpp:189
-#, fuzzy, kde-format
-#| msgid "%1 track"
-#| msgid_plural "%1 tracks"
+#, kde-format
 msgid "1 track"
 msgid_plural "%1 tracks"
-msgstr[0] "%1 רצועה"
-msgstr[1] "%1 רצועות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "רצועה"
+msgstr[1] "שתי רצועות"
+msgstr[2] "%1 רצועות"
+msgstr[3] "%1 רצועות"
 
 #: browsers/CollectionTreeItemModelBase.cpp:281
 #: browsers/CollectionTreeItemModelBase.cpp:372
@@ -2037,7 +2035,7 @@ msgstr "סמן אמן זה"
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
-msgstr ""
+msgstr "אומן/ית האלבום"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
@@ -2073,7 +2071,7 @@ msgstr "ללא"
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
-msgstr ""
+msgstr "צמצום של הכול"
 
 #: browsers/CollectionTreeView.cpp:387
 #, kde-format
@@ -2136,7 +2134,7 @@ msgstr "&עריכת פרטי רצועה"
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
-msgstr ""
+msgstr "ריענון"
 
 #: browsers/filebrowser/FileBrowser.cpp:78
 #, kde-format
@@ -2293,7 +2291,7 @@ msgstr ""
 #: browsers/playlistbrowser/DynamicCategory.cpp:44
 #, kde-format
 msgid "Dynamic Playlists"
-msgstr "רשימות־השמעה דינמיות"
+msgstr "רשימות נגינה דינמיות"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:45
 #, kde-format
@@ -2504,10 +2502,9 @@ msgid "Source"
 msgstr "מקור"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:63
-#, fuzzy, kde-format
-#| msgid "Create Smart Playlist"
+#, kde-format
 msgid "Create an Empty Playlist"
-msgstr "צור רשימת־השמעה חכמה"
+msgstr "יצירת רשימת נגינה ריקה"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:77
 #, kde-format
@@ -2833,7 +2830,7 @@ msgstr "השמעה"
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
 msgid "Configure Playback"
-msgstr "הגדר השמעה"
+msgstr "הגדרת השמעה"
 
 #: configdialog/ConfigDialog.cpp:63
 #, kde-format
@@ -3156,7 +3153,7 @@ msgstr "האם להציג את הסמל במגש המערכת"
 #: configdialog/dialogs/GeneralConfig.ui:78
 #, kde-format
 msgid "Playlist Options"
-msgstr "אפשרויות רשימת־השמעה"
+msgstr "אפשרויות רשימת נגינה"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoScrollPlaylist)
 #: configdialog/dialogs/GeneralConfig.ui:84
@@ -3169,7 +3166,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:87
 #, kde-format
 msgid "Automatically scroll playlist to current track"
-msgstr "גלול אוטומטית את רשימת־ההשמעה לרצועה הנוכחית"
+msgstr "לגלול אוטומטית את רשימת הנגינה לרצועה הנוכחית"
 
 #. i18n: ectx: property (title), widget (QGroupBox, moodbarBox)
 #: configdialog/dialogs/GeneralConfig.ui:97
@@ -3604,7 +3601,7 @@ msgstr ""
 #: configdialog/dialogs/PlaybackConfig.ui:29
 #, kde-format
 msgid "&Resume playback on start"
-msgstr "&חדש השמעה בהפעלה"
+msgstr "&חידוש השמעה בהפעלה"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_StartPlayingOnAdd)
@@ -3966,10 +3963,9 @@ msgid "General Settings"
 msgstr "הגדרות כלליות"
 
 #: context/applets/labels/LabelsApplet.cpp:758
-#, fuzzy, kde-format
-#| msgid "&Settings"
+#, kde-format
 msgid "Blacklist Settings"
-msgstr "&הגדרות"
+msgstr "הגדרות רשימת חסומים"
 
 # kde-il: don't translate
 #: context/applets/labels/LabelsApplet.cpp:759
@@ -3979,10 +3975,9 @@ msgstr "הגדרות החלפה"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: context/applets/labels/labelsBlacklistSettings.ui:17
-#, fuzzy, kde-format
-#| msgid "You can use the following tokens:"
+#, kde-format
 msgid "Do not show the following labels:"
-msgstr "באפשרותך להשתמש באחד מהאסימונים הבאים:"
+msgstr "לא להציג את התוויות הבאות:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchArtistCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:24
@@ -4007,10 +4002,9 @@ msgstr "בסוף"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: context/applets/labels/labelsBlacklistSettings.ui:61
-#, fuzzy, kde-format
-#| msgid "Playlist"
+#, kde-format
 msgid "Blacklist:"
-msgstr "רשימת־השמעה"
+msgstr "לרשימת חסומים:"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, labelsGeneralSettings)
 #: context/applets/labels/labelsGeneralSettings.ui:20
@@ -4036,10 +4030,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: context/applets/labels/labelsGeneralSettings.ui:75
-#, fuzzy, kde-format
-#| msgid "Retrieve similar artists"
+#, kde-format
 msgid "Maximum labels to show:"
-msgstr "אחזר אמנים דומים"
+msgstr "כמות תוויות מרבית להצגה:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, numLabelsSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:95
@@ -4057,10 +4050,9 @@ msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, personalCountSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:127
-#, fuzzy, kde-format
-#| msgid "Add this filter condition to the list"
+#, kde-format
 msgid "Affects the font size of the personal labels."
-msgstr "הוסף את התנאי המסנן לרשימה."
+msgstr "משפיע על גודל הגופן של התוויות האישיות."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoAddCheckBox)
 #: context/applets/labels/labelsGeneralSettings.ui:145
@@ -4100,10 +4092,9 @@ msgstr "איפוס צבעים"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: context/applets/labels/labelsReplacementSettings.ui:19
-#, fuzzy, kde-format
-#| msgid "&Delete Downloaded Episode"
+#, kde-format
 msgid "Replace downloaded label"
-msgstr "&מחק את הפרק שהורד"
+msgstr "החלפת תווית שירדה"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #. i18n: ectx: property (text), widget (QLabel, replaceLabel2)
@@ -4150,10 +4141,9 @@ msgid "Remove selected"
 msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
-#, fuzzy, kde-format
-#| msgid "&Settings"
+#, kde-format
 msgid "Lyrics config"
-msgstr "&הגדרות"
+msgstr "הגדרות מילות שירים"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, kde-format
@@ -4216,9 +4206,9 @@ msgstr "כותרת:"
 #. i18n: ectx: property (text), widget (QLabel, label_22)
 #: context/applets/lyrics/package/contents/ui/main.qml:140
 #: dialogs/TagGuessOptions.ui:127
-#, fuzzy, kde-format
+#, kde-format
 msgid "Artist:"
-msgstr "אמן:"
+msgstr "אומן/נית:"
 
 #: context/applets/playlistinfo/PlaylistInfo.cpp:155
 #, kde-format
@@ -4231,12 +4221,10 @@ msgid "Width"
 msgstr "רוחב"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "מתוך <b>%1</b>"
+msgstr "דומה ל־<b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
@@ -4253,10 +4241,9 @@ msgid "<br>%1 plays by you"
 msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:41
-#, fuzzy, kde-format
-#| msgid "Plugin Information"
+#, kde-format
 msgid "Songkick Concert Information"
-msgstr "מידע אודות התוסף"
+msgstr "פרטי הופעה מ־Songkick"
 
 #: context/applets/songkick/SongkickApplet.cpp:63
 #, kde-format
@@ -4264,10 +4251,9 @@ msgid "Concerts"
 msgstr "הופעות"
 
 #: context/applets/songkick/SongkickApplet.cpp:70
-#, fuzzy, kde-format
-#| msgid "Reload Lyrics"
+#, kde-format
 msgid "Reload Songkick"
-msgstr "טען מחדש מילות־שיר"
+msgstr "ריענון Songkick"
 
 #: context/applets/songkick/SongkickApplet.cpp:152
 #, kde-format
@@ -4275,20 +4261,16 @@ msgid "Concert information is being fetched."
 msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:157
-#, fuzzy, kde-format
-#| msgid ""
-#| "Lyrics were not able to be downloaded. Please check your internet "
-#| "connection: %1"
+#, kde-format
 msgid ""
 "Songkick was not able to be downloaded. Please check your Internet "
 "connection: %1"
-msgstr "מילות־השיר לא יכלו לרדת. יש לבדוק את חיבור האינטרנט: %1"
+msgstr "הורדת מנגנון Songkick נכשלה. נא לבדוק את החיבור שלך לאינטרנט: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:202
-#, fuzzy, kde-format
-#| msgid "There were no lyrics found for this track"
+#, kde-format
 msgid "There was no information found for this track"
-msgstr "לא נמצאו מילות־שיר לרצועה זו"
+msgstr "לא נמצאו פרטים על הרצועה הזאת"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, ReloadEditDialog)
 #: context/applets/tabs/ReloadEditDialog.ui:32
@@ -4308,9 +4290,9 @@ msgstr ""
 #: musicbrainz/MusicBrainzTagsModel.cpp:37 playlist/PlaylistModel.cpp:931
 #: services/jamendo/JamendoInfoParser.cpp:51
 #: services/magnatune/MagnatuneStore.cpp:216
-#, fuzzy, kde-format
+#, kde-format
 msgid "Artist"
-msgstr "אמן"
+msgstr "אומן/נית"
 
 #: context/applets/tabs/TabsApplet.cpp:83
 #: context/applets/tabs/TabsApplet.cpp:133
@@ -4321,11 +4303,10 @@ msgid "Tabs"
 msgstr "תווים"
 
 #: context/applets/tabs/TabsApplet.cpp:99
-#, fuzzy, kde-format
-#| msgid "Redownload"
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Reload tabs"
-msgstr "הורד מחדש"
+msgstr "ריענון תווים"
 
 #: context/applets/tabs/TabsApplet.cpp:162
 #, kde-format
@@ -4665,10 +4646,9 @@ msgid ""
 msgstr ""
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:243
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Updating Amarok database schema"
-msgstr "שם בסיס־נתונים"
+msgstr "סכמת מסד הנתונים של Amarok מתעדכנת"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:530
 #, kde-format
@@ -4676,10 +4656,9 @@ msgid "Source track does not exist: %1"
 msgstr ""
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:541
-#, fuzzy, kde-format
-#| msgid "could not execute %1"
+#, kde-format
 msgid "Could not create directory: %1"
-msgstr "אין אפשרות לבצע את %1"
+msgstr "לא ניתן ליצור תיקייה: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
@@ -5346,10 +5325,9 @@ msgid "Could not save playlist."
 msgstr "לא ניתן לשמור את רשימת הנגינה."
 
 #: core-impl/collections/playdarcollection/PlaydarCollection.cpp:123
-#, fuzzy, kde-format
-#| msgid "Collection"
+#, kde-format
 msgid "Playdar Collection"
-msgstr "אוסף"
+msgstr "אוסף Playdar"
 
 #: core-impl/collections/playdarcollection/PlaydarMeta.cpp:121
 #, kde-format
@@ -6292,11 +6270,10 @@ msgid "Disc Number"
 msgstr "מספר דיסק"
 
 #: core/meta/support/MetaConstants.cpp:191
-#, fuzzy, kde-format
-#| msgid "Bpm"
+#, kde-format
 msgctxt "Track field name"
 msgid "Bpm"
-msgstr "ביטים לשנייה"
+msgstr ""
 
 #: core/meta/support/MetaConstants.cpp:192
 #, kde-format
@@ -7414,17 +7391,14 @@ msgid "Sorry, the cover could not be saved."
 msgstr "אי אפשר לשמור את העטיפה, עמך הסליחה."
 
 #: covermanager/CoverFoundDialog.cpp:518
-#, fuzzy, kde-format
-#| msgid ""
-#| "Determines which Amazon server cover images should be retrieved from."
+#, kde-format
 msgid "Sorry, the cover image could not be retrieved."
-msgstr "קובע מאיזה שרת של Amazon יימשכו עטיפות האלבומים."
+msgstr "לא ניתן למשוך את תמונת העטיפה, עמך הסליחה."
 
 #: covermanager/CoverFoundDialog.cpp:538
-#, fuzzy, kde-format
-#| msgid "Fetching Cover"
+#, kde-format
 msgid "Fetching Large Cover"
-msgstr "צרף עטיפות"
+msgstr "מתקבלת עטיפה גדולה"
 
 #: covermanager/CoverFoundDialog.cpp:539
 #, kde-format
@@ -7585,10 +7559,9 @@ msgid "Fetch Missing Covers"
 msgstr "צרף עטיפות חסרות"
 
 #: covermanager/CoverManager.cpp:312
-#, fuzzy, kde-format
-#| msgid "Fetching content.."
+#, kde-format
 msgid "Fetching"
-msgstr "מצרף תוכן..."
+msgstr "מתקבל"
 
 #: covermanager/CoverManager.cpp:407
 #, kde-format
@@ -9073,7 +9046,7 @@ msgstr "אקראי"
 #: dynamic/BiasedPlaylist.cpp:124
 #, kde-format
 msgid "Generating playlist..."
-msgstr "יוצר רשימת־השמעה..."
+msgstr "יוצר רשימת נגינה…"
 
 #: dynamic/biases/AlbumPlayBias.cpp:35
 #, kde-format
@@ -9096,11 +9069,10 @@ msgid "The next track from the album"
 msgstr "קבע עטיפה מותאמת אישית לאלבום הזה"
 
 #: dynamic/biases/AlbumPlayBias.cpp:109
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgctxt "AlbumPlay bias representation"
 msgid "Any later track from the album"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "כל רצועה מאוחר יותר מהאלבום"
 
 #: dynamic/biases/AlbumPlayBias.cpp:112
 #, kde-format
@@ -9165,10 +9137,9 @@ msgid "the previous track's artist"
 msgstr "אמנים שונים"
 
 #: dynamic/biases/EchoNestBias.cpp:145
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "one of the artist in the current playlist"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "אחד או אחת האומנים ברשימת הנגינה הנוכחית"
 
 #: dynamic/biases/IfElseBias.cpp:35
 #, kde-format
@@ -10609,12 +10580,12 @@ msgstr "מקורות מקוונים של תוכן"
 #: MainWindow.cpp:280
 #, kde-format
 msgid "Playlists"
-msgstr "רשימות־השמעה"
+msgstr "רשימות נגינה"
 
 #: MainWindow.cpp:282
 #, kde-format
 msgid "Various types of playlists"
-msgstr "סוגים שונים של רשימות־השמעה"
+msgstr "סוגים שונים של רשימות נגינה"
 
 #: MainWindow.cpp:291
 #, kde-format
@@ -10681,7 +10652,7 @@ msgstr "&הוסף מדיה..."
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
-msgstr "&נקה רשימת־השמעה"
+msgstr "&ניקוי רשימת נגינה"
 
 #: MainWindow.cpp:766
 #, kde-format
@@ -10703,7 +10674,7 @@ msgstr "ה&וסף שידור רדיו זורם..."
 #: MainWindow.cpp:782
 #, kde-format
 msgid "&Export Playlist As..."
-msgstr "&יצא רשימת־השמעה כ..."
+msgstr "יי&צוא רשימת נגינה בתור…"
 
 #: MainWindow.cpp:794
 #, kde-format
@@ -10713,7 +10684,7 @@ msgstr "אקולייזר"
 #: MainWindow.cpp:798 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
-msgstr "סימניית הגדרות רשימת־השמעה"
+msgstr "הגדרת סימניות רשימת נגינה"
 
 #: MainWindow.cpp:802
 #, kde-format
@@ -10731,22 +10702,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "עריכת פרטי הרצועה הנבחרת"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "חתירה של %1 שניות קדימה"
+msgstr "חתירה של %1 קדימה"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "חתירה של %1 שניות אחורה"
+msgstr "חתירה של %1 אחורה"
 
 #: MainWindow.cpp:866
 #, kde-format
@@ -10776,7 +10745,7 @@ msgstr "ערבוב רשימת נגינה"
 #: MainWindow.cpp:898
 #, kde-format
 msgid "Repopulate Playlist"
-msgstr "מלא מחדש את רשימת־ההשמעה"
+msgstr "מילוי רשימת הנגינה מחדש"
 
 #: MainWindow.cpp:904
 #, kde-format
@@ -10912,7 +10881,7 @@ msgstr "&Amarok"
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
-msgstr "&רשימת־השמעה"
+msgstr "&רשימת נגינה"
 
 #: MainWindow.cpp:1126
 #, kde-format
@@ -11908,10 +11877,9 @@ msgid "Checkpoint"
 msgstr ""
 
 #: playlistgenerator/constraints/Checkpoint.cpp:59
-#, fuzzy, kde-format
-#| msgid "Warning: tracks have been hidden in the playlist"
+#, kde-format
 msgid "Fixes a track, album, or artist to a certain position in the playlist"
-msgstr "אזהרה: רצועות הוחבאו ברשימת־ההשמעה"
+msgstr "קיבוע של רצועה, אלבום או אומן/ית למקום מסוים ברשימת הנגינה"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:170
 #, kde-format
@@ -12068,31 +12036,27 @@ msgid "Sets the preferred duration of the playlist"
 msgstr "הגדרת משך הזמן המועדף לרשימת הנגינה"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:119
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgctxt "%1 is a length of time (e.g. 5:00 for 5 minutes)"
 msgid "Playlist duration: equals %1"
-msgstr "רשימת־השמעה־%1"
+msgstr "משך רשימת נגינה: שווה ל־%1"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:121
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgctxt "%1 is a length of time (e.g. 5:00 for 5 minutes)"
 msgid "Playlist duration: more than %1"
-msgstr "רשימת־השמעה־%1"
+msgstr "משך רשימת נגינה: יותר מ־%1"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:123
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgctxt "%1 is a length of time (e.g. 5:00 for 5 minutes)"
 msgid "Playlist duration: less than %1"
-msgstr "רשימת־השמעה־%1"
+msgstr "משך רשימת נגינה: פחות מ־%1"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:125
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgid "Playlist duration: unknown"
-msgstr "רשימת־השמעה־%1"
+msgstr "משך רשימת נגינה: לא ידוע"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistDurationEditWidget)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:15
@@ -12107,10 +12071,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:21
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Playlist Duration Constraint Settings"
-msgstr "%1 הגדרות"
+msgstr "הגדרות הגבלת משך רשימות נגינה"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:32
@@ -12178,31 +12141,27 @@ msgid "Sets the preferred total file size of the playlist"
 msgstr "הגדרת גודל הקבצים הכולל המועדף לרשימת הנגינה"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:123
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgctxt "%1 is a file size (e.g. 50 MB)"
 msgid "Total file size of playlist: equals %1"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "גודל הקבצים הכולל ברשימת הנגינה: שווה ל־%1"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:125
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgctxt "%1 is a file size (e.g. 50 MB)"
 msgid "Total file size of playlist: more than %1"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "גודל הקבצים הכולל של רשימת הנגינה: יותר מ־%1"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:127
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgctxt "%1 is a file size (e.g. 50 MB)"
 msgid "Total file size of playlist: less than %1"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "גודל הקבצים הכולל של רשימת הנגינה: פחות מ־%1"
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:129
-#, fuzzy, kde-format
-#| msgid "&Append to Playlist"
+#, kde-format
 msgid "Total file size of playlist: unknown"
-msgstr "&הוסף לרשימת־השמעה"
+msgstr "גודל הקבצים הכולל ברשימת הנגינה: לא ידוע"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistFileSizeEditWidget)
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistLengthEditWidget)
@@ -12219,10 +12178,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:21
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Playlist Total Size Constraint Settings"
-msgstr "%1 הגדרות"
+msgstr "הגדרות מגבלת גודל כולל של רשימת הנגינה"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:32
@@ -12255,10 +12213,9 @@ msgstr "גדול מ־"
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_Size)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:59
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "The target total size of all the files in the playlist."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "יעד הגודל הכולל של כל הקבצים ברשימת הנגינה."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:75
@@ -12992,7 +12949,7 @@ msgstr "ערכת רשימת נגינה ללא שם"
 #: playlistgenerator/Preset.cpp:131
 #, kde-format
 msgid "Generating a new playlist"
-msgstr "יוצר רשימת־השמעה חדשה"
+msgstr "נוצרת רשימת נגינה חדשה"
 
 #: playlistgenerator/Preset.cpp:149
 #, kde-format
@@ -13104,12 +13061,12 @@ msgstr ""
 #: playlistmanager/file/PlaylistFileProvider.cpp:92
 #, kde-format
 msgid "Playlist Files on Disk"
-msgstr "קבצי רשימות־השמעה שעל הדיסק"
+msgstr "קובצי רשימות נגינה בכונן"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:283
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
-msgstr "לא ניתן לטעון את קובץ רשימת־ההשמעה \"%1\"."
+msgstr "לא ניתן לטעון את קובץ רשימת הנגינה „%1”."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:273
 #, kde-format
@@ -13910,13 +13867,13 @@ msgid "Username: %1"
 msgstr "שם משתמש: %1"
 
 #: services/lastfm/LastFmService.cpp:323
-#, fuzzy, kde-format
+#, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
-msgstr[0] "מונה השמעות: השמעה אחת"
-msgstr[1] "מונה השמעות: %1 השמעות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "מונה נגינה: נגינה אחת"
+msgstr[1] "מונה נגינות: %1 נגינות"
+msgstr[2] "מונה נגינות: %1 נגינות"
+msgstr[3] "מונה נגינות: %1 נגינות"
 
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
