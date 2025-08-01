@@ -123,6 +123,7 @@ AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketP
              &loop,    &QEventLoop::quit, Qt::QueuedConnection );
     connect( &m_srv,   QOverload<QProcess::ProcessError>::of( &QProcess::errorOccurred ),
              &loop,    &QEventLoop::quit, Qt::QueuedConnection );
+    connect( &m_srv,   &QProcess::readyReadStandardError, [this]() { qDebug() << m_srv.readAllStandardError(); } );
 
     // Important: we use modification of pidfile as a cue that the server is ready
     // This is consistent with behavior of mysqld startup scripts
