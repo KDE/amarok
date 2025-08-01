@@ -48,7 +48,6 @@
 #include <KSharedConfig>
 
 #include <QDir>
-#include <QTextCodec>
 #include <QUrlQuery>
 
 using namespace Collections;
@@ -165,9 +164,10 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
     KEncodingProber prober;
     KEncodingProber::ProberState result = prober.feed( tjob->data() );
-    if( result == KEncodingProber::FoundIt )
+    if( result == KEncodingProber::FoundIt && QStringConverter::encodingForName( prober.encoding() ) )
     {
-        cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( tjob->data() );
+        auto conversion = QStringDecoder( QStringConverter::encodingForName( prober.encoding() ).value() );
+        cddbInfo = conversion.decode( tjob->data() );
         debug() << "Encoding" << prober.encoding()<<"(confidence"<<prober.confidence()<<")";
     }
     else // Encoding detection failed. This is 2020's, try UTF8.

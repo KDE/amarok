@@ -28,7 +28,6 @@
 
 #include <QByteArray>
 #include <QJSEngine>
-#include <QTextCodec>
 
 using namespace AmarokScript;
 
@@ -101,32 +100,4 @@ AmarokLyricsScript::setLyricsForTrack( const QString &trackUrl, const QString &l
     /* TODO - convert method invocation below
     LyricsManager::instance()->setLyricsForTrack( trackUrl, lyrics );
     */
-}
-
-QString
-AmarokLyricsScript::toUtf8( const QByteArray &lyrics, const QString &encoding )
-{
-    QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-    if( !codec )
-        return QString();
-    return codec->toUnicode( lyrics );
-}
-
-QString
-AmarokLyricsScript::QStringtoUtf8( const QString &lyrics, const QString &encoding )
-{
-    QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-    if( !codec )
-        return QString();
-    return codec->toUnicode( lyrics.toLatin1() );
-}
-
-QByteArray
-AmarokLyricsScript::fromUtf8( const QString &str, const QString &encoding )
-{
-    QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-    if( !codec )
-        return QByteArray();
-
-    return codec->fromUnicode( str );
 }

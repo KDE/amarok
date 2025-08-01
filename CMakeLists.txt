@@ -34,7 +34,6 @@ find_package(Qt${QT_MAJOR_VERSION}QuickControls2 ${QT_MIN_VERSION})
 set_package_properties(Qt${QT_MAJOR_VERSION}QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
 
-find_package(Qt${QT_MAJOR_VERSION}Core5Compat ${QT_MIN_VERSION} REQUIRED)
 find_package(Qt${QT_MAJOR_VERSION}SvgWidgets ${QT_MIN_VERSION} REQUIRED)
 find_package(Qt${QT_MAJOR_VERSION}WebEngineWidgets ${QT_MIN_VERSION})
 set_package_properties(Qt${QT_MAJOR_VERSION}WebEngineWidgets PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")

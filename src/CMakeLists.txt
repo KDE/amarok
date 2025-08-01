@@ -479,7 +479,6 @@ set(qtbindings_SRCS
     scripting/scriptengine/qtbindings/CoreIODevice.cpp
     scripting/scriptengine/qtbindings/CoreLocale.cpp
     scripting/scriptengine/qtbindings/CoreResource.cpp
-    scripting/scriptengine/qtbindings/CoreTextCodec.cpp
     scripting/scriptengine/qtbindings/CoreTextStream.cpp
     scripting/scriptengine/qtbindings/CoreTranslator.cpp
     scripting/scriptengine/qtbindings/CoreUrl.cpp
@@ -823,7 +822,6 @@ target_link_libraries(amaroklib
     ${GSTREAMER_PLUGINS_BASE_LIBRARIES}
     ${GLIB_LIBRARIES}
     ${GOBJECT_LIBRARIES}
-    Qt::Core5Compat
     Qt::Gui
     Qt::Qml
     Qt::Quick

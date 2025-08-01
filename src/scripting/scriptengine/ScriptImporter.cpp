@@ -75,7 +75,6 @@ ScriptImporter::loadQtBinding( const QString& binding )
             QtBindings::Core::IODevice::installJSType( m_engine );
             QtBindings::Core::Locale::installJSType( m_engine );
             QtBindings::Core::Resource::installJSType( m_engine );
-            QtBindings::Core::TextCodec::installJSType( m_engine );
             QtBindings::Core::TextStream::installJSType( m_engine );
             QtBindings::Core::Translator::installJSType( m_engine );
             QtBindings::Core::Url::installJSType( m_engine );

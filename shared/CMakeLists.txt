@@ -43,7 +43,6 @@ target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} KF${KF_MAJOR_VERSION}::C
 target_link_libraries( amarokshared
   Qt::Core
   Qt::Gui # for QImage, ...
-  Qt::Core5Compat
 )
 
 set_target_properties( amarokshared PROPERTIES VERSION 1.0.0 SOVERSION 1 )

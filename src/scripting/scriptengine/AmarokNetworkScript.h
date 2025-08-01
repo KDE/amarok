@@ -37,11 +37,11 @@ namespace AmarokScript
 
         public:
             explicit Downloader( QJSEngine* scriptEngine );
-            Q_INVOKABLE QJSValue stringDownloader_prototype_ctor( QString urlString, QJSValue callable, QString encoding = QStringLiteral("UTF-8") );
+            Q_INVOKABLE QJSValue stringDownloader_prototype_ctor( QString urlString, QJSValue callable );
             Q_INVOKABLE QJSValue dataDownloader_prototype_ctor( QString urlString, QJSValue callable);
 
         private:
-            QJSValue init( const QString &urlString, const QJSValue &callable, bool stringResult, QString encoding = QStringLiteral("UTF-8") );
+            QJSValue init( const QString &urlString, const QJSValue &callable, bool stringResult );
 
             QJSEngine* m_scriptEngine;
     };
@@ -60,7 +60,7 @@ namespace AmarokScript
             static AmarokDownloadHelper *instance();
 
             // called by the wrapper class to register a new download
-            void newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, const QString &encoding = QStringLiteral("UTF-8") );
+            void newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj );
             void newDataDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj );
 
         private Q_SLOTS:
@@ -111,7 +111,6 @@ namespace AmarokScript
 
             QMultiHash<QUrl, QJSEngine *> m_engines;
             QMultiHash<QUrl, QJSValue> m_values;
-            QMultiHash<QUrl, QString> m_encodings;
     };
 }
 

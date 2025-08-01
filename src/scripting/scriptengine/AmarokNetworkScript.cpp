@@ -23,7 +23,6 @@
 #include "core/support/Debug.h"
 
 #include <QJSEngine>
-#include <QTextCodec>
 
 using namespace AmarokScript;
 
@@ -43,9 +42,9 @@ Downloader::Downloader( QJSEngine* engine )
 }
 
 QJSValue
-Downloader::stringDownloader_prototype_ctor( QString urlString, QJSValue callable, QString encoding )
+Downloader::stringDownloader_prototype_ctor( QString urlString, QJSValue callable )
 {
-    return init( urlString, callable, true, encoding );
+    return init( urlString, callable, true );
 }
 
 QJSValue
@@ -55,7 +54,7 @@ Downloader::dataDownloader_prototype_ctor( QString urlString, QJSValue callable 
 }
 
 QJSValue
-Downloader::init( const QString &urlString, const QJSValue &callable, bool stringResult, QString encoding )
+Downloader::init( const QString &urlString, const QJSValue &callable, bool stringResult )
 {
     DEBUG_BLOCK
     QJSValue object = m_scriptEngine->newQObject( new QObject() );
@@ -77,7 +76,7 @@ Downloader::init( const QString &urlString, const QJSValue &callable, bool strin
     // start download, and connect to it
     if( stringResult )
     {
-        AmarokDownloadHelper::instance()->newStringDownload( url, m_scriptEngine, callable, encoding );
+        AmarokDownloadHelper::instance()->newStringDownload( url, m_scriptEngine, callable );
     }
     else
         AmarokDownloadHelper::instance()->newDataDownload( url, m_scriptEngine, callable );
@@ -99,9 +98,8 @@ AmarokDownloadHelper::AmarokDownloadHelper()
 }
 
 void
-AmarokDownloadHelper::newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, const QString &encoding )
+AmarokDownloadHelper::newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj )
 {
-    m_encodings.insert(url, encoding);
     newDownload( url, engine, obj, &AmarokDownloadHelper::resultString );
 }
 
@@ -119,7 +117,6 @@ AmarokDownloadHelper::requestRedirected( const QUrl &sourceUrl, const QUrl &targ
     // Move all entries from "url" to "targetUrl".
     updateUrl< QJSEngine* >( m_engines, sourceUrl, targetUrl );
     updateUrl< QJSValue >( m_values, sourceUrl, targetUrl );
-    updateUrl< QString >( m_encodings, sourceUrl, targetUrl );
 }
 
 void
@@ -165,19 +162,10 @@ AmarokDownloadHelper::resultString( const QUrl &url, const QByteArray &data, con
 
     QJSValue obj = m_values.value( url );
     QJSEngine* engine = m_engines.value( url );
-    QString encoding = m_encodings.value( url );
     cleanUp( url );
 
     QString str;
-    if( encoding.isEmpty() )
-    {
-        str = QString::fromUtf8( data );
-    }
-    else
-    {
-        QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-        str = codec->toUnicode( data );
-    }
+    str = QString::fromUtf8( data );
 
     // now send the data to the associated script object
     if( !obj.isCallable() )
@@ -202,7 +190,6 @@ AmarokDownloadHelper::cleanUp( const QUrl &url )
 {
     m_values.remove( url );
     m_engines.remove( url );
-    m_encodings.remove( url );
 }
 
 AmarokDownloadHelper*

@@ -7,7 +7,7 @@ add_subdirectory( photos )
 #add_subdirectory( tabs )
 add_subdirectory( analyzer )
 
-if( Qt5WebEngine_FOUND OR Qt6WebEngineWidgets_FOUND )
+if( Qt6WebEngineWidgets_FOUND )
     add_subdirectory( wikipedia )
 endif()
 

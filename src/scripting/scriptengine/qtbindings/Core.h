@@ -28,7 +28,6 @@
 #include "CoreIODevice.h"
 #include "CoreLocale.h"
 #include "CoreResource.h"
-#include "CoreTextCodec.h"
 #include "CoreTextStream.h"
 #include "CoreTranslator.h"
 #include "CoreUrl.h"
