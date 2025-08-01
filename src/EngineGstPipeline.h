@@ -67,7 +67,7 @@ public:
     static void cb_endOfPads(GstElement *playbin, gpointer data);
 
     static void cb_audioTagsChanged(GstElement *playbin, gint stream, gpointer data);
-    static void cb_setupSource(GstElement *playbin, GParamSpec *spec, gpointer data);
+    static void cb_setupSource(GstElement *playbin, GstElement *source, gpointer data);
     static void cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
     static void cb_muteChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
     GstState state() const;

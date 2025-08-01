@@ -49,10 +49,10 @@ EngineGstPipeline::EngineGstPipeline()
 
     DEBUG_BLOCK
     qRegisterMetaType<GstState>("GstState");
-    m_pipeline = GST_PIPELINE(gst_element_factory_make("playbin", nullptr));
+    m_pipeline = GST_PIPELINE(gst_element_factory_make("playbin3", nullptr));
     gst_object_ref_sink (m_pipeline);
     g_signal_connect(m_pipeline, "audio-tags-changed", G_CALLBACK(cb_audioTagsChanged), this);
-    g_signal_connect(m_pipeline, "notify::source", G_CALLBACK(cb_setupSource), this);
+    g_signal_connect(m_pipeline, "source-setup", G_CALLBACK(cb_setupSource), this);
     g_signal_connect(m_pipeline, "about-to-finish", G_CALLBACK(cb_aboutToFinish), this);
 
     GstBus *bus = gst_pipeline_get_bus(m_pipeline);
@@ -509,26 +509,22 @@ EngineGstPipeline::cb_duration(GstBus *bus, GstMessage *gstMessage, gpointer dat
 }
 
 void
-EngineGstPipeline::cb_setupSource(GstElement *playbin, GParamSpec *param, gpointer data)
+EngineGstPipeline::cb_setupSource(GstElement *playbin, GstElement *source, gpointer data)
 {
     Q_UNUSED(playbin);
-    Q_UNUSED(param);
     DEBUG_BLOCK;
 
-    GstElement *src;
     EngineGstPipeline *that = static_cast<EngineGstPipeline*>(data);
     Q_ASSERT(that->m_pipeline);
-    Q_ASSERT(G_IS_OBJECT(that->m_pipeline));
-    g_object_get(that->m_pipeline, "source", &src, nullptr);
 
     if ( ( that->currentSource().scheme().startsWith(QLatin1String("http") ) ||
            that->currentSource().scheme().startsWith(QLatin1String("rt") ) ) // rtp, rtsp
         // Check whether this property exists.
         // Setting it on a source other than souphttpsrc (which supports it) may break playback.
-        && g_object_class_find_property(G_OBJECT_GET_CLASS(src), "user-agent") )
+        && g_object_class_find_property(G_OBJECT_GET_CLASS(source), "user-agent") )
     {
         QString userAgent = ( QStringLiteral( "Amarok/" ) + QStringLiteral(AMAROK_VERSION) );
-        g_object_set(src, "user-agent", userAgent.toUtf8().constData(), nullptr);
+        g_object_set(source, "user-agent", userAgent.toUtf8().constData(), nullptr);
     }
 }
 
