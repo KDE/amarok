@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-02-16 09:32+0200\n"
+"PO-Revision-Date: 2025-07-20 11:08+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -3598,10 +3598,9 @@ msgid "Use &system notifications"
 msgstr "Käytä &järjestelmän ilmoituksia"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Nykyinen Phonon-taustajärjestelmä ei tue äänenvoimakkuuden häivytystä"
+msgstr "Nykyinen äänitaustajärjestelmä ei tue äänenvoimakkuuden häivytystä"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7910,18 +7909,7 @@ msgid "No"
 msgstr "Ei"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -7934,13 +7922,11 @@ msgid ""
 msgstr ""
 "%1 – diagnostiikka\n"
 "\n"
-"Yleisiä tietoja:\n"
+"Yleistietoa:\n"
 "   %1-versio: %2\n"
 "   KDE Frameworks -versio: %3\n"
 "   Qt-versio: %4\n"
-"   Phonon-versio: %5\n"
-"   Phonon-taustaosa: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -10762,22 +10748,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "Muokkaa valitun raidan tietoja"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "Kelaa eteenpäin %1 sekuntia"
+msgstr "Kelaa eteenpäin %1"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "Kelaa taaksepäin %1 sekuntia"
+msgstr "Kelaa taaksepäin %1"
 
 #: MainWindow.cpp:866
 #, kde-format
