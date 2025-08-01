@@ -42,7 +42,7 @@ Required
     * KDE Frameworks 6.0 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
-    * GStreamer 1.0.0 (or newer)
+    * GStreamer 1.10.0 (or newer)
 
     * Qt 6.7
       https://qt.io/

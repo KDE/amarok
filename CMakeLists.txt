@@ -26,6 +26,7 @@ include(ECMPoQmTools)
 include(FindPkgConfig)
 include(CMakePushCheckState)
 include(GenerateExportHeader)
+include(CheckIncludeFile)
 
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml)
 
@@ -73,32 +74,29 @@ find_package(KF${KF_MAJOR_VERSION}StatusNotifierItem ${KF_MIN_VERSION} REQUIRED)
 find_package(KF${KF_MAJOR_VERSION}Kirigami ${KF_MIN_VERSION})
 set_package_properties(KF${KF_MAJOR_VERSION}Kirigami PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
-# GStreamer search adapted from phonon-gstreamer cmake
-find_package(GStreamer 1.0)
-set_package_properties(GSTREAMER PROPERTIES
-    TYPE REQUIRED
-    DESCRIPTION "GStreamer"
-    PURPOSE "gstreamer 1.0 is required for the multimedia backend"
-    URL "http://gstreamer.freedesktop.org/modules/")
-find_package(GStreamerPlugins QUIET 1.0)
-find_package(GSTREAMER_PLUGIN_AUDIO)
-find_package(GSTREAMER_PLUGIN_PBUTILS)
-set_package_properties(GSTREAMER_PLUGIN_AUDIO PROPERTIES
-    TYPE RUNTIME
-    DESCRIPTION "GStreamer audio plugin"
-    PURPOSE "The gstreamer video plugin (part of gstreamer-plugins-base 1.0) is required for the multimedia gstreamer backend"
-    URL "http://gstreamer.freedesktop.org/modules/")
-set_package_properties(GSTREAMER_PLUGIN_PBUTILS PROPERTIES
-    TYPE RUNTIME
-    DESCRIPTION "GStreamer pbutils plugin"
-    PURPOSE "The gstreamer pbutils plugin (part of gstreamer-plugins-base 1.0) is required for the multimedia gstreamer backend"
-    URL "http://gstreamer.freedesktop.org/modules/")
+pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0>=1.10)
+set_package_properties( GSTREAMER PROPERTIES DESCRIPTION "GStreamer is required for the audio backend" URL "https://gstreamer.freedesktop.org/" TYPE REQUIRED )
+
+pkg_check_modules(GSTREAMER_AUDIO REQUIRED gstreamer-audio-1.0>=1.10)
+set_package_properties( GSTREAMER_AUDIO PROPERTIES DESCRIPTION "GStreamer is required for the audio backend" URL "https://gstreamer.freedesktop.org/" TYPE REQUIRED )
+
+pkg_check_modules(GSTREAMER_PLUGINS_BASE REQUIRED gstreamer-plugins-base-1.0>=1.10)
+set_package_properties( GSTREAMER_PLUGINS_BASE PROPERTIES DESCRIPTION "GStreamer base plugins are required for the audio backend" URL "https://gstreamer.freedesktop.org/" TYPE REQUIRED )
+
+set(CMAKE_REQUIRED_INCLUDES "${GSTREAMER_INCLUDE_DIRS}")
+check_include_file(gst/gst.h HAVE_GST_H)
+if(GSTREAMER_FOUND)
+    message(STATUS "Found GStreamer: ${GSTREAMER_LIBRARIES}")
+endif()
+if(NOT HAVE_GST_H)
+    message(FATAL_ERROR "Missing GStreamer headers - please install devel packages" )
+endif()
 
 pkg_search_module(GLIB REQUIRED glib-2.0)
-set_package_properties( GLIB2 PROPERTIES DESCRIPTION "GLib 2 is required to compile the gstreamer audio backend" URL "http://www.gtk.org" TYPE REQUIRED )
+set_package_properties( GLIB2 PROPERTIES DESCRIPTION "GLib 2 is required to compile the gstreamer audio backend" URL "https://www.gtk.org" TYPE REQUIRED )
 
 pkg_search_module( GOBJECT REQUIRED gobject-2.0 )
-set_package_properties( GOBJECT PROPERTIES DESCRIPTION "GObject is required to compile the gstreamer audio backend" URL "http://www.gtk.org" TYPE OPTIONAL )
+set_package_properties( GOBJECT PROPERTIES DESCRIPTION "GObject is required to compile the gstreamer audio backend" URL "https://www.gtk.org" TYPE OPTIONAL )
 
 ###############
 if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
