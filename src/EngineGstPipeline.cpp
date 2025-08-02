@@ -32,9 +32,9 @@ EngineGstPipeline::EngineGstPipeline()
     : m_currentSinkElement(nullptr)
     , m_replayGainElement(nullptr)
     , m_equalizerElement(nullptr)
-    , m_analyzerDataSize(512)
     , m_channels(1)
     , m_handlingAboutToFinish(false)
+    , m_currentState(GST_STATE_NULL)
     , m_tickTimer(new QTimer(this))
     , m_waitingForNextSource(true)
     , m_waitingForPreviousSource(false)
@@ -1155,8 +1155,7 @@ inline void EngineGstPipeline::analyzerConvertAndEmit(bool isEndOfMedia)
 
 
     for (int j = 0 ; j < m_channels ; ++j) {
-        // QVector::resize doesn't reallocate the buffer
-        m_analyzerChannelBuffers[j].resize(0);
+        m_analyzerChannelBuffers[j].clear();
     }
 }
 
@@ -1183,11 +1182,7 @@ void EngineGstPipeline::analyzerProcessBuffer(GstElement*, GstBuffer* buffer, Gs
     // TODO emit endOfMedia
     EngineGstPipeline *that = static_cast<EngineGstPipeline *>(gThat);
 
-    // Copied locally to avoid multithead problems
-    qint32 dataSize = that->m_analyzerDataSize;
-    if (dataSize == 0) {
-        return;
-    }
+    const qint32 dataSize = 512; // was m_dataSize in original phonon-gstreamer, hard-coded here to default 512
 
     int channelsCount = 0;
 

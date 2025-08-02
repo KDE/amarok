@@ -129,7 +129,6 @@ private:
 
     QVector<qint16> m_analyzerPendingData;
     QVector<QVector<qint16> > m_analyzerChannelBuffers;
-    qint32 m_analyzerDataSize;
     int m_channels;
 
     //This simply pauses the gst signal handler 'till we get something
