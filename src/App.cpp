@@ -447,6 +447,8 @@ App::continueInit()
     AmarokConfig::instance( QStringLiteral("amarokrc") );
     newInstance();
 
+    QNetworkInformation::loadBackendByFeatures( QNetworkInformation::Feature::Reachability );
+
     const bool restoreSession = m_args->positionalArguments().isEmpty() || m_args->isSet( QStringLiteral("append") )
                                 || m_args->isSet( QStringLiteral("queue") )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
@@ -509,8 +511,6 @@ App::continueInit()
     //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
     //FFmpeg which should not take more than ~200msec.
     Amarok::Components::setTranscodingController( new Transcoding::Controller( this ) );
-
-    QNetworkInformation::instance()->loadBackendByFeatures( QNetworkInformation::Feature::Reachability );
 
     PERF_LOG( "App init done" )
 
