@@ -51,7 +51,6 @@ EngineGstPipeline::EngineGstPipeline()
     qRegisterMetaType<GstState>("GstState");
     m_pipeline = GST_PIPELINE(gst_element_factory_make("playbin3", nullptr));
     gst_object_ref_sink (m_pipeline);
-    g_signal_connect(m_pipeline, "audio-tags-changed", G_CALLBACK(cb_audioTagsChanged), this);
     g_signal_connect(m_pipeline, "source-setup", G_CALLBACK(cb_setupSource), this);
     g_signal_connect(m_pipeline, "about-to-finish", G_CALLBACK(cb_aboutToFinish), this);
 
@@ -548,14 +547,6 @@ EngineGstPipeline::cb_muteChanged(GstElement *playbin, GParamSpec *spec, gpointe
     Q_EMIT that->mutedChanged( that->isMuted() );
     Q_UNUSED(spec)
     Q_UNUSED(data)
-}
-
-void
-EngineGstPipeline::cb_audioTagsChanged(GstElement *playbin, gint stream, gpointer data)
-{
-    Q_UNUSED(playbin)
-    EngineGstPipeline *that = static_cast<EngineGstPipeline *>(data);
-    Q_EMIT that->audioTagChanged(stream);
 }
 
 gboolean

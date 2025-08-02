@@ -66,7 +66,6 @@ public:
     static void cb_aboutToFinish(GstElement *appSrc, gpointer data);
     static void cb_endOfPads(GstElement *playbin, gpointer data);
 
-    static void cb_audioTagsChanged(GstElement *playbin, gint stream, gpointer data);
     static void cb_setupSource(GstElement *playbin, GstElement *source, gpointer data);
     static void cb_volumeChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
     static void cb_muteChanged(GstElement *playbin, GParamSpec *spec, gpointer data);
@@ -107,7 +106,6 @@ Q_SIGNALS:
     void buffering(int);
     void stateChanged(GstState oldState, GstState newState);
     void internalStateChanged(GstState oldState, GstState newState);
-    void audioTagChanged(int stream);
     void currentSourceChanged( const QUrl &url );
     // Only emitted when metadata changes in the middle of a stream.
     void metaDataChanged();
