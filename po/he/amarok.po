@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-07-29 10:48+0300\n"
+"PO-Revision-Date: 2025-08-02 20:14+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -13883,7 +13883,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceCollection.cpp:36
 #, kde-format
 msgid "Global Tags"
-msgstr "תגיות גלובליות"
+msgstr "תגיות מקיפות"
 
 #: services/lastfm/LastFmServiceCollection.cpp:40
 #, kde-format
