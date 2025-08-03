@@ -20,6 +20,7 @@ VERSION 3.3.1 UNRELEASED
    * Also transmit embedded cover art through MPRIS (BR 357620)
    * Don't show transcoding dialog after canceling download (BR 275840)
    * Load network information earlier to avoid crashes on startup (BR 507497)
+   * Try to export as-compatible-as-possible playlist files (BR 507329)
 
 VERSION 3.3.0
   FEATURES:

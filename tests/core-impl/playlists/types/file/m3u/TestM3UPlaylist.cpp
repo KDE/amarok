@@ -174,4 +174,20 @@ void TestM3UPlaylist::testSaveAndReload()
     QCOMPARE( tracklist.at( 10 )->name(), QStringLiteral( "Plätz 11" ) );
     QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack1Url );
     QCOMPARE( tracklist.at( 10 )->uidUrl(), testTrack2Url );
+
+/* I'd like to have this kind test and test data include percent characters also, but unfortunately it doesn't
+ * seem to be possible. The original form of the url seems to get lost during the playlist loading phase already,
+ * and I can't find a way to keep it intact. The actual real world behaviour seems to be a bit better with the
+ * decoding parameters added in this commit, however, even though none of the test data paths contain a %.*/
+    QFile originalFile( QUrl::fromLocalFile(dataPath( QStringLiteral("data/playlists/test2.m3u") )).toLocalFile() );
+    QFile savedFile( url.toLocalFile() );
+    QVERIFY( originalFile.open( QFile::ReadOnly ) );
+    QVERIFY( savedFile.open( QFile::ReadOnly ) );
+    qint64 origSize = originalFile.size();
+    qint64 savedSize = savedFile.size();
+    originalFile.seek(origSize - 20);
+    savedFile.seek(savedSize - 20);
+    QCOMPARE( savedFile.read(20), originalFile.read(20) );
+    originalFile.close();
+    savedFile.close(); 
 }

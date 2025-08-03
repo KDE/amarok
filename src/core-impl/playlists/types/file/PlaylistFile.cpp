@@ -190,12 +190,12 @@ PlaylistFile::trackLocation( const Meta::TrackPtr &track ) const
         QUrl uidPath = QUrl( track->uidUrl() );
         if( !uidPath.isLocalFile() )
             return uidPath.toString( QUrl::FullyEncoded );
-        return track->uidUrl();
+        return QUrl::fromLocalFile( track->uidUrl() ).path( QUrl::EncodeDelimiters );
     }
 
     if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
     {
-        return path.toString( QUrl::FullyEncoded );
+        return path.path( ( !path.isLocalFile() || !m_url.isLocalFile() ) ? QUrl::FullyEncoded : QUrl::EncodeDelimiters );
     }
 
     QDir playlistDir( m_url.adjusted(QUrl::RemoveFilename).path() );
