@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-06-28 17:20+0400\n"
+"PO-Revision-Date: 2025-08-03 14:08+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -794,7 +794,7 @@ msgstr "فيما إذا كان يجب على أماروك إلباث المقط�
 msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
 "track."
-msgstr "فيما إذا كان يجب على أماروك منع النّظام من النّوم إن كان يشغّل مقطوعة."
+msgstr "إن كان على أماروك منع النّظام من التعليق إن كان يشغّل مقطوعة."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:280
@@ -1145,7 +1145,7 @@ msgstr ""
 #: services/ampache/NewServerWidget.ui:60
 #, kde-format
 msgid "Password"
-msgstr "كلمة المرور"
+msgstr "كلمة السر"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:463
@@ -2903,7 +2903,7 @@ msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
 "print the real one). To be manually replaced by the user."
 msgid "password"
-msgstr "كلمة المرور"
+msgstr "كلمة السر"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseServer)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_UseServer)
@@ -2973,14 +2973,14 @@ msgstr "أدخل كلمة مرور المستخدم الافتراضي.\n"
 #: services/gpodder/GpodderConfigWidget.ui:45
 #, kde-format
 msgid "&Password:"
-msgstr "&كلمة المرور:"
+msgstr "&كلمة السر:"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, kcfg_User)
 #: configdialog/dialogs/DatabaseConfig.ui:151
 #, kde-format
 msgid ""
 "Enter the username to access the database with full access privileges.\n"
-msgstr "أدخل كلمة المرور للنّفاذ إلى قاعدة البيانات بامتيازات نفوذ كاملة.\n"
+msgstr "أدخل كلمة السر للنّفاذ إلى قاعدة البيانات بامتيازات نفوذ كاملة.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Database)
 #: configdialog/dialogs/DatabaseConfig.ui:161
@@ -3017,7 +3017,7 @@ msgid ""
 "commands (after replacing the password with the correct one):"
 msgstr ""
 "إن لم تكن قاعدة بياناتك معدّة بالفعل، يمكنك استخدام أوا&مر SQL الآتية (بعد "
-"استبدال كلمة المرور هذه بالصّحيحة):"
+"استبدال كلمة السر هذه بالصّحيحة):"
 
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:50
 #, kde-format
@@ -8088,12 +8088,12 @@ msgstr ""
 #: dialogs/MusicBrainzTagger.cpp:92
 #, kde-format
 msgid "Clear Choices"
-msgstr "امسح الاختيارات"
+msgstr "امحُ الاختيارات"
 
 #: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
-msgstr "امسح كلّ الاختيار، حتّى المنشأة يدويًّا."
+msgstr "امحُ كلّ الاختيار، حتّى المنشأة يدويًّا."
 
 #: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
@@ -13358,7 +13358,7 @@ msgstr "يختبر..."
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
-msgstr "إمّا اسم المستخدم أو كلمة المرور فارغتين، فضلًا صحّح وجرّب مجدّدًا."
+msgstr "إمّا اسم المستخدم أو كلمة السر فارغتين، فضلًا صحّح وجرّب مجدّدًا."
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
 #: services/gpodder/GpodderServiceSettings.cpp:179
@@ -14138,7 +14138,7 @@ msgstr "اسم المستخدم:"
 #: services/magnatune/MagnatuneConfigWidget.ui:143
 #, kde-format
 msgid "Password:"
-msgstr "كلمة المرور:"
+msgstr "كلمة السر:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:161
@@ -14655,7 +14655,7 @@ msgstr "البريد الإلكترونيّ:"
 #, kde-format
 msgctxt "The MP3Tunes password"
 msgid "Password:"
-msgstr "كلمة المرور:"
+msgstr "كلمة السر:"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, enableHarmony)
 #. i18n: ectx: property (toolTip), widget (QLabel, label_3)
