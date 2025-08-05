@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-03 14:08+0400\n"
+"PO-Revision-Date: 2025-08-04 18:40+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -34,7 +34,7 @@ msgstr "chahibi@gmail.com,safa1996alfulaij@gmail.com"
 #: ../data/DefaultPlaylistLayouts.xml:3
 #, kde-format
 msgid "Default"
-msgstr "الافتراضيّ"
+msgstr "المبدئي"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
@@ -2778,12 +2778,12 @@ msgstr "اضبط التّشغيل"
 #: configdialog/ConfigDialog.cpp:63
 #, kde-format
 msgid "Notifications"
-msgstr "الإخطارات"
+msgstr "الإشعارات"
 
 #: configdialog/ConfigDialog.cpp:63
 #, kde-format
 msgid "Configure Notifications"
-msgstr "اضبط الإخطارات"
+msgstr "اضبط الإشعارات"
 
 #: configdialog/ConfigDialog.cpp:64
 #, kde-format
@@ -2914,8 +2914,8 @@ msgid ""
 "Check to enable the use of an external database. By default there is already "
 "an embedded MySQL database running."
 msgstr ""
-"أشّر لتمكين استخدام قاعدة بيانات خارجيّة. افتراضيًّا، هناك قاعدة بيانا MySQL "
-"مضمّنة تعمل بالفعل."
+"أشّر لتمكين استخدام قاعدة بيانات خارجيّة. مبدئيًا، هناك قاعدة بيانا MySQL مضمّنة "
+"تعمل بالفعل."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: configdialog/dialogs/DatabaseConfig.ui:23
@@ -2951,7 +2951,7 @@ msgstr "المنف&ذ:"
 #: configdialog/dialogs/DatabaseConfig.ui:91
 #, kde-format
 msgid "Enter the port number to access the server. Default is port 3306.\n"
-msgstr "أدخل رقم المنفذ للنّفاذ إلى الخادوم. الافتراضيّ هو 3306.\n"
+msgstr "أدخل رقم المنفذ للنّفاذ إلى الخادوم. المبدئي هو 3306.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -2965,7 +2965,7 @@ msgstr "ا&سم المستخدم:"
 #: configdialog/dialogs/DatabaseConfig.ui:118
 #, kde-format
 msgid "Enter the password for the default user.\n"
-msgstr "أدخل كلمة مرور المستخدم الافتراضي.\n"
+msgstr "أدخل كلمة مرور المستخدم المبدئي.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
@@ -2992,7 +2992,7 @@ msgstr "&قاعدة البيانات:"
 #: configdialog/dialogs/DatabaseConfig.ui:178
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
-msgstr "أدخل اسم قاعدة البيانات. الافتراضيّ المسبق هو amarokdb.\n"
+msgstr "أدخل اسم قاعدة البيانات. المبدئي المسبق هو amarokdb.\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
@@ -3160,7 +3160,7 @@ msgstr "اختر نمط عرض المزاج"
 #: configdialog/dialogs/GeneralConfig.ui:141
 #, kde-format
 msgid "Default (System colours)"
-msgstr "الافتراضيّ (ألوان النّظام)"
+msgstr "المبدئي (ألوان النّظام)"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:146
@@ -3505,7 +3505,7 @@ msgstr "أشّر لاستخدام إخطار النّظام."
 #: configdialog/dialogs/NotificationsConfig.ui:277
 #, kde-format
 msgid "Use &system notifications"
-msgstr "استخدم إخطارات النّ&ظام"
+msgstr "استخدم إشعارات النّ&ظام"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, fuzzy, kde-format
@@ -8020,7 +8020,7 @@ msgstr ""
 #: dialogs/EqualizerDialog.ui:92
 #, kde-format
 msgid "Reset to Default"
-msgstr "صفّر إلى الافتراضيّ"
+msgstr "صفّر إلى المبدئي"
 
 #. i18n: ectx: property (title), widget (QGroupBox, eqBandsGroupBox)
 #: dialogs/EqualizerDialog.ui:102
@@ -10497,12 +10497,12 @@ msgstr "من&ظور"
 #: MainWindow.cpp:337
 #, kde-format
 msgid "Lock Layout"
-msgstr "اقفل التّصميم"
+msgstr "اقفل التخطيط"
 
 #: MainWindow.cpp:374 MainWindow.cpp:1306
 #, kde-format
 msgid "Reset Layout"
-msgstr "صفّر التّصميم"
+msgstr "صفّر التخطيط"
 
 #: MainWindow.cpp:424
 #, kde-format
@@ -10818,7 +10818,7 @@ msgstr ""
 #: MainWindow.cpp:1306
 #, kde-format
 msgid "Apply this layout change?"
-msgstr "أأطبّق تغيير التّصميم؟"
+msgstr "أأطبّق تغيير هذا التخطيط؟"
 
 #: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, kde-format
@@ -11048,12 +11048,12 @@ msgstr ""
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr "التّخطيط '%1' واحد من التّخطيطات الافتراضيّة ولا يمكن حذفه."
+msgstr "التخطيط '%1' واحد من التخطيطات المبدئية ولا يمكن حذفه."
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "Cannot Delete Default Layouts"
-msgstr "لا يمكن حذف التّخطيطات الافتراضيّة"
+msgstr "لا يمكن حذف التخطيطات المبدئية"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:81
 #, kde-format
@@ -11121,13 +11121,13 @@ msgstr "لا يمكن إنشاء تخطيط بلا اسم."
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
 msgid "Layout name error"
-msgstr "خطأ في اسم التّخطيط"
+msgstr "خطأ في اسم التخطيط"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
-msgstr "لا يمكن إنشاء تخطيط بنفس اسم تصميم موجود."
+msgstr "لا يمكن إنشاء تخطيط بنفس اسم تخطيط موجود."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
 #, kde-format
@@ -11139,7 +11139,7 @@ msgstr "لا يمكن إنشاء تخطيط يحوي '/'."
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
-msgstr "فضلًا اختر اسمًا لتخطيط قوائم التّشغيل الّذي ستعرّفه كنسخة عن التّخطيط '%1':"
+msgstr "فضلًا اختر اسمًا لتخطيط قوائم التّشغيل الّذي ستعرّفه كنسخة عن التخطيط '%1':"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
 #, kde-format
@@ -11168,13 +11168,13 @@ msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Saved as new layout '%2'"
 msgstr ""
-"التّخطيط '%1' الّذي عدّلته أحد التّخطيطات الافتراضيّة ولا يمكن الكتابة فوقه. حُفظ "
+"التخطيط '%1' الّذي عدّلته أحد التخطيطات المبدئية ولا يمكن الكتابة فوقه. حُفظ "
 "'%2' كتخطيط جديد"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
 #, kde-format
 msgid "Default Layout"
-msgstr "تخطيط افتراضيّ"
+msgstr "تخطيط مبدئي"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, PlaylistLayoutEditDialog)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:20
@@ -11186,13 +11186,13 @@ msgstr "محرّر تخطيطات قوائم التّشغيل"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:57
 #, kde-format
 msgid "Available Layouts"
-msgstr "التّخطيطات المتوفّرة"
+msgstr "التخطيطات المتوفّرة"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:249
 #, kde-format
 msgid "Layout"
-msgstr "التّخطيط"
+msgstr "التخطيط"
 
 #. i18n: ectx: property (text), widget (QCheckBox, inlineControlsChekbox)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:255
