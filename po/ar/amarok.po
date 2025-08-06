@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-04 18:40+0400\n"
+"PO-Revision-Date: 2025-08-05 12:57+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -3499,7 +3499,7 @@ msgstr "%"
 #: configdialog/dialogs/NotificationsConfig.ui:274
 #, kde-format
 msgid "Check to use the system notification."
-msgstr "أشّر لاستخدام إخطار النّظام."
+msgstr "أشّر لاستخدام إشعار النّظام."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:277
@@ -10686,7 +10686,7 @@ msgstr "أظهر المقطوعة النّشطة"
 #: MainWindow.cpp:949
 #, kde-format
 msgid "Show Notification Popup"
-msgstr "أظهر منبثقة الإخطار"
+msgstr "أظهر منبثقة الإشعار"
 
 #: MainWindow.cpp:954
 #, kde-format
