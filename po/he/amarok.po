@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-02 20:14+0300\n"
+"PO-Revision-Date: 2025-08-06 10:02+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -3290,11 +3290,10 @@ msgid "Synchronize Last Played Times"
 msgstr "נתונים סטטיסטים"
 
 #: configdialog/dialogs/MetadataConfig.cpp:110
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Playcounts"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון מוני נגינה"
 
 #: configdialog/dialogs/MetadataConfig.cpp:112
 #, fuzzy, kde-format
@@ -4497,10 +4496,9 @@ msgid "Unable to retrieve from Last.fm"
 msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
 
 #: context/engines/labels/LabelsEngine.cpp:369
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
+#, kde-format
 msgid "No connection to Last.fm"
-msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
+msgstr "אין חיבור ל־Last.fm"
 
 #: context/engines/songkick/SongkickEngine.cpp:48
 #, fuzzy, kde-format
@@ -4666,17 +4664,15 @@ msgid "Transferring: %1"
 msgstr "מעביר: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
-#, fuzzy, kde-format
-#| msgid "Transferring: %1"
+#, kde-format
 msgid "Transcoding: %1"
-msgstr "מעביר: %1"
+msgstr "בהתמרה: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:86
-#, fuzzy, kde-format
-#| msgid "Remove this %1"
+#, kde-format
 msgid "Removing: %1"
-msgstr "הסר את זה %1"
+msgstr "בהסרה: %1"
 
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:84
 #, kde-format
