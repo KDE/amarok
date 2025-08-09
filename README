@@ -69,7 +69,7 @@ Optional
     * Liblastfm 1.1.0 (or newer)
       (For scrobbling, internet radio, and artist info)
       originally https://github.com/lastfm/liblastfm
-      a version with Qt6 support available at e.g. https://github.com/drfiemost/liblastfm
+      a version with Qt6 support available at e.g. https://github.com/Mazhoon/liblastfm
 
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.2.0 (or newer)
