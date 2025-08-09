@@ -2,7 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
-VERSION 3.3.1 UNRELEASED
+VERSION 3.3.1
   FEATURES:
    * Enable saving and loading script console items, autocompletion in script
      console, and re-enable some more scripting functionality
@@ -21,6 +21,7 @@ VERSION 3.3.1 UNRELEASED
    * Don't show transcoding dialog after canceling download (BR 275840)
    * Load network information earlier to avoid crashes on startup (BR 507497)
    * Try to export as-compatible-as-possible playlist files (BR 507329)
+   * Fix some random crashes during playback
 
 VERSION 3.3.0
   FEATURES:
