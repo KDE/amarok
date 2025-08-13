@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-06 10:02+0300\n"
+"PO-Revision-Date: 2025-08-11 09:25+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -128,10 +128,9 @@ msgid "&Contributors"
 msgstr "&תורמים"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:282
-#, fuzzy, kde-format
-#| msgid "&Download"
+#, kde-format
 msgid "&Donors"
-msgstr "&הורד"
+msgstr "&&,urnho"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:311
 #, fuzzy, kde-format
@@ -15538,12 +15537,12 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.cpp:70
 #, kde-format
 msgid "&Copy"
-msgstr ""
+msgstr "ה&עתקה"
 
 #: transcoding/TranscodingAssistantDialog.cpp:71
 #, kde-format
 msgid "Just copy the tracks without transcoding them."
-msgstr ""
+msgstr "פשוט להעתיק את הרצועות מבלי להתמיר אותן."
 
 #: transcoding/TranscodingAssistantDialog.cpp:75
 #, kde-format
@@ -15554,16 +15553,20 @@ msgid ""
 "program. Only successfully transcoded files will be removed from their "
 "original location."
 msgstr ""
+"בזמן ההעברה, אפשר לבחור להתמיר את קובצי המוזיקה שלך לתסדיר אחר עם מקודד "
+"(מפענח). אפשר לעשות זאת כדי לחסוך מקום או כדי שהקבצים שלך יותאמו לקריאה על "
+"ידי נגן מוזיקה נייד או תוכנות מסוימות. רק קבצים שהותמרו בהצלחה יוסרו ממקומם "
+"המקורי."
 
 #: transcoding/TranscodingAssistantDialog.cpp:81
 #, kde-format
 msgid "&Move"
-msgstr ""
+msgstr "הע&ברה"
 
 #: transcoding/TranscodingAssistantDialog.cpp:82
 #, kde-format
 msgid "Just move the tracks without transcoding them."
-msgstr ""
+msgstr "פשוט להעביר את הרצועות מבלי להתמיר אותן."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: transcoding/TranscodingAssistantDialog.cpp:125
@@ -15581,7 +15584,7 @@ msgstr "לא זמין כרגע במערכת שלך."
 #: transcoding/TranscodingAssistantDialog.cpp:158
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
-msgstr ""
+msgstr "אוסף יעד מציין שאי אפשר יהיה לנגן את התסדיר הזה."
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)
@@ -15589,7 +15592,7 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.ui:226
 #, kde-format
 msgid "Transcode all tracks to the selected format"
-msgstr ""
+msgstr "להתמיר את כל הרצועות לתסדיר הנבחר"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeAllRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:229
@@ -15605,13 +15608,13 @@ msgstr "התמרת כל הרצועות"
 msgid ""
 "Transcode tracks only when needed for playability in the destination "
 "collection"
-msgstr ""
+msgstr "להתמיר רצועות רק כאשר עולה צורך כדי שאפשר יהיה לנגן באוסף היעד"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:242
 #, kde-format
 msgid "Transcode only when needed for playability"
-msgstr ""
+msgstr "להתמיר רצועות רק כאשר נדרש לשמירת יכולת נגינה"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
@@ -15619,13 +15622,13 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.ui:252
 #, kde-format
 msgid "Transcode only when source and destination file formats different"
-msgstr ""
+msgstr "להתמיר רק כאשר תסדירי קובצי המקור והיעד שונים זה מזה"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:255
 #, kde-format
 msgid "Transcode only when source and destination formats are different"
-msgstr ""
+msgstr "להתמיר רק כאשר תסדירי המקור והיעד שונים זה מזה"
 
 #. i18n: ectx: property (text), widget (QLabel, encoderNotFoundLabel)
 #: transcoding/TranscodingAssistantDialog.ui:265
@@ -15642,7 +15645,7 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.ui:275
 #, kde-format
 msgid "Remember this choice for the next time"
-msgstr ""
+msgstr "לזכור את הבחירה הזאת לפעם הבאה"
 
 #: transcoding/TranscodingOptionsStackedWidget.cpp:55
 #, kde-format
@@ -15805,74 +15808,67 @@ msgstr "שם הערכה"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: widgets/MetaQueryWidget.cpp:130
-#, fuzzy, kde-format
-#| msgid "Seconds"
+#, kde-format
 msgid "second"
 msgid_plural "seconds"
-msgstr[0] "שניות"
+msgstr[0] "שנייה"
 msgstr[1] "שניות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[2] "שניות"
+msgstr[3] "שניות"
 
 #: widgets/MetaQueryWidget.cpp:131
-#, fuzzy, kde-format
-#| msgid "Minutes"
+#, kde-format
 msgid "minute"
 msgid_plural "minutes"
-msgstr[0] "דקות"
+msgstr[0] "דקה"
 msgstr[1] "דקות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[2] "דקות"
+msgstr[3] "דקות"
 
 #: widgets/MetaQueryWidget.cpp:132
-#, fuzzy, kde-format
-#| msgid "Hours"
+#, kde-format
 msgid "hour"
 msgid_plural "hours"
-msgstr[0] "שעות"
-msgstr[1] "שעות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "שעה"
+msgstr[1] "שעתיים"
+msgstr[2] "שעות"
+msgstr[3] "שעות"
 
 #: widgets/MetaQueryWidget.cpp:133
-#, fuzzy, kde-format
-#| msgid "Days"
+#, kde-format
 msgid "day"
 msgid_plural "days"
-msgstr[0] "ימים"
-msgstr[1] "ימים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "יום"
+msgstr[1] "יומיים"
+msgstr[2] "ימים"
+msgstr[3] "ימים"
 
 #: widgets/MetaQueryWidget.cpp:134
-#, fuzzy, kde-format
-#| msgid "is between"
+#, kde-format
 msgid "week"
 msgid_plural "weeks"
-msgstr[0] "בין"
-msgstr[1] "בין"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "שבוע"
+msgstr[1] "שבועיים"
+msgstr[2] "שבועות"
+msgstr[3] "שבועות"
 
 #: widgets/MetaQueryWidget.cpp:135
-#, fuzzy, kde-format
-#| msgid "Months"
+#, kde-format
 msgid "month"
 msgid_plural "months"
-msgstr[0] "חודשים"
-msgstr[1] "חודשים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "חודש"
+msgstr[1] "חודשיים"
+msgstr[2] "חודשים"
+msgstr[3] "חודשים"
 
 #: widgets/MetaQueryWidget.cpp:136
-#, fuzzy, kde-format
-#| msgid "year"
+#, kde-format
 msgid "year"
 msgid_plural "years"
 msgstr[0] "שנה"
-msgstr[1] "שנה"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שנתיים"
+msgstr[2] "שנים"
+msgstr[3] "שנים"
 
 #: widgets/MetaQueryWidget.cpp:318
 #, kde-format
