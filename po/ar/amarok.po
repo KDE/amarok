@@ -2915,7 +2915,7 @@ msgid ""
 "an embedded MySQL database running."
 msgstr ""
 "أشّر لتمكين استخدام قاعدة بيانات خارجيّة. مبدئيًا، هناك قاعدة بيانا MySQL مضمّنة "
-"تعمل بالفعل."
+"تعمل فعلًا."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: configdialog/dialogs/DatabaseConfig.ui:23
@@ -3016,7 +3016,7 @@ msgid ""
 "If your database is not already set up, you can use the following S&QL "
 "commands (after replacing the password with the correct one):"
 msgstr ""
-"إن لم تكن قاعدة بياناتك معدّة بالفعل، يمكنك استخدام أوا&مر SQL الآتية (بعد "
+"إن لم تكن قاعدة بياناتك معدّة فعلًا، يمكنك استخدام أوا&مر SQL الآتية (بعد "
 "استبدال كلمة السر هذه بالصّحيحة):"
 
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:50
@@ -4776,12 +4776,12 @@ msgstr[5] ""
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] "%2 لا مقطوعات هناك بالفعل."
-msgstr[1] "%2 مقطوعة واحدة هناك بالفعل."
-msgstr[2] "%2 مقطوعتان هناك بالفعل."
-msgstr[3] "%2 %1 مقطوعات هناك بالفعل."
-msgstr[4] "%2 %1 مقطوعةً هناك بالفعل."
-msgstr[5] "%2 %1 مقطوعة هناك بالفعل."
+msgstr[0] "%2 لا مقطوعات هناك فعلًا."
+msgstr[1] "%2 مقطوعة واحدة هناك فعلًا."
+msgstr[2] "%2 مقطوعتان هناك فعلًا."
+msgstr[3] "%2 %1 مقطوعات هناك فعلًا."
+msgstr[4] "%2 %1 مقطوعةً هناك فعلًا."
+msgstr[5] "%2 %1 مقطوعة هناك فعلًا."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, kde-format
@@ -5154,12 +5154,12 @@ msgstr "نسق غير مدعوم: %1"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:394
 #, kde-format
 msgid "Already on device"
-msgstr "في الجهاز بالفعل"
+msgstr "في الجهاز فعلًا"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:410
 #, kde-format
 msgid "Tracks not copied: the device already has these tracks"
-msgstr "لم تُنسخ المقطوعات: الجهاز فيه المقطوعات بالفعل"
+msgstr "لم تُنسخ المقطوعات: الجهاز فيه المقطوعات فعلًا"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:431
 #, kde-format
@@ -5212,7 +5212,7 @@ msgstr[5] "فشل حذف المقطوعات"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, kde-format
 msgid "%1 tracks are already being deleted from the device."
-msgstr "%1 المقطوعات تُحذف بالفعل من الجهاز."
+msgstr "%1 المقطوعات تُحذف فعلًا من الجهاز."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
 #, kde-format
@@ -5880,7 +5880,7 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
 #, kde-format
 msgid "Already subscribed to %1."
-msgstr "مشترك في %1 بالفعل."
+msgstr "مشترك في %1 فعلًا."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, kde-format
