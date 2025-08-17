@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-06-09 21:57+0900\n"
+"PO-Revision-Date: 2025-08-16 13:38+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -254,7 +254,7 @@ msgstr "要不要在左邊顯示第二個時間標記。"
 msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
-msgstr "設定這個，可以在播放器視窗的搜尋滑桿左邊顯示第二個時間標記。"
+msgstr "設定這個，可以在播放器視窗的跳轉滑桿左邊顯示第二個時間標記。"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:18
@@ -770,19 +770,19 @@ msgstr "讓每個專輯音量相同"
 #: amarokconfig.kcfg:257
 #, kde-format
 msgid "The length of a short seek, in seconds."
-msgstr "短搜尋長度，單位是秒。"
+msgstr "短跳轉長度，單位是秒。"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:262
 #, kde-format
 msgid "The length of a medium seek, in seconds."
-msgstr "中搜尋長度，單位是秒。"
+msgstr "中跳轉長度，單位是秒。"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:267
 #, kde-format
 msgid "The length of a long seek, in seconds."
-msgstr "長搜尋長度，單位是秒。"
+msgstr "長跳轉長度，單位是秒。"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:272
@@ -10414,22 +10414,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "編輯目前選取的曲目詳情"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "往前搜尋 %1 秒"
+msgstr "快轉 %1"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "往後搜尋 %1 秒"
+msgstr "倒轉 %1"
 
 #: MainWindow.cpp:866
 #, kde-format
