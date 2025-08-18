@@ -2191,7 +2191,7 @@ msgstr ""
 #: browsers/playlistbrowser/APGCategory.cpp:110
 #, kde-format
 msgid "Speed"
-msgstr "السّرعة"
+msgstr "السرعة"
 
 #: browsers/playlistbrowser/APGCategory.cpp:115
 #, kde-format
