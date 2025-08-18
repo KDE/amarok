@@ -65,7 +65,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "artist_id INTEGER,"
                   "album_code ") + sqlDb->textColumnType() + QLatin1Char(',') +
                   QStringLiteral("cover_url ") + sqlDb->exactTextColumnType() + QLatin1Char(',') +
-                  QStringLiteral("description ") + sqlDb->exactTextColumnType() + QStringLiteral(") ENGINE = MyISAM;");
+                  QStringLiteral("description ") + sqlDb->longTextColumnType() + QStringLiteral(") ENGINE = MyISAM;");
 
     debug() << "Creating Magnatune_albums: " << queryString;
 
@@ -80,7 +80,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "id INTEGER PRIMARY KEY ") + autoIncrement + QLatin1Char(',') +
                   QStringLiteral("name ") + sqlDb->textColumnType() + QLatin1Char(',') +
                   QStringLiteral("artist_page ") + sqlDb->exactTextColumnType() + QLatin1Char(',') +
-                  QStringLiteral("description ") + sqlDb->textColumnType() + QLatin1Char(',') +
+                  QStringLiteral("description ") + sqlDb->longTextColumnType() + QLatin1Char(',') +
                   QStringLiteral("photo_url ") + sqlDb->exactTextColumnType() + QStringLiteral(") ENGINE = MyISAM;");
 
     debug() << "Creating magnatune_artist: " << queryString;

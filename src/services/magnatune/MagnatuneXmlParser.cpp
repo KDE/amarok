@@ -108,13 +108,17 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
         debug() << "MagnatuneXmlParser::readConfigFile error reading file";
         return ;
     }
-    if ( !doc.setContent( &device ) )
+    // HACK this one text bite causes the parsing to fail on Qt6 (August 2025), so work around it
+    QByteArray magnatuneXml = device.readAll().replace( "&iuml;&frac14;", "i" );
+    device.close();
+    QDomDocument::ParseResult result = doc.setContent( magnatuneXml );
+    if ( !result )
     {
-        debug() << "MagnatuneXmlParser::readConfigFile error parsing file";
-        device.close();
+        debug() << "MagnatuneXmlParser::readConfigFile error parsing file:"
+                << result.errorLine << result.errorColumn << result.errorMessage;
+
         return ;
     }
-    device.close();
 
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
