@@ -80,21 +80,21 @@ MagnatuneMetaFactory::createTrack(const QStringList & rows)
     }
     track->setStatisticsProvider( Meta::StatisticsPtr( new UrlStatisticsStore( track ) ) );
 
+    QString url = track->uidUrl();
     if ( !m_membershipPrefix.isEmpty() ) {
-        QString url = track->uidUrl();
         url.replace( QStringLiteral("http://he3."), QStringLiteral("http://") + m_userName + QStringLiteral(":") + m_password + QStringLiteral("@") + m_membershipPrefix + QStringLiteral(".") );
-
-        if ( m_streamType == MP3 ) {
-            url.replace( QStringLiteral(".mp3"), QStringLiteral("_nospeech.mp3") );
-        }  else if ( m_streamType == OGG ) {
-            url.replace( QStringLiteral(".ogg"), QStringLiteral("_nospeech.ogg") );
-        }
-
-        track->setUidUrl( url );
-
-        if ( m_membershipPrefix == QStringLiteral("download") )
-            track->setDownloadMembership();
     }
+
+    if ( m_streamType == MP3 ) {
+        url.replace( QStringLiteral(".mp3"), QStringLiteral("_nospeech.mp3") );
+    }  else if ( m_streamType == OGG ) {
+        url.replace( QStringLiteral(".ogg"), QStringLiteral("_nospeech.ogg") );
+    }
+
+    track->setUidUrl( url );
+
+    if ( m_membershipPrefix == QStringLiteral("download") )
+        track->setDownloadMembership();
 
     return Meta::TrackPtr( track );
 }

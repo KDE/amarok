@@ -8,6 +8,7 @@ VERSION 3.3.2 UNRELEASED
   CHANGES:
 
   BUGFIXES:
+   * Fixes to Magnatune collection update and playback (BR 508052)
 
 VERSION 3.3.1
   FEATURES:
