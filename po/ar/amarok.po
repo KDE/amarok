@@ -1331,7 +1331,7 @@ msgstr ""
 #: amarokconfig.kcfg:560
 #, kde-format
 msgid "The hostname of the external server to connect to."
-msgstr "اسم مضيف الخادوم الخارجيّ للاتّصال به."
+msgstr "اسم مضيف الخادم الخارجيّ للاتّصال به."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:564
@@ -2933,13 +2933,13 @@ msgstr "إعدادات الاتّصال"
 #: configdialog/dialogs/DatabaseConfig.ui:38
 #, kde-format
 msgid "&Server:"
-msgstr "ال&خادوم:"
+msgstr "ال&خادم:"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, kcfg_Host)
 #: configdialog/dialogs/DatabaseConfig.ui:55
 #, kde-format
 msgid "Enter the name of the existing MySQL server\n"
-msgstr "أدخل اسم خادوم MySQL الموجود:\n"
+msgstr "أدخل اسم خادم MySQL الموجود:\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Port)
 #: configdialog/dialogs/DatabaseConfig.ui:71
@@ -2951,7 +2951,7 @@ msgstr "المنف&ذ:"
 #: configdialog/dialogs/DatabaseConfig.ui:91
 #, kde-format
 msgid "Enter the port number to access the server. Default is port 3306.\n"
-msgstr "أدخل رقم المنفذ للنّفاذ إلى الخادوم. المبدئي هو 3306.\n"
+msgstr "أدخل رقم المنفذ للنّفاذ إلى الخادم. المبدئي هو 3306.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -9479,7 +9479,7 @@ msgstr "اسم قاعدة البيانات"
 #: importers/amarok/AmarokConfigWidget.ui:163
 #, kde-format
 msgid "MySQL server binary"
-msgstr "ثنائيّ خادوم MySQL"
+msgstr "ثنائيّ خادم MySQL"
 
 #. i18n: ectx: property (nameFilter), widget (KUrlRequester, m_mysqlBinary)
 #: importers/amarok/AmarokConfigWidget.ui:170
@@ -13204,13 +13204,13 @@ msgstr "خطأ استيثاق"
 #: services/ampache/AmpacheConfigWidget.ui:23
 #, kde-format
 msgid "Add Server"
-msgstr "أضف خادومًا"
+msgstr "أضف خادمًا"
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
 #: services/ampache/AmpacheConfigWidget.ui:30
 #, kde-format
 msgid "Remove Server"
-msgstr "أزل الخادوم"
+msgstr "أزل الخادم"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelServerAddress)
@@ -13218,7 +13218,7 @@ msgstr "أزل الخادوم"
 #: services/ampache/NewServerWidget.ui:27
 #, kde-format
 msgid "Server Address"
-msgstr "عنوان الخادوم"
+msgstr "عنوان الخادم"
 
 #: services/ampache/AmpacheService.cpp:94
 #, kde-format

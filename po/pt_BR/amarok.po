@@ -15,20 +15,21 @@
 # Marcus Vinícius de Andrade Gama <marcus.gama@gmail.com>, 2010, 2011, 2012.
 # André Marcelo Alvarenga <alvarenga@kde.org>, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019, 2020.
 # Thiago Masato Costa Sueto <herzenschein@gmail.com>, 2021.
+# SPDX-FileCopyrightText: 2025 Guilherme Marçal Silva <guimarcalsilva@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2021-06-20 14:10-0300\n"
-"Last-Translator: Thiago Masato Costa Sueto <herzenschein@gmail.com>\n"
+"PO-Revision-Date: 2025-08-20 20:21-0300\n"
+"Last-Translator: Guilherme Marçal Silva <guimarcalsilva@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 21.07.70\n"
+"X-Generator: Lokalize 25.08.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -8336,7 +8337,7 @@ msgstr "Original: %1"
 #: dialogs/OrganizeCollectionDialog.cpp:317
 #, kde-format
 msgid "Preview: %1"
-msgstr "Previsão: %1"
+msgstr "Prévia: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:383
 #, kde-format
@@ -8401,7 +8402,7 @@ msgstr "Opções"
 #: dialogs/OrganizeCollectionDialogBase.ui:94
 #, kde-format
 msgid "Destination Preview"
-msgstr "Pré-visualização do destino"
+msgstr "Prévia do destino"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, overwriteCheck)
 #: dialogs/OrganizeCollectionDialogBase.ui:159
@@ -9045,7 +9046,7 @@ msgstr "Substituir &underscores por espaços"
 #: dialogs/TagGuessOptions.ui:95
 #, kde-format
 msgid "Result Preview"
-msgstr "Pré-visualização do resultado"
+msgstr "Prévia do resultado"
 
 #. i18n: ectx: property (text), widget (QLabel, Title_result)
 #. i18n: ectx: property (text), widget (QLabel, Artist_result)
@@ -11496,7 +11497,7 @@ msgstr "Mostrar dicas"
 #: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
-msgstr "Pré-visualizar"
+msgstr "Exibir prévia"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
@@ -14452,7 +14453,7 @@ msgstr "Adicionando capa do álbum à coleção"
 #: services/magnatune/MagnatuneCollectionLocation.cpp:41
 #, kde-format
 msgid "Preview Tracks"
-msgstr "Pré-visualizar faixas"
+msgstr "Exibir prévia das faixas"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:53
 #, kde-format
@@ -14462,11 +14463,11 @@ msgid ""
 "Remember that when buying from Magnatune the artist gets 50%. Also if you "
 "buy using Amarok, you support the Amarok project with 10%."
 msgstr ""
-"As faixas que você está prestes a copiar, são streams de pré-visualização do "
-"Magnatune.com. Para uma melhor qualidade, e streams livres de anúncios, "
-"considere a compra de um download de álbum. Lembre-se que, ao comprar um "
-"álbum do Magnatune, o artista recebe 50%. E, se comprar usando o Amarok, "
-"você suporta o projeto do Amarok com 10%."
+"As faixas que você está prestes a copiar, são streams de prévia do Magnatune."
+"com. Para uma melhor qualidade, e streams livres de anúncios, considere a "
+"compra de um download de álbum. Lembre-se que, ao comprar um álbum do "
+"Magnatune, o artista recebe 50%. E, se comprar usando o Amarok, você suporta "
+"o projeto do Amarok com 10%."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
@@ -14596,7 +14597,7 @@ msgstr "Opções do stream"
 #: services/magnatune/MagnatuneConfigWidget.ui:189
 #, kde-format
 msgid "Preview stream type:"
-msgstr "Tipo do stream de pré-visualização:"
+msgstr "Tipo do stream de prévia:"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:197
@@ -16300,7 +16301,7 @@ msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
-"Pré-visualização da mensagem na tela\n"
+"Prévia da mensagem na tela\n"
 "Arraste para reposicionar"
 
 #: widgets/Osd.cpp:772
