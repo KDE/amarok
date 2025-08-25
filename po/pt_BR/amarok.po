@@ -12,7 +12,7 @@
 # Doutor.Zero <doutor.zero@gmail.com>, 2005, 2006, 2007, 2008, 2009, 2010.
 # Luiz Fernando Ranghetti <elchevive@opensuse.org>, 2008, 2009, 2010, 2011, 2012, 2016, 2017, 2018, 2019, 2020, 2021.
 # Aracele Torres <araceletorres@gmail.com>, 2010, 2011.
-# Marcus Vinícius de Andrade Gama <marcus.gama@gmail.com>, 2010, 2011, 2012.
+# SPDX-FileCopyrightText: 2010, 2011, 2012, 2025 Marcus Vinícius de Andrade Gama <marcus.gama@gmail.com>
 # André Marcelo Alvarenga <alvarenga@kde.org>, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019, 2020.
 # Thiago Masato Costa Sueto <herzenschein@gmail.com>, 2021.
 # SPDX-FileCopyrightText: 2025 Guilherme Marçal Silva <guimarcalsilva@gmail.com>
@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-20 20:21-0300\n"
-"Last-Translator: Guilherme Marçal Silva <guimarcalsilva@gmail.com>\n"
+"PO-Revision-Date: 2025-08-24 10:20-0300\n"
+"Last-Translator: Marcus Gama <marcus.gama@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -440,14 +440,11 @@ msgstr "Se deve ou não mostrar as imagens de fundo no painel do navegador"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
-"Rolar automaticamente a lista de músicas, para fazer com que a música em "
+"Rolar automaticamente a lista de músicas, para fazer com que a faixa em "
 "reprodução fique visível"
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -488,6 +485,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Mostrar o artista da faixa no navegador de coleção se for diferente do "
+"artista do álbum"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -496,6 +495,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Mostra explicitamente o artista no navegador de coleções para álbuns e "
+"faixas de vários artistas em que o artista é diferente do artista do álbum."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -774,8 +775,7 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "11 ganhos do equalizador incluem pré-amplificação, dentro do intervalo de "
@@ -1211,17 +1211,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Enviar músicas reproduzidas"
+msgstr "Enviar faixas reproduzidas"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Músicas reproduzidas serão enviadas para o Audioscrobbler"
+msgstr "Faixas reproduzidas serão enviadas para o Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1274,10 +1272,9 @@ msgstr "Obter artistas parecidos"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Músicas parecidas serão obtidas no Audioscrobbler"
+msgstr "Faixas parecidas serão obtidas no Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1860,12 +1857,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Chave de sessão do Last.fm inválida. Reconecte sua conta do Last.fm nas "
+"Configurações do Plugin."
 
 #: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Erro de chave de sessão do Last.fm"
 
 #: App.cpp:674
 #, kde-format
@@ -1877,24 +1876,22 @@ msgstr ""
 "Você gostaria de usá-lo como uma pasta de coleção?"
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Pastas da coleção"
+msgstr "Selecionar pasta da coleção"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Usuário"
+msgstr "Usar"
 
 #: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Não usar"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -1955,12 +1952,10 @@ msgid "Added This Month"
 msgstr "Adicionado este mês"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Primeira reprodução"
+msgstr "Nunca tocada"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, kde-format
@@ -1997,11 +1992,10 @@ msgid "Show Track Numbers"
 msgstr "Mostrar números das faixas"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Mostrar em vários artistas"
+msgstr "Mostrar artista em vários artistas"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -2393,11 +2387,10 @@ msgid "Duplicates"
 msgstr "Duplicados"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Permitir músicas duplicadas no resultado"
+msgstr "Permitir faixas duplicadas no resultado"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, kde-format
@@ -2598,24 +2591,20 @@ msgstr[0] "Remover uma faixa de %2"
 msgstr[1] "Remover %1 faixas de %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Excluir lista de músicas de %1."
+msgstr "Excluir lista de músicas <i>%1</i> de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Excluir lista de músicas de %1."
+msgstr "Excluir lista de músicas %1 de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
@@ -3638,11 +3627,10 @@ msgid "Use &system notifications"
 msgstr "Usar as notificações do &sistema"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
 msgstr ""
-"A versão atual da infraestrutura do Phonon não tem suporte a diminuição "
+"A versão atual da infraestrutura de áudio não tem suporte a diminuição "
 "gradual de volume"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
@@ -4278,18 +4266,16 @@ msgid "Width"
 msgstr "Largura"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "de <b>%1</b>"
+msgstr "Semelhante a <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 ouvintes<br>%2 reproduções"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4297,7 +4283,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 reproduções por você"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4449,11 +4435,10 @@ msgid "Next"
 msgstr "Próximo"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Atualizar o banco de dados do Magnatune automaticamente"
+msgstr "Não alterar a página automaticamente"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4463,18 +4448,16 @@ msgid "Track"
 msgstr "Faixa"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Copiar para a área de transferência"
+msgstr "Copiar link para a área de transferência"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Copiar para a área de transferência"
+msgstr "Copiar imagem para a área de transferência"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4491,20 +4474,16 @@ msgid "No information found..."
 msgstr "Nenhuma informação encontrada..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artist|band).*\\))"
+msgstr ".*\\(.*(artista|banda).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(composer|musician).*\\))"
+msgstr ".*\\(.*(compositor|músico).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
@@ -4535,7 +4514,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Clique para abrir %1 em um navegador da web"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -5528,8 +5507,7 @@ msgid "Remove empty folders?"
 msgstr "Remover as pastas vazias?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Remover"
@@ -5538,7 +5516,7 @@ msgstr "Remover"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Não remover"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -7995,18 +7973,7 @@ msgid "No"
 msgstr "Não"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8017,15 +7984,13 @@ msgid ""
 "   GStreamer: %5\n"
 "\n"
 msgstr ""
-"Diagnóstico do %1\n"
+"Diagnóstico %1\n"
 "\n"
-"Informações gerais:\n"
-"   Versão do %1: %2\n"
-"   Versão do KDE Frameworks: %3\n"
-"   Versão da Qt: %4\n"
-"   Versão do Phonon: %5\n"
-"   Infraestrutura do Phonon: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"Informações Gerais:\n"
+"   Versão %1: %2\n"
+"   Versão do Framework KDE: %3\n"
+"  Versão do Qt: %4\n"
+"  GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -8107,6 +8072,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -9837,27 +9804,16 @@ msgid "The audio player by KDE"
 msgstr "O reprodutor de áudio do KDE"
 
 #: main.cpp:60
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, da equipe de desenvolvimento do Amarok"
+"(C) 2003-2025, da equipe de desenvolvimento do Amarok"
 
 #: main.cpp:61
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -9868,12 +9824,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat - #amarok\n"
 "\n"
-"Sugestões e críticas:\n"
+"Críticas e sugestões:\n"
 "amarok@kde.org\n"
 "\n"
-"(Data de compilação: %1)"
+"(Data da compilação: %1)"
 
 #: main.cpp:71
 #, kde-format
@@ -10862,23 +10818,21 @@ msgstr "Editar detalhes da faixa selecionada"
 
 # Ex: Avançar 60 segundos
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "Avançar %1 segundos"
+msgstr "Avançar %1"
 
 # Ex: Recuar 60 segundos
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "Recuar %1 segundos"
+msgstr "Recuar %1"
 
 #: MainWindow.cpp:866
 #, kde-format
@@ -11181,18 +11135,17 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
@@ -11952,11 +11905,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "As faixas foram ocultadas devido à pesquisa ativa."
 
 #: playlist/view/listview/PrettyListView.cpp:700
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Adicione aqui algumas músicas, arrastando-as de qualquer lado."
+msgstr "Adicione aqui algumas faixas, arrastando-as de qualquer lado."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12135,17 +12087,13 @@ msgstr "Posição:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"A posição desejada da música na lista, em horas, minutos e segundos. Nota: "
+"A posição desejada da faixa na lista, em horas, minutos e segundos. Nota: "
 "devido à limitações do Qt, a posição máxima que você pode especificar é de "
 "24 horas."
 
@@ -13452,8 +13400,7 @@ msgid "Remove Script"
 msgstr "Remover script"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Remover"
@@ -13462,7 +13409,7 @@ msgstr "Remover"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Não remover"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
@@ -13473,9 +13420,7 @@ msgstr "Tem certeza absoluta?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Sim"
@@ -13484,9 +13429,7 @@ msgstr "Sim"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Não"
@@ -13503,14 +13446,7 @@ msgstr ""
 "O script %1 está em avaliação há mais de 5 segundos. Deseja finalizá-lo?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:339
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13519,8 +13455,8 @@ msgid ""
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
 "O script %1 usa chamadas obsoletas à API de criação de scripts. Contacte o "
-"autor do script, %2 em %3, pedindo-lhe para atualizá-lo antes da próxima "
-"versão do Amarok."
+"autor do script, %2, pedindo-lhe para atualizá-lo antes da próxima versão do "
+"Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:278
 #, kde-format
@@ -13977,9 +13913,7 @@ msgstr "Perfil do Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "Nome do usuário:"
 
@@ -13987,34 +13921,28 @@ msgstr "Nome do usuário:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:226
 #: services/lastfm/LastFmServiceSettings.cpp:250
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "Falha na conexão"
+msgstr "Conectar à conta"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:278
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "Não necessário"
+msgstr "Não conectado"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
-"<a href=\"http://www.last.fm:80/signup.php\">Registre-se no Last.fm</a>"
+msgstr "<a href=\"https://www.last.fm/join\">Registre-se no Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "&Desconectar dispositivo"
+msgstr "Desconectar da conta"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14172,23 +14100,24 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Erro ao migrar o nome de usuário do Last.fm do KWallet. Reconecte sua conta "
+"do Last.fm nas Configurações de Plugins."
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Deseja desconectar o Amarok da conta %1 do Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Desconectar conta do Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Desconectar dispositivo"
+msgstr "Desconectar"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14199,17 +14128,16 @@ msgid "Failed"
 msgstr "Falhou"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr "Abrir site do Last.fm para este evento"
+msgstr "Abrindo site do Last.fm"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Conexão da conta finalizada"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14218,6 +14146,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"A conexão da conta do Last.fm não foi bem-sucedida. Certifique-se de ter "
+"autorizado o Amarok a se conectar à sua conta do Last.fm na página do Last."
+"fm que foi aberta e tente novamente."
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -14983,13 +14914,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Atualizando o banco de dados local do Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -15001,7 +14926,7 @@ msgstr ""
 "\n"
 "\taddMoodyTracks atmosfera calculo: Adiciona à lista de músicas um número "
 "aleatório de faixas com a atmosfera especificada. O argumento atmosfera deve "
-"ter os espaços convertidos para %%20"
+"ter os espaços convertidos para &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15087,14 +15012,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Gerencia o AutoSync para o serviço MP3tunes no Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15103,10 +15021,9 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
-"fr\n"
+"servidor: irc.libera.chat / canal: #amarok\n"
 "\n"
-"Sugestões e críticas:\n"
+"Críticas e sugestões:\n"
 "amarok@kde.org"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:41
@@ -15414,17 +15331,16 @@ msgstr ""
 "Você pode sempre alterar a decisão na configuração do Amarok."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Sincronizar"
+msgstr "Manter sincronizado"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "Não manter sincronizado"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
