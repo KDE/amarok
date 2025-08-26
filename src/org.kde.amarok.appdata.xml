@@ -76,6 +76,7 @@
   <summary xml:lang="lv">Atklāj savu mūziku</summary>
   <summary xml:lang="nl">Herontdek uw muziek</summary>
   <summary xml:lang="pl">Odkryj swoją muzykę na nowo</summary>
+  <summary xml:lang="pt-BR">Redescubra suas músicas</summary>
   <summary xml:lang="sl">Ponovno odkrijte vašo glasbo</summary>
   <summary xml:lang="sv">Återupptäck din musik</summary>
   <summary xml:lang="tr">Müziğinizi yeniden keşfedin</summary>
@@ -308,6 +309,7 @@
       <li xml:lang="lv">Integrēti interneta pakalpojumi: „last.fm“, „Magnatune“, „Ampache“ un citi.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Ampache en meer.</li>
       <li xml:lang="pl">Zintegrowane usługi internetowe: last.fm, Magnatune, Ampache i więcej.</li>
+      <li xml:lang="pt-BR">Serviços de Internet integrados: last.fm, Magnatune, Ampache entre outros.</li>
       <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Ampache in druge.</li>
       <li xml:lang="sv">Integrerade Internet-tjänster: last.fm, Magnatune, Ampache med flera.</li>
       <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Ampache ve daha fazlası</li>
@@ -465,6 +467,7 @@
       <caption xml:lang="lv">Mūzikas atskaņošana ar „Amarok 3.0“</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok 3.0</caption>
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku 3.0</caption>
+      <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok 3.0</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku 3.0</caption>
       <caption xml:lang="sv">Spela musik i Amarok 3.0</caption>
       <caption xml:lang="tr">Amarok 3.0’da müzik çalma</caption>
@@ -494,6 +497,7 @@
       <caption xml:lang="lv">„Amarok 3.1“ atskaņotāja logs ar pielāgotu izkārtojumu</caption>
       <caption xml:lang="nl">Afspelervenster van Amarok 3.1 met een aangepaste indeling</caption>
       <caption xml:lang="pl">Okno odtwarzacza Amarok 3.1 z dostosowanym układem</caption>
+      <caption xml:lang="pt-BR">Janela do reprodutor do Amarok 3.1 com layout personalizado</caption>
       <caption xml:lang="sl">Okno predvajalnika Amarok 3.1 postavitvijo po meri</caption>
       <caption xml:lang="sv">Amarok 3.1 spelarfönster med en egen layout</caption>
       <caption xml:lang="tr">Özelleştirilmiş bir yerleşimle gösterilen Amarok 3.1 müzik çaları</caption>
@@ -518,6 +522,7 @@
       <caption xml:lang="ko">Amarok 3.3 재생기 창</caption>
       <caption xml:lang="nl">Amarok 3.3 spelersvenster</caption>
       <caption xml:lang="pl">Okna odtwarzacza Amarok 3.3</caption>
+      <caption xml:lang="pt-BR">Janela do reprodutor do Amarok 3.3</caption>
       <caption xml:lang="sl">Okno predvajalnika Amarok 3.3</caption>
       <caption xml:lang="sv">Amarok 3.3 spelarfönster</caption>
       <caption xml:lang="tr">Amarok 3.3 çalar penceresi</caption>
