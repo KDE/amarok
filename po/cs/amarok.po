@@ -3602,10 +3602,9 @@ msgid "Use &system notifications"
 msgstr "Použít &systémová upozornění"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Aktuální podpůrná vrstva Phonon nepodporuje postupné zeslabování"
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7974,18 +7973,7 @@ msgid "No"
 msgstr "Ne"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -7996,16 +7984,6 @@ msgid ""
 "   GStreamer: %5\n"
 "\n"
 msgstr ""
-"Diagnostika %1\n"
-"\n"
-"Obecné informace:\n"
-"   Verze %1: %2\n"
-"   Verze KDE Frameworks: %3\n"
-"   Verze Qt: %4\n"
-"   Verze Phononu: %5\n"
-"   Podpůrná vrstva Phononu: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
-"\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
@@ -10819,22 +10797,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "Uložit změny aktuálně vybrané skladby"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "Rychle vpřed o %1 vteřin"
+msgstr ""
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "Rychle vzad o %1 vteřin"
+msgstr ""
 
 #: MainWindow.cpp:866
 #, kde-format
@@ -16355,27 +16331,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "MusicDNS match ratio: %1%"
-#~ msgstr "Míra shody s MusicDNS: %1%"
-
-#~ msgid "Enter an artist name"
-#~ msgstr "Zadejte jméno umělce"
-
-#~ msgid "Enter a tag"
-#~ msgstr "Zadejte značku"
-
-#~ msgid "Enter a Last.fm user name"
-#~ msgstr "Zadejte jméno uživatele služby Last.fm"
-
-#~ msgid "Create a Custom Last.fm Station"
-#~ msgstr "Vytvořit si vlastní stanici Last.fm"
-
-#~ msgid "Tag"
-#~ msgstr "Značka"
-
-#~ msgid "User"
-#~ msgstr "Uživatel"
-
-#~ msgid "Personal Radio"
-#~ msgstr "Vlastní rádio"
