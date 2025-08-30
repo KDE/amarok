@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-11 09:25+0300\n"
+"PO-Revision-Date: 2025-08-28 20:20+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.04.3\n"
+"X-Generator: Lokalize 25.08.0\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
 
@@ -2393,10 +2393,9 @@ msgid "Replace the upcoming tracks with fresh ones."
 msgstr ""
 
 #: browsers/playlistbrowser/DynamicView.cpp:219
-#, fuzzy, kde-format
-#| msgid "Rename playlist layout"
+#, kde-format
 msgid "&Rename playlist"
-msgstr "שנה את שם סידור רשימת־ההשמעה"
+msgstr "&שינוי שם רשימת נגינה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:223
 #, fuzzy, kde-format
@@ -3143,10 +3142,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
 #: configdialog/dialogs/GeneralConfig.ui:68
-#, fuzzy, kde-format
-#| msgid "Whether to show icon in system tray"
+#, kde-format
 msgid "Show background images in the browser panel"
-msgstr "האם להציג את הסמל במגש המערכת"
+msgstr "הצגת תמונות רקע בלוח הדפדפן"
 
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
 #: configdialog/dialogs/GeneralConfig.ui:78
@@ -3209,10 +3207,9 @@ msgstr "סגנון סרגל האווירה"
 #. i18n: ectx: property (whatsThis), widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:134
 #: configdialog/dialogs/GeneralConfig.ui:137
-#, fuzzy, kde-format
-#| msgid "Customize the OSD display text."
+#, kde-format
 msgid "Choose the mood display style"
-msgstr "התאם אישית את הטקסט שיוצג על המסך."
+msgstr "נא לבחור את סגנון תצוגת מצב הרוח"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:141
@@ -3275,18 +3272,16 @@ msgid "Synchronize Ratings"
 msgstr "סנכרון דירוגים"
 
 #: configdialog/dialogs/MetadataConfig.cpp:106
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize First Played Times"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון זמני הנגינה הראשונה"
 
 #: configdialog/dialogs/MetadataConfig.cpp:108
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Last Played Times"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון זמני הנגינה האחרונה"
 
 #: configdialog/dialogs/MetadataConfig.cpp:110
 #, kde-format
@@ -3295,11 +3290,10 @@ msgid "Synchronize Playcounts"
 msgstr "סנכרון מוני נגינה"
 
 #: configdialog/dialogs/MetadataConfig.cpp:112
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Labels"
-msgstr "נתונים סטטיסטים"
+msgstr "סנכרון תוויות"
 
 #: configdialog/dialogs/MetadataConfig.cpp:120
 #, kde-format
@@ -3621,24 +3615,21 @@ msgstr "התחל לנגן את רשימת־ההשמעה הנוכחית"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: configdialog/dialogs/PlaybackConfig.ui:52
-#, fuzzy, kde-format
-#| msgid "Rating"
+#, kde-format
 msgid "Volume Fading"
-msgstr "דירוג"
+msgstr "עמעום עוצמת שמע"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FadeoutOnStop)
 #: configdialog/dialogs/PlaybackConfig.ui:58
-#, fuzzy, kde-format
-#| msgid "&Fadeout on stop"
+#, kde-format
 msgid "Fadeout on stop"
-msgstr "החלש בהדרגתיות בי&ציאה"
+msgstr "עמעום בעת עצירה"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FadeoutOnPause)
 #: configdialog/dialogs/PlaybackConfig.ui:65
-#, fuzzy, kde-format
-#| msgid "Fadeout on e&xit"
+#, kde-format
 msgid "Fadeout on pause"
-msgstr "החלש בהדרגתיות בי&ציאה"
+msgstr "עמעום בעת השהיה"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, kcfg_FadeoutLength)
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, kcfg_FadeoutLength)
@@ -3931,29 +3922,25 @@ msgid "Settings"
 msgstr "הגדרות"
 
 #: context/applets/labels/LabelsApplet.cpp:199
-#, fuzzy, kde-format
-#| msgid "No track playing"
+#, kde-format
 msgid "Labels: No track playing"
-msgstr "שום רצועה מושמעת"
+msgstr "תוויות: אף רצועה לא מושמעת"
 
 #: context/applets/labels/LabelsApplet.cpp:520
-#, fuzzy, kde-format
-#| msgid "Fetching content.."
+#, kde-format
 msgid "Labels: Fetching..."
-msgstr "מצרף תוכן..."
+msgstr "תוויות: מתקבלות…"
 
 #: context/applets/labels/LabelsApplet.cpp:530
 #: statsyncing/models/CommonModel.cpp:186
-#, fuzzy, kde-format
-#| msgid "Label"
+#, kde-format
 msgid "Labels: %1"
-msgstr "תווית"
+msgstr "תוויות: %1"
 
 #: context/applets/labels/LabelsApplet.cpp:578
-#, fuzzy, kde-format
-#| msgid "Track Details: %1 by %2"
+#, kde-format
 msgid "Labels for %1 by %2"
-msgstr "מידע על הרצועה: %1 מאת %2"
+msgstr "תוויות עבור %1 מאת %2"
 
 #: context/applets/labels/LabelsApplet.cpp:757
 #, kde-format
