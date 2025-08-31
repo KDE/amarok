@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-07-28 18:38+0200\n"
+"PO-Revision-Date: 2025-08-30 08:22+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.04.3\n"
+"X-Generator: Lokalize 25.08.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, kde-format
@@ -9227,16 +9227,14 @@ msgstr ""
 
 #: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
-#, fuzzy, kde-format
-#| msgid "the previous artist"
+#, kde-format
 msgid "the previous track's artist"
-msgstr "aurreko artista"
+msgstr "aurreko pistaren artista"
 
 #: dynamic/biases/EchoNestBias.cpp:145
-#, fuzzy, kde-format
-#| msgid "one of the tracks in the current playlist"
+#, kde-format
 msgid "one of the artist in the current playlist"
-msgstr "uneko zerrendako pistetariko bat"
+msgstr "uneko jotze-zerrendako artistetako bat"
 
 #: dynamic/biases/IfElseBias.cpp:35
 #, kde-format
@@ -9317,31 +9315,23 @@ msgstr ""
 "gehitzen ditu."
 
 #: dynamic/biases/QuizPlayBias.cpp:116
-#, fuzzy, kde-format
-#| msgctxt "QuizPlay bias representation"
-#| msgid ""
-#| "Tracks whose title start with a\n"
-#| " character the last track ended with"
+#, kde-format
 msgctxt "QuizPlay bias representation"
 msgid ""
 "Tracks whose title start with a\n"
 "character the last track ended with"
 msgstr ""
-"Azken pistaren amaierako karakterearekin\n"
+"Azken pistaren bukaerako karakterearekin\n"
 "hasten diren tituluak dituzten pistak"
 
 #: dynamic/biases/QuizPlayBias.cpp:120
-#, fuzzy, kde-format
-#| msgctxt "QuizPlay bias representation"
-#| msgid ""
-#| "Tracks whose artist name start\n"
-#| " with a character the last track ended with"
+#, kde-format
 msgctxt "QuizPlay bias representation"
 msgid ""
 "Tracks whose artist name start\n"
 "with a character the last track ended with"
 msgstr ""
-"Azken pistaren amaierako karakterearekin\n"
+"Azken pistaren bukaerako karakterearekin\n"
 "hasten diren artisten izenak dituzten pistak"
 
 #: dynamic/biases/QuizPlayBias.cpp:124
@@ -11901,11 +11891,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Bilaketa aktiboa dela eta, pistak ezkutatu egin dira."
 
 #: playlist/view/listview/PrettyListView.cpp:700
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Gehitu abesti batzuk hemen, inguruetatik arrastatuz."
+msgstr "Gehitu pista batzuk hemen, inguruetatik arrastatuz."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -13428,7 +13417,7 @@ msgstr "Bukatu"
 #: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
-msgstr ""
+msgstr "%1 gidoia dagoeneko 5 segundo pasatxoz ebaluatu da, bukatu?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:339
 #, kde-format
@@ -15336,18 +15325,16 @@ msgid ""
 msgstr ""
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Sinkronizatzea"
+msgstr "Mantendu sinkronizatuta"
 
 #: statsyncing/Controller.cpp:119
-#, fuzzy, kde-format
-#| msgid "Artwork synchronized"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr "Artelanak sinkronizatuta"
+msgstr "Ez mantendu sinkronizatuta"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
@@ -15427,8 +15414,8 @@ msgstr "Pisten estatistikak sinkronizatzen"
 msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%2(e)ren sinkronizatzea egin da. Pista <b>bat</b> eguneratu da."
+msgstr[1] "%2(e)ren sinkronizatzea egin da. <b>%1</b> pista eguneratu da."
 
 #: statsyncing/Process.cpp:273
 #, kde-format
@@ -15456,8 +15443,8 @@ msgstr[1] ""
 msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Pista <b>bat</b> etorkizunean jo zela jakinarazi da."
+msgstr[1] "<b>%1</b> pista etorkizunean jo zirela jakinarazi da."
 
 #: statsyncing/Process.cpp:292
 #, kde-format
@@ -15482,10 +15469,9 @@ msgid "Configure Synchronization..."
 msgstr "Konfiguratu sinkronizatzea..."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
-#, fuzzy, kde-format
-#| msgid "Track rating: %1"
+#, kde-format
 msgid "Tracks matched by: %1"
-msgstr "Pistaren balorazioa: %1"
+msgstr "Honekin bat datozen pistak: %1"
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:165
 #, kde-format
