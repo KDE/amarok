@@ -256,8 +256,8 @@ msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
 msgstr ""
-"Seleccioneu-ho per a mostrar una segona etiqueta de temps a l'esquerra del "
-"control lliscant de progrés en la finestra del reproductor."
+"Trieu-ho per a mostrar una segona etiqueta de temps a l'esquerra del control "
+"lliscant de progrés en la finestra del reproductor."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:18
@@ -274,7 +274,7 @@ msgid ""
 "Set this to display remaining track time instead of past track time in the "
 "player window."
 msgstr ""
-"Seleccioneu per a mostrar el temps restant de les peces en comptes del temps "
+"Trieu per a mostrar el temps restant de les peces en comptes del temps "
 "transcorregut en la finestra de reproducció."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -1887,7 +1887,7 @@ msgstr ""
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Seleccioneu la carpeta de col·lecció"
+msgstr "Trieu la carpeta de col·lecció"
 
 #: App.cpp:677
 #, kde-format
@@ -3267,7 +3267,7 @@ msgstr "Estil de la barra d'ànim"
 #: configdialog/dialogs/GeneralConfig.ui:137
 #, kde-format
 msgid "Choose the mood display style"
-msgstr "Selecciona l'estil de visualització de la barra d'ànim"
+msgstr "Tria l'estil de visualització de la barra d'ànim"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:141
@@ -3773,7 +3773,7 @@ msgstr ""
 #: configdialog/dialogs/ScriptsConfig.cpp:136
 #, kde-format
 msgid "Select Archived Script"
-msgstr "Seleccioneu un script arxivat"
+msgstr "Trieu un script arxivat"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
@@ -6039,7 +6039,7 @@ msgstr "Voleu moure tots els episodis descarregats a la ubicació nova?"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
 #, kde-format
 msgid "Select file for OPML export"
-msgstr "Seleccioneu el fitxer per a l'exportació OPML"
+msgstr "Trieu el fitxer per a l'exportació OPML"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
 #, kde-format
@@ -7452,7 +7452,7 @@ msgstr[1] "Establix manualment les caràtules d'estos %1 àlbums"
 #: covermanager/CoverFetchingActions.cpp:164
 #, kde-format
 msgid "Select Cover Image File"
-msgstr "Seleccioneu un fitxer d'imatge de caràtula"
+msgstr "Trieu un fitxer d'imatge de caràtula"
 
 #. i18n: ectx: property (text), widget (QPushButton, clearButton)
 #: covermanager/CoverFoundDialog.cpp:75 network/NetworkRequests.ui:27
@@ -8195,7 +8195,7 @@ msgstr "Hz"
 #: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
 msgid "Choose Best Matches"
-msgstr "Selecciona les millors coincidències"
+msgstr "Tria les millors coincidències"
 
 #: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
@@ -8206,10 +8206,10 @@ msgid ""
 "different album releases together."
 msgstr ""
 "Utilitza el resultat superior per a cada peça sense decidir. De manera "
-"alternativa, podeu clicar damunt <b>Selecciona les millors coincidències per "
-"a este àlbum</b> en el menú contextual d'un suggeriment bo; pot donar "
-"millors resultats perquè evita barrejar conjuntament les diferents "
-"publicacions d'un àlbum."
+"alternativa, podeu clicar damunt <b>Tria les millors coincidències per a "
+"este àlbum</b> en el menú contextual d'un suggeriment bo; pot donar millors "
+"resultats perquè evita barrejar conjuntament les diferents publicacions d'un "
+"àlbum."
 
 #: dialogs/MusicBrainzTagger.cpp:92
 #, kde-format
@@ -8901,7 +8901,7 @@ msgstr "Etiqueta:"
 #: dialogs/TagDialogBase.ui:945
 #, kde-format
 msgid "Insert your custom label here or select one from the list."
-msgstr "Inseriu ací una etiqueta personalitzada o seleccioneu-la de la llista."
+msgstr "Inseriu ací una etiqueta personalitzada o trieu-la de la llista."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: dialogs/TagDialogBase.ui:976
@@ -11069,7 +11069,7 @@ msgstr "Índex de coincidència de MusicBrainz: %1%"
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
 msgid "Choose Best Matches from This Album"
-msgstr "Selecciona les millors coincidències d'este àlbum"
+msgstr "Tria les millors coincidències d'este àlbum"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:91
 #, kde-format
@@ -11952,7 +11952,7 @@ msgstr "Elimina de la llista de reproducció"
 #: playlist/view/PlaylistViewCommon.cpp:246
 #, kde-format
 msgid "Select Source"
-msgstr "Seleccioneu l'origen"
+msgstr "Trieu l'origen"
 
 #: playlistgenerator/ConstraintGroup.cpp:87
 #, kde-format
@@ -12097,7 +12097,7 @@ msgstr "Configuració de restricció de punt de control"
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:35
 #, kde-format
 msgid "Select the track that you want to use as the checkpoint."
-msgstr "Seleccioneu la peça que voleu utilitzar com a punt de control."
+msgstr "Trieu la peça que voleu utilitzar com a punt de control."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:48
@@ -12807,7 +12807,7 @@ msgstr "Configuració de restricció de coincidència d'etiquetes"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:44
 #, kde-format
 msgid "Selects which track characteristic you want to match."
-msgstr "Selecciona les característiques de peça que voleu que coincidisquen."
+msgstr "Tria les característiques de peça que voleu que coincidisquen."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Match)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:32
@@ -13414,7 +13414,7 @@ msgstr "Açò pararà este script! Voleu continuar?"
 #: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
-msgstr "Seleccioneu a on s'han de guardar els scripts"
+msgstr "Trieu a on s'han de guardar els scripts"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
@@ -14047,8 +14047,8 @@ msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
 "will not be scrobbled</html>"
 msgstr ""
-"<html>Seleccioneu una etiqueta preferida (o escriviu-ne una de nova). Les "
-"peces amb esta etiqueta no s'analitzaran musicalment</html>"
+"<html>Trieu una etiqueta preferida (o escriviu-ne una de nova). Les peces "
+"amb esta etiqueta no s'analitzaran musicalment</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -14593,7 +14593,7 @@ msgstr "Opcions de la baixada"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:25
 #, kde-format
 msgid "Select Format:"
-msgstr "Seleccioneu el format:"
+msgstr "Trieu el format:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:38
@@ -15545,13 +15545,13 @@ msgstr ""
 #: statsyncing/ui/ChooseProvidersPage.ui:17
 #, kde-format
 msgid "Select Collections to Synchronize"
-msgstr "Seleccioneu les col·leccions que s'han de sincronitzar"
+msgstr "Trieu les col·leccions que s'han de sincronitzar"
 
 #. i18n: ectx: property (title), widget (QGroupBox, fieldsBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:49
 #, kde-format
 msgid "Select Fields to Synchronize"
-msgstr "Seleccioneu els camps que s'han de sincronitzar"
+msgstr "Trieu els camps que s'han de sincronitzar"
 
 #: statsyncing/ui/ConfigureProviderDialog.cpp:35
 #, kde-format
