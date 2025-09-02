@@ -292,6 +292,8 @@ int main( int argc, char *argv[] )
 
     KAboutData::setApplicationData(aboutData);
 
+    QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("amarok")));
+
     // Command line parser
     QCommandLineParser parser;
 
