@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-08-30 08:22+0200\n"
+"PO-Revision-Date: 2025-09-03 02:48+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -248,7 +248,7 @@ msgstr "Amarok"
 #: amarokconfig.kcfg:13
 #, kde-format
 msgid "Whether to display a second, left time label."
-msgstr "Falta duen denboraren bigarren etiketa bat erakutsi behar duen edo ez."
+msgstr "Falta duen denboraren bigarren etiketa bat erakutsi behar den ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:14
@@ -265,8 +265,8 @@ msgstr ""
 #, kde-format
 msgid "Whether to display remaining track time in the left time label."
 msgstr ""
-"Falta duen denboraren etiketan pistak falta duen denbora azaldu behar duen "
-"edo ez."
+"Falta duen denboraren etiketan pistak falta duen denbora azaldu behar den "
+"ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:19
@@ -367,7 +367,7 @@ msgstr ""
 #: amarokconfig.kcfg:68
 #, kde-format
 msgid "Whether to show icon in system tray"
-msgstr "Sistemako erretiluan ikonoa erakutsi behar den edo ez"
+msgstr "Sistemako erretiluan ikonoa erakutsi behar den ala ez"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:69
@@ -379,7 +379,7 @@ msgstr "Gaitu/ezgaitu Amarok-en erretiluko ikonoa."
 #: amarokconfig.kcfg:73
 #, kde-format
 msgid "Whether to hide the context view."
-msgstr "Testuinguru-ikuspegia ezkutatu behar den edo ez."
+msgstr "Testuinguru-ikuspegia ezkutatu behar ala edo ez."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:74
@@ -403,7 +403,7 @@ msgstr "Jotze-zerrendako desegite-maila kopurua."
 #: amarokconfig.kcfg:83
 #, kde-format
 msgid "Whether playlists store relative path"
-msgstr "Jotze-zerrendek bide-izen erlatiboa gordetzen duten edo ez"
+msgstr "Jotze-zerrendek bide-izen erlatiboa gordetzen duten ala ez"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:84
@@ -427,14 +427,14 @@ msgstr "Amarok-ek deituko duen kanpoko web-arakatzailearen fitxategi-izena."
 msgid "Whether to automatically attempt to fetch cover art as needed"
 msgstr ""
 "Behar diren heinean disko-azalen irudiak automatikoki eskuratzen saiatu "
-"behar den edo ez"
+"behar den ala ez"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:96
 #, kde-format
 msgid "Whether to show background images in the browser pane"
 msgstr ""
-"Arakatzailearen beiratean atzeko planoko irudiak erakutsi behar diren edo ez"
+"Arakatzailearen beiratean atzeko planoko irudiak erakutsi behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
@@ -483,8 +483,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
-"Pistaren artista Bilduma arakatzailean erakusten du albumekoaren ezberdina "
-"bada"
+"Pistaren artista Bilduma-arakatzailean erakutsi, albumeko artistaren "
+"ezberdina bada"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -493,13 +493,16 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Artista Bilduma-arakatzailean esplizituki erakutsi, \"Hainbat artista\" "
+"albumetarako eta pistetarako, artista albumeko artistarekin bat ez "
+"datorrenean."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
 #, kde-format
 msgid "Whether organize files will overwrite existing files."
 msgstr ""
-"Fitxategiak antolatzea lehendik dauden fitxategiak gainidatziko dituen edo "
+"Fitxategiak antolatzeak lehendik dauden fitxategiak gainidatziko dituen ala "
 "ez."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
@@ -515,7 +518,7 @@ msgstr ""
 #, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr ""
-"«Antolatu fitxategiak» artisten izeneko «The» azkenera mugituko duenedo ez."
+"Fitxategiak antolatzeak artisten izeneko «The» azkenera mugituko duen ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:135
@@ -533,8 +536,8 @@ msgstr ""
 msgid ""
 "Whether organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Fitxategiak antolatzean fitxategi-izenetan zuriuneak azpimarrarekin "
-"ordeztuko dituen edo ez."
+"Fitxategiak antolatzeak fitxategi-izenetan zuriuneak azpimarrarekin "
+"ordeztuko dituen ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:140
@@ -550,8 +553,8 @@ msgstr ""
 #, kde-format
 msgid "Whether organize files will use cover art as folder icons."
 msgstr ""
-"'Antolatu fitxategiak' azaleko irudiak karpeten ikono gisa erabiliko dituen "
-"edo ez."
+"Fitxategiak antolatzeak azaleko irudiak karpeten ikono gisa erabiliko dituen "
+"ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:145
@@ -580,8 +583,8 @@ msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
 "filesystems."
 msgstr ""
-"'Antolatu fitxategiak' fitxategiak izenez aldatuko dituen edo ez, vfat "
-"fitxategi-sistemarekin bateragarriak izateko."
+"Fitxategiak antolatzeak, vfat fitxategi-sistemarekin bateragarriak izateko "
+"fitxategiak izenez aldatuko dituen ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:155
@@ -601,8 +604,8 @@ msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
 "ASCII characters."
 msgstr ""
-"'Antolatu fitxategiak' fitxategiak izenez aldatuko dituen edo ez, 7 biteko "
-"ASCII karaktereak bakarrik edukitzeko."
+"Fitxategiak antolatzeak, 7 biteko ASCII karaktereak bakarrik edukitzeko "
+"fitxategiak izenez aldatuko dituen ala ez"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:160
@@ -619,8 +622,8 @@ msgstr ""
 #, kde-format
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr ""
-"'Antolatu fitxategiak' fitxategiak izendatzeko eskema pertsonalizatuak "
-"erabiliko dituen edo ez."
+"Fitxategiak antolatzeak fitxategiak izendatzeko neurrira ipinitako "
+"antolaerak erabiliko dituen ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:165
@@ -734,7 +737,7 @@ msgstr "Mututu/Ez mututu soinua."
 #: amarokconfig.kcfg:209
 #, kde-format
 msgid "Whether to fade out tracks when pressing stop."
-msgstr "Gelditu sakatzean pistak moteldu behar diren edo ez."
+msgstr "Gelditu sakatzean pistetan ixteko itzaltzea erabili behar den ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:210 amarokconfig.kcfg:215
@@ -746,7 +749,7 @@ msgstr "Gaitu/ezgaitu moteltzea."
 #: amarokconfig.kcfg:214
 #, kde-format
 msgid "Whether to fade out tracks when pressing pause."
-msgstr "Eten sakatzean pistak moteldu behar diren edo ez."
+msgstr "Eten sakatzean pistetan ixteko itzaltzea erabili behar diren ala ez."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:219
@@ -809,8 +812,8 @@ msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
 "and if so whether to make the adjustments per-track or per-album."
 msgstr ""
-"Pisten bolumena doitu edo ez guztiak bolumen berdinean erreproduzitzeko, eta "
-"horrela bada, doiketa pistako edo albumeko egin behar den."
+"Pisten bolumena, bolumen berdinarekin entzun daitezen doitu behar den ala "
+"ez, eta hala bada, doikuntzak pistako edo albumeko egin behar diren ala ez."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:245
@@ -853,8 +856,8 @@ msgstr "Bilaketa luze baten luzera, segundotan."
 #, kde-format
 msgid "Whether Amarok should pause the currently playing track on suspend."
 msgstr ""
-"Sistema esekitzean, Amarok-ek unean erreproduzitzen ari den pista pausarazi "
-"behar duen edo ez."
+"Amarok-ek, sistema esekitzean, unean jotzen ari den pista pausarazi behar "
+"duen ala ez."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:276
@@ -863,8 +866,8 @@ msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
 "track."
 msgstr ""
-"Amarok pista bat erreproduzitzen ari denean sistema lokartzea eragotzi behar "
-"duen edo ez."
+"Amarok-ek, pista bat jotzen ari denean sistema lokartzea eragotzi behar duen "
+"ala ez."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:280
@@ -873,8 +876,8 @@ msgid ""
 "Whether Amarok should start playing if a track is added to playlist (and "
 "nothing else is playing)."
 msgstr ""
-"Jotzeko-zerrendara pista bat gehitzean (beste ezer erreproduzitzen ari ez "
-"dela) Amarok hura erreproduzitzen hasi beharko lukeen edo ez."
+"Amarok-ek, jotzeko-zerrendara pista bat gehitzean (eta beste ezer jotzen ari "
+"ez denean) Amarok jotzen hasi behar duen ala ez."
 
 #. i18n: ectx: label, entry, group (Cover Manager)
 #: amarokconfig.kcfg:287
@@ -947,7 +950,7 @@ msgstr "Egin OSDren atzeko planoa zeharrargi."
 #: amarokconfig.kcfg:325
 #, kde-format
 msgid "Whether to use custom colors for the OSD"
-msgstr "OSDren kolore pertsonalizatuak erabili edo ez"
+msgstr "OSDrekin neurrira ipinitako koloreak erabili behar diren ala ez"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:326
@@ -1145,31 +1148,31 @@ msgstr "Azken arakatzaile aktiboaren zenbakia (goitik)."
 #: amarokconfig.kcfg:410
 #, kde-format
 msgid "Whether Collections folders are scanned recursively"
-msgstr "Biltegien karpetak errekurtsiboki aztertu diren edo ez"
+msgstr "Biltegien karpetak errekurtsiboki aztertu behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:414
 #, kde-format
 msgid "Whether Collection folders are rescanned on change"
-msgstr "Bildumaren karpetak aldatzean berriro aztertuko diren edo ez"
+msgstr "Bildumaren karpetak aldatzean berriro aztertu behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:418
 #, kde-format
 msgid "Whether meta data changes are written back"
-msgstr "Meta-datuen aldaketak gainidazten diren edo ez"
+msgstr "Metadatuen aldaketak atzera idatzi behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:422
 #, kde-format
 msgid "Whether changes to the track statistics are written back"
-msgstr "Pisten estatistiketako aldaketak gainidazten diren edo ez"
+msgstr "Pistaren estatistiken aldaketak atzera idatzi behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:426
 #, kde-format
 msgid "Whether changes to the album cover are written back"
-msgstr "Albumaren azalaren aldaketak gainidazten diren edo ez"
+msgstr "Albuma-azalaren aldaketak atzera idatzi behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:430
@@ -1187,13 +1190,13 @@ msgstr "Karpeten zerrenda bilduman"
 #: amarokconfig.kcfg:437
 #, kde-format
 msgid "Whether track numbers are shown in the collection browser."
-msgstr "Bilduma-arakatzailean pisten zenbakiak erakutsi edo ez"
+msgstr "Bilduma-arakatzailean pisten zenbakiak erakutsi behar diren ala ez."
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:441
 #, kde-format
 msgid "Whether years are shown in the collection browser."
-msgstr "Bilduma-arakatzailean urteak erakutsiko diren edo ez."
+msgstr "Bilduma-arakatzailean urteak erakutsi behar diren ala ez."
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:445
@@ -1202,8 +1205,8 @@ msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
 "encodings."
 msgstr ""
-"Mozilla-ren karaktere-jokoaren detektatzailea erabili ID3 etiketen kodeketa "
-"asmatzeko edo ez."
+"ID3 etiketen kodeketa igartzeko Mozillaren Karaktere-multzoaren "
+"Detektatzailea erabili behar den ala ez."
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
@@ -1214,10 +1217,9 @@ msgstr "Bidali erreproduzitutako abestiak"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Erreproduzitutako abestiak Audioscrobbler gunera bidali edo ez"
+msgstr "Jotako pistak Audioscrobbler-rera bidali behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1271,10 +1273,9 @@ msgstr "Eskuratu antzeko artistak"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Antzeko abestiak Audioscrobbler gunetik eskuratu edo ez"
+msgstr "Antzeko pistak Audioscrobbler-retik eskuratu behar diren ala ez"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1339,8 +1340,8 @@ msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
 msgstr ""
-"Jadanik erreproduzitutako podcast saioak automatikoki ezabatuko diren "
-"multimediako gailua konektatzean edo ez."
+"Hedabide-gailua konektatzen denean dagoeneko jotako podcast-saioak "
+"automatikoki ezabatu behar diren ala ez."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:500
@@ -1355,9 +1356,8 @@ msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
-"Amarok-en estatistikak gailuko erreprodukzioen kopuruarekin eta balioekin "
-"sinkronizatuko den edo ez, eta erreproduzitutako pistak Last.fm gunera "
-"bidaliko diren edo ez."
+"Amarok-en estatistikak gailuko jotze-kopuru eta -balioekin sinkronizatu "
+"behar diren ala ez, eta jotako pistak Last.fm(e)ra bidali behar diren ala ez."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:507
@@ -1431,7 +1431,9 @@ msgstr "Diseinuaren izena abioan kargatzeko"
 msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
-msgstr "Amarok-ek bere barneko datu-basea edo kanpoko motorra erabili."
+msgstr ""
+"Amarok-ek bere barneko datu-base propioa ala kanpoko motor bat erabili behar "
+"duen."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:560
@@ -1477,7 +1479,7 @@ msgstr "Zenbaketa exekuzioan mantentzen du CHECK bat lantzean."
 #: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
-msgstr "Amarok-en gidoietarako modulua gaitu behar den edo ez."
+msgstr "Amarok-en gidoietarako modulua gaitu behar den ala ez."
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:588
@@ -1489,7 +1491,7 @@ msgstr "Gaitu/ezgaitu Amarok-en gidoietarako modulua."
 #: amarokconfig.kcfg:592
 #, kde-format
 msgid "Whether to automatically update built-in scripts"
-msgstr "Barneratutako gidoiak automatikoki eguneratu behar diren edo ez"
+msgstr "Barneratutako gidoiak automatikoki eguneratu behar diren ala ez"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:593
@@ -1502,7 +1504,7 @@ msgstr "Gaitu/Desgaitu barneko script-en eguneraketa automatikoak."
 #: amarokconfig.kcfg:597 amarokconfig.kcfg:598
 #, kde-format
 msgid "Whether to enable the script console."
-msgstr "Gidoien kontsola gaitu behar den edo ez."
+msgstr "Gidoien kontsola gaitu behar den ala ez."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -1511,14 +1513,14 @@ msgstr "Gidoien kontsola gaitu behar den edo ez."
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
 "Zaharkitutako APIak atzitzen dituzten gidoiei buruzko abisuak azaldu behar "
-"diren edo ez."
+"diren ala ez."
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
 #: amarokconfig.kcfg:610 amarokconfig.kcfg:611
 #, kde-format
 msgid "Whether to save the current session on exit."
-msgstr "Irtetean uneko saioa gorde behar den edo ez."
+msgstr "Irtetean uneko saioa gorde behar den ala ez."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:618
@@ -1528,7 +1530,7 @@ msgid ""
 "progress slider"
 msgstr ""
 "Uneko pistaren gogaldi-barra, erabilgarri badago, aurrerapen-graduatzailean "
-"erakutsi behar den edo ez"
+"erakutsi behar den ala ez"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
 #: amarokconfig.kcfg:619
@@ -1557,8 +1559,8 @@ msgid ""
 "A value between 0 and 10 that controls whether the Automated Playlist "
 "Generator tries to optimize for speed (0) or accuracy (10)."
 msgstr ""
-"0 eta 10 arteko balio batek zerrenden sortzaile automatikoak abiadura (0) "
-"edo zehaztasuna (10) optimizatuko duen kontrolatzen du."
+"Jotze-zerrenda sortzaile automatizatuak abiadura (0) ala zehaztasuna (10) "
+"optimizatzen saiatu behar duen kontrolatzen duen 0 eta 10 arteko balio bat."
 
 #: amarokurls/AmarokUrlHandler.cpp:224
 #, kde-format
@@ -1992,11 +1994,10 @@ msgid "Show Track Numbers"
 msgstr "Erakutsi pista-zenbakiak"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Erakutsi \"Hainbat artista\" pean"
+msgstr "Erakutsi \"Hainbat artista\" peko artistak"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -2194,10 +2195,10 @@ msgid ""
 "of whether these files are part of your local collection. You can then add "
 "these files to the playlist as well as perform basic file operations."
 msgstr ""
-"Fitxategi-arakatzaileak sistemako edozer lekutan fitxategiak arakatzea "
-"baimentzen dizu, eta berdin izanik fitxategiak lokaleko bildumaren zati "
-"diren edo ez. Gero, fitxategi horiek gehi dizkiokezu zerrendari fitxategien "
-"oinarrizko eragiketa gisa."
+"Fitxategi-arakatzaileak fitxategiak zure sistemako edozein lekutan arakatzen "
+"uzten dizu, berdin da fitxategiak bilduma lokaleko zati diren ala ez. Gero, "
+"fitxategi horiek jotze-zerrendara gehitu ditzakezu, baita haien gainean "
+"fitxategien oinarrizko eragiketak egin ere."
 
 #: browsers/filebrowser/FileView.cpp:398
 #, kde-format
@@ -2935,8 +2936,8 @@ msgid ""
 "Whether Amarok should transcode tracks when they are copied or moved to "
 "Local Collection."
 msgstr ""
-"Pistak tokiko bildumara kopiatu edo eramatean Amarok-ek pistak transkodetu "
-"behar dituen edo ez."
+"Amarok-ek, pistak bilduma lokalera kopiatzen edo mugitzen direnean "
+"transkodetu behar dituen ala ez."
 
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #: configdialog/dialogs/CollectionConfig.ui:70
@@ -11285,7 +11286,7 @@ msgstr "Gorputza"
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:83
 #, kde-format
 msgid "Body (Various artists)"
-msgstr "Gorputza (hainbat artista)"
+msgstr "Gorputza (Hainbat artista)"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:84
 #, kde-format
@@ -12195,7 +12196,7 @@ msgstr "Jotze-zerrendaren iraupena: ezezaguna"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistDurationEditWidget)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:15
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "An editor for a PlaylistDuration constraint.  The user can set the name of "
 "the constraint; the target duration and whether the playlist should be less "
@@ -12219,8 +12220,8 @@ msgid ""
 "Whether the duration of the generated playlist should be shorter than, equal "
 "to, or longer than the specified value."
 msgstr ""
-"Sortutako zerrendaren iraupena zehaztutako balio baino luzeagoa, laburragoa "
-"edo berdina izango den."
+"Sortutako jotze-zerrendaren iraupena zehaztutako balioa baino laburragoa, "
+"berdina, edo luzeagoa izan behar duen."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:39
@@ -12341,8 +12342,8 @@ msgid ""
 "Whether the total size of all files in the generated playlist should be less "
 "than, equal to, or more than the specified value."
 msgstr ""
-"Sortutako jotze-zerrendaren fitxategi guztien guztizko neurria adierazitako "
-"balioa baino txikiagoa, berdina, edo handiagoa izan behar den."
+"Sortutako jotze-zerrendaren fitxategi guztien neurri osoa zehaztutako balioa "
+"baino txikiagoa, berdina, edo handiagoa izan behar duen."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonTime)
@@ -12470,8 +12471,8 @@ msgid ""
 "Whether the number of tracks in the generated playlist should be less than, "
 "equal to, or more than the specified value."
 msgstr ""
-"Sortutako zerrendaren luzera zehaztutako balio baino handiagoa, txikiagoa "
-"edo berdina izango den."
+"Sortutako jotze-zerrendaren pista kopurua zehaztutako balioa baino "
+"txikiagoa, berdina, edo handiagoa izan behar duen."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:39
@@ -12825,8 +12826,8 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified value."
 msgstr ""
-"APGk zehaztutako balioa baino pista handiagoak, txikiagoak edo berdinak "
-"aukeratu behar dituen."
+"APG(a)k zehaztutako balioa baino txikiagoak, berdinak, edo handiagoak diren "
+"pistak aukeratu behar dituen."
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_ValueInt)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:133
@@ -12851,9 +12852,8 @@ msgid ""
 "specific date; or whether it should choose tracks that are within a certain "
 "time range."
 msgstr ""
-"APGk data zehatz baten aurreko, ondorengo edo data horretako pistak aukeratu "
-"behar dituen, edo data barruti batean kokatutako pistak aukeratu behar "
-"dituen."
+"APG(a)k data zehatz baten aurreko, barruko, ondoko pistak aukeratu behar "
+"dituen, edo denbora barruti batean kokatutako pistak aukeratu behar dituen."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:248
@@ -12889,8 +12889,8 @@ msgid ""
 "Whether the APG should match tracks that equal, start with, end with, or "
 "contain the specified string."
 msgstr ""
-"APGk zehaztutako katearekin hasi, amaitu edo berdinak diren pistak aukeratu "
-"behar dituen."
+"APG(a)k zehaztutako katearekin berdina, hasi, bukatu, edo barnean duten "
+"pistak parekatu behar dituen."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:409
@@ -12929,7 +12929,7 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified time."
 msgstr ""
-"APGk zehaztutako denbora baino pista handiagoak, txikiagoak edo berdinak "
+"APG(a)k zehaztutako denbora baino laburragoa, berdina, luzeagoa duten pistak "
 "aukeratu behar dituen."
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_TimeValue)
@@ -12954,8 +12954,8 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified rating."
 msgstr ""
-"APGk zehaztutako balorazioa baino pista handiagoak, txikiagoak edo berdinak "
-"aukeratu behar dituen."
+"APG(a)k zehaztutako balorazioa baino txikiagoa, berdina, edo handiagoa duten "
+"pistak aukeratu behar dituen."
 
 #. i18n: ectx: property (whatsThis), widget (KRatingWidget, rating_RatingValue)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:624
