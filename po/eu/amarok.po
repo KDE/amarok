@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-09-03 02:48+0200\n"
+"PO-Revision-Date: 2025-09-04 22:35+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -12196,16 +12196,17 @@ msgstr "Jotze-zerrendaren iraupena: ezezaguna"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistDurationEditWidget)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:15
-#, fuzzy, kde-format
+#, kde-format
 msgid ""
 "An editor for a PlaylistDuration constraint.  The user can set the name of "
 "the constraint; the target duration and whether the playlist should be less "
 "than, equal to, or greater than that duration; and the strictness with which "
 "the APG should match that duration."
 msgstr ""
-"Zerrendaren iraupena murriztapenaren editorea. Erabiltzaileak "
-"murriztapenaren izena, helburuko iraupena eta zerrenda luzeago, laburragoa "
-"edo berdina den ezar dezake. Baita APGren iraupenarekiko zorroztasuna ere."
+"Jotze-zerrendaren iraupen murriztapen editore bat. Erabiltzaileak ezar "
+"ditzake, murriztapenaren izena, iraupen helburua, eta jotze-zerrendak "
+"iraupen hori baino gutxiago, berdin, edo gehiago izan behar duen ala ez; eta "
+"APGak iraupen hori betetzeko zorroztasuna."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:21
@@ -12312,22 +12313,17 @@ msgstr "Jotze-zerrendaren guztizko neurria: ezezaguna"
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistLengthEditWidget)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:15
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:15
-#, fuzzy, kde-format
-#| msgid ""
-#| "An editor for a Playlist Length constraint.  The user can the target "
-#| "number of tracks and whether the playlist contain fewer than, equal to, "
-#| "or more than that number of tracks; and the strictness with which the APG "
-#| "should match the target number of tracks."
+#, kde-format
 msgid ""
 "An editor for a Playlist Length constraint.  The user can specify the target "
 "number of tracks and whether the playlist contain fewer than, equal to, or "
 "more than that number of tracks; and the strictness with which the APG "
 "should match the target number of tracks."
 msgstr ""
-"Zerrenda-luzeraren murriztapenaren editorea. Erabiltzaileak helburuko pista "
-"kopurua, eta zerrenda pista kopuru hori baino handiagoa, txikiagoa edo "
-"berdina izango den zehatz dezake. Baita APGren zorroztasuna helburuko pista "
-"kopuruarekiko ere ezar dezake. "
+"Jotze-zerrendaren luzera murriztapen editore bat. Erabiltzaileak ezar "
+"ditzake, pista kopuru helburua, eta jotze-zerrendak hori baino pista kopuru "
+"txikiago, berdin, edo gehiago izan behar duen ala ez; eta APGak pista kopuru "
+"hori betetzeko zorroztasuna."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:21

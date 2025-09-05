@@ -23,15 +23,15 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-07-14 13:04+0300\n"
-"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
-"Language-Team: Turkish <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2025-09-04 15:05+0300\n"
+"Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
+"Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.07.70\n"
+"X-Generator: Lokalize 25.08.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1179,7 +1179,7 @@ msgstr "Albüm kapağı değişikliklerinin geri yazılıp yazılmayacağı"
 #: amarokconfig.kcfg:430
 #, kde-format
 msgid "Maximum embedded cover dimensions"
-msgstr "En çok gömülü kapak boyutu"
+msgstr "En büyük gömülü kapak boyutları"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:434
@@ -4082,13 +4082,13 @@ msgstr ""
 #: context/applets/labels/labelsGeneralSettings.ui:108
 #, kde-format
 msgid "Show personal labels with score:"
-msgstr "Puanlı kişisel etiketleri göster:"
+msgstr "Şu puanlı kişisel etiketleri göster:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, personalCountSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:127
 #, kde-format
 msgid "Affects the font size of the personal labels."
-msgstr "Kişisel etiketlerin yazıtipi boyutlarını etkiler."
+msgstr "Kişisel etiketlerin yazıtipi puntosunu etkiler."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoAddCheckBox)
 #: context/applets/labels/labelsGeneralSettings.ui:145
@@ -4187,7 +4187,7 @@ msgstr "Şarkı Sözü Yapılandırması"
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
 #, kde-format
 msgid "Font size:"
-msgstr "Yazıtipi boyutu:"
+msgstr "Yazıtipi puntosu:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, kde-format
