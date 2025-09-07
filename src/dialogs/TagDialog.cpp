@@ -59,6 +59,7 @@ namespace Field {
     const QString LYRICS = QStringLiteral("lyrics");
     const QString TYPE = QStringLiteral("type");
     const QString COLLECTION = QStringLiteral("collection");
+    const QString ADDED_TO_COLLECTION = QStringLiteral("added_to_collection");
     const QString NOTE = QStringLiteral("note");
 }
 }
@@ -808,6 +809,19 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
                                     tags.value( Meta::Field::COLLECTION ).toString() :
                                     i18nc( "The collection this track is part of", "None") );
 
+    // only show if there's something sensible (for files not in collection, added date might be file creation date, invalid, etc...)
+    if( tags.contains( Meta::Field::COLLECTION ) && tags.contains( Meta::Field::ADDED_TO_COLLECTION ) )
+    {
+        ui->addedToCollectionLabel->setVisible( true );
+        ui->qLabel_addedToCollection->setVisible( true );
+        ui->qLabel_addedToCollection->setText( Amarok::verboseTimeSince( tags.value( Meta::Field::ADDED_TO_COLLECTION ).toDateTime() ) );
+    }
+    else
+    {
+        ui->addedToCollectionLabel->setVisible( false );
+        ui->qLabel_addedToCollection->setVisible( false );
+    }
+
     // special handling - we want to hide this if empty
     if( tags.contains( Meta::Field::NOTE ) )
     {
@@ -971,7 +985,11 @@ TagDialog::getTagsFromTrack( const Meta::TrackPtr &track ) const
     map.insert( Meta::Field::TYPE, track->type() );
 
     if( track->inCollection() )
+    {
         map.insert( Meta::Field::COLLECTION, track->collection()->prettyName() );
+        if( track->createDate().isValid() )
+            map.insert( Meta::Field::ADDED_TO_COLLECTION, track->createDate() );
+    }
 
     if( !track->notPlayableReason().isEmpty() )
         map.insert( Meta::Field::NOTE, i18n( "The track is not playable. %1",

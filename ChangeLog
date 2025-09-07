@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 3.3.2 UNRELEASED
   FEATURES:
+   * Show 'added to collection' time in tag dialog when available (BR 508899)
 
   CHANGES:
 
