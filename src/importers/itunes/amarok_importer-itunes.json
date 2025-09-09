@@ -31,7 +31,6 @@
                 "Name[sv]": "Konrad Zemek",
                 "Name[tr]": "Konrad Zemek",
                 "Name[uk]": "Konrad Zemek",
-                "Name[x-test]": "xxKonrad Zemekxx",
                 "Name[zh_TW]": "Konrad Zemek"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Importera statistik från Apple iTunes-databas",
         "Description[tr]": "İstatistikleri Apple iTunes veritabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Apple iTunes",
-        "Description[x-test]": "xxImport statistics from Apple iTunes databasexx",
         "Description[zh_TW]": "從 Apple iTunes 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "media-album-track",
@@ -107,7 +105,6 @@
         "Name[sv]": "Apple iTunes-importverktyg",
         "Name[tr]": "Apple iTunes İçe Aktarıcısı",
         "Name[uk]": "Засіб імпортування даних Apple iTunes",
-        "Name[x-test]": "xxApple iTunes Importerxx",
         "Name[zh_CN]": "Apple iTunes 导入工具",
         "Name[zh_TW]": "Apple iTunes 匯入器",
         "ServiceTypes": [

@@ -31,7 +31,6 @@
                 "Name[sv]": "Maximilian Kossick",
                 "Name[tr]": "Maximilian Kossick",
                 "Name[uk]": "Maximilian Kossick",
-                "Name[x-test]": "xxMaximilian Kossickxx",
                 "Name[zh_TW]": "Maximilian Kossick"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Samlingsinsticksprogram för Amarok",
         "Description[tr]": "Amarok için koleksiyon eklentisi",
         "Description[uk]": "Додаток збірки для Amarok",
-        "Description[x-test]": "xxCollection plugin for Amarokxx",
         "Description[zh_TW]": "Amarok 的收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "server-database",
@@ -106,7 +104,6 @@
         "Name[sv]": "MySQL-anslutning",
         "Name[tr]": "MySQL Koleksiyonu",
         "Name[uk]": "Збірка MySQL",
-        "Name[x-test]": "xxMySQL Collectionxx",
         "Name[zh_CN]": "MySQL 收藏集",
         "Name[zh_TW]": "MySQL 收藏",
         "ServiceTypes": [

@@ -31,7 +31,6 @@
                 "Name[sv]": "Alejandro Wainzinger",
                 "Name[tr]": "Alejandro Wainzinger",
                 "Name[uk]": "Alejandro Wainzinger",
-                "Name[x-test]": "xxAlejandro Wainzingerxx",
                 "Name[zh_TW]": "Alejandro Wainzinger"
             }
         ],
@@ -88,7 +87,6 @@
         "Name[sv]": "Samling på generell lagringsenhet",
         "Name[tr]": "Evrensel Yığın Depolaması Koleksiyonu",
         "Name[uk]": "Універсальна збірка на носії даних",
-        "Name[x-test]": "xxUniversal Mass Storage Collectionxx",
         "Name[zh_CN]": "通用大容量存储收藏集",
         "Name[zh_TW]": "通用大容量儲存裝置收藏",
         "ServiceTypes": [

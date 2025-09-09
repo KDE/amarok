@@ -28,7 +28,6 @@
         "Description[sv]": "Anpassa gpodder.net inloggningsinformation",
         "Description[tr]": "gpodder.net üyelik ayarlarını yapılandır",
         "Description[uk]": "Налаштувати реєстраційні дані у gpodder.net",
-        "Description[x-test]": "xxConfigure gpodder.net Credentialsxx",
         "Description[zh_TW]": "設定 gpodder.net 的認證資訊",
         "Icon": "view-services-gpodder-amarok",
         "Name": "gpodder.net Service Config",
@@ -75,7 +74,6 @@
         "Name[sv]": "Inställning av gpodder.net-tjänst",
         "Name[tr]": "gpodder.net Hizmeti Yapılandırması",
         "Name[uk]": "Налаштування служби gpodder.net",
-        "Name[x-test]": "xxgpodder.net Service Configxx",
         "Name[zh_CN]": "gpodder.net 服务配置",
         "Name[zh_TW]": "gpodder.net 服務設定",
         "ServiceTypes": [

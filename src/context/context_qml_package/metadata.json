@@ -31,7 +31,6 @@
                 "Name[sv]": "Malte Veerman",
                 "Name[tr]": "Malte Veerman",
                 "Name[uk]": "Malte Veerman",
-                "Name[x-test]": "xxMalte Veermanxx",
                 "Name[zh_TW]": "Malte Veerman"
             }
         ],
@@ -62,7 +61,6 @@
         "Description[sv]": "QML-baspaket för Amaroks sammanhangsområde",
         "Description[tr]": "Amarok bağlam alanı için QML temel paketi",
         "Description[uk]": "Базовий пакунок QML для області контексту Amarok",
-        "Description[x-test]": "xxQML base package for amarok context areaxx",
         "Description[zh_TW]": "Amarok 內容區塊的 QML 基本軟體包",
         "Icon": "amarok",
         "Id": "org.kde.amarok.context",
@@ -100,7 +98,6 @@
         "Name[sv]": "QML-sammanhangsminiprogram för Amarok",
         "Name[tr]": "Amarok-Context-QML-Package",
         "Name[uk]": "Пакунок QML контексту для Amarok",
-        "Name[x-test]": "xxAmarok-Context-QML-Packagexx",
         "Name[zh_CN]": "Amarok 信息视图的 QML 包",
         "Name[zh_TW]": "Amarok-Context-QML-Package",
         "ServiceTypes": [

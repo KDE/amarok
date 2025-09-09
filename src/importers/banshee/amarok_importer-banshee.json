@@ -31,7 +31,6 @@
                 "Name[sv]": "Konrad Zemek",
                 "Name[tr]": "Konrad Zemek",
                 "Name[uk]": "Konrad Zemek",
-                "Name[x-test]": "xxKonrad Zemekxx",
                 "Name[zh_TW]": "Konrad Zemek"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Importera statistik från Banshee-databas",
         "Description[tr]": "İstatistikleri Banshee veritabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Banshee",
-        "Description[x-test]": "xxImport statistics from Banshee databasexx",
         "Description[zh_TW]": "從 Banshee 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "view-importers-banshee-amarok",
@@ -107,7 +105,6 @@
         "Name[sv]": "Banshee-importverktyg",
         "Name[tr]": "Banshee İçe Aktarıcısı",
         "Name[uk]": "Засіб імпортування даних Banshee",
-        "Name[x-test]": "xxBanshee Importerxx",
         "Name[zh_CN]": "Banshee 导入工具",
         "Name[zh_TW]": "Banshee 匯入器",
         "ServiceTypes": [

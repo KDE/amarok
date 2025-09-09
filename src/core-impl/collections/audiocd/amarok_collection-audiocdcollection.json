@@ -31,7 +31,6 @@
                 "Name[sv]": "Nikolaja Hald Nielsen",
                 "Name[tr]": "Nikolaja Hald Nielsen",
                 "Name[uk]": "Nikolaja Hald Nielsen",
-                "Name[x-test]": "xxNikolaja Hald Nielsenxx",
                 "Name[zh_TW]": "Nikolaja Hald Nielsen"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Insticksprogram med musik cd-samling för Amarok",
         "Description[tr]": "Amarok için ses CD’si koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки звукових КД для Amarok",
-        "Description[x-test]": "xxAudioCd collection plugin for Amarokxx",
         "Description[zh_TW]": "Amarok 的音效 CD 收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "media-optical-audio",
@@ -119,7 +117,6 @@
         "Name[tr]": "Ses CD’si Koleksiyonu",
         "Name[uk]": "Збірка звукових КД",
         "Name[wa]": "Ramexhnêye di plakes lazer odio",
-        "Name[x-test]": "xxAudioCd Collectionxx",
         "Name[zh_CN]": "音频 CD 收藏集",
         "Name[zh_TW]": "音效 CD 收藏",
         "ServiceTypes": [

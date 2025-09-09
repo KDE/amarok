@@ -28,7 +28,6 @@
         "Description[sv]": "Anpassa MP3tunes identifieringsinformation",
         "Description[tr]": "MP3tunes kimlik bilgilerini yapılandır",
         "Description[uk]": "Налаштувати реєстраційні дані у mp3tunes",
-        "Description[x-test]": "xxConfigure mp3tunes credentialsxx",
         "Description[zh_TW]": "設定 mp3tunes 的認證資訊",
         "Icon": "view-services-mp3tunes-amarok",
         "Name": "MP3tunes Service Config",
@@ -79,7 +78,6 @@
         "Name[sv]": "Inställning av Mp3tunes-tjänst",
         "Name[tr]": "MP3tunes Hizmeti Yapılandırması",
         "Name[uk]": "Налаштування служби MP3tunes",
-        "Name[x-test]": "xxMP3tunes Service Configxx",
         "Name[zh_CN]": "MP3tunes 服务配置",
         "Name[zh_TW]": "Mp3tunes 服務設定",
         "ServiceTypes": [

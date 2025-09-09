@@ -31,7 +31,6 @@
                 "Name[sv]": "Alejandro Wainzinger",
                 "Name[tr]": "Alejandro Wainzinger",
                 "Name[uk]": "Alejandro Wainzinger",
-                "Name[x-test]": "xxAlejandro Wainzingerxx",
                 "Name[zh_TW]": "Alejandro Wainzinger"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Insticksprogram med mediaenhetssamling för Amarok",
         "Description[tr]": "Amarok için ortam aygıtı koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки на носіях інформації для Amarok",
-        "Description[x-test]": "xxMedia Device collection plugin for Amarokxx",
         "Description[zh_TW]": "Amarok 的媒體裝置收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "multimedia-player",
@@ -123,7 +121,6 @@
         "Name[tr]": "Ortam Aygıtı Koleksiyonu",
         "Name[uk]": "Збірка на носіях інформації",
         "Name[wa]": "Ramexhnêye d' éndjin media",
-        "Name[x-test]": "xxMedia Device Collectionxx",
         "Name[zh_CN]": "媒体设备收藏集",
         "Name[zh_TW]": "媒體裝置收藏",
         "ServiceTypes": [

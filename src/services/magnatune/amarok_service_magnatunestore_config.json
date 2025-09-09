@@ -28,7 +28,6 @@
         "Description[sv]": "Anpassa Magnatune butiksinställningar och medlemskapsinformation",
         "Description[tr]": "Magnatune mağaza ve üyelik ayarlarını yapılandır",
         "Description[uk]": "Налаштувати параметри і членських даних Magnatune",
-        "Description[x-test]": "xxConfigure Magnatune store settings and memberships credentialsxx",
         "Description[zh_TW]": "調整 Magnatune 商店設定與會員憑證",
         "Icon": "view-services-magnatune-amarok",
         "Name": "MagnatuneStore Service Config",
@@ -83,7 +82,6 @@
         "Name[tr]": "MagnatuneStore Hizmeti Yapılandırması",
         "Name[uk]": "Налаштування служби MagnatuneStore",
         "Name[wa]": "Apontiaedje do siervice MagnatuneStore",
-        "Name[x-test]": "xxMagnatuneStore Service Configxx",
         "Name[zh_CN]": "Magnatune 商店服务配置",
         "Name[zh_TW]": "Magnatune商店服務設定",
         "ServiceTypes": [

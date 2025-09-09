@@ -31,7 +31,6 @@
                 "Name[sv]": "Konrad Zemek",
                 "Name[tr]": "Konrad Zemek",
                 "Name[uk]": "Konrad Zemek",
-                "Name[x-test]": "xxKonrad Zemekxx",
                 "Name[zh_TW]": "Konrad Zemek"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Importera statistik från Rhythmbox-databas",
         "Description[tr]": "İstatistikleri Rhythmbox veritabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Rhythmbox",
-        "Description[x-test]": "xxImport statistics from Rhythmbox databasexx",
         "Description[zh_TW]": "從 Rhythmbox 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "view-importers-rhythmbox-amarok",
@@ -107,7 +105,6 @@
         "Name[sv]": "Rhythmbox-importverktyg",
         "Name[tr]": "Rhythmbox İçe Aktarıcısı",
         "Name[uk]": "Засіб імпортування даних Rhythmbox",
-        "Name[x-test]": "xxRhythmbox Importerxx",
         "Name[zh_CN]": "Rhythmbox 导入工具",
         "Name[zh_TW]": "Rhythmbox 匯入器",
         "ServiceTypes": [

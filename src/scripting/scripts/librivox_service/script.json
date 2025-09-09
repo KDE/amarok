@@ -31,7 +31,6 @@
                 "Name[sv]": "Nikolaj Hald Nielsen",
                 "Name[tr]": "Nikolaj Hald Nielsen",
                 "Name[uk]": "Nikolaj Hald Nielsen",
-                "Name[x-test]": "xxNikolaj Hald Nielsenxx",
                 "Name[zh_TW]": "Nikolaj Hald Nielsen"
             }
         ],
@@ -66,7 +65,6 @@
         "Description[sv]": "En skriptbaserad tjänst som låter dig söka efter, strömma och ladda ner fria, allmänt tillgängliga, ljudböcker från Librivox.org",
         "Description[tr]": "Librivox.org sitesinden ücretsiz, kamuya açık alandan, ses kitapları aramanızı, göndermenizi veya indirmenizi sağlayan bir betik hizmeti.",
         "Description[uk]": "Керована скриптами служба, за допомогою якої ви можете шукати, слухати і отримувати вільні, доступні усім звукові книги з Librivox.org",
-        "Description[x-test]": "xxA scripted service that lets you search, stream and download free, public domain, audio books from Librivox.orgxx",
         "Description[zh_TW]": "一個文稿服務，讓您從 Librivox.org 搜尋、接收並下載自由、公共版權的有聲書",
         "EnabledByDefault": true,
         "Icon": "view-services-librivox-amarok",
@@ -113,7 +111,6 @@
         "Name[sv]": "Librivox.org",
         "Name[tr]": "Librivox.org",
         "Name[uk]": "Librivox.org",
-        "Name[x-test]": "xxLibrivox.orgxx",
         "Name[zh_CN]": "Librivox.org",
         "Name[zh_TW]": "Librivox.org",
         "ServiceTypes": [

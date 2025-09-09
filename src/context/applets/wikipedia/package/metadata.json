@@ -32,7 +32,6 @@
                 "Name[sv]": "Leo Franchi",
                 "Name[tr]": "Leo Franchi",
                 "Name[uk]": "Leo Franchi",
-                "Name[x-test]": "xxLeo Franchixx",
                 "Name[zh_TW]": "Leo Franchi"
             }
         ],
@@ -65,7 +64,6 @@
         "Description[sv]": "Wikipediaminiprogram för Amarok",
         "Description[tr]": "Amarok için Vikipedi uygulamacığı",
         "Description[uk]": "Аплет Вікіпедії для Amarok",
-        "Description[x-test]": "xxWikipedia applet for Amarokxx",
         "Description[zh_TW]": "Amarok 的 Wikipedia 小程式",
         "EnabledByDefault": true,
         "Icon": "amarok-wikipedia",
@@ -127,7 +125,6 @@
         "Name[ug]": "ۋىكىپېدىيە",
         "Name[uk]": "Вікіпедія",
         "Name[wa]": "Wikipedia",
-        "Name[x-test]": "xxWikipediaxx",
         "Name[zh_CN]": "维基百科",
         "Name[zh_TW]": "維基百科",
         "ServiceTypes": [

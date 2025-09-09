@@ -31,7 +31,6 @@
                 "Name[sv]": "Andrew Coder",
                 "Name[tr]": "Andrew Coder",
                 "Name[uk]": "Andrew Coder",
-                "Name[x-test]": "xxAndrew Coderxx",
                 "Name[zh_TW]": "Andrew Coder"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Musik som Playdar kan hitta",
         "Description[tr]": "Playdar’ın bulabileceği müzik",
         "Description[uk]": "Музика, яку може знайти Playdar",
-        "Description[x-test]": "xxMusic that Playdar can findxx",
         "Description[zh_TW]": "Playdar 可以找到的音樂",
         "EnabledByDefault": false,
         "Icon": "network-workgroup",
@@ -113,7 +111,6 @@
         "Name[sv]": "Playdar-samling",
         "Name[tr]": "Playdar Koleksiyonu",
         "Name[uk]": "Збірка Playdar",
-        "Name[x-test]": "xxPlaydar Collectionxx",
         "Name[zh_CN]": "Playdar 收藏集",
         "Name[zh_TW]": "Playdar 收藏",
         "ServiceTypes": [

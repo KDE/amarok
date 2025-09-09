@@ -31,7 +31,6 @@
                 "Name[sv]": "Tuomas Nurmi",
                 "Name[tr]": "Tuomas Nurmi",
                 "Name[uk]": "Tuomas Nurmi",
-                "Name[x-test]": "xxTuomas Nurmixx",
                 "Name[zh_TW]": "Tuomas Nurmi"
             }
         ],
@@ -64,7 +63,6 @@
         "Description[sv]": "Last.fm liknande artister miniprogram för Amarok",
         "Description[tr]": "Amarok için Last.fm benzer sanatçılar uygulamacığı",
         "Description[uk]": "Аплет подібних виконавців Last.fm для Amarok",
-        "Description[x-test]": "xxLast.fm similar artists applet for Amarokxx",
         "Description[zh_TW]": "Amarok 的 Last.fm 相似演出者小程式",
         "EnabledByDefault": true,
         "Icon": "similarartists-amarok",
@@ -116,7 +114,6 @@
         "Name[sv]": "Liknande artister",
         "Name[tr]": "Benzer Sanatçılar",
         "Name[uk]": "Подібні виконавці",
-        "Name[x-test]": "xxSimilar Artistsxx",
         "Name[zh_TW]": "相似的演出者",
         "ServiceTypes": [
             "KPackage/Generic",

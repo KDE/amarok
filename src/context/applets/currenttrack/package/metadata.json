@@ -32,7 +32,6 @@
                 "Name[sv]": "Leo Franchi",
                 "Name[tr]": "Leo Franchi",
                 "Name[uk]": "Leo Franchi",
-                "Name[x-test]": "xxLeo Franchixx",
                 "Name[zh_TW]": "Leo Franchi"
             }
         ],
@@ -65,7 +64,6 @@
         "Description[sv]": "Miniprogram med aktuellt spår för Amarok",
         "Description[tr]": "Amarok için şu anda çalan parça uygulamacığı",
         "Description[uk]": "Аплет поточної композиції для Amarok",
-        "Description[x-test]": "xxCurrent track applet for Amarokxx",
         "Description[zh_TW]": "Amarok 的目前曲目小程式",
         "EnabledByDefault": true,
         "Icon": "current-track-amarok",
@@ -125,7 +123,6 @@
         "Name[ug]": "نۆۋەتتىكى نەغمە",
         "Name[uk]": "Поточна композиція",
         "Name[wa]": "Boket do moumint",
-        "Name[x-test]": "xxCurrent Trackxx",
         "Name[zh_CN]": "当前曲目",
         "Name[zh_TW]": "現在的曲目",
         "ServiceTypes": [

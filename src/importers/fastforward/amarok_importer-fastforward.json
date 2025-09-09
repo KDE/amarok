@@ -31,7 +31,6 @@
                 "Name[sv]": "Konrad Zemek",
                 "Name[tr]": "Konrad Zemek",
                 "Name[uk]": "Konrad Zemek",
-                "Name[x-test]": "xxKonrad Zemekxx",
                 "Name[zh_TW]": "Konrad Zemek"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Importera statistik från Amarok 1.4-databas",
         "Description[tr]": "İstatistikleri Amarok 1.4 veritabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Amarok 1.4",
-        "Description[x-test]": "xxImport statistics from Amarok 1.4 databasexx",
         "Description[zh_TW]": "從 Amarok 1.4 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "amarok",
@@ -107,7 +105,6 @@
         "Name[sv]": "Amarok 1.4 (FastForward)-importverktyg",
         "Name[tr]": "Amarok 1.4 (FastForward) İçe Aktarıcısı",
         "Name[uk]": "Засіб імпортування даних Amarok 1.4 (FastForward)",
-        "Name[x-test]": "xxAmarok 1.4 (FastForward) Importerxx",
         "Name[zh_CN]": "Amarok 1.4 (快进合并版) 导入工具",
         "Name[zh_TW]": "Amarok 1.4 （快轉）匯入器",
         "ServiceTypes": [

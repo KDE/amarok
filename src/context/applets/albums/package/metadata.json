@@ -32,7 +32,6 @@
                 "Name[sv]": "Seb Ruiz",
                 "Name[tr]": "Seb Ruiz",
                 "Name[uk]": "Seb Ruiz",
-                "Name[x-test]": "xxSeb Ruizxx",
                 "Name[zh_TW]": "Seb Ruiz"
             }
         ],
@@ -65,7 +64,6 @@
         "Description[sv]": "Albumomslagshanterare för Amarok",
         "Description[tr]": "Amarok için albüm kapak görseli yöneticisi",
         "Description[uk]": "Керування зображеннями обкладинок альбомів для Amarok",
-        "Description[x-test]": "xxAlbum cover manager for Amarokxx",
         "Description[zh_TW]": "Amarok 的專輯封面管理員",
         "EnabledByDefault": false,
         "Icon": "media-album-cover-manager-amarok",
@@ -132,7 +130,6 @@
         "Name[ug]": "ئالبوملار",
         "Name[uk]": "Альбоми",
         "Name[wa]": "Alboms",
-        "Name[x-test]": "xxAlbumsxx",
         "Name[zh_CN]": "专辑",
         "Name[zh_TW]": "專輯",
         "ServiceTypes": [

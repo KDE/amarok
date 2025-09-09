@@ -31,7 +31,6 @@
                 "Name[sv]": "Konrad Zemek",
                 "Name[tr]": "Konrad Zemek",
                 "Name[uk]": "Konrad Zemek",
-                "Name[x-test]": "xxKonrad Zemekxx",
                 "Name[zh_TW]": "Konrad Zemek"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Importera statistik från Clementine-databas",
         "Description[tr]": "İstatistikleri Clementine veritabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Clementine",
-        "Description[x-test]": "xxImport statistics from Clementine databasexx",
         "Description[zh_TW]": "從 Clementine 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "view-importers-clementine-amarok",
@@ -107,7 +105,6 @@
         "Name[sv]": "Clementine-importverktyg",
         "Name[tr]": "Clementine İçe Aktarıcısı",
         "Name[uk]": "Засіб імпортування даних Clementine",
-        "Name[x-test]": "xxClementine Importerxx",
         "Name[zh_CN]": "Clementine 导入工具",
         "Name[zh_TW]": "Clementine 匯入器",
         "ServiceTypes": [

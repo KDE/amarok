@@ -32,7 +32,6 @@
                 "Name[sv]": "Leo Franchi",
                 "Name[tr]": "Leo Franchi",
                 "Name[uk]": "Leo Franchi",
-                "Name[x-test]": "xxLeo Franchixx",
                 "Name[zh_TW]": "Leo Franchi"
             }
         ],
@@ -65,7 +64,6 @@
         "Description[sv]": "Sångtextminiprogram för Amarok",
         "Description[tr]": "Amarok için şarkı sözü uygulamacığı",
         "Description[uk]": "Аплет слів пісні для Amarok",
-        "Description[x-test]": "xxLyrics applet for Amarokxx",
         "Description[zh_TW]": "Amarok 的歌詞小程式",
         "EnabledByDefault": true,
         "Icon": "amarok_lyrics",
@@ -127,7 +125,6 @@
         "Name[ug]": "ناخشا سۆزى",
         "Name[uk]": "Текст пісні",
         "Name[wa]": "Paroles",
-        "Name[x-test]": "xxLyricsxx",
         "Name[zh_CN]": "歌词",
         "Name[zh_TW]": "歌詞",
         "ServiceTypes": [

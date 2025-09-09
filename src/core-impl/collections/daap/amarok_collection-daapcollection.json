@@ -31,7 +31,6 @@
                 "Name[sv]": "Maximilian Kossick",
                 "Name[tr]": "Maximilian Kossick",
                 "Name[uk]": "Maximilian Kossick",
-                "Name[x-test]": "xxMaximilian Kossickxx",
                 "Name[zh_TW]": "Maximilian Kossick"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Insticksprogram med DAAP-samling för Amarok",
         "Description[tr]": "Amarok için DAAP koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки DAAP для Amarok",
-        "Description[x-test]": "xxDAAP collection plugin for Amarokxx",
         "Description[zh_TW]": "Amarok 的 DAAP 收藏外掛程式",
         "EnabledByDefault": false,
         "Icon": "network-workgroup",
@@ -123,7 +121,6 @@
         "Name[tr]": "DAAP Koleksiyonu",
         "Name[uk]": "Збірка DAAP",
         "Name[wa]": "Ramexhnêye DAAP",
-        "Name[x-test]": "xxDAAP Collectionxx",
         "Name[zh_CN]": "DAAP 收藏集",
         "Name[zh_TW]": "DAAP 收藏",
         "ServiceTypes": [

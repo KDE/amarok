@@ -31,7 +31,6 @@
                 "Name[sv]": "Matěj Laitl",
                 "Name[tr]": "Matěj Laitl",
                 "Name[uk]": "Matěj Laitl",
-                "Name[x-test]": "xxMatěj Laitlxx",
                 "Name[zh_TW]": "Matěj Laitl"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Insticksprogram för att använda iPod-liknande enheter som samlingar i Amarok",
         "Description[tr]": "Amarok için iPod benzeri aygıtları koleksiyon olarak kullanma eklentisi",
         "Description[uk]": "Додаток для використання iPod-подібних пристроїв як збірок у Amarok",
-        "Description[x-test]": "xxPlugin to use iPod-like devices as collections in Amarokxx",
         "Description[zh_TW]": "Amarok 的類 iPod 裝置收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "multimedia-player-apple-ipod",
@@ -112,7 +110,6 @@
         "Name[sv]": "Samling på iPod, iPad och iPhone",
         "Name[tr]": "iPod, iPad ve iPhone Koleksiyonu",
         "Name[uk]": "Збірка на iPod, iPad і iPhone",
-        "Name[x-test]": "xxiPod, iPad & iPhone Collectionxx",
         "Name[zh_CN]": "iPod, iPad 和 iPhone 收藏集",
         "Name[zh_TW]": "iPod, iPad 與 iPhone 收藏",
         "ServiceTypes": [

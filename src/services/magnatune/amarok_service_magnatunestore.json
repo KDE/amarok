@@ -31,7 +31,6 @@
                 "Name[sv]": "Nikolaj Hald Nielsen",
                 "Name[tr]": "Nikolaj Hald Nielsen",
                 "Name[uk]": "Nikolaj Hald Nielsen",
-                "Name[x-test]": "xxNikolaj Hald Nielsenxx",
                 "Name[zh_TW]": "Nikolaj Hald Nielsen"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "Förhandsgranska och köp musik från det icke-onda skivbolaget Magnatune",
         "Description[tr]": "Kötü amaçlı olmayan Magnatune plak şirketinden etiketinden müzik önizle ve satın al",
         "Description[uk]": "Прослухайте і купіть музику з ненав’язливої агенції звукозапису Magnatune",
-        "Description[x-test]": "xxPreview and buy music from the non-evil Magnatune record labelxx",
         "Description[zh_TW]": "從標為不邪惡的 Magnatune 唱片標籤的音樂中，預聽並購買",
         "EnabledByDefault": true,
         "Icon": "view-services-magnatune-amarok",
@@ -124,7 +122,6 @@
         "Name[ug]": "Magnatune دۇكىنى",
         "Name[uk]": "Магазин Magnatune",
         "Name[wa]": "Botike Magnatune",
-        "Name[x-test]": "xxMagnatune Storexx",
         "Name[zh_CN]": "Magnatune 商店",
         "Name[zh_TW]": "Magnatune 商店",
         "ServiceTypes": [

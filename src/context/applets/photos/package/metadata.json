@@ -32,7 +32,6 @@
                 "Name[sv]": "Simon Esneault",
                 "Name[tr]": "Simon Esneault",
                 "Name[uk]": "Simon Esneault",
-                "Name[x-test]": "xxSimon Esneaultxx",
                 "Name[zh_TW]": "Simon Esneault"
             }
         ],
@@ -65,7 +64,6 @@
         "Description[sv]": "Fotominiprogram för Amarok",
         "Description[tr]": "Amarok için fotoğraflar uygulamacığı",
         "Description[uk]": "Аплет фотографій для Amarok",
-        "Description[x-test]": "xxPhotos applet for Amarokxx",
         "Description[zh_TW]": "Amarok 的圖片小程式",
         "EnabledByDefault": true,
         "Icon": "photos-amarok",
@@ -127,7 +125,6 @@
         "Name[tr]": "Fotoğraflar",
         "Name[ug]": "سۈرەتلەر",
         "Name[uk]": "Фотографії",
-        "Name[x-test]": "xxPhotosxx",
         "Name[zh_CN]": "照片",
         "Name[zh_TW]": "Photos",
         "ServiceTypes": [

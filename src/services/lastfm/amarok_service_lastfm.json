@@ -31,7 +31,6 @@
                 "Name[sv]": "Shane King",
                 "Name[tr]": "Shane King",
                 "Name[uk]": "Shane King",
-                "Name[x-test]": "xxShane Kingxx",
                 "Name[zh_TW]": "Shane King"
             }
         ],
@@ -63,7 +62,6 @@
         "Description[sv]": "En tjänst som integrerar funktioner från Last.fm i Amarok",
         "Description[tr]": "Last.fm işlevlerini Amarok ile tümleştiren bir hizmet",
         "Description[uk]": "Служба, яка інтегрує функціональність Last.fm до Amarok",
-        "Description[x-test]": "xxA service that integrates Last.fm functionality into Amarokxx",
         "Description[zh_TW]": "一種將 Last.fm 其功能性整合到 Amarok 中的服務",
         "EnabledByDefault": true,
         "Icon": "view-services-lastfm-amarok",
@@ -122,7 +120,6 @@
         "Name[ug]": "Last.fm",
         "Name[uk]": "Last.fm",
         "Name[wa]": "Last.fm",
-        "Name[x-test]": "xxLast.fmxx",
         "Name[zh_CN]": "Last.fm",
         "Name[zh_TW]": "Last.fm ",
         "ServiceTypes": [

@@ -31,7 +31,6 @@
                 "Name[sv]": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
                 "Name[tr]": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
                 "Name[uk]": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
-                "Name[x-test]": "xxStefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomesxx",
                 "Name[zh_TW]": "Stefan Derkits、Christian Wagner、Felix Winter、Lucas Lira Gomes"
             }
         ],
@@ -64,7 +63,6 @@
         "Description[sv]": "Poddsändningstjänst",
         "Description[tr]": "Pod Yayını Hizmeti",
         "Description[uk]": "Служба трансляцій",
-        "Description[x-test]": "xxPodcast Servicexx",
         "Description[zh_TW]": "Podcast 服務",
         "EnabledByDefault": false,
         "Icon": "view-services-gpodder-amarok",
@@ -117,7 +115,6 @@
         "Name[sv]": "gpodder.net",
         "Name[tr]": "gpodder.net",
         "Name[uk]": "gpodder.net",
-        "Name[x-test]": "xxgpodder.netxx",
         "Name[zh_CN]": "gpodder.net",
         "Name[zh_TW]": "gpodder.net",
         "ServiceTypes": [
