@@ -55,7 +55,6 @@
   <name xml:lang="sv">Amarok</name>
   <name xml:lang="tr">Amarok</name>
   <name xml:lang="uk">Amarok</name>
-  <name xml:lang="x-test">xxAmarokxx</name>
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>Rediscover your music</summary>
@@ -81,7 +80,6 @@
   <summary xml:lang="sv">Återupptäck din musik</summary>
   <summary xml:lang="tr">Müziğinizi yeniden keşfedin</summary>
   <summary xml:lang="uk">Відкрийте свою музику знову</summary>
-  <summary xml:lang="x-test">xxRediscover your musicxx</summary>
   <summary xml:lang="zh-TW">重新探索您的音樂</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
@@ -117,7 +115,6 @@
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
     <p xml:lang="tr">Amarok; ücretsiz, çapraz platformlu, çok amaçlı, güçlü ve çok özellikli bir müzik çalar ve koleksiyon yöneticisidir.</p>
     <p xml:lang="uk">Amarok — вільна, універсальна, різнобічна та потужна програма для відтворення звукових даних та керування фонотеками.</p>
-    <p xml:lang="x-test">xxAmarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.xx</p>
     <p xml:lang="zh-CN">Amarok 是一个自由、跨平台、多用途、强大且多功能的音乐播放器及收藏集管理器。</p>
     <p xml:lang="zh-TW">Amarok 是款自由、跨平台、多功能且強大的音樂播放和收藏管理器。</p>
     <p>Features:</p>
@@ -161,7 +158,6 @@
     <p xml:lang="sv">Funktioner:</p>
     <p xml:lang="tr">Özellikler:</p>
     <p xml:lang="uk">Можливості:</p>
-    <p xml:lang="x-test">xxFeatures:xx</p>
     <p xml:lang="zh-CN">功能：</p>
     <p xml:lang="zh-TW">功能：</p>
     <ul>
@@ -203,7 +199,6 @@
       <li xml:lang="sv">Dynamiska spellistor som motsvarar olika kriterier</li>
       <li xml:lang="tr">Farklı kriterlerle eşleşen devingen çalma listeleri</li>
       <li xml:lang="uk">динамічні списки відтворення на основі різних критеріїв;</li>
-      <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li xml:lang="zh-CN">可匹配不同条件的动态播放列表</li>
       <li xml:lang="zh-TW">依據不同條件動態產生的播放清單</li>
       <li>Collection managing with rating support</li>
@@ -244,7 +239,6 @@
       <li xml:lang="sv">Samlingshantering med betygsstöd</li>
       <li xml:lang="tr">Derecelendirme desteği ile koleksiyon yönetimi</li>
       <li xml:lang="uk">керування збіркою з підтримкою оцінок;</li>
-      <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
       <li xml:lang="zh-CN">支持评分的收藏集管理器</li>
       <li xml:lang="zh-TW">支援評分的收藏管理工具</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
@@ -285,7 +279,6 @@
       <li xml:lang="sv">Stöd för grundläggande iPod-, MTP- och UMS-musikspelare</li>
       <li xml:lang="tr">Temel iPod, MTP ve UMS müzik çalar aygıtlar desteği</li>
       <li xml:lang="uk">підтримка базової роботи з пристроями відтворення, що працюють за протоколами iPod, MTP та UMS;</li>
-      <li xml:lang="x-test">xxSupport for basic iPod, MTP and UMS music player devicesxx</li>
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
       <li xml:lang="zh-TW">支援基本的 iPod、MTP 和 UMS 音樂播放裝置</li>
       <li>Integrated Internet services: last.fm, Magnatune, Ampache and more.</li>
@@ -314,7 +307,6 @@
       <li xml:lang="sv">Integrerade Internet-tjänster: last.fm, Magnatune, Ampache med flera.</li>
       <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Ampache ve daha fazlası</li>
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Ampache тощо;</li>
-      <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Ampache and more.xx</li>
       <li xml:lang="zh-TW">整合了這些網路服務：last.fm、Magnatune、Ampache 等等。</li>
       <li>Scripting support</li>
       <li xml:lang="bg">Поддръжка скриптове</li>
@@ -354,7 +346,6 @@
       <li xml:lang="sv">Stöd för skript</li>
       <li xml:lang="tr">Betik yazımı desteği</li>
       <li xml:lang="uk">підтримка роботи зі скриптами;</li>
-      <li xml:lang="x-test">xxScripting supportxx</li>
       <li xml:lang="zh-CN">支持脚本</li>
       <li xml:lang="zh-TW">支援指令碼</li>
       <li>Cover manager</li>
@@ -396,7 +387,6 @@
       <li xml:lang="sv">Omslagshanterare</li>
       <li xml:lang="tr">Kapak görseli yöneticisi</li>
       <li xml:lang="uk">засіб керування збіркою зображень обкладинок;</li>
-      <li xml:lang="x-test">xxCover managerxx</li>
       <li xml:lang="zh-CN">专辑封面管理器</li>
       <li xml:lang="zh-TW">專輯管理員</li>
       <li>Replay gain support</li>
@@ -436,7 +426,6 @@
       <li xml:lang="sv">Stöd för uppspelningsnivå</li>
       <li xml:lang="tr">Ses düzeyi dengeleme desteği</li>
       <li xml:lang="uk">підтримка вирівнювання гучності.</li>
-      <li xml:lang="x-test">xxReplay gain supportxx</li>
       <li xml:lang="zh-CN">支持回放增益</li>
       <li xml:lang="zh-TW">ReplayGain 支援</li>
     </ul>
@@ -472,7 +461,6 @@
       <caption xml:lang="sv">Spela musik i Amarok 3.0</caption>
       <caption xml:lang="tr">Amarok 3.0’da müzik çalma</caption>
       <caption xml:lang="uk">Відтворення музики в Amarok 3.0</caption>
-      <caption xml:lang="x-test">xxPlaying music in Amarok 3.0xx</caption>
       <caption xml:lang="zh-TW">Amarok 3.0 播放音樂時的畫面</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok30.png</image>
     </screenshot>
@@ -484,6 +472,7 @@
       <caption xml:lang="cs">Okno přehrávače Amarok 3.1 s upraveným rozložením</caption>
       <caption xml:lang="de">Amarok 3.1 Wiedergabefenster mit einer angepassten Anordnung</caption>
       <caption xml:lang="en-GB">Amarok 3.1 player window with a customised layout</caption>
+      <caption xml:lang="eo">Fenestro de legilo Amarok-3.1 kun tajlorita aranĝo</caption>
       <caption xml:lang="es">Ventana del reproductor Amarok 3.1 con un diseño personalizado</caption>
       <caption xml:lang="eu">Amarok 3.1 jotzailearen leihoa neurrira ipinitako antolaera batekin</caption>
       <caption xml:lang="fi">Amarok 3.1:n soitinikkuna mukautetulla asettelulla</caption>
@@ -502,7 +491,6 @@
       <caption xml:lang="sv">Amarok 3.1 spelarfönster med en egen layout</caption>
       <caption xml:lang="tr">Özelleştirilmiş bir yerleşimle gösterilen Amarok 3.1 müzik çaları</caption>
       <caption xml:lang="uk">Вікно програвача Amarok 3.1 із нетиповим компонуванням</caption>
-      <caption xml:lang="x-test">xxAmarok 3.1 player window with a customized layoutxx</caption>
       <caption xml:lang="zh-TW">Amarok 3.1 播放器視窗，已自訂配置</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok31.png</image>
     </screenshot>
@@ -512,6 +500,7 @@
       <caption xml:lang="ca">Finestra del reproductor Amarok 3.3</caption>
       <caption xml:lang="ca-valencia">Finestra del reproductor Amarok 3.3</caption>
       <caption xml:lang="de">Amarok 3.3 Wiedergabefenster</caption>
+      <caption xml:lang="eo">Fenestro de Amarok-3.3</caption>
       <caption xml:lang="es">Ventana del reproductor Amarok 3.3</caption>
       <caption xml:lang="eu">Amarok 3.3 jotzailearen leihoa</caption>
       <caption xml:lang="fi">Amarok 3.3:n soitinikkuna</caption>
@@ -527,7 +516,6 @@
       <caption xml:lang="sv">Amarok 3.3 spelarfönster</caption>
       <caption xml:lang="tr">Amarok 3.3 çalar penceresi</caption>
       <caption xml:lang="uk">Вікно програвача Amarok 3.3</caption>
-      <caption xml:lang="x-test">xxAmarok 3.3 player windowxx</caption>
       <caption xml:lang="zh-CN">Amarok 3.3 播放器窗口</caption>
       <caption xml:lang="zh-TW">Amarok 3.3 播放器視窗樣貌</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok33.png</image>
