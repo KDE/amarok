@@ -34,7 +34,7 @@ sharing those files via the Internet.</string>
        <widget class="QCheckBox" name="m_writeBackStatistics">
         <property name="toolTip">
          <string>Write play-changing statistics (e.g. score, lastplayed, playcount)
-as tags back to the file.</string>
+as tags back to the audio file.</string>
         </property>
         <property name="text">
          <string>Write statistics to file</string>
