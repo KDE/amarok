@@ -13,15 +13,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-21 00:41+0000\n"
-"PO-Revision-Date: 2025-09-04 22:35+0200\n"
+"POT-Creation-Date: 2025-09-14 00:41+0000\n"
+"PO-Revision-Date: 2025-09-14 01:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.08.0\n"
+"X-Generator: Lokalize 25.08.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, kde-format
@@ -780,11 +780,10 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"11 Ekualizadorearen aurre-anplifikatzeko balioa, -100 eta 100 artekoa, 0 "
+"11 Ekualizadore-irabazi aurre-anplifikatzea barne,  -100 eta 100 tartea, 0 "
 "normala da."
 
 #. i18n: ectx: label, entry, group (Playback)
@@ -1210,10 +1209,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Bidali erreproduzitutako abestiak"
+msgstr "Bidali jotako pistak"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
@@ -1859,12 +1857,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Last.fm saio-gako baliogabea. Mesedez zure Last.fm kontua Plugin Ezarpenetan "
+"birkonektatu."
 
 #: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Last.fm saio-gakoaren errorea"
 
 #: App.cpp:674
 #, kde-format
@@ -1952,12 +1952,10 @@ msgid "Added This Month"
 msgstr "Hilabete honetan gehituta"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Aurrenekoz jo"
+msgstr "Ez da inoiz jo"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, kde-format
@@ -2384,11 +2382,10 @@ msgid "Duplicates"
 msgstr "Bikoiztuak"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Baimendu bikoiztutako abestiak emaitzan"
+msgstr "Baimendu emaitzan pista bikoiztuak"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, kde-format
@@ -2766,7 +2763,7 @@ msgstr[1] "%1 kanal"
 msgid "Title"
 msgstr "Titulua"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:515
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:516
 #, kde-format
 msgid "Summary"
 msgstr "Laburpena"
@@ -3380,10 +3377,13 @@ msgstr "Idatzi meta-datuak fitxategian"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
+#| "as tags back to the file."
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-"as tags back to the file."
+"as tags back to the audio file."
 msgstr ""
 "Idatzi erreprodukzioaren aldaketak estatistikak (adib. puntuazioa,\n"
 "azken erreproduzitutakoa, erreprodukzioaren zenbaketa) etiketa gisa\n"
@@ -3447,7 +3447,7 @@ msgstr "Estatistikak sinkronizatzea"
 msgid ""
 "<b>Check collections to keep them synchronized.</b> This includes scrobbling "
 "of tracks played on iPods if you have Last.fm plugin configured"
-msgstr "<b>Bildumak ikuskatu haiek sinkronizatuta mantentzeko.</b>"
+msgstr "<b>Egiaztatu bildumak sinkronizatuta mantentzeko.</b> "
 
 #. i18n: ectx: property (text), widget (QPushButton, m_forgetTargetsButton)
 #: configdialog/dialogs/MetadataConfig.ui:128
@@ -3620,10 +3620,9 @@ msgid "Use &system notifications"
 msgstr "Erabili &sistemako jakinarazpenak"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr "Phonon-en uneko bizkarraldekoak ez du onartzen bolumena moteltzea"
+msgstr "Uneko audio-bizkarraldekoak ez du bolumena moteltzea onartzen"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -3785,7 +3784,7 @@ msgstr "%1 gidoia ongi instalatu da"
 msgid "Generic"
 msgstr "Orokorra"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:517
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "Hitzak"
@@ -3947,7 +3946,7 @@ msgstr "Gehitu zerrenda-beltzera"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedLabelsButton)
 #: context/applets/labels/LabelsApplet.cpp:94
-#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:518
+#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:519
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
@@ -4136,7 +4135,7 @@ msgstr "honekin"
 #. i18n: ectx: property (text), widget (QPushButton, addPushButton)
 #. i18n: ectx: property (text), widget (QPushButton, addButton)
 #: context/applets/labels/labelsReplacementSettings.ui:69
-#: dialogs/TagDialogBase.ui:1005
+#: dialogs/TagDialogBase.ui:1037
 #, kde-format
 msgid "Add"
 msgstr "Gehitu"
@@ -4253,18 +4252,16 @@ msgid "Width"
 msgstr "Zabalera"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "<b>%1</b>(r)etik"
+msgstr "<b>%1</b>(r)(e)n antzekoa"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 entzule<br>%2 joaldi"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4272,7 +4269,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>zure %1 joaldi"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4422,11 +4419,10 @@ msgid "Next"
 msgstr "Hurrengoa"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Magnatune datu-basea automatikoki eguneratu"
+msgstr "Ez aldatu orrialdea automatikoki"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4763,10 +4759,9 @@ msgid "&Eject Device"
 msgstr "&Egotzi gailua"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:126
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "Pistak transkodetzen"
+msgstr "Gehitu berriro umezurtz gelditutako pistak eta ahaztu zaharkitutakoak"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:484
 #, kde-format
@@ -4838,7 +4833,7 @@ msgstr[1] ""
 "Amarok arazteko egunkarian)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "Infrequently displayed message, don't bother with singular forms. %1 to %3 "
 "are numbers, %4 is the 'Failed to process ...' sentence or an empty string."
@@ -4846,7 +4841,10 @@ msgid ""
 "Done consolidating iPod files. %1 orphaned tracks matched with stale iTunes "
 "database entries, %2 stale database entries removed, %3 orphaned tracks "
 "added back to the iTunes database. %4"
-msgstr "iPod fitxategiak "
+msgstr ""
+"iPod fitxategiak bateratu dira. %1 pista zurtz iTunes datu-baseko sarrera "
+"zaharkituekin bat etorri d(ir)a, zaharkitutako %2 datu-base sarrera kendu "
+"dira, %3 pista zurtz atzera gehitu dira iTunes datu-basera. %4"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:226
 #, kde-format
@@ -4872,21 +4870,18 @@ msgstr[0] "Transferentzia galarazi da. Pista bat transferitzea lortu da."
 msgstr[1] "Transferentzia galarazi da. %1 pista transferitzea lortu da."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:246
-#, fuzzy, kde-format
-#| msgid ", one track already on media device"
-#| msgid_plural ", %1 tracks already on media device"
+#, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] ", pista bat badago iada multimedia gailuan"
-msgstr[1] ", %1 pista badaude iada multimedia gailuan"
+msgstr[0] "%2 Pista bat jada han zegoen."
+msgstr[1] "%2 %1 pista jada han zeuden."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to MTP"
+#, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "Fitxategiak multimedia gailura transferitzen"
+msgstr "Pista %1(e)ra transferitu da"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:377
 #, kde-format
@@ -4895,13 +4890,16 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
+"Pista bat ondo transferitu da, baina beste pista batzuen transferentziak "
+"huts egin du."
 msgstr[1] ""
+"%1 pista ondo transferitu dira, baina beste pista batzuen transferentziak "
+"huts egin du."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to iPod"
+#, kde-format
 msgid "Transfer of tracks failed."
-msgstr "Pistak iPod gailura transferitzen"
+msgstr "Pisten transferentziak huts egin du."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
 #, kde-format
@@ -4910,13 +4908,15 @@ msgid ""
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
+"Pista bat ez da transferitu iPod-aren edukiera gaindituko zuelako.<br>"
 msgstr[1] ""
+"%1 pista ez dira transferitu iPod-aren edukiera gaindituko zuelako.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:394
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
-msgstr ""
+msgstr "<i>Amarokek %1 gordetzen ditu iTunes datu-basea idazteko.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:401
 #, kde-format
@@ -4927,14 +4927,18 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
+"Pista bat ez da kopiatu ezingo litzatekeelako jo - bere %2 formatua ez da "
+"onartzen.<br>"
 msgstr[1] ""
+"%1 pista ez dira kopiatu ezingo liratekeelako jo - Onartzen ez diren "
+"formatuetan daude (%2).<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fitxategi bat kopiatzea/mugitzea/transkodetzea huts egin du.<br>"
+msgstr[1] "%1 fitxategi kopiatzea/mugitzea/transkodetzea huts egin du.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
 #, kde-format
@@ -4942,12 +4946,14 @@ msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
 msgstr[0] ""
+"Pista bat ez da transferitu Amaroken barneko errore baten eraginez.<br>"
 msgstr[1] ""
+"%1 pista ez dira transferitu Amaroken barneko errore baten eraginez.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:419
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
-msgstr ""
+msgstr "<i>Xehetasunak Amaroken arazketa-irteeran aurki ditzakezu.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
@@ -4974,17 +4980,16 @@ msgid "Reading iPod tracks"
 msgstr "iPod pistak irakurtzen"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:118
-#, fuzzy, kde-format
-#| msgid "Stale Tracks"
+#, kde-format
 msgctxt "iPod playlist name"
 msgid "Stale tracks"
-msgstr "Pista zaharrak"
+msgstr "Pista zaharkituak"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:127
 #, kde-format
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr "Pista umezurtzak"
+msgstr "Pista zurtzak"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:147
 #, kde-format
@@ -4993,6 +4998,9 @@ msgid ""
 "using the <b>%2</b> collection action. You can also view the tracks under "
 "the Saved Playlists tab."
 msgstr ""
+"%1(e)n pista zaharkituak eta/edo zurtzak antzeman dira. <b>%2</b> bilduma-"
+"ekintza erabiliz konpondu dezakezu. Pistak Gordetako jotze-zerrendak fitxan "
+"ere ikus ditzakezu"
 
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 #, kde-format
@@ -5015,10 +5023,9 @@ msgstr "iPod-izena:"
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:36
 #: core-impl/collections/umscollection/UmsConfiguration.ui:111
-#, fuzzy, kde-format
-#| msgid "&Transcode"
+#, kde-format
 msgid "Transcode:"
-msgstr "&Kodetu"
+msgstr "Transkodetu:"
 
 #. i18n: ectx: property (text), widget (QLabel, modelComboLabel)
 #. i18n: ectx: property (text), widget (QLabel, modelLabel)
@@ -5043,10 +5050,9 @@ msgstr "Informazioa"
 
 #. i18n: ectx: property (text), widget (QLabel, generationLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:123
-#, fuzzy, kde-format
-#| msgid "General Options"
+#, kde-format
 msgid "Generation:"
-msgstr "Aukera orokorrak"
+msgstr "Sorrera:"
 
 #. i18n: ectx: property (text), widget (QLabel, videoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
@@ -5064,21 +5070,19 @@ msgstr "Albumeko artelana:"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
 #, kde-format
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Arazoak konpontzea"
 
 #. i18n: ectx: property (text), widget (QLabel, sysInfoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:174
-#, fuzzy, kde-format
-#| msgid "Input file"
+#, kde-format
 msgid "SysInfo file:"
-msgstr "Sarrera-fitxategia"
+msgstr "SysInfo fitxategia:"
 
 #. i18n: ectx: property (text), widget (QLabel, sysInfoExtendedLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:188
-#, fuzzy, kde-format
-#| msgid "Input file"
+#, kde-format
 msgid "SysInfoExtended file:"
-msgstr "Sarrera-fitxategia"
+msgstr "SysInfoExtended fitxategia:"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:48
 #, kde-format
@@ -5089,7 +5093,7 @@ msgstr ""
 #, kde-format
 msgctxt "iPod model that is not (yet) recognized"
 msgid "Unrecognized model"
-msgstr ""
+msgstr "Eredu"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:60
 #, kde-format
@@ -5106,10 +5110,9 @@ msgid "iPod"
 msgstr "iPod"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:214
-#, fuzzy, kde-format
-#| msgid "iPod was not initialized:"
+#, kde-format
 msgid "iPod model was not recognized."
-msgstr "iPod-a ez da hasieratu:"
+msgstr "iPod eredua ez du ezagutu."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:226
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:238
@@ -5135,7 +5138,7 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:262
 #, kde-format
 msgid "Autodetect (%1 file(s) present)"
-msgstr ""
+msgstr "Automatikoki antzeman (%1 fitxategi daude)"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:286
 #, kde-format
@@ -5152,27 +5155,22 @@ msgid "Unknown"
 msgstr "Ezezaguna"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:303
-#, fuzzy, kde-format
-#| msgctxt "@label:textbox Supporing acts for an event"
-#| msgid "Supporting:"
+#, kde-format
 msgctxt "In a dialog: Video: Supported"
 msgid "Supported"
-msgstr "Sustapena:"
+msgstr "Onartzen da"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:304
-#, fuzzy, kde-format
-#| msgctxt "The quality of music"
-#| msgid "Not rated"
+#, kde-format
 msgctxt "In a dialog: Video: Not supported"
 msgid "Not supported"
-msgstr "Baloratu gabe"
+msgstr "Ez da onartzen"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:305
-#, fuzzy, kde-format
-#| msgid "Presets:"
+#, kde-format
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr "Aurrezarpenak:"
+msgstr "Badago"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:306
 #, kde-format
@@ -5181,11 +5179,10 @@ msgid "<b>Not found</b>"
 msgstr "<b>Ez da aurkitu</b>"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:307
-#, fuzzy, kde-format
-#| msgid "Not Mounted"
+#, kde-format
 msgctxt "In a dialog: Some file: Not needed"
 msgid "Not needed"
-msgstr "Muntatu gabe"
+msgstr "Ez da beharrezkoa"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:350
 #, kde-format
@@ -5206,24 +5203,25 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
+"<b>%1</b><br><br>Goiko arazoak Amaroki zure iPod-a erabiltzea eragozten dio. "
+"Beheko <b>%2</b> botoia erabiliz iPod karpeta eta fitxategi kritikoak "
+"berriro sortzen saia zaitezke.<br><br>iPod-a hasieratzeak <b>iPod-aren "
+"pistak eta argazkiak datu-basea suntsitzen du</b>, hala ere ez luke pistarik "
+"ezabatu behar. Pistak zurtz geldituko dira."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
-#, fuzzy, kde-format
-#| msgid "Failed to write scanner batch file \"%1\""
+#, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr "Huts egin du aztertzailearen '%1' batch fitxategia idaztean"
+msgstr "SysInfo idaztea huts egin du: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:439
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 failed to write SysInfo file to iPod, make sure you have write "
-#| "permissions on the iPod"
+#, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
 msgstr ""
-"%1(e)k huts egin du SysInfo fitxategia iPod-en idaztean. Ziurtatu zaitez "
-"nahiko baimen dituzula iPod-ean idazteko."
+"SysInfo fitxategia idaztea huts egin du, jakinarazi gabeko errore baten "
+"ondorioz"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
@@ -8208,7 +8206,7 @@ msgid "Expand All"
 msgstr "Zabaldu denak"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1402
+#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1420
 #, kde-format
 msgid "MusicBrainz Tagger"
 msgstr "MusicBrainz-eko etiketatzailea"
@@ -8233,7 +8231,7 @@ msgstr "Irten gorde gabe"
 
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_cancel)
-#: dialogs/MusicBrainzTagger.ui:68 dialogs/TagDialogBase.ui:1146
+#: dialogs/MusicBrainzTagger.ui:68 dialogs/TagDialogBase.ui:1178
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:36
 #, kde-format
 msgid "&Cancel"
@@ -8616,23 +8614,23 @@ msgstr "Adierazpen erregularra"
 msgid "Character string"
 msgstr "Karaktere-katea"
 
-#: dialogs/TagDialog.cpp:516
+#: dialogs/TagDialog.cpp:517
 #, kde-format
 msgid "Tags"
 msgstr "Etiketak"
 
-#: dialogs/TagDialog.cpp:673 dialogs/TagDialog.cpp:681
+#: dialogs/TagDialog.cpp:674 dialogs/TagDialog.cpp:682
 #, kde-format
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "Ezezaguna"
 
-#: dialogs/TagDialog.cpp:718
+#: dialogs/TagDialog.cpp:719
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "Pistaren informazioa: %1, %2"
 
-#: dialogs/TagDialog.cpp:724
+#: dialogs/TagDialog.cpp:725
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -8640,35 +8638,35 @@ msgid_plural "Information for %1 Tracks"
 msgstr[0] "Pista bat"
 msgstr[1] "%1 pisten informazioa"
 
-#: dialogs/TagDialog.cpp:753 dialogs/TagDialog.cpp:763
+#: dialogs/TagDialog.cpp:754 dialogs/TagDialog.cpp:764
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:755 dialogs/TagDialog.cpp:765
+#: dialogs/TagDialog.cpp:756 dialogs/TagDialog.cpp:766
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:761
+#: dialogs/TagDialog.cpp:762
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b>, <b>%2</b>: <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:771
+#: dialogs/TagDialog.cpp:772
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "Fitxategi 1 editatzen"
 msgstr[1] "%1 fitxategi editatzen"
 
-#: dialogs/TagDialog.cpp:809
+#: dialogs/TagDialog.cpp:810
 #, kde-format
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Bat ere ez"
 
-#: dialogs/TagDialog.cpp:977
+#: dialogs/TagDialog.cpp:995
 #, kde-format
 msgid "The track is not playable. %1"
 msgstr "Pista ezin da jo. %1"
@@ -8763,158 +8761,165 @@ msgstr "Erreproduzitutako aurrenekoa:"
 msgid "Last played:"
 msgstr "Erreproduzitutako azkena:"
 
-#. i18n: ectx: property (text), widget (QLabel, noteLabel)
+#. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
+#, fuzzy, kde-format
+#| msgid "added to collection"
+msgid "Added to collection:"
+msgstr "bildumari gehituta"
+
+#. i18n: ectx: property (text), widget (QLabel, noteLabel)
+#: dialogs/TagDialogBase.ui:499
 #, kde-format
 msgid "Note:"
 msgstr "Oharra:"
 
 #. i18n: ectx: attribute (title), widget (QWidget, tagsTab)
-#: dialogs/TagDialogBase.ui:509
+#: dialogs/TagDialogBase.ui:541
 #, kde-format
 msgid "Ta&gs"
 msgstr "E&tiketak"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: dialogs/TagDialogBase.ui:515
+#: dialogs/TagDialogBase.ui:547
 #, kde-format
 msgid "T&itle:"
 msgstr "&Titulua:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
-#: dialogs/TagDialogBase.ui:541
+#: dialogs/TagDialogBase.ui:573
 #, kde-format
 msgid "&Artist:"
 msgstr "&Artista:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2)
-#: dialogs/TagDialogBase.ui:573
+#: dialogs/TagDialogBase.ui:605
 #, kde-format
 msgid "&Composer:"
 msgstr "&Konpositorea:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel_albumArtist)
-#: dialogs/TagDialogBase.ui:602
+#: dialogs/TagDialogBase.ui:634
 #, kde-format
 msgid "Album artist:"
 msgstr "Albumaren artista:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3)
-#: dialogs/TagDialogBase.ui:625
+#: dialogs/TagDialogBase.ui:657
 #, kde-format
 msgid "Al&bum:"
 msgstr "Al&buma:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_6_6)
-#: dialogs/TagDialogBase.ui:663
+#: dialogs/TagDialogBase.ui:695
 #, kde-format
 msgid "Trac&k number:"
 msgstr "Pista-&zenbakia:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_4)
-#: dialogs/TagDialogBase.ui:701
+#: dialogs/TagDialogBase.ui:733
 #, kde-format
 msgid "&Genre:"
 msgstr "&Generoa:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2_2)
-#: dialogs/TagDialogBase.ui:739
+#: dialogs/TagDialogBase.ui:771
 #, kde-format
 msgid "&Disc number:"
 msgstr "U&Disko-zenbakia:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_5)
-#: dialogs/TagDialogBase.ui:774
+#: dialogs/TagDialogBase.ui:806
 #, kde-format
 msgid "&Year:"
 msgstr "&Urtea:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel_BPM)
-#: dialogs/TagDialogBase.ui:815
+#: dialogs/TagDialogBase.ui:847
 #, kde-format
 msgid "B&eats per minute:"
 msgstr "&Kolpe minutuko (bpm):"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel_comment)
-#: dialogs/TagDialogBase.ui:844
+#: dialogs/TagDialogBase.ui:876
 #, kde-format
 msgid "Co&mment:"
 msgstr "&Iruzkina:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_musicbrainz)
-#: dialogs/TagDialogBase.ui:875
+#: dialogs/TagDialogBase.ui:907
 #, kde-format
 msgid "Get Tags from MusicBrain&z"
 msgstr "Lortu etiketak &MusicBrainz-etik"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
-#: dialogs/TagDialogBase.ui:888
+#: dialogs/TagDialogBase.ui:920
 #, kde-format
 msgid "Guess Tags from &Filename"
 msgstr "Asmatu etiketak &fitxategi-izenetik"
 
 #. i18n: ectx: attribute (title), widget (QWidget, lyricsTab)
-#: dialogs/TagDialogBase.ui:896
+#: dialogs/TagDialogBase.ui:928
 #, kde-format
 msgid "L&yrics"
 msgstr "&Hitzak"
 
 #. i18n: ectx: attribute (title), widget (QWidget, labelsTab)
-#: dialogs/TagDialogBase.ui:913
+#: dialogs/TagDialogBase.ui:945
 #, kde-format
 msgid "La&bels"
 msgstr "&Etiketak"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: dialogs/TagDialogBase.ui:929
+#: dialogs/TagDialogBase.ui:961
 #, kde-format
 msgid "Label:"
 msgstr "Etiketa:"
 
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
-#: dialogs/TagDialogBase.ui:945
+#: dialogs/TagDialogBase.ui:977
 #, kde-format
 msgid "Insert your custom label here or select one from the list."
 msgstr "Txertatu zure etiketa pertsonalizatua hemen, edo hautatu zerrendatik."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: dialogs/TagDialogBase.ui:976
+#: dialogs/TagDialogBase.ui:1008
 #, kde-format
 msgid "Custom labels for this item:"
 msgstr "Elementuaren etiketa pertsonalizatua:"
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
-#: dialogs/TagDialogBase.ui:1021
+#: dialogs/TagDialogBase.ui:1053
 #, kde-format
 msgid "Remove"
 msgstr "Kendu"
 
 #. i18n: ectx: property (text), widget (QLabel, locationLabel)
-#: dialogs/TagDialogBase.ui:1050
+#: dialogs/TagDialogBase.ui:1082
 #, kde-format
 msgid "Location:"
 msgstr "Kokalekua:"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1125 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Previous"
 msgstr "Aurrekoa"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1135 playlist/ProgressiveSearchWidget.cpp:61
 #, kde-format
 msgid "&Next"
 msgstr "&Hurrengoa"
 
 #. i18n: ectx: property (text), widget (QCheckBox, checkBox_perTrack)
-#: dialogs/TagDialogBase.ui:1110
+#: dialogs/TagDialogBase.ui:1142
 #, kde-format
 msgid "Per trac&k"
 msgstr "&Pistako"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_ok)
-#: dialogs/TagDialogBase.ui:1133
+#: dialogs/TagDialogBase.ui:1165
 #, kde-format
 msgid "Sa&ve && Close"
 msgstr "&Gorde eta itxi"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-07-21 00:41+0000\n"
+"POT-Creation-Date: 2025-09-14 00:41+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -2714,7 +2714,7 @@ msgstr[0] "ឆានែល %1"
 msgid "Title"
 msgstr "ចំណង​ជើង"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:515
+#: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:516
 #, kde-format
 msgid "Summary"
 msgstr "សង្ខេប"
@@ -3321,7 +3321,7 @@ msgstr "ឯក​សារ​សរសេរ​មតិ​ព័ត៌មាន
 #, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-"as tags back to the file."
+"as tags back to the audio file."
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
@@ -3714,7 +3714,7 @@ msgstr "បាន​ដំឡើង %1 ដោយ​ជោគជ័យ"
 msgid "Generic"
 msgstr "​ទូទៅ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:517
+#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "Lyrics"
@@ -3886,7 +3886,7 @@ msgstr "បន្ថែម​ទៅ​បញ្ជីខ្មៅ"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedLabelsButton)
 #: context/applets/labels/LabelsApplet.cpp:94
-#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:518
+#: context/applets/labels/LabelsApplet.cpp:187 dialogs/TagDialog.cpp:519
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
@@ -4079,7 +4079,7 @@ msgstr "ដោយ"
 #. i18n: ectx: property (text), widget (QPushButton, addPushButton)
 #. i18n: ectx: property (text), widget (QPushButton, addButton)
 #: context/applets/labels/labelsReplacementSettings.ui:69
-#: dialogs/TagDialogBase.ui:1005
+#: dialogs/TagDialogBase.ui:1037
 #, kde-format
 msgid "Add"
 msgstr "បន្ថែម"
@@ -8110,7 +8110,7 @@ msgid "Expand All"
 msgstr "បន្លាយ​តាម"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1402
+#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1420
 #, kde-format
 msgid "MusicBrainz Tagger"
 msgstr ""
@@ -8136,7 +8136,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_cancel)
-#: dialogs/MusicBrainzTagger.ui:68 dialogs/TagDialogBase.ui:1146
+#: dialogs/MusicBrainzTagger.ui:68 dialogs/TagDialogBase.ui:1178
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:36
 #, kde-format
 msgid "&Cancel"
@@ -8496,57 +8496,57 @@ msgstr "កន្សោម​ធម្មតា"
 msgid "Character string"
 msgstr "ខ្សែអក្សរ​តួអក្សរ"
 
-#: dialogs/TagDialog.cpp:516
+#: dialogs/TagDialog.cpp:517
 #, kde-format
 msgid "Tags"
 msgstr "ស្លាក"
 
-#: dialogs/TagDialog.cpp:673 dialogs/TagDialog.cpp:681
+#: dialogs/TagDialog.cpp:674 dialogs/TagDialog.cpp:682
 #, kde-format
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
 
-#: dialogs/TagDialog.cpp:718
+#: dialogs/TagDialog.cpp:719
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "សេចក្ដី​លម្អិត​បទ ៖ %1 ដោយ %2"
 
-#: dialogs/TagDialog.cpp:724
+#: dialogs/TagDialog.cpp:725
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
 msgstr[0] "ព័ត៌មាន​សម្រាប់​បទ %1"
 
-#: dialogs/TagDialog.cpp:753 dialogs/TagDialog.cpp:763
+#: dialogs/TagDialog.cpp:754 dialogs/TagDialog.cpp:764
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:755 dialogs/TagDialog.cpp:765
+#: dialogs/TagDialog.cpp:756 dialogs/TagDialog.cpp:766
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:761
+#: dialogs/TagDialog.cpp:762
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b> នៅ <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:771
+#: dialogs/TagDialog.cpp:772
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "កែសម្រួល​ឯកសារ %1"
 
-#: dialogs/TagDialog.cpp:809
+#: dialogs/TagDialog.cpp:810
 #, kde-format
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "គ្មាន"
 
-#: dialogs/TagDialog.cpp:977
+#: dialogs/TagDialog.cpp:995
 #, kde-format
 msgid "The track is not playable. %1"
 msgstr ""
@@ -8645,38 +8645,44 @@ msgstr "ចាក់​ដំបូង ៖"
 msgid "Last played:"
 msgstr "បាន​ចាក់​ចុងក្រោយ"
 
-#. i18n: ectx: property (text), widget (QLabel, noteLabel)
+#. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
+#, fuzzy, kde-format
+msgid "Added to collection:"
+msgstr "ផ្លាស់ទី​ទៅ​សម្រាំង"
+
+#. i18n: ectx: property (text), widget (QLabel, noteLabel)
+#: dialogs/TagDialogBase.ui:499
 #, fuzzy, kde-format
 msgid "Note:"
 msgstr "គ្មាន"
 
 #. i18n: ectx: attribute (title), widget (QWidget, tagsTab)
-#: dialogs/TagDialogBase.ui:509
+#: dialogs/TagDialogBase.ui:541
 #, kde-format
 msgid "Ta&gs"
 msgstr "ស្លាក"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: dialogs/TagDialogBase.ui:515
+#: dialogs/TagDialogBase.ui:547
 #, kde-format
 msgid "T&itle:"
 msgstr "ចំណងជើង ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
-#: dialogs/TagDialogBase.ui:541
+#: dialogs/TagDialogBase.ui:573
 #, kde-format
 msgid "&Artist:"
 msgstr "សិល្បករ ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2)
-#: dialogs/TagDialogBase.ui:573
+#: dialogs/TagDialogBase.ui:605
 #, kde-format
 msgid "&Composer:"
 msgstr "អ្នក​និពន្ធ​បទភ្លេង ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel_albumArtist)
-#: dialogs/TagDialogBase.ui:602
+#: dialogs/TagDialogBase.ui:634
 #, fuzzy, kde-format
 #| msgctxt "'Album artist' playlist column name and token for playlist layouts"
 #| msgid "Album artist"
@@ -8684,126 +8690,126 @@ msgid "Album artist:"
 msgstr "សិល្បករ​អាល់ប៊ុម"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3)
-#: dialogs/TagDialogBase.ui:625
+#: dialogs/TagDialogBase.ui:657
 #, kde-format
 msgid "Al&bum:"
 msgstr "អាល់ប៊ុម ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_6_6)
-#: dialogs/TagDialogBase.ui:663
+#: dialogs/TagDialogBase.ui:695
 #, fuzzy, kde-format
 #| msgid "Track Number"
 msgid "Trac&k number:"
 msgstr "លេខ​បទ"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_4)
-#: dialogs/TagDialogBase.ui:701
+#: dialogs/TagDialogBase.ui:733
 #, kde-format
 msgid "&Genre:"
 msgstr "ចង្វាក់ ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2_2)
-#: dialogs/TagDialogBase.ui:739
+#: dialogs/TagDialogBase.ui:771
 #, fuzzy, kde-format
 #| msgid "&Disc Number:"
 msgid "&Disc number:"
 msgstr "លេខ​ថាស ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_5)
-#: dialogs/TagDialogBase.ui:774
+#: dialogs/TagDialogBase.ui:806
 #, kde-format
 msgid "&Year:"
 msgstr "ឆ្នាំ ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel_BPM)
-#: dialogs/TagDialogBase.ui:815
+#: dialogs/TagDialogBase.ui:847
 #, fuzzy, kde-format
 msgid "B&eats per minute:"
 msgstr "លោត​មួយ​នាទី​ ៖"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel_comment)
-#: dialogs/TagDialogBase.ui:844
+#: dialogs/TagDialogBase.ui:876
 #, kde-format
 msgid "Co&mment:"
 msgstr "សេចក្តី​អធិប្បាយ ៖"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_musicbrainz)
-#: dialogs/TagDialogBase.ui:875
+#: dialogs/TagDialogBase.ui:907
 #, fuzzy, kde-format
 #| msgid "Guess Tags From &Filename"
 msgid "Get Tags from MusicBrain&z"
 msgstr "ស្មាន​ស្លាក​ពី​ឈ្មោះ​ឯកសារ"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
-#: dialogs/TagDialogBase.ui:888
+#: dialogs/TagDialogBase.ui:920
 #, fuzzy, kde-format
 #| msgid "Guess Tags From &Filename"
 msgid "Guess Tags from &Filename"
 msgstr "ស្មាន​ស្លាក​ពី​ឈ្មោះ​ឯកសារ"
 
 #. i18n: ectx: attribute (title), widget (QWidget, lyricsTab)
-#: dialogs/TagDialogBase.ui:896
+#: dialogs/TagDialogBase.ui:928
 #, kde-format
 msgid "L&yrics"
 msgstr "អត្ថបទ​ចម្រៀង"
 
 #. i18n: ectx: attribute (title), widget (QWidget, labelsTab)
-#: dialogs/TagDialogBase.ui:913
+#: dialogs/TagDialogBase.ui:945
 #, kde-format
 msgid "La&bels"
 msgstr "ស្លាក"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: dialogs/TagDialogBase.ui:929
+#: dialogs/TagDialogBase.ui:961
 #, kde-format
 msgid "Label:"
 msgstr "ស្លាក ៖"
 
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
-#: dialogs/TagDialogBase.ui:945
+#: dialogs/TagDialogBase.ui:977
 #, fuzzy, kde-format
 msgid "Insert your custom label here or select one from the list."
 msgstr "បញ្ចូល​ស្លាក​ផ្ទាល់​ខ្លួន​របស់​អ្នក​នៅ​ទី​​នេះ ឬជ្រើសមួយ​ពីបញ្ជីចាក់​ ។"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: dialogs/TagDialogBase.ui:976
+#: dialogs/TagDialogBase.ui:1008
 #, fuzzy, kde-format
 msgid "Custom labels for this item:"
 msgstr "ស្លាក​ផ្ទាល់​ខ្លួន​សម្រាប់​ធាតុនេះ​ ៖ "
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
-#: dialogs/TagDialogBase.ui:1021
+#: dialogs/TagDialogBase.ui:1053
 #, kde-format
 msgid "Remove"
 msgstr "យក​ចេញ"
 
 #. i18n: ectx: property (text), widget (QLabel, locationLabel)
-#: dialogs/TagDialogBase.ui:1050
+#: dialogs/TagDialogBase.ui:1082
 #, kde-format
 msgid "Location:"
 msgstr "ទីតាំង ៖"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: dialogs/TagDialogBase.ui:1093 playlist/ProgressiveSearchWidget.cpp:64
+#: dialogs/TagDialogBase.ui:1125 playlist/ProgressiveSearchWidget.cpp:64
 #, kde-format
 msgid "&Previous"
 msgstr "មុន"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: dialogs/TagDialogBase.ui:1103 playlist/ProgressiveSearchWidget.cpp:61
+#: dialogs/TagDialogBase.ui:1135 playlist/ProgressiveSearchWidget.cpp:61
 #, kde-format
 msgid "&Next"
 msgstr "បន្ទាប់"
 
 #. i18n: ectx: property (text), widget (QCheckBox, checkBox_perTrack)
-#: dialogs/TagDialogBase.ui:1110
+#: dialogs/TagDialogBase.ui:1142
 #, fuzzy, kde-format
 #| msgid "Per Trac&k"
 msgid "Per trac&k"
 msgstr "ក្នុង​មួយ​បទ"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_ok)
-#: dialogs/TagDialogBase.ui:1133
+#: dialogs/TagDialogBase.ui:1165
 #, kde-format
 msgid "Sa&ve && Close"
 msgstr "រក្សាទុក ហើយ​បិទ"
