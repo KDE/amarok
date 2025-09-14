@@ -70,7 +70,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             entryCnt++;
             continue;
         }
-        if( tmp == section_playlist )
+        if( tmp.toLower() == section_playlist )
         {
             havePlaylistSection = true;
             continue;
@@ -112,7 +112,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             /* The playlist begins with the "[playlist]" tag.
             * Skip everything before this.
             */
-            if( (*i) == section_playlist )
+            if( (*i).toLower() == section_playlist )
                 inPlaylistSection = true;
             continue;
         }
