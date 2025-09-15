@@ -21,7 +21,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-14 00:41+0000\n"
-"PO-Revision-Date: 2025-08-24 10:20-0300\n"
+"PO-Revision-Date: 2025-09-14 08:36-0300\n"
 "Last-Translator: Marcus Gama <marcus.gama@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
@@ -29,7 +29,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.08.0\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1063,7 +1063,7 @@ msgstr ""
 #: amarokconfig.kcfg:371 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
-msgstr "Não mostrar quando um aplicativo estiver em tela inteira"
+msgstr "Não mostrar quando um aplicativo estiver em tela cheia"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
@@ -1074,7 +1074,7 @@ msgid ""
 "running in fullscreen mode."
 msgstr ""
 "Não mostrar a mensagem na tela (OSD) se outro aplicativo estiver em primeiro "
-"plano e executando em tela inteira."
+"plano e executando em tela cheia."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:380
@@ -3387,16 +3387,14 @@ msgstr "Gravar os metadados em um arquivo"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
-"Gravar as estatísticas alteradas (p.ex., avaliação ou nº de reproduções)\n"
-"no arquivo."
+"Gravar as estatísticas alteradas (ex., avaliação, último tocado, nº de "
+"reproduções)\n"
+"como tags de volta no arquivo de áudio."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -8778,10 +8776,9 @@ msgstr "Última reprodução:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "adicionado à coleção"
+msgstr "Adicionado à coleção:"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
@@ -10902,7 +10899,7 @@ msgstr "Alternar a janela principal"
 #: MainWindow.cpp:930
 #, kde-format
 msgid "Toggle Full Screen"
-msgstr "Alternar para tela inteira"
+msgstr "Alternar para tela cheia"
 
 #: MainWindow.cpp:935 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format

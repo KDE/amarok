@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-14 00:41+0000\n"
-"PO-Revision-Date: 2025-09-14 01:08+0200\n"
+"PO-Revision-Date: 2025-09-14 10:14+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -3375,19 +3375,17 @@ msgstr ""
 msgid "Write metadata to file"
 msgstr "Idatzi meta-datuak fitxategian"
 
+# 2025-09-14 ig hemendik abiatu koherentzia lantzeko.
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
-"Idatzi erreprodukzioaren aldaketak estatistikak (adib. puntuazioa,\n"
-"azken erreproduzitutakoa, erreprodukzioaren zenbaketa) etiketa gisa\n"
-"fitxategian."
+"Idatzi joaldia aldatzeko estatistikak (adib. puntuazioa, azken joaldia, "
+"joaldi kopurua)\n"
+"atzera audio fitxategietan etiketa gisa."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -5119,12 +5117,16 @@ msgstr "iPod eredua ez du ezagutu."
 #, kde-format
 msgid "%1 family uses %2 file to generate correct database checksum."
 msgstr ""
+"%1 familiak %2 fitxategia erabiltzen du datu-basearen egiaztapen-batura "
+"zuzena sortzeko."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:228
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:240
 #, kde-format
 msgid "%1 family needs %2 file to generate correct database checksum."
 msgstr ""
+"%1 familiak %2 fitxategia behar du datu-basearen egiaztapen-batura zuzena "
+"sortzeko."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:248
 #, kde-format
@@ -5134,6 +5136,10 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
+"%1 familiak ziurrenik hash-AB erabiltzen du datu-basearen egiaztapen-batura "
+"zuzena sortzeko. libgpod-ek (0.8.2 bertsiotik aurrera) ez daki hura nola "
+"kalkulatu, baina hori egiteko kanpoko libhashab.so liburua dinamikoki "
+"zamatzen saiatzen da."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:262
 #, kde-format
@@ -5226,7 +5232,7 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr ""
+msgstr "Jakinarazi gabeko errore baten ondorioz ezin du iPod hasieratu."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
@@ -5663,11 +5669,10 @@ msgid "Unknown"
 msgstr "Ezezaguna"
 
 #: core-impl/meta/multi/MultiTrack.h:59
-#, fuzzy, kde-format
-#| msgid "Retrieved lyrics is empty"
+#, kde-format
 msgctxt "Reason why a track is not playable"
 msgid "Underlying playlist is empty"
-msgstr "Eskuratutako hitzak hutsik daude"
+msgstr "Azpiko jotze-zerrenda hutsik dago"
 
 #: core-impl/meta/proxy/MetaProxy.cpp:157
 #, kde-format
@@ -5698,11 +5703,10 @@ msgid "Downloading remote playlist"
 msgstr "Urruneko zerrenda deskargatzen"
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:96
-#, fuzzy, kde-format
-#| msgid "Cannot read playlist (%1)."
+#, kde-format
 msgctxt "%1 is file path"
 msgid "Cannot read playlist from %1"
-msgstr "Ezin da zerrenda irakurri (%1)."
+msgstr "Ezin du %1(e)ko jotze-zerrenda irakurri"
 
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:122
 #, kde-format
@@ -7307,24 +7311,22 @@ msgid "%1, %2"
 msgstr "%1, %2"
 
 #: core/transcoding/TranscodingConfiguration.cpp:211
-#, fuzzy, kde-format
-#| msgid "Tracks"
+#, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "All Tracks to %1"
-msgstr "Pistak"
+msgstr "Pista guztiak %1(e)ra"
 
 #: core/transcoding/TranscodingConfiguration.cpp:215
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to MTP"
+#, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "Non-%1 Tracks to %1"
-msgstr "Fitxategiak multimedia gailura transferitzen"
+msgstr "%1 ez diren pistak %1(e)ra"
 
 #: core/transcoding/TranscodingConfiguration.cpp:219
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "When Needed to %1"
-msgstr ""
+msgstr "Behar denean %1(e)era"
 
 #: covermanager/CoverFetcher.cpp:178 covermanager/CoverFetcher.cpp:341
 #, kde-format
@@ -8166,10 +8168,9 @@ msgid "Hz"
 msgstr "Hz"
 
 #: dialogs/MusicBrainzTagger.cpp:90
-#, fuzzy, kde-format
-#| msgid "Click here to choose best matches"
+#, kde-format
 msgid "Choose Best Matches"
-msgstr "Egin klik hemen bat datorren onena aukeratzeko"
+msgstr "Hautatu bat etortze onenak"
 
 #: dialogs/MusicBrainzTagger.cpp:91
 #, kde-format
@@ -8763,10 +8764,9 @@ msgstr "Erreproduzitutako azkena:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "bildumari gehituta"
+msgstr "Bildumara gehitu da:"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
@@ -10932,7 +10932,7 @@ msgstr "Ilaratu pista"
 #: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr ""
+msgstr "Ipini uneko pistaren Artista - Titulua arbelean"
 
 #: MainWindow.cpp:984
 #, kde-format
@@ -11042,11 +11042,9 @@ msgid "MusicBrainz match ratio: %1%"
 msgstr "MusicBrainz bat etortzearen ehunekoa: % %1"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
-#, fuzzy, kde-format
-#| msgctxt "AlbumPlay bias representation"
-#| msgid "The next track from the album"
+#, kde-format
 msgid "Choose Best Matches from This Album"
-msgstr "Albumeko hurrengo pista"
+msgstr "Hautatu album honetako bat etortze onenak"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:91
 #, kde-format
@@ -11635,6 +11633,8 @@ msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
+"<a href='%1'>Modu dinamikoa</a> gaituta. <a href='%2'>Birpopulatu</a> | <a "
+"href='%3'>Itzali</a>"
 
 #: playlist/PlaylistDock.cpp:177
 #, kde-format
@@ -13958,7 +13958,7 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
-msgstr ""
+msgstr "Iragarri pista-etiketak zuzentzeko iradokizunak"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:158
@@ -14100,7 +14100,7 @@ msgstr "Last.fm webgunea irekitzen"
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Bukatu kontuaren konexioa"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -15628,12 +15628,11 @@ msgid "Tracks that have been excluded from synchronization due to ambiguity"
 msgstr "Anbiguotasunagatik sinkronizaziotik baztertu diren pistak"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
-#, fuzzy, kde-format
-#| msgid "<b>%1</b>"
+#, kde-format
 msgid "<b>One</b> play"
 msgid_plural "<b>%1</b> plays"
-msgstr[0] "<b>%1</b>"
-msgstr[1] "<b>%1</b>"
+msgstr[0] "Joaldi <b>bat</b>"
+msgstr[1] "<b>%1</b> joaldi"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:318
 #, kde-format
@@ -15706,10 +15705,9 @@ msgstr "Baztertutako pistak"
 
 #. i18n: ectx: property (title), widget (QGroupBox, scrobblingGroupBox)
 #: statsyncing/ui/MatchedTracksPage.ui:267
-#, fuzzy, kde-format
-#| msgid "Single"
+#, kde-format
 msgid "Scrobbling"
-msgstr "Bakuna"
+msgstr ""
 
 #: statusbar/CompoundProgressBar.cpp:65 statusbar/CompoundProgressBar.cpp:194
 #: statusbar/ProgressBar.cpp:48
