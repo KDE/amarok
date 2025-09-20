@@ -29,7 +29,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-14 00:41+0000\n"
-"PO-Revision-Date: 2025-07-12 17:23+0200\n"
+"PO-Revision-Date: 2025-09-15 08:39+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -39,7 +39,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Accelerator-Marker: &\n"
 "X-Environment: kde\n"
-"X-Generator: Lokalize 25.04.3\n"
+"X-Generator: Lokalize 25.08.1\n"
 "X-Text-Markup: kde4\n"
 
 #, kde-format
@@ -3425,17 +3425,14 @@ msgstr "Écrire les méta-données dans le fichier"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
-"Écrire dans le fichier les statistiques de lecture (p. ex. note, dernière "
-"écoute, compteur)\n"
-"en tant que balises."
+"Écrire dans le fichier les statistiques de lecture (Par exemple, note, "
+"dernière écoute, compteur)\n"
+"en tant qu'étiquettes dans le fichier audio."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -8855,10 +8852,9 @@ msgstr "Dernière écoute :"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "ajouté à la collection"
+msgstr "Ajouté à la collection :"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
