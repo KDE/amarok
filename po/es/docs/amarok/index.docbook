@@ -145,7 +145,7 @@
 >Guía de inicio rápido</title
 > 
 <para
->Felicitaciones por instalar &amarok;, el programa de descubrimiento de música más avanzado disponible. &amarok; le ayudará a explorar su música y disfrutarla como nunca antes. Usted también puede navegar a través de diferentes fuentes de música, emisoras de radio y audio-libros en línea. En esta guía, le mostraremos como dejar que &amarok; encuentre su colección, la reproduzca para usted y también como usar &amarok; para encontrar cosas en línea. Supondremos que usted no sabe nada de &amarok; pero sabe cómo utilizar menús, el ratón y el teclado. </para>
+>Felicitaciones por instalar &amarok;, el programa de descubrimiento de música más avanzado disponible. &amarok; le ayudará a explorar su música y disfrutarla como nunca antes. También puede navegar a través de diferentes fuentes de música, emisoras de radio y audio-libros en línea. En esta guía, le mostraremos cómo dejar que &amarok; encuentre su colección, la reproduzca y también cómo usar &amarok; para encontrar cosas en línea. Supondremos que no sabe nada de &amarok; pero sabe cómo utilizar menús, el ratón y el teclado. </para>
 <orderedlist>
 <listitem
 ><para
@@ -225,7 +225,7 @@
 <listitem
 ><para
 ><link linkend="streams-and-podcasts"
->Flujos y podcasts</link
+>Flujos y pódcast</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -351,7 +351,7 @@
 >Inicio de Amarok</title
 > 
 <para
->Si usted ya sabe cómo manejarse con el sistema operativo, usted probablemente sabrá como iniciar &amarok; y puede <link linkend="first-time"
+>Si ya sabe cómo manejarse con el sistema operativo, probablemente sabrá cómo iniciar &amarok; y puede <link linkend="first-time"
 >continuar</link
 >. En otro caso, continúe leyendo. </para>
 <sect3 id="from-plasma"
@@ -359,7 +359,7 @@
 >Desde Plasma</title
 > 
 <para
->Si usted está ejecutando el <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
+>Si está ejecutando el <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
 >Área de trabajo Plasma</ulink
 >, puede iniciar &amarok; mediante: </para>
 <itemizedlist>
@@ -402,7 +402,7 @@
 >Primera vez</title
 > 
 <para
->La primera vez que usted use &amarok; un cuadro de diálogo le preguntará su configuración regional: </para>
+>La primera vez que use &amarok; un cuadro de diálogo le preguntará su configuración regional: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -438,7 +438,7 @@
 </screenshot>
 </para>
 <para
->Si usted elige <guilabel
+>Si elige <guilabel
 >No</guilabel
 > en este diálogo, se le presentará otro que le permite seleccionar su carpeta de música: </para>
 <para>
@@ -461,14 +461,14 @@
 >Configurar una colección</link
 > </para>
 <para
->Una vez que usted haya seleccionado la carpeta en la que está su música, &amarok; explorará la carpeta y sus subcarpetas, creando la colección. Esto puede tardar algún tiempo, en función del número de pistas y la velocidad de la ubicación. </para>
+>Una vez que haya seleccionado la carpeta en la que está su música, &amarok; explorará la carpeta y sus subcarpetas, creando la colección. Esto puede tardar algún tiempo, en función del número de pistas y la velocidad de la ubicación. </para>
 </sect2>
 <sect2 id="closing-amarok"
 ><title
 >Cierre de Amarok</title
 > 
 <para
->Si usted quiere cerrar &amarok;: </para>
+>Si quiere cerrar &amarok;: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -507,7 +507,7 @@
 </screenshot>
 </para>
 <para
->Si usted cierra la ventana de &amarok; pulsando <guilabel
+>Si cierra la ventana de &amarok; pulsando <guilabel
 >Cerrar</guilabel
 > en el borde de la ventana, &amarok; continuará en ejecución como trabajo de fondo y solo muestra el icono del lobo azul en la <guilabel
 >Bandeja del sistema</guilabel
@@ -528,7 +528,7 @@
 </screenshot>
 </para>
 <para
->Si usted sale de su sesión o apaga el equipo sin salir de &amarok;, no se guardarán algunas de sus preferencias. </para>
+>Si sale de su sesión o apaga el equipo sin salir de &amarok;, no se guardarán algunas de sus preferencias. </para>
 </sect2>
 </sect1>
 <sect1 id="the-amarok-window"
@@ -600,7 +600,7 @@
 <orderedlist>
 <listitem
 ><para
->Crea una lista de reproducción, seleccionando algunas pistas de su colección que usted encontrará listadas en el panel <guilabel
+>Crea una lista de reproducción, seleccionando algunas pistas de su colección que encontrará listadas en el panel <guilabel
 >Orígenes de medios</guilabel
 > y envía su música al panel <guilabel
 >Lista de reproducción</guilabel
@@ -614,7 +614,7 @@
 ></listitem>
 </orderedlist>
 <para
->Además, usted puede querer transferir parte de su música a reproductores de música portátiles, como un iPod. La siguiente sección le ayudará con estas tareas. </para>
+>Además, puede querer transferir parte de su música a reproductores de música portátiles, como un iPod. La siguiente sección le ayudará con estas tareas. </para>
 </sect2>
 </sect1>
 <sect1 id="the-music-collection"
@@ -628,14 +628,14 @@
 <para
 >El <guilabel
 >Panel de medios</guilabel
-> es el lugar donde usted navega y visualiza su colección de música completa. Esto incluye las pistas en su disco duro local tanto como aquellas en dispositivos externos o medios conectados a su equipo, tales como CD de audio, dispositivos USB, reproductores de medios, discos de red o fuentes de Internet. </para>
+> es el lugar donde navega y visualiza su colección de música completa. Esto incluye las pistas en su disco duro local tanto como aquellas en dispositivos externos o medios conectados a su equipo, tales como CD de audio, dispositivos USB, reproductores de medios, discos de red o fuentes de Internet. </para>
 </sect2>
 <sect2 id="setting-up-a-collection"
 ><title
 >Configuración de una colección</title
 > 
 <para
->¿Tiene usted pistas de música en formato <emphasis
+>¿Tiene pistas de música en formato <emphasis
 >mp3</emphasis
 >, <emphasis
 >Ogg</emphasis
@@ -705,9 +705,9 @@
 <para
 >Por debajo de la barra de búsqueda cerca de la parte superior del panel de <guilabel
 >Orígenes de medios</guilabel
-> usted verá los diferentes dispositivos o categorías de contenido dentro del <guilabel
+> verá los diferentes dispositivos o categorías de contenido dentro del <guilabel
 >Navegador de contenido</guilabel
->. Si usted inserta un CD; de audio en la unidad de CD; aparecerá el panel de <guilabel
+>. Si inserta un CD; de audio en la unidad de CD; aparecerá el panel de <guilabel
 >Orígenes de medios</guilabel
 >, junto con los reproductores de medios, miniaturas de las unidades y otros dispositivos USB. Después de que se haya montado un dispositivo externo, se mostrará automáticamente con el panel de <guilabel
 >Orígenes de medios</guilabel
@@ -737,13 +737,13 @@
 >Extraer un CD en la colección</title
 > 
 <para
->Su usted no tiene archivos de música en su equipo, es fácil <emphasis
+>Su no tiene archivos de música en su equipo, es fácil <emphasis
 >extraerlos</emphasis
 > (copiar pistas de su CD a su colección). Solo introduzca un CD y pulse con el botón derecho en la imagen del dispositivo de CD en el <guilabel
 >Navegador de contenidos</guilabel
 >, para reproducir o copiar su colección que extraerá y <emphasis
 >etiquetará</emphasis
-> sus pistas (vea la imagen de más abajo). Si usted copia música desde un CD de audio a su <guilabel
+> sus pistas (vea la imagen de más abajo). Si copia música desde un CD de audio a su <guilabel
 >colección local</guilabel
 >, la <emphasis
 >barra de mensajes</emphasis
@@ -755,7 +755,7 @@
 >&Ctrl;<keycap
 >Q</keycap
 ></keycombo
-> y reiniciarlo a continuación. Ahora usted debería verlo en su colección. La captura de pantalla de abajo muestra como usted puede mover pistas desde su CD de audio, iPod u otro dispositivo a su colección, usando el menú de contexto que se abre con el botón derecho. </para>
+> y reiniciarlo a continuación. Ahora debería verlo en su colección. La captura de pantalla de abajo muestra como puede mover pistas desde su CD de audio, iPod u otro dispositivo a su colección, usando el menú de contexto que se abre con el botón derecho. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -772,9 +772,9 @@
 </screenshot>
 </para>
 <para
->En el menú de contexto superior, usted también puede ver la posibilidad de <guilabel
+>En el menú de contexto superior, también puede ver la posibilidad de <guilabel
 >Editar detalles de la pista</guilabel
->. Use esta opción si usted tiene una pista que necesita editar una etiqueta. Esto se hace importante cuando usted extrae música a formato .WAV, perdiendo alguna de las etiquetas. Si una parte importante de su colección necesita etiquetado, considere aplicaciones específicas para etiquetado, como </para>
+>. Use esta opción si tiene una pista que necesita editar una etiqueta. Esto se hace importante cuando extrae música a formato .WAV, perdiendo alguna de las etiquetas. Si una parte importante de su colección necesita etiquetado, considere aplicaciones específicas para etiquetado, como </para>
 <itemizedlist>
 <listitem
 ><para
@@ -805,13 +805,13 @@
 >Acceder a otros orígenes de medios</title
 > 
 <para
->Usted puede haberse sorprendido porque el <guilabel
+>Puede haberse sorprendido porque el <guilabel
 >Panel de medios</guilabel
-> no se llama «Panel de colección». &amarok; le proporciona acceso a mucha más música que la de su colección -- Tiendas de Internet, audio libros, podcasts, archivos de música almacenados fuera de su colección y listas de reproducción almacenadas previamente. La <emphasis
+> no se llama «Panel de colección». &amarok; le proporciona acceso a mucha más música que la de su colección -- Tiendas de Internet, audio libros, pódcast, archivos de música almacenados fuera de su colección y listas de reproducción almacenadas previamente. La <emphasis
 >ruta de navegación</emphasis
 > de &amarok; es la clave de todo esto. El icono inicial de la ruta de navegación es icono de carpeta personal en el extremo superior izquierdo del <guilabel
 >Panel de medios</guilabel
->. Este icono se expande y contrae mientras usted navega por el <guilabel
+>. Este icono se expande y contrae mientras navega por el <guilabel
 >Panel de orígenes de medios </guilabel
 >, permitiéndole navegar fácilmente por su colección pulsando su carpeta deseada en la barra de ruta. </para>
 <para>
@@ -830,7 +830,7 @@
 </screenshot>
 </para>
 <para
->Si usted pulsa la carpeta inicial de &amarok; usted verá el panel de <guilabel
+>Si pulsa la carpeta inicial de &amarok; verá el panel de <guilabel
 >Orígenes de medios</guilabel
 > en la parte inferior izquierda, que contiene iconos para los recursos disponibles. Si pulsa en el icono <guilabel
 >Archivos</guilabel
@@ -1062,12 +1062,12 @@
     <entry>
     <para
 ><guilabel
->Podcasts</guilabel
+>Pódcast</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Acceso a Podcasts vía fuentes RSS</para
+>Acceso a pódcast vía fuentes RSS</para
 ></entry>
   </row>
   </tbody>
@@ -1079,26 +1079,26 @@
 >música local</guilabel
 > en la raíz de <guilabel
 >Orígenes de medios</guilabel
-> (imagen superior) o en la barra de ruta le devuelve a su colección, mostrándole una lista de todos los recursos disponibles, artistas álbumes y pistas que ha definido previamente como parte de su colección. La barra de ruta indica que usted está viendo su <guilabel
+> (imagen superior) o en la barra de ruta le devuelve a su colección, mostrándole una lista de todos los recursos disponibles, artistas álbumes y pistas que ha definido previamente como parte de su colección. La barra de ruta indica que está viendo su <guilabel
 >música local</guilabel
 >. </para>
 </sect2>
 <sect2 id="streams-and-podcasts"
 ><title
->Flujos y Podcasts</title
+>Flujos y pódcast</title
 > 
 <para
 >Hay dos formas de escuchar flujos de audio. </para>
 <itemizedlist>
 <listitem
 ><para
->Si usted dispone de una emisora favorita, obtenga el URL del flujo y añádala: <menuchoice
+>Si dispone de una emisora favorita, obtenga la URL del flujo y añádala: <menuchoice
 ><guimenu
 >Lista de reproducción</guimenu
 ><guimenuitem
 >Añadir flujo</guimenuitem
 ></menuchoice
->. Si guarda su lista de reproducción, usted puede encontrarla de nuevo más tarde en <guilabel
+>. Si guarda su lista de reproducción, puede encontrarla de nuevo más tarde en <guilabel
 >Listas de reproducción</guilabel
 >, como una <emphasis
 > Lista de reproducción guardada</emphasis
@@ -1130,9 +1130,9 @@
 ></listitem>
 </itemizedlist>
 <para
->Los podcasts disponen de su propia sección en el <guilabel
+>Los pódcast disponen de su propia sección en el <guilabel
 >Panel de medios</guilabel
->, más arriba. Si usted tiene el URL de una fuente RSS o Atom, pulse el <inlinemediaobject
+>, más arriba. Si tiene la URL de una fuente RSS o Atom, pulse el <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -1146,8 +1146,8 @@
 >Actualizar canal</guilabel
 > o marque un episodio como <guilabel
 >Nuevo</guilabel
->. Si usted está interesado en navegar a través de una gran colección de podcasts, marque <guilabel
->Directorio de podcast</guilabel
+>. Si está interesado en navegar a través de una gran colección de pódcast, marque <guilabel
+>Directorio de pódcast</guilabel
 > disponible mediante el <guilabel
 >Gestor de guiones</guilabel
 > mencionado anteriormente. </para>
@@ -1200,7 +1200,7 @@
 >Mike Oldfield - Canciones de la Tierra Lejana</emphasis
 > se ha expandido, mostrando las pistas individuales. Por otro lado, los álbumes y pistas en la <guilabel
 >Colección local</guilabel
-> están escondidos. Pulsando estas flechas usted también puede expandir u ocultar la información. </para>
+> están escondidos. Pulsando estas flechas también puede expandir u ocultar la información. </para>
 </sect3>
 <sect3 id="changing-the-order-of-tracks-and-albums"
 ><title
@@ -1260,9 +1260,9 @@
 >Barra de búsqueda</guilabel
 > de la parte superior de la sección <guilabel
 >Música local</guilabel
->. Usted no solo puede buscar por artista, álbum o nombre de pista, sino cualquier otro componente. Usted podría crear una bonita lista de reproducción buscando <replaceable
+>. No solo puede buscar por artista, álbum o nombre de pista, sino cualquier otro componente. Podría crear una bonita lista de reproducción buscando <replaceable
 >invierno </replaceable
->, por ejemplo, o simplemente buscar una pista de la que solo recuerde una palabra del título. Usted también puede buscar por puntuación, contador de reproducciones, incluso tipo de archivo. Consulte <link linkend="search-in-collection"
+>, por ejemplo, o simplemente buscar una pista de la que solo recuerde una palabra del título. También puede buscar por puntuación, contador de reproducciones, incluso tipo de archivo. Consulte <link linkend="search-in-collection"
 >Búsqueda en colección</link
 > para más detalles. </para>
 </sect3>
@@ -1271,7 +1271,7 @@
 >Borrado de elementos de la colección</title
 > 
 <para
->Usted puede borrar cualquier elemento de su colección pulsando con el botón derecho y eligiendo la opción <guilabel
+>Puede borrar cualquier elemento de su colección pulsando con el botón derecho y eligiendo la opción <guilabel
 >Mover pistas a la papelera</guilabel
 >. Aparecerá un diálogo de confirmación, evitando el borrado accidental de cualquier pista. Se puede seleccionar más de un elemento mediante <keycombo
 >&Ctrl;<keycap
@@ -1290,11 +1290,11 @@
 >El panel de listas de reproducción</title
 > 
 <para
->Ahora que &amarok; ha explorado su colección de música, usted querrá escucharla. Por lo tanto, use el panel <guilabel
+>Ahora que &amarok; ha explorado su colección de música, querrá escucharla. Por lo tanto, use el panel <guilabel
 >Lista de reproducción</guilabel
-> para crear una lista de reproducción que contenga la selección de pistas que usted quiera. Esto es donde usted reproduce su música, emisiones o podcasts. </para>
+> para crear una lista de reproducción que contenga la selección de pistas que quiera. Esto es donde reproduce su música, emisiones o pódcast. </para>
 <para
->Usted puede ordenar su lista de reproducción por título, álbum, artista, género y otros muchos. Por ejemplo usted puede ordenar sus pistas primero por año, después por artistas y así en adelante. </para>
+>Puede ordenar su lista de reproducción por título, álbum, artista, género y otros muchos. Por ejemplo, puede ordenar sus pistas primero por año, después por artistas y así sucesivamente. </para>
 <para
 >La casilla de búsqueda le permite buscar o filtrar sus pistas. Los iconos <inlinemediaobject
 > <imageobject
@@ -1350,7 +1350,7 @@
 <orderedlist>
 <listitem
 ><para
->Elija algo de su música en el navegador de contexto y arrástrela a la derecha. Si usted la arrastra encima del panel de <guilabel
+>Elija algo de su música en el navegador de contexto y arrástrela a la derecha. Si la arrastra encima del panel de <guilabel
 >Contexto </guilabel
 > verá el <emphasis
 >Gotero emergente</emphasis
@@ -1361,13 +1361,13 @@
 >, <guilabel
 >Remplazar lista de reproducción</guilabel
 > y <guilabel
->Más...</guilabel
+>Más…</guilabel
 >. La opción resaltada en un área gris (<guilabel
 >Añadir a lista de reproducción</guilabel
 > en esta imagen) es la activa. Soltando el álbum allí lo añade a la lista de reproducción en la <guilabel
 >lista de reproducción</guilabel
 >. Elija alguna de las otras opciones para hacer algo más con su selección. Arrastrándola sobre <guilabel
->Más...</guilabel
+>Más…</guilabel
 > proporciona un nuevo menú de opciones en <emphasis
 >PUD</emphasis
 >.</para
@@ -1394,7 +1394,7 @@
 ><para
 ><keycap
 >Haga clic derecho</keycap
-> en el álbum o pista. Es su menú de clic derecho, usted encontrará opciones similares. La imagen inferior muestra el menú de contexto que aparece después de que un elemento se haya pulsado con el botón derecho. Seleccione <guilabel
+> en el álbum o pista. Es su menú de clic derecho, encontrará opciones similares. La imagen inferior muestra el menú de contexto que aparece después de que un elemento se haya pulsado con el botón derecho. Seleccione <guilabel
 >Añadir a lista de reproducción</guilabel
 >.</para
 ></listitem>
@@ -1430,11 +1430,11 @@
 <para
 >Una vez que una pista o emisión comienza a reproducirse, el <emphasis
 >título Artista / Álbum / Pista</emphasis
-> se alterna lentamente en negrita en el centro. A la derecha está la pista siguiente, que puede pulsar para reproducirla inmediatamente. Una vez que la pista se ha reproducido, pasará a la izquierda, usted puede pulsar el título para volver a ella. La barra de progreso en el medio de la <guilabel
+> se alterna lentamente en negrita en el centro. A la derecha está la pista siguiente, que puede pulsar para reproducirla inmediatamente. Una vez que la pista se ha reproducido, pasará a la izquierda, puede pulsar el título para volver a ella. La barra de progreso en el medio de la <guilabel
 >Barra de herramientas</guilabel
 > indica el tiempo transcurrido (a mano izquierda) y el tiempo restante (a mano derecha) para la pista que se está reproduciendo. </para>
 <para
->Si usted prefiere ver una barra de herramientas más tradicional, puede seleccionar <guilabel
+>Si prefiere ver una barra de herramientas más tradicional, puede seleccionar <guilabel
 >Barra de herramientas fina</guilabel
 > desde el menú <guilabel
 >Ver</guilabel
@@ -1460,13 +1460,13 @@
 >Manipulación de listas de reproducción</title
 > 
 <para
->Usted puede querer borrar álbumes o pistas de su lista de reproducción, reorganizar los elementos mostrados para cada pista o reorganizar el orden de las pistas. </para>
+>Puede querer borrar álbumes o pistas de su lista de reproducción, reorganizar los elementos mostrados para cada pista o reorganizar el orden de las pistas. </para>
 <sect3 id="removing-a-track"
 ><title
 >Eliminar una pista</title
 > 
 <para
->Usted puede eliminar cualquier pista o álbum de su lista de reproducción mediante: </para>
+>Puede eliminar cualquier pista o álbum de su lista de reproducción mediante: </para>
 <orderedlist>
 <listitem
 ><para
@@ -1594,7 +1594,7 @@
     </entry>
     <entry>
     <para
->Guarde su lista de reproducción. Si usted no cambia el nombre, toma la fecha como nombre por omisión.</para>
+>Guarde su lista de reproducción. Si no cambia el nombre, toma la fecha como nombre por omisión.</para>
     </entry>
   </row>
   <row>
@@ -1793,7 +1793,7 @@
 <para
 >El poder de &amarok; es el panel de <emphasis
 >Contexto</emphasis
-> (en el centro de la ventana de &amarok;) donde usted puede instalar varias <emphasis
+> (en el centro de la ventana de &amarok;) donde puede instalar varias <emphasis
 >Miniaplicaciones</emphasis
 > para ayudarle a disfrutar y explorar su música. Mucha de esta información adicional se obtiene de Internet, por lo que una conexión es importante para obtener la mayoría de su panel de <emphasis
 >Contexto</emphasis
@@ -1841,7 +1841,7 @@
 <para
 >En la parte inferior del panel de <emphasis
 >Contexto</emphasis
->, hay cuatro botones para las miniaplicaciones predeterminadas. A la derecha de estos tres botones, usted puede ver <inlinemediaobject
+>, hay cuatro botones para las miniaplicaciones predeterminadas. A la derecha de estos tres botones, puede ver <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -1849,7 +1849,7 @@
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> que le permite eliminar estas miniaplicaciones. Pulse las miniaplicaciones para añadirlos al panel. Arrastre los botones etiquetados para reordenar las miniaplicaciones que usted tiene y pulse <inlinemediaobject
+> que le permite eliminar estas miniaplicaciones. Pulse las miniaplicaciones para añadirlos al panel. Arrastre los botones etiquetados para reordenar las miniaplicaciones que tiene y pulse <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -1886,7 +1886,7 @@
 >Parte de la música se está saltando rápidamente</title
 > 
 <para
->Usted no tiene instalados los <emphasis
+>No tiene instalados los <emphasis
 >códecs</emphasis
 > necesarios. Más información sobre eso aquí: </para>
 <para
@@ -1894,7 +1894,7 @@
 >FAQ: Que tipos de medios no reconoce Amarok</link
 >. </para>
 <para
->Por favor, remítase a su distribución. </para>
+>Remítase a su distribución. </para>
 </sect2>
 <sect2 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"
 ><title
@@ -1931,7 +1931,7 @@
 <orderedlist>
 <listitem
 ><para
->Las letras no están disponibles en los sitios comprobados en Internet. Usted puede querer añadir más sitios mediante el menú de guiones.</para
+>Las letras no están disponibles en los sitios comprobados en Internet. Puede querer añadir más sitios mediante el menú de guiones.</para
 ></listitem>
 <listitem
 ><para
@@ -1966,7 +1966,7 @@
 >Migas</title
 > 
 <para
->Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del panel de orígenes de medios. Comenzando en el nivel de carpeta personal, muestra la profundidad en la que se ha navegado en el sistema de archivos. Cuando usted ha ido a un lugar concreto en el sistema de archivos, usted verá todas las carpetas de un nivel superior. En &amarok; los enlaces <guilabel
+>Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del panel de orígenes de medios. Comenzando en el nivel de carpeta personal, muestra la profundidad en la que se ha navegado en el sistema de archivos. Cuando ha ido a un lugar concreto en el sistema de archivos, verá todas las carpetas de un nivel superior. En &amarok; los enlaces <guilabel
 >&gt;</guilabel
 > entre niveles de carpetas le permiten encontrar que carpetas alternativas están disponibles en un determinado nivel. Las migajas son un mecanismo eficiente para navegar por todo el sistema de archivos de su equipo. </para>
 </sect2>
@@ -1986,14 +1986,14 @@
 >Orígenes de medios</emphasis
 > de su sección <quote
 >Música local</quote
-> y le muestra la música que usted tiene disponible en sus colecciones. El navegador de colecciones le permite buscar y ordenar sus pistas por diversas etiquetas id3. </para>
+> y le muestra la música que tiene disponible en sus colecciones. El navegador de colecciones le permite buscar y ordenar sus pistas por diversas etiquetas id3. </para>
 </sect2>
 <sect2 id="playlist"
 ><title
 >Lista de reproducción</title
 > 
 <para
->Una selección de pistas de su colección que usted desea reproducir. Algunos reproductores de música portátiles disponen de listas de reproducción predefinidas que parecen diferir de las de &amarok;. </para>
+>Una selección de pistas de su colección que desea reproducir. Algunos reproductores de música portátiles disponen de listas de reproducción predefinidas que parecen diferir de las de &amarok;. </para>
 </sect2>
 <sect2 id="script"
 ><title
@@ -2015,7 +2015,7 @@
 >Emparejar</title
 > 
 <para
->Promocionar una pista quiere decir que mientras usted la escucha, el título de la pista y el artista se envían a un sitio web como <emphasis
+>Promocionar una pista quiere decir que mientras la escucha, el título de la pista y el artista se envían a un sitio web como <emphasis
 >Last.fm</emphasis
 > donde la información se añade a su perfil. </para>
 </sect2>
@@ -2041,7 +2041,7 @@
 >Etiquetas</title
 > 
 <para
->La información sobre cada una de las pistas que escucha, &eg; nombre del álbum, título de la pista, compositor, artista, año, &etc;. Existe un estándar denominado ID3 para incluir esta información en CD de audio. Usted puede editar las etiquetas de las pistas individuales dentro de &amarok; si los permisos de los archivos son correctos. </para>
+>La información sobre cada una de las pistas que escucha, &eg; nombre del álbum, título de la pista, compositor, artista, año, &etc;. Existe un estándar denominado ID3 para incluir esta información en CD de audio. Puede editar las etiquetas de las pistas individuales dentro de &amarok; si los permisos de los archivos son correctos. </para>
 </sect2>
 </sect1>
 </chapter>
@@ -2050,7 +2050,7 @@
 >La ventana de Amarok</title
 > 
 <para
->Cuando usted abra &amarok;, esto es lo que verá, una vez que &amarok; se haya cargado completamente: </para>
+>Cuando abra &amarok;, esto es lo que verá, una vez que &amarok; se haya cargado completamente: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -2236,7 +2236,7 @@
 <para
 >La <emphasis
 >Barra de herramientas</emphasis
-> se usa para gestionar la canción que se está reproduciendo. Usted puede cambiar entre la barra principal y la fina usando el menú <guilabel
+> se usa para gestionar la canción que se está reproduciendo. Puede cambiar entre la barra principal y la fina usando el menú <guilabel
 >Ver</guilabel
 > en la <emphasis
 >Barra de menú</emphasis
@@ -2246,13 +2246,13 @@
 ></keycombo
 > para ocultar o volver a mostrar. </para>
 <para
->La barra de herramientas puede desempotrarse y moverse a cualquier lugar de su pantalla e incluso usarse si mostrar el resto de la ventana de &amarok;. Para desempotrar la barra de herramientas, usted primero debería asegurarse que la opción de menú <menuchoice
+>La barra de herramientas puede desempotrarse y moverse a cualquier lugar de su pantalla e incluso usarse si mostrar el resto de la ventana de &amarok;. Para desempotrar la barra de herramientas, primero debería asegurarse que la opción de menú <menuchoice
 > <guimenu
 >Ver</guimenu
 ><guimenuitem
 >Bloquear diseño</guimenuitem
 ></menuchoice
-> no está seleccionada. Ahora usted puede capturar la barra de herramientas por su esquina izquierda y arrastrarla a cualquier sitio. Para recuperarla solo arrástrela a su posición anterior mientras el diseño esté todavía desbloqueado. </para>
+> no está seleccionada. Ahora puede capturar la barra de herramientas por su esquina izquierda y arrastrarla a cualquier sitio. Para recuperarla solo arrástrela a su posición anterior mientras el diseño esté todavía desbloqueado. </para>
 </sect2>
 <sect2 id="main-toolbar"
 ><title
@@ -2288,7 +2288,7 @@
 <para
 >Una <emphasis
 >Barra de progreso</emphasis
-> con el tiempo ya reproducido a la izquierda y el tiempo restante a la derecha muestra la posición actual de la canción. Si usted tiene las <emphasis
+> con el tiempo ya reproducido a la izquierda y el tiempo restante a la derecha muestra la posición actual de la canción. Si tiene las <emphasis
 >Barras de humor</emphasis
 > activadas y archivos .mood para sus pistas, esto es lo que mostrarán. Más información sobre <link linkend="the-moodbar"
 >la barra de humor</link
@@ -2302,7 +2302,7 @@
 > <imageobject
 > <imagedata fileref="Icon-flag-green.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> al lado del texto, usted puede añadir la canción actual a sus pistas preferidas en <ulink url="http://www.last.fm/"
+> al lado del texto, puede añadir la canción actual a sus pistas preferidas en <ulink url="http://www.last.fm/"
 >last.fm</ulink
 > o añadir un marcador de posición. </para>
 <para
@@ -2352,13 +2352,13 @@
 <para
 >El panel <emphasis
 >Orígenes de medios</emphasis
-> a la izquierda por omisión es dónde usted accede a su colección local, así como a otros servicios: <emphasis
+> a la izquierda por omisión es dónde accede a su colección local, así como a otros servicios: <emphasis
 >Música local</emphasis
 > arriba, que es la interfaz primaria para su colección local y medios conectados como reproductores de mp3 y CD. </para>
 <para
 >Ahí está una sección de todos los <emphasis
 >Servicios de Internet</emphasis
-> que usted tiene activados. Aquí usted puede navegar por listas de emisoras de radio y podcasts; escucharlas o suscribirse a ellas, interactuar con su cuenta <ulink url="http://www.last.fm"
+> que tiene activados. Aquí puede navegar por listas de emisoras de radio y pódcast; escucharlas o suscribirse a ellas, interactuar con su cuenta <ulink url="http://www.last.fm"
 >last.fm</ulink
 >, adquirir música desde tiendas en línea tales como nuestra nueva tienda de mp3 Amazon, <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
@@ -2379,8 +2379,8 @@
 >La sección <emphasis
 >Archivos</emphasis
 > muestra un navegador de archivos integrado y la sección <emphasis
->Podcasts</emphasis
-> le ofrece acceso a suscripciones de podcast. </para>
+>Pódcast</emphasis
+> le ofrece acceso a suscripciones de pódcast. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -2736,7 +2736,7 @@
 ><guimenu
 >Preferencias</guimenu
 ><guisubmenu
->Configurar Amarok...</guisubmenu
+>Configurar Amarok…</guisubmenu
 ><guimenuitem
 >Complementos</guimenuitem
 ></menuchoice
@@ -2843,12 +2843,12 @@
     <entry>
     <para
 ><guilabel
->Directorio de podcast</guilabel
+>Directorio de pódcast</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Muestra una gran lista de podcasts. Si usted elige suscribirse, se actualizará automáticamente el menú de podcast.</para
+>Muestra una gran lista de pódcast. Si elige suscribirse, se actualizará automáticamente el menú de pódcast.</para
 ></entry>
   </row>
   </tbody>
@@ -2984,7 +2984,7 @@
 </screenshot>
 </para>
 <para
->Si usted prefiere buscar o filtrar algo en vez de navegar, emplee el <emphasis
+>Si prefiere buscar o filtrar algo en vez de navegar, emplee el <emphasis
 >campo de filtro</emphasis
 > para encontrar el contenido deseado. Teclee solo parte del nombre del archivo y se mostrará cómo en este ejemplo. </para>
 <para>
@@ -3005,10 +3005,10 @@
 </sect2>
 <sect2 id="podcasts"
 ><title
->Podcasts</title
+>Pódcast</title
 > 
 <para
->Lista sus podcasts suscritos; desde aquí usted puede escuchar, organizar, añadir, importar o suscribirse a podcasts. </para>
+>Lista sus pódcast suscritos; desde aquí puede escuchar, organizar, añadir, importar o suscribirse a pódcast. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -3040,12 +3040,12 @@
     <entry>
     <para
 ><guilabel
->Añadir podcast</guilabel
+>Añadir pódcast</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Añadir el URL de un podcast: <emphasis
+>Añadir la URL de un pódcast: <emphasis
 >RSS 1.0/2.0</emphasis
 > o <emphasis
 >Fuente Atom</emphasis
@@ -3063,7 +3063,7 @@
     </entry>
     <entry>
     <para
->Añade una carpeta al menú de navegación del podcast.</para>
+>Añade una carpeta al menú de navegación del pódcast.</para>
     </entry>
   </row>
   <row>
@@ -3075,7 +3075,7 @@
     </entry>
     <entry>
     <para
->Selecciona que categoría de podcasts quiere usted ver.</para>
+>Selecciona que categoría de pódcast quiere ver.</para>
     </entry>
   </row>
   <row>
@@ -3087,7 +3087,7 @@
     </entry>
     <entry>
     <para
->Muestra el podcast en una vista mezclada o no mezclada.</para>
+>Muestra el pódcast en una vista mezclada o no mezclada.</para>
     </entry>
   </row>
   <row>
@@ -3101,7 +3101,7 @@
     </entry>
     <entry>
     <para
->Comprueba todos los podcasts para actualizaciones y las descarga si están disponibles.</para>
+>Comprueba todos los pódcast para actualizaciones y las descarga si están disponibles.</para>
     </entry>
   </row>
   <row>
@@ -3131,7 +3131,7 @@
 <para
 >El panel <emphasis
 >Contexto</emphasis
-> es un panel dónde usted puede añadir varias miniaplicaciones que proporcionan información y medio de la música actual. Se necesita una conexión a Internet para el uso más útil de estas pequeñas aplicaciones, que entregan letras, información, fotos e incluso pestañas de guitarra o bajo, dependiendo de que miniaplicaciones elija mostrar. </para>
+> es un panel dónde puede añadir varias miniaplicaciones que proporcionan información y medio de la música actual. Se necesita una conexión a Internet para el uso más útil de estas pequeñas aplicaciones, que entregan letras, información, fotos e incluso pestañas de guitarra o bajo, dependiendo de que miniaplicaciones elija mostrar. </para>
 <sect2 id="using-the-context-pane"
 ><title
 >Uso del panel de contexto</title
@@ -3168,11 +3168,11 @@
 <itemizedlist>
 <listitem
 ><para
->El propio panel de miniaplicaciones, dónde usted puede interactuar con algunas de las miniaplicaciones, cómo editar letras o modificar preferencias.</para
+>El propio panel de miniaplicaciones, dónde puede interactuar con algunas de las miniaplicaciones, cómo editar letras o modificar preferencias.</para
 ></listitem>
 <listitem
 ><para
->La parte inferior del panel, dónde usted puede expandir y contraer miniaplicaciones y manipularlas de varias maneras, una vez que pulse el icono <emphasis
+>La parte inferior del panel, dónde puede expandir y contraer miniaplicaciones y manipularlas de varias maneras, una vez que pulse el icono <emphasis
 >Configurar miniaplicaciones</emphasis
 > <inlinemediaobject
 > <imageobject
@@ -3211,7 +3211,7 @@
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> que usted puede pulsar para eliminar y aparece una lista de miniaplicaciones. Para añadir una nueva miniaplicación, simplemente pulse sobre la miniaplicación y aparecerá en el panel, lista para usarse. Para modificar el orden de visualización de las miniaplicaciones, pulse las pestañas y arrástrelas alrededor de la barra. </para>
+> que puede pulsar para eliminar y aparece una lista de miniaplicaciones. Para añadir una nueva miniaplicación, simplemente pulse sobre la miniaplicación y aparecerá en el panel, lista para usarse. Para modificar el orden de visualización de las miniaplicaciones, pulse las pestañas y arrástrelas alrededor de la barra. </para>
 </sect3>
 </sect2>
 <sect2 id="applets"
@@ -3272,7 +3272,7 @@
     </entry>
     <entry>
     <para
->Información sobre la pista actual. Usted puede puntuarla pulsando sobre las estrellas, añadir un marcador de posición o editar los metadatos. Cuando no se está reproduciendo, la miniaplicación muestra información sobre la colección y las <emphasis
+>Información sobre la pista actual. Puede puntuarla pulsando sobre las estrellas, añadir un marcador de posición o editar los metadatos. Cuando no se está reproduciendo, la miniaplicación muestra información sobre la colección y las <emphasis
 >Pistas reproducidas recientemente</emphasis
 >, lo que le permite ver las pistas y añadirlas a la lista de reproducción.</para>
     </entry>
@@ -3334,7 +3334,7 @@
     </entry>
     <entry>
     <para
->Muestra eventos futuros que involucran al artista o grupo actual. Usted puede establecer un lugar de encuentro para mostrar introduciendo las preferencias de la miniaplicación y estrechándolas bajo la sección favoritos.</para>
+>Muestra eventos futuros que involucran al artista o grupo actual. Puede establecer un lugar de encuentro para mostrar introduciendo las preferencias de la miniaplicación y estrechándolas bajo la sección favoritos.</para>
     </entry>
   </row>
   <row>
@@ -3505,7 +3505,7 @@
     <para
 >Esta miniaplicación busca imágenes en <emphasis
 >Flickr.com</emphasis
-> de la banda que usted está escuchando. Abra la configuración para añadir más palabras clave a su consulta (p. ej.: vive en Tokio).&gt;</para>
+> de la banda que está escuchando. Abra la configuración para añadir más palabras clave a su consulta (p. ej.: vive en Tokio).&gt;</para>
     </entry>
   </row>
   <row>
@@ -3579,7 +3579,7 @@
 >El panel de listas de reproducción</title
 > 
 <para
->&amarok; ofrece una excelente gestión de listas de reproducción para sus canciones y otros archivos de audio. Aquí usted puede ver una breve lista de reproducción, ordenada por álbum. </para>
+>&amarok; ofrece una excelente gestión de listas de reproducción para sus canciones y otros archivos de audio. Aquí puede ver una breve lista de reproducción, ordenada por álbum. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -3631,9 +3631,9 @@
 >Gotero emergente</emphasis
 > o <emphasis
 >PUD</emphasis
->) cuando realice una operación de arrastrar y soltar para añadir música a su lista de reproducción actual. Usted puede usar, bien <guilabel
+>) cuando realice una operación de arrastrar y soltar para añadir música a su lista de reproducción actual. Puede usar, bien <guilabel
 >Añadir a la lista de reproducción</guilabel
->, que añadirá las canciones que usted ha seleccionado o, <guilabel
+>, que añadirá las canciones que ha seleccionado o, <guilabel
 >Remplazar lista de reproducción</guilabel
 >, que remplazará todo el contenido de la lista de reproducción con su selección. </para>
 <para
@@ -3641,7 +3641,7 @@
 >Lista de reproducción</emphasis
 > también funciona. </para>
 <para
->Al pulsar con el botón derecho sobre una pista, álbum o grupo seleccionado, surgirá un menú desplegable desde el que usted puede <guilabel
+>Al pulsar con el botón derecho sobre una pista, álbum o grupo seleccionado, surgirá un menú desplegable desde el que puede <guilabel
 >Añadir a la lista de reproducción</guilabel
 > o <guilabel
 >Remplazar lista de reproducción</guilabel
@@ -3655,7 +3655,7 @@
 <para
 >Al hacer clic con el botón medio sobre un elemento, lo añadirá a la lista de reproducción y comenzará a reproducir desde el inicio de la lista de reproducción. </para>
 <para
->Si usted le dice al navegador de archivos que abra un archivo multimedia reconocido, &amarok; añadirá el archivo seleccionado a la lista de reproducción actual. Algunos archivos multimedia contienen ellos mismos archivos de listas de reproducción, asociados por nombre (p. ej. <emphasis
+>Si le dice al navegador de archivos que abra un archivo multimedia reconocido, &amarok; añadirá el archivo seleccionado a la lista de reproducción actual. Algunos archivos multimedia contienen ellos mismos archivos de listas de reproducción, asociados por nombre (p. ej. <emphasis
 >wav</emphasis
 > con <emphasis
 >cue</emphasis
@@ -3803,7 +3803,7 @@
 <para
 >&amarok; ofrece poderosas capacidades de búsqueda para listas de reproducción. Sencillamente, introduzca su consulta para una canción en el área de texto etiquetada <guilabel
 >Buscar lista de reproducción</guilabel
-> y hará coincidir sus palabras clave contra el criterio de coincidencia que usted especifique en el menú de opciones &mdash; o instancia, usted puede elegir buscar solo <guilabel
+> y hará coincidir sus palabras clave contra el criterio de coincidencia que especifique en el menú de opciones &mdash; o instancia, puede elegir buscar solo <guilabel
 >Álbumes</guilabel
 > y no <guilabel
 >Artistas</guilabel
@@ -3911,7 +3911,7 @@
 <para
 >Al pulsar el pequeño triángulo a la derecha del nivel de ordenación, causará que los elementos en la lista de reproducción cambien entre el orden ascendente y descendente, lo que se indica por la dirección en la que el triángulo apunta &mdash; arriba o abajo, respectivamente. </para>
 <para
->Para quitar un nivel de ordenación, pulse el nombre del nivel de ordenación que precede al que usted quiere quitar. Se pueden eliminar varios niveles de ordenación a la vez &mdash; suponiendo que son inferiores en la jerarquía &mdash; pulsando sobre el antepasado de todos ellos. Si usted desea borrar todos los niveles de ordenación, usted puede pulsar el icono de la lista de reproducción a la izquierda de la primera flecha que apunte a la derecha. </para>
+>Para quitar un nivel de ordenación, pulse el nombre del nivel de ordenación que precede al que quiere quitar. Se pueden eliminar varios niveles de ordenación a la vez &mdash; suponiendo que son inferiores en la jerarquía &mdash; pulsando sobre el antepasado de todos ellos. Si desea borrar todos los niveles de ordenación, puede pulsar el icono de la lista de reproducción a la izquierda de la primera flecha que apunte a la derecha. </para>
 </sect3>
 <sect3 id="bookmarking"
 ><title
@@ -4220,7 +4220,7 @@
 >Progreso de la pista</guilabel
 > le permite modificar el orden en el que &amarok; avanza por las pistas de su lista de reproducción. </para>
 <para
->La mitad superior del menú especifica las opciones de repetición &mdash; si las canciones deben repetirse por pista, por álbum o por lista de reproducción; mientras que la mitad inferior especifica el orden en el que la pista se reproduce &mdash; aleatorio o por preferencia. Solo se puede seleccionar un tipo de avance, &eg; usted no puede seleccionar a la vez pista aleatoria y repetir lista de reproducción. </para>
+>La mitad superior del menú especifica las opciones de repetición &mdash; si las canciones deben repetirse por pista, por álbum o por lista de reproducción; mientras que la mitad inferior especifica el orden en el que la pista se reproduce &mdash; aleatorio o por preferencia. Solo se puede seleccionar un tipo de avance, &eg; no puede seleccionar a la vez pista aleatoria y repetir lista de reproducción. </para>
 <sect4 id="favor"
 ><title
 >Favorecer</title
@@ -4266,7 +4266,7 @@
 ><guimenu
 >Preferencias</guimenu
 ><guimenuitem
->Configurar Amarok...</guimenuitem
+>Configurar Amarok…</guimenuitem
 ></menuchoice
 > y consulte el siguiente diálogo: </para>
 <para>
@@ -4295,7 +4295,7 @@
 <para
 >En la captura de pantalla superior, vea alguna de las <emphasis
 >Opciones generales</emphasis
-> que usted puede establecer. Dependiendo de su distribución, las preferencias predeterminadas pueden variar. Cuando se sobrevuelan las opciones con el puntero del ratón, se mostrará un consejo emergente para explicar las preferencias individuales. </para>
+> que puede establecer. Dependiendo de su distribución, las preferencias predeterminadas pueden variar. Cuando se sobrevuelan las opciones con el puntero del ratón, se mostrará un consejo emergente para explicar las preferencias individuales. </para>
 <para
 >Opciones generales: </para>
 <para>
@@ -4369,7 +4369,7 @@
     <para
 >La <emphasis
 >Barra de humor</emphasis
-> hace posible navegar por la música visualmente. Por favor, tenga en cuenta que esta característica necesita de la <link linkend="the-moodbar"
+> hace posible navegar por la música visualmente. Tenga en cuenta que esta característica necesita de la <link linkend="the-moodbar"
 >Herramienta externa de generación de la barra de humor</link
 > o de un guion.</para>
     </entry>
@@ -4391,7 +4391,7 @@
 </informaltable>
 </para>
 <para
->Cuando usted activa la <emphasis
+>Cuando activa la <emphasis
 >Barra de humor</emphasis
 >, tenga en cuenta los siguientes requisitos: la barra de humor solo se mostrará si sus pistas han sido etiquetadas con humores. Para más información sobre la barra de humor, refiérase a: <link linkend="the-moodbar"
 >Barra de humor</link
@@ -4423,7 +4423,7 @@
 <para
 >Este diálogo muestra su sistema de archivos en una estructura de árbol, denominada <emphasis
 >Carpetas de colección</emphasis
->. Al seleccionar una carpeta siempre incluye sus subcarpetas. Estas carpetas se exploran por archivos multimedia para crear su colección. Usted puede pulsar con el botón derecho en una carpeta para volver a explorarla individualmente si se seleccionó anteriormente. </para>
+>. Al seleccionar una carpeta siempre incluye sus subcarpetas. Estas carpetas se exploran por archivos multimedia para crear su colección. Puede pulsar con el botón derecho en una carpeta para volver a explorarla individualmente si se seleccionó anteriormente. </para>
 <para
 >Opciones de la colección: </para>
 <para>
@@ -4533,7 +4533,7 @@
 <para
 ><emphasis
 >No</emphasis
-> importa estadísticas desde una base de datos &amarok; 2.x, por lo que si usted quiere mezclar una versión de base de datos 2.x, necesitará hacerlo a mano. </para>
+> importa estadísticas desde una base de datos &amarok; 2.x, por lo que si quiere mezclar una versión de base de datos 2.x, necesitará hacerlo a mano. </para>
 </sect2>
 </sect1>
 <sect1 id="metadata"
@@ -4587,7 +4587,7 @@
     <entry>
     <para
 ><guilabel
->Grabar carátulas a archivo, tamaño máximo...</guilabel
+>Grabar carátulas a archivo, tamaño máximo…</guilabel
 ></para>
     </entry>
     <entry>
@@ -4618,7 +4618,7 @@
 <para
 >Este diálogo le permitirá <link linkend="statistics-synchronization"
 >mantener sincronizadas las estadísticas de su colección</link
->. Asegúrese de marcar solo las colecciones entre las cuales usted quiere sincronizar metadatos. </para>
+>. Asegúrese de marcar solo las colecciones entre las cuales quiere sincronizar metadatos. </para>
 <para
 >Opciones de sincronización de estadísticas: </para>
 <para>
@@ -4827,7 +4827,7 @@
 >OS X</guilabel
 >. </para>
 <para
->Es resultado de todo esto es, para usted el usuario, que puede elegir la infraestructura multimedia que funcione mejor para usted. Esto está, generalmente preconfigurado en su distribución. </para>
+>Es resultado de todo esto es, para el usuario, que puede elegir la infraestructura multimedia que funcione mejor. Esto está, generalmente preconfigurado en su distribución. </para>
 <para
 >Los problemas de reproducción en &amarok;, no son, generalmente, asuntos de &amarok; sino de &phonon;, ya que &amarok; ya no maneja el sonido directamente. </para>
 <sect3 id="device-preference-tab"
@@ -4850,13 +4850,13 @@
 </screenshot>
 </para>
 <para
->En función de su SO y distribución, usted puede necesitar usar <guilabel
+>En función de su SO y distribución, puede necesitar usar <guilabel
 >ALSA</guilabel
 >, <guilabel
 >OSS</guilabel
 >, <guilabel
 >PulseAudio</guilabel
->, o algo más como su dispositivo de reproducción predeterminado. Encuentre uno que funcione para usted con el botón <guilabel
+>, o algo más como su dispositivo de reproducción predeterminado. Encuentre uno que funcione con el botón <guilabel
 >Prueba</guilabel
 > y aplíquelo a todos los tipos de salida. Si le gustan distintos tipos de salida con diferentes dispositivos, esto es posible también. </para>
 </sect3>
@@ -4880,7 +4880,7 @@
 </screenshot>
 </para>
 <para
->Usted podría querer cambiar la configuración estándar del altavoz; aquí es el sitio para hacerlo. </para>
+>Podría querer cambiar la configuración estándar del altavoz; aquí es el sitio para hacerlo. </para>
 </sect3>
 <sect3 id="backend-tab"
 ><title
@@ -4902,7 +4902,7 @@
 </screenshot>
 </para>
 <para
->En función de su sistema operativo, usted puede ver aquí opciones cómo <emphasis
+>En función de su sistema operativo, puede ver aquí opciones cómo <emphasis
 >Gstreamer</emphasis
 >, <emphasis
 >VLC</emphasis
@@ -4914,7 +4914,7 @@
 >Gstreamer</emphasis
 >. </para>
 <para
->Si usted no ve <emphasis
+>Si no ve <emphasis
 >VLC</emphasis
 > o <emphasis
 >Gstreamer</emphasis
@@ -4924,7 +4924,7 @@
 >phonon-backend-vlc</guilabel
 >. </para>
 <para
->Cada motor viene con sus propios códecs, por lo que dependiendo del motor que elija, usted no necesitará descargar también los códecs, ya que muchas distribuciones no los proporcionan por motivos legales. </para>
+>Cada motor viene con sus propios códecs, por lo que dependiendo del motor que elija, no necesitará descargar también los códecs, ya que muchas distribuciones no los proporcionan por motivos legales. </para>
 </sect3>
 </sect2>
 </sect1>
@@ -4976,7 +4976,7 @@
 >Visualización en pantalla</emphasis
 >. La <emphasis
 >OSD</emphasis
-> muestra brevemente datos de la pista cuando se reproduce una pista nueva. Una vez marcada, la OSD será visible en su pantalla y usted puede arrastrarla a la ubicación que prefiera.</para>
+> muestra brevemente datos de la pista cuando se reproduce una pista nueva. Una vez marcada, la OSD será visible en su pantalla y puede arrastrarla a la ubicación que prefiera.</para>
     </entry>
   </row>
   <row>
@@ -5000,7 +5000,7 @@
     </entry>
     <entry>
     <para
->Le permite elegir la pantalla que debería mostrar la OSD si usted tiene una configuración de pantallas múltiples. El valor por omisión es 0.</para>
+>Le permite elegir la pantalla que debería mostrar la OSD si tiene una configuración de pantallas múltiples. El valor por omisión es 0.</para>
     </entry>
   </row>
   <row>
@@ -5110,13 +5110,13 @@
 <para
 >La base de datos predeterminada está ya establecida para usar <guilabel
 >MySQL</guilabel
-> empotrado. Para la mayoría de usuarios no hay necesidad de configurar una base de datos externa, ya que no afecta al rendimiento. Si usted quiere compartir su base de datos o usarla remotamente, puede configurar una base de datos externa <guilabel
+> empotrado. Para la mayoría de usuarios no hay necesidad de configurar una base de datos externa, ya que no afecta al rendimiento. Si quiere compartir su base de datos o usarla remotamente, puede configurar una base de datos externa <guilabel
 >MySQL</guilabel
 >. </para>
 <para
->&amarok; espera que la base de datos externa y la cuenta de usuario ya existan. El usuario también necesita acceso completo a la base de datos. Usted DEBE reiniciar &amarok; después de cambiar estas preferencias. </para>
+>&amarok; espera que la base de datos externa y la cuenta de usuario ya existan. El usuario también necesita acceso completo a la base de datos. DEBE reiniciar &amarok; después de cambiar estas preferencias. </para>
 <para
->Si su base de datos no está ya configurada, usted puede usar las órdenes SQL en el campo de abajo para hacerlo, después de remplazar la contraseña por la correcta. </para>
+>Si su base de datos no está ya configurada, puede usar las órdenes SQL en el campo de abajo para hacerlo, después de remplazar la contraseña por la correcta. </para>
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -5208,7 +5208,7 @@
 </informaltable>
 </para>
 <para
->Usted puede encontrar más información sobre la base de datos externa <link linkend="external-database"
+>Puede encontrar más información sobre la base de datos externa <link linkend="external-database"
 >aquí</link
 >. </para>
 </sect1>
@@ -5389,7 +5389,7 @@
     </entry>
     <entry>
     <para
->Servicio de podcast. Consulte también <ulink url="http://www.gpodder.net"
+>Servicio de pódcast. Consulte también <ulink url="http://www.gpodder.net"
 >gpodder.net</ulink
 ></para>
     </entry>
@@ -5492,12 +5492,12 @@
     <entry>
     <para
 ><guilabel
->Directorio de podcast</guilabel
+>Directorio de pódcast</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Navegar y suscribirse a la enorme lista de podcast</para>
+>Navegar y suscribirse a la enorme lista de pódcast</para>
     </entry>
     <entry>
     <para
@@ -5575,13 +5575,13 @@
 >Configuración de Ampache</title
 > 
 <para
->Si usted tiene acceso a un servidor de música remoto <guilabel
+>Si tiene acceso a un servidor de música remoto <guilabel
 >Ampache</guilabel
 >, pulse <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> e introduzca la información necesaria. Usted puede configurar el acceso a más de un servidor <guilabel
+> e introduzca la información necesaria. Puede configurar el acceso a más de un servidor <guilabel
 >Ampache</guilabel
 >. Para más información consulte la sección <link linkend="ampache"
 >Ampache</link
@@ -5598,7 +5598,7 @@
 > </inlinemediaobject
 >. &amarok; le permite almacenar la contraseña en el seguro <guilabel
 >KDE Wallet</guilabel
->. Si usted rechaza usar <guilabel
+>. Si rechaza usar <guilabel
 >Kwallet</guilabel
 >, su contraseña se almacenará en texto sin claro en su lugar. </para>
 </sect2>
@@ -5611,11 +5611,11 @@
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> para añadir sus credenciales de socio si usted es un socio o añada su dirección de correo para volver a descargar la música que haya descargado previamente desde Magnatune. </para>
+> para añadir sus credenciales de socio si es socio o añada su dirección de correo para volver a descargar la música que haya descargado previamente desde Magnatune. </para>
 <para
->Para descargar, usted tiene que ir al panel de <emphasis
+>Para descargar, tiene que ir al panel de <emphasis
 >Orígenes de medios</emphasis
->, seleccionar la sección Internet y pulsar en la tienda Magnatune. Entonces se descargará el catálogo donde usted puede buscar y seleccionar la música que quiere comprar. </para>
+>, seleccionar la sección Internet y pulsar en la tienda Magnatune. Entonces se descargará el catálogo donde puede buscar y seleccionar la música que quiere comprar. </para>
 </sect2>
 <sect2 id="mpthree-store-configuration"
 ><title
@@ -5624,7 +5624,7 @@
 <para
 >Acceder a la tienda MP3 Amazon directamente desde &amarok;. </para>
 <para
->La tienda MP3 de Amazon necesita conocer en que país está usted localizado porque ofrece diferentes elementos en función de su ubicación. Se permiten los siguientes países: </para>
+>La tienda MP3 de Amazon necesita conocer en que país está localizado porque ofrece diferentes elementos en función de su ubicación. Se permiten los siguientes países: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -5648,18 +5648,18 @@
 ></listitem>
 </itemizedlist>
 <para
->NOTA: Al cambiar el país se invalida su carro de la compra. Si su país no está en la lista, usted no puede usar la tienda MP3 de Amazon porque no está admitido por Amazon. </para>
+>NOTA: Al cambiar el país se invalida su carro de la compra. Si su país no está en la lista, no puede usar la tienda MP3 de Amazon porque no está admitido por Amazon. </para>
 </sect2>
 <sect2 id="mp3tunes-configuration"
 ><title
 >Configuración de mp3tunes</title
 > 
 <para
->Si usted dispone de un casillero personal de mp3tunes, pulse <inlinemediaobject
+>Si dispone de un casillero personal de mp3tunes, pulse <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> e introduzca su usuario y contraseña. Usted dispondrá entonces de acceso a su casillero en línea. </para>
+> e introduzca su usuario y contraseña. Dispondrá entonces de acceso a su casillero en línea. </para>
 </sect2>
 </sect1>
 <sect1 id="scripts"
@@ -5745,7 +5745,7 @@
 ></listitem>
 </itemizedlist>
 <para
->Descarga e instala automáticamente actualizaciones para los guiones incrustados desde la página web de &amarok; si están disponibles. Actívelo si usted tiene una conexión de Internet en funcionamiento y quiere que sus guiones se actualicen automáticamente. Esto no actualizará los guiones suministrados por el usuario desde KDE-apps.org. </para>
+>Descarga e instala automáticamente actualizaciones para los guiones incrustados desde la página web de &amarok; si están disponibles. Actívelo si tiene una conexión de Internet en funcionamiento y quiere que sus guiones se actualicen automáticamente. Esto no actualizará los guiones suministrados por el usuario desde KDE-apps.org. </para>
 <itemizedlist>
 <listitem
 ><para
@@ -5852,7 +5852,7 @@
 <para
 >La visibilidad de cada uno de los tres paneles de &amarok; se indica en el menú <guilabel
 >Ver</guilabel
-> (parte del menú de nivel superior). Si usted desbloquea el esquema, cada uno de los tres paneles mostrará casillas pulsables. Esas dos casillas le permiten reorganizar o personalizar el diseño de su ventana de &amarok;. Al pulsar la <guilabel
+> (parte del menú de nivel superior). Si desbloquea el esquema, cada uno de los tres paneles mostrará casillas pulsables. Esas dos casillas le permiten reorganizar o personalizar el diseño de su ventana de &amarok;. Al pulsar la <guilabel
 >X</guilabel
 > se cierra ese panel concreto. Tras haberse cerrado, un panel se puede activar de nuevo pulsando la casilla adecuada en el <guilabel
 >Menú ver</guilabel
@@ -5879,14 +5879,14 @@
 </screenshot>
 </para>
 <para
->Al pulsar el símbolo hueco en la izquierda de la cruz, se provoca que el panel se desbloquee, por lo que aparecerá como una ventana separada en el escritorio. Al repetir esta acción en el panel desbloqueado, lo bloqueará de nuevo, dentro de su ventana de &amarok;. Usted puede arrastrar los paneles dentro de su ventana de &amarok; para reordenarlos. Usted puede apilar los paneles o incluso poner uno o dos tapando los otros, seleccionables por pestañas. </para>
+>Al pulsar el símbolo hueco en la izquierda de la cruz, se provoca que el panel se desbloquee, por lo que aparecerá como una ventana separada en el escritorio. Al repetir esta acción en el panel desbloqueado, lo bloqueará de nuevo, dentro de su ventana de &amarok;. Puede arrastrar los paneles dentro de su ventana de &amarok; para reordenarlos. Puede apilar los paneles o incluso poner uno o dos tapando los otros, seleccionables por pestañas. </para>
 </sect3>
 <sect3 id="lock-and-save-amarok-window-layout"
 ><title
 >Bloquear y guardar el esquema de ventanas de Amarok</title
 > 
 <para
->Si usted está satisfecho con el diseño dentro de su ventana de &amarok;, puede bloquear este diseño pulsando el elemento adecuado en el menú <guilabel
+>Si está satisfecho con el diseño dentro de su ventana de &amarok;, puede bloquear este diseño pulsando el elemento adecuado en el menú <guilabel
 >Ver</guilabel
 >. Advierta que cuando cierre la sesión con &amarok; todavía abierto, salga de &amarok; primero bien eligiendo <menuchoice
 ><guimenu
@@ -5906,7 +5906,7 @@
 >Cambio de la barra de herramientas</title
 > 
 <para
->Usted puede elegir también entre dos diseños de la barra de herramientas pulsando el elemento adecuado en el menú <guilabel
+>Puede elegir también entre dos diseños de la barra de herramientas pulsando el elemento adecuado en el menú <guilabel
 >Ver</guilabel
 >: </para>
 <para>
@@ -6000,9 +6000,9 @@
 ><guisubmenu
 >Diseños de lista de reproducción</guisubmenu
 ><guimenuitem
->Configurar diseños de lista de reproducción...</guimenuitem
+>Configurar diseños de lista de reproducción…</guimenuitem
 ></menuchoice
-> y usted verá la ventana de edición de arriba. A la izquierda puede ver los diseños predeterminados; al pulsar sobre ellos le permite ver cómo se hace la configuración en la derecha. Al pulsar el botón <guilabel
+> y verá la ventana de edición de arriba. A la izquierda puede ver los diseños predeterminados; al pulsar sobre ellos le permite ver cómo se hace la configuración en la derecha. Al pulsar el botón <guilabel
 >Previsualización</guilabel
 > le permite ver el diseño aplicado en el panel <guilabel
 >Lista de reproducción</guilabel
@@ -6032,7 +6032,7 @@
 >Carátula</guilabel
 >. </para>
 <para
->Además, usted también puede añadir: </para>
+>Además, también puede añadir: </para>
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -6097,7 +6097,7 @@
 </screenshot>
 </para>
 <para
->Usted puede entonces decidir el tamaño total del elemento (100 % es el ancho total de la línea, por lo que si usted usa un ancho personalizado y tiene más de un elemento por línea, necesitará reducir ese ancho por elemento), su alineación, el tamaño del tipo de letra y si la etiqueta debe mostrase con un prefijo o sufijo. </para>
+>Puede entonces decidir el tamaño total del elemento (100 % es el ancho total de la línea, por lo que si usa un ancho personalizado y tiene más de un elemento por línea, necesitará reducir ese ancho por elemento), su alineación, el tamaño del tipo de letra y si la etiqueta debe mostrase con un prefijo o sufijo. </para>
 </sect4>
 <sect4 id="example--single-line-layout"
 ><title
@@ -6106,7 +6106,7 @@
 <para
 ><emphasis
 >Ejemplo</emphasis
->: para generar un esquema de línea sencilla sin agrupación, usted solo añada elementos en el elemento pista <guilabel
+>: para generar un esquema de línea sencilla sin agrupación, solo añada elementos en el elemento pista <guilabel
 >Sencilla</guilabel
 >. </para>
 </sect4>
@@ -6130,7 +6130,7 @@
 >Organización</title
 > 
 <para
->Organizar su música le facilita encontrar lo que usted quiere. &amarok; le ofrece varias herramientas de ayuda. </para>
+>Organizar su música le facilita encontrar lo que quiere. &amarok; le ofrece varias herramientas de ayuda. </para>
 <para
 >Primero, organice su colección de música tanto la local como la remota: </para>
 <itemizedlist>
@@ -6348,7 +6348,7 @@
 <itemizedlist>
 <listitem
 ><para
->Usted puede provocar la rexploración de un solo directorio modificando su hora (tal como usando <varname
+>Puede hacer que se vuelva a explorare un directorio modificando su hora (usando <varname
 >touch /ruta/al/directorio</varname
 > en la consola).</para
 ></listitem>
@@ -6364,7 +6364,7 @@
 ></listitem>
 </itemizedlist>
 <para
->Si usted tiene problemas con pistas borradas que todavía aparezcan en la colección, o quiere actualizar carátulas de álbumes (que no se actualizan por un mero <guilabel
+>Si tiene problemas con pistas borradas que todavía aparezcan en la colección, o quiere actualizar carátulas de álbumes (que no se actualizan por un mero <guilabel
 >Actualizar colección</guilabel
 >
 >) entonces puede usar la opción <guilabel
@@ -6377,7 +6377,7 @@
 >Rexploración completa</guilabel
 > solo con todas las carpetas de la <guilabel
 >Colección local</guilabel
-> montadas si usted mueve pistas entre puntos de montaje. La <guilabel
+> montadas si mueve pistas entre puntos de montaje. La <guilabel
 >Rexploración completa</guilabel
 > también actualiza el contador de reproducciones si el almacenado en las etiquetas de archivo es mayor, puntuando si la canción no está puntuada y las etiquetas de archivo mencionan valoración y puntuación (bajo las mismas circunstancias). </para>
 </sect3>
@@ -6409,7 +6409,7 @@
 <para
 >Con las preferencias predeterminadas, &amarok; almacena toda la información de la colección en un directorio denominado <filename
 >~.kde/share/apps/amarok/mysqle/</filename
->. Puede ser una buena idea hacer una copia de respaldo de este directorio de vez en cuando, especialmente cuando usted no activó la escritura de información estadística. </para>
+>. Puede ser una buena idea hacer una copia de respaldo de este directorio de vez en cuando, especialmente cuando no activó la escritura de información estadística. </para>
 </sect3>
 <sect3 id="about-unique-ids"
 ><title
@@ -6487,7 +6487,7 @@
 >álbum-artista</quote
 >. </para>
 <para
->Usted puede eliminar la etiqueta de <emphasis
+>Puede eliminar la etiqueta de <emphasis
 >compilación</emphasis
 > de los archivos mp3 con la siguiente orden: <userinput
 >id3v2 -r TCMP <replaceable
@@ -6509,7 +6509,7 @@
 > <imageobject
 > <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> a la derecha del cuadro de edición. Alternativamente, usted puede pulsar sencillamente <keycombo
+> a la derecha del cuadro de edición. Alternativamente, puede pulsar  <keycombo
 >&Ctrl;<keycap
 >F</keycap
 ></keycombo
@@ -6534,7 +6534,7 @@
 >Casilla de edición</title
 > 
 <para
->Cuando usted teclee en el campo de entrada, &amarok; buscará texto en todas las etiquetas disponibles tales cómo artista, álbum y título. Su vista de la colección se actualizará automáticamente para mostrar las coincidencias en la búsqueda. </para>
+>Cuando escriba en el campo de entrada, &amarok; buscará texto en todas las etiquetas disponibles tales cómo artista, álbum y título. Su vista de la colección se actualizará automáticamente para mostrar las coincidencias en la búsqueda. </para>
 <para
 >Pulsando &Enter; después de una búsqueda se rellenará su lista de reproducción con todos los elementos encontrados en la búsqueda y se despeja la caja de búsqueda. ¡Esto es un magnífico sistema para añadir rápidamente cientos o miles de pistas a una lista de reproducción instantáneamente! </para>
 <para
@@ -6692,7 +6692,7 @@
 >Ejemplos</title
 > 
 <para
->Si usted busca sin especificar una etiqueta, &amarok; buscará en todas las etiquetas importantes de texto: </para>
+>Si busca sin especificar una etiqueta, &amarok; buscará en todas las etiquetas importantes de texto: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -6732,7 +6732,7 @@
 >Diálogo de edición de filtros</title
 > 
 <para
->Si usted prefiere generar sus búsquedas más ordenadamente, arrastre hacia abajo los iconos de los términos de búsqueda que quiera y, arrastre para cambiar el orden de los términos de búsqueda. Usted puede buscar por <guilabel
+>Si prefiere generar sus búsquedas más ordenadamente, arrastre hacia abajo los iconos de los términos de búsqueda que quiera y, arrastre para cambiar el orden de los términos de búsqueda. Puede buscar por <guilabel
 >Texto sencillo</guilabel
 >, <guilabel
 >Título</guilabel
@@ -6794,7 +6794,7 @@
 >Modificado por última vez</guilabel
 >. </para>
 <para
->Usted también puede añadir <guilabel
+>También puede añadir <guilabel
 >OR</guilabel
 > y <guilabel
 >AND</guilabel
@@ -6806,7 +6806,7 @@
 >AND</guilabel
 > o <guilabel
 >OR</guilabel
-> para todos los términos en la búsqueda. Si usted elige <guilabel
+> para todos los términos en la búsqueda. Si elige <guilabel
 >AND</guilabel
 >, todos los términos de búsqueda deben estar presentes. </para>
 <para
@@ -6840,11 +6840,11 @@
 >Organizar colección</title
 > 
 <para
->Aunque organizar su colección en &amarok; es una tarea directa, usted estará manipulando los archivos reales en su disco duro. Por favor, asegúrese de que dispone de una copia de respaldo de sus archivos antes de empezar. </para>
+>Aunque organizar su colección en &amarok; es una tarea directa, estará manipulando los archivos reales en su disco duro. Asegúrese de que dispone de una copia de respaldo de sus archivos antes de empezar. </para>
 <para
 >Con el diálogo <guilabel
 >Organizar archivos</guilabel
-> de &amarok;, usted puede fácilmente gestionar los archivos multimedia de su disco duro. Cuando cambie la nomenclatura de archivos multimedia, usted los organizará, lo que es muy potente. Para acceder al diálogo <guilabel
+> de &amarok;, puede fácilmente gestionar los archivos multimedia de su disco duro. Cuando cambie la nomenclatura de archivos multimedia, los organizará, lo que es muy potente. Para acceder al diálogo <guilabel
 >Organizar archivos</guilabel
 >, pulse con el botón derecho <menuchoice
 ><guimenu
@@ -6858,7 +6858,7 @@
 <para
 ><warning
 ><para
->Usando esta opción se moverán los archivos a una nueva ubicación, por lo que usted no solo necesita los permisos adecuados tanto en la ubicación de origen y de destino, sino también suficiente espacio, generalmente el doble del tamaño total de archivos para que la acción se ejecute suavemente. Si usted no está seguro, NO use esta opción.</para
+>Usando esta opción se moverán los archivos a una nueva ubicación, por lo que no solo necesita los permisos adecuados tanto en la ubicación de origen y de destino, sino también suficiente espacio, generalmente el doble del tamaño total de archivos para que la acción se ejecute suavemente. Si no está seguro, NO use esta opción.</para
 ></warning>
 </para>
 <para>
@@ -6883,11 +6883,11 @@
 <para
 >Si la opción <guilabel
 >Organizar archivos</guilabel
-> no aparece, usted puede tener la vista mezclada activada (cambiada por <inlinemediaobject
+> no aparece, puede tener la vista mezclada activada (cambiada por <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject
 > </inlinemediaobject
->). Para organizar sus archivos con seguridad, usted necesita ver sus colecciones por separado, no mezcladas. </para>
+>). Para organizar sus archivos con seguridad, necesita ver sus colecciones por separado, no mezcladas. </para>
 <sect3 id="organizing-files-interface"
 ><title
 >Organización de la interfaz de archivos</title
@@ -6895,7 +6895,7 @@
 <para
 >Tras seleccionar la opción <guilabel
 >Organizar archivos</guilabel
->, usted verá primero una opción adicional que le permite mover los archivos a una nueva ubicación, así como trasformarlos al mismo tiempo. En función de los códecs que usted tenga instalados en el sistema, algunas opciones de formato podrían no estar disponibles y ponerse en gris: </para>
+>, verá primero una opción adicional que le permite mover los archivos a una nueva ubicación, así como trasformarlos al mismo tiempo. En función de los códecs que tenga instalados en el sistema, algunas opciones de formato podrían no estar disponibles y ponerse en gris: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -6916,7 +6916,7 @@
 </screenshot>
 </para>
 <para
->Para más información sobre trasformaciones, por favor consulte la sección <link linkend="transcoding"
+>Para más información sobre trasformaciones, consulte la sección <link linkend="transcoding"
 >Trasformación</link
 >. </para>
 <para
@@ -7000,7 +7000,7 @@
     </entry>
     <entry>
     <para
->Cuando usted haya creado su esquema de nombres, guárdelo como preestablecido pulsando <guilabel
+>Cuando haya creado su esquema de nombres, guárdelo como preestablecido pulsando <guilabel
 >Guardar preestablecido</guilabel
 >. Elimine preestablecidos pulsando <guilabel
 >Eliminar preestablecidos</guilabel
@@ -7114,9 +7114,9 @@
 >La versión del código de la <guilabel
 >Barra de símbolos</guilabel
 >, que le permite codificar el nombre del formato de los archivos multimedia. Actívela pulsando <guilabel
->Avanzado...</guilabel
+>Avanzado…</guilabel
 > en el menú de interfaz. Para cambiar de nuevo, pulse <guilabel
->Básico...</guilabel
+>Básico…</guilabel
 >. </para>
 <para
 >Encierre entre paréntesis los argumentos condicionales incluidos cómo el número de CD, cómo esto: </para>
@@ -7158,17 +7158,17 @@
 ><guimenuitem
 >Música local</guimenuitem
 ></menuchoice
-> y con el servicio web de Last.fm, si usted elige usar Last.fm. </para>
+> y con el servicio web de Last.fm, si elige usar Last.fm. </para>
 <sect3 id="manual-syncing"
 ><title
 >Sincronización manual</title
 > 
 <para
->En cualquier momento, usted puede iniciar la sincronización manual desde <menuchoice
+>En cualquier momento, puede iniciar la sincronización manual desde <menuchoice
 ><guimenu
 >Herramientas</guimenu
 ><guimenuitem
->Sincronizar estadísticas...</guimenuitem
+>Sincronizar estadísticas…</guimenuitem
 ></menuchoice
 > </para>
 <para>
@@ -7187,7 +7187,7 @@
 </screenshot>
 </para>
 <para
->Desde aquí, usted puede iniciar una sincronización entre las colecciones que usted seleccione, que por omisión, tienen que haberse configurado en la configuración de <link linkend="metadata"
+>Desde aquí, puede iniciar una sincronización entre las colecciones que seleccione, que por omisión, tienen que haberse configurado en la configuración de <link linkend="metadata"
 >Metadatos</link
 > de &amarok;. </para>
 <sect4 id="conflicts-and-syncing-statistics-dialog"
@@ -7195,7 +7195,7 @@
 >Diálogo de conflictos y sincronización de estadísticas</title
 > 
 <para
->Cuando sincroniza, &amarok; mostrará un cuadro de diálogo que indica los conflictos y estadísticas de la sincronización que se ha ejecutado recientemente. En esta ventana, usted podrá ver tres pestañas: <guilabel
+>Cuando sincroniza, &amarok; mostrará un cuadro de diálogo que indica los conflictos y estadísticas de la sincronización que se ha ejecutado recientemente. En esta ventana, podrá ver tres pestañas: <guilabel
 >Pistas coincidentes</guilabel
 >, <guilabel
 >Pistas únicas</guilabel
@@ -7225,7 +7225,7 @@
 ></term>
     <listitem>
     <para
->Esta pestaña mostrará todas las pistas que &amarok; haya encontrado en más de una colección y refleja conflictos. Cuando las pistas se agrupan, usted puede ver dos tipos de fondo: verde claro y rojo claro. Un fondo verde claro indica un campo nuevo o actualizado, mientras que un fondo rojo claro indica el campo viejo o sobrescrito. Usted no necesita resolver todos los conflictos listados aquí: el campo concreto de las pistas listadas no se va a sincronizar si usted no resuelve el conflicto.</para>
+>Esta pestaña mostrará todas las pistas que &amarok; haya encontrado en más de una colección y refleja conflictos. Cuando las pistas se agrupan, puede ver dos tipos de fondo: verde claro y rojo claro. Un fondo verde claro indica un campo nuevo o actualizado, mientras que un fondo rojo claro indica el campo viejo o sobrescrito. No necesita resolver todos los conflictos listados aquí: el campo concreto de las pistas listadas no se va a sincronizar si no resuelve el conflicto.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -7235,7 +7235,7 @@
 ></term>
     <listitem>
     <para
->Estas son pistas encontradas solo en una colección. Usted puede usarlas como una <emphasis
+>Estas son pistas encontradas solo en una colección. Puede usarlas como una <emphasis
 >vista de diferencias</emphasis
 >. Se admite el arrastre de pistas aquí.</para>
      </listitem>
@@ -7258,13 +7258,13 @@
 >Sincronización con Last.fm</title
 > 
 <para
->Si usted dispone del complemento de Last.fm activado y configurado correctamente con su cuenta de Last.fm, puede también elegir sincronizar sus contadores de reproducción de &amarok;, valoraciones y etiquetas con su biblioteca de Last.fm. La sincronización tarda algún tiempo, pero usted puede continuar usando &amarok; mientras se sincroniza. Por favor, tenga en cuenta que la sincronización desatendida (que se explicará más adelante) no es posible con Last.fm y la sincronización desde Last.fm hasta &amarok; necesita iniciarse manualmente. </para>
+>Si dispone del complemento de Last.fm activado y configurado correctamente con su cuenta de Last.fm, puede también elegir sincronizar sus contadores de reproducción de &amarok;, valoraciones y etiquetas con su biblioteca de Last.fm. La sincronización tarda algún tiempo, pero puede continuar usando &amarok; mientras se sincroniza. Tenga en cuenta que la sincronización desatendida (que se explicará más adelante) no es posible con Last.fm y la sincronización desde Last.fm hasta &amarok; necesita iniciarse manualmente. </para>
 <sect4 id="spelling-auto-correction"
 ><title
 >Autocorrección de ortografía</title
 > 
 <para
->Las.fm permite por omisión una característica que autocorrige errores comunes de deletreo durante la sincronización, puede ocurrir que incluso si usted empareja muchas reproducciones de pistas, no se muestren en pistas coincidentes, ya que Last.fm reconoce la pista con un nombre ligeramente distinto. </para>
+>Las.fm permite por omisión una característica que autocorrige errores comunes de deletreo durante la sincronización, puede ocurrir que incluso si empareja muchas reproducciones de pistas, no se muestren en pistas coincidentes, ya que Last.fm reconoce la pista con un nombre ligeramente distinto. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7281,7 +7281,7 @@
 </screenshot>
 </para>
 <para
->Usted puede desactivar esta característica en el sitio de Last.fm y los cambios se aplicarán incluso a sus emparejamientos previos. Usted dispone de dos opciones: </para>
+>Puede desactivar esta característica en el sitio de Last.fm y los cambios se aplicarán incluso a sus emparejamientos previos. Dispone de dos opciones: </para>
 <variablelist>
   <varlistentry
 ><term
@@ -7290,7 +7290,7 @@
 ></term>
     <listitem>
     <para
->Las pistas se emparejan adecuadamente, pero si usted cambia sus etiquetas tras un tiempo, su contador de reproducciones se divide en dos pistas.</para>
+>Las pistas se emparejan adecuadamente, pero si cambia sus etiquetas tras un tiempo, su contador de reproducciones se divide en dos pistas.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -7300,7 +7300,7 @@
 ></term>
     <listitem>
     <para
->Usted puede contar las reproducciones de las pistas incluso si las pistas se cambian tras algún tiempo, pero usted tendrá que usar la ortografía preferida por Last.fm.</para>
+>Puede contar las reproducciones de las pistas incluso si las pistas se cambian tras algún tiempo, pero tendrá que usar la ortografía preferida por Last.fm.</para>
      </listitem>
   </varlistentry>
 </variablelist>
@@ -7313,11 +7313,11 @@
 <para
 ><important
 ><para
->Por favor, tenga en cuenta que el diálogo solo aparecerá en el caso de iPods.</para
+>Tenga en cuenta que el diálogo solo aparecerá en el caso de iPods.</para
 ></important>
 </para>
 <para
->Cuando usted conecta un dispositivo que es capaz de sincronizarse con sus colecciones, aparecerá un desplegable como este. </para>
+>Cuando conecta un dispositivo que es capaz de sincronizarse con sus colecciones, aparecerá un desplegable como este. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7334,7 +7334,7 @@
 </screenshot>
 </para>
 <para
->Para que se inicie la sincronización desatendida, usted solo necesita pulsar <guilabel
+>Para que se inicie la sincronización desatendida, solo necesita pulsar <guilabel
 >Sí</guilabel
 > en el desplegable. &amarok; trabajará en el fondo, por lo que los metadatos de su dispositivo, incluyendo valoraciones, primera y última reproducción, contador de reproducciones y etiquetas se sincronizarán con otras colecciones <link linkend="metadata"
 >configuradas para participar en la sincronización</link
@@ -7346,7 +7346,7 @@
 >Colecciones remotas</title
 > 
 <para
->Con frecuencia, es útil compartir sus archivos multimedia en la red, especialmente si usted quiere usarlos es distintos equipos. Esto se puede hacer de varias maneras: </para>
+>Con frecuencia, es útil compartir sus archivos multimedia en la red, especialmente si quiere usarlos es distintos equipos. Esto se puede hacer de varias maneras: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -7501,7 +7501,7 @@
 ><guimenuitem
 >Música local</guimenuitem
 ></menuchoice
-> si usted activa la colección DAAP en <menuchoice
+> si activa la colección DAAP en <menuchoice
 ><guimenu
 >Preferencias</guimenu
 ><guisubmenu
@@ -7515,7 +7515,7 @@
 > <imageobject
 > <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> para asegurarse de que usted no está en la vista mezclada. </para>
+> para asegurarse de que no está en la vista mezclada. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7550,7 +7550,7 @@
 >Cliente</title
 > 
 <para
->Usted necesita montar la unida compartida para usarla en &amarok;. Para hacerlo, usted necesita instalar el paquete <emphasis
+>Necesita montar la unida compartida para usarla en &amarok;. Para hacerlo, necesita instalar el paquete <emphasis
 >smbfs</emphasis
 >. Use la orden </para>
 <para
@@ -7564,7 +7564,7 @@
 ></userinput>
 </para>
 <para
->para montar la unidad compartida. Después de eso, usted podrá usarla cómo una carpeta local y añadirla a su colección local. </para>
+>para montar la unidad compartida. Después de eso, podrá usarla cómo una carpeta local y añadirla a su colección local. </para>
 </sect3>
 <sect3 id="server"
 ><title
@@ -7573,7 +7573,7 @@
 <para
 >El modo más fácil es usar su gestor de archivos. En distribuciones basadas en <guilabel
 >Debian</guilabel
-> cómo &ubuntu; usted puede instalar una extensión de &dolphin; para gestionar unidades compartidas usando </para>
+> cómo &ubuntu; puede instalar una extensión de &dolphin; para gestionar unidades compartidas usando </para>
 <para
 ><userinput
 >sudo apt-get install kdenetwork-filesharing</userinput>
@@ -7621,7 +7621,7 @@
 </screenshot>
 </para>
 <para
->La carpeta debería ser accesible ahora a la red. Por favor, consulte la <link linkend="client"
+>La carpeta debería ser accesible ahora a la red. Consulte la <link linkend="client"
 >Sección cliente</link
 > para más detalles sobre como usarla en &amarok;. </para>
 </sect3>
@@ -7710,9 +7710,9 @@
 >Instalar MySQL-Server</title
 > 
 <para
->Primero, usted necesita instalar un servidor <guilabel
+>Primero, necesita instalar un servidor <guilabel
 >MySQL</guilabel
->. En distribuciones basadas en Debian como Ubuntu, usted puede usar </para>
+>. En distribuciones basadas en Debian como Ubuntu, puede usar </para>
 <para
 ><userinput
 >sudo apt-get install mysql-server mysql-client</userinput>
@@ -7737,7 +7737,7 @@
 >root</emphasis
 > de <guilabel
 >MySQL</guilabel
->. Usted accederá a la línea de órdenes <screen
+>. Accederá a la línea de órdenes <screen
 >mysql&gt;</screen
 >. </para>
 <para
@@ -7799,13 +7799,13 @@
 >MySQL</guilabel
 >. </para>
 <para
->Por omisión, solo puede accederse al servidor desde el equipo local. Para cambiarlo, usted necesita editar el archivo <filename
+>Por omisión, solo puede accederse al servidor desde el equipo local. Para cambiarlo, necesita editar el archivo <filename
 >/etc/mysql/my.cnf</filename
 > y editar la dirección que está cerca de <emphasis
 >bind-address</emphasis
 > a una de las que su servidor escucha en la red. <guilabel
 >0.0.0.0</guilabel
-> escucha en todas las interfaces. Tras esto, usted necesita reiniciar el servidor usando </para>
+> escucha en todas las interfaces. Tras esto, necesita reiniciar el servidor usando </para>
 <para
 ><userinput
 >sudo service mysql restart</userinput>
@@ -7841,14 +7841,14 @@
 </screenshot>
 </para>
 <para
->Usted necesita reiniciar &amarok; para que los cambios surtan efecto. </para>
+>Necesita reiniciar &amarok; para que los cambios surtan efecto. </para>
 </sect3>
 <sect3 id="migrating-from-mysql-embedded-to-mysql-server"
 ><title
 >Migrar de MySQL empotrado a servidor MySQL</title
 > 
 <para
->Si usted quiere mantener las estadísticas, &etc; que tiene en la base de datos <guilabel
+>Si quiere mantener las estadísticas, &etc; que tiene en la base de datos <guilabel
 >MySQL</guilabel
 > empotrada anterior a &amarok; 2.2, puede hacer los siguiente: </para>
 <para
@@ -7872,7 +7872,7 @@
 >/usr/sbin/mysqld --defaults-file=`pwd`/my.cnf --default-storage-engine=MyISAM --datadir=`pwd`/mysqle --socket=`pwd`/sock --skip-grant-tables</userinput>
 </para>
 <para
->El privilegio skip-grant-tables significa que usted puede usar cualquier usuario o contraseña para conectarse. «localhost» no funcionará, el cliente <guilabel
+>El privilegio skip-grant-tables significa que puede usar cualquier usuario o contraseña para conectarse. «localhost» no funcionará, el cliente <guilabel
 >MySQL</guilabel
 > intentará usar un socket <guilabel
 >&UNIX;</guilabel
@@ -7890,11 +7890,11 @@
 >mysqldump -S sock amarok &gt; amarok.mysql</userinput>
 </para>
 <para
->Usted puede entonces reiniciar su servicio <guilabel
+>Puede entonces reiniciar su servicio <guilabel
 >MySQL</guilabel
 > y cargar este archivo SQL en su servidor <guilabel
 >MySQL</guilabel
->. Usted habrá necesitado ejecutar previamente la sentencia GRANT de arriba y crear una base de datos &amarok; (<quote
+>. Habrá necesitado ejecutar previamente la sentencia GRANT de arriba y crear una base de datos &amarok; (<quote
 >CREATE DATABASE amarok;</quote
 >): </para>
 <para
@@ -7905,7 +7905,7 @@
 <para
 ><note
 ><para
->Usted puede necesitar rexplorar su colección en &amarok; después de completar esto.</para
+>Es posible que necesite volver a explorar su colección en &amarok; después de completar esto.</para
 ></note>
 </para>
 </sect3>
@@ -7979,7 +7979,7 @@
 </screenshot>
 </para>
 <para
->Tras la exploración, &amarok; mostrará todas las pistas de música disponibles en el dispositivo multimedia, que usted puede mover a continuación a la <guilabel
+>Tras la exploración, &amarok; mostrará todas las pistas de música disponibles en el dispositivo multimedia, que puede mover a continuación a la <guilabel
 >Lista de reproducción</guilabel
 > para reproducirlas o copiarlas o moverlas a su <guilabel
 >Lista de reproducción</guilabel
@@ -8169,7 +8169,7 @@
 ></listitem>
 <listitem
 ><para
->iPods/iPhones, dependiendo de su implementación por la biblioteca libgpod. El estado depende de la versión de esta biblioteca instalada en su sistema, por favor, refiérase a <ulink url="http://www.gtkpod.org/wiki/Home"
+>iPods/iPhones, dependiendo de su implementación por la biblioteca libgpod. El estado depende de la versión de esta biblioteca instalada en su sistema, refiérase a <ulink url="http://www.gtkpod.org/wiki/Home"
 >el listado de implementación de libgpod</ulink
 > en su página de inicio.</para
 ></listitem>
@@ -8203,7 +8203,7 @@
 <para
 >El <guilabel
 >Gestor de carátulas</guilabel
-> es una herramienta para gestionar todas las carátulas de su colección. Le permite cambiar las carátulas fácilmente, obtener las perdidas y navegar por ellas. Usted puede encontrar el <guilabel
+> es una herramienta para gestionar todas las carátulas de su colección. Le permite cambiar las carátulas fácilmente, obtener las perdidas y navegar por ellas. Puede encontrar el <guilabel
 >Gestor de carátulas</guilabel
 > en <menuchoice
 ><guimenu
@@ -8228,7 +8228,7 @@
 </screenshot>
 </para>
 <para
->Si un álbum no tiene carátula o la actual es incorrecta, usted puede obtener una desde Internet con el <guilabel
+>Si un álbum no tiene carátula o la actual es incorrecta, puede obtener una desde Internet con el <guilabel
 >Gestor de carátulas</guilabel
 >. </para>
 <sect2 id="browsing-covers"
@@ -8238,18 +8238,18 @@
 <para
 >Con el <guilabel
 >Gestor de carátulas</guilabel
-> es fácil navegar por las carátulas. Usted puede ver carátulas de cualquier artista seleccionándolo de la lista de la izquierda, o usar el cuadro de búsqueda para localizar el álbum correcto. En la barra de estado, usted puede ver cuantas carátulas se listan actualmente o cuantos álbumes no tienen carátulas. Usted puede también hacer que el <guilabel
+> es fácil navegar por las carátulas. Puede ver carátulas de cualquier artista seleccionándolo de la lista de la izquierda, o usar el cuadro de búsqueda para localizar el álbum correcto. En la barra de estado, puede ver cuántas carátulas se listan actualmente o cuantos álbumes no tienen carátulas. Puede también hacer que el <guilabel
 >Gestor de carátulas</guilabel
 > muestre solo álbumes con o sin carátulas. Al pulsar con el botón derecho en una carátula y seleccionar <guilabel
 >Mostrar carátula</guilabel
-> usted puede ver la imagen de la carátula a su tamaño original. </para>
+> puede ver la imagen de la carátula a su tamaño original. </para>
 </sect2>
 <sect2 id="fetching-missing-covers"
 ><title
 >Recuperación de carátulas perdidas</title
 > 
 <para
->Si hay álbumes con carátulas perdidas, usted puede intentar obtenerlas automáticamente de Internet. Solo seleccione <guilabel
+>Si hay álbumes con carátulas perdidas, puede intentar obtenerlas automáticamente de Internet. Solo seleccione <guilabel
 >Recuperar carátulas perdidas</guilabel
 > en la parte superior de la ventana y el <emphasis
 >Gestor de carátulas</emphasis
@@ -8275,15 +8275,15 @@
 </screenshot>
 </para>
 <para
->Si hay algún álbum con una carátula incorrecta, usted puede obtener una nueva desde Internet. Pulse con el botón derecho en la carátula y seleccione <guilabel
+>Si hay algún álbum con una carátula incorrecta, puede obtener una nueva desde Internet. Pulse con el botón derecho en la carátula y seleccione <guilabel
 >Obtener carátula</guilabel
->. Se abrirá un cuadro de diálogo para encontrar una nueva carátula. &amarok; intenta encontrar automáticamente la carátula correcta buscando por el nombre del artista y de álbum. Generalmente, esto funciona muy bien, como con el ejemplo, y usted probablemente vea una carátula correcta en los resultados como en el ejemplo. Si no se encuentra ninguna carátula correcta, usted puede intentar introducir una frase de búsqueda personalizada o cambiar la fuente de imágenes pulsando en <guilabel
->Configurar...</guilabel
->. Usted puede seleccionar donde buscar, incluyendo Last.fm, Google Images, Yahoo! Image Search o Discogs. Tras encontrar una carátula para el álbum, pulse <guilabel
+>. Se abrirá un cuadro de diálogo para encontrar una nueva carátula. &amarok; intenta encontrar automáticamente la carátula correcta buscando por el nombre del artista y de álbum. Generalmente, esto funciona muy bien, como con el ejemplo, y probablemente vea una carátula correcta en los resultados como en el ejemplo. Si no se encuentra ninguna carátula correcta, puede intentar introducir una frase de búsqueda personalizada o cambiar la fuente de imágenes pulsando en <guilabel
+>Configurar…</guilabel
+>. Puede seleccionar donde buscar, incluyendo Last.fm, Google Images, Yahoo! Image Search o Discogs. Tras encontrar una carátula para el álbum, pulse <guilabel
 >Aceptar</guilabel
 > y se aplicarán los cambios. </para>
 <para
->Usted también puede usar una imagen de su disco duro como carátula. Si usted quiere guardar la imagen en la carpeta del álbum, nómbrela como <filename
+>También puede usar una imagen de su disco duro como carátula. Si quiere guardar la imagen en la carpeta del álbum, nómbrela como <filename
 >cover.jpg</filename
 > o <filename
 >cover.png</filename
@@ -8291,13 +8291,13 @@
 >Establecer carátula personalizada</guilabel
 >. </para>
 <para
->Si a usted no le gusta la carátula después de todo, puede deshacer pulsando con el botón derecho en la imagen y seleccionando <guilabel
+>Si no le gusta la carátula después de todo, puede deshacer pulsando con el botón derecho en la imagen y seleccionando <guilabel
 >Deshacer carátula</guilabel
 >. </para>
 <para
 ><tip
 ><para
->Usted puede encontrar este menú sin el <guilabel
+>Puede encontrar este menú sin el <guilabel
 >Gestor de carátula</guilabel
 > también. Solo pulse con el botón derecho en el álbum o canción de su lista de reproducción y sobrevuele el elemento <guilabel
 >Álbum</guilabel
@@ -8492,7 +8492,7 @@
 >Editar pista sencilla</title
 > 
 <para
->Es este modo usted puede cambiar todas las etiquetas admitidas del archivo elegido. </para>
+>Es este modo puede cambiar todas las etiquetas admitidas del archivo elegido. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8582,7 +8582,7 @@
 >Cancele</guilabel
 >. </para>
 <para
->Si usted dispone de los paquetes <emphasis
+>Si dispone de los paquetes <emphasis
 >libofa</emphasis
 > y <emphasis
 >ffmpeg</emphasis
@@ -8648,7 +8648,7 @@
 >Básico</title
 > 
 <para
->En la vista básica usted obtiene un menú de arrastrar y soltar para crear el patrón en el nombre de archivo. </para>
+>En la vista básica se muestra un menú de arrastrar y soltar para crear el patrón en el nombre de archivo. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8698,7 +8698,7 @@
 >Avanzado</title
 > 
 <para
->En la vista avanzada usted puede crear un patrón usando marcadores en una cadena. </para>
+>En la vista avanzada puede crear un patrón usando marcadores en una cadena. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8766,7 +8766,7 @@
 <para
 >El diálogo de <emphasis
 >trasformación</emphasis
-> aparecerá siempre que usted copie o mueva pistas a una de las colecciones que admitan trasformación. Usted también puede trasformar pistas dentro de la <emphasis
+> aparecerá siempre que copie o mueva pistas a una de las colecciones que admitan trasformación. También puede trasformar pistas dentro de la <emphasis
 >Colección local</emphasis
 > usando la funcionalidad <guilabel
 >Organizar archivos</guilabel
@@ -8777,7 +8777,7 @@
 >Diálogo de trasformación de pistas</title
 > 
 <para
->Si usted elije copiar o mover archivos a una colección reconocida, se desplegará el siguiente diálogo: </para>
+>Si elije copiar o mover archivos a una colección reconocida, se desplegará el siguiente diálogo: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8824,7 +8824,7 @@
     </entry>
     <entry>
     <para
->Lista todos sus códecs instalados: elija entre ellos para poder hacer trasformaciones. Si esta lista está vacía, usted necesita instalar <emphasis
+>Lista todos sus códecs instalados: elija entre ellos para poder hacer trasformaciones. Si esta lista está vacía, necesita instalar <emphasis
 >FFmpeg</emphasis
 >.</para>
     </entry>
@@ -9037,7 +9037,7 @@
 </screenshot>
 </para>
 <para
->Por favor, consulte <link linkend="scripts"
+>Consulte <link linkend="scripts"
 >Configuración de Amarok -&gt; Guiones</link
 > para más información. </para>
 </sect1>
@@ -9091,7 +9091,7 @@
 >Listas de reproducción guardadas</emphasis
 > son un tipo tradicional de lista de reproducción. Las listas de reproducción guardadas funcionan como la lista de reproducción actual de &amarok;, guardadas en la base de datos de &amarok; o en su sistema de archivos para uso posterior. Puede ser divertido usarlas en las ocasiones en las que tenga canciones específicas que quiera que se reproduzcan. </para>
 <para
->Crear una lista de reproducción guardada es muy fácil con las canciones y el orden exacto que usted quiera. Para el uso diario, algunas veces es más rápido usar <link linkend="dynamic-playlists"
+>Crear una lista de reproducción guardada es muy fácil con las canciones y el orden exacto que quiera. Para el uso diario, algunas veces es más rápido usar <link linkend="dynamic-playlists"
 >Listas de reproducción dinámicas</link
 > o el <link linkend="automatic-playlist-generator"
 >Generador automático de listas de reproducción</link
@@ -9128,13 +9128,13 @@
 </screenshot>
 </para>
 <para
->Usted puede guardar su lista de reproducción actual en la base de datos de &amarok; pulsando el icono guardar (<inlinemediaobject
+>Puede guardar su lista de reproducción actual en la base de datos de &amarok; pulsando el icono guardar (<inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject
 > </inlinemediaobject
 >) en la parte inferior de la vista <guilabel
 >Lista de reproducción</guilabel
->. Usted puede navegar por las listas de reproducción de la base de datos de &amarok; yendo a <menuchoice
+>. Puede navegar por las listas de reproducción de la base de datos de &amarok; yendo a <menuchoice
 ><guimenu
 >Listas de reproducción</guimenu
 ><guimenuitem
@@ -9144,7 +9144,7 @@
 >Orígenes de medios</guilabel
 > expandiendo la sección <guilabel
 >Base de datos de Amarok</guilabel
->. Usted las encontrará en su sistema de archivos aquí: <filename
+>. Las encontrará en su sistema de archivos aquí: <filename
 >~/.kde(4)/share/apps/amarok/playlists</filename
 >. </para>
 </sect3>
@@ -9153,22 +9153,22 @@
 >Exportación a lista de reproducción</title
 > 
 <para
->Usted puede exportar su lista de reproducción actual su sistema de archivos pulsando <menuchoice
+>Puede exportar su lista de reproducción actual su sistema de archivos pulsando <menuchoice
 ><guimenu
 >Lista de reproducción</guimenu
 ><guimenuitem
->Exportar lista de reproducción como...</guimenuitem
+>Exportar lista de reproducción como…</guimenuitem
 ></menuchoice
-> desde la barra de menú superior. Desde el menú guardar que se abre, usted puede cambiar el nombre, ubicación o tipo de la lista de reproducción. A continuación, pulse <guilabel
+> desde la barra de menú superior. Desde el menú guardar que se abre, puede cambiar el nombre, ubicación o tipo de la lista de reproducción. A continuación, pulse <guilabel
 >Guardar</guilabel
->. Recuerde, los archivos de listas de reproducción no contienen datos de música. Si usted quiere escuchar el contenido de la lista de reproducción en otro equipo, necesitará llevarse su música, salvo que ese equipo ya contenga las pistas. </para>
+>. Recuerde, los archivos de listas de reproducción no contienen datos de música. Si quiere escuchar el contenido de la lista de reproducción en otro equipo, necesitará llevarse su música, salvo que ese equipo ya contenga las pistas. </para>
 </sect3>
 <sect3 id="importing-a-playlist"
 ><title
 >Importación de una lista de reproducción</title
 > 
 <para
->Usted puede importar un archivo de lista de reproducción en &amarok; solo copiándolo a cualquier directorio que &amarok; considere parte de su colección de música. Cuando &amarok; detecte una nueva lista de reproducción en cualquier carpeta de su colección, la añadirá a la sección <guilabel
+>Puede importar un archivo de lista de reproducción en &amarok; solo copiándolo a cualquier directorio que &amarok; considere parte de su colección de música. Cuando &amarok; detecte una nueva lista de reproducción en cualquier carpeta de su colección, la añadirá a la sección <guilabel
 >Archivos de lista de reproducción en disco</guilabel
 > de <menuchoice
 ><guimenu
@@ -9178,17 +9178,17 @@
 ></menuchoice
 > en el panel <guilabel
 >Orígenes de medios</guilabel
->. Si la lista de reproducción no aparece correctamente, usted puede actualizar la colección manualmente pulsando <menuchoice
+>. Si la lista de reproducción no aparece correctamente, puede actualizar la colección manualmente pulsando <menuchoice
 ><guimenu
 >Herramientas</guimenu
 ><guimenuitem
 >Actualizar colección</guimenuitem
 ></menuchoice
->. Sí, en lugar de importar la lista de reproducción, usted solo quiere escucharla, ábrala con <menuchoice
+>. Sí, en lugar de importar la lista de reproducción, solo quiere escucharla, ábrala con <menuchoice
 ><guimenu
 >Amarok</guimenu
 ><guimenuitem
->Reproducir medio...</guimenuitem
+>Reproducir medio…</guimenuitem
 ></menuchoice
 > desde la barra de menú. La lista de reproducción seleccionada se añadirá a la lista de reproducción actual. </para>
 </sect3>
@@ -9201,7 +9201,7 @@
 <para
 >La función <emphasis
 >Buscar lista de reproducción</emphasis
-> en &amarok; es muy potente, puesto que le permite buscar distintas pistas por diversas restricciones. El resultado de la búsqueda limita lo que usted puede realmente ver, lo que hace fácil encolar las pistas requeridas o eliminarlas de la lista de reproducción. </para>
+> en &amarok; es muy potente, puesto que le permite buscar distintas pistas por diversas restricciones. El resultado de la búsqueda limita lo que puede realmente ver, lo que hace fácil encolar las pistas requeridas o eliminarlas de la lista de reproducción. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -9222,7 +9222,7 @@
 >Casilla de edición</title
 > 
 <para
->Cuando usted teclea algo en el campo <guilabel
+>Cuando escriba algo en el campo <guilabel
 >Buscar lista de reproducción</guilabel
 >, &amarok; buscará en su lista de reproducción y marcará las pistas que coincidan, artistas y así en adelante. </para>
 <sect3 id="examples11"
@@ -9253,7 +9253,7 @@
 >Preferencias de búsqueda</title
 > 
 <para
->Este es un pequeño menú desplegable con opciones para el campo de búsqueda, si usted necesita algo más que una búsqueda sencilla. Usted puede elegir que tipos de búsqueda quiere usar en <guilabel
+>Este es un pequeño menú desplegable con opciones para el campo de búsqueda, si necesita algo más que una búsqueda sencilla. Puede elegir que tipos de búsqueda quiere usar en <guilabel
 >Buscar lista de reproducción</guilabel
 >. Marque las casillas de acuerdo con lo que necesite para la búsqueda. </para>
 <para>
@@ -9431,7 +9431,7 @@
 >Encolar pista</guilabel
 >. </para>
 <para
->Cuando usted selecciona o añade canciones a la cola, a cada una se le asigna un número. El número indica el orden en el que se reproducen las canciones. </para>
+>Cuando selecciona o añade canciones a la cola, a cada una se le asigna un número. El número indica el orden en el que se reproducen las canciones. </para>
 <sect3 id="example12"
 ><title
 >Ejemplo</title
@@ -9519,7 +9519,7 @@
 >Cómo editar la cola</title
 > 
 <para
->Si usted quiere hacer cualquier cambio en la <emphasis
+>Si quiere hacer cualquier cambio en la <emphasis
 >Cola</emphasis
 >, puede usar el <guilabel
 >Editor de colas</guilabel
@@ -9666,7 +9666,7 @@
 >Como funciona la lista de reproducción dinámica</title
 > 
 <para
->La lista de reproducción dinámica es una lista que crece mientras usted escucha su música. </para>
+>La lista de reproducción dinámica es una lista que crece mientras escucha su música. </para>
 <para
 >Mantiene un cierto número de canciones junto a la canción reproducida en la actualidad y limpiará la lista de reproducción eliminando viejas canciones. </para>
 <para
@@ -9687,11 +9687,11 @@
 >Lista de reproducción</guilabel
 > anunciando que está activada. Seleccione que lista de reproducción dinámica usar de la lista de opciones haciendo doble clic sobre ella. La lista de reproducción seleccionada actualmente está en negrita. </para>
 <para
->Usted puede ajustar el número de canciones antes y después de la canción que se está reproduciendo para mostrarla en la lista de reproducción con los campos <guilabel
+>Puede ajustar el número de canciones antes y después de la canción que se está reproduciendo para mostrarla en la lista de reproducción con los campos <guilabel
 >Anterior</guilabel
 > y <guilabel
 >Siguiente</guilabel
->. Usted puede evitar que algunas pistas aparezcan en la lista de reproducción actual más de una vez usando el botón <inlinemediaobject
+>. Puede evitar que algunas pistas aparezcan en la lista de reproducción actual más de una vez usando el botón <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-edit-copy.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -9710,7 +9710,7 @@
 >Buscar</emphasis
 >) o grupos de otros sesgos (&eg; el sesgo <emphasis
 >Coincidir con todos</emphasis
->). Se incluyen algunos ejemplos de lista de reproducción y, usted puede definir una nueva lista de reproducción con el botón <inlinemediaobject
+>). Se incluyen algunos ejemplos de lista de reproducción y, puede definir una nueva lista de reproducción con el botón <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-new.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -9732,7 +9732,7 @@
 >Sesgos</title
 > 
 <para
->Debido a que se pueden definir varios sesgos, &amarok; puede a veces devolver una lista de reproducción vacía. Esto sucede si se proporciona un conjunto de condiciones de imposible cumplimiento. Para evitarlo y entender mejor cada sesgo disponible, junto con cualquier opción que tome, por favor, consulte abajo: </para>
+>Debido a que se pueden definir varios sesgos, &amarok; puede a veces devolver una lista de reproducción vacía. Esto sucede si se proporciona un conjunto de condiciones de imposible cumplimiento. Para evitarlo y entender mejor cada sesgo disponible, junto con cualquier opción que tome, consulte abajo: </para>
 <variablelist>
   <varlistentry
 ><term
@@ -9741,7 +9741,7 @@
 ></term>
     <listitem>
     <para
->Este sesgo coincide con las pistas encontradas por una petición de búsqueda. Usa la misma cadena de búsqueda utilizada por el navegador de colección. Usted también puede usar el sesgo <guilabel
+>Este sesgo coincide con las pistas encontradas por una petición de búsqueda. Usa la misma cadena de búsqueda utilizada por el navegador de colección. También puede usar el sesgo <guilabel
 >Coincidir metaetiqueta</guilabel
 > para coincidir con pistas del mismo modo que el editor de búsqueda de colecciones.</para>
      </listitem>
@@ -9789,9 +9789,9 @@
     <para
 >Este grupo de sesgos coincide con las pistas de los subsesgos en proporción. La ventana de edición para este sesgo tiene deslizadores para cada subsesgo para ajustar las proporciones. Por ejemplo, con dos subsesgos con sus deslizadores de proporción iguales, la mitad de las lista de reproducción coincidirá con un sesgo y la otra mitad con el otro.</para>
     <para
->Nota: La lista de reproducción dinámica funciona internamente con más pistas de las que usted puede ver, por lo que después de pulsar <quote
+>Nota: La lista de reproducción dinámica funciona internamente con más pistas de las que puede ver, por lo que después de pulsar <quote
 >Repoblar</quote
-> la lista podría no contener una distribución 50:50 de canciones. Sin embargo, según usted continúe escuchando música, verá que al final coinciden.</para>
+> la lista podría no contener una distribución 50:50 de canciones. Sin embargo, según continúe escuchando música, verá que al final coinciden.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -9815,7 +9815,7 @@
 ></term>
     <listitem>
     <para
->Este sesgo coincide con las pistas que encuentran ciertas condiciones en una etiqueta. La interfaz de selección es la misma que el editor de filtro de búsqueda en el navegador de colección. Seleccione un tipo de etiqueta del desplegable y rellene la restricción. (Pista: usted puede usar un varias de estas en un sesgo <guilabel
+>Este sesgo coincide con las pistas que encuentran ciertas condiciones en una etiqueta. La interfaz de selección es la misma que el editor de filtro de búsqueda en el navegador de colección. Seleccione un tipo de etiqueta del desplegable y rellene la restricción. (Pista: puede usar un varias de estas en un sesgo <guilabel
 >Y</guilabel
 >).</para>
      </listitem>
@@ -9827,7 +9827,7 @@
 ></term>
     <listitem>
     <para
->Este sesgo coincide con las pistas relacionadas con el elemento anterior en la lista de reproducción por álbum. Usted puede seleccionar los detalles del sesgo desde el menú desplegable. Por ejemplo, <guilabel
+>Este sesgo coincide con las pistas relacionadas con el elemento anterior en la lista de reproducción por álbum. Puede seleccionar los detalles del sesgo desde el menú desplegable. Por ejemplo, <guilabel
 >La pista sigue directamente a la anterior en el álbum</guilabel
 > se usa en el ejemplo de lista de reproducción <guilabel
 >Reproducción de álbum</guilabel
@@ -9841,7 +9841,7 @@
 ></term>
     <listitem>
     <para
->Este sesgo coincide con las pistas en las que el primer carácter de una etiqueta dada (título, artista o álbum) sea el mismo que el último carácter de alguna etiqueta de la etiqueta previa. Por ejemplo, cuando se selecciona artista, usted puede disponer de las siguientes series: Led Zeppeli<guilabel
+>Este sesgo coincide con las pistas en las que el primer carácter de una etiqueta dada (título, artista o álbum) sea el mismo que el último carácter de alguna etiqueta de la etiqueta previa. Por ejemplo, cuando se selecciona artista, puede disponer de las siguientes series: Led Zeppeli<guilabel
 >n</guilabel
 > -&gt; <guilabel
 >N</guilabel
@@ -9859,7 +9859,7 @@
 ></term>
     <listitem>
     <para
->Este sesgo coincide con las pistas que son parecidas de acuerdo con EchoNest, bien a la pista anterior o a cualquier pista en la lista de reproducción. Esto le permite reproducir un conjunto de pistas compatibles simplemente añadiendo una sola pista a la lista de reproducción y activando la lista de reproducción dinámica, mejor que definiendo todas las reglas de coincidencia usted mismo.</para>
+>Este sesgo coincide con las pistas que son parecidas de acuerdo con EchoNest, bien a la pista anterior o a cualquier pista en la lista de reproducción. Esto le permite reproducir un conjunto de pistas compatibles simplemente añadiendo una sola pista a la lista de reproducción y activando la lista de reproducción dinámica, mejor que definiendo todas las reglas de coincidencia.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -9869,7 +9869,7 @@
 ></term>
     <listitem>
     <para
->Este sesgo ejecuta la misma función que el sesgo EchoNest, pero usa Last.fm para determinar el parecido. Usted también puede elegir el parecido a la pista anterior o al artista anterior.</para>
+>Este sesgo ejecuta la misma función que el sesgo EchoNest, pero usa Last.fm para determinar el parecido. También puede elegir el parecido a la pista anterior o al artista anterior.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -9960,7 +9960,7 @@
 <para
 >El <guilabel
 >Generador automático de listas de reproducción (APG)</guilabel
-> genera automáticamente listas de reproducción basadas en las restricciones que usted establezca. Esas restricciones pueden ser conjuntos basados en datos de la canción (artista, género, año) o tiempo de acceso (última reproducción). También hay restricciones especiales para determinar como &amarok; va a buscar canciones. Usted encontrará el <emphasis
+> genera automáticamente listas de reproducción basadas en las restricciones que establezca. Esas restricciones pueden ser conjuntos basados en datos de la canción (artista, género, año) o tiempo de acceso (última reproducción). También hay restricciones especiales para determinar como &amarok; va a buscar canciones. Encontrará el <emphasis
 >APG</emphasis
 > en su panel <guilabel
 >Orígenes de medios</guilabel
@@ -10186,13 +10186,13 @@
 </informaltable>
 </para>
 <para
->Tenga en cuenta que usted puede cambiar el modo en que funcionan las restricciones de varias maneras, tales como establecer el deslizador de borroso-exacto, que determina como de cerca se va a seguir la restricción. </para>
+>Tenga en cuenta que puede cambiar el modo en que funcionan las restricciones de varias maneras, tales como establecer el deslizador de borroso-exacto, que determina como de cerca se va a seguir la restricción. </para>
 <para
 >Otra forma de modificar restricciones que está presente en <guilabel
 >Emparejar etiquetas</guilabel
 > con una etiqueta basada en texto se encuentra en la línea bajo el cuadro de opciones <guilabel
 >Campo</guilabel
->. En el campo de texto de la derecha usted escribe el texto a emparejar y en el cuadro de opciones a la izquierda, el valor que puede seleccionar <guilabel
+>. En el campo de texto de la derecha, escriba el texto a emparejar y en el cuadro de opciones a la izquierda, el valor que puede seleccionar <guilabel
 >contiene</guilabel
 > (lo que considerará cualquier canción que tengan el texto correspondiente en su etiqueta), <guilabel
 >coincide</guilabel
@@ -10202,7 +10202,7 @@
 >termina con</guilabel
 >. </para>
 <para
->De forma parecida, usted también puede editar el modo en que restricciones basadas en valores (como la restricción <guilabel
+>De forma parecida, también puede editar el modo en que restricciones basadas en valores (como la restricción <guilabel
 >Longitud de la lista de reproducción</guilabel
 > y el contador de reproducciones de la restricción <guilabel
 >Emparejar etiqueta</guilabel
@@ -10255,7 +10255,7 @@
 >Uso de sus predefiniciones</title
 > 
 <para
->Una vez que usted configura una predefinición, solo tiene que seleccionarla en el panel <guilabel
+>Una vez que configure una predefinición, solo tiene que seleccionarla en el panel <guilabel
 >Predefiniciones APG</guilabel
 > en el <guilabel
 >Generador automático de listas de reproducción (APG)</guilabel
@@ -10265,7 +10265,7 @@
 > </inlinemediaobject
 > la barra de herramientas para ejecutar <guilabel
 >APG</guilabel
-> con la predefinición seleccionada. Usted dispondrá entonces de una lista de reproducción que coincida con su criterio, como esta: </para>
+> con la predefinición seleccionada. Dispondrá entonces de una lista de reproducción que coincida con su criterio, como esta: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -10370,9 +10370,9 @@
 >Barra de humor</emphasis
 > le muestra el <quote
 >humor</quote
-> de una pista, lo que usted puede usar para imaginarse cuando ocurre algo de interés en la canción. </para>
+> de una pista, lo que puede usar para imaginarse cuando ocurre algo de interés en la canción. </para>
 <para
->Para que &amarok; muestre barras de humor para su música, usted necesitará el programa <guilabel
+>Para que &amarok; muestre barras de humor para su música, necesitará el programa <guilabel
 >Moodbar</guilabel
 > (consulte abajo para <link linkend="source-downloads"
 >descargas</link
@@ -10382,10 +10382,10 @@
 >Moodbar</guilabel
 > necesita <guilabel
 >GStreamer</guilabel
-> y diversos complementos en función de los tipos de archivo que usted use (consulte <link linkend="supported-filetypes"
+> y diversos complementos en función de los tipos de archivo que use (consulte <link linkend="supported-filetypes"
 >Tipos de archivos reconocidos</link
->). Usted <emphasis
->no</emphasis
+>). <emphasis
+>No</emphasis
 > necesitará el paquete phonon-backend-gstreamer para crear archivos .mood. </para>
 <para
 >Hay dos partes en la nueva implementación de la <guilabel
@@ -10440,7 +10440,7 @@
 >Transformada rápida de Fourier en el oeste</emphasis
 > (<ulink url="http://www.fftw.org"
 >fftw.org</ulink
->) versión 3.0 de la biblioteca FFTW o superior (al menos la versión de coma flotante de simple precisión - libfftw3f) &mdash; Si su plataforma no proporciona esto para usted o necesita compilar su propia versión, recuerde configurar el paquete con <userinput
+>) versión 3.0 de la biblioteca FFTW o superior (al menos la versión de coma flotante de simple precisión - libfftw3f) &mdash; Si su plataforma no proporciona esto o necesita compilar su propia versión, recuerde configurar el paquete con <userinput
 >./configure --enable-single</userinput
 ></para
 ></listitem>
@@ -10467,7 +10467,7 @@
 <para
 >Actualmente, los paquetes .mood se <emphasis
 >deben</emphasis
-> generar manualmente, &amarok; no puede hacerlo por usted. Para hacer esto para su colección completa, use el <link linkend="moodbar-file-generation-script"
+> generar manualmente, &amarok; no puede hacerlo por sí mismo. Para hacerlo con su colección completa, use el <link linkend="moodbar-file-generation-script"
 >Guion de generación de la barra de humor</link
 > descrito anteriormente. </para>
 <para
@@ -10483,7 +10483,7 @@
 ></menuchoice
 >. Las barras de humor deberían aparecer ahora en los deslizadores de pista de la ventana del reproductor y <guilabel
 >Lista de reproducción</guilabel
->; también habrá un campo de humor que usted podrá añadir a sus diseños de lista de reproducción. </para>
+>; también habrá un campo de humor que podrá añadir a sus diseños de lista de reproducción. </para>
 </sect2>
 <sect2 id="installation"
 ><title
@@ -10506,7 +10506,7 @@
 >capítulo del resumen de requisitos</link
 >. La versión 0.1.4 es una bifurcación del código fuente original de 0.1.2, actualizada para que use GStreamer 1.0. El código fuente de la versión antigua 0.1.2 ya no están disponibles de manera fiable en línea, pero aún pueden estar disponibles paquetes para algunas distribuciones. </para>
 <para
->Si usted encuentra algún fallo, por favor, envíe un informe de fallo a <ulink url="http://bugs.kde.org"
+>Si encuentra algún fallo, envíe un informe de fallo a <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
 >. </para>
 </sect3>
@@ -10523,7 +10523,7 @@
 <para
 >Un paquete para Moodbar está ahora disponible en Debian inestable. Sencillamente ejecute <userinput
 >apt-get install moodbar</userinput
->. Usted seguramente querrá instalar también gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, y gstreamer0.10-plugins-bad para reconocimiento del formato. </para>
+>. Seguramente querrá instalar también gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, y gstreamer0.10-plugins-bad para reconocimiento del formato. </para>
 </sect3>
 <sect3 id="kubuntu-and-ubuntu-packages"
 ><title
@@ -10544,7 +10544,7 @@
 >Adept</guilabel
 >, <guilabel
 >Synaptic</guilabel
->). Usted seguramente también querrá instalar gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, y gstreamer0.10-plugins-bad para reconocimiento del formato. </para>
+>). Seguramente también querrá instalar gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, y gstreamer0.10-plugins-bad para reconocimiento del formato. </para>
 <para
 >O, para instalar, pegue esto en <guilabel
 >Firefox</guilabel
@@ -10580,7 +10580,7 @@
 ></note>
 </para>
 <para
->Si usted está en una distribución basada en rpm, puede generar un .rpm usando rpmbuild con la última </para>
+>Si está en una distribución basada en rpm, puede generar un .rpm usando rpmbuild con la última </para>
 <para
 ><ulink url="http://cvs.pld-linux.org/cgi-bin/cvsweb/SPECS/gstreamer-plugins-moodbar.spec"
 >gstreamer-plugins-moodbar.spec</ulink
@@ -10649,7 +10649,7 @@
 ></note>
 </para>
 <para
->Lo primero de todo, usted necesita añadir los repositorios PLF, por tanto visite <ulink url="http://easyurpmi.zarb.org"
+>Lo primero de todo, necesita añadir los repositorios PLF, por tanto visite <ulink url="http://easyurpmi.zarb.org"
 >easyurpmi.zarb.org</ulink
 > y añádalos a su lista de repositorios. </para>
 <para
@@ -10733,7 +10733,7 @@
  control_c()        # run if user hits control-c
  {
    echo "" &gt; "$LAST"
-   echo "Exiting..."
+   echo "Exiting…"
    exit
  }
  if [ -e "$LAST" ]; then
@@ -10762,7 +10762,7 @@
 > 
 </para>
 <para
->De forma alternativa, si lo anterior no funciona, usted puede intentar: </para>
+>De forma alternativa, si lo anterior no funciona, puede intentar: </para>
 <para
 ><userinput
 >chmod +x moodbar.sh ./moodbar.sh </userinput
@@ -10771,7 +10771,7 @@
 <para
 >¡Esto puede tardar un montón para colecciones grandes! Tenga en cuenta que las barras de humor no aparecerán en &amarok; hasta que &amarok; vuelva a explorar la colección. Los archivos <filename
 >mood</filename
-> generados serán archivos ocultos (&ie; prefijados con un punto) - téngalo en cuenta si usted no puede encontrar algún archivo de humor generado. </para>
+> generados serán archivos ocultos (&ie; prefijados con un punto) - téngalo en cuenta si no puede encontrar algún archivo de humor generado. </para>
 <para
 >Basado en el guion anterior, una alternativa para las CPU con varios núcleos: </para>
 <para
@@ -10804,25 +10804,25 @@
 >bus error</emphasis
 >, esto casi siempre significa que no puede decodificar (o no puede encontrar) su archivo. Eche un vistazo a <link linkend="supported-filetypes"
 >tipos de archivo reconocidos</link
-> abajo para ideas sobre que complementos de GStreamer instalar. Usted también puede intentar la orden inferior para probar si GStreamer puede decodificar su archivo: <userinput
+> abajo para ideas sobre que complementos de GStreamer instalar. También puede intentar la orden inferior para probar si GStreamer puede decodificar su archivo: <userinput
 >gst-launch-1.0 filesrc location=[file] ! decodebin ! fakesink</userinput
 ></para
 ></listitem>
 <listitem
 ><para
->Si usted está usando el complemento ffmpeg para decodificar mp3, usted puede también recibir errores de bus misteriosos. La solución es parar de usar el complemento ffmpeg, ya que tiene muchos fallos &mdash; use mad en su lugar.</para
+>Si está usando el complemento ffmpeg para decodificar mp3, puede también recibir errores de bus misteriosos. La solución es parar de usar el complemento ffmpeg, ya que tiene muchos fallos &mdash; use mad en su lugar.</para
 ></listitem>
 <listitem
 ><para
 >Si el ejecutable <guilabel
 >Moodbar</guilabel
 > le dice qué no puede encontrar un elemento &mdash; p. ej. le muestra un mensaje de error como <screen
->No se pudo crear un elemento de tipo fftwspectrum, por favor, instálelo.</screen
->&mdash; lo que, generalmente significa que usted bien no tiene los complementos exigidos instalados (consulte la lista de complementos <link linkend="supported-filetypes"
+>No se pudo crear un elemento de tipo fftwspectrum, instálelo.</screen
+>&mdash; lo que, generalmente significa que bien no tiene los complementos exigidos instalados (consulte la lista de complementos <link linkend="supported-filetypes"
 >aquí</link
->), o que usted no instaló el paquete Moodbar con el mismo prefijo que GStreamer, si libmoodbar.so y libgstdecodebin.so no están en el mismo directorio, entonces Moodbar no se instala con el mismo prefijo que GStreamer. Por favor, lea el archivo INSTALL para instrucciones sobre como configurar el paquete moodbar correctamente. De otro modo, <emphasis
+>), o que no instaló el paquete Moodbar con el mismo prefijo que GStreamer, si libmoodbar.so y libgstdecodebin.so no están en el mismo directorio, entonces Moodbar no se instala con el mismo prefijo que GStreamer. Lea el archivo INSTALL para instrucciones sobre como configurar el paquete moodbar correctamente. De otro modo, <emphasis
 >si sabe lo qué está haciendo,</emphasis
-> puede ser más fácil para usted echar un vistazo a la variable de entorno <filename
+> puede ser más fácil para echar un vistazo a la variable de entorno <filename
 >GST_PLUGIN_PATH</filename
 >.</para
 ></listitem>
@@ -10838,7 +10838,7 @@
 ></listitem>
 <listitem
 ><para
->Si usted dispone de varias versiones de GStreamer instaladas, asegúrese de que todos los complementos están instalados <emphasis
+>Si dispone de varias versiones de GStreamer instaladas, asegúrese de que todos los complementos están instalados <emphasis
 >para la versión 1.0.*</emphasis
 > -- diferentes versiones <emphasis
 >no pueden</emphasis
@@ -10851,7 +10851,7 @@
 >Tipos de archivo admitidos</title
 > 
 <para
->Usted necesitará varios complementos de Gstreamer para permitir que <guilabel
+>Necesitará varios complementos de Gstreamer para permitir que <guilabel
 >Moodbar</guilabel
 > analice sus archivos. Aquí hay una lista de los complementos que necesitará; asegúrese de instalar la <emphasis
 >versión 1.0.*</emphasis
@@ -11346,7 +11346,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 <para
->Es caso de que &amarok; se inicie lentamente en LXDE, usted puede añadir <guilabel
+>Es caso de que &amarok; se inicie lentamente en LXDE, puede añadir <guilabel
 >kdeinit</guilabel
 > a las aplicaciones de inicio usando la orden <guilabel
 >lxsession-edit</guilabel
@@ -11364,13 +11364,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ></warning>
 </para>
 <para
->Como usted ya sabe, una instalación normal de Windows no usa KDE, por lo que, si usted quiere instalar &amarok; no puede descargarse solo el paquete &amarok;. Usted debe instalar primero un compilador compatible. Aquí se describe como descargar, instalar y ejecutar &amarok; en el sistema operativo Windows. </para>
+>Como ya sabe, una instalación normal de Windows no usa KDE, por lo que, si quiere instalar &amarok; no puede descargarse solo el paquete &amarok;. Debe instalar primero un compilador compatible. Aquí se describe como descargar, instalar y ejecutar &amarok; en el sistema operativo Windows. </para>
 <sect3 id="how-to-download"
 ><title
 >Cómo descargar</title
 > 
 <para
->Si usted experimenta alguna dificultad, por favor visite la <ulink url="http://community.kde.org/Amarok/GettingStarted/Download/Windows"
+>Si experimenta alguna dificultad, visite la <ulink url="http://community.kde.org/Amarok/GettingStarted/Download/Windows"
 >Página wiki de Amarok en Windows</ulink
 > donde se mantienen actualizados los últimos enlaces. De otro modo, use lo último en los siguientes enlaces: </para>
 </sect3>
@@ -11383,7 +11383,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><warning
 ><para
->Si usted quiere actualizar, asegúrese de eliminar su instalación actual.</para
+>Si quiere actualizar, asegúrese de eliminar su instalación actual.</para
 ></warning>
 </para>
 <sect4 id="step-1"
@@ -11415,8 +11415,8 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Segundo, elija la ubicación de la instalación. </para>
 <para
->Si usted quiere cambiar la ubicación predeterminada, seleccione <guilabel
->Navegar...</guilabel
+>Si quiere cambiar la ubicación predeterminada, seleccione <guilabel
+>Navegar…</guilabel
 > y elija una nueva ubicación. </para>
 <para>
 <screenshot>
@@ -11486,7 +11486,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Ejecución de Amarok</title
 > 
 <para
->Cuando la instalación termine, usted encontrará un acceso rápido a &amarok; en su escritorio. Para ejecutar &amarok; solo pulse sobre el acceso rápido. </para>
+>Cuando la instalación termine, encontrará un acceso rápido a &amarok; en su escritorio. Para ejecutar &amarok; pulse sobre dicho acceso rápido. </para>
 </sect3>
 </sect2>
 <sect2 id="amarok-on-mac-os-x"
@@ -11560,7 +11560,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Otros recursos</title
 > 
 <para
->Si usted tiene dificultades, hay una <ulink url="http://community.kde.org/Amarok/Development/OS_X"
+>Si tiene dificultades, dispone de una <ulink url="http://community.kde.org/Amarok/Development/OS_X"
 >página de resolución de problemas aquí</ulink
 >. </para>
 </sect3>
@@ -11571,9 +11571,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Resolución de problemas y problemas comunes</title
 > 
 <para
->Si usted trabaja siguiendo estos procedimientos, pero no tiene éxito, por favor acuda al IRC (irc://irc.libera.chat/amarok), escriba en el foro de KDE <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Si trabaja siguiendo estos procedimientos pero no tiene éxito, acuda al IRC (irc://irc.libera.chat/amarok), escriba en la <ulink url="http://forum.kde.org/viewforum.php?f=127"
 >sección Amarok</ulink
->, o en la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+> de los foros de KDE o en la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >lista de Amarok</ulink
 >. </para>
 <sect2 id="problems-installing"
@@ -11598,15 +11598,15 @@ ftpProxy=http://username:password@proxyserver:port/
 >Manual de GIT en Techbase</ulink
 >. </para>
 <para
->Si usted ha compilado antes satisfactoriamente y ahora encuentra errores, intente eliminar <filename
+>Si ha compilado antes con éxito y ahora encuentra errores, intente eliminar <filename
 >CMakeCache.txt</filename
 > y pruebe de nuevo. Si continúan los errores, elimine la carpeta Build completa y compile desde cero. </para>
 <para
->El URL del que tirar de git ha cambiado recientemente. Ejecute <userinput
+>La URL del que tirar de git ha cambiado recientemente. Ejecute <userinput
 ><command
 >git remote set-url origin git://anongit.kde.org/amarok</command
 ></userinput
-> si usted quiere continuar usando el URL antiguo. Por favor, avísenos si usted encuentra el enlace antiguo en nuestros documentos de forma que podamos actualizarlo en cualquier parte. </para>
+> si quiere continuar usando la URL antigua. Avísenos si encuentra el enlace antiguo en nuestros documentos de forma que podamos actualizarlo en cualquier parte. </para>
 </sect3>
 </sect2>
 <sect2 id="problems-starting-up"
@@ -11631,7 +11631,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Asuntos de base de datos</title
 > 
 <para
->Si la base de datos está estropeada y esto evita que &amarok; arranque, usted puede mover la base de datos a la ubicación de la copia de respaldo (o sencillamente borrarla). Esto causará que &amarok; reconstruya la base de datos desde cero. Mueva la carpeta <filename
+>Si la base de datos está estropeada y esto evita que &amarok; arranque, puede mover la base de datos a la ubicación de la copia de respaldo (o sencillamente borrarla). Esto causará que &amarok; reconstruya la base de datos desde cero. Mueva la carpeta <filename
 >$HOME/.kde/share/apps/amarok/mysqle</filename
 > a una ubicación de copia de respaldo (como <filename
 >$HOME/.kde/share/apps/amarok/mysqle~</filename
@@ -11642,7 +11642,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Otros asuntos y copia de seguridad de las preferencias</title
 > 
 <para
->En lo de arriba dos elementos no ayudan o usted, de otro modo, necesitaría restaurar &amarok; a una configuración limpia, usted puede mover a una ubicación de copia de respaldo (o borrar) el directorio de &amarok; en <filename
+>Si los dos elementos anteriores no sirven de ayuda o, en caso contrario, necesita restaurar &amarok; con una configuración limpia, puede mover a una ubicación de copia de respaldo (o borrar) el directorio de &amarok; en <filename
 >$HOME/.kde/share/apps/amarok</filename
 > y los archivos de configuración de &amarok; en <filename
 >$HOME/.kde/share/config/amarok*</filename
@@ -11658,7 +11658,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Problemas explorando, ordenado archivos</title
 > 
 <para
->&amarok; explora sus archivos de música en el arranque inicial y mantendrá su colección actualizada automáticamente, si usted elige <menuchoice
+>&amarok; explora sus archivos de música en el arranque inicial y mantendrá su colección actualizada automáticamente, si elige <menuchoice
 ><guimenu
 >Preferencias</guimenu
 ><guisubmenu
@@ -11670,7 +11670,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></menuchoice
 >. </para>
 <para
->Si usted no quiere que &amarok; explore en busca de cambios, desmárquelo, y use <menuchoice
+>Si no quiere que &amarok; explore en busca de cambios, desmárquelo, y use <menuchoice
 ><guimenu
 >Herramientas</guimenu
 ><guimenuitem
@@ -11686,7 +11686,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Etiquetas dañadas</title
 > 
 <para
->Algunas personas se dan cuenta de que &amarok; parece perder algunos archivos. Una de las causas puede ser etiquetas corruptas, que usted puede comprobar mediante la aplicación de etiquetado <ulink url="http://kid3.sourceforge.net/"
+>Algunas personas se dan cuenta de que &amarok; parece perder algunos archivos. Una de las causas puede ser etiquetas corruptas, que puede comprobar mediante la aplicación de etiquetado <ulink url="http://kid3.sourceforge.net/"
 >kid3</ulink
 >. Más información sobre etiquetado <link linkend="tag-editor"
 >aquí</link
@@ -11703,7 +11703,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Imposibilidad de escribir etiquetas</title
 > 
 <para
->Si &amarok; no guarda los cambios de las etiquetas, usted puede tener problemas de permisos. Asegúrese de que su usuario tiene permisos de escritura para su música. Por ejemplo, <userinput
+>Si &amarok; no guarda los cambios de las etiquetas, puede tener problemas de permisos. Asegúrese de que su usuario tiene permisos de escritura para su música. Por ejemplo, <userinput
 >chown -R su-usuario Música/</userinput
 > para cambiar los permisos a su usuario o <userinput
 >chmod -R +w Música/</userinput
@@ -11716,13 +11716,13 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Algunas veces la gente informa que las pistas están en Varios artistas cuando no deberían estarlo o se clasifican como <quote
 >Álbum desconocido.</quote
-> Lo que separa los álbumes de Varios artistas y las pistas y álbumes clasificados junto sus artistas es la etiqueta Artista del álbum. Cuando usted pulsa <guilabel
+> Lo que separa los álbumes de Varios artistas y las pistas y álbumes clasificados junto sus artistas es la etiqueta Artista del álbum. Cuando pulse <guilabel
 >Mostrar en Varios artistas</guilabel
-> en el menú de contexto (botón derecho), esa etiqueta se borrará si está cumplimentada. Lo contrario ocurre a un archivo de Varios artistas cuando usted elige <guilabel
+> en el menú de contexto (botón derecho), esa etiqueta se borrará si está cumplimentada. Lo contrario ocurre a un archivo de Varios artistas cuando elige <guilabel
 >No mostrar en varios artistas</guilabel
 >, pero la etiqueta Artista del álbum se autocompletará desde la etiqueta artista. </para>
 <para
->Si no hay etiqueta álbum ni etiqueta Artista del álbum, &amarok; pondrá la pista en Álbum desconocido en Varios artistas. Si usted los quiere ordenar de otra manera, etiquételos del modo que los quiera ordenar. Si no conoce parte de la información, pruebe la nueva función <emphasis
+>Si no hay etiqueta álbum ni etiqueta Artista del álbum, &amarok; pondrá la pista en Álbum desconocido en Varios artistas. Si los quiere ordenar de otra manera, etiquételos del modo que los quiera ordenar. Si no conoce parte de la información, pruebe la nueva función <emphasis
 >MusicBrainz</emphasis
 > en el editor de etiquetas o use una aplicación de etiquetado. </para>
 </sect3>
@@ -11748,22 +11748,22 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 <para
->Esto significa más probablemente que un archivo idéntico terminó duplicado en su colección en distintos lugares. Usted puede usar el navegador de archivos de Amarok para comprobar los archivos individualmente, <guilabel
+>Esto significa más probablemente que un archivo idéntico terminó duplicado en su colección en distintos lugares. Puede usar el navegador de archivos de Amarok para comprobar los archivos individualmente, <guilabel
 >la acción habitual es eliminar uno de los duplicados</guilabel
->. Si usted está seguro de que las pistas no están (o no deberían estar) duplicadas, puede haber varios motivos por los que &amarok; piensa que lo están: </para>
+>. Si está seguro de que las pistas no están (o no deberían estar) duplicadas, puede haber varios motivos por los que &amarok; piensa que lo están: </para>
 <orderedlist>
 <listitem
 ><para
 >Los archivos son idénticos bit-a-bit<itemizedlist>
 <listitem
 ><para
->Usted puede usar, por ejemplo, la orden <varname
+>Puede usar, por ejemplo, la orden <varname
 >md5sum</varname
 > para verificar que</para
 ></listitem>
 <listitem
 ><para
->Usted puede editar metadatos de uno de los archivos desde dentro del navegador de archivos de &amarok; para diferenciarlos de alguna manera, quizás editando artista (álbum), año, compositor o un comentario</para
+>Puede editar metadatos de uno de los archivos desde dentro del navegador de archivos de &amarok; para diferenciarlos de alguna manera, quizás editando artista (álbum), año, compositor o un comentario</para
 ></listitem>
 </itemizedlist>
 </para
@@ -11779,7 +11779,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Usted puede usar la utilidad de línea de órdenes <varname
+>Puede usar la utilidad de línea de órdenes <varname
 >amarok_afttagger</varname
 > para reiniciar el id único de una de las pistas: <userinput
 >amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput
@@ -11787,7 +11787,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->De otro modo, usted puede eliminar el id. único de una de las pistas, perdiendo la funcionalidad seguir-incluso-si-se-cambia-desde-fuera: <userinput
+>De otro modo, puede eliminar el id. único de una de las pistas, perdiendo la funcionalidad seguir-incluso-si-se-cambia-desde-fuera: <userinput
 >amarok_afttagger --delete --verbose path/to/one/of/the/tracks.mp3</userinput
 ></para
 ></listitem>
@@ -11803,7 +11803,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Las versiones liberadas hasta &amarok; 2.7 trataban los ids. MusizBrainz incrustados en etiquetas (rellenado por etiquetadores permitidos por MusizBrainz como Picard) como identificadores únicos de las pistas. Sin embargo, MusizBrainz cambió la semántica del id. para significar <quote
 >id. de grabación</quote
-> desde que estaba implementado originalmente en &amarok; los que significa que usted podría obtener falsos duplicados, por ejemplo, pistas que aparecen en el álbum original y en el de los mejores. Consulte <emphasis role="strikethrough"
+> desde que estaba implementado originalmente en &amarok; lo que significa que podría obtener falsos duplicados, por ejemplo, pistas que aparecen en el álbum original y en el de los mejores. Consulte <emphasis role="strikethrough"
 ><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329"
 >bug #315329</ulink
 ></emphasis
@@ -11811,13 +11811,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Usted puede usar cualquier lector avanzado de etiquetas para verificarlo (busque cadenas <varname
+>Puede usar cualquier lector avanzado de etiquetas para verificarlo (busque cadenas <varname
 >MusicBrainz</varname
 > en las etiquetas) y para eliminar el id de MusicBrainz de una de las pistas</para
 ></listitem>
 <listitem
 ><para
->Como una solución alternativa, usted puede usar <varname
+>Como una solución alternativa, Puede usar <varname
 >amarok_afttagger</varname
 > para añadir el id de AFT de &amarok; a una de las pistas debido a que &amarok; preferirá entonces su propio id en lugar del de MusicBrainz: <userinput
 >amarok_afttagger --newid --verbose path/to/one/of/the/tracks.mp3</userinput
@@ -11838,7 +11838,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Amarok salta pistas, a parece que las reproduce sin sonido</title
 > 
 <para
->Si los archivos que usted está intentando reproducir están en formato mp3, por favor, consulte las instrucciones para activar el reconocimiento de mp3 en su distribución, <link linkend="what-media-types-does-amarok-support"
+>Si los archivos que está intentando reproducir están en formato mp3, consulte las instrucciones para activar el reconocimiento de mp3 en su distribución, <link linkend="what-media-types-does-amarok-support"
 >aquí</link
 >. Tenga en cuenta que un programa capaz de reproducir mp3 en su sistema no significa que &amarok; tenga los códecs exigidos instalados. </para>
 </sect3>
@@ -11861,11 +11861,11 @@ ftpProxy=http://username:password@proxyserver:port/
 ></menuchoice
 >. Considere cambiar a un motor diferente; los motores VLC y GStreamer deberían estar disponibles en su distribución. Se recomiendan ambos, Gstreamer o VLC, si su distribución todavía incluye otros motores no los use. </para>
 <para
->Compruebe también si el motor en solitario puede reproducir los archivos correctamente; si no esto es un asunto con el software y usted puede encontrar más información en sus archivos de ayuda. En otras palabras, ¿pueden Gstreamer y VLC reproducir el mismo archivo? ¿Se reproducirá con <ulink url="help:/dragonplayer"
+>Compruebe también si el motor en solitario puede reproducir los archivos correctamente; si esto no es un problema con el software y puede encontrar más información en sus archivos de ayuda. En otras palabras, ¿pueden Gstreamer y VLC reproducir el mismo archivo? ¿Se reproducirá con <ulink url="help:/dragonplayer"
 >Dragon</ulink
 >, que también usa phonon? </para>
 <para
->Si parece ser un problema de PulseAudio y usted puede proporcionar un registro a los desarrolladores de PulseAudio, la página de resolución de problemas está <ulink url="https://wiki.ubuntu.com/PulseAudio/Log"
+>Si parece ser un problema de PulseAudio y puede proporcionar un registro a los desarrolladores de PulseAudio, la página de resolución de problemas está <ulink url="https://wiki.ubuntu.com/PulseAudio/Log"
 >aquí</ulink
 >. </para>
 </sect3>
@@ -11917,7 +11917,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Rellenando informe de fallos: si se activó <guilabel
 >Dr. Konqi</guilabel
-> proporcionará una opción para informar de un fallo y hace la mayor parte del trabajo por usted. Si no, usted necesitará enviar el fallo manualmente a <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
+> proporcionará una opción para informar de un fallo y hace la mayor parte del trabajo. Si no, necesitará enviar el fallo manualmente a <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
 > bugs.kde.org</ulink
 >. Para informes de fallos, pegue la traza desde <guilabel
 >gdb</guilabel
@@ -11960,7 +11960,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cuáles son las diferencias entre Amarok 2 y las versiones anteriores?</title
 > 
 <para
->&amarok; 2 es casi una completa rescritura del código por lo que la base del código tiene poco que ver con &amarok; 1.4. Si usted ha perdido alguna característica, por favor cree un deseo en <ulink url="http://bugs.kde.org"
+>&amarok; 2 es casi una completa rescritura del código por lo que la base del código tiene poco que ver con &amarok; 1.4. Si ha perdido alguna característica, cree un deseo en <ulink url="http://bugs.kde.org"
 >Bugzilla</ulink
 >. </para>
 <para
@@ -11970,7 +11970,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Quizás la mayor característica nueva es la <emphasis
 >Infraestructura de servicios</emphasis
->, que integra fuentes de música en red directamente en &amarok;. Esto incluye tiendas de música en línea, servidores de medios, contenedores de música Web y más. Gracias a ello, usted obtendrá un acceso fácil a música proporcionada por <emphasis
+>, que integra fuentes de música en red directamente en &amarok;. Esto incluye tiendas de música en línea, servidores de medios, contenedores de música Web y más. Gracias a ello, obtendrá un acceso fácil a música proporcionada por <emphasis
 >Magnatune</emphasis
 >, <emphasis
 >Jamendo</emphasis
@@ -11990,7 +11990,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Contexto</guilabel
 >, que ocupa el lugar central de la ventana de &amarok; remplazando el viejo <emphasis
 >Navegador de contexto</emphasis
-> de la serie 1.x. Muestra información contextual sobre la música que usted reproduce, como la carátula del álbum, valoración de la pista, etiquetas, letras, información del artista, canciones y artistas relacionados, pestañas de guitarras y bajos y otras. Gracias a la tecnología Plasma que usa, el panel de <guilabel
+> de la serie 1.x. Muestra información contextual sobre la música que reproduce, como la carátula del álbum, valoración de la pista, etiquetas, letras, información del artista, canciones y artistas relacionados, pestañas de guitarras y bajos y otras. Gracias a la tecnología Plasma que usa, el panel de <guilabel
 >Contexto</guilabel
 > puede proporcionar contenido muy amplio, como AJAX, video y animaciones, todo de forma fascinante para la vista. Más información sobre el <link linkend="the-context-pane"
 >Panel de contexto</link
@@ -12000,7 +12000,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Para acompañar el panel de <guilabel
 >Contexto</guilabel
->, hemos desarrollado una nueva y eficiente en espacio, lista de reproducción. Para preservar el espaciado horizontal, agrupa el nombre de la pista, artista, nombre del álbum y carátula todo junto, y le permite agrupamiento adicional por nombres de álbum. Más aun, usted puede reorganizarlo todo en su contenido. Si usted prefiere la vieja lista de reproducción de 1.4, también puede tenerla. Consulte <link linkend="changing-the-playlist-layout"
+>, hemos desarrollado una nueva y eficiente en espacio, lista de reproducción. Para preservar el espaciado horizontal, agrupa el nombre de la pista, artista, nombre del álbum y carátula todo junto, y le permite agrupamiento adicional por nombres de álbum. Más aun, puede reorganizarlo todo en su contenido. Si prefiere la vieja lista de reproducción de 1.4, también puede tenerla. Consulte <link linkend="changing-the-playlist-layout"
 >Cambio del diseño de lista de reproducción</link
 > para más.</para
 ></listitem>
@@ -12028,7 +12028,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 </itemizedlist>
 <para
->Hay muchas más características importantes como guiones avanzados, colecciones dinámicas, mejoras de ergonomía, manejo mejorado de dispositivos multimedia, un nuevo gestor de podcast, uso de más plataformas y otras. </para>
+>Hay muchas más características importantes como guiones avanzados, colecciones dinámicas, mejoras de ergonomía, manejo mejorado de dispositivos multimedia, un nuevo gestor de pódcast, uso de más plataformas y otras. </para>
 </sect2>
 <sect2 id="installation15"
 ><title
@@ -12077,7 +12077,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Dónde puedo obtener apoyo para Amarok?</title
 > 
 <para
->Hay varias opciones. Muchas veces los problemas que usted tiene con la instalación inicial de &amarok; los responden mejor los expertos en su distribución particular de &UNIX; o &Linux;. Usted puede buscar ayuda de otros usuarios y desarrolladores en el <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Hay varias opciones. Muchas veces los problemas que tiene con la instalación inicial de &amarok; los responden mejor los expertos en su distribución particular de &UNIX; o &Linux;. Puede buscar ayuda de otros usuarios y desarrolladores en el <ulink url="http://forum.kde.org/viewforum.php?f=127"
 >Foro de Amarok</ulink
 > y el <ulink url="irc://irc.licera.chat/amarok"
 >Canal IRC de Amarok</ulink
@@ -12085,16 +12085,16 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Tenga en cuenta que <ulink url="http://bugs.kde.org"
 >bugzilla</ulink
-> no es un lugar para buscar apoyo. Por favor, introduzca un informe de fallo si usted está comprometido a ayudar a resolver un fallo en el propio &amarok;. </para>
+> no es un lugar para buscar apoyo. Introduzca un informe de fallo si está comprometido a ayudar a resolver un fallo en el propio &amarok;. </para>
 </sect3>
 <sect3 id="how-do-i-report-a-bug"
 ><title
 >¿Cómo informo de un fallo?</title
 > 
 <para
->Si usted encuentra un fallo en &amarok;, por favor envíelo a <ulink url="https://bugs.kde.org"
+>Si encuentra un fallo en &amarok;, envíelo a <ulink url="https://bugs.kde.org"
 >Instancia KDE de bugzilla</ulink
->. Para crear un informe de fallo completo, por favor incluya siempre la siguiente información: </para>
+>. Para crear un informe de fallo completo, incluya siempre la siguiente información: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -12104,11 +12104,11 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guimenuitem
 >Acerca de Amarok</guimenuitem
 ></menuchoice
->). Usted no debería informar de fallos de versiones de &amarok; anteriores a la estable actual, ya que no podemos proporcionar correcciones retroactivas.</para
+>). No debería informar de fallos de versiones de &amarok; anteriores a la estable actual, ya que no podemos proporcionar correcciones retroactivas.</para
 ></listitem>
 <listitem
 ><para
->La versión exacta de KDE y Qt, incluso si usted no ejecuta &amarok; en KDE (<menuchoice
+>La versión exacta de KDE y Qt, incluso si no ejecuta &amarok; en KDE (<menuchoice
 ><guimenu
 >Ayuda</guimenu
 ><guimenuitem
@@ -12118,7 +12118,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->El motor exacto de Phonon. Usted puede encontrar esta información en los diagnósticos (<menuchoice
+>El motor exacto de Phonon. Puede encontrar esta información en los diagnósticos (<menuchoice
 ><guimenu
 >Ayuda</guimenu
 ><guimenuitem
@@ -12128,7 +12128,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Si el fallo es reproducible. Por favor, no informe de fallos que usted no puede reproducir ya que son casi imposibles de arreglar.</para
+>Si el fallo es reproducible. No informe de fallos que no puede reproducir ya que son casi imposibles de arreglar.</para
 ></listitem>
 <listitem
 ><para
@@ -12136,7 +12136,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 </itemizedlist>
 <para
->Si cualquiera de esta información no está cumplimentada, el informe de fallos es incompleto. Por favor, esté también preparado para responder preguntas de los desarrolladores o de los clasificadores de fallos y, finalmente probar otras preferencias. </para>
+>Si cualquiera de esta información no está cumplimentada, el informe de fallos es incompleto. Esté también preparado para responder preguntas de los desarrolladores o de los clasificadores de fallos y, finalmente probar otras preferencias. </para>
 </sect3>
 </sect2>
 <sect2 id="questions-about-the-playlist"
@@ -12156,11 +12156,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >Orígenes de medios</guilabel
 > en el lado izquierdo para navegar al artista/álbum/pista/deseado. A continuación, arrastre los archivos al componente <guilabel
 >Lista de reproducción</guilabel
-> de la derecha. Usted puede usar <guilabel
+> de la derecha. Puede usar <guilabel
 >Lista de reproducción dinámicas</guilabel
 > o el <guilabel
 >Generador automático de listas de reproducción</guilabel
-> para rellenar su lista de reproducción. Usted también puede arrastrar archivos desde cualquier gestor de archivos, como &dolphin;. Usted puede hacer doble clic en una pista, artista o género en su <guilabel
+> para rellenar su lista de reproducción. También puede arrastrar archivos desde cualquier gestor de archivos, como &dolphin;. Puede hacer doble clic en una pista, artista o género en su <guilabel
 >Orígenes de medios</guilabel
 > o sistema de archivos, o pulsar el botón derecho y <guilabel
 >Añadir a la lista de reproducción</guilabel
@@ -12173,7 +12173,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo elimino pistas de la lista de reproducción?</title
 > 
 <para
->Seleccione la(s) pista(s) que usted quiere eliminar y pulse la tecla <keycap
+>Seleccione las pistas que quiere eliminar y pulse la tecla <keycap
 >Supr.</keycap
 >. O pulse con el botón derecho la selección y elija <guilabel
 >Eliminar de Playlist</guilabel
@@ -12212,7 +12212,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo reproduzco CD de audio?</title
 > 
 <para
->Los CD de audio se tratan distinto que sus CD de datos, que también se admiten. Cuando usted inserta un CD de audio, se mostrará en su colección local. Arrastre la lista de reproducción o <emphasis
+>Los CD de audio se tratan distinto que sus CD de datos, que también se admiten. Cuando inserte un CD de audio, se mostrará en su colección local. Arrastre la lista de reproducción o <emphasis
 >Gotero emergente</emphasis
 >, o pulse con el botón derecho las pistas seleccionadas y elija <guilabel
 >Añadir a lista de reproducción</guilabel
@@ -12234,20 +12234,20 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><emphasis
 >Phonon</emphasis
-> es la infraestructura multimedia de KDE 4. Usted puede encontrar más información <link linkend="playback"
+> es la infraestructura multimedia de KDE 4. Puede encontrar más información <link linkend="playback"
 >aquí</link
 >. </para>
 <para
->Recomendamos tanto el motor Gstreamer como el VLC ya que ambos se mantienen activamente. Si usted quiere reproducir emisiones usted debería usar el motor VLC solo, ya que el Gstreamer tiene algunas particularidades en esta materia. Asegúrese de que usted no usa ningún otro motor, ya que están obsoletos. </para>
+>Recomendamos tanto el motor Gstreamer como el VLC ya que ambos se mantienen activamente. Si quiere reproducir emisiones, debería usar el motor VLC solo, ya que el Gstreamer tiene algunas particularidades en esta materia. Asegúrese de que no usa ningún otro motor, ya que están obsoletos. </para>
 <para
->Si usted está usando el motor de Phonon gstreamer, asegúrese de que solo usa complementos de una sola versión de gstreamer, de otro modo su sonido se verá comprometido. </para>
+>Si está usando el motor de Phonon gstreamer, asegúrese de que solo usa complementos de una sola versión de gstreamer, de otro modo su sonido se verá comprometido. </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"
 ><title
 >Amarok no reproduce mp3, ¿qué puedo hacer?</title
 > 
 <para
->Usted probablemente carezca de los códecs exigidos por su motor Phonon (Gstreamer o VLC). Por favor, informe de esto a su distribución si no se le pide instalarlos automáticamente cuando inicia &amarok; por primera vez. </para>
+>Probablemente carezca de los códecs exigidos por su motor Phonon (Gstreamer o VLC). Informe de esto a su distribución si no se le pide instalarlos automáticamente cuando inicia &amarok; por primera vez. </para>
 </sect3>
 <sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"
 ><title
@@ -12272,11 +12272,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >mka</filename
 > cámbielo a <filename
 >mkv</filename
->. Por supuesto, usted debe asegurarse que los archivos contienen solo audio. Usted puede usar la orden ffprobe para consultar que flujos están presentes en el archivo. Si el archivo contiene un flujo de video, debe separarse. Hay montones de herramientas disponibles para editar esos formatos y muchas de ellas están basadas en <filename
+>. Por supuesto, debe asegurarse que los archivos contienen solo audio. Puede usar la orden ffprobe para consultar que flujos están presentes en el archivo. Si el archivo contiene un flujo de video, debe separarse. Hay montones de herramientas disponibles para editar esos formatos y muchas de ellas están basadas en <filename
 >ffmpeg</filename
 >/<filename
 >libav</filename
->, que usted puede usar si está familiarizado con ellas. Si usted prefiere herramientas gráficas, una posible elección es <ulink url="http://www.avidemux.org/"
+>, que puede usar si está familiarizado con ellas. Si prefiere herramientas gráficas, una posible elección es <ulink url="http://www.avidemux.org/"
 >avidemux</ulink
 >. </para>
 <para
@@ -12300,14 +12300,14 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Si la salida de la orden anterior está vacía, entonces no hay archivo de video en el archivo. Para crear un archivo <filename
 >m4a</filename
-> solo con el flujo de audio, usted puede usar algo como </para>
+> solo con el flujo de audio, puede usar algo como </para>
 <para
 ><screen
 >ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </screen>
 </para>
 <para
->Usted también puede usar <filename
+>También puede usar <filename
 >avconv</filename
 >en lugar de <filename
 >ffmpeg</filename
@@ -12323,7 +12323,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 ><emphasis
 >-acodec copy</emphasis
-> se usa para no codificar de nuevo el flujo de audio, sino solo copiarlo. Esto evita pérdida de calidad, pero usted puede también codificar a un formato diferente si quiere y no está obligado a usar el contenedor m4a en este caso</para
+> se usa para no codificar de nuevo el flujo de audio, sino solo copiarlo. Esto evita pérdida de calidad, pero puede también codificar a un formato diferente si quiere y no está obligado a usar el contenedor m4a en este caso</para
 ></listitem>
 <listitem
 ><para
@@ -12363,7 +12363,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Dónde está el ecualizador?</title
 > 
 <para
->El ecualizador solo está disponible si usted está usando un motor phonon gstreamer. Usted puede encontrarlo en el menú <guilabel
+>El ecualizador solo está disponible si está usando un motor phonon gstreamer. Puede encontrarlo en el menú <guilabel
 >Herramientas</guilabel
 >. </para>
 </sect3>
@@ -12374,7 +12374,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Muchas distribuciones proporcionan actualmente el demonio de sonido <guilabel
 >PulseAudio</guilabel
-> que maneja las preferencias de sonido del sistema. Si usted no puede cambiar el volumen en &amarok; independientemente de &kmix;, entonces sus preferencias de <application
+> que maneja las preferencias de sonido del sistema. Si no puede cambiar el volumen en &amarok; independientemente de &kmix;, entonces sus preferencias de <application
 >PulseAudio</application
 > tienen la opción </para>
 <para
@@ -12395,26 +12395,26 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo activo las visualizaciones?</title
 > 
 <para
->Las visualizaciones vienen en forma de una miniaplicación. Para más información, por favor, consulte la <link linkend="applets"
+>Las visualizaciones vienen en forma de una miniaplicación. Para más información, Consulte la <link linkend="applets"
 >página de miniaplicaciones</link
 >. Las visualizaciones están actualmente en desarrollo y pueden ser erróneas en este momento. </para>
 </sect3>
 <sect3 id="how-can-i-add-podcasts"
 ><title
->¿Cómo añado podcasts?</title
+>¿Cómo añado pódcast?</title
 > 
 <para
 >Vaya a la sección <guilabel
->Podcast</guilabel
+>Pódcast</guilabel
 > en el panel <guilabel
 >Orígenes de medios</guilabel
 > y, a continuación, seleccione <guilabel
->Añadir Podcast...</guilabel
->. Añada el URL del podcast dónde se indica. Más información sobre podcasts <link linkend="podcasts"
+>Añadir pódcast…</guilabel
+>. Añada la URL del pódcast dónde se indica. Más información sobre pódcast <link linkend="podcasts"
 >aquí</link
 >. </para>
 <para
->También disponemos de algunos servicios como gpodder y directorio de podcasts para ayudarle a encontrar estupendos podcasts. Active los servicios en el menú <guilabel
+>También disponemos de algunos servicios como gpodder y directorio de pódcast para ayudarle a encontrar estupendos pódcast. Active los servicios en el menú <guilabel
 >Preferencias</guilabel
 >: <menuchoice
 ><guimenu
@@ -12429,7 +12429,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo uso Amarok para emitir a mi propia emisora de radio?</title
 > 
 <para
->Si usted quiere emitir directamente a un servidor icecast o shoutcast, la respuesta simplemente es: no está implementado. Usted puede usar <ulink url="http://giss.tv/sahabuntu/doc/idjc.html"
+>Si quiere emitir directamente a un servidor icecast o shoutcast, la respuesta simplemente es: no está implementado. Puede usar <ulink url="http://giss.tv/sahabuntu/doc/idjc.html"
 >IDJC</ulink
 > para eso. </para>
 </sect3>
@@ -12443,7 +12443,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >La carpeta no se ha recogido adecuadamente</title
 > 
 <para
->Si usted encuentra que la mayor parte de su música se reconoce por &amarok;, pero algunas carpetas no se recogen adecuadamente, abra una consola y teclee </para>
+>Si encuentra que la mayor parte de su música se reconoce por &amarok;, pero algunas carpetas no se recogen adecuadamente, abra una consola y teclee </para>
 <para
 ><userinput
 >touch <replaceable
@@ -12476,7 +12476,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Puedo usar medios extraíbles dentro de Amarok?</title
 > 
 <para
->&amarok; dispone de un gran apoyo mejorado para los dispositivos de medios basados en Solid, la capa de hardware de KDE, esto no necesita mucha configuración. Usted debería ser capaz de solo conectar su dispositivo y acceder a él con &amarok;. También, gracias a las <emphasis
+>&amarok; dispone de un gran apoyo mejorado para los dispositivos de medios basados en Solid, la capa de hardware de KDE, esto no necesita mucha configuración. Debería poder conectar su dispositivo y acceder a él con &amarok;. También, gracias a las <emphasis
 >Colecciones dinámicas</emphasis
 > sus dispositivos de medios pueden formar parte de su colección de música y ser localizables y accesibles desde la sección <guilabel
 >Música local</guilabel
@@ -12484,9 +12484,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Orígenes de medios</emphasis
 > cuando estén conectados. </para>
 <para
->Usted puede transferir sus canciones, álbumes y artistas desde su colección local pulsando con el botón derecho sobre <guilabel
+>Puede transferir sus canciones, álbumes y artistas desde su colección local pulsando con el botón derecho sobre <guilabel
 >Copiar a colección</guilabel
-> y escogiendo su dispositivo; y usted puede también hacerlo de otra manera: pulse con el botón derecho sobre <menuchoice
+> y escogiendo su dispositivo; y puede también hacerlo de otra manera: pulse con el botón derecho sobre <menuchoice
 ><guimenu
 > Copiar a colección </guimenu
 ><guimenuitem
@@ -12501,7 +12501,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Puedo usar la vieja colección de Amarok en Amarok 2? ¿Se perderán mis etiquetas, puntuaciones y valoraciones?</title
 > 
 <para
->Un importador de base de datos está disponible. Usted podrá mantener sus puntuaciones y estadísticas muy bien. Más información <link linkend="collection"
+>Un importador de base de datos está disponible. Podrá mantener sus puntuaciones y estadísticas muy bien. Más información <link linkend="collection"
 >aquí</link
 >. </para>
 </sect3>
@@ -12515,13 +12515,13 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Qué son los guiones?</title
 > 
 <para
->Existen pequeñas piezas de programas que añaden algunas funciones a &amarok;. Hay un montón de guiones y usted puede encontrarlos en <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57"
+>Existen pequeñas piezas de programas que añaden algunas funciones a &amarok;. Hay un montón de guiones y puede encontrarlos en <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57"
 >kde-apps.org</ulink
 > o puede buscarlos e instalarlos desde dentro de &amarok; usando el <guilabel
 >Gestor de guiones</guilabel
 >. Más detalles pueden encontrase <link linkend="script-manager"
 >aquí</link
->. Usted encontrará el <guilabel
+>. Encontrará el <guilabel
 >Gestor de guiones</guilabel
 > en el menú <guilabel
 >Preferencias</guilabel
@@ -12576,7 +12576,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo se determina la puntuación de las pistas?</title
 > 
 <para
->&amarok; asigna una puntuación (un número 0-100) a una canción basándose en cuantas veces la ha escuchado usted y si ha saltado la canción sin terminarla. Cada vez que la canción termina de reproducirse, la puntuación se cambia. </para>
+>&amarok; asigna una puntuación (un número 0-100) a una canción basándose en cuantas veces la ha escuchado y si ha saltado la canción sin terminarla. Cada vez que la canción termina de reproducirse, la puntuación se cambia. </para>
 <para
 >Aquí tiene un ejemplo de guion que puede calcular puntuaciones: </para>
 <para
@@ -12589,7 +12589,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screen>
 </para>
 <para
->Usted puede crear fácilmente su propio guion con su propio algoritmo. Consulte <ulink url="http://community.kde.org/Amarok/Development/Scripting_HowTo_2.0"
+>Puede crear fácilmente su propio guion con su propio algoritmo. Consulte <ulink url="http://community.kde.org/Amarok/Development/Scripting_HowTo_2.0"
 >Cómo escribir guiones</ulink
 > para más información. </para>
 </sect3>
@@ -12598,7 +12598,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo cambio manualmente la puntuación de una pista?</title
 > 
 <para
->Usted puede cambiar la puntuación a mano en el diálogo <guilabel
+>Puede cambiar la puntuación a mano en el diálogo <guilabel
 >Detalles de pista</guilabel
 >, disponible pulsando con el botón derecho sobre una pista, eligiendo <guilabel
 >Editar detalles de la pista</guilabel
@@ -12611,7 +12611,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¡Pero yo también quiero un sistema de estrellas, cómo en otros reproductores!</title
 > 
 <para
->&amarok;, por supuesto, implementa un sistema de puntuaciones definido por el usuario con el que usted puede puntuar sus pistas con una sola pulsación usando la miniaplicación de <guilabel
+>&amarok;, por supuesto, implementa un sistema de puntuaciones definido por el usuario con el que puede puntuar sus pistas con una sola pulsación usando la miniaplicación de <guilabel
 >Pista actual</guilabel
 >. También puede hacer esto con el menú de contexto (pulsación derecha) <menuchoice
 ><guimenu
@@ -12643,7 +12643,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></menuchoice
 >; entre otros. </para>
 <para
->Una vez que se carga el flujo, usted puede guardarlo pulsando en el panel <inlinemediaobject
+>Una vez que se carga el flujo, puede guardarlo pulsando en el panel <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -12676,7 +12676,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Cómo obtengo una traza?</title
 > 
 <para
->Si &amarok; ha fallado y usted quiere informar de ello, visite <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo"
+>Si &amarok; ha fallado y quiere informar de ello, visite <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo"
 >Cómo depurar</ulink
 >. El informe de falos debe hacerse en <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
@@ -12687,7 +12687,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >¡Amarok se congela! ¿Cómo puedo solucionar esto?</title
 > 
 <para
->Usted puede obtener una traza de una instancia congelada de &amarok; usando gdb cómo: </para>
+>Puede obtener una traza de una instancia congelada de &amarok; usando gdb cómo: </para>
 <para
 ><userinput
 >$ gdb -p `pidof amarok` (gdb) thread apply full bt all</userinput
@@ -12705,9 +12705,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Amarok tarda un montón de tiempo en iniciarse</title
 > 
 <para
->Si esto ocurre usted tiene que comprobar qué guiones ha instalado y qué servicios de Internet se están ejecutando, porque algunos de ellos pueden hacer más lento el inicio. También, si usted tiene emisiones en la lista de reproducción cuando abre &amarok; el inicio puede tardar un poco más. Lo mismo ocurre si usted tiene un gran número de pistas en la lista de reproducción (sobre 300 o más). </para>
+>Si esto ocurre, tiene que comprobar los guiones que ha instalado y los servicios de internet que se están ejecutando, porque algunos de ellos pueden hacer más lento el inicio. También, si tiene emisiones en la lista de reproducción cuando abre &amarok; el inicio puede tardar un poco más. Lo mismo ocurre si tiene un gran número de pistas en la lista de reproducción (sobre 300 o más). </para>
 <para
->Por otro lado, si usted no usa KDE, sino un entorno de escritorio distinto, el tiempo de inicio pude incrementarse ligeramente porque hay más bibliotecas que cargar. </para>
+>Por otro lado, si no usa KDE, sino un entorno de escritorio distinto, el tiempo de inicio pude incrementarse ligeramente porque hay más bibliotecas que cargar. </para>
 </sect3>
 </sect2>
 <sect2 id="development-questions"
@@ -12737,9 +12737,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >He encontrado un fallo / ¡Tengo una gran idea para Amarok!</title
 > 
 <para
->Por favor, informe a <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
+>Informe a <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
 >bugs.kde.org</ulink
->. Si usted tiene una lista de sugerencias o deseos, puede ser mejor enviarlas a nuestra lista de correo: <ulink url="mailto:amarok@kde.org"
+>. Si tiene una lista de sugerencias o deseos, puede ser mejor enviarlas a nuestra lista de correo: <ulink url="mailto:amarok@kde.org"
 >amarok@kde.org</ulink
 >. Simplemente enviar la idea a nuestros canales de IRC o a una rara página wiki o blog no ayudará mucho ya que la información se perdería. </para>
 </sect3>
@@ -12748,9 +12748,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Aceptan parches?</title
 > 
 <para
->Afortunadamente nuestro mejor curso de acción es permitirnos saber qué es lo que planea hacer antes de que haga ningún trabajo, de modo que podamos debatirlo, pero no se enfríe ¡todavía no hemos rechazado ningún parche! El debate es principalmente para ayudar a que usted modifique los bits correctos de &amarok;. Envíe sus parches y contribuciones de código a git.reviewboard.kde.org. Consulte también <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/"
+>Afortunadamente nuestro mejor curso de acción es permitirnos saber qué es lo que planea hacer antes de que haga ningún trabajo, de modo que podamos debatirlo, pero no se enfríe ¡todavía no hemos rechazado ningún parche! El debate es principalmente para ayudar a que modifique los bits correctos de &amarok;. Envíe sus parches y contribuciones de código a git.reviewboard.kde.org. Consulte también <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/"
 >Cómo enviar parches a &amarok;</ulink
->. Si usted dispone de una corrección de fallos, adelante: esto es un proyecto de código abierto después de todo. <inlinemediaobject
+>. Si dispone de una corrección de fallos, adelante: esto es un proyecto de código abierto después de todo. <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Face-smile.png" format="PNG"/> </imageobject
 > </inlinemediaobject>
@@ -13012,7 +13012,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry
 >Descripción</entry>
     <entry
->Acceso rápido</entry>
+>Atajo de teclado</entry>
   </row>
   </thead>
   <tbody>
@@ -13020,7 +13020,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Reproducir medio...</guilabel
+>Reproducir medio…</guilabel
 ></para>
     </entry>
     <entry>
@@ -13379,9 +13379,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Menú de lista de reproducción</title
 > 
 <para
->Esto es un menú desplegable de nivel superior dónde usted puede configurar su <guilabel
+>Esto es un menú desplegable de nivel superior dónde puede configurar su <guilabel
 >Lista de reproducción</guilabel
->. Desde aquí usted puede añadir más pistas, emisiones de canales de radio y limpiar su lista de reproducción. </para>
+>. Desde aquí puede añadir más pistas, emisiones de canales de radio y limpiar su lista de reproducción. </para>
 <sect3 id="menu-items"
 ><title
 >Opciones de menú</title
@@ -13415,7 +13415,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry
 >Descripción</entry>
     <entry
->Acceso rápido</entry>
+>Atajo de teclado</entry>
   </row>
   </thead>
   <tbody>
@@ -13423,7 +13423,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Añadir medio...</guilabel
+>Añadir medio…</guilabel
 ></para>
     </entry>
     <entry>
@@ -13435,7 +13435,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Añadir emisión...</guilabel
+>Añadir emisión…</guilabel
 ></para>
     </entry>
     <entry>
@@ -13449,7 +13449,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Exportar lista de reproducción como...</guilabel
+>Exportar lista de reproducción como…</guilabel
 ></para>
     </entry>
     <entry>
@@ -13750,7 +13750,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="configure-playlist-layout---"
 ><title
->Configurar diseño de lista de reproducción...</title
+>Configurar diseño de lista de reproducción…</title
 > 
 <para
 ><menuchoice
@@ -13759,7 +13759,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guisubmenu
 >Diseños de lista de reproducción</guisubmenu
 ><guimenuitem
->Configurar diseño de lista de reproducción...</guimenuitem
+>Configurar diseño de lista de reproducción…</guimenuitem
 ></menuchoice>
 </para>
 <para
@@ -13793,7 +13793,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Menú herramientas</title
 > 
 <para
->Desde este menú usted puede usar herramientas adicionales y guiones. </para>
+>Desde este menú puede usar herramientas adicionales y guiones. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13906,7 +13906,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Gestor de marcadores</title
 > 
 <para
->El gestor de marcadores le permite añadir a marcadores diferentes clases de cosas para recuperarlas más tarde. Usted también puede crear carpetas para organizar su colección de marcadores. La casilla de búsqueda proporciona un modo adecuado de encontrar marcadores. El menú de contexto ofrece la posibilidad de <guilabel
+>El gestor de marcadores le permite añadir a marcadores diferentes clases de cosas para recuperarlas más tarde. También puede crear carpetas para organizar su colección de marcadores. La casilla de búsqueda proporciona un modo adecuado de encontrar marcadores. El menú de contexto ofrece la posibilidad de <guilabel
 >Cargar</guilabel
 > y <guilabel
 >Borrar</guilabel
@@ -13996,7 +13996,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Gestor de carátulas</title
 >  
 <para
->Muestra todos los álbumes de su colección. Aquí usted puede establecer carátulas de álbumes personalizadas y obtener las perdidas. Más información sobre el <link linkend="cover-manager"
+>Muestra todos los álbumes de su colección. Aquí puede establecer carátulas de álbumes personalizadas y obtener las perdidas. Más información sobre el <link linkend="cover-manager"
 >Gestor de carátulas</link
 >, mostrada abajo. </para>
 <para>
@@ -14020,7 +14020,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Ecualizador</title
 > 
 <para
->Proporciona la posibilidad de configurar preferencias de sonido. Usted puede elegir entre ajustar manualmente las preferencias y usar plantillas. Ahora mismo <emphasis
+>Proporciona la posibilidad de configurar preferencias de sonido. Puede elegir entre ajustar manualmente las preferencias y usar plantillas. Ahora mismo <emphasis
 >Phonon</emphasis
 > <emphasis
 >GStreamer</emphasis
@@ -14070,7 +14070,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Actualizar colección</title
 > 
 <para
->Comprueba los archivos en las carpetas que usted definió como su colección. Los archivos nuevos se añadirán y los perdidos se eliminarán desde el panel izquierdo. </para>
+>Comprueba los archivos en las carpetas que definió como su colección. Los archivos nuevos se añadirán y los perdidos se eliminarán desde el panel izquierdo. </para>
 </sect3>
 <sect3 id="synchronize-statistics"
 ><title
@@ -14087,7 +14087,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Menú preferencias</title
 > 
 <para
->Aquí es dónde usted cambia las preferencias y configura &amarok;. </para>
+>Aquí es donde puede cambiar las preferencias y configurar &amarok;. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -14157,7 +14157,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Configurar accesos rápidos...</guilabel
+>Configurar accesos rápidos…</guilabel
 ></para>
     </entry>
     <entry>
@@ -14169,7 +14169,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Configurar Amarok...</guilabel
+>Configurar Amarok…</guilabel
 ></para>
     </entry>
     <entry>
@@ -14192,7 +14192,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
->, porque usted no puede deseleccionar la opción de menú cuando no se muestra la barra de menú. Más información sobre los <link linkend="menu-and-command-reference"
+>, porque no puede deseleccionar la opción de menú cuando no se muestra la barra de menú. Más información sobre los <link linkend="menu-and-command-reference"
 >Menús en la barra de menú</link
 >. </para>
 </sect3>
@@ -14205,11 +14205,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >Artículo de la Wikipedia sobre repetición de ganancia</ulink
 >. </para>
 <para
->Usted puede desactivar el mecanismo de repetición de ganancia, emplee uno basado en pistas o la repetición de ganancia basada en álbum. </para>
+>Puede desactivar el mecanismo de repetición de ganancia, emplee uno basado en pistas o la repetición de ganancia basada en álbum. </para>
 </sect3>
 <sect3 id="configure-shortcuts---"
 ><title
->Configurar accesos rápidos...</title
+>Configurar accesos rápidos…</title
 > 
 <para
 >Cambia y define nuevos accesos rápidos de teclado, o activa teclas multimedia si su teclado dispone de ellas. Más información sobre <link linkend="keybinding-reference"
@@ -14218,7 +14218,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="configure-amarok---"
 ><title
->Configurar Amarok...</title
+>Configurar Amarok…</title
 > 
 <para>
 <screenshot>
@@ -14286,7 +14286,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Informar de fallo...</guilabel
+>Informar de fallo…</guilabel
 ></para>
     </entry>
     <entry>
@@ -14334,7 +14334,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Cambiar el idioma de la aplicación...</guilabel
+>Cambiar el idioma de la aplicación…</guilabel
 ></para>
     </entry>
     <entry>
@@ -14400,7 +14400,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guimenu
 >Preferencias</guimenu
 ><guimenuitem
->Configurar accesos rápidos...</guimenuitem
+>Configurar accesos rápidos…</guimenuitem
 ></menuchoice
 >. </para>
 <para>
@@ -14463,14 +14463,14 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry
 >Acción</entry>
     <entry
->Acceso rápido global predeterminado</entry>
+>Atajo de teclado global predeterminado</entry>
   </row>
   </thead>
   <tbody>
   <row>
     <entry>
     <para
->Añadir medio...</para>
+>Añadir medio…</para>
     </entry>
     <entry>
     <para
@@ -14768,7 +14768,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Controle &amarok; usando <emphasis
 >accesos rápidos de teclado</emphasis
->, que son combinaciones de teclas que cada una de ellas controla una acción específica. &amarok; dispone de accesos rápidos predeterminados, pero usted puede crear los suyos propios. </para>
+>, que son combinaciones de teclas que cada una de ellas controla una acción específica. &amarok; dispone de accesos rápidos predeterminados, pero puede crear los suyos propios. </para>
 <sect3 id="default-shortcuts"
 ><title
 >Accesos rápidos predeterminados</title
@@ -14781,7 +14781,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry
 >Acción</entry>
     <entry
->Acceso rápido</entry>
+>Atajo de teclado</entry>
   </row>
   </thead>
   <tbody>
@@ -14854,7 +14854,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Reproducir medio...</para>
+>Reproducir medio…</para>
     </entry>
     <entry>
     <para
@@ -15123,13 +15123,13 @@ ftpProxy=http://username:password@proxyserver:port/
 >Cómo crear accesos rápidos</title
 > 
 <para
->Usted puede configurar accesos rápidos desde <menuchoice
+>Puede configurar accesos rápidos desde <menuchoice
 ><guimenu
 >Preferencias</guimenu
 ><guimenuitem
->Configurar accesos rápidos...</guimenuitem
+>Configurar accesos rápidos…</guimenuitem
 ></menuchoice
-> dónde usted puede cambiar o crear nuevos accesos rápidos. </para>
+> donde puede cambiar o crear nuevos accesos rápidos. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -15149,7 +15149,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="how-to-use-configure-shortcuts---"
 ><title
->Cómo usar «Configurar accesos rápidos...»</title
+>Cómo usar «Configurar accesos rápidos…»</title
 > 
 <para>
 <screenshot>
@@ -15255,15 +15255,15 @@ ftpProxy=http://username:password@proxyserver:port/
 </informaltable>
 </para>
 <para
->Cuando usted selecciona una acción, que abre una subventana donde usted puede elegir entre dos botones de radio, <guilabel
+>Cuando selecciona una acción, que abre una subventana donde puede elegir entre dos botones de radio, <guilabel
 >Predeterminado</guilabel
 > y <guilabel
 >Personalizado</guilabel
->. Si usted elije <guilabel
+>. Si elije <guilabel
 >Predeterminado</guilabel
->, usará el acceso rápido predeterminado. Si usted elije <guilabel
+>, usará el atajo de teclado predeterminado. Si elije <guilabel
 >Personalizado</guilabel
->, configurará y usará su acceso rápido para esta acción. </para>
+>, configurará y usará su atajo de teclado para esta acción. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -15302,7 +15302,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><note
 ><para
->Por favor, añada su nombre aquí si usted contribuye al manual. Por favor, respete el orden alfabético</para
+>Añada su nombre aquí si contribuye al manual. Respete el orden alfabético</para
 ></note>
 </para>
 <para
