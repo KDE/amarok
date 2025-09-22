@@ -1,44 +1,43 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Safa Alfulaij <safa1996alfulaij@gmail.com>, 2015.
+# SPDX-FileCopyrightText: 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-14 01:25+0000\n"
-"PO-Revision-Date: 2015-01-20 17:35+0300\n"
-"Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
-"Language-Team: Arabic <doc@arabeyes.org>\n"
+"PO-Revision-Date: 2025-09-21 19:19+0400\n"
+"Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
+"Language-Team: ar\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Lokalize 23.08.5\n"
 "X-Qt-Contexts: true\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:117
 #: utilities/collectionscanner/CollectionScanner.cpp:140
-#, fuzzy, qt-format
-#| msgid "File \"%1\" not found."
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
-msgstr "لم يُعثر على الملفّ \"%1\"."
+msgstr "الملف \"%1\" غير موجود."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:120
-#, fuzzy, qt-format
-#| msgid "Could not open file \"%1\"."
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
-msgstr "تعذّر فتح الملفّ \"%1\"."
+msgstr "تعذّر فتح الملف \"%1\"."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:367
-#, fuzzy, qt-format
-#| msgid "Missing argument for option %1"
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
-msgstr "معامل ناقص للخيار %1"
+msgstr "وسيطة مفقودة للخيار %1"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:401
 msgctxt "CollectionScanner::Scanner|"
@@ -73,3 +72,31 @@ msgid ""
 "   </scanner>\n"
 "                          You can also use a previous scan result for that.\n"
 msgstr ""
+"ماسح مجموعة أماروك\n"
+"يقوم بمسح الدلائل وإخراج ملف xml بالنتائج.\n"
+"لمزيد من المعلومات، انظر http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
+"\n"
+"الاستخدام: amarokcollectionscanner [خيارات] <مجلد(ات)>\n"
+"خيارات قابلة للتعديل من قبل المستخدم:\n"
+"<المجلد(ات)>: قائمة المجلدات المراد مسحها\n"
+"-h، --help: نص المساعدة هذا\n"
+"-v، --version: طباعة إصدار هذه الأداة\n"
+"-r، --recursive: مسح المجلدات بشكل متكرر\n"
+"-i، --incremental: مسح تزايدي (المجلدات المعدلة فقط)\n"
+"-s, --restart           : بعد تعطل، إعادة تشغيل الماسح الضوئي في آخر موضع "
+"له\n"
+"    --idlepriority      : التشغيل بأولوية الخمول\n"
+"    --sharedmemory <key> : جزء ذاكرة مشتركة لاستخدامه في إعادة تشغيل الفحص\n"
+"    --newer <path>      : فحص الدلائل فقط إذا كان وقت التعديل أحدث من "
+"<path>\n"
+"                          مفيد فقط في وضع الفحص التزايدي\n"
+"    --batch <path>      : إضافة الدلائل من ملف xml الدفعي\n"
+"                          يجب أن يكون تنسيق الملف الدفعي كما يلي:\n"
+"   <scanner>\n"
+"    <directory>\n"
+"     <path>/absolute/path/of/directory</path>\n"
+"     <mtime>1234</mtime>   (هذا اختياري)\n"
+"    </directory>\n"
+"   </scanner>\n"
+"                          يمكنك أيضًا استخدام نتيجة فحص سابقة لذلك.\n"

@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-14 00:41+0000\n"
-"PO-Revision-Date: 2025-08-16 13:38+0900\n"
+"PO-Revision-Date: 2025-09-22 03:39+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -3233,16 +3233,13 @@ msgstr "將中繼資料寫入檔案"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
 "將變更過的統計 (如評分、上次播放或播放次數等)\n"
-"以標籤形式寫回檔案。"
+"以標籤形式寫回音效檔案。"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -3603,13 +3600,13 @@ msgstr "選擇封存的文稿"
 #: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
 msgid "Invalid Archive"
-msgstr "不合法的封存"
+msgstr "無效的封存"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
 #: configdialog/dialogs/ScriptsConfig.cpp:188
 #, kde-format
 msgid "Invalid Script File"
-msgstr "不合法的文稿檔"
+msgstr "無效的文稿檔"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
@@ -6983,7 +6980,7 @@ msgstr ""
 #: core/transcoding/TranscodingConfiguration.cpp:110
 #, kde-format
 msgid "Invalid"
-msgstr "不合法"
+msgstr "無效"
 
 #: core/transcoding/TranscodingConfiguration.cpp:112
 #, kde-format
@@ -8403,10 +8400,9 @@ msgstr "上一次播放："
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "新增至收藏"
+msgstr "已新增至收藏："
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
