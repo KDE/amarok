@@ -2,6 +2,7 @@
 IconName=amarok
 DesktopEntry=org.kde.amarok
 Comment=Amarok
+Comment[ar]=أماروك
 Comment[bg]=Amarok
 Comment[bs]=Amarok
 Comment[ca]=Amarok
@@ -58,6 +59,7 @@ Comment[zh_TW]=Amarok 影音播放器
 
 [Event/trackChange]
 Name=Track Change
+Name[ar]=تتبع التغيير
 Name[bg]=Прехвърляне запис
 Name[bs]=Promjena numere
 Name[ca]=Canvi de peça
@@ -109,6 +111,7 @@ Name[uk]=Зміна композиції
 Name[zh_CN]=已换歌
 Name[zh_TW]=曲目變更
 Comment=Amarok changed to a new track
+Comment[ar]=أماروك تغير إلى مسار جديد
 Comment[bg]=Amarok прехвърли към друг запис
 Comment[bs]=Amarok je prešao na novu numeru
 Comment[ca]=L'Amarok ha canviat a una peça nova
@@ -163,6 +166,7 @@ Urgency=Low
 
 [Event/message]
 Name=Message
+Name[ar]=الرسالة
 Name[bg]=Съобщение
 Name[bs]=Poruka
 Name[ca]=Missatge
@@ -212,6 +216,7 @@ Name[uk]=Повідомлення
 Name[zh_CN]=消息
 Name[zh_TW]=訊息
 Comment=Amarok issued an uncategorized text message
+Comment[ar]=أصدر أماروك رسالة نصية غير مصنفة
 Comment[bg]=Amarok издаде некатегоризирано текстово съобщение
 Comment[bs]=Amarok je izbacio nekategorizovanu tekstualnu poruku
 Comment[ca]=L'Amarok ha emès un missatge de text sense categoria

@@ -5,6 +5,7 @@ Actions=addAsPodcast;
 
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
+Name[ar]=أضف كمدونة صوتية إلى أماروك
 Name[be]=Дадаць як подкаст у Amarok
 Name[bg]=Добавяне като подкаст в Amarok
 Name[bs]=Dodaj kao podemisiju u Amarok

@@ -3,6 +3,7 @@ ServiceTypes=KonqPopupMenu/Plugin,audio/*,inode/directory
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 Type=Service
 X-KDE-Submenu=Amarok
+X-KDE-Submenu[ar]=أماروك
 X-KDE-Submenu[be]=Amarok
 X-KDE-Submenu[bg]=Amarok
 X-KDE-Submenu[bs]=Amarok
@@ -69,6 +70,7 @@ X-KDE-Submenu[zh_TW]=Amarok
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
+Name[ar]=ألحِق بقائمة التّشغيل
 Name[be]=Дадаць у спіс прайгравання
 Name[bg]=Добавяне към списъка със записи
 Name[bs]=Dodaј u listu numera
@@ -132,6 +134,7 @@ Exec=amarok -a %U
 
 [Desktop Action appendAndPlay]
 Name=Append & Play
+Name[ar]=ألحق وشغّل
 Name[be]=Дадаць і граць
 Name[bg]=Добавяне и изпълнение
 Name[bs]=Dodaj i pusti
@@ -195,6 +198,7 @@ Exec=amarok --append %U --play
 
 [Desktop Action queueTrack]
 Name=Queue Track
+Name[ar]=صفّ المسار
 Name[be]=Дадаць у чаргу
 Name[bg]=На опашката
 Name[bs]=Stavi numeru u red
