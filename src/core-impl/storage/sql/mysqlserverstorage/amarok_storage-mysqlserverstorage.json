@@ -4,6 +4,7 @@
             {
                 "Email": "ralf.engels@gmx.de",
                 "Name": "Ralf Engels",
+                "Name[ar]": "رالف إنجلز",
                 "Name[bg]": "Ralf Engels",
                 "Name[ca@valencia]": "Ralf Engels",
                 "Name[ca]": "Ralf Engels",
@@ -36,6 +37,7 @@
         ],
         "Category": "Storage",
         "Description": "Storage plugin for Amarok",
+        "Description[ar]": "ملحق تخزين لأماروك",
         "Description[bg]": "Приставка за хранилища за Amarok",
         "Description[ca@valencia]": "Connector d'emmagatzematge per a Amarok",
         "Description[ca]": "Connector d'emmagatzematge per a l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "network-server-database",
         "License": "GPL",
         "Name": "MySQLServer Storage",
+        "Name[ar]": "تخزين MySQLServer",
         "Name[bg]": "MySQLServer Хранилище",
         "Name[bs]": "Zbirka na serveru MySQL",
         "Name[ca@valencia]": "Emmagatzematge MySQLServer",

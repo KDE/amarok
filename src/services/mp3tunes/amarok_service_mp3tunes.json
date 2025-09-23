@@ -4,6 +4,7 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[ar]": "نيكولاي هالد نيلسن",
                 "Name[bg]": "Nikolaj Hald Nielsen",
                 "Name[ca@valencia]": "Nikolaj Hald Nielsen",
                 "Name[ca]": "Nikolaj Hald Nielsen",
@@ -36,6 +37,7 @@
         ],
         "Category": "Service",
         "Description": "Browse and listen to the music stored in your MP3tunes account",
+        "Description[ar]": "استعرض واستمع إلى الموسيقى المخزّنة في حسابك على MP3tunes",
         "Description[bg]": "Преглед и слушане на музиката от регистрацията ви в MP3tunes",
         "Description[ca@valencia]": "Navegueu i escolteu la música emmagatzemada en el vostre compte de MP3tunes",
         "Description[ca]": "Navegueu i escolteu la música emmagatzemada en el vostre compte de MP3tunes",
@@ -68,6 +70,7 @@
         "Id": "amarok_service_mp3tunes",
         "License": "GPL",
         "Name": "MP3tunes",
+        "Name[ar]": "MP3tunes",
         "Name[bg]": "MP3tunes",
         "Name[bs]": "MP3 melodija",
         "Name[ca@valencia]": "MP3tunes",

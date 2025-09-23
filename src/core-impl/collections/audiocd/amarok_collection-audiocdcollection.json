@@ -4,6 +4,7 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaja Hald Nielsen",
+                "Name[ar]": "نيكولاجا هالد نيلسن",
                 "Name[bg]": "Nikolaja Hald Nielsen",
                 "Name[ca@valencia]": "Nikolaja Hald Nielsen",
                 "Name[ca]": "Nikolaja Hald Nielsen",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "AudioCd collection plugin for Amarok",
+        "Description[ar]": "ملحق مجموعة القرص الصوتي لأماروك",
         "Description[bg]": "Приставка за колекция с компактдискове (Amarok)",
         "Description[ca@valencia]": "Connector de col·leccions de CD d'àudio per a Amarok",
         "Description[ca]": "Connector de col·leccions de CD d'àudio per a l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "media-optical-audio",
         "License": "GPL",
         "Name": "AudioCd Collection",
+        "Name[ar]": "مجموعة قرص صوتي",
         "Name[bg]": "Колекция с компактдискове",
         "Name[bs]": "Zbirka Audio CD-ova",
         "Name[ca@valencia]": "Col·lecció de CD d'àudio",

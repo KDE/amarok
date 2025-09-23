@@ -1,6 +1,7 @@
 {
     "KPlugin": {
         "Description": "Set up Last.fm username and password",
+        "Description[ar]": "اضبط اسم المستخدم وكلمة المرور في Last.fm",
         "Description[bg]": "Настройване на потребител и парола за Last.fm",
         "Description[ca@valencia]": "Establix el nom d'usuari i contrasenya de Last.fm",
         "Description[ca]": "Defineix el nom d'usuari i contrasenya del Last.fm",
@@ -30,6 +31,7 @@
         "Description[zh_TW]": "設定 Last.fm 的使用者名稱與密碼",
         "Icon": "view-services-lastfm-amarok",
         "Name": "Last.fm Service Config",
+        "Name[ar]": "ضبط خدمة Last.fm",
         "Name[be]": "Настаўленне сервісу Last.fm",
         "Name[bg]": "Настройване на Last.fm",
         "Name[bs]": "Postavke Last.fm servisa",

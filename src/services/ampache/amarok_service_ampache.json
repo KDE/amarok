@@ -4,6 +4,7 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[ar]": "نيكولاي هالد نيلسن",
                 "Name[bg]": "Nikolaj Hald Nielsen",
                 "Name[ca@valencia]": "Nikolaj Hald Nielsen",
                 "Name[ca]": "Nikolaj Hald Nielsen",
@@ -36,6 +37,7 @@
         ],
         "Category": "Service",
         "Description": "Listen to music from an Ampache server",
+        "Description[ar]": "استمع إلى الموسيقى من خادم Ampache",
         "Description[bg]": "Слушане на музика от Ampache сървър",
         "Description[ca@valencia]": "Escolta música des d'un servidor Ampache",
         "Description[ca]": "Escolta música des d'un servidor Ampache",
@@ -67,6 +69,7 @@
         "Icon": "view-services-ampache-amarok",
         "License": "GPL",
         "Name": "Ampache",
+        "Name[ar]": "Ampache",
         "Name[bg]": "Ampache",
         "Name[bs]": "Ampache",
         "Name[ca@valencia]": "Ampache",

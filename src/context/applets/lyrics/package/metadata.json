@@ -5,6 +5,7 @@
             {
                 "Email": "lfranchi@gmail.com",
                 "Name": "Leo Franchi",
+                "Name[ar]": "ليو فرانشي",
                 "Name[bg]": "Leo Franchi",
                 "Name[ca@valencia]": "Leo Franchi",
                 "Name[ca]": "Leo Franchi",
@@ -38,6 +39,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Lyrics applet for Amarok",
+        "Description[ar]": "أداة كلمات الأغاني لأماروك",
         "Description[bg]": "Приставка за текстове на песни за Amarok",
         "Description[ca@valencia]": "Miniaplicació de lletres per a Amarok",
         "Description[ca]": "Miniaplicació de lletres per a l'Amarok",
@@ -70,6 +72,7 @@
         "Id": "org.kde.amarok.lyrics",
         "License": "GPL",
         "Name": "Lyrics",
+        "Name[ar]": "كلمات الأغنية",
         "Name[bg]": "Текстове",
         "Name[bs]": "Stihovi",
         "Name[ca@valencia]": "Lletres",

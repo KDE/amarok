@@ -4,6 +4,7 @@
             {
                 "Email": "maximilian.kossick@googlemail.com",
                 "Name": "Maximilian Kossick",
+                "Name[ar]": "ماكسيميليان كوسيك",
                 "Name[bg]": "Maximilian Kossick",
                 "Name[ca@valencia]": "Maximilian Kossick",
                 "Name[ca]": "Maximilian Kossick",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "DAAP collection plugin for Amarok",
+        "Description[ar]": "ملحق مجموعة DAAP لأماروك",
         "Description[bg]": "Приставка за колекция DAAP за Amarok",
         "Description[ca@valencia]": "Connector de col·leccions DAAP per a Amarok",
         "Description[ca]": "Connector de col·leccions DAAP per a l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "network-workgroup",
         "License": "GPL",
         "Name": "DAAP Collection",
+        "Name[ar]": "مجموعة DAAP",
         "Name[be]": "Калекцыя DAAP",
         "Name[bg]": "Колекция DAAP",
         "Name[bs]": "Zbirka DAAP",

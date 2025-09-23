@@ -5,6 +5,7 @@
             {
                 "Email": "lfranchi@gmail.com",
                 "Name": "Leo Franchi",
+                "Name[ar]": "ليو فرانشي",
                 "Name[bg]": "Leo Franchi",
                 "Name[ca@valencia]": "Leo Franchi",
                 "Name[ca]": "Leo Franchi",
@@ -38,6 +39,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Wikipedia applet for Amarok",
+        "Description[ar]": "أداة ويكيبيديا لأماروك",
         "Description[bg]": "Приставка за Wikipedia на Amarok",
         "Description[ca@valencia]": "Miniaplicació de la Viquipèdia per a Amarok",
         "Description[ca]": "Miniaplicació de la Viquipèdia per a l'Amarok",
@@ -70,6 +72,7 @@
         "Id": "org.kde.amarok.wikipedia",
         "License": "GPL",
         "Name": "Wikipedia",
+        "Name[ar]": "ويكيبيديا",
         "Name[bg]": "Уикипедия",
         "Name[bs]": "Wikipedia",
         "Name[ca@valencia]": "Viquipèdia",

@@ -4,6 +4,7 @@
             {
                 "Email": "konrad.zemek@gmail.com",
                 "Name": "Konrad Zemek",
+                "Name[ar]": "كونراد زيميك",
                 "Name[bg]": "Konrad Zemek",
                 "Name[ca@valencia]": "Konrad Zemek",
                 "Name[ca]": "Konrad Zemek",
@@ -36,6 +37,7 @@
         ],
         "Category": "Importer",
         "Description": "Import statistics from Banshee database",
+        "Description[ar]": "استورد إحصاءات من قاعدة بيانات Banshee",
         "Description[bg]": "Импортиране на статистика от базата данни на Banshee",
         "Description[ca@valencia]": "Importa estadístiques des de base de dades del Banshee",
         "Description[ca]": "Importa estadístiques des de base de dades del Banshee",
@@ -67,6 +69,7 @@
         "Icon": "view-importers-banshee-amarok",
         "License": "GPL",
         "Name": "Banshee Importer",
+        "Name[ar]": "مستورد Banshee",
         "Name[bg]": "Импортиране от Banshee",
         "Name[bs]": "Banshee uvoznik",
         "Name[ca@valencia]": "Importador del Banshee",

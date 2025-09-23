@@ -4,6 +4,7 @@
             {
                 "Email": "aikawarazuni@gmail.com",
                 "Name": "Alejandro Wainzinger",
+                "Name[ar]": "أليخاندرو واينزينجر",
                 "Name[bg]": "Alejandro Wainzinger",
                 "Name[ca@valencia]": "Alejandro Wainzinger",
                 "Name[ca]": "Alejandro Wainzinger",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "MTP collection plugin for Amarok",
+        "Description[ar]": "ملحق مجموعة MTP لأماروك",
         "Description[bg]": "Приставка за колекция MTP за Amarok",
         "Description[ca@valencia]": "Connector de col·leccions MTP per a Amarok",
         "Description[ca]": "Connector de col·leccions MTP per a l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "media-flash-smart-media",
         "License": "GPL",
         "Name": "MTP Collection",
+        "Name[ar]": "مجموعة MTP",
         "Name[be]": "Калекцыя MTP",
         "Name[bg]": "Колекция MTP",
         "Name[bs]": "MTP Zbirka",

@@ -4,6 +4,7 @@
             {
                 "Email": "stefan@derkits.at, christian.wagner86@gmx.at, ixos01@gmail.com, x8lucas8x@gmail.com",
                 "Name": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
+                "Name[ar]": "ستيفان ديركيتس، كريستيان واجنر، فيليكس وينتر، لوكاس ليرا غوميس",
                 "Name[bg]": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
                 "Name[ca@valencia]": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
                 "Name[ca]": "Stefan Derkits, Christian Wagner, Felix Winter, Lucas Lira Gomes",
@@ -36,6 +37,7 @@
         ],
         "Category": "Service",
         "Description": "Podcast Service",
+        "Description[ar]": "خدمة البودكاست",
         "Description[bg]": "Услуга за подкастове",
         "Description[ca@valencia]": "Servei de pòdcast",
         "Description[ca]": "Servei de pòdcasts",
@@ -68,6 +70,7 @@
         "Icon": "view-services-gpodder-amarok",
         "License": "GPL",
         "Name": "gpodder.net",
+        "Name[ar]": "gpodder.net",
         "Name[bg]": "gpodder.net",
         "Name[bs]": "gpodder.net",
         "Name[ca@valencia]": "gpodder.net",

@@ -5,6 +5,7 @@
             {
                 "Email": "ruiz@kde.org",
                 "Name": "Seb Ruiz",
+                "Name[ar]": "سيب رويز",
                 "Name[bg]": "Seb Ruiz",
                 "Name[ca@valencia]": "Seb Ruiz",
                 "Name[ca]": "Seb Ruiz",
@@ -38,6 +39,7 @@
         "Category": "Current",
         "Dependencies": [],
         "Description": "Album cover manager for Amarok",
+        "Description[ar]": "مدير غلاف الألبوم لأماروك",
         "Description[bg]": "Управление на обложки за албуми на Amarok",
         "Description[ca@valencia]": "Gestor per a les caràtules d'àlbum per a Amarok",
         "Description[ca]": "Gestor per a les caràtules d'àlbum per a l'Amarok",
@@ -70,6 +72,7 @@
         "Id": "org.kde.amarok.albums",
         "License": "GPL",
         "Name": "Albums",
+        "Name[ar]": "ألبومات",
         "Name[be]": "Альбомы",
         "Name[bg]": "Албуми",
         "Name[bs]": "Albumi",

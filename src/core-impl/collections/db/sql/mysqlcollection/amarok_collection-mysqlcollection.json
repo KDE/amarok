@@ -4,6 +4,7 @@
             {
                 "Email": "maximilian.kossick@googlemail.com",
                 "Name": "Maximilian Kossick",
+                "Name[ar]": "ماكسيميليان كوسيك",
                 "Name[bg]": "Maximilian Kossick",
                 "Name[ca@valencia]": "Maximilian Kossick",
                 "Name[ca]": "Maximilian Kossick",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "Collection plugin for Amarok",
+        "Description[ar]": "ملحق مجموعة لأماروك",
         "Description[bg]": "Приставка за колекция за Amarok",
         "Description[ca@valencia]": "Connector de col·leccions per a Amarok",
         "Description[ca]": "Connector de col·leccions per a l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "server-database",
         "License": "GPL",
         "Name": "MySQL Collection",
+        "Name[ar]": "مجموعة MySQL",
         "Name[bg]": "Колекция MySQL",
         "Name[bs]": "MySQLe Zbirka",
         "Name[ca@valencia]": "Col·lecció MySQL",

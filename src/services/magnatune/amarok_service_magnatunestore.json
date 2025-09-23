@@ -4,6 +4,7 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[ar]": "نيكولاي هالد نيلسن",
                 "Name[bg]": "Nikolaj Hald Nielsen",
                 "Name[ca@valencia]": "Nikolaj Hald Nielsen",
                 "Name[ca]": "Nikolaj Hald Nielsen",
@@ -36,6 +37,7 @@
         ],
         "Category": "Service",
         "Description": "Preview and buy music from the non-evil Magnatune record label",
+        "Description[ar]": "استعرض واشترِ الموسيقى من علامة Magnatune التجارية غير الشريرة",
         "Description[bg]": "Прослушване и купуване на музика от Magnatune",
         "Description[ca@valencia]": "Vista prèvia i compra de música del segell de música Magnatune (non-evil)",
         "Description[ca]": "Vista prèvia i compra de música del segell de música Magnatune (non-evil)",
@@ -67,6 +69,7 @@
         "Icon": "view-services-magnatune-amarok",
         "License": "GPL",
         "Name": "Magnatune Store",
+        "Name[ar]": "متجر Magnatune",
         "Name[bg]": "Магазин Magnatune",
         "Name[bs]": "Magnatune prodavnica",
         "Name[ca@valencia]": "Botiga Magnatune",

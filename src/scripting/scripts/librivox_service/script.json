@@ -4,6 +4,7 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[ar]": "نيكولاي هالد نيلسن",
                 "Name[bg]": "Nikolaj Hald Nielsen",
                 "Name[ca@valencia]": "Nikolaj Hald Nielsen",
                 "Name[ca]": "Nikolaj Hald Nielsen",
@@ -39,6 +40,7 @@
             "Amarok2.0"
         ],
         "Description": "A scripted service that lets you search, stream and download free, public domain, audio books from Librivox.org",
+        "Description[ar]": "خدمة عبر سكربت تتيح لك البحث عن كتب صوتية مجانية وعامة من Librivox.org، وبثّها وتنزيلها",
         "Description[bg]": "Услуга, която ви позволява да търсите, стриймвате и изтегляте безплатни, публични аудиокниги от Librivox.org",
         "Description[ca@valencia]": "Un servei amb scripts que us permet buscar, escoltar i baixar àudio llibres lliures de domini públic des de Librivox.org",
         "Description[ca]": "Un servei amb scripts que us permet cercar, escoltar i baixar àudio llibres lliures de domini públic des de Librivox.org",
@@ -71,6 +73,7 @@
         "Id": "Librivox.org",
         "License": "LGPL",
         "Name": "Librivox.org",
+        "Name[ar]": "Librivox.org",
         "Name[bg]": "Librivox.org",
         "Name[bs]": "Librivox.org",
         "Name[ca@valencia]": "Librivox.org",

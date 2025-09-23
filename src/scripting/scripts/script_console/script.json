@@ -5,6 +5,7 @@
             "Amarok2.0"
         ],
         "Description": "Amarok Script Console",
+        "Description[ar]": "وحدة تحكم سكربت أماروك",
         "Description[bg]": "Конзола за скриптове на Amarok",
         "Description[ca@valencia]": "Consola de scripts d'Amarok",
         "Description[ca]": "Consola de scripts de l'Amarok",
@@ -37,6 +38,7 @@
         "Id": "Amarok Script Console",
         "License": "GPL",
         "Name": "Amarok Script Console",
+        "Name[ar]": "وحدة تحكم سكربت أماروك",
         "Name[bg]": "Amarok Script Console",
         "Name[bs]": "Amarok skript konzola",
         "Name[ca@valencia]": "Consola de scripts d'Amarok",

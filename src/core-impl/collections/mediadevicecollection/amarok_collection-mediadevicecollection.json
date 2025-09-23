@@ -4,6 +4,7 @@
             {
                 "Email": "aikawarazuni@gmail.com",
                 "Name": "Alejandro Wainzinger",
+                "Name[ar]": "أليخاندرو واينزينجر",
                 "Name[bg]": "Alejandro Wainzinger",
                 "Name[ca@valencia]": "Alejandro Wainzinger",
                 "Name[ca]": "Alejandro Wainzinger",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "Media Device collection plugin for Amarok",
+        "Description[ar]": "ملحق مجموعة جهاز وسائط لأماروك",
         "Description[bg]": "Приставка за колекцията на медийните устройства за Amarok",
         "Description[ca@valencia]": "Connector de col·leccions de dispositius de suports per a Amarok",
         "Description[ca]": "Connector de col·leccions de dispositius de suports per a l'Amarok",
@@ -68,6 +70,7 @@
         "Id": "amarok_collection-mediadevicecollection",
         "License": "GPL",
         "Name": "Media Device Collection",
+        "Name[ar]": "مجموعة جهاز وسائط",
         "Name[be]": "Калекцыя медыяпрылады",
         "Name[bg]": "Колекция на медийните устройства",
         "Name[bs]": "Zbirka multimediјalnog uređaјa",

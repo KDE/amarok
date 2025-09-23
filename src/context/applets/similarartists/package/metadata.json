@@ -5,6 +5,7 @@
             {
                 "Email": "tuomas@norsumanageri.org",
                 "Name": "Tuomas Nurmi",
+                "Name[ar]": "توماس نورمي",
                 "Name[bg]": "Tuomas Nurmi",
                 "Name[ca@valencia]": "Tuomas Nurmi",
                 "Name[ca]": "Tuomas Nurmi",
@@ -37,6 +38,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Last.fm similar artists applet for Amarok",
+        "Description[ar]": "أداة فنانين مشابهين من Last.fm لأماروك",
         "Description[bg]": "Последният подобен аплет на изпълнител в Last.fm за Amarok",
         "Description[ca@valencia]": "Miniaplicació d'artistes semblants per a Amarok",
         "Description[ca]": "Miniaplicació d'artistes semblants per a l'Amarok",
@@ -69,6 +71,7 @@
         "Id": "org.kde.amarok.similarartists",
         "License": "GPL",
         "Name": "Similar Artists",
+        "Name[ar]": "فنانون مشابهون",
         "Name[bg]": "Подобни изпълнители",
         "Name[bs]": "Slični izvođači",
         "Name[ca@valencia]": "Artistes semblants",

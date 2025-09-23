@@ -4,6 +4,7 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[ar]": "نيكولاي هالد نيلسن",
                 "Name[bg]": "Nikolaj Hald Nielsen",
                 "Name[ca@valencia]": "Nikolaj Hald Nielsen",
                 "Name[ca]": "Nikolaj Hald Nielsen",
@@ -39,6 +40,7 @@
             "Amarok2.0"
         ],
         "Description": "A script that sets up a service with a few cool internet radio stations",
+        "Description[ar]": "سكربت يعدّ خدمة مع بضع محطات راديو إنترنت رائعة",
         "Description[bg]": "Скрипт, който създава услуга с няколко готини интернет радиостанции",
         "Description[ca@valencia]": "Un script que configura un servei amb diverses estacions de ràdio interessants per Internet",
         "Description[ca]": "Un script que configura un servei amb diverses estacions de ràdio interessants per Internet",
@@ -71,6 +73,7 @@
         "Id": "Cool Streams",
         "License": "LGPL",
         "Name": "Cool Streams",
+        "Name[ar]": "محطات رائعة",
         "Name[bg]": "Cool Streams",
         "Name[bs]": "Odlični tokovi",
         "Name[ca@valencia]": "Cool Streams",

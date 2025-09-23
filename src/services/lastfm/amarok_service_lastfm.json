@@ -4,6 +4,7 @@
             {
                 "Email": "kde@dontletsstart.com",
                 "Name": "Shane King",
+                "Name[ar]": "شين كينج",
                 "Name[bg]": "Shane King",
                 "Name[ca@valencia]": "Shane King",
                 "Name[ca]": "Shane King",
@@ -36,6 +37,7 @@
         ],
         "Category": "Service",
         "Description": "A service that integrates Last.fm functionality into Amarok",
+        "Description[ar]": "خدمة تدمج وظائف Last.fm في أماروك",
         "Description[bg]": "Услуга, която вгражда функции на Last.fm в Amarok",
         "Description[ca@valencia]": "Un servei que integra la funcionalitat de Last.fm en Amarok",
         "Description[ca]": "Un servei que integra la funcionalitat de Last.fm en l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "view-services-lastfm-amarok",
         "License": "GPL",
         "Name": "Last.fm",
+        "Name[ar]": "Last.fm",
         "Name[bg]": "Last.fm",
         "Name[bs]": "Last.fm",
         "Name[ca@valencia]": "Last.fm",

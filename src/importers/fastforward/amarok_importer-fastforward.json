@@ -4,6 +4,7 @@
             {
                 "Email": "konrad.zemek@gmail.com",
                 "Name": "Konrad Zemek",
+                "Name[ar]": "كونراد زيميك",
                 "Name[bg]": "Konrad Zemek",
                 "Name[ca@valencia]": "Konrad Zemek",
                 "Name[ca]": "Konrad Zemek",
@@ -36,6 +37,7 @@
         ],
         "Category": "Importer",
         "Description": "Import statistics from Amarok 1.4 database",
+        "Description[ar]": "استورد إحصاءات من قاعدة بيانات أماروك 1.4",
         "Description[bg]": "Импортиране на статистика от базата данни на Amarok 1.4x",
         "Description[ca@valencia]": "Importa estadístiques des de base de dades d'Amarok 1.4",
         "Description[ca]": "Importa estadístiques des de base de dades de l'Amarok 1.4",
@@ -67,6 +69,7 @@
         "Icon": "amarok",
         "License": "GPL",
         "Name": "Amarok 1.4 (FastForward) Importer",
+        "Name[ar]": "مستورد أماروك 1.4 (FastForward)",
         "Name[bg]": "Импортиране от Amarok 1.4x",
         "Name[bs]": "Amarok 1.4 (FastForward) uvoznik",
         "Name[ca@valencia]": "Importador d'Amarok 1.4 (FastForward)",

@@ -4,6 +4,7 @@
             {
                 "Email": "konrad.zemek@gmail.com",
                 "Name": "Konrad Zemek",
+                "Name[ar]": "كونراد زيميك",
                 "Name[bg]": "Konrad Zemek",
                 "Name[ca@valencia]": "Konrad Zemek",
                 "Name[ca]": "Konrad Zemek",
@@ -36,6 +37,7 @@
         ],
         "Category": "Importer",
         "Description": "Import statistics from Rhythmbox database",
+        "Description[ar]": "استورد إحصاءات من قاعدة بيانات Rhythmbox",
         "Description[bg]": "Импортиране на статистика от базата данни на Rhythmbox",
         "Description[ca@valencia]": "Importa estadístiques des de base de dades del Rhythmbox",
         "Description[ca]": "Importa estadístiques des de base de dades del Rhythmbox",
@@ -67,6 +69,7 @@
         "Icon": "view-importers-rhythmbox-amarok",
         "License": "GPL",
         "Name": "Rhythmbox Importer",
+        "Name[ar]": "مستورد Rhythmbox",
         "Name[bg]": "Импортиране от Rhythmbox",
         "Name[bs]": "Rhythmbox uvoznik",
         "Name[ca@valencia]": "Importador del Rhythmbox",

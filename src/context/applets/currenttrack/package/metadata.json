@@ -5,6 +5,7 @@
             {
                 "Email": "lfranchi@gmail.com",
                 "Name": "Leo Franchi",
+                "Name[ar]": "ليو فرانشي",
                 "Name[bg]": "Leo Franchi",
                 "Name[ca@valencia]": "Leo Franchi",
                 "Name[ca]": "Leo Franchi",
@@ -38,6 +39,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Current track applet for Amarok",
+        "Description[ar]": "أداة المسار الحالي لأماروك",
         "Description[bg]": "Приставка за текущ запис на Amarok",
         "Description[ca@valencia]": "Miniaplicació de peça actual per a Amarok",
         "Description[ca]": "Miniaplicació de peça actual per a l'Amarok",
@@ -70,6 +72,7 @@
         "Id": "org.kde.amarok.currenttrack",
         "License": "GPL",
         "Name": "Current Track",
+        "Name[ar]": "المسار الحالي",
         "Name[bg]": "Текущ запис",
         "Name[bs]": "Trenutna numera",
         "Name[ca@valencia]": "Peça actual",

@@ -4,6 +4,7 @@
             {
                 "Email": "matej@laitl.cz",
                 "Name": "Matěj Laitl",
+                "Name[ar]": "ماتيج لايتل",
                 "Name[bg]": "Matěj Laitl",
                 "Name[ca@valencia]": "Matěj Laitl",
                 "Name[ca]": "Matěj Laitl",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "Plugin to use iPod-like devices as collections in Amarok",
+        "Description[ar]": "ملحق لاستخدام الأجهزة المشابهة لـ iPod كمجموعات في أماروك",
         "Description[bg]": "Приставка за колекцията на медийните устройства като iPod на Amarok",
         "Description[ca@valencia]": "Connector per a utilitzar dispositius de tipus iPod com a col·leccions en Amarok",
         "Description[ca]": "Connector per a usar dispositius de tipus iPod com a col·leccions en l'Amarok",
@@ -67,6 +69,7 @@
         "Icon": "multimedia-player-apple-ipod",
         "License": "GPL",
         "Name": "iPod, iPad & iPhone Collection",
+        "Name[ar]": "مجموعة iPod و iPad و iPhone",
         "Name[bg]": "Колекция на iPod, iPad & iPhone",
         "Name[bs]": "iPod, iPad & iPhone kolekcija",
         "Name[ca@valencia]": "Col·lecció en iPod, iPad i iPhone",

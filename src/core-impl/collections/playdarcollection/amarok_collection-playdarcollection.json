@@ -4,6 +4,7 @@
             {
                 "Email": "andrew.coder@gmail.com",
                 "Name": "Andrew Coder",
+                "Name[ar]": "أندرو كودر",
                 "Name[bg]": "Andrew Coder",
                 "Name[ca@valencia]": "Andrew Coder",
                 "Name[ca]": "Andrew Coder",
@@ -36,6 +37,7 @@
         ],
         "Category": "Collection",
         "Description": "Music that Playdar can find",
+        "Description[ar]": "الموسيقى التي يستطيع Playdar إيجادها",
         "Description[bg]": "Музика откривана с Playdar",
         "Description[ca@valencia]": "Música que Playdar pot trobar",
         "Description[ca]": "Música que el Playdar pot trobar",
@@ -67,6 +69,7 @@
         "Icon": "network-workgroup",
         "License": "GPL",
         "Name": "Playdar Collection",
+        "Name[ar]": "مجموعة Playdar",
         "Name[bg]": "Колекция Playdar",
         "Name[bs]": "Playdar kolekcija",
         "Name[ca@valencia]": "Col·lecció de Playdar",

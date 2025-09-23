@@ -4,6 +4,7 @@
             {
                 "Email": "aikawarazuni@gmail.com",
                 "Name": "Alejandro Wainzinger",
+                "Name[ar]": "أليخاندرو واينزينجر",
                 "Name[bg]": "Alejandro Wainzinger",
                 "Name[ca@valencia]": "Alejandro Wainzinger",
                 "Name[ca]": "Alejandro Wainzinger",
@@ -39,6 +40,7 @@
         "Icon": "drive-removable-media-usb-pendrive",
         "License": "GPL",
         "Name": "Universal Mass Storage Collection",
+        "Name[ar]": "مجموعة التخزين الشامل الموحد",
         "Name[bg]": "Колекция Universal Mass Storage",
         "Name[bs]": "Zbirka na univerzalnom masovnom skladištu",
         "Name[ca@valencia]": "Col·lecció d'emmagatzematge massiu universal",

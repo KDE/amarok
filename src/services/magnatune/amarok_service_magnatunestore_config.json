@@ -1,6 +1,7 @@
 {
     "KPlugin": {
         "Description": "Configure Magnatune store settings and memberships credentials",
+        "Description[ar]": "اضبط إعدادات متجر Magnatune وبيانات العضوية",
         "Description[bg]": "Настройване на членството в Magnatune",
         "Description[ca@valencia]": "Configura els paràmetres de la botiga Magnatune i les credencials de soci",
         "Description[ca]": "Configura els paràmetres de la botiga Magnatune i les credencials de soci",
@@ -31,6 +32,7 @@
         "Description[zh_TW]": "調整 Magnatune 商店設定與會員憑證",
         "Icon": "view-services-magnatune-amarok",
         "Name": "MagnatuneStore Service Config",
+        "Name[ar]": "ضبط خدمة متجر Magnatune",
         "Name[bg]": "Настройване на услугата MagnatuneStore",
         "Name[bs]": "Postava servisa Magnatune prodavnice",
         "Name[ca@valencia]": "Configureu el servei MagnatuneStore",

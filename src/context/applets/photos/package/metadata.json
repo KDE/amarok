@@ -5,6 +5,7 @@
             {
                 "Email": "simon.esneault@gmail.com",
                 "Name": "Simon Esneault",
+                "Name[ar]": "سيمون إسنيو",
                 "Name[bg]": "Simon Esneault",
                 "Name[ca@valencia]": "Simon Esneault",
                 "Name[ca]": "Simon Esneault",
@@ -38,6 +39,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Photos applet for Amarok",
+        "Description[ar]": "أداة الصور لأماروك",
         "Description[bg]": "Приставка за снимки на Amarok",
         "Description[ca@valencia]": "Miniaplicació de fotos per a Amarok",
         "Description[ca]": "Miniaplicació de fotos per a l'Amarok",
@@ -70,6 +72,7 @@
         "Id": "org.kde.amarok.photos",
         "License": "GPL",
         "Name": "Photos",
+        "Name[ar]": "صور",
         "Name[bg]": "Снимки",
         "Name[bs]": "Fotografije",
         "Name[ca@valencia]": "Fotos",

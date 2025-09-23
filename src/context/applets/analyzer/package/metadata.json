@@ -5,6 +5,7 @@
             {
                 "Email": "kretschmann@kde.org",
                 "Name": "Mark Kretschmann",
+                "Name[ar]": "مارك كريتشمان",
                 "Name[bg]": "Mark Kretschmann",
                 "Name[ca@valencia]": "Mark Kretschmann",
                 "Name[ca]": "Mark Kretschmann",
@@ -38,6 +39,7 @@
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Analyzer applet for Amarok",
+        "Description[ar]": "محلل مصغر لأماروك",
         "Description[bg]": "Приставка за анализатор за Amarok",
         "Description[ca@valencia]": "Miniaplicació analitzadora per a Amarok",
         "Description[ca]": "Miniaplicació analitzadora per a l'Amarok",
@@ -70,6 +72,7 @@
         "Id": "org.kde.amarok.analyzer",
         "License": "GPL",
         "Name": "Analyzer",
+        "Name[ar]": "محلل",
         "Name[bg]": "Анализатор",
         "Name[bs]": "Analizator",
         "Name[ca@valencia]": "Analitzador",
