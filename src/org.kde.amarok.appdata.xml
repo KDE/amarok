@@ -58,6 +58,7 @@
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>Rediscover your music</summary>
+  <summary xml:lang="ar">اكتشف موسيقاك من جديد</summary>
   <summary xml:lang="bg">Преоткрийте музиката си</summary>
   <summary xml:lang="ca">Torna a descobrir la teva música</summary>
   <summary xml:lang="ca-valencia">Torna a descobrir la teua música</summary>
@@ -83,6 +84,7 @@
   <summary xml:lang="zh-TW">重新探索您的音樂</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
+    <p xml:lang="ar">أماروك هو مشغل موسيقى ومدير مجموعات موسيقية مجاني ومتعدد المنصات ومتعدد الاستخدامات وقوي وغني بالميزات.</p>
     <p xml:lang="bg">Amarok е безплатен, междуплатформен, универсален, мощен и богат на функции музикален плейър и мениджър на колекции.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="ca-valencia">Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
@@ -282,6 +284,7 @@
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
       <li xml:lang="zh-TW">支援基本的 iPod、MTP 和 UMS 音樂播放裝置</li>
       <li>Integrated Internet services: last.fm, Magnatune, Ampache and more.</li>
+      <li xml:lang="ar">خدمات الإنترنت المتكاملة: last.fm و Magnatune و Ampache والمزيد.</li>
       <li xml:lang="bg">Интегрирани Интернет услуги: last.fm, Magnatune,, Ampache и др.</li>
       <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Ampache i més.</li>
       <li xml:lang="ca-valencia">Serveis integrats d'Internet: last.fm, Magnatune, Ampache i més.</li>
@@ -309,6 +312,7 @@
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Ampache тощо;</li>
       <li xml:lang="zh-TW">整合了這些網路服務：last.fm、Magnatune、Ampache 等等。</li>
       <li>Scripting support</li>
+      <li xml:lang="ar">دعم البرمجة النصية</li>
       <li xml:lang="bg">Поддръжка скриптове</li>
       <li xml:lang="bs">Podrška za skriptiranje</li>
       <li xml:lang="ca">Permet la creació de scripts</li>
@@ -390,6 +394,7 @@
       <li xml:lang="zh-CN">专辑封面管理器</li>
       <li xml:lang="zh-TW">專輯管理員</li>
       <li>Replay gain support</li>
+      <li xml:lang="ar">إمكانية تعويض الكسب Replay Gain</li>
       <li xml:lang="bg">Поддръжка на нормализиране силата на звука</li>
       <li xml:lang="bs">Ponoviti dobijanje podrške</li>
       <li xml:lang="ca">Permet el guany de repetició</li>
@@ -436,6 +441,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Playing music in Amarok 3.0</caption>
+      <caption xml:lang="ar">تشغيل الموسيقى في أماروك 3.0</caption>
       <caption xml:lang="bg">Възпроизвеждане на музика в Amarok 3.0</caption>
       <caption xml:lang="ca">Reproduint música en l'Amarok 3.0</caption>
       <caption xml:lang="ca-valencia">Reproduint música en Amarok 3.0</caption>
@@ -466,6 +472,7 @@
     </screenshot>
     <screenshot>
       <caption>Amarok 3.1 player window with a customized layout</caption>
+      <caption xml:lang="ar">نافذة مشغل أماروك 3.1 بتصميم مخصص</caption>
       <caption xml:lang="bg">Прозорец на плейър Amarok 3.1 с персонализирано оформление</caption>
       <caption xml:lang="ca">Finestra del reproductor Amarok 3.1 amb una disposició personalitzada</caption>
       <caption xml:lang="ca-valencia">Finestra del reproductor Amarok 3.1 amb una disposició personalitzada</caption>
@@ -496,6 +503,7 @@
     </screenshot>
     <screenshot>
       <caption>Amarok 3.3 player window</caption>
+      <caption xml:lang="ar">نافذة مشغل أماروك 3.3</caption>
       <caption xml:lang="bg">Прозорец на плейър Amarok 3.3</caption>
       <caption xml:lang="ca">Finestra del reproductor Amarok 3.3</caption>
       <caption xml:lang="ca-valencia">Finestra del reproductor Amarok 3.3</caption>
