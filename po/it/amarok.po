@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-14 00:41+0000\n"
-"PO-Revision-Date: 2025-07-11 14:29+0200\n"
+"PO-Revision-Date: 2025-09-15 09:37+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.04.3\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3379,17 +3379,13 @@ msgstr "Scrivi i metadati su file"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
-"Riporta le statistiche di riproduzione (ad es. punteggio, ultima "
-"riproduzione\n"
-"o numero di riproduzioni) come tag del file."
+"Scrivi le statistiche influenzate dalla riproduzione (ad esempio punteggio, "
+"ultima riproduzione, conteggio delle riproduzioni)come tag nel file audio."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -8779,10 +8775,9 @@ msgstr "Ultima riproduzione:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "aggiunta alla collezione"
+msgstr "Aggiunta alla collezione:"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
