@@ -3214,16 +3214,11 @@ msgstr "向文件写入元数据"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
-"将播放变化统计数据 (例如分数，最后播放，播放次数)\n"
-"作为标签写入回文件。"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -8372,10 +8367,9 @@ msgstr "上次播放："
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "添加至收藏集的日期"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
