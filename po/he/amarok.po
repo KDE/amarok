@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-14 00:41+0000\n"
-"PO-Revision-Date: 2025-08-30 20:03+0300\n"
+"PO-Revision-Date: 2025-10-05 12:16+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.08.0\n"
+"X-Generator: Lokalize 25.08.1\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
 
@@ -1723,7 +1723,7 @@ msgstr "התחלת ניגון רשימת הנגינה הנוכחית"
 #: App.cpp:367
 #, kde-format
 msgid "Play if stopped, pause if playing"
-msgstr "נגן במידה שמושהה, השהה במידה שמנגן"
+msgstr "לנגן אם מושהה, להשהות אם מנגן"
 
 #: App.cpp:368
 #, kde-format
@@ -2206,7 +2206,7 @@ msgstr ""
 #: browsers/playlistbrowser/APGCategory.cpp:62
 #, kde-format
 msgid "Add new preset"
-msgstr "הוסף אפשרויות קבועות חדשות"
+msgstr "הוספת ערכה חדשה"
 
 #: browsers/playlistbrowser/APGCategory.cpp:65
 #, fuzzy, kde-format
@@ -2448,7 +2448,7 @@ msgstr ""
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
 #, kde-format
 msgid "Add Folder"
-msgstr "הוסף תיקייה"
+msgstr "הוספת תיקייה"
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:80
 #, kde-format
@@ -2653,7 +2653,7 @@ msgstr ""
 #: browsers/playlistbrowser/PodcastCategory.cpp:92
 #, kde-format
 msgid "&Add Podcast"
-msgstr "&הוסף פוד־קסט"
+msgstr "הוס&פת הסכת"
 
 # kde-il: don't translate
 #: browsers/playlistbrowser/PodcastCategory.cpp:99
@@ -2691,19 +2691,19 @@ msgstr "תאריך הרשמה:"
 #: browsers/playlistbrowser/PodcastCategory.cpp:241
 #, kde-format
 msgid "Keywords:"
-msgstr ""
+msgstr "מילות מפתח:"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "הוסף פוד־קסט..."
+msgstr "הוספת הסכת…"
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #, kde-format
 msgid "add podcast..."
-msgstr "הוסף פוד־קסט..."
+msgstr "הוספת הסכת…"
 
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
@@ -2728,15 +2728,14 @@ msgstr "מרווח זמן לסריקה..."
 # kde-il: don't translate
 #: browsers/playlistbrowser/PodcastModel.cpp:216
 #: browsers/playlistbrowser/PodcastModel.cpp:268
-#, fuzzy, kde-format
-#| msgid "&Update All"
+#, kde-format
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
 msgid_plural "%1 channels"
-msgstr[0] "&עדכן הכול"
-msgstr[1] "&עדכן הכול"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "ערוץ"
+msgstr[1] "שני ערוצים"
+msgstr[2] "%1 ערוצים"
+msgstr[3] "%1 ערוצים"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:320
@@ -2769,7 +2768,7 @@ msgstr "רשימות נגינה שנשמרו"
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:37
 #, kde-format
 msgid "User generated and imported playlists"
-msgstr ""
+msgstr "רשימות נגינה שנוצרו על ידי המשתמשים או יובאו"
 
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:40
 #, kde-format
@@ -2813,7 +2812,7 @@ msgstr "הגדרת אוסף מקומי"
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
 msgid "Metadata"
-msgstr ""
+msgstr "נתוני־על"
 
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
@@ -3406,7 +3405,7 @@ msgstr ""
 #: configdialog/dialogs/MetadataConfig.ui:128
 #, kde-format
 msgid "Forget"
-msgstr ""
+msgstr "לשכוח"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_configureTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:138
@@ -3418,7 +3417,7 @@ msgstr "הגדרה…"
 #: configdialog/dialogs/MetadataConfig.ui:145
 #, kde-format
 msgid "Add…"
-msgstr ""
+msgstr "הוספה…"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_synchronizeButton)
 #: configdialog/dialogs/MetadataConfig.ui:155
@@ -3587,7 +3586,7 @@ msgid ""
 "previous session -- just like a tape-player."
 msgstr ""
 "אם סומן, Amarok <br> יחזור לנגן מאותו מקום שהופסק בהפעלה הקודמת - בדומה לנגן "
-"טייפ."
+"קלטות."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
 #: configdialog/dialogs/PlaybackConfig.ui:29
@@ -5740,13 +5739,13 @@ msgstr "הורדת מדיה"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:124
 #, kde-format
 msgid "Download media as soon as it becomes available"
-msgstr "הורד מדיה ברגע שהיא תהיה זמינה"
+msgstr "להוריד מדיה ברגע שהיא זמינה"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_downloadRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:127
 #, kde-format
 msgid "Download when a&vailable"
-msgstr "הורד כאשר ז&מין"
+msgstr "להוריד כאשר ז&מין"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, m_streamRadio)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, m_streamRadio)
@@ -10605,7 +10604,7 @@ msgid ""
 "qt>"
 msgstr ""
 "<qt> סגירת החלון הראשי תשאיר את Amarok פועל במגש המערכת. השתמש ב־ <B>יציאה</"
-"B> מתוך התפריט או בסמל של  Amarok במגש המערכת כדי לסגור את התכנה. </qt>"
+"B> מתוך התפריט או בסמל של Amarok במגש המערכת כדי לסגור את התכנה. </qt>"
 
 #: MainWindow.cpp:426
 #, kde-format
@@ -10615,17 +10614,17 @@ msgstr "ממזער למגש המערכת"
 #: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
-msgstr "נגן מדיה (קבצים או כתובות)"
+msgstr "ניגון מדיה (קבצים או כתובות)"
 
 #: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
-msgstr "הוסף מדיה (קבצים או כתובות)"
+msgstr "הוספת מדיה (קבצים או כתובות)"
 
 #: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
-msgstr "הוסף שידור־זורם"
+msgstr "הוספת תזרים"
 
 #: MainWindow.cpp:546
 #, kde-format
@@ -10635,7 +10634,7 @@ msgstr "הכנס כתובת זורמת:"
 #: MainWindow.cpp:756
 #, kde-format
 msgid "&Add Media..."
-msgstr "&הוסף מדיה..."
+msgstr "הוס&פת מדיה…"
 
 #: MainWindow.cpp:761
 #, kde-format
@@ -10658,7 +10657,7 @@ msgstr "ה&סר כפילויות"
 #: MainWindow.cpp:778
 #, kde-format
 msgid "&Add Stream..."
-msgstr "ה&וסף שידור רדיו זורם..."
+msgstr "הוספת ת&זרים…"
 
 #: MainWindow.cpp:782
 #, kde-format
@@ -10683,7 +10682,7 @@ msgstr "צור סימניית יישומי קישורים"
 #: MainWindow.cpp:810
 #, kde-format
 msgid "Play Media..."
-msgstr "נגן מדיה..."
+msgstr "ניגון מדיה…"
 
 #: MainWindow.cpp:815
 #, kde-format
@@ -11863,7 +11862,7 @@ msgstr "%1 הגדרות"
 #: playlistgenerator/constraints/Checkpoint.cpp:58
 #, kde-format
 msgid "Checkpoint"
-msgstr ""
+msgstr "נקודת ביקורת"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:59
 #, kde-format
@@ -11880,7 +11879,7 @@ msgstr "נקודת ביקורת: %1"
 #: playlistgenerator/constraints/Checkpoint.cpp:198
 #, kde-format
 msgid "unassigned"
-msgstr ""
+msgstr "לא מוקצית"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:180
 #, kde-format
@@ -12252,10 +12251,9 @@ msgid "Playlist Length"
 msgstr "אורך רשימת נגינה"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:52
-#, fuzzy, kde-format
-#| msgid "Add this filter condition to the list"
+#, kde-format
 msgid "Sets the preferred number of tracks in the playlist"
-msgstr "הוסף את התנאי המסנן לרשימה."
+msgstr "הגדרת מספר הרצועות ברשימת הנגינה"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:118
 #, fuzzy, kde-format
@@ -12951,7 +12949,7 @@ msgstr ""
 #: playlistgenerator/PresetEditDialog.cpp:62
 #, kde-format
 msgid "Add new"
-msgstr "הוסף חדש"
+msgstr "הוספת חדשה"
 
 # kde-il: don't translate
 #: playlistgenerator/PresetEditDialog.cpp:63
@@ -13341,7 +13339,7 @@ msgstr ""
 #: services/ampache/AmpacheServiceCollection.cpp:61
 #, kde-format
 msgid "Ampache Server %1"
-msgstr "שרת Ampache  %1"
+msgstr "שרת Ampache %1"
 
 # kde-il: don't translate
 #: services/ampache/LastfmInfoParser.cpp:66
@@ -14134,7 +14132,7 @@ msgstr ""
 #: services/lastfm/SimilarArtistsAction.cpp:27
 #, kde-format
 msgid "Play Similar Artists from Last.fm"
-msgstr "נגן אמנים דומים  מ־Last.fm"
+msgstr "לנגן אמנים דומים מ־Last.fm"
 
 #: services/lastfm/SynchronizationAdapter.cpp:61
 #, kde-format
@@ -14352,7 +14350,7 @@ msgstr "בחר תבנית:"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:38
 #, kde-format
 msgid "Download to:"
-msgstr "הורד אל:"
+msgstr "להוריד אל:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:51
@@ -14507,7 +14505,7 @@ msgstr "אלום האלבומים בהורדת בפעמים הקודמות:"
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:29
 #, kde-format
 msgid "Re&download"
-msgstr "&הורד מחדש"
+msgstr "הו&רדה מחדש"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, redownloadListView)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:60
@@ -14602,7 +14600,7 @@ msgstr "אמן / אלבום"
 #: services/magnatune/MagnatuneStore.cpp:243
 #, kde-format
 msgid "Re-download"
-msgstr "הורד מחדש"
+msgstr "הורדה מחדש"
 
 #: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
@@ -14617,7 +14615,7 @@ msgstr "כלים"
 #: services/magnatune/MagnatuneStore.cpp:270
 #, kde-format
 msgid "Download Album"
-msgstr "הורד אלבום"
+msgstr "הורדת אלבום"
 
 #: services/magnatune/MagnatuneStore.cpp:277
 #, kde-format
