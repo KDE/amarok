@@ -6492,7 +6492,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 </sect1>
 <sect1 id="troubleshooting-and-common-problems"><title>Troubleshooting and Common Problems</title> 
-<para>If you work through the procedures here, but don't have success, please come into IRC (irc://irc.libera.chat/amarok), post on the KDE Forum <ulink url="http://forum.kde.org/viewforum.php?f=127">Amarok section</ulink>, or write to the <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Amarok list</ulink>.
+<para>If you work through the procedures here, but don't have success, please come into IRC (irc://irc.libera.chat/amarok), post on Discuss under <ulink url="https://discuss.kde.org/tag/amarok">the Amarok category</ulink>, or write to the <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Amarok list</ulink>.
 </para>
 <sect2 id="problems-installing"><title>Problems installing</title> 
 <sect3 id="bad-packaging"><title>Bad packaging</title> 
@@ -6609,7 +6609,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <listitem><para>How to run &amarok; from the command line: <userinput>amarok --debug --nofork</userinput></para></listitem>
 <listitem><para>&amarok; crashes, but <guilabel>Dr. Konqi</guilabel> doesn't pop up &mdash; run in <guilabel>gdb</guilabel> with the following command: <userinput>gdb --args amarok --debug --nofork</userinput>  In <guilabel>gdb's</guilabel> console, type <varname>run</varname> to start &amarok;, reproduce the crash, and then in <guilabel>gdb</guilabel> type <varname>thread apply all bt</varname> to generate the backtrace.</para></listitem>
 <listitem><para>Filing bugs: If triggered, <guilabel>Dr. Konqi</guilabel> will provide an option to report a bug and do most of the work for you. If not, you will need to submit the bug manually at <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"> bugs.kde.org</ulink>. For crash bugs, paste the backtrace from <guilabel>gdb</guilabel> as a comment.</para></listitem>
-<listitem><para>How to get personal support with problems: <ulink url="irc://irc.libera.chat/#amarok">IRC</ulink> (#amarok on Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127">Forum</ulink>, <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Mailing list</ulink></para></listitem>
+<listitem><para>How to get personal support with problems: <ulink url="irc://irc.libera.chat/#amarok">IRC</ulink> (#amarok on Libera Chat IRC), <ulink url="https://discuss.kde.org/tag/amarok">Discuss</ulink>, <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Mailing list</ulink></para></listitem>
 </itemizedlist>
 </sect2>
 </sect1>
@@ -6653,7 +6653,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 </sect3>
 <sect3 id="where-can-i-get-support-for-amarok"><title>Where can I get support for Amarok?</title> 
-<para>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127">Amarok forum</ulink> and the <ulink url="irc://irc.libera.chat/amarok">Amarok IRC channel</ulink> at irc.libera.chat channel #amarok.
+<para>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="https://discuss.kde.org/tag/amarok">Discuss server under the Amarok category</ulink> and the <ulink url="irc://irc.libera.chat/amarok">Amarok IRC channel</ulink> at irc.libera.chat channel #amarok.
 </para>
 <para>Note that <ulink url="http://bugs.kde.org">bugzilla</ulink> is not a place to seek support. Please do enter a bug if you are serious about helping fix a bug in &amarok; itself.
 </para>
