@@ -11474,9 +11474,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Solució de problemes i problemes habituals</title
 > 
 <para
->Si heu treballat els procediments d'aquí, però no tingueu èxit, entreu a l'IRC (irc://irc.libera.chat/amarok), publiqueu al fòrum de KDE <ulink url="http://forum.kde.org/viewforum.php?f=127"
->secció de l'Amarok</ulink
->, o escriviu a la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>Si heu treballat els procediments d'aquí, però no tingueu èxit, entreu a l'IRC (irc://irc.libera.chat/amarok), publiqueu al Discuss de KDE a la <ulink url="https://discuss.kde.org/tag/amarok"
+>categoria de l'Amarok</ulink
+> o escriviu a la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >llista de l'Amarok</ulink
 >. </para>
 <sect2 id="problems-installing"
@@ -11826,10 +11826,10 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Com obtenir suport personal amb els problemes: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok a l'IRC de Libera Chat), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Forum</ulink
+> (#amarok a l'IRC de Libera Chat), <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->llista de correus</ulink
+>llista de correu</ulink
 ></para
 ></listitem>
 </itemizedlist>
@@ -11974,8 +11974,8 @@ ftpProxy=http://username:password@proxyserver:port/
 >On puc obtenir suport per a l'Amarok?</title
 > 
 <para
->Hi ha diverses opcions. Sovint els problemes que teniu amb la instal·lació inicial de l'&amarok; són millor contestats per experts de la vostra distribució d'&UNIX; o &Linux; en particular. Podeu cercar ajuda dels altres usuaris i desenvolupadors al <ulink url="http://forum.kde.org/viewforum.php?f=127"
->fòrum de l'Amarok</ulink
+>Hi ha diverses opcions. Sovint els problemes que teniu amb la instal·lació inicial de l'&amarok; són millor contestats per experts de la vostra distribució d'&UNIX; o &Linux; en particular. Podeu cercar ajuda dels altres usuaris i desenvolupadors a la <ulink url="https://discuss.kde.org/tag/amarok"
+>categoria Amarok del servidor Discuss</ulink
 > i al <ulink url="irc://irc.libera.chat/amarok"
 >canal d'IRC de l'Amarok</ulink
 > a irc.libera.chat canal #amarok. </para>

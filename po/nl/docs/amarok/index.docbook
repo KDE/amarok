@@ -11534,10 +11534,10 @@ ftpProxy=http://username:password@proxyserver:port/
 >Problemen oplossen en algemene problemen</title
 > 
 <para
->Indien u de procedures op deze pagina hebt uitgeprobeerd maar nog steeds geen succes hebt dan kunt u contact zoeken via IRC (irc://irc.libera.chat/amarok), een bericht posten op het KDE Forum, de <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Amarok sectie</ulink
-> of schrijven (in het Engels) naar de <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->Amarok-e-maillijst</ulink
+>If you work through the procedures here, but don't have success, please come into IRC (irc://irc.libera.chat/amarok), post on the KDE Forum <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Amarok section</ulink
+>, or write to the <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>Amarok list</ulink
 >. </para>
 <sect2 id="problems-installing"
 ><title
@@ -11888,12 +11888,12 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Hoe persoonlijke ondersteuning bij problemen te verkrijgen: <ulink url="irc://irc.libera.chat/#amarok"
+>How to get personal support with problems: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok op Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
+> (#amarok on Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
 >Forum</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->E-maillijst</ulink
+>Mailing list</ulink
 ></para
 ></listitem>
 </itemizedlist>
@@ -12040,11 +12040,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >Waar kan ik ondersteuning voor Amarok krijgen?</title
 > 
 <para
->Er zijn verschillende opties. Meestal kunnen problemen die u hebt met de initiële installatie van &amarok; het best beantwoord worden door experts van uw specifieke &UNIX;- of &Linux;-distributie. U kunt hulp zoeken bij medegebruikers en ontwikkelaars op het <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Amarokforum</ulink
-> en het <ulink url="irc://irc.libera.chat/amarok"
->Amarok IRC-kanaal</ulink
-> op irc.libera.chat kanaal #amarok. </para>
+>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Amarok forum</ulink
+> and the <ulink url="irc://irc.libera.chat/amarok"
+>Amarok IRC channel</ulink
+> at irc.libera.chat channel #amarok. </para>
 <para
 >Merk op dat <ulink url="http://bugs.kde.org"
 >bugzilla</ulink

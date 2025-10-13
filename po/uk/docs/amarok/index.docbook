@@ -11447,8 +11447,8 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >Вирішення типових проблем</title
 > 
 <para
->Якщо ви виконали наведені тут настанови, але не досягли успіху у вирішенні проблем, будь ласка, зверніться з питаннями на канал IRC (irc://irc.libera.chat/amarok), створіть допис на форумі KDE у <ulink url="http://forum.kde.org/viewforum.php?f=127"
->розділі Amarok</ulink
+>Якщо ви виконали наведені тут настанови, але не досягли успіху у вирішенні проблем, будь ласка, зверніться з питаннями на Discuss у <ulink url="https://discuss.kde.org/tag/amarok"
+>категорії Amarok</ulink
 > або напишіть листа до <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >списку листування Amarok</ulink
 >. </para>
@@ -11793,8 +11793,8 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 ><para
 >Адреси особистої підтримки щодо усування проблем: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok на сервері Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->форум</ulink
+> (#amarok на сервері Libera Chat IRC),  <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >список листування</ulink
 >.</para
@@ -11939,8 +11939,8 @@ ftpProxy=http://користувач:пароль@сервер:порт/
 >Де мені отримати підтримку щодо &amarok;?</title
 > 
 <para
->Ви можете скористатися одним з декількох варіантів. Часто з вирішеннями проблем, які виникають у вас з початковим встановленням &amarok;, найкраще ознайомлені знавці відповідних дистрибутивів &UNIX; або &Linux;. Спробуйте знайти підтримку у дружніх користувачів або розробників на <ulink url="http://forum.kde.org/viewforum.php?f=127"
->форумі &amarok;</ulink
+>Ви можете скористатися одним з декількох варіантів. Часто з вирішеннями проблем, які виникають у вас з початковим встановленням &amarok;, найкраще ознайомлені знавці відповідних дистрибутивів &UNIX; або &Linux;. Спробуйте знайти підтримку у дружніх користувачів або розробників на <ulink url="https://discuss.kde.org/tag/amarok"
+>сервері Discuss у категорії Amarok</ulink
 > або на <ulink url="irc://irc.libera.chat/amarok"
 >каналі &amarok; у IRC</ulink
 > на сервері irc.libera.chat (канал #amarok). </para>
