@@ -201,9 +201,7 @@ ScriptManager::updateAllScripts() // SLOT
     const uint now = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
     bool autoUpdateScripts = AmarokConfig::autoUpdateScripts();
     // note: we can't update scripts without the QtCryptoArchitecture, so don't even try
-    #ifndef QCA2_FOUND
     autoUpdateScripts = false;
-    #endif
 
     // last update was at least 7 days ago -> check now if auto update is enabled
     if( false && autoUpdateScripts && (now - lastCheck > 7*24*60*60) )

@@ -9,9 +9,6 @@
 /* have opus file format support in TagLib */
 #cmakedefine TAGLIB_OPUS_FOUND 1
 
-/* have QtCrypto the Qt crypto architecture */
-#cmakedefine QCA2_FOUND 1
-
 /* have QtOpenGL */
 #cmakedefine QT_QTOPENGL_FOUND 1
 
