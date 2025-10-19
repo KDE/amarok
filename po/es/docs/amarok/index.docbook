@@ -11571,9 +11571,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Resolución de problemas y problemas comunes</title
 > 
 <para
->Si trabaja siguiendo estos procedimientos pero no tiene éxito, acuda al IRC (irc://irc.libera.chat/amarok), escriba en la <ulink url="http://forum.kde.org/viewforum.php?f=127"
->sección Amarok</ulink
-> de los foros de KDE o en la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>Si sigue los procedimientos aquí descritos, pero no tiene éxito, acceda al IRC (irc://irc.libera.chat/amarok), publique en Discuss en la <ulink url="https://discuss.kde.org/tag/amarok"
+>categoría de Amarok</ulink
+> o escriba a la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >lista de Amarok</ulink
 >. </para>
 <sect2 id="problems-installing"
@@ -11925,13 +11925,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Cómo obtener apoyo personalizado por problemas: <ulink url="irc://irc.libera.chat/#amarok"
+>Cómo obtener ayuda personalizado ante problemas: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok en Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Foo</ulink
+> (#amarok en el chat IRC de Libera), <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->Lista de correo</ulink
-></para
+>lista de distribución</ulink
+>.</para
 ></listitem>
 </itemizedlist>
 </sect2>
@@ -12077,11 +12077,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >¿Dónde puedo obtener apoyo para Amarok?</title
 > 
 <para
->Hay varias opciones. Muchas veces los problemas que tiene con la instalación inicial de &amarok; los responden mejor los expertos en su distribución particular de &UNIX; o &Linux;. Puede buscar ayuda de otros usuarios y desarrolladores en el <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Foro de Amarok</ulink
-> y el <ulink url="irc://irc.licera.chat/amarok"
->Canal IRC de Amarok</ulink
-> en irc.libera.chat canal #amarok. </para>
+>Dispone de varias opciones. Muchas veces, los problemas de pueda tener con la instalación inicial de &amarok; los responden mejor los expertos de su distribución particular de &UNIX; o &Linux;. Puede buscar ayuda de otros usuarios y desarrolladores en el <ulink url="https://discuss.kde.org/tag/amarok"
+>servidor Discuss bajo la categoría Amarok</ulink
+> y en el <ulink url="irc://irc.libera.chat/amarok"
+>canal IRC de Amarok</ulink
+> en canal #amarok de irc.libera.chat. </para>
 <para
 >Tenga en cuenta que <ulink url="http://bugs.kde.org"
 >bugzilla</ulink
