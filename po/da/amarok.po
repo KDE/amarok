@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-09-14 00:41+0000\n"
+"POT-Creation-Date: 2025-10-20 00:41+0000\n"
 "PO-Revision-Date: 2021-09-27 21:22+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <kde-i18n-doc@kde.org>\n"
@@ -13399,7 +13399,7 @@ msgstr ""
 "Scriptet %1 bruger forældede API-kald. Kontakt script-udvikleren, %2 på %3, "
 "og bed ham om at opgradere det før næste udgivelse af Amarok."
 
-#: scripting/scriptmanager/ScriptManager.cpp:278
+#: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"

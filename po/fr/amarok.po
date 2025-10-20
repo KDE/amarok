@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-09-14 00:41+0000\n"
+"POT-Creation-Date: 2025-10-20 00:41+0000\n"
 "PO-Revision-Date: 2025-09-15 08:39+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
@@ -13578,7 +13578,7 @@ msgstr ""
 "les auteurs du script %2 et leur demander de le mettre à jour avant la "
 "prochaine sortie de Amarok."
 
-#: scripting/scriptmanager/ScriptManager.cpp:278
+#: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"

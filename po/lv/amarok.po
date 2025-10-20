@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-09-14 00:41+0000\n"
+"POT-Creation-Date: 2025-10-20 00:41+0000\n"
 "PO-Revision-Date: 2025-02-28 10:10+0200\n"
 "Last-Translator: Toms Trasuns <toms.trasuns@posteo.net>\n"
 "Language-Team: Latvian <kde-i18n-doc@kde.org>\n"
@@ -13461,7 +13461,7 @@ msgstr ""
 "autoriem, %2, un viņiem palūdziet skriptu atjaunināt līdz nākamajai „Amarok“ "
 "versijai"
 
-#: scripting/scriptmanager/ScriptManager.cpp:278
+#: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"

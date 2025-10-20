@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-09-14 00:41+0000\n"
+"POT-Creation-Date: 2025-10-20 00:41+0000\n"
 "PO-Revision-Date: 2017-12-03 23:07+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -13886,7 +13886,7 @@ msgstr ""
 "Skripta %1 koristi prevaziđene API pozive. Pitajte autora skripte, %2 na %3, "
 "da li može da ažurira skriptu do narednog izdanja Amaroka."
 
-#: scripting/scriptmanager/ScriptManager.cpp:278
+#: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
