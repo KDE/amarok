@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-09-14 11:24+0200\n"
+"PO-Revision-Date: 2025-10-24 22:17+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -1689,22 +1689,22 @@ msgstr "Файлове (%1)"
 #: amarokurls/NavigationUrlGenerator.cpp:191
 #, kde-format
 msgid "Album \"%1\" from %2"
-msgstr "Албум \"%1\" на %2"
+msgstr "Албум „%1“  на %2"
 
 #: amarokurls/NavigationUrlGenerator.cpp:193
 #, kde-format
 msgid "Album \"%1\""
-msgstr "Албум \"%1\""
+msgstr "Албум „%1“ "
 
 #: amarokurls/NavigationUrlGenerator.cpp:238
 #, kde-format
 msgid "Artist \"%1\" from %2"
-msgstr "Изпълнител \"%1\" от %2"
+msgstr "Изпълнител „%1“  от %2"
 
 #: amarokurls/NavigationUrlGenerator.cpp:240
 #, kde-format
 msgid "Artist \"%1\""
-msgstr "Изпълнител \"%1\""
+msgstr "Изпълнител „%1“ "
 
 #: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:786
 #, kde-format
@@ -6023,7 +6023,7 @@ msgstr "Изберете файл за изнасяне на OPML"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
-msgstr "Наистина ли искате да се отпишете от \"%1\"?"
+msgstr "Наистина ли искате да се отпишете от „%1“ ?"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
 #, kde-format
@@ -6056,7 +6056,7 @@ msgstr "Сваляне на подкаст"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
 #, kde-format
 msgid "Downloading Podcast \"%1\""
-msgstr "Сваляне на подкаст \"%1\""
+msgstr "Сваляне на подкаст „%1“ "
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:56
 #, kde-format
@@ -6719,7 +6719,7 @@ msgstr "Обновяване на подкаст канал"
 #: core/podcasts/PodcastReader.cpp:458
 #, kde-format
 msgid "Updating \"%1\""
-msgstr "Обновяване на \"%1\""
+msgstr "Обновяване на „%1“ "
 
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
@@ -6734,7 +6734,7 @@ msgstr "Обновяването на подкаст от %1 предизвик�
 #: core/podcasts/PodcastReader.cpp:511 core/podcasts/PodcastReader.cpp:525
 #, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr "Обновяването на \"%1\" предизвика грешка:\n"
+msgstr "Обновяването на „%1“  предизвика грешка:\n"
 
 #: core/podcasts/PodcastReader.cpp:996
 #, kde-format
@@ -7700,8 +7700,8 @@ msgstr "Свързване..."
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
-msgstr[0] "1 резултат за \"%2\""
-msgstr[1] "%1 резултат за \"%2\""
+msgstr[0] "1 резултат за „%2“ "
+msgstr[1] "%1 резултат за „%2“ "
 
 #: covermanager/CoverManager.cpp:687
 #, kde-format
@@ -7751,7 +7751,7 @@ msgstr "Изглед на обложката"
 #: databaseimporter/SqlBatchImporter.cpp:83
 #, kde-format
 msgid "Could not open file \"%1\"."
-msgstr "Грешка при отваряне на файла \"%1\"."
+msgstr "Грешка при отваряне на файла „%1“ ."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:36
 #, kde-format
@@ -8928,10 +8928,10 @@ msgid ""
 msgstr ""
 "Следните изрази могат да се използват за определяне на схемата на имената:"
 "<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font color=\"%3\">"
+"color=\"%2\">%title%</font>,                           <font color=„%3“>"
 "%artist%</font>, <font color=\"%4\">%composer%</"
-"font>,                           <font color=\"%5\">%year%</font>, <font "
-"color=\"%6\">%album%</font>,                           <font color=\"%7\">"
+"font>,                           <font color=„%5“>%year%</font>, <font color="
+"\"%6\">%album%</font>,                           <font color=\"%7\">"
 "%albumartist%</font>, <font color=\"%8\">%comment%</"
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 
@@ -10999,7 +10999,7 @@ msgid ""
 msgstr ""
 "Избрали сте да скриете лентата с менюта.\n"
 "\n"
-"Моля, не забравяйте, че винаги можете да използвате прекия път \"%1\", за да "
+"Моля, не забравяйте, че винаги можете да използвате прекия път „%1“ , за да "
 "я върнете."
 
 #: MainWindow.cpp:1177
@@ -11209,7 +11209,7 @@ msgstr "Шрифт: "
 #: playlist/layouts/LayoutEditDialog.cpp:241
 #, kde-format
 msgid "Configuration for '%1'"
-msgstr "Настройки на \"%1\""
+msgstr "Настройки на „%1“ "
 
 #: playlist/layouts/LayoutEditWidget.cpp:43
 #, kde-format
@@ -11247,12 +11247,12 @@ msgid ""
 "Current layout '%1' is read only. Creating a new layout '%2' with your "
 "changes and setting this as active"
 msgstr ""
-"Изгледът \"%1\" е само за четене. Ще бъде създаден \"%2\" с вашите настройки"
+"Изгледът „%1“  е само за четене. Ще бъде създаден „%2“  с вашите настройки"
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr "Изгледът \"%1\" е един от стандартните и не може да бъде изтрит."
+msgstr "Изгледът „%1“  е един от стандартните и не може да бъде изтрит."
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
@@ -11345,7 +11345,7 @@ msgid ""
 "of the layout '%1':"
 msgstr ""
 "Моля, въведете името на изгледа на списъка за възпроизвеждане, който ще бъде "
-"копие на \"%1\":"
+"копие на „%1“ :"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
 #, kde-format
@@ -11376,7 +11376,7 @@ msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Saved as new layout '%2'"
 msgstr ""
-"Изгледът \"%1\" е стандартен и не може да бъде презаписан. Записан е под име "
+"Изгледът „%1“  е стандартен и не може да бъде презаписан. Записан е под име "
 "\"%2\"."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
@@ -11627,7 +11627,7 @@ msgstr "&Запис на текущия списък за възпроизвеж
 #: playlist/PlaylistDock.cpp:268
 #, kde-format
 msgid "&Save playlist to \"%1\""
-msgstr "&Запис на списъка за възпроизвеждане в \"%1\""
+msgstr "&Запис на списъка за възпроизвеждане в „%1“ "
 
 #: playlist/PlaylistInfoWidget.cpp:58
 #, kde-format
@@ -11976,8 +11976,8 @@ msgid ""
 "\"the tracks should match properties A, B, or C\"."
 msgstr ""
 "APG счита, че комбинацията от условия е изпълнена, ако някое от условията в "
-"нея е изпълнено.  Това е аналогично на логическото ИЛИ: \" песните трябва да "
-"съответстват на свойствата A, B или C\"."
+"нея е изпълнено.  Това е аналогично на логическото ИЛИ: „песните трябва да "
+"съответстват на свойствата A, B или C“."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAny)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:42
@@ -13196,7 +13196,7 @@ msgstr "Пример 5: 80-минутен диск с рок, метъл и ин
 #: playlistgenerator/PresetModel.cpp:293
 #, kde-format
 msgid "Export \"%1\" preset"
-msgstr "Изнасяне на предварителна настройка \"%1\""
+msgstr "Изнасяне на предварителна настройка „%1“ "
 
 #: playlistgenerator/PresetModel.cpp:295
 #, kde-format
@@ -13211,7 +13211,7 @@ msgstr "Списъци за възпроизвеждане върху диска
 #: playlistmanager/file/PlaylistFileProvider.cpp:283
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
-msgstr "Списъкът за възпроизвеждане \"%1\" не може да бъде зареден."
+msgstr "Списъкът за възпроизвеждане „%1“  не може да бъде зареден."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:273
 #, kde-format
@@ -14206,22 +14206,22 @@ msgstr "Пропускане на записа"
 #: services/lastfm/meta/LastFmMeta.cpp:267
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
-msgstr "Глобално радио: \"%1\""
+msgstr "Глобално радио: „%1“ "
 
 #: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
-msgstr "Потребителско радио: \"%1\""
+msgstr "Потребителско радио: „%1“ "
 
 #: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
-msgstr "Подобни на \"%1\" изпълнители"
+msgstr "Подобни на „%1“  изпълнители"
 
 #: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
-msgstr "Радио на феновете: \"%1\""
+msgstr "Радио на феновете: „%1“ "
 
 #: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
@@ -14593,7 +14593,7 @@ msgid ""
 "Username: %3\n"
 "Password: %4\n"
 msgstr ""
-"Ново сваляне на закупения преди албум \"%1\" на \"%2\" от Magnatune.com.\n"
+"Ново сваляне на закупения преди албум „%1“  на „%2“  от Magnatune.com.\n"
 "\n"
 "Потребител:%3\n"
 "Парола: %4\n"
@@ -14814,9 +14814,8 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">След като се присъедините, "
-"отидете в конфигурацията на Magnatune в \" Настройки->Конфигуриране на "
-"Amarok-> Приставки\" и въведете информацията за членството си. </p></body></"
-"html>"
+"отидете в конфигурацията на Magnatune в „Настройки->Конфигуриране на Amarok-"
+"> Приставки“ и въведете информацията за членството си. </p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:45
