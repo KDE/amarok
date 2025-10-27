@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-10-05 12:16+0300\n"
+"PO-Revision-Date: 2025-10-26 10:38+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -133,16 +133,14 @@ msgid "&Donors"
 msgstr "&&,urnho"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:311
-#, fuzzy, kde-format
-#| msgid "&Duration:"
+#, kde-format
 msgid "T&ranslation"
-msgstr "&משך זמן:"
+msgstr "&תרגום"
 
 #: aboutdialog/OcsPersonItem.cpp:82
-#, fuzzy, kde-format
-#| msgid "Former contributors"
+#, kde-format
 msgid "Email contributor"
-msgstr "תורמים מהעבר"
+msgstr "שליחת דוא״ל למתנדב"
 
 #: aboutdialog/OcsPersonItem.cpp:90
 #, kde-format
@@ -212,16 +210,14 @@ msgid "Stop after current Track"
 msgstr "לעצור לאחר הרצועה הנוכחית"
 
 #: ActionClasses.cpp:420
-#, fuzzy, kde-format
-#| msgid "Love Current Track"
+#, kde-format
 msgid "Stop after current track: Off"
-msgstr "אוהב את הרצועה הנוכחית"
+msgstr "לעצור לאחר הרצועה הנוכחית: כבוי"
 
 #: ActionClasses.cpp:425
-#, fuzzy, kde-format
-#| msgid "Love Current Track"
+#, kde-format
 msgid "Stop after current track: On"
-msgstr "אוהב את הרצועה הנוכחית"
+msgstr "לעצור לאחר הרצועה הנוכחית: פעיל"
 
 #: ActionClasses.cpp:429
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
@@ -247,25 +243,17 @@ msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:14
-#, fuzzy, kde-format
-#| msgid ""
-#| "Set this to display remaining track time instead of past track time in "
-#| "the player window."
+#, kde-format
 msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
-msgstr ""
-"סמן את זה על מנת להציג את הזמן הנותר לרצועה במקום את הזמן שעבר בחלון הניגון."
+msgstr "להגדיר את זה להציג תווית זמן שנייה משמאל למחוון החתימה בחלון הנגן."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:18
-#, fuzzy, kde-format
-#| msgid ""
-#| "Set this to display remaining track time instead of past track time in "
-#| "the player window."
+#, kde-format
 msgid "Whether to display remaining track time in the left time label."
-msgstr ""
-"סמן את זה על מנת להציג את הזמן הנותר לרצועה במקום את הזמן שעבר בחלון הניגון."
+msgstr "האם להציג את הזמן שנותר לרצועה בתווית זמן משמאל."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:19
@@ -294,24 +282,21 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:34
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "How to progress through tracks in the playlist"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "איך להתקדם בין הרצועות שברשימת הנגינה"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:35
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "Determines how amarok will progress through the tracks in the playlist"
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "קביעה איך Amarok יתקדם בין הרצועות ברשימת הנגינה"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:48
-#, fuzzy, kde-format
-#| msgid "Turn dynamic mode on."
+#, kde-format
 msgid "The status of dynamic mode."
-msgstr "הדלק מצב דינמי"
+msgstr "מה המצב של המצב הדינמי."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:49
@@ -324,10 +309,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:53
-#, fuzzy, kde-format
-#| msgid "Turn dynamic mode on."
+#, kde-format
 msgid "Duplicate tracks in dynamic mode."
-msgstr "הדלק מצב דינמי"
+msgstr "שכפול רצועות במצב דינמי."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:54
@@ -338,31 +322,27 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:58
-#, fuzzy, kde-format
-#| msgid "Previous Track"
+#, kde-format
 msgid "Previous tracks count."
-msgstr "הרצועה הקודמת"
+msgstr "כמות רצועות קודמות."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:59
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "Number of tracks to leave in the playlist before the active track."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "מספר הרצועות להשאיר ברשימת הנגינה לפני הרצועה הפעילה."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:63
-#, fuzzy, kde-format
-#| msgid "Previous Track"
+#, kde-format
 msgid "Upcoming tracks count."
-msgstr "הרצועה הקודמת"
+msgstr "כמות רצועות באות."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:64
-#, fuzzy, kde-format
-#| msgid "The number of undo levels in the playlist."
+#, kde-format
 msgid "Number of tracks to load into the playlist after the active track."
-msgstr "מספר רמות הביטול ברשימת־ההשמעה."
+msgstr "מספר הרצועות לטעון לרשימת הנגינה אחרי הרצועה הפעילה."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:68
@@ -378,17 +358,15 @@ msgstr "הפעלה/כיבוי הסמל של Amarok בשורת המערכת."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
-#, fuzzy, kde-format
-#| msgid "Whether to animate the systray icon"
+#, kde-format
 msgid "Whether to hide the context view."
-msgstr "האם להנפיש את הסמל במגש המערכת"
+msgstr "האם להסתיר את תצוגת ההקשר."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:74
-#, fuzzy, kde-format
-#| msgid "Enable/Disable tray icon for Amarok."
+#, kde-format
 msgid "Enable/Disable context view in Amarok."
-msgstr "הפעל/בטל את הסמל במגש המערכת עבור Amarok."
+msgstr "הפעלת/השבתת תצוגת הקשר ב־Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:78
@@ -432,32 +410,28 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:96
-#, fuzzy, kde-format
-#| msgid "Whether to show icon in system tray"
+#, kde-format
 msgid "Whether to show background images in the browser pane"
-msgstr "האם להציג את הסמל במגש המערכת"
+msgstr "האם להציג תמונות רקע בלוח הדפדפן"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid "Automatically scroll playlist to current track"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
-msgstr "גלול אוטומטית את רשימת־ההשמעה לרצועה הנוכחית"
+msgstr "לגלול אוטומטית ברשימת הנגינה כדי שהרצועה הנוכחית שמתנגנת תופיע"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
-#, fuzzy, kde-format
-#| msgid "List of folders in the Collection"
+#, kde-format
 msgid "Show Album art in the Collection Browser"
-msgstr "רשימת התיקיות באוסף"
+msgstr "הצגת עטיפת אלבום בדפדפן האוספים"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:108
-#, fuzzy, kde-format
-#| msgid "Whether to animate the systray icon"
+#, kde-format
 msgid "Show the Context View"
-msgstr "האם להנפיש את הסמל במגש המערכת"
+msgstr "הצגת תצוגת ההקשר"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:112
@@ -507,37 +481,33 @@ msgstr "אם הוגדר, ארגון קבצים ישכתב כל יעד קיים."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:134
-#, fuzzy, kde-format
-#| msgid "Whether organize files will ignore The in artist names."
+#, kde-format
 msgid "Whether organize files will move The in artist names to the end."
-msgstr "האם ארגון קבצים יתעלם מהמילה The בשמות האמנים."
+msgstr "האם סידור הקבצים יעביר את ‚The’ בשמות האומנים לסוף."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:135
-#, fuzzy, kde-format
-#| msgid "If set, Organize files will ignore The in artist names."
+#, kde-format
 msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
-msgstr "אם נקבע, ארגון קבצים יתעלם מהמילה The בשמות האמנים."
+msgstr ""
+"אם הוגדר, ארגון קבצים יעביר את המילה ‚The’ בשמות האמנים לסוף כמו ב־„Beatles, "
+"The”."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:139
-#, fuzzy, kde-format
-#| msgid ""
-#| "Whether organize files will replace spaces in filenames by an underscore."
+#, kde-format
 msgid ""
 "Whether organize files will replace spaces in filenames with underscores."
-msgstr "האם ארגון קבצים יחליף רווחים בשמות־הקבצים, בקו־תחתון."
+msgstr "האם סידור הקבצים יחליף רווחים בשמות הקבצים בקווים תחתיים."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:140
-#, fuzzy, kde-format
-#| msgid ""
-#| "If set, Organize files will replace spaces in filenames by an underscore."
+#, kde-format
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
-msgstr "אם נקבע, ארגון קבצים יחליף רווחים בשמות־הקבצים, בקו־תחתון."
+msgstr "אם הוגדר, סידור הקבצים יחליף רווחים בשמות הקבצים בקווים תחתיים."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:144
@@ -553,17 +523,15 @@ msgstr "אם הוגדר, ארגון קבצים ישתמש בתמונת העטי�
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:149
-#, fuzzy, kde-format
-#| msgid "Index of collection folder destination for Organize files."
+#, kde-format
 msgid "Collection folder path destination for Organize files."
-msgstr "מפתח יעד תיקיית אוסף עבור ארגון קבצים."
+msgstr "יעד נתיב תיקיית אוסף לסידור קבצים."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:150
-#, fuzzy, kde-format
-#| msgid "The ID of the collection folder destination for Organize files."
+#, kde-format
 msgid "The path of the collection folder destination for Organize files."
-msgstr "המספר המזהה של יעד תיקיית אוסף עבור ארגון קבצים."
+msgstr "הנתיב של יעד תיקיית האוספים לסידור קבצים."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:154
@@ -672,10 +640,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:189
-#, fuzzy, kde-format
-#| msgid "Import Collection"
+#, kde-format
 msgid "Format Presets"
-msgstr "ייבא אפשרויות קבועות"
+msgstr "תצורות תבנית"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:190
@@ -691,10 +658,9 @@ msgstr "עוצמת קול ראשית"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:198
-#, fuzzy, kde-format
-#| msgid "The Amarok master volume, a value between 0 (muted) and 100."
+#, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
-msgstr "עוצמת הקול הראשית של Amarok, ערך בין 0 (מושתק) ל־ 100."
+msgstr "עוצמת הקול הראשית של Amarok, ערך בין 0 ל־ 100."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:204
@@ -722,10 +688,9 @@ msgstr "אפשר/בטל החלשה הדרגתית."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:214
-#, fuzzy, kde-format
-#| msgid "Whether to fade out tracks when pressing stop."
+#, kde-format
 msgid "Whether to fade out tracks when pressing pause."
-msgstr "האם לעמעם רצועות בלחיצה על עצור."
+msgstr "האם לעמעם רצועות בלחיצה על השהיה."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:219
@@ -753,25 +718,21 @@ msgstr "אם סומן, תוסף האקולייזר יסנן את שידור הש
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"ערך קדם־הגבר של האקולייזר, הערך הוא בין 100 - ובין 100 +, 0 הוא הערך הנורמלי."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
-#, fuzzy, kde-format
-#| msgid "Equalizer preset name."
+#, kde-format
 msgid "List with user equalizer preset names"
-msgstr "שם אפשרות קבועה של האקולייזר."
+msgstr "רשימה עם שמות ערכות אקולייזר של המשתמש"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:237
-#, fuzzy, kde-format
-#| msgid "Equalizer preset name."
+#, kde-format
 msgid "List with user presets values"
-msgstr "שם אפשרות קבועה של האקולייזר."
+msgstr "רשימה עם ערכים של ערכות משתמש"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:241
@@ -789,10 +750,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:245
-#, fuzzy, kde-format
-#| msgid "&Replay Gain Mode"
+#, kde-format
 msgid "Disable Replay Gain"
-msgstr "&מצב הגברת שמע"
+msgstr "השבתת איזון עוצמת שמע"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:248
@@ -808,31 +768,27 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:257
-#, fuzzy, kde-format
-#| msgid "The length of the fadeout, in milliseconds."
+#, kde-format
 msgid "The length of a short seek, in seconds."
-msgstr "אורך ההחלשה, באלפיות־שנייה."
+msgstr "אורך החתירה הקצרה, בשניות."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:262
-#, fuzzy, kde-format
-#| msgid "The length of the fadeout, in milliseconds."
+#, kde-format
 msgid "The length of a medium seek, in seconds."
-msgstr "אורך ההחלשה, באלפיות־שנייה."
+msgstr "אורך החתירה הבינונית, בשניות."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:267
-#, fuzzy, kde-format
-#| msgid "The length of the fadeout, in milliseconds."
+#, kde-format
 msgid "The length of a long seek, in seconds."
-msgstr "אורך ההחלשה, באלפיות־שנייה."
+msgstr "אורך החתירה הארוכה, בשניות."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:272
-#, fuzzy, kde-format
-#| msgid "Queue URLs after the currently playing track"
+#, kde-format
 msgid "Whether Amarok should pause the currently playing track on suspend."
-msgstr "הכנס כתובות לתור לאחר הרצועה הנוכחית המתנגנת"
+msgstr "האם על Amarok להשהות את הרצועה המתנגנת בעת יציאה להשהיית המערכת."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:276
@@ -932,10 +888,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:330
-#, fuzzy, kde-format
-#| msgid "Font Color for On-Screen Display"
+#, kde-format
 msgid "Font color for OSD"
-msgstr "צבע גופן לשימוש בתצוגה־על־המסך"
+msgstr "צבע גופן לשימוש בתצוגת על"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:331
@@ -949,10 +904,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:335
-#, fuzzy, kde-format
-#| msgid "Font Color for On-Screen Display"
+#, kde-format
 msgid "Font scaling for OSD"
-msgstr "צבע גופן לשימוש בתצוגה־על־המסך"
+msgstr "קנה מידת גופן לתצוגת על"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:336
@@ -1069,10 +1023,9 @@ msgstr "פנימי: כתובת הרצועה לחידוש ההשמעה לאחר �
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:389
-#, fuzzy, kde-format
-#| msgid "&Resume playback on start"
+#, kde-format
 msgid "Internal: Resume playback in paused state"
-msgstr "&חדש השמעה בהפעלה"
+msgstr "פנימי: להמשיך נגינה במצב מושהה"
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:393
@@ -1119,24 +1072,21 @@ msgstr "האם רצועות האוסף יסרקו בעת שינוי"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:418
-#, fuzzy, kde-format
-#| msgid "Whether the album cover should be shown"
+#, kde-format
 msgid "Whether meta data changes are written back"
-msgstr "האם להציג את עטיפת האלבום"
+msgstr "האם שינויי נתוני העל נכתבים בחזרה"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:422
-#, fuzzy, kde-format
-#| msgid "Whether the album cover should be shown"
+#, kde-format
 msgid "Whether changes to the track statistics are written back"
-msgstr "האם להציג את עטיפת האלבום"
+msgstr "האם השינויים לסטטיסטיקת הרצועה נכתבים בחזרה"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:426
-#, fuzzy, kde-format
-#| msgid "Whether the album cover should be shown"
+#, kde-format
 msgid "Whether changes to the album cover are written back"
-msgstr "האם להציג את עטיפת האלבום"
+msgstr "האם שינויים לעטיפת האלבום נכתבים בחזרה"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:430
@@ -1152,10 +1102,9 @@ msgstr "רשימת התיקיות באוסף"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:437
-#, fuzzy, kde-format
-#| msgid "List of folders in the Collection"
+#, kde-format
 msgid "Whether track numbers are shown in the collection browser."
-msgstr "רשימת התיקיות באוסף"
+msgstr "האם מספרי הרצועות מופיעים בדפדפן האוספים."
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:441
@@ -1296,16 +1245,11 @@ msgstr "מחיקה אוטומטית של פוד־קסטים"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:497
-#, fuzzy, kde-format
-#| msgid ""
-#| "Whether podcasts shows already played are automatically deleted when "
-#| "media device is connected."
+#, kde-format
 msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
-msgstr ""
-"בכל פעם ששידורי פוד־קסט כבר נוגנו, נמחקים באופן אוטומטי, כאשר התקן־המדיה "
-"מחובר."
+msgstr "האם פרקי הסכתים שכבר נוגנו נמחקים אוטומטית עם חיבור של התקן מדיה."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:500
@@ -1315,16 +1259,13 @@ msgstr "סנכרן סטטיסטיקה"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:501
-#, fuzzy, kde-format
-#| msgid ""
-#| "Whether Amarok statistics should be synchronized with play count/ratings "
-#| "on device and whether tracks played should be submitted to last.fm."
+#, kde-format
 msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
-"האם הסטטיסטיקה של Amarok צריכה להיות מתואמת עם מניית־השמעות/דירוג על התקני־"
-"מדיה והאם רצועות שנוגנו צריכות להימסר ל־ last.fm."
+"האם הסטטיסטיקה של Amarok צריכה להסתנכרן עם כמות השמעות/דיגורים במכשיר והאם "
+"שמות הרצועות שנוגנו יישלחו ל־Last.fm."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:507
@@ -1941,17 +1882,15 @@ msgid "Show Track Numbers"
 msgstr "הצגת מספרי רצועות"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "הצג תחת אמנים שונים"
+msgstr "הצגת אומן/נית למגוון אומנים"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show Cover Art"
-msgstr "הראה שנים"
+msgstr "הצגת עטיפה"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:268
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:85
@@ -2024,10 +1963,9 @@ msgid "Year - Album"
 msgstr "(שנה) - אלבום"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1167
-#, fuzzy, kde-format
-#| msgid "Bookmark this Artist"
+#, kde-format
 msgid "Track Artist"
-msgstr "סמן אמן זה"
+msgstr "אומן/נית רצועה"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
 #: browsers/CollectionTreeItemModelBase.cpp:1169 dialogs/TagGuessOptions.ui:253
@@ -2209,28 +2147,24 @@ msgid "Add new preset"
 msgstr "הוספת ערכה חדשה"
 
 #: browsers/playlistbrowser/APGCategory.cpp:65
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Edit selected preset"
-msgstr "המחיקה נכשלה"
+msgstr "עריכת הערכה הנבחרת"
 
 #: browsers/playlistbrowser/APGCategory.cpp:70
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Delete selected preset"
-msgstr "המחיקה נכשלה"
+msgstr "מחיקת הערכה הנבחרת"
 
 #: browsers/playlistbrowser/APGCategory.cpp:75
-#, fuzzy, kde-format
-#| msgid "Add new preset"
+#, kde-format
 msgid "Import a new preset"
-msgstr "הוסף אפשרויות קבועות חדשות"
+msgstr "ייבוא ערכה חדשה"
 
 #: browsers/playlistbrowser/APGCategory.cpp:79
-#, fuzzy, kde-format
-#| msgid "About to delete selected files"
+#, kde-format
 msgid "Export the selected preset"
-msgstr "עמוד למחוק קבצים מסומנים"
+msgstr "ייצוא הערכה הנבחרת"
 
 #: browsers/playlistbrowser/APGCategory.cpp:86
 #, kde-format
@@ -13086,7 +13020,7 @@ msgstr ""
 #: playlistmanager/SyncedPlaylist.cpp:43 playlistmanager/SyncedPlaylist.cpp:51
 #, kde-format
 msgid "<Empty>"
-msgstr ""
+msgstr "<ריקה>"
 
 #: PluginManager.cpp:143
 #, kde-format
@@ -13782,7 +13716,7 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
-msgstr ""
+msgstr "להשתמש בתגיות מהודרות כדי לייצג דירוגים"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:146
@@ -13865,7 +13799,7 @@ msgstr[3] "מונה נגינות: %1 נגינות"
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
 msgid "%1's Streams"
-msgstr ""
+msgstr "התזרימים של %1"
 
 #: services/lastfm/LastFmServiceCollection.cpp:36
 #, kde-format
@@ -13885,7 +13819,7 @@ msgstr "הרדיו האישי של החברים"
 #: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
-msgstr ""
+msgstr "פתיחת הארנק של KDE לטובת קריאת פרטי הגישה ל־Last.fm נכשלה"
 
 #: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
@@ -13897,12 +13831,12 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "לנתק את Amarok מחשבון ה־Last.fm עם השם %1?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "לנתק חשבון Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
@@ -13922,13 +13856,13 @@ msgstr "נכשל"
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr ""
+msgstr "העמוד באתר של Last.fm נפתח"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "סיום חיבור חשבון"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -13954,10 +13888,10 @@ msgstr "%1 (%2)"
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%2 (השמעה אחת)"
+msgstr[1] "%2 (שתי השמעות)"
+msgstr[2] "%2 (%1 השמעות)"
+msgstr[3] "%2 (%1 השמעות)"
 
 #: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
@@ -15242,13 +15176,13 @@ msgstr ""
 #: statsyncing/ui/ChooseProvidersPage.ui:17
 #, kde-format
 msgid "Select Collections to Synchronize"
-msgstr ""
+msgstr "נא לבחור אוספים לסנכרון"
 
 #. i18n: ectx: property (title), widget (QGroupBox, fieldsBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:49
 #, kde-format
 msgid "Select Fields to Synchronize"
-msgstr ""
+msgstr "נא לבחור שדות לסנכרון"
 
 #: statsyncing/ui/ConfigureProviderDialog.cpp:35
 #, kde-format
@@ -15286,7 +15220,7 @@ msgstr "חזרה"
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
 msgid "Synchronize"
-msgstr ""
+msgstr "סנכרון"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:148
 #, kde-format
@@ -15298,12 +15232,12 @@ msgstr ""
 #: statsyncing/ui/MatchedTracksPage.cpp:151
 #, kde-format
 msgid "There are no tracks excluded from synchronization"
-msgstr ""
+msgstr "אין רצועות שמוחרגות מהסנכרון"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:155
 #, kde-format
 msgid "Expand Tracks With Conflicts"
-msgstr ""
+msgstr "הרחבת רצועות עם סתירות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:157
 #, kde-format
@@ -15313,34 +15247,34 @@ msgstr "הרחבת העדכניים"
 #: statsyncing/ui/MatchedTracksPage.cpp:163
 #, kde-format
 msgid "Collapse Tracks Without Conflicts"
-msgstr ""
+msgstr "צמצום רצועות ללא סתירות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:165
 #, kde-format
 msgid "Collapse Not Updated"
-msgstr ""
+msgstr "צמצום לא עדכניים"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
 msgid "Reset All Ratings to Undecided"
-msgstr ""
+msgstr "איפוס כל הדירוגים למצב ללא החלטה"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:194
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Include Labels from %1"
-msgstr ""
+msgstr "הכללת תוויות מ־%1"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:198
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Exclude Labels from %1"
-msgstr ""
+msgstr "החרגת תוויות מ־%1"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
 msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
-msgstr ""
+msgstr "איפוס כל התוויות למצב ללא החלטה (לא לסנכרן אותן)"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
 #, kde-format
@@ -15356,22 +15290,22 @@ msgstr "רצועות עדכניות"
 #: statsyncing/ui/MatchedTracksPage.cpp:230
 #, kde-format
 msgid "Tracks With Conflicts"
-msgstr ""
+msgstr "רצועות עם סתירות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:239
 #, kde-format
 msgid "There are no tracks with conflicts"
-msgstr ""
+msgstr "אין רצועות עם סתירות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:245
 #, kde-format
 msgid "There are no tracks going to be updated"
-msgstr ""
+msgstr "אין רצועות שתעודכנה"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:272
 #, kde-format
 msgid "Tracks that are unique to their sources"
-msgstr ""
+msgstr "רצועות שהן ייחודיות למקורות שלהן"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
@@ -15379,14 +15313,13 @@ msgid "Tracks that have been excluded from synchronization due to ambiguity"
 msgstr ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
-#, fuzzy, kde-format
-#| msgid "<b>%1</b>"
+#, kde-format
 msgid "<b>One</b> play"
 msgid_plural "<b>%1</b> plays"
-msgstr[0] "<b>%1</b>"
-msgstr[1] "<b>%1</b>"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "השמעה <b>אחת</b>"
+msgstr[1] "<b>שתי</b> השמעות"
+msgstr[2] "<b>%1</b> השמעות"
+msgstr[3] "<b>%1</b> השמעות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:318
 #, kde-format
@@ -15402,7 +15335,7 @@ msgstr[3] ""
 #, kde-format
 msgctxt "%2 is the above '%1 track(s)' message"
 msgid "Showing %1 out of %2"
-msgstr ""
+msgstr "מוצגים %1 מתוך %2"
 
 #. i18n: ectx: attribute (title), widget (QWidget, matchedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:21
@@ -15444,7 +15377,7 @@ msgstr "הרחבה"
 #: statsyncing/ui/MatchedTracksPage.ui:126
 #, kde-format
 msgid "Collapse"
-msgstr ""
+msgstr "צמצום"
 
 #. i18n: ectx: attribute (title), widget (QWidget, uniqueTab)
 #: statsyncing/ui/MatchedTracksPage.ui:152
@@ -15462,7 +15395,7 @@ msgstr "רצועות מוחרגות"
 #: statsyncing/ui/MatchedTracksPage.ui:267
 #, kde-format
 msgid "Scrobbling"
-msgstr ""
+msgstr "התאמה מוזיקלית"
 
 #: statusbar/CompoundProgressBar.cpp:65 statusbar/CompoundProgressBar.cpp:194
 #: statusbar/ProgressBar.cpp:48
@@ -15699,7 +15632,7 @@ msgstr "סימנייה"
 #: widgets/BreadcrumbItemButton.cpp:238
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
-msgstr ""
+msgstr "הצגה והרצה של סימניות, או יצירת חדשות"
 
 #: widgets/BreadcrumbItemButton.cpp:256
 #, kde-format
@@ -15709,7 +15642,7 @@ msgstr "הסימניות של Amarok"
 #: widgets/BreadcrumbItemButton.cpp:275
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
-msgstr ""
+msgstr "העתקת סימניית התצוגה הנוכחית ללוח הגזירים"
 
 #: widgets/FilenameLayoutWidget.cpp:78
 #, kde-format
@@ -15775,7 +15708,7 @@ msgstr "התחלתי"
 #: widgets/FilenameLayoutWidget.cpp:207
 #, kde-format
 msgid "Collection root"
-msgstr ""
+msgstr "שורש האוספים"
 
 #: widgets/FilenameLayoutWidget.cpp:277
 #, kde-format
