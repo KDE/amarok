@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-10-26 10:38+0200\n"
+"PO-Revision-Date: 2025-10-28 16:20+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.08.1\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Poedit 3.7\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -13078,17 +13078,17 @@ msgstr "קוד"
 #: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Console"
-msgstr ""
+msgstr "מסוף"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Output"
-msgstr ""
+msgstr "פלט"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
 msgid "Error"
-msgstr ""
+msgstr "שגיאה"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
@@ -13129,12 +13129,12 @@ msgstr "ת&צוגה"
 #: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
-msgstr ""
+msgstr "הפעולה הזאת תעצור את הסקריפט! להמשיך?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
-msgstr ""
+msgstr "נא לבחור איפה לשמור את הסקריפטים שלך"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
 #, kde-format
@@ -13156,12 +13156,12 @@ msgstr "הסרה"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "לא להסיר"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
-msgstr ""
+msgstr "בוודאות?"
 
 #: scripting/scriptengine/AmarokScript.cpp:68
 #: scripting/scriptengine/AmarokScript.cpp:72
@@ -13184,7 +13184,7 @@ msgstr "לא"
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
 msgid "Terminate"
-msgstr ""
+msgstr "חיסול"
 
 #: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
@@ -13207,6 +13207,8 @@ msgid ""
 "Script error reported by: %1\n"
 "%2"
 msgstr ""
+"דווחה שגיאת סקריפט על ידי: %1\n"
+"%2"
 
 #: services/ampache/AddServerDialog.cpp:44
 #, kde-format
@@ -13373,12 +13375,12 @@ msgstr "הסכתים מ־Gpodder"
 #: services/gpodder/GpodderProvider.cpp:469
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
-msgstr ""
+msgstr "מתבצע ניסיון לסנכרן מצבים עם gpodder.net"
 
 #: services/gpodder/GpodderProvider.cpp:529
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
-msgstr ""
+msgstr "מתבצע ניסיון לסנכרן מינויים עם gpodder.net"
 
 #: services/gpodder/GpodderProvider.cpp:778
 #: services/gpodder/GpodderProvider.cpp:789
@@ -13387,6 +13389,7 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
+"קבלת נתונים מהשרת של שירות GPodder נכשלה. יתבצע ניסיון חוזר עוד 10 שניות…"
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
@@ -13396,7 +13399,7 @@ msgstr "gpodder.net: שירות ספריית הסכתים"
 #: services/gpodder/GpodderService.cpp:119
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
-msgstr ""
+msgstr "gpodder.net הוא שירות מקוון לסנכרון וספרייה של הסכתים."
 
 #: services/gpodder/GpodderService.cpp:225
 #: services/opmldirectory/OpmlDirectoryService.cpp:130
@@ -13415,11 +13418,13 @@ msgid ""
 "No running KWallet found. Would you like Amarok to save your gpodder.net "
 "credentials in plaintext?"
 msgstr ""
+"לא נמצאו KWallet פעיל. האם להנחות את Amarok לשמור את פרטי הגישה שלך ל־"
+"gpodder.net כטקסט גלוי?"
 
 #: services/gpodder/GpodderServiceSettings.cpp:94
 #, kde-format
 msgid "Testing..."
-msgstr ""
+msgstr "מתבצעת בדיקה…"
 
 #: services/gpodder/GpodderServiceSettings.cpp:111
 #, kde-format
@@ -13486,7 +13491,7 @@ msgstr "אתר בו אמנים יכולים לשתף בחופשיות את המ�
 #: services/jamendo/JamendoService.cpp:77
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
-msgstr ""
+msgstr "ארכיון של מוזיקה חופשית ברישיון Creative Commons"
 
 #: services/jamendo/JamendoService.cpp:80
 #, kde-format
@@ -13555,16 +13560,16 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: services/jamendo/JamendoXmlParser.cpp:172
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "Middle part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
 msgstr[0] "אלבום אחד מתוך "
-msgstr[1] "%1 אלבומים מתוך "
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שני אלבומים מתוך "
+msgstr[2] "%1 אלבומים מתוך "
+msgstr[3] "%1 אלבומים מתוך "
 
 #: services/jamendo/JamendoXmlParser.cpp:173
 #, fuzzy, kde-format
@@ -13633,7 +13638,7 @@ msgstr ""
 #, kde-format
 msgctxt "WeeklyTopBias bias representation"
 msgid "Tracks from the Last.fm top lists from %1 to %2"
-msgstr ""
+msgstr "רצועות מהרשימות המובילות ב־Last.fm מ־%1 עד %2"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:132
 #, kde-format
@@ -13711,6 +13716,8 @@ msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
 "during statistics synchronization"
 msgstr ""
+"להשתמש בתגיות Last.fm כגון <b>7 מתוך 10 כוכבים</b> כדי לייצג את הדירוגים שלך "
+"ב־Amarok במהלך סנכרון סטטיסטיקה"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:139
@@ -13911,7 +13918,7 @@ msgstr ""
 #: services/lastfm/LastFmTreeModel.cpp:305
 #, kde-format
 msgid "My Top Artists"
-msgstr ""
+msgstr "האומנים המובילים שלי"
 
 #: services/lastfm/LastFmTreeModel.cpp:307
 #, kde-format
@@ -14514,7 +14521,7 @@ msgstr "סגירה"
 #: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
 msgid "\"Fair trade\" online music store"
-msgstr ""
+msgstr "חנות מוזיקה מקוונת „סחר הוגן”"
 
 #: services/magnatune/MagnatuneStore.cpp:109
 #, no-c-format, kde-format
@@ -14579,12 +14586,13 @@ msgstr ""
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
 msgid "ERROR: No arguments supplied"
-msgstr ""
+msgstr "שגיאה: לא סופקו ארגומנטים"
 
 #: services/magnatune/MagnatuneStore.cpp:636
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
 msgstr ""
+"שגיאה: כמות שגויה של ארגומנטים ל־addMoodyTracks (הוספת רצועות לפי מצב רוח)"
 
 #: services/magnatune/MagnatuneStore.cpp:646
 #, kde-format
@@ -14599,7 +14607,7 @@ msgstr "בסדר"
 #: services/magnatune/MagnatuneStore.cpp:653
 #, kde-format
 msgid "ERROR: Unknown argument."
-msgstr ""
+msgstr "שגיאה: ארגומנט לא ידוע."
 
 #: services/magnatune/MagnatuneUrlRunner.cpp:38
 #, kde-format
@@ -14699,7 +14707,7 @@ msgstr "http://amarok.kde.org"
 #: services/mp3tunes/harmonydaemon/main.cpp:48
 #, kde-format
 msgid "The identifier the daemon should use."
-msgstr ""
+msgstr "המזהה שבו הסוכן צריך להשתמש."
 
 # kde-il: don't translate
 #: services/mp3tunes/harmonydaemon/main.cpp:49
@@ -14710,7 +14718,7 @@ msgstr "הדוא\"ל שישומש לוידוא הזהות."
 #: services/mp3tunes/harmonydaemon/main.cpp:50
 #, kde-format
 msgid "The pin to be used for authentication."
-msgstr ""
+msgstr "הקוד האישי שישמש לאימות."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:16
@@ -14756,7 +14764,7 @@ msgstr ""
 #, kde-format
 msgctxt "Enable harmony"
 msgid "Enable AutoSync"
-msgstr ""
+msgstr "הפעלת סנכרון אוטומטי"
 
 # kde-il: don't translate
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -14921,13 +14929,13 @@ msgstr "מצרף מידע על הפוד־קסט"
 #: services/opmldirectory/OpmlDirectoryService.cpp:139
 #, kde-format
 msgid "Add OPML"
-msgstr ""
+msgstr "הוספת OPML"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:293
 #, kde-format
 msgctxt "Heading of Add OPML dialog"
 msgid "Add OPML"
-msgstr ""
+msgstr "הוספת OPML"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:344
 #, kde-format
@@ -14950,6 +14958,7 @@ msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
+"רשימה מפורטת של הסכתים שניתן לחפש אחריהם ולהירשם אליהם ישירות מתוך Amarok."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:163
 #, kde-format
@@ -14977,7 +14986,7 @@ msgstr "שגיאה: הודעה לא ידועה"
 #: services/ServiceMetaBase.cpp:249
 #, kde-format
 msgid "Neither playable nor downloadable url specified."
-msgstr ""
+msgstr "הכתובת שצוינה אינה מיועדת לנגינה או להורדה."
 
 #: services/ServicePluginManager.cpp:147 services/ServicePluginManager.cpp:164
 #: services/ServicePluginManager.cpp:181
@@ -14988,7 +14997,7 @@ msgstr "אין שרות בשם %1 הרץ כרגע"
 #: statsyncing/Config.cpp:100
 #, kde-format
 msgid "This collection is currently offline"
-msgstr ""
+msgstr "האוסף הזה אינו מקוון כרגע"
 
 #: statsyncing/Controller.cpp:112
 #, kde-format
@@ -15010,7 +15019,7 @@ msgstr "לשמור על סנכרון"
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "לא לשמור על סנכרון"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format

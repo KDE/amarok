@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-10-24 22:17+0200\n"
+"PO-Revision-Date: 2025-10-24 23:40+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.07.70\n"
+"X-Generator: Lokalize 25.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -8927,13 +8927,13 @@ msgid ""
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 msgstr ""
 "Следните изрази могат да се използват за определяне на схемата на имената:"
-"<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font color=„%3“>"
-"%artist%</font>, <font color=\"%4\">%composer%</"
-"font>,                           <font color=„%5“>%year%</font>, <font color="
-"\"%6\">%album%</font>,                           <font color=\"%7\">"
-"%albumartist%</font>, <font color=\"%8\">%comment%</"
-"font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
+"<br>                           <font color=„%1“>%track%</font>, <font "
+"color=„%2“>%title%</font>,                           <font color=„%3“>%artist"
+"%</font>, <font color=\"%4\">%composer%</font>,                           "
+"<font color=„%5“>%year%</font>, <font color=\"%6\">%album%</"
+"font>,                           <font color=\"%7\">%albumartist%</font>, "
+"<font color=\"%8\">%comment%</font>,                           <font color="
+"\"%9\">%genre%</font>, %ignore%."
 
 #: dialogs/TagGuesserDialog.cpp:224
 #, kde-format
@@ -11377,7 +11377,7 @@ msgid ""
 "overwritten. Saved as new layout '%2'"
 msgstr ""
 "Изгледът „%1“  е стандартен и не може да бъде презаписан. Записан е под име "
-"\"%2\"."
+"„%2“."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
 #, kde-format
@@ -12012,22 +12012,22 @@ msgstr "(не е настроено)"
 #: playlistgenerator/constraints/Checkpoint.cpp:180
 #, kde-format
 msgid "\"%1\" (track) by %2"
-msgstr "\"%1\" (песен) от %2"
+msgstr "„%1“ (песен) от %2"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:189
 #, kde-format
 msgid "\"%1\" (album) by %2"
-msgstr "\"%1\" (албум) от %2"
+msgstr "„%1“ (албум) от %2"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:191
 #, kde-format
 msgid "\"%1\" (album)"
-msgstr "\"%1\" (албум)"
+msgstr "„%1“ (албум)"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:200
 #, kde-format
 msgid "\"%1\" (artist)"
-msgstr "\"%1\" (изпълнител)"
+msgstr "„%1“ (изпълнител)"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, CheckpointEditWidget)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:15
@@ -12604,7 +12604,7 @@ msgstr[1] "%1 звезди"
 #, kde-format
 msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
-msgstr "\"%1\""
+msgstr "„%1“"
 
 #: playlistgenerator/constraints/TagMatch.cpp:341
 #: widgets/MetaQueryWidget.cpp:1018
