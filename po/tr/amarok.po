@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-09-14 18:11+0300\n"
+"PO-Revision-Date: 2025-10-29 08:44+0300\n"
 "Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.08.0\n"
+"X-Generator: Lokalize 25.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -7198,9 +7198,9 @@ msgstr ""
 "“-q parametresi” kullanır. Bu sürgüdeki bit hızı ölçüsü, q değeri verilen "
 "kodlanmış parçanın ortalama bit hızının yalnızca kaba bir tahminidir (Vorbis "
 "tarafından sağlanır). Aslında, daha yeni ve daha verimli Vorbis sürümleri "
-"ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir bir çalarda "
-"müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ b> altındaki herhangi bir "
-"şey müzik için yetersiz olabilir ve <b>-q8</b> değerinin üstündeki herhangi "
+"ile gerçek bit hızı daha da düşüktür.<br><b>−q5</b>, taşınabilir bir çalarda "
+"müzik dinlemek için iyi bir seçimdir.<br/><b>−q3</b> altındaki herhangi bir "
+"şey müzik için yetersiz olabilir ve <b>−q8</b> değerinin üstündeki herhangi "
 "bir şey büyük olasılıkla aşırı derecede gereksizdir."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:59
@@ -8116,13 +8116,13 @@ msgstr "0 dB"
 #: dialogs/EqualizerDialog.ui:559
 #, kde-format
 msgid "-dB"
-msgstr "-dB"
+msgstr "−dB"
 
 #. i18n: ectx: property (text), widget (QLabel, eqPreampLabel)
 #: dialogs/EqualizerDialog.ui:569
 #, kde-format
 msgid "Preamp"
-msgstr "Önamfi"
+msgstr "Ön amplifikatör"
 
 #. i18n: ectx: property (text), widget (QLabel, eqBand0Label)
 #. i18n: ectx: property (text), widget (QLabel, eqBand1Label)
@@ -9197,7 +9197,9 @@ msgstr ""
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
-msgstr "<a href=\"http://the.echonest.com/\">Echonest</a>, sanatçının"
+msgstr ""
+"<a href=\"http://the.echonest.com/\">Echonest</a>, sanatçının şunlara benzer "
+"olduğunu düşünüyor:"
 
 #: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
@@ -14783,7 +14785,7 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Kaydolduktan sonra "
-"\"Ayarlar → Amarok Uygulamasını Yapılandır → Eklentiler\" sayfasındaki "
+"“Ayarlar → Amarok Uygulamasını Yapılandır → Eklentiler” sayfasındaki "
 "Magnatune yapılandırmasına gidin ve üyelik bilgilerinizi girin.</p></body></"
 "html>"
 
