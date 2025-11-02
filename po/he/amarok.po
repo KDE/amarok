@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-10-28 16:20+0200\n"
+"PO-Revision-Date: 2025-11-01 16:47+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Lokalize 25.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3899,24 +3899,21 @@ msgstr "לא להציג את התוויות הבאות:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchArtistCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:24
-#, fuzzy, kde-format
-#| msgid "is in the last"
+#, kde-format
 msgid "Labels matching the artist"
-msgstr "בסוף"
+msgstr "תוויות שתואמות לאומן/נית"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchTitleCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:31
-#, fuzzy, kde-format
-#| msgid "is in the last"
+#, kde-format
 msgid "Labels matching the title"
-msgstr "בסוף"
+msgstr "תוויות שתואמות לכותרת"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchAlbumCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:38
-#, fuzzy, kde-format
-#| msgid "is in the last"
+#, kde-format
 msgid "Labels matching the album"
-msgstr "בסוף"
+msgstr "תוויות שתואמות לאלבום"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: context/applets/labels/labelsBlacklistSettings.ui:61
@@ -3926,10 +3923,9 @@ msgstr "לרשימת חסומים:"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, labelsGeneralSettings)
 #: context/applets/labels/labelsGeneralSettings.ui:20
-#, fuzzy, kde-format
-#| msgid "&Settings"
+#, kde-format
 msgid "Labels Settings"
-msgstr "&הגדרות"
+msgstr "הגדרות תוויות"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #. i18n: ectx: property (text), widget (QLabel, minAutoAddCountLabel)
@@ -8589,10 +8585,9 @@ msgstr "השמעה אחרונה:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "נוסף לאוסף"
+msgstr "נוסף לאוסף:"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
@@ -8983,12 +8978,10 @@ msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
 msgstr ""
 
 #: dynamic/biases/AlbumPlayBias.cpp:106
-#, fuzzy, kde-format
-#| msgid "Set custom artwork for this album"
-#| msgid_plural "Set custom artwork for these %1 albums"
+#, kde-format
 msgctxt "AlbumPlay bias representation"
 msgid "The next track from the album"
-msgstr "קבע עטיפה מותאמת אישית לאלבום הזה"
+msgstr "הרצועה הבאה מהאלבום"
 
 #: dynamic/biases/AlbumPlayBias.cpp:109
 #, kde-format
@@ -9053,10 +9046,9 @@ msgstr ""
 
 #: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
-#, fuzzy, kde-format
-#| msgid "Various Artists"
+#, kde-format
 msgid "the previous track's artist"
-msgstr "אמנים שונים"
+msgstr "האומן של הרצועה הקודמת"
 
 #: dynamic/biases/EchoNestBias.cpp:145
 #, kde-format
@@ -13312,22 +13304,7 @@ msgstr "פרופיל ב־gpodder.net"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/gpodder/GpodderConfigWidget.ui:78
-#, fuzzy, kde-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
-#| "family:'Sans Serif';\">For more information about the Magnatune.com "
-#| "memberships, and to sign up, go to  </span><a href=\"http://magnatune.com/"
-#| "compare_plans?referal_id=amarok\"><span style=\" font-family:'Sans "
-#| "Serif'; text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
-#| "compare_plans</span></a></p></body></html>"
+#, kde-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -13346,15 +13323,12 @@ msgstr ""
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
 "\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
-"font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Ubuntu'; font-size:9pt; font-"
+"weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
-"family:'Sans Serif';\">למידע נוסף אודות חברויות ב־Magnatune.com, וכדי "
-"להירשם, ניתן לפנות לכתובת </span><a href=\"http://magnatune.com/"
-"compare_plans?referal_id=amarok\"><span style=\" font-family:'Sans Serif'; "
-"text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
-"compare_plans</span></a></p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
+"gpodder.net/register/\"><span style=\" text-decoration: underline; color:"
+"#0057ae;\">הרשמה ל־gpodder.net</span></a></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
@@ -14775,22 +14749,7 @@ msgstr "קוד PIN:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:89
-#, fuzzy, kde-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
-#| "family:'Sans Serif';\">For more information about the Magnatune.com "
-#| "memberships, and to sign up, go to  </span><a href=\"http://magnatune.com/"
-#| "compare_plans?referal_id=amarok\"><span style=\" font-family:'Sans "
-#| "Serif'; text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
-#| "compare_plans</span></a></p></body></html>"
+#, kde-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -14810,15 +14769,12 @@ msgstr ""
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
 "\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
 "font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
-"family:'Sans Serif';\">למידע נוסף אודות חברויות ב־Magnatune.com, וכדי "
-"להירשם, ניתן לפנות לכתובת </span><a href=\"http://magnatune.com/"
-"compare_plans?referal_id=amarok\"><span style=\" font-family:'Sans Serif'; "
-"text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
-"compare_plans</span></a></p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
+"mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">הורדת נועל MP3tunes</span></a></p></body></html>"
 
 #: services/mp3tunes/Mp3tunesMeta.cpp:48
 #, kde-format
