@@ -388,13 +388,13 @@ msgstr ""
 #: amarokconfig.kcfg:68
 #, kde-format
 msgid "Whether to show icon in system tray"
-msgstr "Afficher une icône dans la boîte à miniatures"
+msgstr "Afficher une icône dans la boite à miniatures"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:69
 #, kde-format
 msgid "Enable/Disable tray icon for Amarok."
-msgstr "Activer / désactiver l'icône de la boîte à miniatures de Amarok."
+msgstr "Activer / désactiver l'icône de la boite à miniatures de Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
@@ -694,7 +694,7 @@ msgstr "Chaîne de remplacement."
 #, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
-"Les parties correspondantes seront remplacées par cette chaîne, lors de la "
+"Les parties correspondantes seront remplacées par cette chaine, lors de la "
 "réorganisation des fichiers."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -3183,7 +3183,7 @@ msgstr "Options générales"
 #, kde-format
 msgid "Check to enable the Amarok system tray icon."
 msgstr ""
-"Cochez cette case pour afficher une icône de Amarok dans la boîte à "
+"Cochez cette case pour afficher une icône de Amarok dans la boite à "
 "miniatures."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowTrayIcon)
@@ -5659,7 +5659,7 @@ msgstr "Oui, supprimer de %1."
 #: services/gpodder/GpodderProvider.cpp:350
 #, kde-format
 msgid "&Delete Channel and Episodes"
-msgstr "Effacer la chaîne et les épiso&des"
+msgstr "Effacer la chaine et les épiso&des"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:250
 #, kde-format
@@ -6003,7 +6003,7 @@ msgstr "Podcast"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
 #, kde-format
 msgid "&Update All Channels"
-msgstr "Mettre les chaînes"
+msgstr "Mettre les chaines"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
 #, kde-format
@@ -6195,15 +6195,15 @@ msgstr ""
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Dossier de base pour "
-"toutes les nouvelles chaînes de podcasts</p>\n"
+"toutes les nouvelles chaines de podcasts</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Quand une chaîne de "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Quand une chaine de "
 "podcasts est ajoutée <span style=\" font-style:italic;\">&lt;dossier de "
-"base&gt;</span>/<span style=\" font-style:italic;\">&lt;nom de la chaîne&gt;"
+"base&gt;</span>/<span style=\" font-style:italic;\">&lt;nom de la chaine&gt;"
 "</span> est utilisé comme dossier de téléchargement. </p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Ceci peut être modifié "
-"pour chaque chaîne individuellement.</p></body></html>"
+"pour chaque chaine individuellement.</p></body></html>"
 
 #. i18n: ectx: property (whatsThis), widget (KUrlRequester, m_baseDirUrl)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:112
@@ -6217,7 +6217,7 @@ msgstr ""
 "Dossier de base pour tous les nouveaux canaux de podcasts.\n"
 "Quand un canal de podcasts est ajouté <base directory>/<channel name> est "
 "utilisé comme dossier de téléchargement.\n"
-"Ceci peut être modifié pour chaque chaîne individuellement."
+"Ceci peut être modifié pour chaque chaine individuellement."
 
 #: core-impl/storage/StorageManager.cpp:159
 #, kde-format
@@ -10822,14 +10822,14 @@ msgid ""
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
 "qt>"
 msgstr ""
-"<qt>Fermer la fenêtre principale laissera Amarok fonctionner dans la boîte à "
+"<qt>Fermer la fenêtre principale laissera Amarok fonctionner dans la boite à "
 "miniatures. Utilisez <B>Quitter</B> à partir du menu ou de l'icône de Amarok "
-"dans la boîte à miniatures pour fermer l'application.</qt>"
+"dans la boite à miniatures pour fermer l'application.</qt>"
 
 #: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
-msgstr "Incrustation dans la boîte à miniatures"
+msgstr "Incrustation dans la boite à miniatures"
 
 #: MainWindow.cpp:526
 #, kde-format
@@ -13047,7 +13047,7 @@ msgstr "contient"
 #, kde-format
 msgid "The string that the APG should use when matching tracks."
 msgstr ""
-"La chaîne de caractères que le GALL doit utiliser pour chercher les "
+"La chaine de caractères que le GALL doit utiliser pour chercher les "
 "correspondances."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonTime)
@@ -16061,7 +16061,7 @@ msgstr ""
 "des pistes, veuillez installer le paquet <i>ffmpeg</i> ou <i>libav</i> (avec "
 "l'enveloppeur <i>ffmpeg</i>) avec les encodeurs appropriés. Autrement vous "
 "pouvez cocher l'option <i>Se souvenir de ce choix pour la prochaine fois</i> "
-"pour sauter cette boîte de dialogue pour les prochains transferts."
+"pour sauter cette boite de dialogue pour les prochains transferts."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
