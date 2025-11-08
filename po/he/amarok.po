@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-11-01 16:47+0200\n"
+"PO-Revision-Date: 2025-11-07 10:41+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -1556,10 +1556,9 @@ msgid "&Create timecode track"
 msgstr ""
 
 #: amarokurls/BookmarkTreeView.cpp:370
-#, fuzzy, kde-format
-#| msgid "Selected Tracks"
+#, kde-format
 msgid "New Timecode Track"
-msgstr "רצועות מסומנות"
+msgstr "רצועת קוד זמן חדשה"
 
 #: amarokurls/BookmarkTreeView.cpp:371 amarokurls/BookmarkTreeView.cpp:372
 #: amarokurls/BookmarkTreeView.cpp:373
@@ -3303,17 +3302,15 @@ msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_useCharsetDetector)
 #: configdialog/dialogs/MetadataConfig.ui:84
-#, fuzzy, kde-format
-#| msgid ""
-#| "If selected, Amarok will use Mozilla's Character Set Detector to attempt "
-#| "to automatically guess the character sets used in ID3 tags."
+#, kde-format
 msgid ""
 "If selected, Amarok will use Mozilla's\n"
 "Character Set Detector to attempt to automatically guess the\n"
 "character sets used in ID3 tags."
 msgstr ""
-"אם סומן, Amarok ישתמש במזהה קידוד התווים של מוזילה כדי לזהות באופן אוטומטי "
-"את קידוד התווים של תגי ה-ID3."
+"אם סומן, Amarok ישתמש במזהה\n"
+"קידוד התווים של מוזילה כדי לנחש אוטומטית\n"
+"את קידוד התווים של תגיות ה־ID3."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_useCharsetDetector)
 #: configdialog/dialogs/MetadataConfig.ui:87
@@ -3631,10 +3628,9 @@ msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:136
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "Select Archived Script"
-msgstr "מחפש תסריטים"
+msgstr "בחירת סקריפטים שבארכיון"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
@@ -4405,10 +4401,9 @@ msgid "No labels found on Last.fm"
 msgstr ""
 
 #: context/engines/labels/LabelsEngine.cpp:319
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
+#, kde-format
 msgid "Unable to retrieve from Last.fm"
-msgstr "אין אפשרות לאחזר מידע מוויקיפדיה: %1"
+msgstr "לא ניתן למשוך מ־Last.fm"
 
 #: context/engines/labels/LabelsEngine.cpp:369
 #, kde-format
@@ -7758,13 +7753,14 @@ msgid ""
 msgstr ""
 
 #: dialogs/DatabaseImporterDialog.cpp:193
-#, fuzzy, kde-format
-#| msgid "<b><font color='red'>Error:</font></b> %1"
+#, kde-format
 msgctxt "Track has been matched ambiguously, format: Url"
 msgid ""
 "Multiple ambiguous matches found for <b><font color='red'>%1</font></b>, has "
 "been discarded."
-msgstr "<b><font color='red'>שגיאה:</font></b> %1"
+msgstr ""
+"יש כמה תוצאות לא חד־משמעיות לחיפוש אחר <b><font color='red'>%1</font></b>, "
+"הושמטו."
 
 #: dialogs/DiagnosticDialog.cpp:54
 #, kde-format
@@ -7908,10 +7904,9 @@ msgstr "שמירה"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetDeleteBtn)
 #: dialogs/EqualizerDialog.ui:73
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Delete currently selected preset. Not available for built-in presets."
-msgstr "המחיקה נכשלה"
+msgstr "מחיקת הערכה הנבחרת. לא זמין לערכות מובנות."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetResetBtn)
 #: dialogs/EqualizerDialog.ui:89
@@ -8735,10 +8730,9 @@ msgstr "&הבא"
 
 #. i18n: ectx: property (text), widget (QCheckBox, checkBox_perTrack)
 #: dialogs/TagDialogBase.ui:1142
-#, fuzzy, kde-format
-#| msgid "Per Trac&k"
+#, kde-format
 msgid "Per trac&k"
-msgstr "לפי רצוע&ה"
+msgstr "לפי &רצועה"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_ok)
 #: dialogs/TagDialogBase.ui:1165
@@ -8776,10 +8770,9 @@ msgstr "&lt;ריק&gt;"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbCase)
 #: dialogs/TagGuessOptions.ui:23
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgid "Edit &case"
-msgstr "מילות־שיר"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbTitleCase)
 #: dialogs/TagGuessOptions.ui:36
