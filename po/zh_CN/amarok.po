@@ -3219,6 +3219,8 @@ msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
+"将播放变更统计信息（如评分、最后播放时间、播放次数）\n"
+"作为标签回写入音频文件。"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -8369,7 +8371,7 @@ msgstr "上次播放："
 #: dialogs/TagDialogBase.ui:467
 #, kde-format
 msgid "Added to collection:"
-msgstr ""
+msgstr "已添加到收藏集："
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
