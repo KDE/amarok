@@ -16332,27 +16332,3 @@ msgstr "Изпълнител: %1"
 #, kde-format
 msgid "empty"
 msgstr "празно"
-
-#~ msgid "MusicDNS match ratio: %1%"
-#~ msgstr "Съотношение на съвпадение на MusicDNS: %1%"
-
-#~ msgid "Enter an artist name"
-#~ msgstr "Въведете името на изпълнителя"
-
-#~ msgid "Enter a tag"
-#~ msgstr "Въведете етикет"
-
-#~ msgid "Enter a Last.fm user name"
-#~ msgstr "Въведете потребителското име от last.fm"
-
-#~ msgid "Create a Custom Last.fm Station"
-#~ msgstr "Създайте потребителска станция в Last.fm"
-
-#~ msgid "Tag"
-#~ msgstr "Етикет"
-
-#~ msgid "User"
-#~ msgstr "Потребител"
-
-#~ msgid "Personal Radio"
-#~ msgstr "Лично радио"
