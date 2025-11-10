@@ -481,13 +481,11 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     }
 
     // code copied in PlaylistBrowserView::mouseDoubleClickEvent(), keep in sync
-    // mind bug 279513
-    bool isExpandable = model()->hasChildren( index );
-    bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
-                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) ); // we're in doubleClick
+    // Avoid doing anything if clicking outside the item, such as the expand/collapse arrow: bug 279513
+    const bool clickedOnItem = visualRect( index ).contains( event->pos() );
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        !wouldExpand )
+        clickedOnItem )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::OnDoubleClickOnSelectedItems );
