@@ -159,7 +159,6 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     if( state() == QAbstractItemView::NoState &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) &&
         ( file.isDir() || file.isNull() ) )
     {
         Q_EMIT navigateToDirectory( index );

@@ -184,7 +184,6 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
         state() == QTreeView::NoState &&
         expandCollapsePressedAt &&
         ( *expandCollapsePressedAt - event->pos() ).manhattanLength() < QApplication::startDragDistance() &&
-        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) &&
         model()->hasChildren( index ) )
     {
         setExpanded( index, !isExpanded( index ) );
