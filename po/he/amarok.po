@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-11-07 10:41+0200\n"
+"PO-Revision-Date: 2025-11-11 14:26+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 25.08.2\n"
+"X-Generator: Lokalize 25.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -10042,12 +10042,12 @@ msgstr "מפתח (MaskMaster)"
 #: main.cpp:190
 #, kde-format
 msgid "Mathias Panzenböck"
-msgstr ""
+msgstr "מתיאס פנצנבלוק"
 
 #: main.cpp:192
 #, kde-format
 msgid "Mikko Caldara"
-msgstr ""
+msgstr "מיקו קלדרה"
 
 #: main.cpp:192
 #, kde-format
@@ -10102,7 +10102,7 @@ msgstr "ממשק סקריפטים"
 #: main.cpp:204
 #, kde-format
 msgid "Phalgun Guduthur"
-msgstr ""
+msgstr "פלגון גודות׳ור"
 
 #: main.cpp:204
 #, kde-format
@@ -10165,7 +10165,7 @@ msgstr "מפתח"
 #: main.cpp:216
 #, kde-format
 msgid "Valentin Rouet"
-msgstr ""
+msgstr "ולנטין רואט"
 
 #: main.cpp:218
 #, kde-format
@@ -12136,25 +12136,25 @@ msgstr ""
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:82
 #, kde-format
 msgid "kB"
-msgstr ""
+msgstr "ק״ב"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:87
 #, kde-format
 msgid "MB"
-msgstr ""
+msgstr "מ״ב"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:92
 #, kde-format
 msgid "GB"
-msgstr ""
+msgstr "ג״ב"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:97
 #, kde-format
 msgid "TB"
-msgstr ""
+msgstr "ט״ב"
 
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:145
@@ -12175,15 +12175,14 @@ msgid "Sets the preferred number of tracks in the playlist"
 msgstr "הגדרת מספר הרצועות ברשימת הנגינה"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:118
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgctxt "%1 is a number"
 msgid "Playlist length: 1 track"
 msgid_plural "Playlist length: %1 tracks"
-msgstr[0] "רשימת־השמעה־%1"
-msgstr[1] "רשימת־השמעה־%1"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "אורך רשימת נגינה: רצועה"
+msgstr[1] "אורך רשימת נגינה: שתי רצועות"
+msgstr[2] "אורך רשימת נגינה: %1 רצועות"
+msgstr[3] "אורך רשימת הנגינה: %1 רצועות"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:120
 #, fuzzy, kde-format
@@ -12522,10 +12521,9 @@ msgstr ""
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:21
-#, fuzzy, kde-format
-#| msgid "%1 Settings"
+#, kde-format
 msgid "Match Tag Constraint Settings"
-msgstr "%1 הגדרות"
+msgstr "כמו הגדרות מגבלת תגיות"
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Match)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Field)
