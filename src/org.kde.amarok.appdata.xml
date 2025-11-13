@@ -551,6 +551,6 @@
     <release version="2.9.0" date="2018-03-07" type="stable"/>
   </releases>
   <custom>
-    <value key="KDE::supporters">deepy</value>
+    <value key="KDE::supporters">deepy; Umbra, mpooch</value>
   </custom>
 </component>
