@@ -194,6 +194,7 @@ Icon=amarok
 MimeType=video/x-ms-asf;application/ogg;
 NoDisplay=true
 Keywords=music;podcast;
+Keywords[ar]=موسيقى;مدونة صوتية;
 Keywords[bg]=музика,подкаст;
 Keywords[ca]=música;pòdcast;
 Keywords[es]=música;podcast;
