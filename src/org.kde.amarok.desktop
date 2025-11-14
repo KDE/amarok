@@ -209,6 +209,7 @@ Keywords[pt_BR]=música;podcast;
 Keywords[sl]=glasba;podcast;
 Keywords[tr]=müzik;podcast;pod yayını;
 Keywords[uk]=music;podcast;музика;трансляція;подкаст;
+Keywords[zh_TW]=音樂;podcast;
 X-KDE-Protocols=http
 DBusActivatable=true
 Terminal=false
