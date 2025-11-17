@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-10-20 00:41+0000\n"
-"PO-Revision-Date: 2025-11-11 14:26+0200\n"
+"PO-Revision-Date: 2025-11-15 14:58+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -14991,7 +14991,7 @@ msgstr "%1 (%2)"
 #, kde-format
 msgctxt "comma between list words"
 msgid ", "
-msgstr ""
+msgstr ", "
 
 #: statsyncing/models/CommonModel.cpp:177
 #, kde-format
