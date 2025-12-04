@@ -11550,9 +11550,9 @@ ftpProxy=http://nomeutente:password@serverproxy:porta/
 >Individuazione dei problemi e problemi comuni</title
 > 
 <para
->Se si utilizzano le procedure qui descritte, ma senza successo, entrare in IRC (irc: //irc.libera.chat/amarok), pubblicare sul forum di KDE <ulink url="http://forum.kde.org/viewforum.php?f=127"
->sezione Amarok</ulink
->, oppure scrivere alla <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>Se si utilizzano le procedure qui descritte, ma senza successo, entrare in IRC (irc: //irc.libera.chat/amarok), commentare su Discuss sotto <ulink url="https://discuss.kde.org/tag/amarok"
+>la categoria Amarok</ulink
+>, o scrivere alla <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >lista di Amarok </ulink
 >. </para>
 <sect2 id="problems-installing"
@@ -11906,8 +11906,8 @@ ftpProxy=http://nomeutente:password@serverproxy:porta/
 ><para
 >Come ottenere supporto personalizzato per problemi: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok su Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Forum</ulink
+> (#amarok su Libera Chat IRC), <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >Mailing list</ulink
 ></para
@@ -12056,11 +12056,11 @@ ftpProxy=http://nomeutente:password@serverproxy:porta/
 >Dove posso ottenere supporto per Amarok?</title
 > 
 <para
->Esistono diverse opzioni. Spesso i problemi che si hanno con l'installazione iniziale di &amarok; trovano risposta migliore dagli esperti della propria distribuzione &UNIX; o &Linux;. È possibile chiedere aiuto ad altri utenti e sviluppatori nel <ulink url="http://forum.kde.org/viewforum.php?f=127"
->forum di Amarok</ulink
+>Esistono diverse opzioni. Spesso i problemi che si hanno con l'installazione iniziale di &amarok; trovano risposta migliore dagli esperti della propria distribuzione &UNIX; o &Linux;. È possibile chiedere aiuto ad altri utenti e sviluppatori nel <ulink url="https://discuss.kde.org/tag/amarok"
+>server Discuss sotto la categoria Amarok</ulink
 > e nel <ulink url="irc://irc.libera.chat/amarok"
-> canale IRC di Amarok</ulink
-> sul canale #amarok di irc.libera.chat. </para>
+>canale IRC Amarok</ulink
+> su irc.libera.chat canale #amarok. </para>
 <para
 >Notare che <ulink url="http://bugs.kde.org"
 >bugzilla</ulink
