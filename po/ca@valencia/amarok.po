@@ -1442,7 +1442,7 @@ msgstr ""
 #: amarokconfig.kcfg:560
 #, kde-format
 msgid "The hostname of the external server to connect to."
-msgstr "El nom de l'amfitrió del servidor extern al qual s'ha de connectar."
+msgstr "El nom d'amfitrió del servidor extern al qual s'ha de connectar."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:564
@@ -4853,11 +4853,11 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
-"No s'ha pogut processar una peça (hi ha més informació en el registre de "
-"depuració d'Amarok)"
+"Ha fallat mentre es processava una peça (hi ha més informació en el registre "
+"de depuració d'Amarok)"
 msgstr[1] ""
-"No s'han pogut processar %1 peces (hi ha més informació en el registre de "
-"depuració d'Amarok)"
+"Ha fallat mentre es processaven %1 peces (hi ha més informació en el "
+"registre de depuració d'Amarok)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -5261,14 +5261,14 @@ msgstr ""
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr "No s'ha pogut escriure al SysInfo: %1"
+msgstr "Ha fallat mentre s'escrivia al SysInfo: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:439
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
 msgstr ""
-"No s'ha pogut escriure el fitxer SysInfo a causa d'un error no informat"
+"Ha fallat mentre s'escrivia el fitxer SysInfo a causa d'un error no informat"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
@@ -5314,13 +5314,13 @@ msgstr "S'estan transferint les peces cap al dispositiu"
 #, kde-format
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] "%1 peça ha fallat en copiar-se al dispositiu"
-msgstr[1] "%1 peces han fallat en copiar-se al dispositiu"
+msgstr[0] "%1 peça ha fallat mentre es copiava al dispositiu"
+msgstr[1] "%1 peces han fallat mentre es copiava al dispositiu"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:561
 #, kde-format
 msgid "The track failed to copy to the device"
-msgstr "La peça ha fallat en copiar-se al dispositiu"
+msgstr "La peça ha fallat mentre es copiava al dispositiu"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:571
 #, kde-format
@@ -5333,8 +5333,8 @@ msgstr[1] "Peces no suprimides:"
 #, kde-format
 msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
-msgstr[0] "No s'ha pogut suprimir la peça"
-msgstr[1] "No s'han pogut suprimir les peces"
+msgstr[0] "Ha fallat mentre se suprimia la peça"
+msgstr[1] "Ha fallat mentre se suprimien les peces"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, kde-format
@@ -13115,8 +13115,8 @@ msgstr "etiqueta"
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr ""
-"El generador de llistes de reproducció ha fallat en carregar les peces de la "
-"col·lecció."
+"El generador de llistes de reproducció ha fallat mentre es carregaven les "
+"peces de la col·lecció."
 
 #: playlistgenerator/ConstraintSolver.cpp:236
 #, kde-format
@@ -13657,7 +13657,7 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
-"El servei GPodder ha fallat en obtindre les dades del servidor. Es "
+"El servei GPodder ha fallat mentre s'obtenien les dades del servidor. Es "
 "reintentarà d'ací a 10 segons…"
 
 #: services/gpodder/GpodderService.cpp:116
@@ -13745,8 +13745,8 @@ msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
 "report a bug"
 msgstr ""
-"S'ha produït un error en l'anàlisi sintàctica de la resposta. Verifiqueu que "
-"gpodder.net estiga funcionant correctament i informeu de l'error"
+"S'ha produït un error durant l'anàlisi la resposta. Verifiqueu que gpodder."
+"net estiga funcionant correctament i informeu de l'error"
 
 #: services/jamendo/JamendoInfoParser.cpp:46
 #: services/jamendo/JamendoInfoParser.cpp:77
@@ -14124,7 +14124,8 @@ msgstr "Ràdio personal dels amics"
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
-"No s'ha pogut obrir la cartera de KDE per a llegir les credencials de Last.fm"
+"Ha fallat mentre s'obria la cartera de KDE per a llegir les credencials de "
+"Last.fm"
 
 #: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
@@ -14132,9 +14133,9 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
-"S'ha produït un error en migrar el nom d'usuari de Last.fm des de KWallet. "
-"Torneu a connectar amb el vostre compte de Last.fm en la configuració dels "
-"connectors."
+"S'ha produït un error mentre es migrava el nom d'usuari de Last.fm des de "
+"KWallet. Torneu a connectar amb el vostre compte de Last.fm en la "
+"configuració dels connectors."
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
@@ -14343,7 +14344,8 @@ msgstr ""
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:106
 #, kde-format
 msgid "Error starting track from Last.fm radio"
-msgstr "S'ha produït un error en iniciar la peça des de la ràdio Last.fm"
+msgstr ""
+"S'ha produït un error mentre s'iniciava la peça des de la ràdio Last.fm"
 
 #: services/lastfm/ScrobblerAdapter.cpp:158
 #, kde-format
