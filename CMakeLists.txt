@@ -27,6 +27,7 @@ include(FindPkgConfig)
 include(CMakePushCheckState)
 include(GenerateExportHeader)
 include(CheckIncludeFile)
+include(ECMQmlModule)
 
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml)
 

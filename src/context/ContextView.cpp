@@ -70,15 +70,7 @@ ContextView::ContextView( QWidget *parent )
 
     quickWindow()->setColor( The::paletteHandler()->palette().color( QPalette::Window ) );
 
-    auto qmlPackage = KPackage::PackageLoader::self()->loadPackage( QStringLiteral( "KPackage/GenericQML" ),
-                                                                    QStringLiteral( "org.kde.amarok.context" ) );
-    Q_ASSERT( qmlPackage.isValid() );
-
-    const QUrl sourceUrl = qmlPackage.fileUrl( "mainscript" );
-
-    ::debug() << "Loading context qml mainscript:" << sourceUrl;
-
-    setSource( sourceUrl );
+    loadFromModule("org.kde.amarok.context", "Main");
     setResizeMode( SizeRootObjectToView );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out
