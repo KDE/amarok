@@ -7,6 +7,8 @@ VERSION 3.3.2 UNRELEASED
    * Show 'added to collection' time in tag dialog when available (BR 508899)
 
   CHANGES:
+   * Make single click open items and double click add to playlist in collection
+     browser.
 
   BUGFIXES:
    * Fixes to Magnatune collection update and playback (BR 508052)
