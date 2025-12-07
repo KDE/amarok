@@ -48,4 +48,12 @@ install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml
 
 install( FILES ${qml_plugin_qml_files} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
 
-kpackage_install_package( context_qml_package org.kde.amarok.context genericqml )
+qt_add_library(qml_context STATIC)
+ecm_add_qml_module(qml_context URI org.kde.amarok.context
+    QML_FILES
+        context_qml_package/contents/ui/Main.qml
+        context_qml_package/contents/ui/toolbar/AppletToolbarAddItem.qml
+        context_qml_package/contents/ui/toolbar/AppletToolbarAppletItem.qml
+        context_qml_package/contents/ui/toolbar/AppletToolbar.qml
+    GENERATE_PLUGIN_SOURCE
+)

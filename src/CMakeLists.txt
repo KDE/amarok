@@ -888,6 +888,7 @@ target_link_libraries(amarok
 
     amarokcore
     amaroklib
+    qml_contextplugin
 )
 
 install(TARGETS amarok ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})

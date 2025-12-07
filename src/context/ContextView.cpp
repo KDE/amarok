@@ -69,16 +69,7 @@ ContextView::ContextView( QWidget *parent )
     rootContext()->setContextProperty( QStringLiteral( "Svg" ), The::svgHandler() );
 
     quickWindow()->setColor( The::paletteHandler()->palette().color( QPalette::Window ) );
-
-    auto qmlPackage = KPackage::PackageLoader::self()->loadPackage( QStringLiteral( "KPackage/GenericQML" ),
-                                                                    QStringLiteral( "org.kde.amarok.context" ) );
-    Q_ASSERT( qmlPackage.isValid() );
-
-    const QUrl sourceUrl = qmlPackage.fileUrl( "mainscript" );
-
-    ::debug() << "Loading context qml mainscript:" << sourceUrl;
-
-    setSource( sourceUrl );
+    setSource(QUrl::fromLocalFile(QStringLiteral(":/qt/qml/org/kde/amarok/context/context_qml_package/contents/ui/Main.qml")));
     setResizeMode( SizeRootObjectToView );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out
