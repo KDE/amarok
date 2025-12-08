@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2025-09-14 06:10+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -2112,19 +2112,19 @@ msgstr "ტრეკების ნაგავში გადაყრა"
 msgid "Delete Tracks"
 msgstr "ტრეკების წაშლა"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "მეტი..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&დასაკრავი სიაში დამატება"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
@@ -2132,13 +2132,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "დასაკრავი სიის &ჩანაცვლება"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "ფაილების დალაგება"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&ტრეკის დეტალების ჩასწორება"
@@ -2525,7 +2525,7 @@ msgstr "&წაშლა..."
 msgid "&Export As..."
 msgstr "&გატანა, როგორც..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2533,13 +2533,13 @@ msgid_plural "%1 Tracks"
 msgstr[0] "ტრეკი"
 msgstr[1] "%1 ტრეკი"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "%1-ის წაშლა %2-დან"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
@@ -2547,7 +2547,7 @@ msgid_plural "%1 Playlists"
 msgstr[0] "1 დასაკრავი სია"
 msgstr[1] "%1დასაკრავი სია"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2555,7 +2555,7 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "ტრეკის %2-დან წაშლა"
 msgstr[1] "%1 ტრეკის წაშლა %2-დან"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
@@ -2563,7 +2563,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "წავშალო დასაკრავი სია <i>%1</i> %2-დან?"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
@@ -2571,17 +2571,17 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "წავშალო %1 დასაკრავი სია %2-დან?"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "დასაკრავი სიის წაშლის დადასტურება"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "შედარებითი ბილიკის გამოყენება შე&სანახად"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"

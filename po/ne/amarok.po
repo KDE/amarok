@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -2184,13 +2184,13 @@ msgstr "रद्दीटोकरीमा फाइलहरू सार्�
 msgid "Delete Tracks"
 msgstr "चयन गरिएको ट्रयाक"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, fuzzy, kde-format
 #| msgid "&Configure..."
 msgid "More..."
 msgstr "कन्फिगर गर्नुहोस्..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, fuzzy, kde-format
@@ -2198,7 +2198,7 @@ msgstr "कन्फिगर गर्नुहोस्..."
 msgid "&Add to Playlist"
 msgstr "प्ले सूचीमा थप्नुहोस्"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, fuzzy, kde-format
@@ -2207,14 +2207,14 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "प्ले सूची दोहोर्याउनुहोस्"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, fuzzy, kde-format
 #| msgid "Organize Files"
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "फाइल सङ्गठित गर्नुहोस्"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, fuzzy, kde-format
 #| msgid "Edit Track &Information..."
 #| msgid_plural "Edit &Information for %1 Tracks..."
@@ -2639,7 +2639,7 @@ msgstr "मेट्नुहोस्"
 msgid "&Export As..."
 msgstr "प्लेसूची आयात गर्नुहोस्..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, fuzzy, kde-format
 #| msgid "1 Track"
 #| msgid_plural "Information for %1 Tracks"
@@ -2649,14 +2649,14 @@ msgid_plural "%1 Tracks"
 msgstr[0] "%1 ट्रयाकको लागि सूचना"
 msgstr[1] "%1 ट्रयाकको लागि सूचना"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "हटाउनुहोस्"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, fuzzy, kde-format
 #| msgid "&Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2665,7 +2665,7 @@ msgid_plural "%1 Playlists"
 msgstr[0] "प्ले सूची"
 msgstr[1] "प्ले सूची"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, fuzzy, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2673,7 +2673,7 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "आइपोडबाट ट्र्याक मेट्नुहोस्"
 msgstr[1] "आइपोडबाट ट्र्याक मेट्नुहोस्"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgctxt ""
@@ -2682,7 +2682,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "प्लेसूची नाम:"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgctxt ""
@@ -2691,18 +2691,18 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "प्लेसूची नाम:"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
 #| msgid "Configure last.fm Support"
 msgid "Confirm Playlist Deletion"
 msgstr "last.fm समर्थन कन्फिगर गर्नुहोस्"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, fuzzy, kde-format
 #| msgid "Stale"

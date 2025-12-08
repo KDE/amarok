@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2025-02-28 10:10+0200\n"
 "Last-Translator: Toms Trasuns <toms.trasuns@posteo.net>\n"
 "Language-Team: Latvian <kde-i18n-doc@kde.org>\n"
@@ -2110,19 +2110,19 @@ msgstr "Pārvietot celiņus uz atkritni"
 msgid "Delete Tracks"
 msgstr "Dzēst celiņus"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "Vairāk..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Pievienot repertuāram"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
@@ -2130,13 +2130,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Aizvietot &repertuāru"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organizēt datnes"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "R&ediģēt celiņa datus"
@@ -2524,7 +2524,7 @@ msgstr "&Dzēst..."
 msgid "&Export As..."
 msgstr "&Eksportēt kā..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2533,13 +2533,13 @@ msgstr[0] "%1 celiņu"
 msgstr[1] "%1 celiņus"
 msgstr[2] "%1 celiņu"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Noņemt %1 no %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
@@ -2548,7 +2548,7 @@ msgstr[0] "%1 repertuāra"
 msgstr[1] "%1 repertuāriem"
 msgstr[2] "%1 repertuāriem"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2557,7 +2557,7 @@ msgstr[0] "Noņemt %1 celiņu no „%2“"
 msgstr[1] "Noņemt %1 celiņus no „%2“"
 msgstr[2] "Noņemt %1 celiņu no „%2“"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
@@ -2565,7 +2565,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "Vai dzēst repertuāru <i>%1</i> no „%2“?"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
@@ -2573,17 +2573,17 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "Vai dzēst %1 repertuāru no „%2“?"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "Apstipriniet repertuāra dzēšanu"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "&Saglabāšanai lietot relatīvu ceļu"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -2148,19 +2148,19 @@ msgstr "Premjesti numere u smeće"
 msgid "Delete Tracks"
 msgstr "Obriši numere"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "Više..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "Dod&aj u listu numera"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
@@ -2168,13 +2168,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Zamijeni listu numera"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organizuj datoteke"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Izmijeni podatke numere"
@@ -2565,7 +2565,7 @@ msgstr "O&briši..."
 msgid "&Export As..."
 msgstr "&Izvezi kao..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2574,13 +2574,13 @@ msgstr[0] "%1 numera"
 msgstr[1] " %1 numere"
 msgstr[2] "%1 numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Ukloni %1  iz %2 "
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
@@ -2589,7 +2589,7 @@ msgstr[0] "%1 Lista numera"
 msgstr[1] "%1 Liste numera"
 msgstr[2] "%1 Listi numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2598,7 +2598,7 @@ msgstr[0] "Ukloni %1 numeru iz %2 liste numera"
 msgstr[1] "Ukloni %1 numere iz %2 liste numera"
 msgstr[2] "Ukloni %1 numera iz %2 liste numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, fuzzy, kde-format
 #| msgid "&Delete playlist"
 msgctxt ""
@@ -2607,7 +2607,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "&Obriši listu numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "&Delete playlist"
 msgctxt ""
@@ -2616,17 +2616,17 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "&Obriši listu numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "Potvrdite brisanje liste numera"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Relativna putanja pri &upisivanju"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2025-10-15 17:26+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
@@ -2068,19 +2068,19 @@ msgstr "انقل المسارات إلى المهملات"
 msgid "Delete Tracks"
 msgstr "احذف المسارات"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "أكثر..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "أ&ضف إلى قائمة التّشغيل"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
@@ -2088,13 +2088,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "ا&ستبدل قائمة التّشغيل"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "نظّم الملفّات"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&حرّر تفاصيل المسار"
@@ -2494,7 +2494,7 @@ msgstr "ا&حذف..."
 msgid "&Export As..."
 msgstr "&صدّر كَـ..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
@@ -2506,13 +2506,13 @@ msgstr[3] "%1 مسارات"
 msgstr[4] "%1 مسارًا"
 msgstr[5] "%1 مسار"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "أزل %1 من %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
@@ -2524,7 +2524,7 @@ msgstr[3] "%1 قوائم تشغيل"
 msgstr[4] "%1 قائمة تسجيل"
 msgstr[5] "%1 قائمة تسجيل"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
@@ -2536,7 +2536,7 @@ msgstr[3] "أزل %1 مسارات من %2"
 msgstr[4] "أزل %1 مسارًا من %2"
 msgstr[5] "أزل %1 مسار من %2"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
@@ -2544,7 +2544,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "هل ا&حذف قائمة التّشغيل<i>%1</i> من %2؟"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
@@ -2552,17 +2552,17 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "هل ا&حذف قائمة التّشغيل %1 من %2؟"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "أكّد حذف قائمة التّشغيل"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "استخدم مسارًا نسبيًا لـ&الحفظ"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2009-12-21 00:36+0100\n"
 "Last-Translator: Mark Kwidzińśczi <mark@linuxcsb.org>\n"
 "Language-Team: Kaszëbsczi <i18n-csb@linuxcsb.org>\n"
@@ -2093,12 +2093,12 @@ msgstr "Mòje lubòtné sztëcczi"
 msgid "Delete Tracks"
 msgstr "&Rëmôj sztëcczi"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "Wicy..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, fuzzy, kde-format
@@ -2106,7 +2106,7 @@ msgstr "Wicy..."
 msgid "&Add to Playlist"
 msgstr "Dodôj do lëstë graniô"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
@@ -2114,13 +2114,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Pòdmieni lëstã graniô"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Òrganizëjë lopczi"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Editëjë detale sztëczka"
@@ -2542,7 +2542,7 @@ msgstr "&Rëmôj"
 msgid "&Export As..."
 msgstr "&Ekspòrtëjë lëstã graniô jakno..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, fuzzy, kde-format
 #| msgctxt "The amount of tracks being edited"
 #| msgid "1 Track"
@@ -2554,14 +2554,14 @@ msgstr[0] "Wëdowiédzô dlô %1 sztëczka"
 msgstr[1] "Wëdowiédzô dlô %1 sztëczków"
 msgstr[2] "Wëdowiédzô dlô %1 sztëczków"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, fuzzy, kde-format
 #| msgid "Remove %1"
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Rëmôj %1"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2571,7 +2571,7 @@ msgstr[0] "Lësta graniô"
 msgstr[1] "Lësta graniô"
 msgstr[2] "Lësta graniô"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, fuzzy, kde-format
 #| msgid "Removing Tracks from Device"
 msgctxt "%2 is saved playlist name"
@@ -2581,7 +2581,7 @@ msgstr[0] "Rëmanié traków z ùrządzenia"
 msgstr[1] "Rëmanié traków z ùrządzenia"
 msgstr[2] "Rëmanié traków z ùrządzenia"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2590,7 +2590,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "Rëmôj wëzdrzatk lëstë òdegraniô"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
 msgctxt ""
@@ -2599,18 +2599,18 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "Rëmôj wëzdrzatk lëstë òdegraniô"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
 #| msgid "Configure Playlist Info Applet"
 msgid "Confirm Playlist Deletion"
 msgstr "Kònfigùracëjô apleta jinfòrmacëji ò lësce graniô"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"

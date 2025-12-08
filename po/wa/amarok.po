@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2025-12-08 00:42+0000\n"
 "PO-Revision-Date: 2014-03-28 22:28+0100\n"
 "Last-Translator: Jean Cayron <jean.cayron@gmail.com>\n"
 "Language-Team: Walloon <linux-wa@walon.org>\n"
@@ -2149,19 +2149,19 @@ msgstr "Taper les bokets å batch"
 msgid "Delete Tracks"
 msgstr "Disfacer bokets"
 
-#: browsers/CollectionTreeView.cpp:714 services/lastfm/LastFmTreeView.cpp:157
+#: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
 msgstr "Pus..."
 
-#: browsers/CollectionTreeView.cpp:1106 browsers/filebrowser/FileView.cpp:378
+#: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
 #: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Radjouter el djivêye a djouwer"
 
-#: browsers/CollectionTreeView.cpp:1117 browsers/filebrowser/FileView.cpp:389
+#: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
 #: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
@@ -2169,13 +2169,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Replaecî djivêye a djouwer"
 
-#: browsers/CollectionTreeView.cpp:1166
+#: browsers/CollectionTreeView.cpp:1164
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Assonrer fitchîs"
 
-#: browsers/CollectionTreeView.cpp:1199 browsers/filebrowser/FileView.cpp:421
+#: browsers/CollectionTreeView.cpp:1197 browsers/filebrowser/FileView.cpp:421
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Candjî detays do boket"
@@ -2571,7 +2571,7 @@ msgstr "&Disfacer"
 msgid "&Export As..."
 msgstr "&Ebaguer djivêye a djouwer eyet l' rilomer..."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, fuzzy, kde-format
 #| msgctxt "The amount of tracks being edited"
 #| msgid "1 Track"
@@ -2582,14 +2582,14 @@ msgid_plural "%1 Tracks"
 msgstr[0] "1 boket"
 msgstr[1] "Informåcions po %1 bokets"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:370
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
 #, fuzzy, kde-format
 #| msgid "Remove From Playlist"
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
 msgstr "Oister del djivêye a djouwer"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:371
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgctxt "Second part of 'Remove %1 From %2'"
@@ -2598,7 +2598,7 @@ msgid_plural "%1 Playlists"
 msgstr[0] "Djivêye a djouwer"
 msgstr[1] "Djivêye a djouwer"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, fuzzy, kde-format
 #| msgid "Removing Track from Device"
 #| msgid_plural "Removing Tracks from Device"
@@ -2608,7 +2608,7 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "Dji disface li boket di l' éndjin"
 msgstr[1] "Dji disface li boket di l' éndjin"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
 #, fuzzy, kde-format
 #| msgid "&Delete playlist"
 msgctxt ""
@@ -2617,7 +2617,7 @@ msgctxt ""
 msgid "Delete playlist <i>%1</i> from %2?"
 msgstr "&Disfacer djivêye a djouwer"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:468
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, fuzzy, kde-format
 #| msgid "&Delete playlist"
 msgctxt ""
@@ -2626,18 +2626,18 @@ msgctxt ""
 msgid "Delete %1 playlists from %2?"
 msgstr "&Disfacer djivêye a djouwer"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
 #| msgid "Configure Playlist Info Applet"
 msgid "Confirm Playlist Deletion"
 msgstr "Apontyî l' aplikete Info sol djivêye a djouwer"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:517 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Eployi tchimin relatif pol &schapaedje"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:530
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
