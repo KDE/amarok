@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Lukáš Tinkl <ltinkl@redhat.com>, 2010, 2011.
-# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024 Vít Pelčák <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025 Vít Pelčák <vit@pelcak.org>
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012, 2013.
 # SPDX-FileCopyrightText: 2021, 2022, 2023, 2024, 2025 Vit Pelcak <vit@pelcak.org>
 #
@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-08 00:42+0000\n"
-"PO-Revision-Date: 2025-02-24 09:45+0100\n"
+"PO-Revision-Date: 2025-12-02 11:05+0100\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 24.12.2\n"
+"X-Generator: Lokalize 25.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3363,6 +3363,9 @@ msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
+"Zapisovat statistiky, které se mění s přehráním (např. skóre, poslední "
+"přehrání, počet přehrání)\n"
+"jako značky zpět do souboru."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -3601,7 +3604,7 @@ msgstr "Použít &systémová upozornění"
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr ""
+msgstr "Aktuální podpůrná vrstva nepodporuje postupné zeslabování"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -7981,6 +7984,14 @@ msgid ""
 "   GStreamer: %5\n"
 "\n"
 msgstr ""
+"Diagnostika %1\n"
+"\n"
+"Obecné informace:\n"
+"   Verze %1: %2\n"
+"   Verze KDE Frameworks: %3\n"
+"   Verze Qt: %4\n"
+"   GStreamer: %5\n"
+"\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
 #, kde-format
@@ -8762,7 +8773,7 @@ msgstr "Naposledy hrané:"
 #: dialogs/TagDialogBase.ui:467
 #, kde-format
 msgid "Added to collection:"
-msgstr ""
+msgstr "Přidáno do sbírky"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
@@ -10805,7 +10816,7 @@ msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr ""
+msgstr "Rychle vpřed o %1"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
 #, kde-format
@@ -10813,7 +10824,7 @@ msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr ""
+msgstr "Rychle vzad o %1"
 
 #: MainWindow.cpp:866
 #, kde-format
@@ -11116,6 +11127,8 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
 #, kde-format
