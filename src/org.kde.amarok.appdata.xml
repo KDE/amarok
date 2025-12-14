@@ -551,7 +551,4 @@
     <release version="2.9.71" date="2021-01-31" type="development"/>
     <release version="2.9.0" date="2018-03-07" type="stable"/>
   </releases>
-  <custom>
-    <value key="KDE::supporters">deepy; Umbra, mpooch, Dean C, w1ntermute</value>
-  </custom>
 </component>
