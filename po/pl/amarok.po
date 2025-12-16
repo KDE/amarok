@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-08 00:42+0000\n"
-"PO-Revision-Date: 2025-08-17 12:53+0200\n"
+"PO-Revision-Date: 2025-12-15 08:47+0100\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
 "Language-Team: pl\n"
 "Language: pl\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 25.08.0\n"
+"X-Generator: Lokalize 25.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3374,17 +3374,14 @@ msgstr "Zapisz metadane do pliku"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
 "Zapisz statystyki zmiany odtwarzania (np. punktacja, ostatnio odtwarzane, "
 "liczba odtworzeń)\n"
-"jako znacznik z powrotem do pliku."
+"jako znacznik z powrotem do pliku dźwiękowego."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -8813,10 +8810,9 @@ msgstr "Ostatnie odtworzenie:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "dodano do zbioru"
+msgstr "Dodano do zbioru:"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
