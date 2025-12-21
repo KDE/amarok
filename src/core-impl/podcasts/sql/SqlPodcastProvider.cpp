@@ -42,6 +42,7 @@
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
+#include <KLocalization>
 #include <KLocalizedString>
 
 #include <QAction>
@@ -600,9 +601,7 @@ SqlPodcastProvider::configureProvider()
     settings.m_baseDirUrl->setUrl( m_baseDownloadDir );
 
     settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
-    settings.m_autoUpdateInterval->setPrefix(
-            i18nc( "prefix to 'x minutes'", "every " ) );
-    settings.m_autoUpdateInterval->setSuffix( i18np( " minute", " minutes", settings.m_autoUpdateInterval->value() ) );
+    KLocalization::setupSpinBoxFormatString(settings.m_autoUpdateInterval, ki18ncp("Spinbox label", "every %v minute", "every %v minutes"));
 
     auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply );
 

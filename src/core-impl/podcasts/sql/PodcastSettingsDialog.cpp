@@ -20,6 +20,8 @@
 
 #include "core/support/Debug.h"
 
+#include <KLocalization>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QFontMetrics>
@@ -74,7 +76,7 @@ PodcastSettingsDialog::init()
 
     m_ps->m_purgeCheck->setChecked( m_channel->hasPurge() );
     m_ps->m_purgeCountSpinBox->setValue( m_channel->purgeCount() );
-    m_ps->m_purgeCountSpinBox->setSuffix( i18np( " Item", " Items", m_ps->m_purgeCountSpinBox->value() ) );
+    KLocalization::setupSpinBoxFormatString(m_ps->m_purgeCountSpinBox, ki18ncp("Spinbox label", "%v item", "%v items"));
 
     if( !m_channel->hasPurge() )
     {
