@@ -11,9 +11,9 @@
 <author>
 <personname
 ><firstname
->Esta documentação foi convertida a partir da página do <ulink url="http://userbase.kde.org/Amarok/Manual"
+>Esta documentação foi convertida a partir da página <ulink url="http://userbase.kde.org/Amarok/Manual"
 >Amarok/Manual</ulink
-> da &kde; UserBase.</firstname
+> do KDE UserBase.</firstname
 > <surname
 ></surname
 > </personname>
@@ -51,12 +51,14 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->13/08/2013</date>
+>21/05/2018</date>
       <releaseinfo
->2.8.0</releaseinfo>
+>2.9.0</releaseinfo>
 <abstract>
 <para
->&amarok; é um livre, versátil e poderosa reprodutor de músicas para &Linux; e &Microsoft; &Windows;, que o auxilia na organização da sua coleção de músicas. A versão estável atual é a 2.8, que traz de volta importantes funcionalidades existentes nas versões 1.x.</para>
+>O &amarok; é um reprodutor de música gratuito, versátil e poderoso para &Linux;. A versão mais recente, a 2.x, frequentemente chamada de <quote
+>Amarok&nbsp;2</quote
+>, é multiplataforma (pode ser usada em diversas plataformas, incluindo &Linux;, &MacOS; e &Microsoft; &Windows;) e implementa uma base de código completamente reformulada que permitirá a incorporação de novos recursos interessantes à medida que a versão amadurece. A versão estável atual é a 2.4.</para>
       </abstract>
 <keywordset>
  <keyword
@@ -80,7 +82,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2013-07-30T12:51:14Z</timestamp
+>2018-05-21T14:49:54Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -114,7 +116,7 @@
   <row>
     <entry>
     <para
->Leiaute padrão do Amarok 2.8</para
+>Layout padrão do Amarok 2.8</para
 ></entry>
   </row>
   </tbody>
@@ -161,7 +163,7 @@
 <listitem
 ><para
 ><link linkend="default-layout-of-the-amarok-window"
->Leiaute padrão da janela do Amarok</link
+>Layout padrão da janela do Amarok</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -303,7 +305,7 @@
 <listitem
 ><para
 ><link linkend="default-layout"
->Leiaute padrão</link
+>Layout padrão</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -522,10 +524,10 @@
 >Janela do Amarok</title
 > 
 <para
->A janela do &amarok; está desenhada para permitir que você redescubra as suas músicas. Além disso, também está desenhada para lhe dar o máximo de informação visual possível sobre as suas músicas. Embora muitos usuários possam achar o leiaute padrão adequado para as suas necessidades, ele pode ser completamente personalizado. </para>
+>A janela do &amarok; está desenhada para permitir que você redescubra as suas músicas. Além disso, também está desenhada para lhe dar o máximo de informação visual possível sobre as suas músicas. Embora muitos usuários possam achar o layout padrão adequado para as suas necessidades, ele pode ser completamente personalizado. </para>
 <sect2 id="default-layout-of-the-amarok-window"
 ><title
->Leiaute padrão da janela do Amarok</title
+>Layout padrão da janela do Amarok</title
 > 
 <para
 >Após a instalação, o &amarok; parecerá com isto: </para>
@@ -1133,7 +1135,7 @@
 > ou marcar um episódio como <guilabel
 >Novo</guilabel
 >. Se você estiver interessado em navegar por uma grande coleção de podcasts, obtenha o <guilabel
->Diretório de Podcasts</guilabel
+>Pasta de podcasts</guilabel
 > disponível no <guilabel
 >Gerenciador de scripts</guilabel
 > mencionado acima. </para>
@@ -1298,13 +1300,13 @@
 > </inlinemediaobject
 > permite-lhe filtrar suas faixas por artista, álbum, &etc; </para>
 <para
->O leiaute da <guilabel
+>O layout da <guilabel
 >Lista de músicas</guilabel
 > pode ser alterado através do menu de topo: <menuchoice
 ><guimenu
 >Lista de músicas</guimenu
 ><guimenuitem
->Leiautes de lista de músicas</guimenuitem
+>Layouts de lista de músicas</guimenuitem
 ></menuchoice
 >. </para>
 </sect2>
@@ -1790,7 +1792,7 @@
 >. </para>
 <sect2 id="default-layout"
 ><title
->Leiaute padrão</title
+>Layout padrão</title
 > 
 <para
 >O painel de <emphasis
@@ -1997,7 +1999,7 @@
 >Scrobble</title
 > 
 <para
->Fazer o scrobble de uma faixa significa que, conforme você a ouve, o seu título e artista são enviadas para uma página Web como o <emphasis
+>Fazer o scrobble de uma faixa significa que, conforme você a ouve, o seu título e artista são enviadas para um site como o <emphasis
 >Last.fm</emphasis
 > onde as informações são adicionadas ao seu perfil. </para>
 </sect2>
@@ -2054,7 +2056,7 @@
 </para>
 <sect1 id="window-layout"
 ><title
->Leiaute da janela</title
+>Layout da janela</title
 > 
 <para
 >O &amarok; é organizado em quatro áreas principais, a barra de ferramentas e três painéis: </para>
@@ -2232,9 +2234,9 @@
 ><guimenu
 >Exibir</guimenu
 ><guimenuitem
->Bloquear leiaute</guimenuitem
+>Bloquear layout</guimenuitem
 ></menuchoice
-> esteja desmarcado. Agora você pode pegar a barra de ferramentas pelo seu canto esquerdo e arrastá-la para qualquer local. Para retorná-la ao seu lugar basta arrastá-la para a posição antiga enquanto o leiaute esteja ainda desbloqueado. </para>
+> esteja desmarcado. Agora você pode pegar a barra de ferramentas pelo seu canto esquerdo e arrastá-la para qualquer local. Para retorná-la ao seu lugar basta arrastá-la para a posição antiga enquanto o layout esteja ainda desbloqueado. </para>
 </sect2>
 <sect2 id="main-toolbar"
 ><title
@@ -3920,16 +3922,16 @@
 </para>
 <para
 >O menu de favoritos oferece opções para salvar o seu <link linkend="changing-the-playlist-layout"
->leiaute atual da lista de músicas</link
+>layout atual da lista de músicas</link
 >. Se clicar na <guilabel
 >Configuração da lista de músicas favorita</guilabel
->, irá adicionar o seu leiaute de músicas favoritas aos favoritos de leiautes, os quais podem ser visualizados no <link linkend="bookmark-manager"
+>, irá adicionar o seu layout de músicas favoritas aos favoritos de layouts, os quais podem ser visualizados no <link linkend="bookmark-manager"
 >Gerenciador de favoritos</link
 >. </para>
 <para
 >A opção <guilabel
 >Copiar o favorito da visão atual para a área de transferência</guilabel
-> copia a URL de um leiaute da lista de músicas do &amarok; para a área de transferência, a qual poderá ser usada para salvaguardar o leiaute da sua lista de músicas. </para>
+> copia a URL de um layout da lista de músicas do &amarok; para a área de transferência, a qual poderá ser usada para salvaguardar o layout da sua lista de músicas. </para>
 </sect3>
 </sect2>
 <sect2 id="playlist-functions"
@@ -5013,12 +5015,12 @@
     <entry>
     <para
 ><guilabel
->Não mostrar quando um aplicativo estiver em tela inteira</guilabel
+>Não mostrar quando um aplicativo estiver em tela cheia</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Não mostrar a 'Mensagem na tela', caso outro aplicativo estiver em primeiro plano e a execução estiver em tela inteira.</para>
+>Não mostrar a 'Mensagem na tela', caso outro aplicativo estiver em primeiro plano e a execução estiver em tela cheia.</para>
     </entry>
   </row>
   <row>
@@ -5177,7 +5179,7 @@
     <entry>
     <para
 ><guilabel
->Base de dados</guilabel
+>Banco de dados</guilabel
 ></para>
     </entry>
     <entry>
@@ -5727,7 +5729,7 @@
 ></listitem>
 </itemizedlist>
 <para
->Baixa automaticamente e instala as atualizações dos scripts incorporados a partir da página Web do &amarok;, caso estejam disponíveis. Ative isto se você normalmente tiver uma conexão com a Internet funcional e se quiser atualizar automaticamente os seus scripts. Isto não irá atualizar os scripts dos fornecidos por usuários através do KDE-apps.org. </para>
+>Baixa automaticamente e instala as atualizações dos scripts incorporados a partir do site do &amarok;, caso estejam disponíveis. Ative isto se você normalmente tiver uma conexão com a Internet funcional e se quiser atualizar automaticamente os seus scripts. Isto não irá atualizar os scripts dos fornecidos por usuários através do KDE-apps.org. </para>
 <itemizedlist>
 <listitem
 ><para
@@ -5810,11 +5812,11 @@
 </sect1>
 <sect1 id="changing-layouts"
 ><title
->Alterando leiautes</title
+>Alterando layouts</title
 > 
 <sect2 id="changing-the-amarok-window-layout"
 ><title
->Alterando o leiaute da janela do Amarok</title
+>Alterando o layout da janela do Amarok</title
 > 
 <para>
 <screenshot>
@@ -5834,12 +5836,12 @@
 <para
 >A visibilidade de cada uma dos três painéis do &amarok; é indicada no menu <guilabel
 >Exibir</guilabel
-> (parte do menu superior). Se você desbloquear o leiaute, cada um destes painéis mostrará dois botões. Estes botões permitem-lhe reorganizar ou personalizar o leiaute da sua janela do &amarok;. Se clicar no <guilabel
+> (parte do menu superior). Se você desbloquear o layout, cada um destes painéis mostrará dois botões. Estes botões permitem-lhe reorganizar ou personalizar o layout da sua janela do &amarok;. Se clicar no <guilabel
 >X</guilabel
 >, este painel específico será fechado. Depois de fechado, o painel poderá ser reativado através da opção respectiva no menu <guilabel
 >Exibir</guilabel
 >. Se clicar em <guilabel
->Restaurar leiaute</guilabel
+>Restaurar layout</guilabel
 > irá então restaurar a aparência padrão. </para>
 <sect3 id="undocking-amarok-panes"
 ><title
@@ -5865,12 +5867,12 @@
 </sect3>
 <sect3 id="lock-and-save-amarok-window-layout"
 ><title
->Bloquear e salvar o leiaute da janela do Amarok</title
+>Bloquear e salvar o layout da janela do Amarok</title
 > 
 <para
->Se estiver satisfeito com o leiaute dentro da janela do &amarok;, você poderá bloqueá-lo com o item apropriado do menu <guilabel
+>Se estiver satisfeito com o layout dentro da janela do &amarok;, você poderá bloqueá-lo com o item apropriado do menu <guilabel
 >Exibir</guilabel
->. Certifique-se de que o seu leiaute seja mantido na próxima execução do &amarok; fechando-o com a opção <menuchoice
+>. Certifique-se de que o seu layout seja mantido na próxima execução do &amarok; fechando-o com a opção <menuchoice
 ><guimenu
 >Amarok</guimenu
 ><guimenuitem
@@ -5888,7 +5890,7 @@
 >Alterando a barra de ferramentas</title
 > 
 <para
->Você também pode optar entre dois leiautes da Barra de ferramentas, clicando no item apropriado do menu <guilabel
+>Você também pode optar entre dois layouts da Barra de ferramentas, clicando no item apropriado do menu <guilabel
 >Exibir</guilabel
 >: </para>
 <para>
@@ -5956,7 +5958,7 @@
 </sect2>
 <sect2 id="changing-the-playlist-layout"
 ><title
->Alterando o leiaute da lista de músicas</title
+>Alterando o layout da lista de músicas</title
 > 
 <para>
 <screenshot>
@@ -5975,42 +5977,42 @@
 </para>
 <para
 >Para acessar o <guilabel
->Editor de leiautes da lista de músicas</guilabel
+>Editor de layouts da lista de músicas</guilabel
 >, vá para <menuchoice
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes da lista de músicas</guisubmenu
+>Layouts da lista de músicas</guisubmenu
 ><guimenuitem
->Configurar os leiautes da lista de músicas...</guimenuitem
+>Configurar os layouts da lista de músicas...</guimenuitem
 ></menuchoice
-> e veja a janela de edição acima. Do lado esquerdo, você pode ver os leiautes predefinidos; clicando neles, você poderá ver como é feita a configuração à direita. Se clicar no botão <guilabel
+> e veja a janela de edição acima. Do lado esquerdo, você pode ver os layouts predefinidos; clicando neles, você poderá ver como é feita a configuração à direita. Se clicar no botão <guilabel
 >Visualizar</guilabel
->, você poderá ver o leiaute aplicado no painel da <guilabel
+>, você poderá ver o layout aplicado no painel da <guilabel
 >Lista de músicas</guilabel
 >. </para>
 <sect3 id="modifying-a-default-layout"
 ><title
->Modificando um leiaute predefinido</title
+>Modificando um layout predefinido</title
 > 
 <para
->Para modificar um dos leiautes predefinidos, faça primeiro uma nova cópia dele: basta clicar em <inlinemediaobject
+>Para modificar um dos layouts predefinidos, faça primeiro uma nova cópia dele: basta clicar em <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-edit-copy.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> e salvá-lo com um novo nome. Para gerar um novo leiaute, clique em <inlinemediaobject
+> e salvá-lo com um novo nome. Para gerar um novo layout, clique em <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-new.png" format="PNG"/> </imageobject
 > </inlinemediaobject>
 </para>
 <para
->Um leiaute é composto de 3 elementos: o <emphasis
+>Um layout é composto de 3 elementos: o <emphasis
 >Cabeçalho</emphasis
 > do álbum, o <emphasis
 >Conteúdo</emphasis
 > do álbum (com um conteúdo especial para as faixas dos Vários Artistas) e a configuração de faixas <emphasis
 >Únicas</emphasis
->, que podem ser selecionadas nas abas da parte central do editor. Para adicionar um item, basta arrastá-lo do seletor na parte superior e soltá-lo na aba do leiaute selecionado abaixo. Para mostrar a capa do álbum, basta assinalar o campo <guilabel
+>, que podem ser selecionadas nas abas da parte central do editor. Para adicionar um item, basta arrastá-lo do seletor na parte superior e soltá-lo na aba do layout selecionado abaixo. Para mostrar a capa do álbum, basta assinalar o campo <guilabel
 >Capa</guilabel
 >. </para>
 <para
@@ -6057,10 +6059,10 @@
 </para>
 <sect4 id="item-layout-configuration"
 ><title
->Configuração do leiaute do item</title
+>Configuração do layout do item</title
 > 
 <para
->Cada um dos itens adicionados pode ter o seu próprio leiaute configurado: se passar o mouse sobre o item será mostrada uma chave inglesa; se clicar nesse botão, você poderá acessar uma janela de configuração desse item. O exemplo abaixo mostra-lhe a janela de configuração do item <guilabel
+>Cada um dos itens adicionados pode ter o seu próprio layout configurado: se passar o mouse sobre o item será mostrada uma chave inglesa; se clicar nesse botão, você poderá acessar uma janela de configuração desse item. O exemplo abaixo mostra-lhe a janela de configuração do item <guilabel
 >Álbum</guilabel
 >: </para>
 <para>
@@ -6083,21 +6085,21 @@
 </sect4>
 <sect4 id="example--single-line-layout"
 ><title
->Exemplo: leiaute de linha única</title
+>Exemplo: layout de linha única</title
 > 
 <para
 ><emphasis
 >Exemplo</emphasis
->: para gerar um leiaute de uma única linha sem o agrupamento, você só irá adicionar os itens no elemento de faixas <guilabel
+>: para gerar um layout de uma única linha sem o agrupamento, você só irá adicionar os itens no elemento de faixas <guilabel
 >Simples</guilabel
 >. </para>
 </sect4>
 <sect4 id="playlist-layout-storage"
 ><title
->Armazenamento do leiaute da lista de músicas</title
+>Armazenamento do layout da lista de músicas</title
 > 
 <para
->Os leiautes das listas de músicas são armazenados em formato XML em <filename
+>Os layouts das listas de músicas são armazenados em formato XML em <filename
 >$HOME/.kde/share/apps/amarok/playlist_layouts</filename
 > (pode ser <filename
 >$HOME/.kde4/share/apps/amarok/playlist-layouts</filename
@@ -6245,12 +6247,6 @@
 ><link linkend="statistics-synchronization"
 >Sincronização das estatísticas entre as coleções e com o Last.fm</link
 >&nbsp;</para
-></listitem>
-<listitem
-><para
-><link linkend="nepomuk-collection-in-amarok"
->Coleção do Nepomuk</link
-></para
 ></listitem>
 <listitem
 ><para
@@ -7068,7 +7064,7 @@
     <entry>
     <para
 ><guilabel
->Pré-visualização do destino</guilabel
+>Prévia do destino</guilabel
 ></para>
     </entry>
     <entry>
@@ -7234,7 +7230,7 @@
 ></term>
     <listitem>
     <para
->Estas são as faixas que não estão sincronizadas por diversas razões, como metadados idênticos, para não causar desordem na base de dados.</para>
+>Estas são as faixas que não estão sincronizadas por diversas razões, como metadados idênticos, para não causar desordem no banco de dados.</para>
      </listitem>
   </varlistentry>
 </variablelist>
@@ -7328,162 +7324,6 @@
 >, e as faixas recentemente reproduzidas no dispositivo sejam sondadas e os dados enviados para o Last.fm, caso esteja ativo. O processo não irá pedir qualquer interação do usuário, a menos que seja encontrado algum conflito no processo. </para>
 </sect3>
 </sect2>
-<sect2 id="nepomuk-collection-in-amarok"
-><title
->Coleção do Nepomuk no Amarok</title
-> 
-<para
->O Nepomuk tem sido uma ótima plataforma semântica ao longo dos últimos anos, com vários aplicativos, como o &dolphin;, que a usam para gerenciar os metadados associados aos seus arquivos e recursos. Agora, até mesmo o &amarok; usa o Nepomuk para procurar faixas no seu computador. Esta coleção não usa a infraestrutura SQLite para armazenar as estatísticas e metadados (artista, álbum, ano, gênero, legendas, etc ), mas sim, o Nepomuk para obter e armazená-los. </para>
-<para
->Para mais detalhes sobre o Nepomuk, visite a <ulink url="http://nepomuk.kde.org"
->sua página oficial</ulink
->. </para>
-<sect3 id="why-use-the-nepomuk-collection-at-all"
-><title
->Por que usar a Coleção do Nepomuk em tudo?</title
-> 
-<para
->O Nepomuk é uma infraestrutura a nível do sistema, com vários aplicativos que já estão usando-o para pesquisas e metadados. Como tal, quando você avalia uma faixa no &amarok;, isso se refletirá também no &dolphin;. Quando gravar as suas faixas de música em um disco, as avaliações também serão incluídas! Você não precisa lembrar mais do local onde armazenou as suas faixas de música. O Nepomuk obtém as faixas de qualquer local do seu computador. Você não terá que organizar as suas faixas de música em uma única pasta! Imagine o número de vezes que você baixou uma faixa só porque não se lembra onde a colocou no seu computador -- nunca mais. </para>
-</sect3>
-<sect3 id="getting-started6"
-><title
->Começando</title
-> 
-<sect4 id="indexing-files"
-><title
->Indexando os arquivos</title
-> 
-<para
->Para suas faixas aparecerem no &amarok;, elas precisam primeiro ser <emphasis
->indexadas</emphasis
-> pelo Nepomuk. Obviamente, o Nepomuk não indexa todos os arquivos do disco rígido. A configuração padrão da maioria das distribuições &Linux;, exclui alguns padrões comuns para arquivos de cópia de segurança e pastas de configuração, indexando apenas algumas pastas da sua pasta pessoal.  </para>
-<para
->Atenção: A indexação de arquivos poderá levar bastante tempo, dependendo do número de arquivos que serão indexados, assim como a quantidade de memória permitida para a indexação. Veja também a <ulink url="help:/kcontrol/nepomuk"
->Pesquisa no desktop</ulink
->. </para>
-</sect4>
-<sect4 id="choosing-directories-to-index"
-><title
->Escolhendo as pastas a serem indexadas</title
-> 
-<para
->As pastas que serão indexadas podem ser alteradas em <menuchoice
-><guimenu
->Configurações do Sistema</guimenu
-><guisubmenu
->Pesquisa no desktop</guisubmenu
-><guimenuitem
->Indexação</guimenuitem
-><guimenuitem
->Personalizando as pastas</guimenuitem
-></menuchoice
->. Desde o KDE 4.11, esta é a caixa de diálogo que você verá: </para>
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok_2-8_nepomukindexfolders_dialog_kde_4-11.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-</sect4>
-<sect4 id="enabling-nepomuk-collection-in-amarok"
-><title
->Ativando a Coleção do Nepomuk no Amarok</title
-> 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para
->A <guilabel
->Coleção do Nepomuk</guilabel
-> no &amarok; é um plugin que pode ser ativado em <menuchoice
-><guimenu
->Configurações</guimenu
-> <guisubmenu
->Configurar o Amarok</guisubmenu
-><guimenuitem
->Plugins</guimenuitem
-><guimenuitem
->Coleção do Nepomuk</guimenuitem
-></menuchoice
->. Depois de ativá-lo, reinicie o &amarok; para que o plugin seja completamente carregado. </para>
-</sect4>
-</sect3>
-<sect3 id="collections7"
-><title
->Coleções</title
-> 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amaroknepomukcollectionbrowser2-7.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para
->Depois de ativar o plugin, existirá uma nova coleção chamada <guilabel
->Coleção do Nepomuk</guilabel
-> que contém as faixas indexadas pelo Nepomuk. </para>
-</sect3>
-<sect3 id="using-nepomuk-collection"
-><title
->Usando a Coleção do Nepomuk</title
-> 
-<sect4 id="rating-tracks"
-><title
->Avaliando as faixas</title
-> 
-<para
->Depois de ativar a Pesquisa no desktop com o Nepomuk, as faixas e os outros arquivos poderão ser avaliados no gerenciador de arquivos &dolphin;. As faixas na <guilabel
->Coleção do Nepomuk</guilabel
-> podem ser avaliadas por outros programas e a avaliação será apresentada de forma instantânea no &amarok;. </para>
-</sect4>
-<sect4 id="moving-tracks"
-><title
->Movendo as faixas</title
-> 
-<para
->As faixas apresentadas na <guilabel
->Coleção do Nepomuk</guilabel
-> podem ser reproduzidas mesmo que tenham sido retiradas na sua localização original. Elas podem ser usadas mesmo que forem renomeadas. </para>
-</sect4>
-<sect4 id="playlists8"
-><title
->Listas de músicas</title
-> 
-<para
->Todos os recursos do Nepomuk também podem ser usados com as listas de músicas criadas. </para>
-</sect4>
-</sect3>
-</sect2>
 <sect2 id="remote-collections"
 ><title
 >Coleções remotas</title
@@ -7521,13 +7361,11 @@
 >Ampache</title
 > 
 <para
->O &amarok; é capaz de reproduzir músicas de um servidor multimídia <guilabel
+>O &amarok; é capaz de reproduzir música de um servidor de mídia <guilabel
 >Ampache</guilabel
->. Se quiser instalar um servidor, veja <ulink url="http://ampache.org/wiki/os_foundation"
+>. Se você quiser instalar um servidor, veja <ulink url="https://github.com/ampache/ampache/wiki/Installation"
 >aqui</ulink
-> mais informações. As indicações de instalação estão <ulink url="http://ampache.org/wiki/install"
->aqui</ulink
->. </para>
+> para obter mais informações. </para>
 </sect3>
 <sect3 id="ampache-client"
 ><title
@@ -7633,7 +7471,7 @@
 <para
 >O DAAP é um protocolo para compartilhar conteúdos multimídia em uma rede. Foi usado pela primeira vez no reprodutor de música <guilabel
 >iTunes</guilabel
->, mas agora é amplamente usado. </para>
+>, mas agora é amplamente usado. O estado atual é que o plugin DAAP não funciona com uma versão recente do iTunes, mas sabe-se que o servidor de mídia Firefox funciona. </para>
 </sect3>
 <sect3 id="client"
 ><title
@@ -7690,7 +7528,7 @@
 >Nautilus</guilabel
 > suportam este protocolo. </para>
 </sect3>
-<sect3 id="client9"
+<sect3 id="client6"
 ><title
 >Cliente</title
 > 
@@ -7831,7 +7669,7 @@
 <para
 >A funcionalidade UPnP depende do suporte para servidores multimídia UPnP no <guilabel
 >KDE</guilabel
->. </para>
+>. Até o momento (2015) não existe nenhum kio-slave UPnP funcional disponível. </para>
 </sect3>
 </sect2>
 <sect2 id="external-database"
@@ -8316,7 +8154,7 @@
 ><para
 >iPods/iPhones, dependendo do suporte que tiverem pela biblioteca libgpod. O status depende da versão desta biblioteca que estiver instalada no seu sistema. Consulte na <ulink url="http://www.gtkpod.org/wiki/Home"
 >listagem de suporte da libgpod</ulink
-> localizada na página Web respectiva.</para
+> localizada no site respectivo.</para
 ></listitem>
 <listitem
 ><para
@@ -8473,7 +8311,7 @@
 >. Se clicar em <guilabel
 >Cancelar</guilabel
 > irá eliminar as alterações não salvas. </para>
-<sect3 id="tags10"
+<sect3 id="tags7"
 ><title
 >Marcas</title
 > 
@@ -8860,7 +8698,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example11"
+<sect3 id="example8"
 ><title
 >Exemplo</title
 > 
@@ -9187,7 +9025,7 @@
 > para obter mais informações. </para>
 </sect1>
 </chapter>
-<chapter id="playlist12"
+<chapter id="playlist9"
 ><title
 >Lista de músicas</title
 > 
@@ -9360,7 +9198,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="edit-box13"
+<sect2 id="edit-box10"
 ><title
 >Campo de edição</title
 > 
@@ -9368,7 +9206,7 @@
 >Quando você digitar algo no campo <guilabel
 >Pesquisar na lista de músicas</guilabel
 >, o &amarok; irá pesquisar na sua lista de músicas e marcar as faixas, artistas e outros itens que correspondam ao critério de pesquisa. </para>
-<sect3 id="examples14"
+<sect3 id="examples11"
 ><title
 >Exemplos</title
 > 
@@ -9575,7 +9413,7 @@
 >. </para>
 <para
 >À medida em que selecionar ou adicionar músicas à Fila, cada uma delas fica com um número. O número indica a ordem pela qual as músicas serão reproduzidas. </para>
-<sect3 id="example15"
+<sect3 id="example12"
 ><title
 >Exemplo</title
 > 
@@ -10075,7 +9913,7 @@
 > </inlinemediaobject
 > para excluí-las. </para>
 </sect2>
-<sect2 id="a-dynamic-playlist-in-use16"
+<sect2 id="a-dynamic-playlist-in-use13"
 ><title
 >Uma lista de músicas dinâmica em uso</title
 > 
@@ -10143,7 +9981,7 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Adiciona uma predefinição em branco que poderá ser modificada.</para
 ></listitem>
 <listitem
@@ -10151,7 +9989,7 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Abre a janela do <guilabel
 >Editor de predefinições do APG</guilabel
 > para editar as restrições da predefinição selecionada.</para
@@ -10161,7 +9999,7 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-list-remove.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Remove a predefinição selecionada da lista; a ação <emphasis
 >não</emphasis
 > pode ser desfeita.</para
@@ -10171,7 +10009,7 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-import.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Importa uma predefinição de um arquivo .xml. Tem o potencial de ser mal formado, caso seja editado fora do &amarok;; use o teste das restrições.</para
 ></listitem>
 <listitem
@@ -10179,7 +10017,7 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-export.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Exporta a predefinição selecionada para um arquivo .xml que possa ser posteriormente importado.</para
 ></listitem>
 <listitem
@@ -10187,7 +10025,7 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-go-next.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Carrega o <guilabel
 >APG</guilabel
 > com a predefinição selecionada e gera uma lista de músicas automaticamente.</para
@@ -10461,6 +10299,12 @@
 ></listitem>
 <listitem
 ><para
+><link linkend="replay-gain"
+>ReplayGain</link
+>&nbsp;</para
+></listitem>
+<listitem
+><para
 ><link linkend="amarok-on-other-platforms"
 >O Amarok em outros ambientes de trabalho e sistemas operacionais</link
 >&nbsp;<itemizedlist>
@@ -10555,12 +10399,12 @@
 ><para
 >O executável do <guilabel
 >Moodbar</guilabel
->, no seu PATH (deve aparecer se executar <userinput
+>, no seu PATH (ele deve estar listado ao executar <userinput
 >which moodbar</userinput
-> na linha de comando) &mdash; Lembre-se de configurar o pacote do <guilabel
+> em um console) &mdash; Lembre-se de configurar o pacote <guilabel
 >Moodbar</guilabel
-> com <userinput
->./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput
+> com o caminho correto, &eg;, compile e instale com os comandos <userinput
+>./autogen.sh --prefix=`pkg-config --variable=prefix gstreamer-1.0` &amp; &amp; make &amp;&amp; sudo make install</userinput
 ></para
 ></listitem>
 <listitem
@@ -10569,7 +10413,7 @@
 >plugins</link
 > dos formatos onde você deseja que o <guilabel
 >Moodbar</guilabel
-> possa analisar.</para
+> possa analisar. (Uma versão anterior baseada no GStreamer 0.10 também ainda está disponível para algumas distribuições)</para
 ></listitem>
 <listitem
 ><para
@@ -10593,7 +10437,7 @@
 <para
 ><note
 ><para
->Os sistemas com gerenciadores de pacotes devem instalar automaticamente os plugins do GStreamer e o FFTW em conjunto com o pacote Moodbar; esta informação só é fornecida para as pessoas que precisem compilar do código ou instalar os pacotes manualmente.</para
+>Sistemas com gerenciadores de pacotes devem instalar automaticamente os plugins do GStreamer e o FFTW, juntamente com o pacote Moodbar, se disponível; esta informação é fornecida principalmente para pessoas que desejam ou precisam compilar a partir do código-fonte ou instalar pacotes manualmente, ou quando as instruções específicas da distribuição estão desatualizadas e ainda não há um pacote Moodbar atualizado disponível.</para
 ></note>
 </para>
 </sect2>
@@ -10620,7 +10464,7 @@
 ></menuchoice
 >. Estas barras devem agora aparecer nas barras da faixa na janela do reprodutor e na <guilabel
 >Lista de músicas</guilabel
->; existirá também um campo de atmosfera que poderá adicionar aos seus leiautes da lista de músicas. </para>
+>; existirá também um campo de atmosfera que poderá adicionar aos seus layouts da lista de músicas. </para>
 </sect2>
 <sect2 id="installation"
 ><title
@@ -10631,15 +10475,17 @@
 >Pacotes do código-fonte</title
 > 
 <para
->Última versão: <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz"
->moodbar-0.1.2.tar.gz</ulink
-> &mdash; este é o pacote de código do Moodbar, que contém o programa <guilabel
+>Última versão: <ulink url="https://github.com/Mazhoon/moodbar/archive/v0.1.4.tar.gz"
+>moodbar-0.1.4.tar.gz</ulink
+> &mdash; este é o pacote de código-fonte do Moodbar, que contém o programa <guilabel
 >Moodbar</guilabel
-> (que gera arquivos '.mood' a partir dos arquivos de música) e um plugin do GStreamer que faz o resto do trabalho. O pacote Moodbar necessita do GStreamer 0.10.* instalado, além da versão 0.10.* de <link linkend="supported-filetypes"
+> (que gera arquivos .mood a partir de arquivos de música) e um plugin do GStreamer que realiza o trabalho. O pacote Moodbar precisa do GStreamer 1.0.* instalado, além da versão 1.0.* de <link linkend="supported-filetypes"
 >vários plugins</link
 >. Certifique-se de instalar o pacote Moodbar no <emphasis
 >mesmo prefixo</emphasis
-> que o GStreamer &mdash; siga as instruções do arquivo INSTALL. </para>
+> do GStreamer &mdash; siga as instruções no <link linkend="summary-of-requirements"
+> capítulo de resumo dos requisitos</link
+>. A versão 0.1.4 é um fork do código-fonte original da versão 0.1.2, atualizado para usar o GStreamer 1.0. O código-fonte antigo da versão 0.1.2 não está mais disponível online de forma confiável, mas pacotes ainda podem estar disponíveis para algumas distribuições. </para>
 <para
 >Se encontrar algum erro, por favor, envie um relatório para o <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
@@ -10650,6 +10496,12 @@
 >Pacotes do Debian</title
 > 
 <para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
+<para
 >Está disponível agora um pacote do Moodbar para o Debian instável. Basta executar <userinput
 >apt-get install moodbar</userinput
 > Você provavelmente terá que instalar os pacotes gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good e gstreamer0.10-plugins-bad para dar suporte ao formato. </para>
@@ -10658,6 +10510,12 @@
 ><title
 >Pacotes do Kubuntu e Ubuntu</title
 > 
+<para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
 <para
 >Um pacote do Moodbar está disponível no repositório de pacotes oficial, basta garantir que a seção Universe está ativa (como deve estar por padrão). Instale o pacote 'moodbar' com o seu gerenciador de pacotes preferido (<guilabel
 >KPackageKit</guilabel
@@ -10682,6 +10540,12 @@
 >Pacotes ebuild do Gentoo</title
 > 
 <para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
+<para
 >O Moodbar está disponível no Portage, basta executar <userinput
 >emerge moodbar</userinput
 >. Não são mais necessários ebuilds não oficiais. </para>
@@ -10690,6 +10554,12 @@
 ><title
 >Versões em RPM</title
 > 
+<para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas</para
+></note>
+</para>
 <para
 >Se você for usuário de uma distribuição baseada no RPM, você poderá compilar um '.rpm' usando o comando rpmbuild com </para>
 <para
@@ -10704,6 +10574,12 @@
 >Fedora</title
 > 
 <para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
+<para
 >No Fedora 7 e superiores (até o 16, no momento em que este documento foi escrito), o Moodbar está disponível nos repositórios predefinidos. Basta instalá-lo com a interface do PackageKit ou com o seguinte comando do yum: </para>
 <para
 ><userinput
@@ -10715,89 +10591,44 @@
 >Pacotes do openSUSE</title
 > 
 <para
->No openSUSE 11.0 e posteriores, instale automaticamente os seguintes pacotes: </para>
-<itemizedlist>
-<listitem
-><para
->gstreamer-0_10-fluendo-mp3</para
-></listitem>
-<listitem
-><para
->gstreamer-0_10-plugins-base</para
-></listitem>
-</itemizedlist>
-<para
->Da mesma forma, se as suas músicas tiverem etiquetas ID3, você precisa instalar </para>
-<itemizedlist>
-<listitem
-><para
->gstreamer-0_10-plugins-good</para
-></listitem>
-</itemizedlist>
-<sect4 id="moodbar-installation"
-><title
->Instalação do Moodbar</title
-> 
-<para
->1-Clique em 'Instalar' no openSUSE 11. - basta escolher a sua versão e o procedimento de instalação fará o resto: </para>
-<itemizedlist>
-<listitem
-><para
-><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.2/moodbar.ymp"
->openSUSE 11.2</ulink
-></para
-></listitem>
-<listitem
-><para
-><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.1/moodbar.ymp"
->openSUSE 11.1</ulink
-></para
-></listitem>
-</itemizedlist>
-<para
->Para instalar, adicione o repositório correto para a sua versão do openSUSE no <guilabel
->YaST</guilabel
->, certificando-se de que os seguintes pacotes são instalados: </para>
-<itemizedlist>
-<listitem
-><para
->gstreamer-0_10-plugins-good</para
-></listitem>
-<listitem
-><para
->gstreamer-0_10-plugins-ugly</para
-></listitem>
-<listitem
-><para
->gstreamer-0_10-plugins-moodbar</para
-></listitem>
-<listitem
-><para
->mad</para
-></listitem>
-</itemizedlist>
+>A versão 0.1.4 baseada no GStreamer versão 1.0 está disponível no repositório KDE:Extra para o openSUSE Leap 42.3 e versões posteriores. Uma versão anterior, a 0.1.2, baseada no GStreamer 0.10, também está disponível no repositório principal para algumas versões do openSUSE. </para>
 <para
 >Para mais detalhes sobre a adição de repositórios, veja a <ulink url="http://en.opensuse.org/SDB:Add_package_repositories"
 >Wiki do openSUSE</ulink
 >. </para>
 <para
->Se estiver usando a ferramenta de gerenciamento de aplicativos <guilabel
->Smart</guilabel
->, adicione o canal digitando na linha de comando (lembre-se de alterar a URL para corresponder à sua versão do openSUSE): <userinput
-><command
->smart channel --add http://software.opensuse.org/download/home:/d7/openSUSE_10.2/home:d7.repo</command
-></userinput
->. Depois digite <userinput
->smart update home:d7</userinput
->. Agora você poderá instalar os pacotes necessários com o comando <userinput
->smart install gstreamer10-plugins-moodbar</userinput
->. As dependências são resolvidas automaticamente. </para>
-</sect4>
+>1-Clique em 'Instalar' no openSUSE - basta escolher a sua versão e o procedimento de instalação fará o resto: </para>
+<itemizedlist>
+<listitem
+><para
+><ulink url="https://software.opensuse.org/ymp/KDE:Extra/KDE_Frameworks5_openSUSE_Tumbleweed/moodbar.ymp"
+>openSUSE Tumbleweed</ulink
+></para
+></listitem>
+<listitem
+><para
+><ulink url="https://software.opensuse.org/ymp/KDE:Extra/openSUSE_Leap_15.0/moodbar.ymp"
+>openSUSE Leap 15.0</ulink
+></para
+></listitem>
+<listitem
+><para
+><ulink url="https://software.opensuse.org/ymp/KDE:Extra/openSUSE_Leap_42.3/moodbar.ymp"
+>openSUSE Leap 42.3</ulink
+></para
+></listitem>
+</itemizedlist>
 </sect3>
 <sect3 id="mandriva-packages"
 ><title
 >Pacotes da Mandriva</title
 > 
+<para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
 <para
 >Primeiramente, você precisa adicionar os repositórios PLF. Para isso, vá para <ulink url="http://easyurpmi.zarb.org"
 >easyurpmi.zarb.org</ulink
@@ -10828,6 +10659,12 @@
 >Arch &Linux;</title
 > 
 <para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
+<para
 >Existe um PKGBUILD para o Moodbar no <ulink url="http://aur.archlinux.org"
 >Arch User Repository (AUR)</ulink
 > disponível <ulink url="http://aur.archlinux.org/packages.php?ID=6552"
@@ -10842,6 +10679,12 @@
 ><title
 >FreeBSD</title
 > 
+<para
+><note
+><para
+>Esta seção contém instruções antigas para a moodbar na versão 0.1.2 baseada no GStreamer 0.10. Elas podem estar desatualizadas.</para
+></note>
+</para>
 <para
 >Existe aqui uma versão: <ulink url="http://www.freshports.org/audio/gstreamer-plugins-moodbar"
 >audio/gstreamer-plugins-moodbar</ulink
@@ -10928,12 +10771,6 @@
  done</programlisting
 > 
 </para>
-<para
->Existe outro script no <ulink url="https://github.com/aendruk/moodbar-preview-cli"
->Github</ulink
->, que mostra visualizações dos arquivos mood gerados na linha de comando, enquanto são criados. Leia mais sobre ele no <ulink url="https://aendruk.wordpress.com/2011/02/13/moodbar-previews-on-the-command-line/"
->blog do autor</ulink
->. </para>
 </sect2>
 <sect2 id="troubleshooting"
 ><title
@@ -10949,7 +10786,7 @@
 > (erro de barramento), isto quase sempre significa que ele não consegue decodificar (ou encontrar) o seu arquivo. Verifique em <link linkend="supported-filetypes"
 >tipos de arquivo suportados</link
 > para obter informações sobre a escolha do plugins GStreamer a serem instalados. Você também pode tentar o comando a seguir para testar se o GStreamer consegue decodificar o seu arquivo:<userinput
->gst-launch filesrc location=[arquivo] ! decodebin ! fakesink</userinput
+>gst-launch-1.0 filesrc location=[arquivo] ! decodebin ! fakesink</userinput
 ></para
 ></listitem>
 <listitem
@@ -10976,12 +10813,14 @@
 >Moodbar</guilabel
 > não está funcionando ou não funciona com determinado arquivo, execute o comando abaixo, onde [arquivo] é um arquivo de música qualquer: <userinput
 >moodbar -o teste.mood [arquivo]</userinput
+> Para gerar uma pré-visualização de imagem de teste, pode-se usar o comando: <userinput
+>gst-launch-1.0 filesrc location=[arquivo] ! decodebin ! audioconvert ! fftwspectrum ! moodbar height=50 max-width=300 ! pngenc ! filesink location=mood.png</userinput
 ></para
 ></listitem>
 <listitem
 ><para
 >Se tiver várias versões do GStreamer instaladas, certifique-se de que todos os plugins necessários estão instalados para a <emphasis
->versão 0.10.*</emphasis
+>versão 1.0.*</emphasis
 > -- outras versões diferentes <emphasis
 >não podem</emphasis
 > usar os plugins desta.</para
@@ -10996,7 +10835,7 @@
 >Você precisa de vários plugins do Gstreamer para ativar a análise dos seus arquivos pelo <guilabel
 >Moodbar</guilabel
 >. Aqui está uma lista com os plugins que você precisa; certifique-se de que seja instalada a <emphasis
->versão 0.10.*</emphasis
+>versão 1.0.*</emphasis
 > de cada plugin: </para>
 <para>
 <informaltable>
@@ -11019,7 +10858,7 @@
     </entry>
     <entry>
     <para
->gstreamer-0.10.*, gst-plugins-base, gst-plugins-good</para>
+>gstreamer-1.0.*, gst-plugins-base, gst-plugins-good</para>
     </entry>
   </row>
   <row>
@@ -11116,6 +10955,144 @@
   </mediaobject>
 </screenshot>
 </para>
+</sect2>
+</sect1>
+<sect1 id="replay-gain"
+><title
+>Ganho de reprodução</title
+> 
+<para
+>O <ulink url="https://en.wikipedia.org/wiki/ReplayGain"
+>Ganho de reprodução</ulink
+> ajustará automaticamente o volume da música que está sendo reproduzida, em relação a outras músicas, de acordo com a pessoa que codificou o arquivo de áudio. Para ativar o ganho de reprodução, consulte o <link linkend="settings-menu"
+>Menu de configurações</link
+>. </para>
+<para
+>Para lidar com isso, o &amarok; depende de metadados incorporados no arquivo de áudio: </para>
+<orderedlist>
+<listitem
+><para
+>Se não houver informações de ganho de reprodução incorporadas, o &amarok; não ajustará o volume</para
+></listitem>
+<listitem
+><para
+>Se forem encontradas informações sobre ganho de reprodução, elas serão gravadas no banco de dados do &amarok;</para
+></listitem>
+</orderedlist>
+<para
+>Durante a reprodução, o &amarok; só consultará seu próprio banco de dados para obter essas informações. As atualizações nos metadados do arquivo nem sempre serão gravadas no banco de dados durante uma atualização da coleção (por exemplo, o ganho de reprodução é excluído do arquivo). </para>
+<para
+>Isso pode levar a comportamentos inesperados: músicas do mesmo artista tocam em níveis de volume diferentes, &etc; </para>
+<sect2 id="is-replay-gain-being-used"
+><title
+>O ganho de reprodução está sendo utilizado?</title
+> 
+<para
+>Para descobrir se o problema de volume é causado pelo ganho de reprodução ou por uma codificação inadequada: </para>
+<itemizedlist>
+<listitem
+><para
+>Desative o processamento de ganho de reprodução (veja acima)</para
+></listitem>
+<listitem
+><para
+>Inicie o &amarok; no modo de depuração e procure por saídas relacionadas ao ganho:</para
+></listitem>
+</itemizedlist>
+<para
+><userinput
+><command
+>amarok -d --nofork | grep gain</command
+></userinput>
+</para>
+<para
+>Se o ganho de reprodução estiver ativo para a música reproduzida, a saída será </para>
+<para
+>Usando um ganho de -10,28 com um pico relativo de -1 </para>
+</sect2>
+<sect2 id="view-replay-gain-information"
+><title
+>Exibir as informações sobre ganho de reprodução</title
+> 
+<para
+>Para arquivos .flac, o <quote
+>metaflac</quote
+> pode ser usado para visualizar dados de ganho de reprodução incorporados: </para>
+<para
+><userinput
+><command
+>metaflac --list Millencolin\ -\ Balanced\ Boy.flac</command
+></userinput>
+</para>
+<para
+>Entre outras coisas, isso mostrará algo como isto: </para>
+<para
+>METADATA block #2 </para>
+<para
+>type: 4 (VORBIS_COMMENT) </para>
+<para
+>is last: false </para>
+<para
+>length: 390 </para>
+<para
+>vendor string: reference libFLAC 1.2.1 20070917 </para>
+<para
+>comments: 14 </para>
+<para
+>comment[9]: REPLAYGAIN_REFERENCE_LOUDNESS=89.0 dB </para>
+<para
+>comment[10]: REPLAYGAIN_TRACK_GAIN=-1.55 dB </para>
+<para
+>comment[11]: REPLAYGAIN_TRACK_PEAK=0.75894165 </para>
+<para
+>comment[12]: REPLAYGAIN_ALBUM_GAIN=-4.19 dB </para>
+<para
+>comment[13]: REPLAYGAIN_ALBUM_PEAK=0.98712158 </para>
+<para
+>Para visualizar essas informações de rastreamento no banco de dados &amarok; </para>
+<para
+><userinput
+><command
+>select id, title, albumgain, albumpeakgain, trackgain, trackpeakgain das faixas com título como &quot;Balanced%&quot;;</command
+></userinput>
+</para>
+<para
+>Exibirá: </para>
+<para
+>+-------+------------------+-----------+---------------+-----------+---------------+ </para>
+<para
+>| id | title | albumgain | albumpeakgain | trackgain | trackpeakgain | </para>
+<para
+>+-------+------------------+-----------+---------------+-----------+---------------+ </para>
+<para
+>| 10459 | Balanced Boy | 0.53 | -5.60297 | 0.44 | -5.60297 | </para>
+<para
+>Observe a diferença nos níveis de volume. </para>
+</sect2>
+<sect2 id="delete-replay-gain-information"
+><title
+>Excluir informações sobre ganho de reprodução</title
+> 
+<para
+>Primeiro, exclua os metadados do arquivo: </para>
+<para
+><userinput
+><command
+>metaflac --remove-replay-gain Millencolin\ -\ Balanced\ Boy.flac</command
+></userinput>
+</para>
+<para
+>Depois disso, atualize sua coleção &amarok;. Se ainda estiver usando ganho de reprodução, atualize a entrada do banco de dados: </para>
+<para
+><userinput
+><command
+>update tracks set albumgain=-1,albumpeakgain=-1,trackgain=-1,trackpeakgain=-1 where id=10459</command
+></userinput>
+</para>
+<para
+>Reinicie o &amarok; e a saída do log deverá agora mostrar os valores atualizados sendo usados. </para>
+<para
+>Sinta-se à vontade para tentar ajustar os valores manualmente para melhorar os níveis de volume. </para>
 </sect2>
 </sect1>
 <sect1 id="amarok-on-other-platforms"
@@ -11539,7 +11516,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >port</varname
 > irá obter todas as dependências, compilá-las e instalá-las. Este processo poderá levar bastante tempo, de quatro a cinco horas em uma instalação recente. </para>
 </sect3>
-<sect3 id="screenshots17"
+<sect3 id="screenshots14"
 ><title
 >Imagens</title
 > 
@@ -11577,10 +11554,10 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Resolução de problemas e problemas comuns</title
 > 
 <para
->Se você seguir os procedimento aqui descritos, mas não tiver sucesso, entre no IRC (irc://irc.freenode.org/amarok), cadastre a sua dúvida na <ulink url="http://forum.kde.org/viewforum.php?f=127"
->seção Amarok</ulink
-> do Fórum do KDE, ou escreva na <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->lista de discussão do Amarok</ulink
+>Se você seguir os procedimentos aqui, mas não tiver sucesso, por favor, entre no IRC (irc://irc.libera.chat/amarok), poste no Discuss na <ulink url="https://discuss.kde.org/tag/amarok"
+>categoria Amarok</ulink
+> ou escreva para a <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>lista do Amarok</ulink
 >. </para>
 <sect2 id="problems-installing"
 ><title
@@ -11931,13 +11908,13 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ></listitem>
 <listitem
 ><para
->Como obter um suporte técnico pessoal relativo aos problemas encontrados: <ulink url="irc://irc.freenode.net/#amarok"
+>Como obter suporte pessoal para problemas: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok no IRC da Freenode), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->fórum</ulink
+> (#amarok no IRC do Libera Chat), <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->lista de discussão</ulink
->.</para
+>Lista de discussão</ulink
+></para
 ></listitem>
 </itemizedlist>
 </sect2>
@@ -12007,7 +11984,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Para acompanhar o painel de <guilabel
 >Contexto</guilabel
 >, foi desenvolvida uma nova lista de músicas eficiente em espaço. Para preservar o espaço horizontal, ela agrupa o nome do artista, da faixa, do álbum e das capas, podendo ainda agrupar pelos nomes dos álbuns. Além disso, você pode reorganizá-la como bem entender! Se preferir a antiga lista de músicas da versão 1.4, você também pode tê-la. Veja como em <link linkend="changing-the-playlist-layout"
->Alterando o leiaute da lista de músicas</link
+>Alterando o layout da lista de músicas</link
 >.</para
 ></listitem>
 <listitem
@@ -12036,7 +12013,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 >Existem muitas outras excelentes funcionalidades, tais como o uso avançado de scripts, as coleções dinâmicas, as melhorias de usabilidade, o tratamento melhorado de dispositivos multimídia, um novo gerenciador de podcasts, o suporte a novas plataformas de software, entre outras. </para>
 </sect2>
-<sect2 id="installation18"
+<sect2 id="installation15"
 ><title
 >Instalação</title
 > 
@@ -12083,11 +12060,11 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Onde posso obter suporte ao Amarok?</title
 > 
 <para
->Existem diversas opções. Muitas vezes, os problemas que você tem com a instalação inicial do &amarok; são melhor respondidos por pessoas experientes da sua distribuição &UNIX; ou &Linux; específica. Você pode procurar ajuda com os usuários e desenvolvedores no <ulink url="http://forum.kde.org/viewforum.php?f=127"
->fórum do Amarok</ulink
-> e no <ulink url="irc://irc.freenode.net/amarok"
->canal de IRC do Amarok</ulink
-> #amarok do irc.freenode.net. </para>
+>Existem várias opções. Muitas vezes, os problemas que você tiver com a instalação inicial do &amarok; são melhor resolvidos por especialistas da sua distribuição &UNIX; ou &Linux; específica. Você pode buscar ajuda de outros usuários e desenvolvedores no <ulink url="https://discuss.kde.org/tag/amarok"
+>servidor de Discuss na categoria Amarok</ulink
+> e no <ulink url="irc://irc.libera.chat/amarok"
+>canal IRC do Amarok</ulink
+> no canal #amarok do irc.libera.chat. </para>
 <para
 >Lembre-se de que o <ulink url="http://bugs.kde.org"
 >bugzilla</ulink
@@ -12622,7 +12599,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenuitem
 >Resumo</guimenuitem
 ></menuchoice
->. Se tiver as estrelas de classificação visíveis no seu leiaute da lista de músicas, você pode editar ali mesmo, com o <emphasis
+>. Se tiver as estrelas de classificação visíveis no seu layout da lista de músicas, você pode editar ali mesmo, com o <emphasis
 >clique duplo lento</emphasis
 >. </para>
 </sect3>
@@ -12670,7 +12647,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </para>
 </sect3>
 </sect2>
-<sect2 id="troubleshooting19"
+<sect2 id="troubleshooting16"
 ><title
 >Solução de problemas</title
 > 
@@ -12982,7 +12959,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 >Algumas das ações comuns no &amarok; estão aqui, principalmente para controlar a reprodução dos conteúdos multimídia. </para>
 </sect2>
-<sect2 id="contents20"
+<sect2 id="contents17"
 ><title
 >Conteúdo</title
 > 
@@ -13229,18 +13206,18 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </sect2>
 <sect2 id="amarok-window-layouts"
 ><title
->Leiautes da janela do Amarok</title
+>Layouts da janela do Amarok</title
 > 
 <para
 >Se o botão <guilabel
->Bloquear leiaute</guilabel
+>Bloquear layout</guilabel
 > estiver desativado, as abas das <emphasis
 >Fontes multimídia</emphasis
 >, do <emphasis
 >Contexto</emphasis
 > e da <emphasis
 >Lista de músicas</emphasis
-> podem ser ativadas/desativadas e diversos leiautes poderão ser criados como os apresentados abaixo: </para>
+> podem ser ativadas/desativadas e diversos layouts poderão ser criados como os apresentados abaixo: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13530,7 +13507,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><guilabel
->Leiautes de lista de músicas</guilabel
+>Layouts de lista de músicas</guilabel
 ></para>
     </entry>
     <entry>
@@ -13559,16 +13536,16 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </sect3>
 <sect3 id="playlist-layouts"
 ><title
->Leiautes de lista de músicas</title
+>Layouts de lista de músicas</title
 > 
 <para
 >A partir da <menuchoice
 ><guimenu
 >Lista de músicas</guimenu
 ><guimenuitem
->Leiautes de lista de músicas</guimenuitem
+>Layouts de lista de músicas</guimenuitem
 ></menuchoice
->, você poderá alternar entre vários leiautes através dos botões de opção disponíveis, assim como configurar o seu leiaute pessoal da <guilabel
+>, você poderá alternar entre vários layouts através dos botões de opção disponíveis, assim como configurar o seu layout pessoal da <guilabel
 >Lista de músicas</guilabel
 >. </para>
 <sect4 id="default"
@@ -13580,7 +13557,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes de lista de músicas</guisubmenu
+>Layouts de lista de músicas</guisubmenu
 ><guimenuitem
 >Padrão</guimenuitem
 ></menuchoice>
@@ -13625,7 +13602,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes de lista de músicas</guisubmenu
+>Layouts de lista de músicas</guisubmenu
 ><guimenuitem
 >Sem agrupamento</guimenuitem
 ></menuchoice>
@@ -13670,7 +13647,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes de lista de músicas</guisubmenu
+>Layouts de lista de músicas</guisubmenu
 ><guimenuitem
 >Sem agrupamento (única linha)</guimenuitem
 ></menuchoice>
@@ -13715,7 +13692,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes de lista de músicas</guisubmenu
+>Layouts de lista de músicas</guisubmenu
 ><guimenuitem
 >Detalhada</guimenuitem
 ></menuchoice>
@@ -13753,20 +13730,20 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </sect4>
 <sect4 id="configure-playlist-layout---"
 ><title
->Configurar o leiaute da lista de músicas...</title
+>Configurar o layout da lista de músicas...</title
 > 
 <para
 ><menuchoice
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes de lista de músicas</guisubmenu
+>Layouts de lista de músicas</guisubmenu
 ><guimenuitem
->Configurar o leiaute da lista de músicas...</guimenuitem
+>Configurar o layout da lista de músicas...</guimenuitem
 ></menuchoice>
 </para>
 <para
->Esta opção permite-lhe criar o seu próprio leiaute da <guilabel
+>Esta opção permite-lhe criar o seu próprio layout da <guilabel
 >Lista de músicas</guilabel
 >; mostrar o artista, o gênero, o ano, as BPM e assim por diante. </para>
 <para>
@@ -13779,11 +13756,11 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </imageobject>
     <textobject>
       <phrase
->Crie o seu próprio leiaute</phrase>
+>Crie o seu próprio layout</phrase>
     </textobject>
     <caption>
       <para
->Crie o seu próprio leiaute</para>
+>Crie o seu próprio layout</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13803,7 +13780,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-8menutools.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_menutools.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -13897,8 +13874,8 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Abre a janela de sincronização das estatísticas.</para>
-    </entry>
+>Abre a janela de sincronização das estatísticas.</para
+></entry>
   </row>
   </tbody>
   </tgroup>
@@ -13994,7 +13971,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </informaltable>
 </para>
 </sect3>
-<sect3 id="cover-manager21"
+<sect3 id="cover-manager18"
 ><title
 >Gerenciador de capas</title
 >  
@@ -15041,7 +15018,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Alternar para tela inteira</para>
+>Alternar para tela cheia</para>
     </entry>
     <entry>
     <para
@@ -15375,7 +15352,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 > e André Marcelo Alvarenga <email
 >alvarenga@kde.org</email
 ></para
->  &underFDL; </sect1>
+> &underFDL; </sect1>
 </chapter>
 &documentation.index;
 </book>
