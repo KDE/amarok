@@ -23,15 +23,15 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-08 00:42+0000\n"
-"PO-Revision-Date: 2025-10-29 08:44+0300\n"
-"Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
+"PO-Revision-Date: 2025-12-21 16:08+0300\n"
+"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.08.2\n"
+"X-Generator: Lokalize 25.11.80\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -2682,7 +2682,7 @@ msgstr "Pod Yayını &Ekle"
 #: browsers/playlistbrowser/PodcastCategory.cpp:99
 #, kde-format
 msgid "&Update All"
-msgstr "&Tümünü Güncelle"
+msgstr "&Tümünü güncelle"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:107
 #: browsers/playlistbrowser/PodcastCategory.cpp:110
@@ -4511,7 +4511,7 @@ msgstr "%1 bağlantısını bir web tarayıcısında açmak için tıkla"
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
 msgid "Configure Applets..."
-msgstr "Uygulamacıkları Yapılandır…"
+msgstr "Uygulamacıkları yapılandır…"
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -5918,7 +5918,7 @@ msgstr "&Genel Ayarları Yapılandır"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
 #, kde-format
 msgid "&Export subscriptions to OPML file"
-msgstr "Abonelikleri OPML dosyasına dışa &aktar"
+msgstr "Abonelikleri OPML Dosyasına Dışa &Aktar"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
 #, kde-format
@@ -7761,7 +7761,7 @@ msgstr "Girdi dosyası"
 #: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
-msgstr "Tam yeniden tarama"
+msgstr "Tam Yeniden Tarama"
 
 #: dialogs/CollectionSetup.cpp:69
 #, kde-format
@@ -10730,7 +10730,7 @@ msgstr "&Ortam Ekle…"
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
-msgstr "Çalma Listesini &Temizle"
+msgstr "Çalma listesini &temizle"
 
 #: MainWindow.cpp:766
 #, kde-format
@@ -10863,7 +10863,7 @@ msgstr "Çalma listesinde ara…"
 #: MainWindow.cpp:945
 #, kde-format
 msgid "Show active track"
-msgstr "Etkin Parçayı Göster"
+msgstr "Etkin parçayı göster"
 
 #: MainWindow.cpp:949
 #, kde-format
@@ -11416,7 +11416,7 @@ msgstr "Önizle"
 #: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
-msgstr "Parça İlerlemesi"
+msgstr "Parça ilerlemesi"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
@@ -11607,7 +11607,7 @@ msgstr ""
 #: playlist/PlaylistDock.cpp:177
 #, kde-format
 msgid "&Save Current Playlist"
-msgstr "Geçerli Çalma Listesini &Kaydet"
+msgstr "Geçerli çalma listesini &kaydet"
 
 #: playlist/PlaylistDock.cpp:268
 #, kde-format
@@ -16188,7 +16188,7 @@ msgstr "Aramak için boşlukla ayrılmış terimleri girin."
 #: widgets/SearchWidget.cpp:72 widgets/SearchWidget.cpp:166
 #, kde-format
 msgid "Edit filter"
-msgstr "Süzgeci Düzenle"
+msgstr "Süzgeci düzenle"
 
 #: widgets/SliderWidget.cpp:241
 #, kde-format
