@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-08 00:42+0000\n"
-"PO-Revision-Date: 2025-12-21 16:08+0300\n"
+"PO-Revision-Date: 2025-12-22 18:15+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.11.80\n"
+"X-Generator: Lokalize 25.12.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -6640,7 +6640,7 @@ msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
-msgstr "sa:mm:ss"
+msgstr "h:mm:ss"
 
 #: core/meta/support/MetaUtility.cpp:442
 #, kde-format
@@ -14967,7 +14967,7 @@ msgstr ""
 #: services/mp3tunes/harmonydaemon/main.cpp:41
 #, kde-format
 msgid "http://amarok.kde.org"
-msgstr "http://amarok.kde.org"
+msgstr "https://amarok.kde.org"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:48
 #, kde-format
