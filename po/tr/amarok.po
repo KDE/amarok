@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-08 00:42+0000\n"
-"PO-Revision-Date: 2025-12-22 18:15+0300\n"
+"PO-Revision-Date: 2025-12-23 11:54+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -1431,7 +1431,7 @@ msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
 msgstr ""
-"Amarok’un dış bir işletke yerine kendi iç veritabanını kullanıp kullanmadığı"
+"Amarok’un dış bir işletke yerine kendi iç veri tabanını kullanıp kullanmadığı"
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:560
@@ -1443,7 +1443,7 @@ msgstr "Bağlanılacak dış sunucunun makine adı."
 #: amarokconfig.kcfg:564
 #, kde-format
 msgid "Which server port to connect to the database engine."
-msgstr "Veritabanı işletkesine bağlanılırken kullanılacak sunucu kapısı."
+msgstr "Veri tabanı işletkesine bağlanılırken kullanılacak sunucu kapısı."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:568
@@ -1452,20 +1452,20 @@ msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
 "access permissions."
 msgstr ""
-"Amarok’un kullanacağı veritabanının adı. Kullanıcının yeterli erişim "
+"Amarok’un kullanacağı veri tabanının adı. Kullanıcının yeterli erişim "
 "izinlerine sahip olması gerekir."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:572
 #, kde-format
 msgid "Username used to access the external database."
-msgstr "Dış veritabanına erişmek için kullanılan kullanıcı adı."
+msgstr "Dış veri tabanına erişmek için kullanılan kullanıcı adı."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:576
 #, kde-format
 msgid "Password for the external database user."
-msgstr "Dış veritabanı kullanıcısının parolası."
+msgstr "Dış veri tabanı kullanıcısının parolası."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:580
@@ -1833,7 +1833,7 @@ msgstr "Göreceli dosya adları/URL’ler için temel"
 #: App.cpp:520 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
-msgstr "Veritabanı Hatası"
+msgstr "Veri Tabanı Hatası"
 
 #: App.cpp:521
 #, kde-format
@@ -1843,7 +1843,7 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
-"Amarok veritabanı aşağıdaki hataları bildirdi:\n"
+"Amarok veri tabanı aşağıdaki hataları bildirdi:\n"
 "%1\n"
 "Çoğu durumda Amarok’un düzgün çalışması için bu hataları çözmeniz "
 "gerekecektir."
@@ -2868,12 +2868,12 @@ msgstr "Bildirimleri Yapılandır"
 #: configdialog/ConfigDialog.cpp:64
 #, kde-format
 msgid "Database"
-msgstr "Veritabanı"
+msgstr "Veri Tabanı"
 
 #: configdialog/ConfigDialog.cpp:64
 #, kde-format
 msgid "Configure Database"
-msgstr "Veritabanını Yapılandır"
+msgstr "Veri Tabanını Yapılandır"
 
 #: configdialog/ConfigDialog.cpp:65
 #, kde-format
@@ -2947,7 +2947,7 @@ msgstr "Parçaları arakodla:"
 #: configdialog/dialogs/DatabaseConfig.cpp:103
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
-msgstr "Amarok veritabanına başarılı bir bağlantı kurmayı başardı."
+msgstr "Amarok veri tabanına başarılı bir bağlantı kurmayı başardı."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:104
 #, kde-format
@@ -2962,7 +2962,7 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
-"Amarok veritabanı aşağıdaki hataları bildirdi:\n"
+"Amarok veri tabanı aşağıdaki hataları bildirdi:\n"
 "%1\n"
 "Çoğu durumda Amarok’un düzgün çalışması için bu hataları çözmeniz "
 "gerekecektir."
@@ -2973,13 +2973,13 @@ msgid ""
 "Changes to database settings only take\n"
 "effect after Amarok is restarted."
 msgstr ""
-"Veritabanı ayarlarında yapılan değişiklikler;\n"
+"Veri tabanı ayarlarında yapılan değişiklikler;\n"
 "ancak Amarok yeniden başlatıldıktan sonra geçerli olur."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:138
 #, kde-format
 msgid "Database settings changed"
-msgstr "Veritabanı ayarları değişti"
+msgstr "Veri tabanı ayarları değişti"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:161
 #, kde-format
@@ -2998,14 +2998,14 @@ msgid ""
 "Check to enable the use of an external database. By default there is already "
 "an embedded MySQL database running."
 msgstr ""
-"Dış bir veritabanının kullanımını etkinleştirmek için işaretleyin. Öntanımlı "
-"olarak zaten çalışan bir gömülü MySQL veritabanı vardır."
+"Dış bir veri tabanının kullanımını etkinleştirmek için işaretleyin. "
+"Öntanımlı olarak zaten çalışan bir gömülü MySQL veri tabanı vardır."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: configdialog/dialogs/DatabaseConfig.ui:23
 #, kde-format
 msgid "Use &external MySQL database"
-msgstr "&Dış MySQL veritabanı kullan"
+msgstr "&Dış MySQL veri tabanı kullan"
 
 #. i18n: ectx: property (title), widget (QGroupBox, group_Connection)
 #: configdialog/dialogs/DatabaseConfig.ui:30
@@ -3067,26 +3067,26 @@ msgstr "&Parola:"
 msgid ""
 "Enter the username to access the database with full access privileges.\n"
 msgstr ""
-"Veritabanına tam erişim ayrıcalıklarıyla erişmek için kullanıcı adını "
+"Veri tabanına tam erişim ayrıcalıklarıyla erişmek için kullanıcı adını "
 "girin.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Database)
 #: configdialog/dialogs/DatabaseConfig.ui:161
 #, kde-format
 msgid "&Database:"
-msgstr "&Veritabanı:"
+msgstr "&Veri tabanı:"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, kcfg_Database)
 #: configdialog/dialogs/DatabaseConfig.ui:178
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
-msgstr "Veritabanının adını girin. Öntanımlı önayar amarokdb’dir.\n"
+msgstr "Veri tabanının adını girin. Öntanımlı önayar amarokdb’dir.\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
 #, kde-format
 msgid "Test database connection"
-msgstr "Veritabanı Bağlantısını Sına"
+msgstr "Veri Tabanı Bağlantısını Sına"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: configdialog/dialogs/DatabaseConfig.ui:206
@@ -3096,8 +3096,8 @@ msgid ""
 "user also requires full access to the database. Changes only take effect "
 "after Amarok is restarted."
 msgstr ""
-"Amarok yukarıdaki veritabanının ve kullanıcı hesabının halihazırda var "
-"olmasını beklemektedir. Bu kullanıcının ayrıca veritabanına tam erişime "
+"Amarok yukarıdaki veri tabanının ve kullanıcı hesabının halihazırda var "
+"olmasını beklemektedir. Bu kullanıcının ayrıca veri tabanına tam erişime "
 "gereksinimi vardır. Değişiklikler Amarok yeniden başlatıldıktan sonra "
 "geçerli olur."
 
@@ -3108,7 +3108,7 @@ msgid ""
 "If your database is not already set up, you can use the following S&QL "
 "commands (after replacing the password with the correct one):"
 msgstr ""
-"Veritabanınız henüz ayarlanmamışsa aşağıdaki S&QL komutlarını "
+"Veri tabanınız henüz ayarlanmamışsa aşağıdaki S&QL komutlarını "
 "kullanabilirsiniz (parolayı doğru olanla değiştirdikten sonra):"
 
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:50
@@ -4690,13 +4690,13 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
-"Amarok veritabanı şeması güncelleniyor. Veritabanı bozulmasını önlemek üzere "
-"şu an için Amarok’tan çıkmayın."
+"Amarok veri tabanı şeması güncelleniyor. Veri tabanı bozulmasını önlemek "
+"üzere şu an için Amarok’tan çıkmayın."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:243
 #, kde-format
 msgid "Updating Amarok database schema"
-msgstr "Amarok Veritabanı Şeması Güncellemesi"
+msgstr "Amarok Veri Tabanı Şeması Güncellemesi"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:530
 #, kde-format
@@ -4781,20 +4781,20 @@ msgstr "İlklendirme başarılı."
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
-msgstr "iTunes veritabanı %1 içine başarıyla yazıldı."
+msgstr "iTunes veri tabanı %1 içine başarıyla yazıldı."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:713
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr ""
-"iTunes veritabanını %1 içine yazma, bir hata vermediği halde başarısız oldu."
+"iTunes veri tabanını %1 içine yazma, bir hata vermediği halde başarısız oldu."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:717
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
-msgstr "iTunes veritabanının %1 içine yazılamadı: %2"
+msgstr "iTunes veri tabanının %1 içine yazılamadı: %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
@@ -4850,8 +4850,8 @@ msgid ""
 "added back to the iTunes database. %4"
 msgstr ""
 "iPod dosyalarının birleştirilmesi tamamlandı. %1 artık parça eski iTunes "
-"veritabanı girdileriyle eşleştirildi, %2 eski veritabanı girdisi kaldırıldı, "
-"%3 artık parça iTunes veritabanına geri eklendi. %4"
+"veri tabanı girdileriyle eşleştirildi, %2 eski veri tabanı girdisi "
+"kaldırıldı, %3 artık parça iTunes veri tabanına geri eklendi. %4"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:226
 #, kde-format
@@ -4921,7 +4921,7 @@ msgstr[1] "iPod sığasını aşacağı için %1 parça aktarılmadı.<br>"
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
-msgstr "<i>Amarok, iTunes veritabanına yazmak için iPod’da %1 ayırdı.</i><br>"
+msgstr "<i>Amarok, iTunes veri tabanına yazmak için iPod’da %1 ayırdı.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:401
 #, kde-format
@@ -5090,7 +5090,8 @@ msgstr "SysInfoExtended dosyası:"
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:48
 #, kde-format
 msgid "Cannot parse iTunes database due to an unreported error."
-msgstr "Rapor edilmemiş bir hata nedeniyle iTunes veritabanı ayrıştırılamıyor."
+msgstr ""
+"Rapor edilmemiş bir hata nedeniyle iTunes veri tabanı ayrıştırılamıyor."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
 #, kde-format
@@ -5122,7 +5123,7 @@ msgstr "iPod modeli tanınamadı."
 #, kde-format
 msgid "%1 family uses %2 file to generate correct database checksum."
 msgstr ""
-"%1 ailesi, doğru veritabanı sağlama toplamını üretmek için %2 dosyasını "
+"%1 ailesi, doğru veri tabanı sağlama toplamını üretmek için %2 dosyasını "
 "kullanıyor."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:228
@@ -5130,7 +5131,7 @@ msgstr ""
 #, kde-format
 msgid "%1 family needs %2 file to generate correct database checksum."
 msgstr ""
-"Doğru veritabanı sağlama toplamını üretmek için %1 ailesinin %2 dosyasına "
+"Doğru veri tabanı sağlama toplamını üretmek için %1 ailesinin %2 dosyasına "
 "gereksinimi var."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:248
@@ -5141,7 +5142,7 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
-"%1 ailesi, doğru veritabanı sağlama toplamını üretmek için büyük olasılıkla "
+"%1 ailesi, doğru veri tabanı sağlama toplamını üretmek için büyük olasılıkla "
 "hash-AB kullanıyor. libgpod (sürüm 0.8.2 itibarıyla) bunu nasıl "
 "hesaplayacağını bilmiyor; ancak bunu yapmak için libhashab.so dış "
 "kitaplığını devingen biçimde yüklemeye çalışıyor."
@@ -5205,10 +5206,10 @@ msgid ""
 "libgpod source repository for more information."
 msgstr ""
 "<b>%1</b><br><br>Güvenlik önlemi olarak Amarok, iPod’a <i>herhangi bir yazma "
-"işlemi gerçekleştirmeyi reddedecektir</i>. (iTunes veritabanını değiştirmek, "
-"aygıtın bakış açısından boş görünmesine neden olabilir).<br>Daha fazla bilgi "
-"için libgpod kaynak deposundaki <a href='%2'>README.overview</a> dosyasına "
-"bakın."
+"işlemi gerçekleştirmeyi reddedecektir</i>. (iTunes veri tabanını "
+"değiştirmek, aygıtın bakış açısından boş görünmesine neden olabilir)."
+"<br>Daha fazla bilgi için libgpod kaynak deposundaki <a href='%2'>README."
+"overview</a> dosyasına bakın."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
 #, kde-format
@@ -5221,9 +5222,9 @@ msgid ""
 msgstr ""
 "<b>%1</b><br><br>Yukarıdaki sorun, Amarok’un iPod’unuzu kullanmasını "
 "engelliyor. Aşağıdaki <b>%2</b> düğmesini kullanarak kritik iPod "
-"klasörlerini ve dosyalarını (iTunes veritabanı dahil) yeniden oluşturmayı "
+"klasörlerini ve dosyalarını (iTunes veri tabanı dahil) yeniden oluşturmayı "
 "deneyebilirsiniz.<br><br>iPod’un ilklendirilmesi <b>iPod parçalarını ve "
-"fotoğraf veritabanını yok eder</b>; ancak hiçbir parçayı silmemelidir. "
+"fotoğraf veri tabanını yok eder</b>; ancak hiçbir parçayı silmemelidir. "
 "Parçalar ayrık olarak imlenir."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
@@ -6125,7 +6126,7 @@ msgstr ""
 #: core-impl/storage/StorageManager.cpp:159
 #, kde-format
 msgid "The configured database plugin could not be loaded."
-msgstr "Yapılandırılmış veritabanı eklentisi yüklenemedi."
+msgstr "Yapılandırılmış veri tabanı eklentisi yüklenemedi."
 
 #: core/collections/CollectionLocation.cpp:381
 #, kde-format
@@ -9617,7 +9618,7 @@ msgstr "Kullanıcı adı"
 #: importers/amarok/AmarokConfigWidget.ui:58
 #, kde-format
 msgid "Database type"
-msgstr "Veritabanı türü"
+msgstr "Veri tabanı türü"
 
 #. i18n: ectx: property (text), widget (QLabel, m_databaseLocationLabel)
 #: importers/amarok/AmarokConfigWidget.ui:71
@@ -9628,7 +9629,7 @@ msgstr "Veritabanı türü"
 #: importers/rhythmbox/RhythmboxConfigWidget.cpp:35
 #, kde-format
 msgid "Database location"
-msgstr "Veritabanı konumu"
+msgstr "Veri tabanı konumu"
 
 #. i18n: ectx: property (text), widget (QLabel, m_targetNameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:91
@@ -9656,7 +9657,7 @@ msgstr "Kapı"
 #: importers/fastforward/FastForwardConfigWidget.ui:135
 #, kde-format
 msgid "Database name"
-msgstr "Veritabanı adı"
+msgstr "Veri tabanı adı"
 
 #. i18n: ectx: property (text), widget (QLabel, m_mysqlBinaryLabel)
 #: importers/amarok/AmarokConfigWidget.ui:163
@@ -13195,12 +13196,12 @@ msgid ""
 "operations with them may result in losing them. Perhaps you have started an "
 "older version of Amarok with a database written by newer version?"
 msgstr ""
-"Çalma listesi veritabanı şemasının %1 sürümüyle karşılaşıldı; ancak bu "
+"Çalma listesi veri tabanı şemasının %1 sürümüyle karşılaşıldı; ancak bu "
 "Amarok sürümü yalnızca %2 sürümünü (ve %2 ile başlayan önceki sürümleri) "
-"destekliyor. Amarok veritabanına kaydedilen çalma listeleri büyük olasılıkla "
-"çalışmayacaktır ve bunlarla yapılacak herhangi bir yazma işlemi, bunların "
-"kaybolmasına neden olabilir. Belki de Amarok’un eski bir sürümünü, yeni "
-"sürüm tarafından yazılan bir veritabanıyla başlattınız?"
+"destekliyor. Amarok veri tabanına kaydedilen çalma listeleri büyük "
+"olasılıkla çalışmayacaktır ve bunlarla yapılacak herhangi bir yazma işlemi, "
+"bunların kaybolmasına neden olabilir. Belki de Amarok’un eski bir sürümünü, "
+"yeni sürüm tarafından yazılan bir veri tabanıyla başlattınız?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:280
 #, kde-format
@@ -13208,17 +13209,17 @@ msgctxt ""
 "the user's 'database version' is newer and unsupported by this software "
 "version"
 msgid "Future version of Playlist Database?"
-msgstr "Çalma listesi veritabanının gelecekten sürümü mü?"
+msgstr "Çalma listesi veri tabanının gelecekten sürümü mü?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 #, kde-format
 msgid "Amarok Database"
-msgstr "Amarok Veritabanı"
+msgstr "Amarok Veri Tabanı"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 #, kde-format
 msgid "Local playlists stored in the database"
-msgstr "Veritabanında depolanan yerel çalma listeleri"
+msgstr "Veri tabanında depolanan yerel çalma listeleri"
 
 #: playlistmanager/SyncedPlaylist.cpp:43 playlistmanager/SyncedPlaylist.cpp:51
 #, kde-format
@@ -13742,12 +13743,12 @@ msgstr "Tür/Sanatçı/Albüm"
 #: services/jamendo/JamendoService.cpp:194
 #, kde-format
 msgid "Downloading Jamendo.com database..."
-msgstr "Jamendo.com veritabanı indiriliyor…"
+msgstr "Jamendo.com veri tabanı indiriliyor…"
 
 #: services/jamendo/JamendoService.cpp:216
 #, kde-format
 msgid "Updating the local Jamendo database."
-msgstr "Yerel Jamendo veritabanı güncelleniyor…"
+msgstr "Yerel Jamendo veri tabanı güncelleniyor…"
 
 #: services/jamendo/JamendoXmlParser.cpp:171
 #, kde-format
@@ -13756,8 +13757,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
-msgstr[0] "Jamendo.com veritabanı güncellemesi tamamlandı. 1 parça "
-msgstr[1] "Jamendo.com veritabanı güncellemesi tamamlandı. %1 parça "
+msgstr[0] "Jamendo.com veri tabanı güncellemesi tamamlandı. 1 parça "
+msgstr[1] "Jamendo.com veri tabanı güncellemesi tamamlandı. %1 parça "
 
 #: services/jamendo/JamendoXmlParser.cpp:172
 #, kde-format
@@ -14355,7 +14356,7 @@ msgid ""
 "If you check this box, Amarok will periodically check for Magnatune database "
 "updates and download them automatically."
 msgstr ""
-"Bu kutuyu işaretlerseniz Amarok, Magnatune veritabanı güncellemelerini "
+"Bu kutuyu işaretlerseniz Amarok, Magnatune veri tabanı güncellemelerini "
 "periyodik olarak denetleyecek ve bunları kendiliğinden indirecektir."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdate)
@@ -14364,7 +14365,7 @@ msgstr ""
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:32
 #, kde-format
 msgid "Update Magnatune database automatically"
-msgstr "Magnatune veritabanını kendiliğinden güncelle"
+msgstr "Magnatune veri tabanını kendiliğinden güncelle"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:43
@@ -14634,7 +14635,7 @@ msgstr ""
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:39
 #, kde-format
 msgid "Click this button to download Magnatune database now."
-msgstr "Magnatune veritabanını hemen indirmek için bu düğmeye tıklayın."
+msgstr "Magnatune veri tabanını hemen indirmek için bu düğmeye tıklayın."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:49
@@ -14643,8 +14644,8 @@ msgid ""
 "Amarok needs to download Magnatune database in order to enable Magnatune "
 "store."
 msgstr ""
-"Amarok’un Magnatune mağazasını etkinleştirebilmesi için Magnatune "
-"veritabanını indirmesi gerekiyor."
+"Amarok’un Magnatune mağazasını etkinleştirebilmesi için Magnatune veri "
+"tabanını indirmesi gerekiyor."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:59
@@ -14828,7 +14829,7 @@ msgstr "Yeniden İndir"
 #: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Update Database"
-msgstr "Veritabanını Güncelle"
+msgstr "Veri Tabanını Güncelle"
 
 #: services/magnatune/MagnatuneStore.cpp:249
 #, kde-format
@@ -14848,12 +14849,12 @@ msgstr "Kaydol"
 #: services/magnatune/MagnatuneStore.cpp:328
 #, kde-format
 msgid "Downloading Magnatune.com database..."
-msgstr "Magnatune.com veritabanı indiriliyor…"
+msgstr "Magnatune.com veri tabanı indiriliyor…"
 
 #: services/magnatune/MagnatuneStore.cpp:357
 #, kde-format
 msgid "Updating the local Magnatune database."
-msgstr "Magnatune veritabanı güncelleniyor…"
+msgstr "Magnatune veri tabanı güncelleniyor…"
 
 #: services/magnatune/MagnatuneStore.cpp:620
 #, kde-format
@@ -14911,8 +14912,8 @@ msgctxt ""
 msgid "Magnatune.com database update complete. Database contains 1 track on "
 msgid_plural ""
 "Magnatune.com database update complete. Database contains %1 tracks on "
-msgstr[0] "Magnatune.com veritabanı güncellemesi tamamlandı. 1 parça "
-msgstr[1] "Magnatune.com veritabanı güncellemesi tamamlandı. %1 parça "
+msgstr[0] "Magnatune.com veri tabanı güncellemesi tamamlandı. 1 parça "
+msgstr[1] "Magnatune.com veri tabanı güncellemesi tamamlandı. %1 parça "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:81
 #, kde-format
@@ -15462,7 +15463,7 @@ msgid ""
 "database file is not currently in use!"
 msgstr ""
 "<span style=\"color:red; font-weight:bold;\">Önemli:</span> Parçaları dosya "
-"tabanlı bir hedefle eşzamanlamadan önce daima veritabanı dosyasının o anda "
+"tabanlı bir hedefle eşzamanlamadan önce daima veri tabanı dosyasının o anda "
 "kullanımda olmadığından emin olun!"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:60
