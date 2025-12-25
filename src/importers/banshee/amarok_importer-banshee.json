@@ -64,7 +64,7 @@
         "Description[ru]": "Импорт статистики из базы данных Banshee",
         "Description[sl]": "Uvoz statistike iz podatkovne zbirke Banshee",
         "Description[sv]": "Importera statistik från Banshee-databas",
-        "Description[tr]": "İstatistikleri Banshee veritabanından içe aktar",
+        "Description[tr]": "İstatistikleri Banshee veri tabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Banshee",
         "Description[zh_TW]": "從 Banshee 資料庫中匯入統計資料",
         "EnabledByDefault": true,

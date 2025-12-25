@@ -64,7 +64,7 @@
         "Description[ru]": "Импорт статистики из базы данных Rhythmbox",
         "Description[sl]": "Uvoz statistike iz podatkovne zbirke Rhythmbox",
         "Description[sv]": "Importera statistik från Rhythmbox-databas",
-        "Description[tr]": "İstatistikleri Rhythmbox veritabanından içe aktar",
+        "Description[tr]": "İstatistikleri Rhythmbox veri tabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Rhythmbox",
         "Description[zh_TW]": "從 Rhythmbox 資料庫中匯入統計資料",
         "EnabledByDefault": true,

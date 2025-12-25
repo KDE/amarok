@@ -64,7 +64,7 @@
         "Description[ru]": "Импорт статистики из базы данных Clementine",
         "Description[sl]": "Uvoz statistike iz podatkovne zbirke Clementine",
         "Description[sv]": "Importera statistik från Clementine-databas",
-        "Description[tr]": "İstatistikleri Clementine veritabanından içe aktar",
+        "Description[tr]": "İstatistikleri Clementine veri tabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Clementine",
         "Description[zh_TW]": "從 Clementine 資料庫中匯入統計資料",
         "EnabledByDefault": true,
