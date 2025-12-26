@@ -39,7 +39,7 @@ not be entirely up to date. You can always look at CMakeLists.txt to discover
 the most recent dependencies.
 
 Required
-    * KDE Frameworks 6.0 (or newer, for an exact list look at CMakeLists.txt)
+    * KDE Frameworks 6.5 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
     * GStreamer 1.10.0 (or newer)
