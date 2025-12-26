@@ -4,7 +4,7 @@ project(Amarok)
 
 ###############
 
-set(KF_MIN_VERSION "6.0.0")
+set(KF_MIN_VERSION "6.5.0")
 set(KF_MAJOR_VERSION "6")
 set(QT_MIN_VERSION "6.7.0")
 set(QT_MAJOR_VERSION "6")

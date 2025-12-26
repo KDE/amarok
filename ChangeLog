@@ -9,6 +9,7 @@ VERSION 3.3.2 UNRELEASED
   CHANGES:
    * Make single click open items and double click add to playlist in collection
      browser.
+   * Amarok now depends on KDE Frameworks 6.5.
 
   BUGFIXES:
    * Fixes to Magnatune collection update and playback (BR 508052)
