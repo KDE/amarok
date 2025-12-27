@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-08 00:42+0000\n"
+"POT-Creation-Date: 2025-12-27 00:41+0000\n"
 "PO-Revision-Date: 2025-10-15 17:26+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
@@ -3909,7 +3909,7 @@ msgstr "أعد التّحميل"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:50
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
@@ -5882,22 +5882,25 @@ msgstr "اكتب معلومات التّغذية إلى وسوم بعد التّ
 msgid "Episode Filename Configuration"
 msgstr "إعداد اسم ملف الحلقة"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:41
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
 msgstr "اضبط %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
-#, kde-format
-msgid " Item"
-msgid_plural " Items"
-msgstr[0] "لا يوجد "
-msgstr[1] " عنصر واحد"
-msgstr[2] " عنصران"
-msgstr[3] " عناصر"
-msgstr[4] " عنصرًا"
-msgstr[5] " عنصر"
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
+#, fuzzy, kde-format
+#| msgid "One item"
+#| msgid_plural "%1 items"
+msgctxt "Spinbox label"
+msgid "%v item"
+msgid_plural "%v items"
+msgstr[0] "لا عنصر"
+msgstr[1] "لا عنصر"
+msgstr[2] "لا عنصر"
+msgstr[3] "لا عنصر"
+msgstr[4] "لا عنصر"
+msgstr[5] "لا عنصر"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5905,57 +5908,57 @@ msgstr[5] " عنصر"
 msgid "Podcast"
 msgstr "نشرة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&حدّث كلّ القنوات"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "ا&ضبط الخيارات العامّة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&صدّر الاشتراكات إلى ملفّ OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
 msgid "&Configure"
 msgstr "ا&ضبط"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "أ&زل الاشتراك"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, kde-format
 msgid "&Update Channel"
 msgstr "&حدّث القناة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
 msgid "&Download Episode"
 msgstr "&نزّل الحلقة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "ا&حذف الحلقة المنزّلة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "ا&كتب معلومات التّغذية إلى ملفّ"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "أ&بقِ الملفّ المنزّل"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -5965,59 +5968,57 @@ msgstr ""
 "بدّل حالة ملفّ هذه الحلقة الذي نُزّل إلى \"احتفظ\". لن تُحذف الملفات التي نُزّلت "
 "بهذه الحالة حتى لو طبقنا تطهيرًا."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "مشترك في %1 فعلًا."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, kde-format
-msgctxt "prefix to 'x minutes'"
-msgid "every "
-msgstr "كلّ "
+#, fuzzy, kde-format
+#| msgctxt "number of minutes for the pretty time"
+#| msgid "%1 minute"
+#| msgid_plural "%1 minutes"
+msgctxt "Spinbox label"
+msgid "every %v minute"
+msgid_plural "every %v minutes"
+msgstr[0] "أقلّ من دقيقة"
+msgstr[1] "دقيقة واحدة"
+msgstr[2] "دقيقتان"
+msgstr[3] "%1 دقائق"
+msgstr[4] "%1 دقيقةً"
+msgstr[5] "%1 دقيقة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, kde-format
-msgid " minute"
-msgid_plural " minutes"
-msgstr[0] " (أقلّ من دقيقة)"
-msgstr[1] " دقيقة"
-msgstr[2] " دقيقتان"
-msgstr[3] " دقائق"
-msgstr[4] " دقيقة"
-msgstr[5] " دقيقة"
-
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "اضبط النّشرات المحلّيّة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:640
 #, kde-format
 msgid "Move Podcasts"
 msgstr "انقل المدونات"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "أتريد نقل كلّ الحلقات المنزّلة إلى المكان الجديد؟"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "اختر ملفًّا لتصدير OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "أمتأكّد من إزالة الاشتراك في \"%1\"؟"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "احذف الحلقات المنزّلة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6028,23 +6029,23 @@ msgstr[3] "لا تزال %1 تنزيلات لمدونة تعمل"
 msgstr[4] "لا تزال %1 تنزيلا لمدونة تعمل"
 msgstr[5] "لا تزال %1 تنزيل لمدونة تعمل"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "ألغِ التّنزيل واخرج."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "تعذّر حفظ ملفّ حلقة النّشرة إلى %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "ينزّل وسائط النّشرة"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "ينزّل النّشرة \"%1\""
@@ -16464,6 +16465,28 @@ msgstr "الفنّان: %1"
 msgid "empty"
 msgstr "فارغ"
 
+#~ msgid " Item"
+#~ msgid_plural " Items"
+#~ msgstr[0] "لا يوجد "
+#~ msgstr[1] " عنصر واحد"
+#~ msgstr[2] " عنصران"
+#~ msgstr[3] " عناصر"
+#~ msgstr[4] " عنصرًا"
+#~ msgstr[5] " عنصر"
+
+#~ msgctxt "prefix to 'x minutes'"
+#~ msgid "every "
+#~ msgstr "كلّ "
+
+#~ msgid " minute"
+#~ msgid_plural " minutes"
+#~ msgstr[0] " (أقلّ من دقيقة)"
+#~ msgstr[1] " دقيقة"
+#~ msgstr[2] " دقيقتان"
+#~ msgstr[3] " دقائق"
+#~ msgstr[4] " دقيقة"
+#~ msgstr[5] " دقيقة"
+
 #~ msgid "Enter an artist name"
 #~ msgstr "أدخل اسم الفنّان"
 
@@ -20701,12 +20724,6 @@ msgstr "فارغ"
 #~| msgid "Unknown Applet"
 #~ msgid "Unknown Wallpaper"
 #~ msgstr "بريمج مجهول"
-
-#, fuzzy
-#~| msgid "One item"
-#~| msgid_plural "%1 items"
-#~ msgid "no items"
-#~ msgstr "لا عنصر"
 
 #, fuzzy
 #~| msgid "Unknown Artist"

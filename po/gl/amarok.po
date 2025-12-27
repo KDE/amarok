@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-08 00:42+0000\n"
+"POT-Creation-Date: 2025-12-27 00:41+0000\n"
 "PO-Revision-Date: 2025-06-19 09:57+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.gal>\n"
 "Language-Team: Proxecto Trasno (proxecto@trasno.gal)\n"
@@ -4009,7 +4009,7 @@ msgstr "Cargar de novo"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:50
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
@@ -5933,18 +5933,19 @@ msgstr "Gravar a información da fonte nas etiquetas despois de descargar."
 msgid "Episode Filename Configuration"
 msgstr "Configuración do nome de ficheiro do episodio"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:41
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
 msgstr "Configurar %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
 #, kde-format
-msgid " Item"
-msgid_plural " Items"
-msgstr[0] " elemento"
-msgstr[1] " elementos"
+msgctxt "Spinbox label"
+msgid "%v item"
+msgid_plural "%v items"
+msgstr[0] ""
+msgstr[1] ""
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5952,57 +5953,57 @@ msgstr[1] " elementos"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
 msgid "&Update All Channels"
 msgstr "Act&ualizar todas as canles"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Configurar as opcións xerais"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Exportar as subscricións a un ficheiro OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
 msgid "&Configure"
 msgstr "&Configurar"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Retirar a subscrición"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, kde-format
 msgid "&Update Channel"
 msgstr "Act&ualizar a canle"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
 msgid "&Download Episode"
 msgstr "&descargar o episodio"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "&Eliminar o episodio descargado"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Gravar nun ficheiro a información da fonte"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, kde-format
 msgid "&Keep downloaded file"
 msgstr "&Manter o ficheiro descargado"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6013,78 +6014,76 @@ msgstr ""
 "podcast. Os ficheiros descargados con este estado non se eliminan mesmo "
 "cando se produce unha purga."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Xa está subscrito a %1."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, kde-format
-msgctxt "prefix to 'x minutes'"
-msgid "every "
-msgstr "cada "
+#, fuzzy, kde-format
+#| msgctxt "number of minutes for the pretty time"
+#| msgid "%1 minute"
+#| msgid_plural "%1 minutes"
+msgctxt "Spinbox label"
+msgid "every %v minute"
+msgid_plural "every %v minutes"
+msgstr[0] "%1 minuto"
+msgstr[1] "%1 minutos"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, kde-format
-msgid " minute"
-msgid_plural " minutes"
-msgstr[0] " minuto"
-msgstr[1] " minutos"
-
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Configurar podcasts locais"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:640
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Mover podcasts"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "Quere mover todos os episodios descargados ao novo sitio?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Seleccione o ficheiro para exportar a OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Seguro que quere anular a subscrición a «%1»?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Eliminar os episodios descargados"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "Aínda hai unha descarga de Podcast en proceso"
 msgstr[1] "Aínda hai %1 descargas de Podcast en proceso"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Cancelar a descarga e saír."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Non é posíbel gardar o ficheiro co episodio do podcast en %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Descargando os podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Descargando o podcast «%1»"
@@ -16401,6 +16400,20 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "baleiro"
+
+#~ msgid " Item"
+#~ msgid_plural " Items"
+#~ msgstr[0] " elemento"
+#~ msgstr[1] " elementos"
+
+#~ msgctxt "prefix to 'x minutes'"
+#~ msgid "every "
+#~ msgstr "cada "
+
+#~ msgid " minute"
+#~ msgid_plural " minutes"
+#~ msgstr[0] " minuto"
+#~ msgstr[1] " minutos"
 
 #~ msgid "MusicDNS match ratio: %1%"
 #~ msgstr "Relación de coincidencia en MusicDNS: %1%"

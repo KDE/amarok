@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-08 00:42+0000\n"
+"POT-Creation-Date: 2025-12-27 00:41+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -3996,7 +3996,7 @@ msgstr "Nû ve bar bike"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:50
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, fuzzy, kde-format
 #| msgid "&Settings"
@@ -5992,19 +5992,20 @@ msgstr ""
 msgid "Episode Filename Configuration"
 msgstr "Gorî Mîhengên Navên Pelan Texmîn Bike"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:41
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
 msgstr "%1 Veava bike"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
 #, fuzzy, kde-format
-#| msgid " Items"
-msgid " Item"
-msgid_plural " Items"
-msgstr[0] "Hêman"
-msgstr[1] "Hêman"
+#| msgid "no items"
+msgctxt "Spinbox label"
+msgid "%v item"
+msgid_plural "%v items"
+msgstr[0] "hêman tune ye"
+msgstr[1] "hêman tune ye"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6012,61 +6013,61 @@ msgstr[1] "Hêman"
 msgid "Podcast"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgid "&Update All Channels"
 msgstr "Hemû yan &Rojane Bike"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, fuzzy, kde-format
 #| msgid "Configure General Options"
 msgid "&Configure General Settings"
 msgstr "Bijare yên Giştî Veava Bike"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
 msgid "&Configure"
 msgstr "&Veava Bike"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "Endamiyê &Rake "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgid "&Update Channel"
 msgstr "Hemû yan &Rojane Bike"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
 msgid "&Download Episode"
 msgstr "Beşa Rêzefilmê &Daxe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "Beşa (yê rêzefilmê) Daxistî &Jê Bibe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "&Keep downloaded file"
 msgstr "Beşa (yê rêzefilmê) Daxistî &Jê Bibe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6074,84 +6075,78 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Jixwe endamê %1 ê ye."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, fuzzy, kde-format
-#| msgid "Never"
-msgctxt "prefix to 'x minutes'"
-msgid "every "
-msgstr "Ti car"
-
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, fuzzy, kde-format
 #| msgid "Minutes"
-msgid " minute"
-msgid_plural " minutes"
+msgctxt "Spinbox label"
+msgid "every %v minute"
+msgid_plural "every %v minutes"
 msgstr[0] "Xulekan"
 msgstr[1] "Xulekan"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, fuzzy, kde-format
 #| msgid "Configure Podcasts..."
 msgid "Configure Local Podcasts"
 msgstr "Postcast an Veava Bike..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:640
 #, fuzzy, kde-format
 #| msgid "Podcasts"
 msgid "Move Podcasts"
 msgstr "Podcast"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, kde-format
 msgid "Select file for OPML export"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, fuzzy, kde-format
 #| msgid "Do you really want to remove this %1?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "Ji dil dixwazî vê %1 jê bibî?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, fuzzy, kde-format
 #| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
 msgstr "Beşa (yê rêzefilmê) Daxistî &Jê Bibe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Nekarî beşa ji torê tê anîn tomar bike di pela %1 de"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Medya ya Podcast Tê Daxistin"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Podcasta \"%1\" Tê Daxistin"
@@ -16748,6 +16743,26 @@ msgstr "Hunermend \"%1\""
 msgid "empty"
 msgstr ""
 
+#, fuzzy
+#~| msgid " Items"
+#~ msgid " Item"
+#~ msgid_plural " Items"
+#~ msgstr[0] "Hêman"
+#~ msgstr[1] "Hêman"
+
+#, fuzzy
+#~| msgid "Never"
+#~ msgctxt "prefix to 'x minutes'"
+#~ msgid "every "
+#~ msgstr "Ti car"
+
+#, fuzzy
+#~| msgid "Minutes"
+#~ msgid " minute"
+#~ msgid_plural " minutes"
+#~ msgstr[0] "Xulekan"
+#~ msgstr[1] "Xulekan"
+
 #~ msgid "Enter an artist name"
 #~ msgstr "Navê hunermendê binivîse"
 
@@ -20982,9 +20997,6 @@ msgstr ""
 
 #~ msgid "Select File"
 #~ msgstr "Pel jê têne birin"
-
-#~ msgid "no items"
-#~ msgstr "hêman tune ye"
 
 #~ msgid "Activate %1 Widget"
 #~ msgstr "Alava %1 Çalak Bike"

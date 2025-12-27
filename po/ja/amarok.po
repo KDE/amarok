@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-08 00:42+0000\n"
+"POT-Creation-Date: 2025-12-27 00:41+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -3979,7 +3979,7 @@ msgstr "再読み込み"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:50
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
@@ -5911,17 +5911,18 @@ msgstr "ダウンロード後にフィード情報をタグに書き込む。"
 msgid "Episode Filename Configuration"
 msgstr "エピソードのファイル名設定"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:41
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
 msgstr "%1 を設定"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
 #, kde-format
-msgid " Item"
-msgid_plural " Items"
-msgstr[0] " 個の項目"
+msgctxt "Spinbox label"
+msgid "%v item"
+msgid_plural "%v items"
+msgstr[0] ""
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5929,58 +5930,58 @@ msgstr[0] " 個の項目"
 msgid "Podcast"
 msgstr "ポッドキャスト"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
 msgid "&Update All Channels"
 msgstr "すべてのチャネルを更新(&U)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "全般の設定(&C)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "購読を OPML ファイルにエクスポート(&E)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
 msgid "&Configure"
 msgstr "設定(&C)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "購読を削除(&R)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, kde-format
 msgid "&Update Channel"
 msgstr "チャンネルを更新(&U)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
 msgid "&Download Episode"
 msgstr "エピソードをダウンロード(&D)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "ダウンロードしたエピソードを削除(&D)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "フィード情報をファイルに書き込む(&W)"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, fuzzy, kde-format
 #| msgid "Replace downloaded label"
 msgid "&Keep downloaded file"
 msgstr "ダウンロードしたラベルを置き換える"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -5988,76 +5989,74 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "%1 は既に購読しています。"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, kde-format
-msgctxt "prefix to 'x minutes'"
-msgid "every "
-msgstr "毎 "
+#, fuzzy, kde-format
+#| msgctxt "number of minutes for the pretty time"
+#| msgid "%1 minute"
+#| msgid_plural "%1 minutes"
+msgctxt "Spinbox label"
+msgid "every %v minute"
+msgid_plural "every %v minutes"
+msgstr[0] "%1 分"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, kde-format
-msgid " minute"
-msgid_plural " minutes"
-msgstr[0] " 分"
-
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "ローカルポッドキャストを設定"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:640
 #, kde-format
 msgid "Move Podcasts"
 msgstr "ポッドキャストを移動"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr "ダウンロードしたすべてのエピソードを、新しい場所に移動しますか？"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "エクスポートのための OPML ファイルを選択"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "「%1」の購読を中止しますか？"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "ダウンロードしたエピソードを削除"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "進行中のポッドキャストダウンロードが %1 あります"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "ダウンロードをキャンセルし終了します。"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "ポッドキャストのエピソードファイルを ‘%1’ に保存できません"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "ポッドキャストメディアをダウンロード"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "ポッドキャスト “%1” をダウンロード"
@@ -16470,6 +16469,18 @@ msgstr "アーティスト: %1"
 #, kde-format
 msgid "empty"
 msgstr "空"
+
+#~ msgid " Item"
+#~ msgid_plural " Items"
+#~ msgstr[0] " 個の項目"
+
+#~ msgctxt "prefix to 'x minutes'"
+#~ msgid "every "
+#~ msgstr "毎 "
+
+#~ msgid " minute"
+#~ msgid_plural " minutes"
+#~ msgstr[0] " 分"
 
 #~ msgid "MusicDNS match ratio: %1%"
 #~ msgstr "MusicDNS 該当率: %1%"

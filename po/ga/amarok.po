@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-08 00:42+0000\n"
+"POT-Creation-Date: 2025-12-27 00:41+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -4005,7 +4005,7 @@ msgstr "Athluchtaigh"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:50
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
@@ -6044,21 +6044,22 @@ msgstr "&Scríobh Faisnéis an Fhotha i gComhad"
 msgid "Episode Filename Configuration"
 msgstr "Cumraíocht ghléis iPod"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:41
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
 msgstr "Cumraigh %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
 #, kde-format
-msgid " Item"
-msgid_plural " Items"
-msgstr[0] " Mhír"
-msgstr[1] " Mhír"
-msgstr[2] " Mhír"
-msgstr[3] " Mír"
-msgstr[4] " Mír"
+msgctxt "Spinbox label"
+msgid "%v item"
+msgid_plural "%v items"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6066,52 +6067,52 @@ msgstr[4] " Mír"
 msgid "Podcast"
 msgstr "Podchraoladh"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
 msgid "&Update All Channels"
 msgstr "&Nuashonraigh Gach Cainéal"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, kde-format
 msgid "&Configure General Settings"
 msgstr "&Cumraigh Socruithe Ginearálta"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr "&Easpórtáil liostálacha go comhad OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
 msgid "&Configure"
 msgstr "&Cumraigh"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, kde-format
 msgid "&Remove Subscription"
 msgstr "&Bain Síntiús"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, kde-format
 msgid "&Update Channel"
 msgstr "&Nuashonraigh Cainéal"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
 msgid "&Download Episode"
 msgstr "Í&osluchtaigh Eipeasóid"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, kde-format
 msgid "&Delete Downloaded Episode"
 msgstr "Scrios Podchrao&ladh Íosluchtaithe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr "&Scríobh Faisnéis an Fhotha i gComhad"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6121,7 +6122,7 @@ msgstr "&Scríobh Faisnéis an Fhotha i gComhad"
 msgid "&Keep downloaded file"
 msgstr "&Coinnigh an comhad íosluchtaithe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6129,60 +6130,58 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Liostáilte le %1 cheana."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, kde-format
-msgctxt "prefix to 'x minutes'"
-msgid "every "
-msgstr "gach "
+#, fuzzy, kde-format
+#| msgctxt "number of minutes for the pretty time"
+#| msgid "%1 minute"
+#| msgid_plural "%1 minutes"
+msgctxt "Spinbox label"
+msgid "every %v minute"
+msgid_plural "every %v minutes"
+msgstr[0] "%1 nóiméad"
+msgstr[1] "%1 nóiméad"
+msgstr[2] "%1 nóiméad"
+msgstr[3] "%1 nóiméad"
+msgstr[4] "%1 nóiméad"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, kde-format
-msgid " minute"
-msgid_plural " minutes"
-msgstr[0] " nóiméad"
-msgstr[1] " nóiméad"
-msgstr[2] " nóiméad"
-msgstr[3] " nóiméad"
-msgstr[4] " nóiméad"
-
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
 msgid "Configure Local Podcasts"
 msgstr "Cumraigh Podchraoltaí Logánta"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:640
 #, kde-format
 msgid "Move Podcasts"
 msgstr "Bog Podchraoltaí"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 "An bhfuil fonn ort gach eipeasóid íosluchtaithe a bhogadh go dtí an suíomh "
 "nua?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, kde-format
 msgid "Select file for OPML export"
 msgstr "Roghnaigh comhad le haghaidh easpórtála OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "An bhfuil tú cinnte gur mian leat díliostáil ó \"%1\"?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, kde-format
 msgid "Delete downloaded episodes"
 msgstr "Scrios eipeasóidí íosluchtaithe"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -6192,23 +6191,23 @@ msgstr[2] "%1 phodchraoladh á n-íosluchtú fós"
 msgstr[3] "%1 bpodchraoladh á n-íosluchtú fós"
 msgstr[4] "%1 podchraoladh á n-íosluchtú fós"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr "Cealaigh an tÍosluchtú agus Scoir."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Ní féidir an comhad eipeasóide a shábháil mar %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "Meáin Phodchraolta á nÍosluchtú"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Podchraoladh \"%1\" á Íosluchtú"
@@ -16695,6 +16694,26 @@ msgstr "Ealaíontóir: %1"
 #, kde-format
 msgid "empty"
 msgstr "folamh"
+
+#~ msgid " Item"
+#~ msgid_plural " Items"
+#~ msgstr[0] " Mhír"
+#~ msgstr[1] " Mhír"
+#~ msgstr[2] " Mhír"
+#~ msgstr[3] " Mír"
+#~ msgstr[4] " Mír"
+
+#~ msgctxt "prefix to 'x minutes'"
+#~ msgid "every "
+#~ msgstr "gach "
+
+#~ msgid " minute"
+#~ msgid_plural " minutes"
+#~ msgstr[0] " nóiméad"
+#~ msgstr[1] " nóiméad"
+#~ msgstr[2] " nóiméad"
+#~ msgstr[3] " nóiméad"
+#~ msgstr[4] " nóiméad"
 
 #~ msgid "MusicDNS match ratio: %1%"
 #~ msgstr "Cóimheas comhoiriúnaithe MusicDNS: %1%"

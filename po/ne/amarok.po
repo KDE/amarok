@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-08 00:42+0000\n"
+"POT-Creation-Date: 2025-12-27 00:41+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -4092,7 +4092,7 @@ msgstr "पुन: डाउनलोड गर्नुहोस्"
 #: context/applets/tabs/TabsApplet.cpp:108
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:45
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:50
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, fuzzy, kde-format
 #| msgid "&Settings"
@@ -6088,19 +6088,19 @@ msgstr ""
 msgid "Episode Filename Configuration"
 msgstr "फाइलनाम कन्फिगरेसनद्वारा अनुमान गर्नुहोस्"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:41
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
 msgstr " %1कन्फिगर गर्नुहोस्..."
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
 #, fuzzy, kde-format
-#| msgid " Items"
-msgid " Item"
-msgid_plural " Items"
-msgstr[0] "वस्तु"
-msgstr[1] "वस्तु"
+msgctxt "Spinbox label"
+msgid "%v item"
+msgid_plural "%v items"
+msgstr[0] "एउटा वस्तु"
+msgstr[1] "एउटा वस्तु"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6109,64 +6109,64 @@ msgstr[1] "वस्तु"
 msgid "Podcast"
 msgstr "पोडकास्ट"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:291
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, fuzzy, kde-format
 #| msgid "Update"
 msgid "&Update All Channels"
 msgstr "अद्यावधिक गर्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:297
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, fuzzy, kde-format
 #| msgid "Configure General Options"
 msgid "&Configure General Settings"
 msgstr "साधारण विकल्प कन्फिगर गर्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:303
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:329
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
 msgid "&Configure"
 msgstr "कन्फिगर गर्नुहोस्..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, fuzzy, kde-format
 #| msgid "Description"
 msgid "&Remove Subscription"
 msgstr "वर्णन"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:351
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, fuzzy, kde-format
 #| msgid "Update"
 msgid "&Update Channel"
 msgstr "अद्यावधिक गर्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:387
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, fuzzy, kde-format
 #| msgid "De&lete Downloaded Podcast"
 msgid "&Download Episode"
 msgstr "डाउनलोड गरिएको पोडकास्ट मेट्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:395
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, fuzzy, kde-format
 #| msgid "De&lete Downloaded Podcast"
 msgid "&Delete Downloaded Episode"
 msgstr "डाउनलोड गरिएको पोडकास्ट मेट्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:404
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:405
 #, kde-format
 msgid "&Write Feed Information to File"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:412
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, fuzzy, kde-format
 #| msgid "De&lete Downloaded Podcast"
 msgid "&Keep downloaded file"
 msgstr "डाउनलोड गरिएको पोडकास्ट मेट्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
 msgid ""
 "Toggle the \"keep\" downloaded file status of this podcast episode. "
@@ -6174,7 +6174,7 @@ msgid ""
 "purge."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:479
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, fuzzy, kde-format
 #| msgid "Already subscribed to feed %1 as %2"
 msgid "Already subscribed to %1."
@@ -6182,79 +6182,73 @@ msgstr "%2 को रूपमा फिड %1 लाई सघाउनु प�
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, fuzzy, kde-format
-#| msgid "Never"
-msgctxt "prefix to 'x minutes'"
-msgid "every "
-msgstr "कहिल्यै पनि"
-
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, fuzzy, kde-format
 #| msgid "Minutes"
-msgid " minute"
-msgid_plural " minutes"
+msgctxt "Spinbox label"
+msgid "every %v minute"
+msgid_plural "every %v minutes"
 msgstr[0] "मिनेट"
 msgstr[1] "मिनेट"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:620
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, fuzzy, kde-format
 #| msgid "&Configure Podcasts..."
 msgid "Configure Local Podcasts"
 msgstr "पोडकास्ट कन्फिगर गर्नुहोस्..."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:640
 #, fuzzy, kde-format
 #| msgid "Moving Podcasts"
 msgid "Move Podcasts"
 msgstr "पोडकास्ट सारिंदै"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:642
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:709
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, fuzzy, kde-format
 #| msgid "Select Local File for %1"
 msgid "Select file for OPML export"
 msgstr "%1 का लागि स्थानीय फाइल चयन गर्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:856
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, fuzzy, kde-format
 #| msgid "Are you sure you want to overwrite this cover?"
 msgid "Do you really want to unsubscribe from \"%1\"?"
 msgstr "तपाईँ यो आवरण अधिलेखन गर्न निश्चित चाहनुहुन्छ ?"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:859
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:858
 #, fuzzy, kde-format
 #| msgid "De&lete Downloaded Podcast"
 msgid "Delete downloaded episodes"
 msgstr "डाउनलोड गरिएको पोडकास्ट मेट्नुहोस्"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:982
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:981
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:985
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
 msgstr ""
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1161
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1409
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, fuzzy, kde-format
 #| msgid "Setting iPod model to %1 GB %2 (x%3)"
 msgid "Unable to save podcast episode file to %1"
 msgstr "%1 GB %2 (x%3) मा आईपोड नमूना सेट गर्दै"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
 msgid "Downloading Podcast Media"
 msgstr "पोडकास्ट मिडिया डाउनलोड गर्दै"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1172
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1171
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "पोडकास्ट \"%1\" डाउनलोड गर्दै"
@@ -16787,6 +16781,26 @@ msgid "empty"
 msgstr "पुन: प्रयास गर्नुहोस्"
 
 #, fuzzy
+#~| msgid " Items"
+#~ msgid " Item"
+#~ msgid_plural " Items"
+#~ msgstr[0] "वस्तु"
+#~ msgstr[1] "वस्तु"
+
+#, fuzzy
+#~| msgid "Never"
+#~ msgctxt "prefix to 'x minutes'"
+#~ msgid "every "
+#~ msgstr "कहिल्यै पनि"
+
+#, fuzzy
+#~| msgid "Minutes"
+#~ msgid " minute"
+#~ msgid_plural " minutes"
+#~ msgstr[0] "मिनेट"
+#~ msgstr[1] "मिनेट"
+
+#, fuzzy
 #~| msgid "Enter preset name:"
 #~ msgid "Enter an artist name"
 #~ msgstr "प्रिसेट नाम प्रविष्ट गर्नुहोस्:"
@@ -21562,10 +21576,6 @@ msgstr "पुन: प्रयास गर्नुहोस्"
 #~| msgid "Unknown title"
 #~ msgid "Unknown Wallpaper"
 #~ msgstr "अज्ञात शीर्षक"
-
-#, fuzzy
-#~ msgid "no items"
-#~ msgstr "एउटा वस्तु"
 
 #, fuzzy
 #~| msgid "Unknown Artist"
