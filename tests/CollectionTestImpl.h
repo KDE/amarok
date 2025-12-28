@@ -68,7 +68,7 @@ public:
 
     bool possiblyContainsTrack( const QUrl &url ) const override
     {
-        return findTrackForUrl( url );
+        return (bool)findTrackForUrl( url );
     }
 
     Meta::TrackPtr trackForUrl( const QUrl &url ) override

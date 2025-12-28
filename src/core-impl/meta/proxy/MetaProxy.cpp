@@ -522,5 +522,5 @@ Track::endUpdate()
 bool
 Track::isResolved() const
 {
-    return d->realTrack;
+    return (bool)d->realTrack;
 }

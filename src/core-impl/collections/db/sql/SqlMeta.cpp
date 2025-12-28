@@ -874,7 +874,7 @@ SqlTrack::commitIfInNonBatchUpdate()
             m_album->setSuppressImageAutoFetch( true );
 
             if( m_album->hasAlbumArtist() &&
-                m_album->albumArtist() == oldArtist &&
+                m_album->albumArtist() == Meta::ArtistPtr::dynamicCast(oldArtist) &&
                 !m_cache.contains( Meta::valAlbum ) &&
                 !m_cache.contains( Meta::valAlbumId ) )
             {

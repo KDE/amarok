@@ -65,7 +65,7 @@ LastFmMultiPlayableCapability::slotTrackPlaying( const Meta::TrackPtr &track )
     // time to update underlying track with metadata
     // warning: this depends on MetaProxy::Track operator== returning true
     // between proxy and underlying track!
-    if( track == m_track )
+    if( track == Meta::TrackPtr::dynamicCast( m_track ))
         m_track->setTrackInfo( m_currentTrack );
 }
 

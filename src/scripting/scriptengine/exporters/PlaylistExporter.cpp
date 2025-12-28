@@ -124,7 +124,7 @@ PlaylistPrototype::PlaylistPrototype( Playlists::PlaylistPtr playlist )
 bool
 PlaylistPrototype::isValid() const
 {
-    return m_playlist;
+    return (bool)m_playlist;
 }
 
 QString

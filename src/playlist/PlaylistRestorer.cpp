@@ -66,7 +66,7 @@ Restorer::runJingle()
 void
 Restorer::tracksLoaded(Playlists::PlaylistPtr playlist )
 {
-    if( m_playlistToRestore == playlist )
+    if( Playlists::PlaylistPtr::dynamicCast(m_playlistToRestore) == playlist )
     {
         m_tracks = playlist->tracks();
         m_position = m_tracks;

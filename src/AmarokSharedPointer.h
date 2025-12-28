@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QSharedData>
+#include <QDebug>
 
 template<class T>
 class AmarokSharedPointer
@@ -63,7 +64,7 @@ public:
     inline T& operator*() { Q_ASSERT(d); return *d; }
     inline const T* operator->() const { Q_ASSERT(d); return d; }
     inline T* operator->() { Q_ASSERT(d); return d; }
-    inline operator bool() const { return ( d != nullptr ); }
+    explicit inline operator bool() const { return ( d != nullptr ); }
 
     inline bool isNull() const { return d == nullptr; }
     inline int count() const { return d ? d->ref.loadRelaxed() : 0; }
@@ -86,10 +87,16 @@ public:
         return AmarokSharedPointer<T>(qobject_cast<T *>(o.data()));
     }
 
+
+
 private:
     T *d;
 };
-
+template<typename T>
+QDebug operator<<(QDebug d, const AmarokSharedPointer<T> &ptr){
+    d << (uintptr_t) ptr.data();
+    return d;
+}
 template<class T>
 inline uint qHash( const AmarokSharedPointer<T> &p, uint seed ) { return qHash( p.data(), seed ); }
 

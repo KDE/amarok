@@ -40,8 +40,8 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent )
     , m_artistInfoQueryInProcess( false )
 {
     EngineController *engine = The::engineController();
-    connect( engine, &EngineController::trackChanged, this, &SimilarArtistsEngine::update );
-    connect( engine, &EngineController::trackMetadataChanged, this, &SimilarArtistsEngine::update );
+    connect( engine, &EngineController::trackChanged, this, [this](auto) {this->SimilarArtistsEngine::update();} );
+    connect( engine, &EngineController::trackMetadataChanged, this, [this](auto){this->SimilarArtistsEngine::update() ;} );
 }
 
 SimilarArtistsEngine::~SimilarArtistsEngine()

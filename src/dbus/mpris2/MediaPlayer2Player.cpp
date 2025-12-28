@@ -132,7 +132,7 @@ void MediaPlayer2Player::Previous() const
 
 bool MediaPlayer2Player::CanPause() const
 {
-    return The::engineController()->currentTrack();
+    return (bool)The::engineController()->currentTrack();
 }
 
 void MediaPlayer2Player::Pause() const

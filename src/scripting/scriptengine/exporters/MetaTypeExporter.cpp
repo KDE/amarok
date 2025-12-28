@@ -274,14 +274,14 @@ MetaTrackPrototype::imagePixmap( int size ) const
 bool
 MetaTrackPrototype::isValid() const
 {
-    return m_track;
+    return (bool)m_track;
 }
 
 bool
 MetaTrackPrototype::isEditable()
 {
     CHECK_TRACK( false )
-    return m_track->editor(); // converts to bool nicely
+    return (bool)m_track->editor(); // converts to bool nicely
 }
 
 QString
