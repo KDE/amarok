@@ -371,7 +371,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
          */
         QImage image( int size = 0 ) const override;
 
-        QUrl imageLocation( int size = 0 ) override;
+        QUrl imageLocation( int size = 0 ) const override;
         void setImage( const QImage &image ) override;
         void removeImage() override;
         void setSuppressImageAutoFetch( const bool suppress ) override { m_suppressAutoFetch = suppress; }

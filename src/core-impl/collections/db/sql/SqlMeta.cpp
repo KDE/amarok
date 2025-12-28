@@ -1635,7 +1635,7 @@ SqlAlbum::image( int size ) const
 }
 
 QUrl
-SqlAlbum::imageLocation( int size )
+SqlAlbum::imageLocation( int size ) const
 {
     if( !hasImage() )
         return QUrl();

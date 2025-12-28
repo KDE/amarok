@@ -289,7 +289,7 @@ namespace Meta
                 The mpris interface is using this information for notifications so
                 it better is a local file url.
             */
-            virtual QUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return QUrl(); }
+            virtual QUrl imageLocation( int size = 0 ) const { Q_UNUSED( size ); return QUrl(); }
 
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }

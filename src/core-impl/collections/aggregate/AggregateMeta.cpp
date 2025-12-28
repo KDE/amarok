@@ -862,7 +862,7 @@ AggregateAlbum::image( int size ) const
 }
 
 QUrl
-AggregateAlbum::imageLocation( int size )
+AggregateAlbum::imageLocation( int size ) const
 {
     for( Meta::AlbumPtr album : m_albums )
     {

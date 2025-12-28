@@ -138,7 +138,7 @@ namespace Meta {
         /** returns the cover of the album */
         QImage image( int size = 0 ) const override;
         /** returns the image location on disk */
-        QUrl imageLocation( int size = 0 ) override;
+        QUrl imageLocation( int size = 0 ) const override;
         /** returns the cover of the album with a nice border around it*/
         virtual QPixmap imageWithBorder( int size = 0, int borderWidth = 5 );
         /** Returns true if it is possible to update the cover of the album */

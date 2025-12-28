@@ -116,7 +116,7 @@ public:
     void setCoverUrl( const QString &coverUrl ) override;
     QString coverUrl() const override;
 
-    QUrl imageLocation( int size = 1 ) override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
+    QUrl imageLocation( int size = 1 ) const override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
     
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();

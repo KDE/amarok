@@ -501,7 +501,7 @@ Meta::PlaydarAlbum::image( int size ) const
 }
 
 QUrl
-Meta::PlaydarAlbum::imageLocation( int size )
+Meta::PlaydarAlbum::imageLocation( int size ) const
 {
     if( !m_cover.isNull() )
         return QUrl();

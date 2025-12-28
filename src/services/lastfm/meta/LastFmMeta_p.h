@@ -276,7 +276,7 @@ public:
         return d->albumArt;
     }
 
-    QUrl imageLocation( int size ) override
+    QUrl imageLocation( int size ) const override
     {
         Q_UNUSED( size );
         if( d && !d->imageUrl.isEmpty() )

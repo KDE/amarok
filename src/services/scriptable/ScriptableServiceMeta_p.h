@@ -170,7 +170,7 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
         void setCoverUrl( const QString &coverUrl ) override { m_coverUrl = coverUrl; }
         QString coverUrl() const override { return m_coverUrl; }
 
-        QUrl imageLocation( int size = 1 ) override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
+        QUrl imageLocation( int size = 1 ) const override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
 
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {

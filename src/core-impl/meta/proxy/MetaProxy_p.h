@@ -258,7 +258,7 @@ public:
             return Meta::Album::hasImage( size );
     }
 
-    QUrl imageLocation( int size = 0 ) override
+    QUrl imageLocation( int size = 0 ) const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->imageLocation( size );
