@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-27 00:41+0000\n"
-"PO-Revision-Date: 2025-09-14 15:12+0300\n"
+"PO-Revision-Date: 2025-12-27 07:54+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -6027,10 +6027,10 @@ msgstr "Налаштувати %1"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%v запис"
+msgstr[1] "%v записи"
+msgstr[2] "%v записів"
+msgstr[3] "%v запис"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6105,17 +6105,14 @@ msgid "Already subscribed to %1."
 msgstr "Ви вже підписалися на %1."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1 хвилина"
-msgstr[1] "%1 хвилини"
-msgstr[2] "%1 хвилин"
-msgstr[3] "%1 хвилина"
+msgstr[0] "кожну %v хвилину"
+msgstr[1] "кожні %v хвилини"
+msgstr[2] "кожні %v хвилин"
+msgstr[3] "кожну %v хвилину"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
