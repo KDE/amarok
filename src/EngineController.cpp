@@ -150,12 +150,12 @@ EngineController::initializeBackend()
     if( m_currentTrack )
     {
         unsubscribeFrom( m_currentTrack );
-        m_currentTrack.clear();
+        m_currentTrack.reset();
     }
     if( m_currentAlbum )
     {
         unsubscribeFrom( m_currentAlbum );
-        m_currentAlbum.clear();
+        m_currentAlbum.reset();
     }
 }
 
@@ -500,7 +500,7 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         m_multiPlayback = nullptr;
         m_multiSource.reset();
 
-        m_nextTrack.clear();
+        m_nextTrack.reset();
         m_nextUrl.clear();
         m_pipeline->clearPlaybackQueue();
     }
@@ -929,7 +929,7 @@ EngineController::slotNewTrackPlaying( const QUrl &source )
     {
         // already unsubscribed
         m_currentTrack = m_nextTrack;
-        m_nextTrack.clear();
+        m_nextTrack.reset();
 
         m_multiSource.reset( m_currentTrack->create<Capabilities::MultiSourceCapability>() );
         if( m_multiSource )
@@ -1034,7 +1034,7 @@ EngineController::slotPlayableUrlFetched( const QUrl &url )
         m_pipeline->clearPlaybackQueue();
         // keep synced with setNextTrack(), playUrl()
         m_pipeline->enqueuePlayback( url );
-        m_nextTrack.clear();
+        m_nextTrack.reset();
         m_nextUrl = url;
         debug() << "The next url we're playing is: " << m_nextUrl;
         // reset this flag each time

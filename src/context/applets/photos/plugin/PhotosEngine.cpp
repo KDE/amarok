@@ -51,7 +51,7 @@ PhotosEngine::stopped()
     setPhotos( QList<PhotoInfo>() );
     setStatus( Stopped );
     setArtist( QString() );
-    m_currentTrack.clear();
+    m_currentTrack.reset();
 }
 
 void

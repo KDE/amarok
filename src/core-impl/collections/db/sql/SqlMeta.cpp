@@ -920,8 +920,8 @@ SqlTrack::commitIfInNonBatchUpdate()
             m_cache.remove( Meta::valAlbum );
             m_cache.remove( Meta::valAlbumId );
             m_cache.remove( Meta::valAlbumArtist );
-            oldAlbum.clear();
-            newAlbum.clear();
+            oldAlbum.reset();
+            newAlbum.reset();
         }
     }
 

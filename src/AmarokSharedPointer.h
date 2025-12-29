@@ -69,7 +69,7 @@ public:
     inline bool isNull() const { return d == nullptr; }
     inline int count() const { return d ? d->ref.loadRelaxed() : 0; }
     inline T* data() const { return d; }
-    inline void clear() { if (d && !d->ref.deref()) delete d; d = nullptr; }
+    inline void reset() { if (d && !d->ref.deref()) delete d; d = nullptr; }
 
     template <class U>
     static AmarokSharedPointer<T> staticCast(const AmarokSharedPointer<U>& o)

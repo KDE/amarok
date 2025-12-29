@@ -98,7 +98,7 @@ CurrentEngine::slotTrackChanged(const Meta::TrackPtr &track)
 void
 CurrentEngine::stopped()
 {
-    m_currentTrack.clear();
+    m_currentTrack.reset();
     Q_EMIT trackChanged();
 
     m_cover = QPixmap();

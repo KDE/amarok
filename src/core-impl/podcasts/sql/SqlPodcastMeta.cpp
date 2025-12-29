@@ -271,7 +271,7 @@ SqlPodcastEpisode::setLocalUrl( const QUrl &url )
 
     if( m_localUrl.isEmpty() && !m_localFile.isNull() )
     {
-        m_localFile.clear();
+        m_localFile.reset();
         notifyObservers();
     }
     else

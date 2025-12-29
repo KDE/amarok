@@ -95,8 +95,8 @@ void AlbumsEngine::slotTrackChanged( const Meta::TrackPtr &track )
 
 void AlbumsEngine::stopped()
 {
-    m_currentTrack.clear();
-    m_artist.clear();
+    m_currentTrack.reset();
+    m_artist.reset();
 
     updateRecentlyAddedAlbums();
 }
