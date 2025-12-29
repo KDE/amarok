@@ -99,7 +99,7 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr &track )
 
     map.insert( Meta::Field::UNIQUEID, QVariant( track->uidUrl() ) );
     map.insert( Meta::Field::URL, QVariant( track->prettyUrl() ) );
-    Meta::ConstStatisticsPtr statistics = track->statistics();
+    Meta::ConstStatisticsPtr statistics(track->statistics().data());
     map.insert( Meta::Field::RATING, QVariant( statistics->rating() ) );
     map.insert( Meta::Field::SCORE, QVariant( statistics->score() ) );
     map.insert( Meta::Field::PLAYCOUNT, QVariant( statistics->playCount() ) );
@@ -190,7 +190,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr &track )
         Meta::ComposerPtr composer = track->composer();
         Meta::YearPtr     year = track->year();
         Meta::GenrePtr    genre = track->genre();
-        Meta::ConstStatisticsPtr statistics = track->statistics();
+        Meta::ConstStatisticsPtr statistics(track->statistics().data());
 
         if( album ) {
             QUrl url = album->imageLocation();

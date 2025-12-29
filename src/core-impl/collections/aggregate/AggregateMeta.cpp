@@ -284,7 +284,7 @@ AggregateTrack::score() const
     int totalCount = 0;
     for( const Meta::TrackPtr &track : m_tracks )
     {
-        ConstStatisticsPtr statistics = track->statistics();
+        ConstStatisticsPtr statistics(track->statistics().data());
         totalCount += statistics->playCount();
         weightedSum += statistics->playCount() * statistics->score();
     }
@@ -332,7 +332,7 @@ AggregateTrack::firstPlayed() const
     QDateTime result;
     for( const Meta::TrackPtr &track : m_tracks )
     {
-        ConstStatisticsPtr statistics = track->statistics();
+        ConstStatisticsPtr statistics(track->statistics().data());
         //use the track's firstPlayed value if it represents an earlier timestamp than
         //the current result, or use it directly if result has not been set yet
         //this should result in the earliest timestamp for first play of all internal

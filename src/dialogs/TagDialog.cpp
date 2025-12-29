@@ -974,7 +974,7 @@ TagDialog::getTagsFromTrack( const Meta::TrackPtr &track ) const
     if( track->filesize() )
         map.insert( Meta::Field::FILESIZE, track->filesize() );
 
-    Meta::ConstStatisticsPtr statistics = track->statistics();
+    Meta::ConstStatisticsPtr statistics(track->statistics().data());
     map.insert( Meta::Field::SCORE, statistics->score() );
     map.insert( Meta::Field::RATING, statistics->rating() );
     map.insert( Meta::Field::PLAYCOUNT, statistics->playCount() );

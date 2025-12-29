@@ -97,7 +97,7 @@ Track::Track( const Meta::TrackPtr &origTrack )
     if( albumArtist.isEmpty() )
         albumArtist = i18n( "Various Artists" );
 
-    Meta::ConstStatisticsPtr origStats = origTrack->statistics();
+    Meta::ConstStatisticsPtr origStats(origTrack->statistics().data());
 
     setAlbumArtist( albumArtist );
     setIsCompilation( isCompilation );

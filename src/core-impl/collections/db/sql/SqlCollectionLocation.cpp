@@ -177,7 +177,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &path 
     } else
         metaTrack = Meta::SqlTrackPtr::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
 
-    Meta::ConstStatisticsPtr origStats = track->statistics();
+    Meta::ConstStatisticsPtr origStats(track->statistics().data());
 
     // -- set the values
     metaTrack->setWriteFile( false ); // no need to write the tags back
