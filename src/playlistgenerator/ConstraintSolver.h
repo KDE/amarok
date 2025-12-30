@@ -21,6 +21,7 @@
 
 #include <QHash>
 #include <QMutex>
+#include <QObject>
 #include <QString>
 
 #include <ThreadWeaver/Job>

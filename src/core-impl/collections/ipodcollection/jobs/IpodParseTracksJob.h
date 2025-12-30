@@ -17,8 +17,10 @@
 #ifndef IPODPARSETRACKSJOB_H
 #define IPODPARSETRACKSJOB_H
 
+
 #include "core/meta/forward_declarations.h"
 
+#include <QObject>
 #include <ThreadWeaver/Job>
 
 class IpodCollection;

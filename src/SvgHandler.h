@@ -23,6 +23,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QHash>
+#include <QObject>
 #include <QPixmap>
 #include <QReadWriteLock>
 #include <QString>

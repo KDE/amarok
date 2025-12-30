@@ -20,6 +20,8 @@
 #include "core/amarokcore_export.h"
 #include "core/playlists/Playlist.h"
 
+#include <QObject>
+
 class QIcon;
 
 namespace Playlists {

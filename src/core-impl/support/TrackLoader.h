@@ -24,6 +24,7 @@
 #include "core/meta/forward_declarations.h"
 #include "core/meta/Observer.h"
 #include "core/playlists/Playlist.h"
+#include <QObject>
 
 namespace KIO {
     class Job;
