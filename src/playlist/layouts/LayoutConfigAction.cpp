@@ -83,6 +83,8 @@ void LayoutConfigAction::configureLayouts()
 {
     if( m_layoutDialog == nullptr )
         m_layoutDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
+    else
+        m_layoutDialog->resetFirstActiveLayout();
 
     m_layoutDialog->setModal( false );
     connect( m_layoutDialog, &Playlist::PlaylistLayoutEditDialog::accepted, this, &LayoutConfigAction::layoutListChanged );

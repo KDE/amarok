@@ -71,7 +71,7 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
                                         iconName( tokenValues[i] ),
                                         static_cast<qint64>(tokenValues[i]) ) );
 
-    m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
+    resetFirstActiveLayout();
 
     //add an editor to each tab
     for( int part = 0; part < PlaylistLayout::NumParts; part++ )
@@ -148,6 +148,12 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
 Playlist::PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 {
+}
+
+void
+Playlist::PlaylistLayoutEditDialog::resetFirstActiveLayout()
+{
+    m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
 }
 
 void

@@ -59,6 +59,9 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
          */
         void setLayout( const QString &layoutName );
 
+        /** Needed so that canceling the edit dialog returns to the previous layout **/
+        void resetFirstActiveLayout();
+
     protected Q_SLOTS:
 
         /**
