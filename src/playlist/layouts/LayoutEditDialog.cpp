@@ -240,7 +240,6 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
         return;
     setWindowTitle( i18n( "Configuration for '%1'", t->name() ) );
     
-    apply();
     m_element->setText( m_token->name() );
     m_prefix->setText( m_token->prefix() );
     m_suffix->setText( m_token->suffix() );
