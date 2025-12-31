@@ -29,7 +29,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-12-27 00:41+0000\n"
-"PO-Revision-Date: 2025-09-15 08:39+0200\n"
+"PO-Revision-Date: 2025-12-28 12:36+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -39,7 +39,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Accelerator-Marker: &\n"
 "X-Environment: kde\n"
-"X-Generator: Lokalize 25.08.1\n"
+"X-Generator: Lokalize 25.12.0\n"
 "X-Text-Markup: kde4\n"
 
 #, kde-format
@@ -5992,8 +5992,8 @@ msgstr "Configurer %1"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Élément %v"
+msgstr[1] "%v éléments"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6068,15 +6068,12 @@ msgid "Already subscribed to %1."
 msgstr "Déjà inscrit-e sur %1."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1 minute"
-msgstr[1] "%1 minutes"
+msgstr[0] "Chaque %v minute"
+msgstr[1] "Chaque %v minutes"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
