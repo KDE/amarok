@@ -40,7 +40,6 @@ AMAROK_EXPORT OcsData ocsData;
 int main( int argc, char *argv[] )
 {
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     App app(argc, argv);
 

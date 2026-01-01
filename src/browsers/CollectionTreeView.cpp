@@ -621,7 +621,7 @@ CollectionTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
     // this mangling is not needed for Copy/Move distinction to work, it is only needed
     // for mouse cursor changing to work
-    if( (event->keyboardModifiers() & Qt::ShiftModifier)
+    if( (event->modifiers() & Qt::ShiftModifier)
         && (event->possibleActions() & Qt::MoveAction) )
     {
         event->setDropAction( Qt::MoveAction );
