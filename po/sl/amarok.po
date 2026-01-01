@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-27 00:41+0000\n"
+"POT-Creation-Date: 2026-01-01 00:41+0000\n"
 "PO-Revision-Date: 2025-12-27 06:27+0100\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -45,7 +45,7 @@ msgstr "Privzeto"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:518
 #, kde-format
 msgid "No Grouping"
 msgstr "Brez združevanja"
@@ -11322,13 +11322,13 @@ msgid "Encountered an unknown element name while reading layout."
 msgstr "Med branjem razporeda se je naletelo na neznano ime predmeta."
 
 #: playlist/layouts/LayoutManager.cpp:107
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:401
 #, kde-format
 msgid "copy of %1"
 msgstr "kopija %1"
 
 #: playlist/layouts/LayoutManager.cpp:115
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:409
 #, kde-format
 msgctxt ""
 "adds a copy number to a generated name if the name already exists, for "
@@ -11395,47 +11395,47 @@ msgstr "Izbriši razpored seznama predvajanja"
 msgid "Rename playlist layout"
 msgstr "Preimenuj razpored seznama predvajanja"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:163
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:213
 #, kde-format
 msgid "Choose a name for the new playlist layout"
 msgstr "Izberite ime za novi razpored seznama predvajanja"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr "Vnesite ime za razpored seznama predvajanja, ki ga boste določili:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
 #, kde-format
 msgid "Cannot create a layout with no name."
 msgstr "Razporeda brez imena ni mogoče ustvariti."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Layout name error"
 msgstr "Napaka v imenu razporeda"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
 msgstr ""
 "Razporeda z imenom, ki je enak že obstoječemu imenu, ni mogoče ustvariti."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
 #, kde-format
 msgid "Cannot create a layout containing '/'."
 msgstr "Razporeda, ki vsebuje »/«, ni mogoče ustvariti."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:214
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
@@ -11444,31 +11444,31 @@ msgstr ""
 "Vnesite ime za razpored seznama predvajanja, ki ga boste določili kot kopijo "
 "razporeda »%1«:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:272
 #, kde-format
 msgid "Choose a new name for the playlist layout"
 msgstr "Izberite novo ime za razpored seznama predvajanja"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:273
 #, kde-format
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
 "Vnesite novo ime za razpored seznama predvajanja, ki ga boste preimenovali:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
 #, kde-format
 msgid "Cannot rename a layout to have no name."
 msgstr "Razporeda ni mogoče preimenovati s praznim imenom."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr ""
 "Razporeda ni mogoče preimenovati z imenom, kakršnega že ima obstoječ "
 "razpored."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:412
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
@@ -11477,7 +11477,7 @@ msgstr ""
 "Spremenjeni razpored »%1« je en izmed privzetih in ga zato ni mogoče "
 "prepisati. Shranjen je bil kot novi razpored »%2«."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, kde-format
 msgid "Default Layout"
 msgstr "Privzeti razpored"

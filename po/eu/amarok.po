@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-27 00:41+0000\n"
+"POT-Creation-Date: 2026-01-01 00:41+0000\n"
 "PO-Revision-Date: 2025-09-14 10:14+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -42,7 +42,7 @@ msgstr "Lehenetsia"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:518
 #, kde-format
 msgid "No Grouping"
 msgstr "Taldekatzerik gabe"
@@ -11242,13 +11242,13 @@ msgid "Encountered an unknown element name while reading layout."
 msgstr "Elementuaren izen ezezaguna aurkitu da diseinua irakurtzean."
 
 #: playlist/layouts/LayoutManager.cpp:107
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:401
 #, kde-format
 msgid "copy of %1"
 msgstr "%1(r)en kopia"
 
 #: playlist/layouts/LayoutManager.cpp:115
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:409
 #, kde-format
 msgctxt ""
 "adds a copy number to a generated name if the name already exists, for "
@@ -11315,46 +11315,46 @@ msgstr "Ezabatu zerrendaren diseinua"
 msgid "Rename playlist layout"
 msgstr "Aldatu zerrendaren diseinuaren izena"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:163
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:213
 #, kde-format
 msgid "Choose a name for the new playlist layout"
 msgstr "Aukeratu izen bat zerrendaren diseinu berriarentzako"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr "Sartu izen bat definitzera zoazen zerrendaren diseinuarentzako:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
 #, kde-format
 msgid "Cannot create a layout with no name."
 msgstr "Ezin da diseinurik sortu izenik gabe."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Layout name error"
 msgstr "Diseinuaren izenaren errorea"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
 msgstr "Ezin da diseinu bat sortu beste diseinu baten izena badarama."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
 #, kde-format
 msgid "Cannot create a layout containing '/'."
 msgstr "Ezin da '/' duen diseinurik sortu."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:214
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
@@ -11363,30 +11363,30 @@ msgstr ""
 "Sartu izen bat '%1' diseinuaren kopia gisa definitzera zoazen zerrendaren "
 "diseinuarentzako:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:272
 #, kde-format
 msgid "Choose a new name for the playlist layout"
 msgstr "Aukeratu izen berria zerrendaren diseinuarentzako"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:273
 #, kde-format
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
 "Sartu izen berria izenez aldatzera zoazen zerrendaren diseinuarentzako:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
 #, kde-format
 msgid "Cannot rename a layout to have no name."
 msgstr "Ezin da diseinua izenik gabekora aldatu."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr ""
 "Ezin da diseinuaren izena aldatu beste diseinu baten izen berdinarekin."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:412
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
@@ -11395,7 +11395,7 @@ msgstr ""
 "Aldatu duzun '%1' diseinua diseinu lehenetsietariko bat da eta ezin da "
 "gainidatzi. Gorde '%2' diseinu berri bezala."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, kde-format
 msgid "Default Layout"
 msgstr "Diseinu lehenetsia"

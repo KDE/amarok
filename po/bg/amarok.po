@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-27 00:41+0000\n"
+"POT-Creation-Date: 2026-01-01 00:41+0000\n"
 "PO-Revision-Date: 2025-12-28 15:46+0100\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
@@ -37,7 +37,7 @@ msgstr "Стандартен"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:518
 #, kde-format
 msgid "No Grouping"
 msgstr "Без групирания"
@@ -11223,13 +11223,13 @@ msgid "Encountered an unknown element name while reading layout."
 msgstr "Намерен е неизвестен елемент прич етенето на изгледа."
 
 #: playlist/layouts/LayoutManager.cpp:107
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:401
 #, kde-format
 msgid "copy of %1"
 msgstr "копие на %1"
 
 #: playlist/layouts/LayoutManager.cpp:115
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:409
 #, kde-format
 msgctxt ""
 "adds a copy number to a generated name if the name already exists, for "
@@ -11295,46 +11295,46 @@ msgstr "Изтриване изгледа на списъка за възпро�
 msgid "Rename playlist layout"
 msgstr "Преименуване изгледа на списъка за възпроизвеждане"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:163
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:213
 #, kde-format
 msgid "Choose a name for the new playlist layout"
 msgstr "Изберете име за новото оформление на списъка за възпроизвеждане"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr "Моля, въведете име за изгледа на списъка за възпроизвеждане:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
 #, kde-format
 msgid "Cannot create a layout with no name."
 msgstr "Не можете да създавате изглед без име."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Layout name error"
 msgstr "Грешка в името"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
 msgstr "Не можете да създавате изглед със същото име като текущия."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
 #, kde-format
 msgid "Cannot create a layout containing '/'."
 msgstr "Не можете да създавате изглед, съдържащ \"/\"."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:214
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
@@ -11343,12 +11343,12 @@ msgstr ""
 "Моля, въведете името на изгледа на списъка за възпроизвеждане, който ще бъде "
 "копие на „%1“ :"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:272
 #, kde-format
 msgid "Choose a new name for the playlist layout"
 msgstr "Изберете ново име за изгледа на списъка за възпроизвеждане"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:273
 #, kde-format
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
@@ -11356,17 +11356,17 @@ msgstr ""
 "Моля, въведете ново име за изгледа на списъка за възпроизвеждане, който "
 "искате да преименувате:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
 #, kde-format
 msgid "Cannot rename a layout to have no name."
 msgstr "Не може да се преименува изглед без име."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr "Изгледите не може да имат едно и също име."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:412
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
@@ -11375,7 +11375,7 @@ msgstr ""
 "Изгледът „%1“  е стандартен и не може да бъде презаписан. Записан е под име "
 "„%2“."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, kde-format
 msgid "Default Layout"
 msgstr "Стандартен изглед"

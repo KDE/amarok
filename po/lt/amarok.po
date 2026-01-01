@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-27 00:41+0000\n"
+"POT-Creation-Date: 2026-01-01 00:41+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -43,7 +43,7 @@ msgstr "Numatytas"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:518
 #, kde-format
 msgid "No Grouping"
 msgstr "Negrupuoti"
@@ -11515,13 +11515,13 @@ msgid "Encountered an unknown element name while reading layout."
 msgstr "Skaitant išdėstymą aptiktas nežinomas elementas."
 
 #: playlist/layouts/LayoutManager.cpp:107
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:401
 #, kde-format
 msgid "copy of %1"
 msgstr "%1 kopija"
 
 #: playlist/layouts/LayoutManager.cpp:115
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:409
 #, kde-format
 msgctxt ""
 "adds a copy number to a generated name if the name already exists, for "
@@ -11590,48 +11590,48 @@ msgstr "Trinti grojaraščio išdėstymą"
 msgid "Rename playlist layout"
 msgstr "Pervadinti grojaraščio išdėstymą"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:163
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:213
 #, kde-format
 msgid "Choose a name for the new playlist layout"
 msgstr "Pasirinkite naujo grojaraščio išdėstymo pavadinimą"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr "Prašome įvesti naujai apibrėžiamo grojaraščio išdėstymo pavadinimą:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
 #, kde-format
 msgid "Cannot create a layout with no name."
 msgstr "Negalima sukurti išdėstymo be pavadinimo."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Layout name error"
 msgstr "Išdėstymo pavadinimo klaida"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
 msgstr ""
 "Negalima sukurti išdėstymo su tokiu pačiu pavadinimu, kaip jau "
 "egzistuojantis kitas išdėstymas."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
 #, kde-format
 msgid "Cannot create a layout containing '/'."
 msgstr "Negalima sukurti išdėstymo su simboliu „/“."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:214
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
@@ -11640,29 +11640,29 @@ msgstr ""
 "Prašome įvesti pavadinimą grojaraščio išdėstymo, kurį jūs kuriate kaip "
 "išdėstymo „%1“ kopiją:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:272
 #, kde-format
 msgid "Choose a new name for the playlist layout"
 msgstr "Prašome pasirinkti naują grojaraščio išdėstymo pavadinimą"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:273
 #, kde-format
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr "Prašau įvesti naują pervadinamo grojaraščio išdėstymo pavadinimą:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
 #, kde-format
 msgid "Cannot rename a layout to have no name."
 msgstr "Negalima pakeisti išdėstymo į neturintį pavadinimo."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr ""
 "Negalima pakeisti pavadinimo į jau egzistuojančio kito išdėstymo pavadinimą."
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:412
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
@@ -11671,7 +11671,7 @@ msgstr ""
 "Išdėstymas „%1“ yra vienas iš pradinių išdėstymų, todėl negali būti "
 "pakeistas. Įrašytas naujas išdėstymas „%2“"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, kde-format
 msgid "Default Layout"
 msgstr "Numatytasis išdėstymas"

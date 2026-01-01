@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-27 00:41+0000\n"
+"POT-Creation-Date: 2026-01-01 00:41+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -42,7 +42,7 @@ msgstr "លំនាំដើម"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:518
 #, fuzzy, kde-format
 msgid "No Grouping"
 msgstr "មិនដាក់​ជាក្រុម​"
@@ -11145,13 +11145,13 @@ msgid "Encountered an unknown element name while reading layout."
 msgstr "ដែល​ជួប​ប្រ​ទះ​មិន​ដឹង​ឈ្មោះ​ធាតុ​​អំ​ឡុង​ពេល​ការ​អាន​ប្លង់ ។"
 
 #: playlist/layouts/LayoutManager.cpp:107
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:401
 #, fuzzy, kde-format
 msgid "copy of %1"
 msgstr "ចម្លង​របស់ %1"
 
 #: playlist/layouts/LayoutManager.cpp:115
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:409
 #, fuzzy, kde-format
 msgctxt ""
 "adds a copy number to a generated name if the name already exists, for "
@@ -11218,74 +11218,74 @@ msgstr "លុប​ប្លង់​បញ្ជី​ចាក់"
 msgid "Rename playlist layout"
 msgstr "ប្ដូរ​ឈ្មោះ​ប្លង់​បញ្ជី​ចាក់"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:163
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:213
 #, kde-format
 msgid "Choose a name for the new playlist layout"
 msgstr "ជ្រើស​ឈ្មោះ​សម្រាប់​ប្លង់​បញ្ជី​ចាក់​ថ្មី"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr "សូម​បញ្ចូលឈ្មោះ​សម្រាប់ប្លង់​បញ្ជី​ចាក់​ដែលអ្នក​រៀប​នឹង​កំណត់ ៖"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
 #, kde-format
 msgid "Cannot create a layout with no name."
 msgstr "មិនអាច​បង្កើត​ប្លង់​ដែល​គ្មាន​ឈ្មោះ​បានទេ ។"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Layout name error"
 msgstr "កំហុស​របស់​ឈ្មោះ​ប្លង់"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
 msgstr "មិនអាច​បង្កើត​ប្លង់​ដែលមាន​ឈ្មោះដូច​គ្នា​នឹង​ប្លង់​ដែល​មាន​ស្រាប់​បានទេ ។"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
 #, kde-format
 msgid "Cannot create a layout containing '/'."
 msgstr "មិនអាច​បង្កើត​ស្រទាប់​ដែល​មាន '/' បានទេ ។"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:214
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
 msgstr "សូម​បញ្ចូល​ឈ្មោះ​សម្រាប់​ប្លង់​បញ្ជាក់​ចាក់​ដែលអ្នក​រៀប​នឹង​កំណត់​ជា​ច្បាប់ចម្លង​របស់​ប្លង់ '%1' ៖"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:272
 #, kde-format
 msgid "Choose a new name for the playlist layout"
 msgstr "ជ្រើស​ឈ្មោះ​ថ្មី​សម្រាប់ប្លង់​បញ្ជី​ចាក់"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:273
 #, kde-format
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr "សូម​បញ្ចូល​ឈ្មោះ​ថ្មី​សម្រាប់​ប្លង់​បញ្ជី​ចាក់​ដែល​អ្នក​រៀប​នឹង​ប្ដូរឈ្មោះ ៖"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
 #, kde-format
 msgid "Cannot rename a layout to have no name."
 msgstr "មិនអាច​អាន​ប្លង់​ដែល​គ្មាន​ឈ្មោះ​ទេ ។"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr "មិនអាច​អាន​ប្លង់​ដែល​មាន​ឈ្មោះដូច​គ្នា​នឹង​ប្លង់​ដែល​មាន​ស្រាប់​នោះទេ ។"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:412
 #, fuzzy, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
@@ -11294,7 +11294,7 @@ msgstr ""
 "ប្លង់ '%1' ដែល​អ្នក​បានកែប្រែ​គឺ​ជា​ប្លង់​មួយ​ក្នុង​ចំណោម​ប្លង់​​ជា​ច្រើន ហើយ​មិន​អាច​ត្រូវ​បាន​សរសេរ​ជាន់​លើ​"
 "បានទេ សូម​ជ្រើស​ឈ្មោះ​ផ្សេង​ដើម្បី​រក្សាទុក​ច្បាប់ចម្លង"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, fuzzy, kde-format
 msgid "Default Layout"
 msgstr "ប្លង់​បញ្ជី​ចាក់"

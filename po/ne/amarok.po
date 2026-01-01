@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-12-27 00:41+0000\n"
+"POT-Creation-Date: 2026-01-01 00:41+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -40,7 +40,7 @@ msgstr "प्लेसूची नाम:"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:36
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:512
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:518
 #, fuzzy, kde-format
 #| msgid "Groupings"
 msgid "No Grouping"
@@ -11555,13 +11555,13 @@ msgid "Encountered an unknown element name while reading layout."
 msgstr ""
 
 #: playlist/layouts/LayoutManager.cpp:107
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:401
 #, kde-format
 msgid "copy of %1"
 msgstr ""
 
 #: playlist/layouts/LayoutManager.cpp:115
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:409
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
@@ -11635,20 +11635,20 @@ msgstr "प्लेसूची नाम:"
 msgid "Rename playlist layout"
 msgstr "प्लेसूची नाम:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:163
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:213
 #, fuzzy, kde-format
 #| msgid "&Enter a name for the playlist:"
 msgid "Choose a name for the new playlist layout"
 msgstr "प्ले सूचीका लागि नाम प्रविष्ट गर्नुहोस्:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:158
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr ""
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
 #, fuzzy, kde-format
 #| msgid ""
 #| "Sorry, you cannot define two devices\n"
@@ -11658,20 +11658,20 @@ msgstr ""
 "माफ गर्नुहोस्, तपाईँ एउटै नाम र माउन्टबिन्दु\n"
 "भएको दुई यन्त्रहरू परिभाषित गर्न सक्नुहुन्न!"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:170
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:221
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, fuzzy, kde-format
 #| msgid "Playcount"
 msgid "Layout name error"
 msgstr "प्ले गणना"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:175
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:226
 #, fuzzy, kde-format
 #| msgid ""
 #| "Sorry, you cannot define two devices\n"
@@ -11681,7 +11681,7 @@ msgstr ""
 "माफ गर्नुहोस्, तपाईँ एउटै नाम र माउन्टबिन्दु\n"
 "भएको दुई यन्त्रहरू परिभाषित गर्न सक्नुहुन्न!"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:180
 #, fuzzy, kde-format
 #| msgid ""
 #| "Sorry, you cannot define two devices\n"
@@ -11691,26 +11691,26 @@ msgstr ""
 "माफ गर्नुहोस्, तपाईँ एउटै नाम र माउन्टबिन्दु\n"
 "भएको दुई यन्त्रहरू परिभाषित गर्न सक्नुहुन्न!"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:214
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
 msgstr ""
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:272
 #, fuzzy, kde-format
 #| msgid "&Enter a name for the playlist:"
 msgid "Choose a new name for the playlist layout"
 msgstr "प्ले सूचीका लागि नाम प्रविष्ट गर्नुहोस्:"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:267
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:273
 #, kde-format
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:281
 #, fuzzy, kde-format
 #| msgid ""
 #| "Sorry, you cannot define two devices\n"
@@ -11720,7 +11720,7 @@ msgstr ""
 "माफ गर्नुहोस्, तपाईँ एउटै नाम र माउन्टबिन्दु\n"
 "भएको दुई यन्त्रहरू परिभाषित गर्न सक्नुहुन्न!"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:283
 #, fuzzy, kde-format
 #| msgid ""
 #| "Sorry, you cannot define two devices\n"
@@ -11730,14 +11730,14 @@ msgstr ""
 "माफ गर्नुहोस्, तपाईँ एउटै नाम र माउन्टबिन्दु\n"
 "भएको दुई यन्त्रहरू परिभाषित गर्न सक्नुहुन्न!"
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:412
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Saved as new layout '%2'"
 msgstr ""
 
-#: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
+#: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
 msgid "Default Layout"
