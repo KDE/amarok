@@ -14,6 +14,7 @@ VERSION 3.3.2 UNRELEASED
   BUGFIXES:
    * Fixes to Magnatune collection update and playback (BR 508052)
    * Fix some issues in playlist layout editor
+   * Fix getting stuck in a loop if mute state was altered repeatedly
 
 VERSION 3.3.1
   FEATURES:

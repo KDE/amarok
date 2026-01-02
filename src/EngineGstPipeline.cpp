@@ -28,6 +28,8 @@
 #include <gst/audio/streamvolume.h>
 #include <gst/audio/audio-format.h>
 
+bool EngineGstPipeline::s_previousMute = false;
+
 EngineGstPipeline::EngineGstPipeline()
     : m_currentSinkElement(nullptr)
     , m_replayGainElement(nullptr)
@@ -167,10 +169,12 @@ EngineGstPipeline::EngineGstPipeline()
         gst_object_unref(pad);
 
         g_object_set( GST_BIN(m_pipeline), "audio-sink", bin, nullptr);
+        s_previousMute = isMuted();
     }
     else
     {
         debug() << "failed to create custom playback bin";
+        s_previousMute = isMuted();
         g_signal_connect( m_pipeline, "notify::volume", G_CALLBACK (cb_volumeChanged), this);
         g_signal_connect( m_pipeline, "notify::mute", G_CALLBACK (cb_muteChanged), this);
     }
@@ -544,7 +548,18 @@ EngineGstPipeline::cb_muteChanged(GstElement *playbin, GParamSpec *spec, gpointe
     Q_UNUSED(playbin)
 
     EngineGstPipeline *that = static_cast<EngineGstPipeline *>(data);
-    Q_EMIT that->mutedChanged( that->isMuted() );
+    bool state = that->isMuted();
+    // Due to way how gstreamer is used (abused?), this callback might be fired multiple times
+    // for a single mute state, with isMuted() returning a value different from the expected one
+    // during first callback. This would trigger a loop in overlying code.
+    // One path of fixing would be altering how gstreamer is used, offloading the signals
+    // (and mute state queries) to main thread with g_idle_add or so.
+    // However, here is the "moral imperative" solution for this method:
+    // EngineGstPipeline should never claim that mute state has changed if it actually hasn't.
+    // Let's enforce that.
+    if( state != s_previousMute )
+        Q_EMIT that->mutedChanged( state );
+    s_previousMute = state;
     Q_UNUSED(spec)
     Q_UNUSED(data)
 }

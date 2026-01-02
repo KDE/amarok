@@ -152,4 +152,5 @@ private:
     qint64 m_posAtReset;
     QMutex m_tagLock;
     QMultiMap<QString, QString> m_metaData;
+    static bool s_previousMute;
 };
