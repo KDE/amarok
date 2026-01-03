@@ -709,16 +709,15 @@ EngineController::setNextTrack( Meta::TrackPtr track )
         return;
 
     QMutexLocker locker( &m_mutex );
-    if( isPlaying() )
-    {
-        m_pipeline->clearPlaybackQueue();
-        // keep in sync with playUrl(), slotPlayableUrlFetched()
+    m_pipeline->clearPlaybackQueue();
+    // keep in sync with playUrl(), slotPlayableUrlFetched()
+    // also try to avoid volume spikes: only try to do gapless if replaygain is not
+    // active or tracks are from the same album, bug 299461
+    if( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Off
+        || ( m_currentTrack && track->album() && track->album() == m_currentTrack->album() ) )
         m_pipeline->enqueuePlayback( url );
-        m_nextTrack = track;
-        m_nextUrl = url;
-    }
-    else
-        play( track );
+    m_nextTrack = track;
+    m_nextUrl = url;
 }
 
 bool
@@ -835,6 +834,7 @@ EngineController::slotAboutToFinish()
         //there might not be any more tracks in the playlist...
         stop( true, true );
         The::playlistActions()->requestNextTrack();
+        The::playlistActions()->play();
     }
     else if( m_pipeline->isPlaybackQueueEmpty() )
         The::playlistActions()->requestNextTrack();
