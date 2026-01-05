@@ -1,13 +1,13 @@
 # Copyright (C) 2008 This_file_is_part_of_KDE
 # This file is distributed under the same license as the amarok package.
-# Sergiu Bivol <sergiu@cip.md>, 2008, 2009, 2010, 2012, 2013, 2020, 2021, 2022, 2023.
+# SPDX-FileCopyrightText: 2008, 2009, 2010, 2012, 2013, 2020, 2021, 2022, 2023, 2025, 2026 Sergiu Bivol <sergiu@cip.md>
 # Cristian Oneț <onet.cristian@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-02 00:43+0000\n"
-"PO-Revision-Date: 2023-04-10 19:07+0100\n"
+"PO-Revision-Date: 2026-01-03 17:16+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Lokalize 21.12.3\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -80,16 +80,13 @@ msgid "About %1"
 msgstr "Despre %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:141
-#, fuzzy, kde-format
-#| msgid ""
-#| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
-#| "%3</html>"
+#, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
 "Frameworks %3</html>"
 msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Versiune %2</b><br />Folosind KDE "
-"%3</html>"
+"Frameworks %3</html>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:180
 #, kde-format
@@ -102,22 +99,19 @@ msgid "&About"
 msgstr "&Despre"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:211
-#, fuzzy, kde-format
-#| msgid ""
-#| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
-#| "report bugs.\n"
+#, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"Utilizați <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> pentru a "
-"raporta erori.\n"
+"Folosiți <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> pentru a "
+"raporta defecte.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:216
 #: aboutdialog/ExtendedAboutDialog.cpp:222
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Utilizați <a href=\"mailto:%1\">%2</a> pentru a raporta erori.\n"
+msgstr "Folosiți <a href=\"mailto:%1\">%2</a> pentru a raporta defecte.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:239
 #, kde-format
@@ -214,7 +208,7 @@ msgstr "Oprește"
 #: ActionClasses.cpp:403
 #, kde-format
 msgid "Stop after current Track"
-msgstr "Oprește după piesa curentă"
+msgstr "Oprește după piesa actuală"
 
 #: ActionClasses.cpp:420
 #, kde-format
@@ -260,24 +254,23 @@ msgstr ""
 #: amarokconfig.kcfg:18
 #, kde-format
 msgid "Whether to display remaining track time in the left time label."
-msgstr ""
-"Dacă să fie afișată durata de redare rămasă în eticheta de timp stîngă."
+msgstr "Dacă să fie afișată durata rămasă din piesă în eticheta cu timp rămas."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:19
-#, fuzzy, kde-format
-#| msgid "Whether to display remaining track time in the left time label."
+#, kde-format
 msgid ""
 "Set this to display remaining track time instead of past track time in the "
 "player window."
 msgstr ""
-"Dacă să fie afișată durata de redare rămasă în eticheta de timp stîngă."
+"Bifați aici pentru a afișa durata rămasă din piesă în loc de durata redată "
+"în fereastra lectorului."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:23
 #, kde-format
 msgid "Which tracks or albums to favor in Random Mode"
-msgstr "Ce piese sau albume să fie favorizate în regimul aleator"
+msgstr "Ce piese sau albume să fie favorizate în regimul aleatoriu"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:24
@@ -287,7 +280,7 @@ msgid ""
 "in Random Mode."
 msgstr ""
 "Piesele sau albumele cu proprietatea aleasă vor avea mai multe șanse să fie "
-"alese în regimul aleatoriu"
+"alese în regimul aleatoriu."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:34
@@ -299,7 +292,7 @@ msgstr "Cum să progreseze piesele în lista de redare"
 #: amarokconfig.kcfg:35
 #, kde-format
 msgid "Determines how amarok will progress through the tracks in the playlist"
-msgstr "Determină cum va progresa amarok printre pistele din lista de redare"
+msgstr "Determină cum va progresa Amarok printre piesele din lista de redare"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:48
@@ -314,6 +307,8 @@ msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
 msgstr ""
+"Dacă e bifată, regimul dinamic va fi pornit și piesele vor fi adăugate în "
+"acord cu lista dinamică specificată."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:53
@@ -351,7 +346,7 @@ msgstr "Numărul de piese următoare."
 #: amarokconfig.kcfg:64
 #, kde-format
 msgid "Number of tracks to load into the playlist after the active track."
-msgstr "Numărul de piese de încărcat în lista de redare după de piesa activă."
+msgstr "Numărul de piese de încărcat în lista de redare după piesa activă."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:68
@@ -427,14 +422,12 @@ msgstr "Dacă să fie afișate imagini de fundal în panoul de navigare"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
-"Derulează automat lista de redare pentru a face vizibil cîntecul curent"
+"Derulează automat lista de redare pentru a face vizibilă piesa aflată în "
+"redare"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -452,21 +445,21 @@ msgstr "Arată vizualizarea contextuală"
 #: amarokconfig.kcfg:112
 #, kde-format
 msgid "Play the first run jingle"
-msgstr "Cîntă un zdrăngănit la prima rulare"
+msgstr "Redă un zornăit la prima rulare"
 
 #. i18n: ectx: label, entry, group (General Options)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnimateAppletCollapse)
 #: amarokconfig.kcfg:116 configdialog/dialogs/GeneralConfig.ui:61
 #, kde-format
 msgid "Enable context applets collapse animations"
-msgstr "Activează animațiile de strîngere a miniaplicațiilor contextuale"
+msgstr "Activează animațiile de strângere ale miniaplicațiilor contextuale"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:117
 #, kde-format
 msgid "If set, context applets will collapse using animations."
 msgstr ""
-"Dacă e bifată, miniaplicațiile contextuale se vor strînge folosind animații."
+"Dacă e bifată, miniaplicațiile contextuale se vor strânge folosind animații."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:121
@@ -474,6 +467,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Arată artistul piesei în navigatorul de colecții dacă e diferit de artistul "
+"albumului"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -482,6 +477,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Arată explicit artistul în navigatorul de colecții pentru albumele cu "
+"diverși artiști și piesele la care artistul diferă de cel al albumului."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -494,26 +491,25 @@ msgstr "Dacă organizarea fișierelor va suprascrie fișiere existente."
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
-"Dacă e bifată, Organizarea fișierelor va suprascrie orice destinație "
+"Dacă e bifată, organizarea fișierelor va suprascrie orice destinație "
 "existentă."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:134
-#, fuzzy, kde-format
-#| msgid "Whether organize files will ignore The in artist names."
+#, kde-format
 msgid "Whether organize files will move The in artist names to the end."
-msgstr "Dacă organizarea fișierelor va ignora „The” în numele interpreților."
+msgstr ""
+"Dacă organizarea fișierelor va muta „The” din numele artiștilor la final."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:135
-#, fuzzy, kde-format
-#| msgid "If set, Organize files will ignore The in artist names."
+#, kde-format
 msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Dacă e bifată, Organizarea fișierelor va ignora „The” în numele "
-"interpreților."
+"Dacă organizarea fișierelor va muta „The” din numele artiștilor la final, ca "
+"în „Beatles, The”."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:139
@@ -530,7 +526,7 @@ msgstr ""
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Dacă e bifată, Organizarea fișierelor va înlocui spațiile în denumiri de "
+"Dacă e bifată, organizarea fișierelor va înlocui spațiile în denumiri de "
 "fișiere cu linii de subliniere."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -546,45 +542,40 @@ msgstr ""
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
-"Dacă e bifată, Organizarea fișierelor va folosi coperțile de album ca "
+"Dacă e bifată, organizarea fișierelor va folosi coperțile de album ca "
 "pictograme pentru dosare."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:149
 #, kde-format
 msgid "Collection folder path destination for Organize files."
-msgstr ""
+msgstr "Calea destinației dosarului de colecții pentru organizarea fișierelor."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:150
 #, kde-format
 msgid "The path of the collection folder destination for Organize files."
-msgstr ""
+msgstr "Calea destinației dosarului de colecții pentru organizarea fișierelor."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:154
-#, fuzzy, kde-format
-#| msgid ""
-#| "Whether organize files will replace spaces in filenames with underscores."
+#, kde-format
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
 "filesystems."
 msgstr ""
-"Dacă organizarea fișierelor va înlocui spațiile în denumiri de fișiere cu "
-"linii de subliniere."
+"Dacă organizarea fișierelor va redenumi fișierele într-un mod compatibil cu "
+"sisteme de fișiere „vfat”."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:155
-#, fuzzy, kde-format
-#| msgid ""
-#| "If set, Organize files will replace characters that are not compatible "
-#| "with the 7-bit ASCII character set."
+#, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
-"Dacă e bifată, Organizarea fișierelor va înlocui caracterele incompatibile "
-"cu setul de caractere ASCII pe 7 biți."
+"Dacă e bifată, organizarea fișierelor va înlocui caracterele incompatibile "
+"cu sisteme de fișiere „vfat” (cum ar fi „:”, „*” și „?”)."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:159
@@ -693,7 +684,7 @@ msgstr "Preconfigurări de format"
 #: amarokconfig.kcfg:190
 #, kde-format
 msgid "A list of preset formats (token schemas)."
-msgstr "O listă cu preconfigurări de format (scheme jeton)"
+msgstr "O listă cu preconfigurări de format (scheme-jeton)."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:197
@@ -705,7 +696,7 @@ msgstr "Volum principal"
 #: amarokconfig.kcfg:198
 #, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
-msgstr "Volumul stăpîn al Amarok, o valoare între 0 și 100."
+msgstr "Volumul principal al Amarok, o valoare între 0 și 100."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:204
@@ -717,7 +708,7 @@ msgstr "Starea muțirii"
 #: amarokconfig.kcfg:205
 #, kde-format
 msgid "Mute/Unmute sound."
-msgstr "Muțește/sonorizează."
+msgstr "Muțește/sonorizează sunetul."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:209
@@ -741,7 +732,7 @@ msgstr "Dacă să se estompeze piesele la întrerupere."
 #: amarokconfig.kcfg:219
 #, kde-format
 msgid "Length of fadeout, in milliseconds"
-msgstr "Durata estompării, în milisecunde."
+msgstr "Durata estompării, în milisecunde"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:220
@@ -759,7 +750,7 @@ msgstr "Regim egalizator - 0 = dezactivat, 1 la n = nr. preconfigurare"
 #: amarokconfig.kcfg:226
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
-msgstr "Cînd este activată, un modul de egalizator filtrează fluxul audio."
+msgstr "Când este activată, un modul de egalizator filtrează fluxul audio."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
@@ -771,7 +762,8 @@ msgstr ""
 #: amarokconfig.kcfg:234
 #, kde-format
 msgid "List with user equalizer preset names"
-msgstr "Listă cu denumiri de preconfigurări egalizator ale utilizatorului"
+msgstr ""
+"Listă cu denumiri de preconfigurări pentru egalizator ale utilizatorului"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:237
@@ -815,19 +807,19 @@ msgstr "Fă fiecare album de același volum"
 #: amarokconfig.kcfg:257
 #, kde-format
 msgid "The length of a short seek, in seconds."
-msgstr "Durata unei căutări scurte, în secunde."
+msgstr "Durata unei derulări scurte, în secunde."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:262
 #, kde-format
 msgid "The length of a medium seek, in seconds."
-msgstr "Durata unei căutări medii, în secunde."
+msgstr "Durata unei derulări medii, în secunde."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:267
 #, kde-format
 msgid "The length of a long seek, in seconds."
-msgstr "Durata unei căutări lungi, în secunde."
+msgstr "Durata unei derulări lungi, în secunde."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:272
@@ -856,7 +848,7 @@ msgstr ""
 #: amarokconfig.kcfg:287
 #, kde-format
 msgid "Amazon locale for cover retrieval"
-msgstr "Limbă Amazon pentru obținerea copertelor"
+msgstr "Configurări regionale Amazon pentru obținerea copertelor"
 
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
 #: amarokconfig.kcfg:288
@@ -870,7 +862,7 @@ msgstr "Determină în ce limbă este preluată informația de pe Wikipedia."
 #: amarokconfig.kcfg:295
 #, kde-format
 msgid "Wikipedia locale for information retrieval"
-msgstr "Limba Wikipedia pentru obținerea informațiilor"
+msgstr "Configurări regionale Wikipedia pentru obținerea informațiilor"
 
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
 #: amarokconfig.kcfg:296
@@ -889,7 +881,7 @@ msgstr "Utilizează suportul KNotify"
 #: amarokconfig.kcfg:310
 #, kde-format
 msgid "Use On-Screen Display"
-msgstr "Utilizează Afișaj-pe-ecran"
+msgstr "Utilizează afișaj-pe-ecran"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:311
@@ -1112,7 +1104,7 @@ msgstr "Dacă dosarele colecției sînt examinate recursiv"
 #: amarokconfig.kcfg:414
 #, kde-format
 msgid "Whether Collection folders are rescanned on change"
-msgstr "Dacă dosarele colecției sînt reexaminate la modificare"
+msgstr "Dacă dosarele de colecții sunt reexaminate la modificare"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:418
@@ -1829,26 +1821,26 @@ msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
+"O cale pentru muzică, %1, e stabilită în Configurări de Sistem.\n"
+"Doriți să o folosiți ca dosar de colecții?"
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Dosare de colecție"
+msgstr "Alegeți dosarul de colecții"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Utilizator"
+msgstr "Folosește"
 
 #: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Nu folosi"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -2874,7 +2866,7 @@ msgstr "Configurare colecție"
 #: configdialog/dialogs/CollectionConfig.ui:20
 #, kde-format
 msgid "Collection Folders"
-msgstr "Dosare de colecție"
+msgstr "Dosare de colecții"
 
 #. i18n: ectx: property (text), widget (QLabel, descriptionLabel)
 #: configdialog/dialogs/CollectionConfig.ui:26
@@ -8211,7 +8203,7 @@ msgstr "Dosar c&olecție:"
 #: dialogs/OrganizeCollectionDialogBase.ui:51
 #, kde-format
 msgid "The collection folder to which the files will be transferred."
-msgstr "Dosarul de colecție în care se transferă fișierele."
+msgstr "Dosarul de colecții în care se transferă fișierele."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (whatsThis), widget (QToolButton, optionsButton)

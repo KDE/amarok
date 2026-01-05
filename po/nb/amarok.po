@@ -16098,17 +16098,3 @@ msgstr "Kunstner: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
-
-#~ msgid " Item"
-#~ msgid_plural " Items"
-#~ msgstr[0] " Element"
-#~ msgstr[1] " Elementer"
-
-#~ msgctxt "prefix to 'x minutes'"
-#~ msgid "every "
-#~ msgstr "hvert "
-
-#~ msgid " minute"
-#~ msgid_plural " minutes"
-#~ msgstr[0] " minutt"
-#~ msgstr[1] " minutter"

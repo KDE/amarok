@@ -1,15 +1,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Sergiu Bivol <sergiu@cip.md>, 2010.
-# Sergiu Bivol <sergiu@cip.md>, 2011.
+# SPDX-FileCopyrightText: 2010, 2011, 2026 Sergiu Bivol <sergiu@cip.md>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-14 01:25+0000\n"
-"PO-Revision-Date: 2011-01-24 12:43+0200\n"
-"Last-Translator: Sergiu Bivol <sergiu@ase.md>\n"
+"PO-Revision-Date: 2026-01-03 15:49+0000\n"
+"Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
@@ -17,29 +16,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 25.08.1\n"
 "X-Qt-Contexts: true\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:117
 #: utilities/collectionscanner/CollectionScanner.cpp:140
-#, fuzzy, qt-format
-#| msgid "File \"%1\" not found."
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
 msgstr "Fișierul „%1” nu a fost găsit."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:120
-#, fuzzy, qt-format
-#| msgid "Could not open file \"%1\"."
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "Fișierul „%1” nu poate fi deschis."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:367
-#, fuzzy, qt-format
-#| msgid "Missing argument for option %1"
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
-msgstr "Lipsește argumetul pentru opțiunea %1"
+msgstr "Lipsește argumentul pentru opțiunea %1"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:401
 msgctxt "CollectionScanner::Scanner|"
