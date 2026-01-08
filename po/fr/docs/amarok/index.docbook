@@ -6,14 +6,14 @@
 <book id="amarok" lang="&language;">
 <bookinfo>
 <title
->Manuel d'&amarok;</title>
+>Manuel de &amarok;</title>
 <authorgroup>
 <author>
 <personname
 ><firstname
->Cette documentation a été convertie depuis la page <ulink url="http://userbase.kde.org/Amarok/Manual"
->Amarok/Manuel</ulink
-> de la base utilisateur de &kde;.</firstname
+>Cette documentation a été convertie depuis la page de la base utilisateur de &kde; <ulink url="http://userbase.kde.org/Amarok/Manual"
+>Amarok / Manuel</ulink
+>.</firstname
 > <surname
 ></surname
 >  </personname>
@@ -23,12 +23,14 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->13/08/2013</date>
+>21-05-2018</date>
       <releaseinfo
->2.8.0</releaseinfo>
+>2.9.0</releaseinfo>
 <abstract>
 <para
->&amarok; est un lecteur de musique gratuit, puissant et versatile pour &Linux; et &Microsoft; &Windows; vous aidant à organiser votre collection musicale et à redécouvrir votre musique. La dernière version stable du logiciel est la version 2.8. Elle réintroduit toutes les caractéristiques connues des versions 1.x.</para>
+>&amarok; est un lecteur de musique gratuit, polyvalent et puissant pour &Linux;. Les dernières séries de publication de version 2.x, souvent appelée <quote
+>Amarok 2</quote
+>, est multi-plate-forme (Elle peut être utilisée sur de nombreuses plates-formes, y compris &Linux;, &macOS; et &Microsoft; &Windows;). Elle intègre un code complètement retravaillée lui permettant dans l'avenir d'incorporer de nouvelles fonctionnalités passionnantes à mesure que la version mûrit. La version stable courante est la version 2.4.</para>
       </abstract>
 <keywordset>
  <keyword
@@ -52,7 +54,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2013-07-30T12:51:14Z</timestamp
+>2018-05-21T14:49:54Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -86,7 +88,7 @@
   <row>
     <entry>
     <para
->Disposition par défaut d'Amarok 2.8</para
+>Disposition par défaut dans Amarok 2.8</para
 ></entry>
   </row>
   </tbody>
@@ -130,18 +132,18 @@
 <listitem
 ><para
 ><link linkend="the-amarok-window"
->La fenêtre d'Amarok</link
+>La fenêtre de Amarok</link
 >&nbsp;<orderedlist>
 <listitem
 ><para
 ><link linkend="default-layout-of-the-amarok-window"
->Organisation par défaut de la fenêtre d'Amarok</link
+>Organisation par défaut de la fenêtre de Amarok</link
 >&nbsp;</para
 ></listitem>
 <listitem
 ><para
 ><link linkend="using-the-amarok-window-to-manage-and-play-your-music"
->Utilisation de la fenêtre d'Amarok pour gérer et lire votre musique</link
+>Utilisation de la fenêtre de Amarok pour gérer et lire votre musique</link
 >&nbsp;</para
 ></listitem>
 </orderedlist>
@@ -263,7 +265,7 @@
 <listitem
 ><para
 ><link linkend="saving-and-retrieving-your-favorite-playlists"
->Enregistrer et récupérer vos listes de lecture préférées</link
+> Enregistrer et accéder à vos listes de lecture préférées</link
 >&nbsp;</para
 ></listitem>
 </orderedlist>
@@ -329,7 +331,7 @@
 >Kickoff</ulink
 > puis <menuchoice
 ><guimenu
->Multimedia</guimenu
+>Multimédia</guimenu
 ><guimenuitem
 >Amarok</guimenuitem
 ></menuchoice
@@ -362,7 +364,7 @@
 >Première utilisation</title
 > 
 <para
->La première fois que vous utilisez &amarok; une boîte de dialogue s'affichera vous demandant de spécifier votre pays :  </para>
+>La première fois que vous utilisez &amarok; une boite de dialogue s'affichera vous demandant de spécifier votre pays :  </para>
 <para>
 <screenshot>
 <screeninfo
@@ -379,7 +381,7 @@
 </screenshot>
 </para>
 <para
->Ensuite, une boîte de dialogue de démarrage s'affichera, vous demandant de spécifier l'emplacement de votre musique. Si vous avez déjà un dossier de musique <ulink url="help:/kcontrol/paths"
+>Ensuite, une boite de dialogue de démarrage s'affichera, vous demandant de spécifier l'emplacement de votre musique. Si vous avez déjà un dossier de musique <ulink url="help:/kcontrol/paths"
 >configuré sur votre système</ulink
 >, &amarok; devrait le détecter et vous demander s'il faut l'utiliser :  </para>
 <para>
@@ -400,7 +402,7 @@
 <para
 >Si vous choisissez <guilabel
 >Non</guilabel
-> dans cette boîte de dialogue, une autre s'affichera pour vous permettre de choisir le dossier contenant votre musique :  </para>
+> dans cette boite de dialogue, une autre s'affichera pour vous permettre de choisir le dossier contenant votre musique :  </para>
 <para>
 <screenshot>
 <screeninfo
@@ -447,7 +449,7 @@
 <listitem
 ><para
 >ou faites un clic droit sur l'icône du loup bleu dans la <guilabel
->boîte à icônes</guilabel
+>boite à icônes</guilabel
 > en bas de votre écran. Le menu contextuel suivant s'affichera : </para
 ></listitem>
 </itemizedlist>
@@ -469,8 +471,8 @@
 <para
 >Si vous fermez la fenêtre d'&amarok; en appuyant sur le bouton <guilabel
 >Fermer</guilabel
-> dans la décoration de la fenêtre, &amarok; continuera à s'exécuter en tâche de fond et n'affichera que l'icônes du loup bleu dans la <guilabel
->boîte à icônes</guilabel
+> dans la décoration de la fenêtre, &amarok; continuera à s'exécuter en tâche de fond et n'affichera que l'icône du loup bleu dans la <guilabel
+>boite à icônes</guilabel
 > : </para>
 <para>
 <screenshot>
@@ -499,7 +501,7 @@
 >La fenêtre d'&amarok; est pensée pour vous permettre de redécouvrir votre musique. Ainsi, elle vous donne accès à autant d'informations sur votre musique qu'il est possible. Même si de nombreux utilisateurs apprécieront l'organisation par défaut de cette fenêtre, elle est entièrement personnalisable. </para>
 <sect2 id="default-layout-of-the-amarok-window"
 ><title
->Organisation par défaut de la fenêtre d'Amarok</title
+>Organisation par défaut de la fenêtre de Amarok</title
 > 
 <para
 >Une fois installé, &amarok; ressemblera à ceci :  </para>
@@ -553,7 +555,7 @@
 </sect2>
 <sect2 id="using-the-amarok-window-to-manage-and-play-your-music"
 ><title
->Utilisation de la fenêtre d'Amarok pour gérer et lire votre musique</title
+>Utilisation de la fenêtre de Amarok pour gérer et lire votre musique</title
 > 
 <para
 >Lire de la musique en utilisant &amarok; se fait habituellement en deux étapes :  </para>
@@ -652,7 +654,7 @@
 <para
 ><tip
 ><para
->Le jeu de formats multimédia pris en charge par &amarok; n'est pas restreint à ceux mentionnés plus haut; les formats sont contrôlés par le moteur (<foreignphrase
+>Le jeu de formats multimédia pris en charge par &amarok; n'est pas restreint à ceux mentionnés plus haut. Les formats sont contrôlés par le moteur (<foreignphrase
 >backend</foreignphrase
 >) de <ulink url="http://userbase.kde.org/Special:Mylanguage/Phonon"
 >Phonon</ulink
@@ -669,9 +671,9 @@
 >sources de média</guilabel
 >, les différents périphériques et / ou les catégories de contenu sont affichés dans le <guilabel
 >navigateur de contenu</guilabel
->. Si vous insérez un CD audio dans le lecteur de CD, il apparaîtra dans le panneau <guilabel
+>. Si vous insérez un CD audio dans le lecteur de CD, il apparaitra dans le panneau <guilabel
 >sources de média</guilabel
->, aux côtés des lecteurs multimédia, clés USB et d'autres périphériques USB. Après qu'un périphérique externe a été monté, il sera automatiquement affiché dans le panneau des <guilabel
+>, aux côtés des lecteurs multimédia, des lecteurs en forme de vignettes, des clés USB, des lecteurs portables et d'autres périphériques USB. Après qu'un périphérique externe a été monté, il sera automatiquement affiché dans le panneau des <guilabel
 >sources de média</guilabel
 >. </para>
 <para
@@ -709,9 +711,9 @@
 >collection locale</guilabel
 >, la <emphasis
 >barre de messages</emphasis
-> en bas de la fenêtre d'&amarok; indiquera qu'il est occupé à copier la musique. L'extraction peut durer plusieurs minutes. Une fois l'extraction achevée, le message dans la barre de messages disparaît et la musique apparaît dans le navigateur de contenu de votre <guilabel
+> en bas de la fenêtre d'&amarok; indiquera qu'il est occupé à copier la musique. L'extraction peut durer plusieurs minutes. Une fois l'extraction achevée, le message dans la barre de messages disparait et la musique apparait dans le navigateur de contenu de votre <guilabel
 >collection locale</guilabel
->. Si la musique extraite n'apparaît pas dans le panneau des <guilabel
+>. Si la musique extraite n'apparait pas dans le panneau des <guilabel
 >sources de média</guilabel
 >, vous devez alors quitter &amarok; depuis le menu tout en haut, ou appuyer sur les touches <keycombo
 >&Ctrl;<keycap
@@ -736,7 +738,7 @@
 <para
 >Dans le menu contextuel ci-dessus, vous avez aussi le choix pour <guilabel
 >modifier les détails de la piste</guilabel
->. Utilisez cette option si vous avez une piste dont la balise doit être modifiée. Cela devient important quand vous extrayez de la musique au format .wav, vous perdez certaines balises. Si une partie de votre collection a besoin d'être balisée, tournez-vous plutôt vers des logiciels dédiés aux balises, tels que </para>
+>. Utilisez cette option si vous avez une piste dont la balise doit être modifiée. Cela devient important quand vous extrayez de la musique au format « .wav », vous perdez certaines balises. Si une partie de votre collection a besoin d'être balisée, tournez-vous plutôt vers des logiciels dédiés aux balises, tels que </para>
 <itemizedlist>
 <listitem
 ><para
@@ -758,7 +760,7 @@
 ></listitem>
 </itemizedlist>
 <para
->Corriger les balises est important pour aider &amarok; à afficher vos pistes dans les albums appropriés et dans le bon ordre. Reportez-vous à la section  de documentation <link linkend="tags"
+>Corriger les balises est important pour aider &amarok; à afficher vos pistes dans les albums appropriés et dans le bon ordre. Reportez-vous à la section de documentation <link linkend="tags"
 >extraction et les balises</link
 >. </para>
 </sect2>
@@ -775,7 +777,7 @@
 >sources de média</guilabel
 >. Cette icône développe et réduit l'arborescence lorsque vous naviguez dans le panneau des <guilabel
 >sources de média</guilabel
->, vous permettant de parcourir facilement votre collection en choisissant le dossier que vous   désirez dans la barre de l'aide à la navigation. </para>
+>, vous permettant de parcourir facilement votre collection en choisissant le dossier que vous désirez dans la barre de l'aide à la navigation. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1090,18 +1092,18 @@
 <para
 >Les podcasts ont leur propre section dans le panneau des <guilabel
 >sources de média</guilabel
->. Si vous avez l'URL d'un flux RSS au Atom, appuyez sur l'icône <inlinemediaobject
+>. Si vous avez l'URL d'un flux « RSS » au Atom, appuyez sur l'icône <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> et ajoutez-la ici. Si vous avez un fichier OPML à impoter, ce choix est aussi disponible. Utilisez les menus contextuels (clic droit) pour <guilabel
+> et ajoutez-la ici. Si vous avez un fichier « OPML » à importer, ce choix est aussi disponible. Utilisez les menus contextuels (clic droit) pour <guilabel
 >ajouter à la liste de lecture</guilabel
 >, <guilabel
 >configurer les options générales</guilabel
 >, <guilabel
 >supprimer l'abonnement</guilabel
 >, <guilabel
->mettre à jour les chaînes</guilabel
+>mettre à jour les chaines</guilabel
 >, ou marquer un podcast comme <guilabel
 >nouveau</guilabel
 >. Si vous possédez une énorme collection de podcasts, le script <guilabel
@@ -1154,7 +1156,7 @@
 <para
 >Cliquer sur la bannière d'un périphérique (la barre bleue pour MPMAN Mass Storage sur la capture ci-dessus) affiche ou cache le contenu de ce périphérique. La direction de la flèche sur la droite indique si le contenu du périphérique est affiché ou caché. Le contenu d'un périphérique particulier peut être caché ou affiché en utilisant le même principe, en cliquant sur l'artiste ou l'album approprié. Une flèche pointant vers le bas à gauche d'un artiste ou d'un album indique que le contenu est affiché. Une flèche pointant vers la droite indique que des informations sur cette catégorie sont disponibles mais actuellement cachées. Sur la capture ci-dessus, les informations sur le CD de <emphasis
 >Travis - The invisible Band</emphasis
-> sont développées, affichant les pistes individuelles. En revnache, les albums et les pistes dans la <guilabel
+> sont développées, affichant les pistes individuelles. En revanche, les albums et les pistes dans la <guilabel
 >collection locale</guilabel
 > sont cachés. En cliquant sur ces flèches vous pouvez les afficher puis éventuellement les cacher à nouveau. </para>
 </sect3>
@@ -1202,7 +1204,7 @@
 >navigateur de contenu</guilabel
 > peut être temporairement modifié par l'ordre de tri défini par l'utilisateur (décrit plus haut) ou par la <emphasis
 >vue fusionnée</emphasis
-> dans laquelle les artistes sont classés par ordre alphabétique, peu importe sur quel support la musique est enregistrée. Pour basculer sur la <emphasis
+> dans laquelle les artistes sont classés par ordre alphabétique, peu importe sur quel média la musique est enregistrée. Pour basculer sur la <emphasis
 >vue fusionnée</emphasis
 >, appuyez sur l'icône <inlinemediaobject
 > <imageobject
@@ -1229,7 +1231,7 @@
 <para
 >Vous pouvez supprimer n'importe quel élément de votre collection par un clic droit sur l'élément et en choisissant l'élément du bas <guilabel
 >Supprimer les pistes</guilabel
->. Une boîte de dialogue de confirmation s'affichera pour empêcher les suppressions accidentelles des pistes. Plusieurs éléments peuvent être choisis en appuyant sur <keycombo
+>. Une boite de dialogue de confirmation s'affichera pour empêcher les suppressions accidentelles des pistes. Plusieurs éléments peuvent être choisis en appuyant sur <keycombo
 >&Ctrl;<keycap
 >clic</keycap
 ></keycombo
@@ -1765,7 +1767,7 @@
 <para
 >Le panneau <emphasis
 >Contexte</emphasis
-> par défaut affiche les éléments suivants : piste actuelle, analyseur, wikipedia et paroles. Selon la largeur de votre écran, le panneau « paroles » pourrait ne pas être visible, mais le fait de cliquer sur le bouton se trouvant au bas de l'écran le rendra visible. Lorsqu'aucun fichier n'est lu, l'applet « piste actuelle » affichera les dernières pistes jouées et des informations à propos de la collection locale </para>
+> par défaut affiche les éléments suivants : piste actuelle, analyseur, Wikipedia et paroles. Selon la largeur de votre écran, le panneau « paroles » pourrait ne pas être visible, mais le fait de cliquer sur le bouton se trouvant au bas de l'écran le rendra visible. Lorsqu'aucun fichier n'est lu, l'applet « piste actuelle » affichera les dernières pistes jouées et des informations à propos de la collection locale </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1843,7 +1845,7 @@
 > nécessaires. Plus d'informations ici : </para>
 <para
 ><link linkend="what-media-types-does-amarok-support"
->FAQ : quels types de média Amarok prend-il en charge</link
+>FAQ : quels types de média, Amarok prend-il en charge ?</link
 >. </para>
 <para
 >Reportez-vous à votre distribution. </para>
@@ -1905,13 +1907,13 @@
 >Les problèmes plus complexes sont couverts dans ce manuel, dans la section <link linkend="troubleshooting-and-common-problems"
 >Dépannage et problèmes communs</link
 >, et dans la <link linkend="frequently-asked-questions"
->FAQ d'Amarok</link
+>FAQ de Amarok</link
 >. </para>
 </sect2>
 </sect1>
 <sect1 id="glossary"
 ><title
->GLOSSAIRE</title
+>Glossaire</title
 > 
 <sect2 id="breadcrumbs"
 ><title
@@ -1969,7 +1971,7 @@
 <para
 ><foreignphrase
 >Scrobbler</foreignphrase
-> une piste signifie que pendant que vous l'écoutez, le titre de la chanson et l'artiste sont envoyés à un site web tel que <emphasis
+> une piste signifie que pendant que vous l'écoutez, le titre de la chanson et l'artiste sont envoyés à un site Internet tel que <emphasis
 >Last.fm</emphasis
 >, où les informations sont ajoutées à votre profil. </para>
 </sect2>
@@ -1999,7 +2001,7 @@
 </chapter>
 <chapter id="the-amarok-window0"
 ><title
->La fenêtre d'Amarok</title
+>La fenêtre de Amarok</title
 > 
 <para
 >Quand vous ouvrez &amarok; la première fois, voici ce que vous voyez, une fois qu'&amarok; est complètement démarré :  </para>
@@ -2053,7 +2055,7 @@
     <entry>
     <para
 ><link linkend="toolbar"
->La barre d'outils principale</link
+>La barre principale d'outils</link
 >&nbsp;</para
 >    </entry>
   </row>
@@ -2188,7 +2190,7 @@
 <para
 >La <emphasis
 >barre d'outils</emphasis
-> est utilisée pour gérer l'écoute de la chanson actuelle. Vous pouvez basculer de la barre d'outils principale à la barre d'outils compacte en utilisant le menu <guilabel
+> est utilisée pour gérer l'écoute de la chanson actuelle. Vous pouvez basculer de la barre principale d'outils à la barre d'outils réduite en utilisant le menu <guilabel
 >Affichage</guilabel
 > dans la <emphasis
 >barre de menus</emphasis
@@ -2196,7 +2198,7 @@
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
-> pour la cacher ou l'afficher à nouveau. </para>
+> pour la masquer ou l'afficher à nouveau. </para>
 <para
 >La barre d'outils peut être déverrouillée et déplacée n'importe où sur vote écran, et même utilisée sans que le reste de la fenêtre d'&amarok; ne soit affichée. Pour déverrouiller la barre d'outils, vous devez d'abord vous assurer que l'élément du menu <menuchoice
 ><guimenu
@@ -2208,7 +2210,7 @@
 </sect2>
 <sect2 id="main-toolbar"
 ><title
->Barre d'outils principale</title
+>Barre principale d'outils</title
 > 
 <para>
 <screenshot>
@@ -2242,7 +2244,7 @@
 >barre de progression</emphasis
 > avec le temps d'écoute écoulé à gauche et le temps restant à droite affiche la position actuelle de l'écoute de la chanson. Si vous avez les <emphasis
 >barres d'humeur</emphasis
-> activées, et les fichiers .mood pour vos pistes, c'est ici qu'elles seront affichées. Plus d'informations sur la <link linkend="the-moodbar"
+> activées, et les fichiers « .mood » pour vos pistes, c'est ici qu'elles seront affichées. Plus d'informations sur la <link linkend="the-moodbar"
 >barre d'humeur</link
 > plus loin. </para>
 <para
@@ -2254,7 +2256,7 @@
 > <imageobject
 > <imagedata fileref="Icon-flag-green.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> près du texte vous pouvez ajouter la chanson actuelle à vos pistes coups de coeur sur <ulink url="http://www.last.fm/"
+> près du texte vous pouvez ajouter la chanson actuelle à vos pistes coups de cœur sur <ulink url="http://www.last.fm/"
 >last.fm</ulink
 > ou ajouter un marqueur de position. </para>
 <para
@@ -2281,11 +2283,11 @@
 </para>
 <para
 >La <emphasis
->barre d'outils compacte</emphasis
+>barre d'outils réduite</emphasis
 > possède les mêmes fonctionnalités que la <emphasis
->barre d'outils principale</emphasis
+>barre principale d'outils</emphasis
 >, mais elle est plus compacte. De plus, la <emphasis
->barre d'outils compacte</emphasis
+>barre d'outils réduite</emphasis
 > possède un bouton <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-media-playback-stop.png" format="PNG"/> </imageobject
@@ -2356,9 +2358,9 @@
 >Le <emphasis
 >menu de navigation</emphasis
 > est constitué d'une <emphasis
->barre de filtre</emphasis
+>barre de filtres</emphasis
 >, d'un <emphasis
->bouton favoris</emphasis
+>bouton pour mettre en signets</emphasis
 > et de la <emphasis
 >barre d'aide à la navigation</emphasis
 >. </para>
@@ -2388,10 +2390,10 @@
 </sect3>
 <sect3 id="bookmarks"
 ><title
->Favoris</title
+>Signets</title
 > 
 <para
->Pour accéder à cette fonctionnalité, appuyez sur l'icône  <inlinemediaobject
+>Pour accéder à cette fonctionnalité, appuyez sur l'icône <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-bookmark-new-list.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -2429,50 +2431,50 @@
     <entry>
     <para
 ><guilabel
->Mettre en favoris la vue des sources de média</guilabel
+>Mettre en signet la vue des sources de média</guilabel
 ></para>
     </entry>
     <entry>
     <para
 >Ajoute la configuration actuelle de la vue des <emphasis
 >sources de média</emphasis
-> à la liste des favoris.</para>
+> à la liste des signets.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Copier la vue courante des marques-pages dans le presse papier</guilabel
+>Copier la vue courante des marques-pages dans le presse-papier</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Copie les favoris dans le presse papier du système.</para>
+>Copie les signets dans le presse-papier du système.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Gestionnaire de favoris</guilabel
+>Gestionnaire de signets</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Affiche une liste des favoris disponibles dans une nouvelle fenêtre avec les options pour les modifier.</para>
+>Affiche une liste des signets disponibles dans une nouvelle fenêtre avec les options pour les modifier.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><emphasis
->Liste des favoris</emphasis
+>Liste des signets</emphasis
 ></para>
     </entry>
     <entry>
     <para
->Liste tous les favoris pour une sélection plus rapide.</para
+>Liste tous les signets pour une sélection plus rapide.</para
 ></entry>
   </row>
   </tbody>
@@ -2753,7 +2755,7 @@
     <entry>
     <para
 ><guilabel
->Librivox.org</guilabel
+>librivox.org</guilabel
 ></para>
     </entry>
     <entry>
@@ -3157,7 +3159,7 @@
 > </inlinemediaobject
 > dans la partie inférieure du panneau de <emphasis
 >contexte</emphasis
-> dont l'affichage change légèrement; chaque onglet d'applets possède une icône <inlinemediaobject
+> dont l'affichage change légèrement. Chaque onglet d'applets possède une icône <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -3171,7 +3173,7 @@
 <para
 >Il y a plusieurs applets disponibles à placer dans votre panneau de <emphasis
 >contexte</emphasis
->; voici une description de chacun d'entre eux. </para>
+>. Voici une description de chacun d'entre eux. </para>
 <para>
 <informaltable>
   <tgroup cols="3">
@@ -3224,7 +3226,7 @@
     <para
 >Information sur la piste actuelle. Vous pouvez lui attribuer une note en cliquant sur les étoiles, ajouter un marqueur de position ou modifier les métadonnées de la piste. Lorsque le lecteur n'est pas en cours de lecture, l'applet affiche les informations sur la collection et <emphasis
 >les pistes récemment jouées</emphasis
->, vous permettant de visualiser les pistes et les ajouter à la liste de lecture.</para>
+>, vous permettant d'afficher les pistes et les ajouter à la liste de lecture.</para>
     </entry>
   </row>
   <row>
@@ -3284,7 +3286,7 @@
     </entry>
     <entry>
     <para
->Affiche les évènements à venir qui impliquent l'artiste ou le groupe actuel. Vous pouvez configurer un lieu spécifique à surveiller en configurant les options de l'applet dans la section Lieux favoris.</para>
+>Affiche les évènements à venir qui impliquent l'artiste ou le groupe actuel. Vous pouvez configurer un lieu spécifique à surveiller en configurant les options de l'applet dans la section « Signets ».</para>
     </entry>
   </row>
   <row>
@@ -3333,7 +3335,7 @@
     </entry>
     <entry>
     <para
->Affiche, ajoute et modifie les étiquettes de la chanson actuelle. Pour ajouter une étiquette, saisissez-la dans la boîte de texte et appuyez sur &Entree;. Les étiquettes proposées proviennent des contributions des utilisateurs de <emphasis
+>Affiche, ajoute et modifie les étiquettes de la chanson actuelle. Pour ajouter une étiquette, saisissez-la dans la boite de texte et appuyez sur Entrée;. Les étiquettes proposées proviennent des contributions des utilisateurs de <emphasis
 >Last.fm</emphasis
 >.</para>
     </entry>
@@ -3484,7 +3486,7 @@
     </entry>
     <entry>
     <para
->Il s'agit d'un nouvel applet de la version 2.8. Il fournit des visualisations audio de base. Un clic-droit dessus permet sa configuration.</para>
+>Il s'agit d'un nouvel applet de la version 2.8. Il fournit des affichages basiques audio. Un clic-droit dessus permet sa configuration.</para>
     </entry>
   </row>
   <row>
@@ -3601,7 +3603,7 @@
 >ajouter à la liste de lecture</guilabel
 >. </para>
 <para
->Cliquer sur un élément à l'aide du bouton du milieu de la souris ajoutera cet élément à la suite des autres dans laliste de lecture et commencera la lecture depuis le début la liste de lecture. </para>
+>Cliquer sur un élément à l'aide du bouton central de la souris ajoutera cet élément à la suite des autres dans la liste de lecture et commencera la lecture depuis le début la liste de lecture. </para>
 <para
 >Si vous demandez au navigateur de fichiers d'ouvrir un fichier multimédia pris en charge, &amarok; ajoutera le fichier choisi à la suite des autres pistes de votre liste de lecture actuelle. Certains fichiers multimédia sont eux-mêmes des listes de lecture ou peuvent avoir des fichiers de listes de lecture associées par nom (&pex; <emphasis
 >wav</emphasis
@@ -3662,7 +3664,7 @@
 >Arrêter la lecture après cette piste</title
 > 
 <para
->Choisir cette option permet de terminer l'écoute d'une piste, après quoi &amarok; arrêtera la lecture. Ce sera indiqué par une icône stop à la place du numéro de la piste. Choisir cette option sur une piste déjà marquée annulera la marque précédente. Une piste seulement peut être marquée ainsi. </para>
+>Sélectionnez cette option permet de terminer l'écoute d'une piste, après quoi &amarok; arrêtera la lecture. Ce sera indiqué par une icône « Arrêt » à la place du numéro de la piste. La sélection de cette option sur une piste déjà marquée annulera la marque précédente. Une seule piste peut être marquée ainsi. </para>
 </sect3>
 <sect3 id="remove-from-playlist"
 ><title
@@ -3802,7 +3804,7 @@
 </sect2>
 <sect2 id="sorting-levels-and-bookmarking"
 ><title
->Niveaux de tri et favoris</title
+>Niveaux de tri et signets</title
 > 
 <para>
 <screenshot>
@@ -3814,11 +3816,11 @@
     </imageobject>
     <textobject>
       <phrase
->Barre d'outils de tri et de favoris</phrase>
+>Barre d'outils de tri et de signets</phrase>
     </textobject>
     <caption>
       <para
->Barre d'outils de tri et de favoris</para>
+>Barre d'outils de tri et de signets</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -3863,7 +3865,7 @@
 </sect3>
 <sect3 id="bookmarking"
 ><title
->Favoris</title
+>Signets</title
 > 
 <para>
 <screenshot>
@@ -3875,26 +3877,26 @@
     </imageobject>
     <textobject>
       <phrase
->Menu des favoris</phrase>
+>Menu des signets</phrase>
     </textobject>
     <caption>
       <para
->Menu des favoris</para>
+>Menu des signets</para>
     </caption>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Le menu des favoris propose des options pour enregistrer la <link linkend="changing-the-playlist-layout"
+>Le menu des signets propose des options pour enregistrer la <link linkend="changing-the-playlist-layout"
 >disposition actuelle de la liste de lecture</link
 >. Appuyer sur l'entrée <guilabel
->mettre en favoris les paramètres de la liste de lecture</guilabel
+>mettre en signets les paramètres de la liste de lecture</guilabel
 > ajoutera la disposition de votre liste aux dispositions préférées, qui peuvent être affichées dans le <link linkend="bookmark-manager"
->gestionnaire de favoris</link
+>gestionnaire de signets</link
 >. </para>
 <para
 ><guilabel
->Copier la vue courante des favoris dans le presse-papier</guilabel
+>Copier la vue courante des signets dans le presse-papier</guilabel
 > copie l'URL de la disposition de la liste de lecture d'&amarok; dans le presse-papier, qui peut être utilisée pour retourner à cette disposition. </para>
 </sect3>
 </sect2>
@@ -4164,10 +4166,10 @@
 >avancement de la piste</guilabel
 > vous permet de modifier l'ordre dans lequel &amarok; lit les pistes de votre liste de lecture. </para>
 <para
->La moitié supérieure du menu fournit des options de répétitions &mdash; répétitions par piste, album ou liste de lecture; tandis que la moitié inférieure fournit des options pour donner l'ordre de lecture des pistes &mdash; aléatoirement ou par favoris. Un type d'avancement seulement peut être choisi, &pex; vous ne pouvez pas choisir  pistes aléatoires et répéter la liste de lecture ensemble. </para>
+>La moitié supérieure du menu fournit des options de répétitions &mdash; répétitions par piste, album ou liste de lecture; tandis que la moitié inférieure fournit des options pour donner l'ordre de lecture des pistes &mdash; aléatoirement ou par signets. Un type d'avancement seulement peut être choisi, &pex; vous ne pouvez pas choisir pistes aléatoires et répéter la liste de lecture ensemble. </para>
 <sect4 id="favor"
 ><title
->Favoris</title
+>Signets</title
 > 
 <para>
 <screenshot>
@@ -4179,17 +4181,17 @@
     </imageobject>
     <textobject>
       <phrase
->Menu favoris de la liste de lecture</phrase>
+>Menu « Signets » de la liste de lecture</phrase>
     </textobject>
     <caption>
       <para
->Menu favoris de la liste de lecture</para>
+>Menu « Signets » de la liste de lecture</para>
     </caption>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Cette option nommée favoris est une méthode innovante pour déterminer la prochaine piste à écouter quand vous utilisez le mode de lecture aléatoire. La prochaine piste à écouter peut être déterminée selon son score (une mesure de la fréquence d'écoutes des chansons), la note donnée par l'utilisateur, ou si elle n'a pas été récemment écoutée. </para>
+>Cette option nommée « Signets » est une méthode innovante pour déterminer la prochaine piste à écouter quand vous utilisez le mode de lecture aléatoire. La prochaine piste à écouter peut être déterminée selon son score (une mesure de la fréquence d'écoutes des chansons), la note donnée par l'utilisateur, ou si elle n'a pas été récemment écoutée. </para>
 </sect4>
 </sect3>
 </sect2>
@@ -4200,8 +4202,8 @@
 >Configurer &amarok;</title
 > 
 <para
->Au premier lancement, une configuration basique est réalisée; reportez-vous aussi au <link linkend="getting-started"
->Guide de démarrage rapide : Mise en route</link
+>Au premier lancement, une configuration basique est réalisée. Veuillez consulter aussi au <link linkend="getting-started"
+>Guide de démarrage rapide : mise en route</link
 >. Mais il y en a davantage sous le capot. </para>
 <para
 >Pour accéder au <emphasis
@@ -4258,12 +4260,12 @@
     <entry>
     <para
 ><guilabel
->Afficher une icône dans la boîte à miniatures</guilabel
+>Afficher une icône dans la boite à miniatures</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Cochez cette case pour afficher l'icône d'&amarok; dans la boîte à miniatures.</para>
+>Cochez cette case pour afficher l'icône d'&amarok; dans la boite à miniatures.</para>
     </entry>
   </row>
   <row>
@@ -4496,7 +4498,7 @@
 </screenshot>
 </para>
 <para
->Cette boîte de dialogue vous permettra de configurer les paramètres pour la gestion des métadonnées. Il s'agit d'une fenêtre séparée se lançant avec Amarok 2.7 </para>
+>Cette boite de dialogue vous permettra de configurer les paramètres pour la gestion des métadonnées. Il s'agit d'une fenêtre séparée se lançant avec Amarok 2.7 </para>
 <para
 >Options des métadonnées : </para>
 <para>
@@ -4685,7 +4687,7 @@
     </entry>
     <entry>
     <para
->Cochez cette case pour qu' Amarok effectue un fondu en fermeture à l'arrêt de la lecture ou à la fin de la liste de lecture, plutôt que d'arrêter immédiatement la lecture.</para>
+>Cochez cette case pour que Amarok effectue un fondu en fermeture à l'arrêt de la lecture ou à la fin de la liste de lecture, plutôt que d'arrêter immédiatement la lecture.</para>
     </entry>
   </row>
   <row>
@@ -4767,7 +4769,7 @@
 >OS X</guilabel
 >. </para>
 <para
->Le résultat de tout cela pour vous, utilisateur, est que vous pouvez choisir le programme-cadre qui fonctionne le mieux pour vous. Ceci est habituellement pré-configuré par votre distribution. </para>
+>Le résultat de tout cela pour vous, utilisateur, est que vous pouvez choisir le programme-cadre qui fonctionne le mieux pour vous. Ceci est habituellement préconfiguré par votre distribution. </para>
 <para
 >Les problèmes de lecture dans &amarok; ne sont typiquement pas liés à &amarok;, mais plutôt à &phonon;, étant donné qu'&amarok; ne gère plus le son directement. </para>
 <sect3 id="device-preference-tab"
@@ -4843,7 +4845,7 @@
 </para>
 <para
 >Selon votre &SE;, vous pouvez avoir des options telles que <emphasis
->Gstreamer</emphasis
+>GStreamer</emphasis
 >, <emphasis
 >VLC</emphasis
 >, ou <emphasis
@@ -4851,14 +4853,14 @@
 > (Windows) ici. Le moteur phonon recommandé pour les utilisateurs de &Linux; est <emphasis
 >VLC</emphasis
 > ou <emphasis
->Gstreamer</emphasis
+>GStreamer</emphasis
 >. </para>
 <para
->Si vous n'avez pas les entrées <emphasis
+>Si vous ne voyez aucune entrée <emphasis
 >VLC</emphasis
 > ou <emphasis
->Gstreamer</emphasis
-> dans la liste, installez alors les paquets correspondants. Pour la plupart des distributions, le nom du paquet pour <emphasis
+>GStreamer</emphasis
+> dans la liste, veuillez alors installer les paquets correspondants. Pour la plupart des distributions, le nom du paquet pour <emphasis
 >VLC</emphasis
 >, par exemple, devrait ressembler à <guilabel
 >phonon-backend-vlc</guilabel
@@ -4912,7 +4914,7 @@
     </entry>
     <entry>
     <para
->Cochez cette case pour activer l'affichage à l'écran OSD. Lorsqu'une nouvelle piste est lue, des informations la concernant (comme son titre ou sa durée) s'affichent brièvement. L'OSD sera visible sur votre écran et vous pouvez le déplacer à l'emplacement que vous préférez.</para>
+>Cochez cette case pour activer l'affichage « OSD » à l'écran. Lorsqu'une nouvelle piste est lue, des informations la concernant (comme son titre ou sa durée) s'affichent brièvement. L'affichage « OSD » sera visible sur votre écran et vous pouvez le déplacer à l'emplacement que vous préférez.</para>
     </entry>
   </row>
   <row>
@@ -4924,7 +4926,7 @@
     </entry>
     <entry>
     <para
->Durée d'affichage de l'OSD. La valeur doit être comprise entre 500 et 10 000 ms.</para>
+>Durée d'affichage « OSD ». La valeur doit être comprise entre 500 et 10 000 ms.</para>
     </entry>
   </row>
   <row>
@@ -4936,7 +4938,7 @@
     </entry>
     <entry>
     <para
->Écran sur lequel sera affiché l'OSD si vous en possédez plusieurs. La valeur par défaut est 0.</para>
+>Écran sur lequel sera affiché les informations « OSD » si vous en possédez plusieurs. La valeur par défaut est 0.</para>
     </entry>
   </row>
   <row>
@@ -4960,7 +4962,7 @@
     </entry>
     <entry>
     <para
->(choisissez la taille de la police dans l'OSD)</para>
+>(choisissez la taille de la police « OSD »)</para>
     </entry>
   </row>
   <row>
@@ -5381,7 +5383,7 @@
     </entry>
     <entry>
     <para
->Écoute d'extraits et achat de musique depuis une gentille maison de disque ;-) . Rendez-vous aussi sur la page web <ulink url="http://magnatune.com/info/whynotevil"
+>Écoute d'extraits et achat de musique depuis une gentille maison de disque ;-). Rendez-vous aussi sur la page web <ulink url="http://magnatune.com/info/whynotevil"
 >Magnatunes.com</ulink
 ></para>
     </entry>
@@ -5547,7 +5549,7 @@
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> pour ajouter vos certificats de membre si vous êtes un membre et/ou ajoutez votre adresse mail pour télécharger à nouveau la musique que vous aviez antérieurement téléchargée depuis Magnatune. </para>
+> pour ajouter vos identifiants de membre si vous êtes un membre et / ou ajoutez votre adresse de courriel pour télécharger à nouveau la musique que vous aviez antérieurement téléchargée depuis Magnatune. </para>
 <para
 >Pour télécharger, rendez-vous dans le panneau des <emphasis
 >sources de média</emphasis
@@ -5584,7 +5586,7 @@
 ></listitem>
 </itemizedlist>
 <para
->Remarque : Modifier le pays invalide votre panier. Si votre pays n'est pas dans la liste, vous serez dans l'impossibilité d'utiliser la boutique MP3 d'Amazon car il n'est pas pris en charge par Amazon. </para>
+>Remarque : une modification du pays non valable votre panier. Si votre pays n'est pas dans la liste, vous serez dans l'impossibilité d'utiliser la boutique « MP3 » d'Amazon car il n'est pas pris en charge par Amazon. </para>
 </sect2>
 <sect2 id="mp3tunes-configuration"
 ><title
@@ -5622,7 +5624,7 @@
 </screenshot>
 </para>
 <para
->La configuration des scripts dans &amarok; concernes les services <guilabel
+>La configuration des scripts dans &amarok; concerne les services <guilabel
 >génériques</guilabel
 >, pour les <guilabel
 >paroles</guilabel
@@ -5637,8 +5639,8 @@
 > 
 <para
 >Les scripts génériques ajoutent des fonctionnalités à &amarok;. La <emphasis
->console de scripts d'Amarok</emphasis
-> est disponible par défaut; d'autres scripts qui ajoutent des fonctionnalités telles que la gravure de CD, l'enregistrement des images des pochettes, les jeux, et beaucoup d'autres fonctions sont disponibles. s'ils sont installés, ces scripts s'afficheront dans le menu <emphasis
+>console de scripts de Amarok</emphasis
+> est disponible par défaut. D'autres scripts ajoutant des fonctionnalités telles que la gravure de CD, l'enregistrement des images des pochettes, les jeux, et beaucoup d'autres fonctions sont disponibles. s'ils sont installés, ces scripts s'afficheront dans le menu <emphasis
 >Outils</emphasis
 >. </para>
 </sect2>
@@ -5647,7 +5649,7 @@
 >Scripts pour les paroles</title
 > 
 <para
->Divers scripts pour les paroles sont disponibles; <emphasis
+>Divers scripts pour les paroles sont disponibles. <emphasis
 >Ultimate Lyrics</emphasis
 > est fournit par défaut. Le script pour les paroles que vous aurez choisi affichera les paroles dans l'applet <emphasis
 >Paroles</emphasis
@@ -5691,8 +5693,8 @@
 ></listitem>
 </itemizedlist>
 <para
->Parcourez, installez et désinstallez les scripts créés par des utilisateurs tiers; vous pouvez aussi rechercher, trier et donner une note aux scripts dans l'<emphasis
->installateur d'extensions d'Amarok</emphasis
+>Parcourez, installez et désinstallez les scripts créés par des utilisateurs tiers. Vous pouvez aussi rechercher, trier et donner une note aux scripts dans l'<emphasis
+>installateur d'extensions de Amarok</emphasis
 >. </para>
 <sect3 id="add-on-installer"
 ><title
@@ -5708,11 +5710,11 @@
     </imageobject>
     <textobject>
       <phrase
->Gestionnaire de scripts d'Amarok</phrase>
+>Gestionnaire de scripts pour Amarok</phrase>
     </textobject>
     <caption>
       <para
->Gestionnaire de scripts d'Amarok</para>
+>Gestionnaire de scripts pour Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -5737,7 +5739,7 @@
 > </inlinemediaobject
 >. </para>
 <para
->Un script peut aussi être exécuté directement dans la console de script d'Amarok. Pour activer ce comportement, choisissez la console de script et confirmez votre choix en appuyant soit sur le bouton <guilabel
+>Un script peut aussi être exécuté directement dans la console de script pour Amarok. Pour activer ce comportement, choisissez la console de script et confirmez votre choix en appuyant soit sur le bouton <guilabel
 >Ok</guilabel
 >, soit sur <guilabel
 >Appliquer</guilabel
@@ -5766,7 +5768,7 @@
 > 
 <sect2 id="changing-the-amarok-window-layout"
 ><title
->Modifier la disposition de la fenêtre d'Amarok</title
+>Modifier la disposition de la fenêtre de Amarok</title
 > 
 <para>
 <screenshot>
@@ -5795,7 +5797,7 @@
 > fera revenir aux réglages par défaut. </para>
 <sect3 id="undocking-amarok-panes"
 ><title
->Déplacer les panneaux d'Amarok</title
+>Déplacer les panneaux de Amarok</title
 > 
 <para>
 <screenshot>
@@ -5813,11 +5815,11 @@
 </screenshot>
 </para>
 <para
->Appuyer sur le symbole du losange à gauche de la croix vous permettra de déplacer le panneau, il apparaîtra donc comme une fenêtre séparée sur votre bureau. Répéter cette action sur le panneau « flottant » le fixera une nouvelle fois dans la fenêtre d'&amarok;. Vous pouvez faire glisser les panneaux dans la fenêtre d'&amarok; pour les réorganiser. Vous pouvez empiler les panneaux, ou même en placer un ou deux sur les autres, que vous pourrez ensuite choisir par onglets. </para>
+>Appuyer sur le symbole du losange à gauche de la croix vous permettra de déplacer le panneau, il apparaitra donc comme une fenêtre séparée sur votre bureau. Répéter cette action sur le panneau « flottant » le fixera une nouvelle fois dans la fenêtre d'&amarok;. Vous pouvez faire glisser les panneaux dans la fenêtre d'&amarok; pour les réorganiser. Vous pouvez empiler les panneaux, ou même en placer un ou deux sur les autres, que vous pourrez ensuite choisir par onglets. </para>
 </sect3>
 <sect3 id="lock-and-save-amarok-window-layout"
 ><title
->Verrouiller et enregistrer la disposition de la fenêtre d'Amarok</title
+>Verrouiller et enregistrer la disposition de la fenêtre de Amarok</title
 > 
 <para
 >Si vous êtes satisfait par la disposition de la fenêtre d'&amarok;, vous pouvez alors verrouiller cette disposition en appuyant sur l'élément approprié dans le menu <guilabel
@@ -5869,7 +5871,7 @@
   <row>
     <entry>
     <para
->Barre d'outils principale</para>
+>Barre principale d'outils</para>
     </entry>
   </row>
   <row>
@@ -5936,7 +5938,7 @@
 ><guimenuitem
 >Configurer les dispositions de la liste de lecture...</guimenuitem
 ></menuchoice
->  et l'éditeur ci-dessus s'affichera. À gauche, vous trouverez les dispositions prédéfinies; cliquez sur ceux qui vous permettent d'afficher la configuration à droite. Appuyer sur le bouton <guilabel
+> et l'éditeur ci-dessus s'affichera. À gauche, vous trouverez les dispositions prédéfinies. Cliquez sur ceux vous permettant d'afficher la configuration à droite. Appuyer sur le bouton <guilabel
 >Aperçu</guilabel
 > vous permet d'afficher la disposition appliquée dans le panneau de la <guilabel
 >liste de lecture</guilabel
@@ -6012,7 +6014,7 @@
 >Configuration de la disposition des éléments</title
 > 
 <para
->Chaque élément ajouté peut avoir sa propre disposition : le survol d'un élément affiche une clé à outils, cliquer sur cette clé vous permettra d'accéder à la boîte de dialogue de configuration pour cet élément. L'exemple ci-dessous vous donne un aperçu de la boîte de dialogue de configuration pour l'élément <guilabel
+>Chaque élément ajouté peut avoir sa propre disposition : le survol d'un élément affiche une clé à outils, cliquer sur cette clé vous permettra d'accéder à la boite de dialogue de configuration pour cet élément. L'exemple ci-dessous vous donne un aperçu de la boite de dialogue de configuration pour l'élément <guilabel
 >Album</guilabel
 > : </para>
 <para>
@@ -6196,12 +6198,6 @@
 ></listitem>
 <listitem
 ><para
-><link linkend="nepomuk-collection-in-amarok"
->Collection de Nepomuk</link
-></para
-></listitem>
-<listitem
-><para
 ><link linkend="remote-collections"
 >Collections distantes</link
 >&nbsp;<itemizedlist>
@@ -6287,7 +6283,7 @@
 <listitem
 ><para
 >Vous pouvez déclencher une ré-analyse d'un dossier en modifiant sa date (comme en utilisant la commande <varname
->touch /chemin/vers/le/dossier</varname
+>touch /emplacement/vers/</varname
 > dans un terminal).</para
 ></listitem>
 <listitem
@@ -6310,7 +6306,7 @@
 <para
 ><guilabel
 >La ré-analyse complète</guilabel
-> ne s'occupera pas des dates de modification. Elle ne supprimera pas les statistiques des fichiers existants; cependant, elle supprimera les statistiques des pistes qui ont disparu des dossiers de la collection actuellement montée. À cause de ce point précisément, il est conseillé d'exécuter une <guilabel
+> ne s'occupera pas des dates de modification. Elle ne supprimera pas les statistiques des fichiers existants. Cependant, elle supprimera les statistiques des pistes qui ont disparu des dossiers de la collection actuellement montée. À cause de ce point précisément, il est conseillé d'exécuter une <guilabel
 >ré-analyse complète</guilabel
 > seulement avec tous les dossiers de <guilabel
 >collection locale</guilabel
@@ -6346,14 +6342,14 @@
 <para
 >Avec la configuration par défaut, &amarok; enregistre toutes les informations de la collection dans un dossier appelé <filename
 >~.kde/share/apps/amarok/mysqle/</filename
-> . Il peut être une bonne idée de réaliser une sauvegarde de ce dossier de temps en temps, surtout si vous n'avez pas permis l'écriture des  informations statistiques. </para>
+>. Il peut être une bonne idée de réaliser une sauvegarde de ce dossier de temps en temps, surtout si vous n'avez pas permis l'écriture des informations statistiques. </para>
 </sect3>
 <sect3 id="about-unique-ids"
 ><title
 >À propos des identifiants uniques.</title
 > 
 <para
->&amarok; recherche les fichiers par un identifiant qui est enregistré dans la piste audio ou calculé grâce aux métadonnées du fichier, de la balise et des tous premiers kilobytes du fichier. </para>
+>&amarok; recherche les fichiers par un identifiant qui est enregistré dans la piste audio ou calculé grâce aux métadonnées du fichier, de la balise et des tous premiers Kilooctets du fichier. </para>
 <para
 >Cet identifiant aide &amarok; à identifier les pistes qui sont déplacées vers d'autres emplacements. Ainsi, ces informations statistiques (notes, scores, nombres d'écoutes, première &amp; dernière écoutes) ne sont pas perdues. </para>
 <para
@@ -6428,7 +6424,7 @@
 >compilation</emphasis
 > des fichiers mp3 avec la commande suivante :<userinput
 >id3v2 -r TCMP <replaceable
->le_nom_de_votre_fichier_ici</replaceable
+>le-nom-de-votre-fichier-ici</replaceable
 ></userinput
 > </para>
 </sect3>
@@ -6629,7 +6625,7 @@
 >Exemples</title
 > 
 <para
->Si vous faîtes une recherche sans spécifier de balise, &amarok; recherchera dans toutes les balises importantes : </para>
+>Si vous faites une recherche sans spécifier de balise, &amarok; recherchera dans toutes les balises importantes : </para>
 <para>
 <screenshot>
 <screeninfo
@@ -6745,7 +6741,7 @@
 >OU</guilabel
 > pour tous les termes de cette recherche. Si vous choisissez <guilabel
 >ET</guilabel
->, tous les ermes de recherche doivent être présents. </para>
+>, tous les termes de recherche doivent être présents. </para>
 <para
 >Si vous choisissez <guilabel
 >OU</guilabel
@@ -6820,7 +6816,7 @@
 <para
 >Si l'option<guilabel
 >Organiser les fichiers</guilabel
-> n'apparaît pas, vous êtes peut-être dans la vue fusionnée (basculez avec l'icône <inlinemediaobject
+> n'apparait pas, vous êtes peut-être dans la vue fusionnée (basculez avec l'icône <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -6832,7 +6828,7 @@
 <para
 >Après avoir choisi l'option <guilabel
 >Organiser les fichiers</guilabel
-> vous verrez d'abord une option supplémentaire vous permettant de déplacer les fichiers à un autre emplacement, en plus de pouvoir les transcoder en même temps. Selon les codecs installés sur votre système, certaines options pourraient ne pas être disponibles et donc apparaître en grisée : </para>
+> vous verrez d'abord une option supplémentaire vous permettant de déplacer les fichiers à un autre emplacement, en plus de pouvoir les transcoder en même temps. Selon les codecs installés sur votre système, certaines options pourraient ne pas être disponibles et donc apparaitre en grisée : </para>
 <para>
 <screenshot>
 <screeninfo
@@ -6859,7 +6855,7 @@
 <para
 >Après avoir appuyé sur le bouton <guilabel
 >Déplacer</guilabel
-> en haut de l'écran, vous verrez apparaître l'interface suivante : </para>
+> en haut de l'écran, vous verrez apparaitre l'interface suivante : </para>
 <para>
 <screenshot>
 <screeninfo
@@ -6932,15 +6928,15 @@
     <entry>
     <para
 ><guilabel
->Formats pré-configurés</guilabel
+>Formats préconfigurés</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Lorsque vous avez créé votre modèle de nommage, enregistrez-le comme un format pré-configuré en appuyant sur <guilabel
->Enregistrer le format pré-configuré</guilabel
->. Supprimez les formats pré-configurés en appuyant sur <guilabel
->Supprimer le format pré-configuré</guilabel
+>Lorsque vous avez créé votre modèle de nommage, enregistrez-le comme un format préconfiguré en appuyant sur <guilabel
+>Enregistrer le format préconfiguré</guilabel
+>. Supprimez les formats préconfigurés en appuyant sur <guilabel
+>Supprimer le format préconfiguré</guilabel
 >.</para>
     </entry>
   </row>
@@ -6960,7 +6956,7 @@
     <entry>
     <para
 ><guilabel
->Ignorer 'Le' dans les noms d'artistes</guilabel
+>Ignorer « Le » dans les noms d'artistes</guilabel
 ></para>
     </entry>
     <entry>
@@ -7009,7 +7005,7 @@
     <para
 >Remplace les expressions des balises que vous avez écrites sous le champ <guilabel
 >Remplacer</guilabel
-> par des chaînes de caractères que vous avez écrites dans le champs <guilabel
+> par des chaines de caractères que vous avez écrites dans le champs <guilabel
 >Par</guilabel
 >. Utile si vous avez des fautes d'orthographe dans CDDB.</para>
     </entry>
@@ -7023,7 +7019,7 @@
     </entry>
     <entry>
     <para
->Affiche le modèle de nommage original de vos fichiers multimédia et comment ils apparaîtront une fois que les modifications seront appliquées (indisponible depuis la version 2.4.2).</para>
+>Affiche le modèle de nommage original de vos fichiers multimédia et comment ils apparaitront une fois que les modifications seront appliquées (indisponible depuis la version 2.4.2).</para>
     </entry>
   </row>
   <row>
@@ -7049,7 +7045,7 @@
 > 
 <para
 >La version du code de la barre de symboles, qui vous permet de donner le format des noms des fichiers multimédia. Activez-le en appuyant sur <guilabel
->Advancé...</guilabel
+>Avancé...</guilabel
 > dans le menu de la fenêtre. Pour restaurer la vue, appuyez sur <guilabel
 >Basique...</guilabel
 >. </para>
@@ -7060,9 +7056,9 @@
 >%artist%/%album%{/Disc %discnumber%}/%track% %title%</userinput>
 </para>
 <para
->Remarque : Avant, le code était <varname
+>Remarque : avant, le code était <varname
 >%token</varname
->, alors que depuis la version 2.4 il est devenu <varname
+>, alors que depuis la version 2.4, il est devenu <varname
 >%token%</varname
 >. </para>
 <para>
@@ -7160,7 +7156,7 @@
 ></term>
     <listitem>
     <para
->Cet onglet affichera toutes les pistes qu'&amarok; a trouvé dans plus d'une collection, et mettra en évidence les conflits. Lorsque les pistes sont regroupées, vous pouvez voir deux types d'arrière-plan : vert clair et rouge clair. Un arrière-plan vert clair indique les champs nouveaux ou mis à jour, alors qu'un arrière-plan rouge clair indique les champs anciens/écrasés. Vous n'avez pas besoin de résoudre tous les conflits listés ici; le champ particulier des pistes listées ne seront pas synchronisées si vous ne résolvez pas le conflit.</para>
+>Cet onglet affichera toutes les pistes que &amarok; a trouvé dans plus d'une collection et mettra en évidence les conflits. Lorsque les pistes sont regroupées, vous pouvez voir deux types d'arrière-plan : vert clair et rouge clair. Un arrière-plan vert clair indique les champs nouveaux ou mis à jour, alors qu'un arrière-plan rouge clair indique les champs anciens/écrasés. Vous n'avez pas besoin de résoudre tous les conflits listés ici. Le champ particulier des pistes listées ne seront pas synchronisées si vous ne résolvez pas le conflit.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -7276,162 +7272,6 @@
 >, et les pistes récemment écoutées sur le périphérique seront scrobblées vers Last.fm, si la fonction est activée. Le processus ne demandera pas d'interaction utilisateur sauf si un conflit se présente. </para>
 </sect3>
 </sect2>
-<sect2 id="nepomuk-collection-in-amarok"
-><title
->Collection Nepomuk dans &amarok;</title
-> 
-<para
->Nepomuk est un grand programme cadre depuis quelques années avec beaucoup d'applications comme &dolphin; qui l'utilisent pour la gestion des métadonnées associées avec ses fichiers et ressources. Et maintenant, même &amarok; utilise Nepomuk pour atteindre des pistes sur votre ordinateur. Cette collection n'utilise pas la base SQLite pour enregistrer les statistiques et métadonnées (artiste, album, année, genre, étiquettes, etc). Elle utilise Nepomuk à la place pour les enregistrer et les atteindre. </para>
-<para
->Pour davantage de détails sur Nepomuk, rendez-vous sur <ulink url="http://nepomuk.kde.org"
->sa page officielle (en anglais)</ulink
->. </para>
-<sect3 id="why-use-the-nepomuk-collection-at-all"
-><title
->Pourquoi utiliser la collection Nepomuk ?</title
-> 
-<para
->Nepomuk est un gros moteur système avec de multiples applications l'utilisant pour la recherche de données et les métadonnées. Donc lorsque vous notez une piste dans &amarok;, cela s'affiche aussi dans &dolphin;. Lorsque vous gravez vos pistes sur un disque, les notes seront incluses aussi ! Vous n'avez plus à vous souvenir où vous avez enregistré vos pistes musicales. Nepomuk atteint les pistes n'importe où sur votre ordinateur. vous n'êtes pas contraint d'organiser votre musique dans un seul dossier ! Imaginez le nombre de fois que vous avez re-téléchargé une piste juste parce que vous ne la trouviez plus sur votre ordinateur -- c'est du passé maintenant ! </para>
-</sect3>
-<sect3 id="getting-started6"
-><title
->Mise en route</title
-> 
-<sect4 id="indexing-files"
-><title
->Indexation des fichiers</title
-> 
-<para
->Pour que vos pistes s'affichent dans &amarok;, elles doivent être <emphasis
->indexées</emphasis
-> par Nepomuk d'abord. Et Nepomuk n'indexe pas tous les fichiers sur votre disque dur. Sa configuration par défaut dans la plupart des distributions GNU/&Linux; exclut certains modèles communs pour la restauration de fichiers et de configuration des dossiers. Aussi, il n'indexe seulement certains dossiers situés dans votre dossier personnel.  </para>
-<para
->Attention : l'indexation des fichiers peut prendre beaucoup de temps aussi bien selon le nombre de fichiers à indexer que selon la quantité de mémoire allouée à la recherche sur le bureau pour l'indexation. Reportez-vous aussi dans la section <ulink url="help:/kcontrol/nepomuk"
->Rechercher sur le bureau</ulink
->. </para>
-</sect4>
-<sect4 id="choosing-directories-to-index"
-><title
->Choisir des dossiers à indexer</title
-> 
-<para
->Les dossiers qui sont à indexer peuvent être modifiés dans <menuchoice
-><guimenu
->Configuration du système</guimenu
-><guisubmenu
->Rechercher sur le bureau</guisubmenu
-><guimenuitem
->Indexation</guimenuitem
-><guimenuitem
->Personnaliser des dossiers</guimenuitem
-></menuchoice
->. Depuis KDE 4.11, voici la fenêtre de dialogue : </para>
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok_2-8_nepomukindexfolders_dialog_kde_4-11.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-</sect4>
-<sect4 id="enabling-nepomuk-collection-in-amarok"
-><title
->Activer la collection Nepomuk dans Amarok</title
-> 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para
->La <guilabel
->collection Nepomuk</guilabel
-> dans &amarok; est un module externe qui peut être activé en parcourant le menu <menuchoice
-><guimenu
->Configuration</guimenu
-><guisubmenu
->Configurer Amarok...</guisubmenu
-><guimenuitem
->Modules externes</guimenuitem
-><guimenuitem
->Collection Nepomuk</guimenuitem
-></menuchoice
->. Après l'activation, redémarrez &amarok; afin que le module externe se charge complètement. </para>
-</sect4>
-</sect3>
-<sect3 id="collections7"
-><title
->Collections</title
-> 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amaroknepomukcollectionbrowser2-7.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para
->Une fois le module externe activé, il y aura une nouvelle collection nommée <guilabel
->Collection Nepomuk</guilabel
-> contenant les pistes indexées par Nepomuk. </para>
-</sect3>
-<sect3 id="using-nepomuk-collection"
-><title
->Utiliser la collection Nepomuk</title
-> 
-<sect4 id="rating-tracks"
-><title
->Noter les pistes</title
-> 
-<para
->Une fois activée la recherche sur le bureau avec Nepomuk, les pistes et d'autres fichiers peuvent être notés dans le navigateur de fichiers &dolphin;. Les pistes dans la <guilabel
->collection Nepomuk</guilabel
-> peuvent être notées en dehors et la note sera affichée instantanément dans &amarok;. </para>
-</sect4>
-<sect4 id="moving-tracks"
-><title
->Déplacer des pistes</title
-> 
-<para
->Les pistes affichées dans la <guilabel
->collection Nepomuk</guilabel
-> peuvent être écoutées même si elles sont déplacées de leur emplacement d'origine. Il en est de même si vous les renommez. </para>
-</sect4>
-<sect4 id="playlists8"
-><title
->Listes de lecture</title
-> 
-<para
->Toutes les fonctionnalités de Nepomuk peuvent aussi être utilisées avec les listes de lecture crées. </para>
-</sect4>
-</sect3>
-</sect2>
 <sect2 id="remote-collections"
 ><title
 >Collections distantes</title
@@ -7471,11 +7311,9 @@
 <para
 >&amarok; est capable de lire de la musique depuis un serveur multimédia <guilabel
 >Ampache</guilabel
->. Si vous voulez installer un serveur, reportez-vous <ulink url="http://ampache.org/wiki/os_foundation"
->ici</ulink
-> pour davantage d'informations. Vous trouverez les instructions d'installation <ulink url="http://ampache.org/wiki/install"
->ici</ulink
->. </para>
+>. Si vous voulez installer un serveur, veuillez consulter cette <ulink url="https://github.com/ampache/ampache/wiki/Installation"
+>page</ulink
+> pour davantage d'informations. </para>
 </sect3>
 <sect3 id="ampache-client"
 ><title
@@ -7551,7 +7389,7 @@
 <para
 >À présent le service <guilabel
 >Ampache</guilabel
-> devrait apparaître dans <menuchoice
+> devrait apparaitre dans <menuchoice
 ><guimenu
 >Sources de média</guimenu
 ><guimenuitem
@@ -7579,9 +7417,9 @@
 >Protocole d'accès à l'audio numérique (DAAP)</title
 > 
 <para
->DAAP est un protocole de partages multimédia sur un réseau. Il a d'abord été utilisé par le lecteur de musique <guilabel
+>Le protocole « DAAP » permet le partage de média sur un réseau. Il a d'abord été utilisé pour le lecteur de musique <guilabel
 >iTunes</guilabel
->, mais il est aujourd'hui largement utilisé. </para>
+> mais il est maintenant largement utilisé. L'état actuel est que le module externe « DAAP » ne fonctionnera pas avec une version récente de iTunes, le serveur de média Firefly est connu pour fonctionner. </para>
 </sect3>
 <sect3 id="client"
 ><title
@@ -7638,7 +7476,7 @@
 >Nautilus</guilabel
 > prennent en charge ce protocole. </para>
 </sect3>
-<sect3 id="client9"
+<sect3 id="client6"
 ><title
 >Client</title
 > 
@@ -7653,7 +7491,7 @@
 >/<guilabel
 >partage</guilabel
 > <guilabel
->/point_de_montage/</guilabel
+>/point-de-montage/</guilabel
 ></userinput>
 </para>
 <para
@@ -7664,7 +7502,7 @@
 >Serveur</title
 > 
 <para
->La méthode la plus facile est d'utiliser votre gestionnaire de fichiers. Sur les distributions basées sur <guilabel
+>La méthode la plus facile est d'utiliser votre gestionnaire de fichiers. Sur les distributions bâties à partir de <guilabel
 >Debian</guilabel
 > telles qu'&ubuntu; vous pouvez installer une extension &dolphin; pour gérer les partages avec la commande </para>
 <para
@@ -7725,11 +7563,11 @@
 <para
 ><emphasis
 >UPnP</emphasis
-> est un ensemble de protocoles pour partager des périphériques sur le réseau. Il est aussi pris en charge par une large gamme de routeurs et de serveurs de stockage en réseau NAS. Actuellement, la prise en charge de l'UPnP est communément indiqué sous le sigle <ulink url="https://fr.wikipedia.org/wiki/Dlna"
+> est un ensemble de protocoles pour partager des périphériques sur le réseau. Il est aussi pris en charge par une large gamme de routeurs et de serveurs de stockage en réseau NAS. Actuellement, la prise en charge de « UPnP » est communément indiqué sous le sigle <ulink url="https://fr.wikipedia.org/wiki/Dlna"
 >DLNA</ulink
 >. </para>
 <para
->&amarok; possède un client intégré de partage de media UPnP, donc il peut lire des pistes partagées sur le réseau. Pour l'activer, parcourez le menu <menuchoice
+>&amarok; possède un client intégré de partage de média « UPnP », donc il peut lire des pistes partagées sur le réseau. Pour l'activer, parcourez le menu <menuchoice
 ><guimenu
 >Configuration</guimenu
 ><guisubmenu
@@ -7740,7 +7578,7 @@
 >Collections</guimenuitem
 ></menuchoice
 > et cochez la case à côté du module externe <guilabel
->Collection UPnP</guilabel
+>Collection « UPnP »</guilabel
 >.  </para>
 <para>
 <screenshot>
@@ -7777,9 +7615,9 @@
 </screenshot>
 </para>
 <para
->La fonctionnalité UPnP dépend de la prise en charge du serveur multimédia UPnP de <guilabel
+>La fonctionnalité « UPnP » dépend de la prise en charge du serveur multimédia « UPnP » de <guilabel
 >KDE</guilabel
->. </para>
+>. À ce jour (2015), il n'y a aucun module d'entrée / sortie (kioslave) « UPnP » disponible. </para>
 </sect3>
 </sect2>
 <sect2 id="external-database"
@@ -7803,15 +7641,15 @@
 >Installer un serveur MySQL</title
 > 
 <para
->D'abord vous avez besoin d'installer un serveur <guilabel
+>Tout d'abord, vous avez besoin d'installer un serveur <guilabel
 >MySQL</guilabel
->. Sur les distributions basées sur Debian comme Ubuntu vous pouvez utiliser </para>
+>. Sur les distributions construites à partir de Debian comme Ubuntu vous pouvez utiliser </para>
 <para
 ><userinput
 >sudo apt-get install mysql-server mysql-client</userinput>
 </para>
 <para
->pour l'installer. Il vous sera demandé un mot de passe pour le compte root pour la base de données. Le paquet <emphasis
+>pour l'installer. Il vous sera demandé un mot de passe pour le compte administrateur pour la base de données. Le paquet <emphasis
 >mysql-client</emphasis
 > est nécessaire pour exécuter certaines commandes de cette documentation, mais ne l'est pas pour l'utilisation d'&amarok;. </para>
 </sect3>
@@ -7826,7 +7664,7 @@
 >mysql -u root -p</userinput>
 </para>
 <para
->Le mot de passe du super-utilisateur pour <guilabel
+>Le mot de passe administrateur pour <guilabel
 >MySQL</guilabel
 > vous sera demandé. Vous obtiendrez le prompt <screen
 >mysql&gt;</screen
@@ -7845,7 +7683,7 @@
 >'localhost'</guilabel
 > IDENTIFIED BY <guilabel
 >'amarokpass'</guilabel
->;</userinput>
+> ;</userinput>
 </para>
 <para
 >Amarok a besoin de sa propre base de données, qui est créée par </para>
@@ -7853,7 +7691,7 @@
 ><userinput
 >CREATE DATABASE <guilabel
 >amarokdb</guilabel
->;</userinput>
+> ;</userinput>
 </para>
 <para
 >Permettez l'accès au nouvel utilisateur à la base de données en entrant la commande </para>
@@ -7867,7 +7705,7 @@
 >'%'</guilabel
 > IDENTIFIED BY <guilabel
 >'amarokpass'</guilabel
->;</userinput>
+> ;</userinput>
 </para>
 <para
 >où <emphasis
@@ -7875,7 +7713,7 @@
 > est un joker pour permettre à tous les hôtes de se connecter à la base de données. Maintenant, utilisez l'expression </para>
 <para
 ><userinput
->FLUSH PRIVILEGES;</userinput>
+>FLUSH PRIVILEGES ;</userinput>
 </para>
 <para
 >pour rafraîchir divers caches internes utilisés par <guilabel
@@ -7907,7 +7745,7 @@
 >Configurer le client</title
 > 
 <para
->Ouvrez la boîte de dialogue de configuration en cliquant sur <menuchoice
+>Ouvrez la boite de dialogue de configuration en cliquant sur <menuchoice
 ><guimenu
 >Configuration</guimenu
 ><guisubmenu
@@ -7957,7 +7795,7 @@
 >MySQL</guilabel
 > depuis votre dossier <filename
 >~/.kde4/share/apps/amarok</filename
-> (pour Debian et dérivés remplacez .kde4/ par .kde/)(--defaults-file DOIT ABSOLUMENT être la première option !) : </para>
+> (pour Debian et dérivés, remplacez « .kde4/ » par « .kde/ »)(--defaults-file DOIT ABSOLUMENT être la première option !) : </para>
 <para
 ><userinput
 >/usr/sbin/mysqld --defaults-file=`pwd`/my.cnf --default-storage-engine=MyISAM --datadir=`pwd`/mysqle --socket=`pwd`/sock --skip-grant-tables</userinput>
@@ -7965,7 +7803,7 @@
 <para
 >L'option « skip-grant-tables » signifie que vous pouvez utiliser n'importe quel mot de passe ou nom d'utilisateur pour vous y connecter. « localhost » ne fonctionnera pas, le client <guilabel
 >MySQL</guilabel
-> essayera d'utiliser une socket <guilabel
+> essayera d'utiliser un socket <guilabel
 >&UNIX;</guilabel
 >. Par contre, utiliser <guilabel
 >127.0.0.1</guilabel
@@ -7975,7 +7813,7 @@
 >sudo /etc/init.d/apparmor stop</userinput>
 </para>
 <para
->Maintenant, exécuter mysqldump, en lui passant l'option -S pour spécifier la socket locale. Cela copiera votre ancienne base de données embarquée vers un fichier SQL. </para>
+>Maintenant, exécuter mysqldump, en lui passant l'option « -S » pour spécifier le socket local. Cela copiera votre ancienne base de données embarquée vers un fichier « SQL ». </para>
 <para
 ><userinput
 >mysqldump -S sock amarok &gt; amarok.mysql</userinput>
@@ -8027,7 +7865,7 @@
 >Connecter des périphériques multimédia</title
 > 
 <para
->Connectez votre périphérique multimédia en utilisant le câble USB. Le plasmoïd de notification de nouveau périphérique de&kde; s'affichera automatiquement avec une liste de tous les périphériques disponibles. Appuyez sur l'icône <inlinemediaobject
+>Connectez votre périphérique multimédia en utilisant le câble USB. Le composant graphique de notification de nouveau périphérique de &kde; s'affichera automatiquement avec une liste de tous les périphériques disponibles. Appuyez sur l'icône <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-emblem-mounted.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -8153,7 +7991,7 @@
     </entry>
     <entry>
     <para
->Ouvre une boîte de dialogue pour modifier la configuration des options pour le périphérique.</para>
+>Ouvre une boite de dialogue pour modifier la configuration des options pour le périphérique.</para>
     </entry>
   </row>
   <row>
@@ -8237,7 +8075,7 @@
     </entry>
     <entry>
     <para
->Ouvre une boîte de dialogue pour modifier les informations des pistes choisies depuis le périphérique multimédia.</para
+>Ouvre une boite de dialogue pour modifier les informations des pistes choisies depuis le périphérique multimédia.</para
 ></entry>
   </row>
   </tbody>
@@ -8247,10 +8085,10 @@
 </sect3>
 <sect3 id="troubleshooting-media-device-support"
 ><title
->Résolution de problèmes relatif à la prise en charge des périphériques de media.</title
+>Résolution de problèmes relatif à la prise en charge des périphériques de média.</title
 > 
 <para
->Depuis la version 2.8 d'Amarok, les appareils suivants devraient fonctionner avec Amarok : </para>
+>Depuis la version 2.8 de Amarok, les appareils suivants devraient fonctionner avec Amarok : </para>
 <itemizedlist>
 <listitem
 ><para
@@ -8258,13 +8096,13 @@
 ></listitem>
 <listitem
 ><para
->Les iPods / iPhones, s'ils sont pris en charge par la bibliothèque libgpod. L'état dépend de la version de cette bibliothèque installée sur votre système, référez vous à <ulink url="http://www.gtkpod.org/wiki/Home"
+>Les iPods / iPhones, s'ils sont pris en charge par la bibliothèque « libgpod ». L'état dépend de la version de cette bibliothèque installée sur votre système, référez vous à <ulink url="http://www.gtkpod.org/wiki/Home"
 >la liste de prise en charge de libgpod</ulink
 > sur leur page d'accueil.</para
 ></listitem>
 <listitem
 ><para
->Prise en charge limitée pour les appareils utilisant le protocole MTP, la prise en charge pour les nouveaux appareils Android est actuellement en cours d'implémentation pour la prochaine version d'Amarok.</para
+>Prise en charge limitée pour les appareils utilisant le protocole « MTP », la prise en charge pour les nouveaux appareils Android est actuellement en cours d'implémentation pour la prochaine version de Amarok.</para
 ></listitem>
 </itemizedlist>
 </sect3>
@@ -8338,11 +8176,11 @@
 >Télécharger les pochettes manquantes</title
 > 
 <para
->S'il y a des albums dont il manque les pochettes, vous pouvez essayer de toutes les récupérer automatiquement depuis internet. Choisissez juste <guilabel
+>S'il y a des albums dont les pochettes sont manquantes, vous pouvez essayer de toutes les télécharger automatiquement depuis Internet. Sélectionnez simplement <guilabel
 >Télécharger les pochettes manquantes</guilabel
 > en haut de la fenêtre et le <guilabel
 >gestionnaire de pochettes</guilabel
-> essayera de trouver les pochettes. S'il y a beaucoup d'albums dont les pochettes manquent, le processus peut prendre un certain temps. </para>
+> essayera de trouver les pochettes. S'il y a beaucoup d'albums dont les pochettes sont manquantes, le processus peut prendre un certain temps. </para>
 </sect2>
 <sect2 id="changing-cover-art"
 ><title
@@ -8417,7 +8255,7 @@
 >. Appuyer sur <guilabel
 >Annuler</guilabel
 > annule toutes les modifications qui n'ont pas été enregistrées. </para>
-<sect3 id="tags10"
+<sect3 id="tags7"
 ><title
 >Balises</title
 > 
@@ -8508,7 +8346,7 @@
     </entry>
     <entry>
     <para
->Le numéro du disque de l'album; important pour les albums avec plusieurs CD.</para>
+>Le numéro du disque de l'album :important pour les albums avec plusieurs CD.</para>
     </entry>
   </row>
   <row>
@@ -8676,7 +8514,7 @@
 > et <emphasis
 >ffmpeg</emphasis
 > d'installés, et si &amarok; a été compilé avec eux, <guilabel
->Musicbrainz</guilabel
+>MusicBrainz</guilabel
 > sera capable d'utiliser <quote
 >fingerprinting</quote
 > (le service de <emphasis
@@ -8759,13 +8597,13 @@
 >Exemple</title
 > 
 <para
->Nom de fichier : 03-Michel_Sardou-je_vais_t_aimer.mp3 </para>
+>Nom de fichier : 03-Michel-Sardou-je-vais-t-aimer.mp3 </para>
 <para
 >Numéro de la piste : 03 </para>
 <para
->Artiste : Michel_Sardou </para>
+>Artiste : Michel Sardou </para>
 <para
->Titre: je_vais_t_aimer </para>
+>Titre: je-vais-t-aimer </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8787,7 +8625,7 @@
 >Avancé</title
 > 
 <para
->Dans le mode de vue avancé, vous pouvez créer un modèle en utilisant des marqueurs dans une chaîne de caractères. </para>
+>Dans le mode de vue avancé, vous pouvez créer un modèle en utilisant des marqueurs dans une chaine de caractères. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8804,18 +8642,18 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example11"
+<sect3 id="example8"
 ><title
 >Exemple</title
 > 
 <para
->Nom de fichier : 03-Michel_Sardou-je_vais_t_aimer.mp3 </para>
+>Nom de fichier : 03-Michel-Sardou-je-vais-t-aimer.mp3 </para>
 <para
 >Numéro de la piste : 03 </para>
 <para
->Artiste : Michel_Sardou </para>
+>Artiste : Michel Sardou </para>
 <para
->Titre: je_vais_t_aimer </para>
+>Titre: je-vais-t-aimer </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8913,8 +8751,8 @@
     </entry>
     <entry>
     <para
->Liste de tous vos codecs installés; choisissez-en un pour pouvoir transcoder. Si cette liste est vide, vous devez installer <emphasis
->FFmpeg</emphasis
+>Liste de tous vos codecs installés. Sélectionnez-en un pour pouvoir faire le transcodage. Si cette liste est vide, vous devez installer <emphasis
+>FFMpeg</emphasis
 >.</para>
     </entry>
   </row>
@@ -9081,9 +8919,9 @@
 >Conseil de pro : extraire une piste audio de fichiers vidéos</title
 > 
 <para
->Les capacités de transcodage d'&amarok; peuvent être utilisée pour extraire de l'audio depuis des fichiers vidéos lorsque vous les déplacez ou les copiez dans une collection. Choisissez un (ou plusieurs) fichier vidéo dans le navigateur de fichiers embarqué d'&amarok;, faîtes un clic droit et choisissez <guilabel
+>Les capacités de transcodage d'&amarok; peuvent être utilisée pour extraire de l'audio depuis des fichiers vidéos lorsque vous les déplacez ou les copiez dans une collection. Sélectionnez un (ou plusieurs) fichier vidéo dans le navigateur de fichiers embarqué d'&amarok;, faites un clic droit et choisissez <guilabel
 >copier dans la collection</guilabel
->.  La fenêtre de dialogue pour <guilabel
+>. La fenêtre de dialogue pour <guilabel
 >transcoder les pistes</guilabel
 > s'affichera. Choisissez l'un des encodeurs, appuyez sur le bouton <guilabel
 >transcoder</guilabel
@@ -9129,7 +8967,7 @@
 > pour davantage d'informations. </para>
 </sect1>
 </chapter>
-<chapter id="playlist12"
+<chapter id="playlist9"
 ><title
 >Liste de lecture</title
 > 
@@ -9176,7 +9014,7 @@
 <para
 >La <emphasis
 >liste de lecture enregistrée</emphasis
-> est un type traditionnel de liste de lecture. Les listes enregistrées fonctionnent comme la liste de lecture courante d'&amarok;, enregistrées dans la base de données d'&amarok; ou sur votre disque pour une prochaine utilisation. Partager vos listes de lecture enregistrées avec vos amis est facile et il peut être amusant de les utiliser lors d'événements pendant lesquels vous souhaitez écouter des chansons particulières. </para>
+> est un type traditionnel de liste de lecture. Les listes enregistrées fonctionnent comme la liste de lecture courante d'&amarok;, enregistrées dans la base de données d'&amarok; ou sur votre disque pour une prochaine utilisation. Partager vos listes de lecture enregistrées avec vos amis est facile et il peut être amusant de les utiliser lors d'évènements pendant lesquels vous souhaitez écouter des chansons particulières. </para>
 <para
 >Créer une liste de lecture enregistrée est très facile avec les chansons et l'ordre exacts que vous voulez. Pour une utilisation quotidienne, il est parfois plus rapide d'utiliser les <link linkend="dynamic-playlists"
 >listes de lecture dynamiques</link
@@ -9228,7 +9066,7 @@
 > dans le panneau <guilabel
 >Sources de média</guilabel
 > et développer la section <guilabel
->Base de données d'Amarok</guilabel
+>Base de données de Amarok</guilabel
 >. Vous les trouverez dans votre système de fichiers ici : <filename
 >~/.kde(4)/share/apps/amarok/playlists</filename
 >. </para>
@@ -9253,7 +9091,7 @@
 >Importer une liste de lecture</title
 > 
 <para
->Vous pouvez importer un fichier de liste de lecture dans &amarok; en le copiant simplement vers n'importe quel répertoire qu'&amarok; considère qu'il fait partie de votre collection de musique. Lorsqu'&amarok; détecte une nouvelle liste de lecture dans un des répertoires de votre collection, il l'ajoutera à <guilabel
+>Vous pouvez importer un fichier de liste de lecture dans &amarok; en le copiant simplement vers n'importe quel dossier qu'&amarok; considère qu'il fait partie de votre collection de musique. Lorsqu'&amarok; détecte une nouvelle liste de lecture dans un des dossiers de votre collection, il l'ajoutera à <guilabel
 >Fichiers de listes de lecture sur le disque</guilabel
 > section des <menuchoice
 ><guimenu
@@ -9263,7 +9101,7 @@
 ></menuchoice
 > dans le panneau des <guilabel
 >Sources de média</guilabel
->. Si la liste de lecture n'apparaît pas aussitôt, vous pouvez mettre à jour la collection manuellement en appuyant sur <menuchoice
+>. Si la liste de lecture n'apparait pas aussitôt, vous pouvez mettre à jour la collection manuellement en appuyant sur <menuchoice
 ><guimenu
 >Outils</guimenu
 ><guimenuitem
@@ -9302,15 +9140,15 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="edit-box13"
+<sect2 id="edit-box10"
 ><title
 >Barre de recherche</title
 > 
 <para
 >Quand vous saisissez quelque chose dans le champ de <guilabel
 >recherche de la liste de lecture</guilabel
->, &amarok; recherchera et marquera les pistes, les artistes, etc correspondants à votre recherche dans votre liste de lecture. </para>
-<sect3 id="examples14"
+>, &amarok; recherchera et marquera les pistes, les artistes correspondants à votre recherche dans votre liste de lecture. </para>
+<sect3 id="examples11"
 ><title
 >Exemples</title
 > 
@@ -9381,7 +9219,7 @@
     </entry>
     <entry>
     <para
->&amarok; recherchera le texte saisi dans les balises : Titre de la piste</para>
+>&amarok; recherchera le texte saisi dans les balises : titres de la piste</para>
     </entry>
   </row>
   <row>
@@ -9393,7 +9231,7 @@
     </entry>
     <entry>
     <para
->Recherche le texte saisi dans la balise : Titre d'album</para>
+>Recherche le texte saisi dans la balise : titres d'album</para>
     </entry>
   </row>
   <row>
@@ -9405,7 +9243,7 @@
     </entry>
     <entry>
     <para
->Recherche le texte saisi dans la balise : Artiste</para>
+>Recherche le texte saisi dans la balise : artiste</para>
     </entry>
   </row>
   <row>
@@ -9417,7 +9255,7 @@
     </entry>
     <entry>
     <para
->Recherche le texte saisi dans la balise : Genre</para>
+>Recherche le texte saisi dans la balise : genre</para>
     </entry>
   </row>
   <row>
@@ -9429,7 +9267,7 @@
     </entry>
     <entry>
     <para
->Recherche le texte saisi dans la balise : Compositeur</para>
+>Recherche le texte saisi dans la balise : compositeur</para>
     </entry>
   </row>
   <row>
@@ -9517,7 +9355,7 @@
 >. </para>
 <para
 >Au fur et à mesure que vous choisissez ou ajoutez des chansons à la file d'attente, chacune d'elles prend un numéro. Ce dernier indique l'ordre de passage dans lequel les chansons seront écoutées. </para>
-<sect3 id="example15"
+<sect3 id="example12"
 ><title
 >Exemple</title
 > 
@@ -9753,7 +9591,7 @@
 <para
 >La liste de lecture dynamique est une liste qui se remplit lorsque vous écoutez votre musique. </para>
 <para
->Elle gardera un certain nombre de chansons devant la chansons actuellement écoutée et elle nettoiera la liste de lecture en supprimant les anciennes chansons. </para>
+>Elle conservera un certain nombre de chansons devant la chansons actuellement écoutée et elle nettoiera la liste de lecture en supprimant les anciennes chansons. </para>
 <para
 >Les chansons qui seront ajoutées au début de la liste sont déterminées par la liste de lecture dynamique actuellement choisie. </para>
 </sect2>
@@ -9824,7 +9662,7 @@
 ></term>
     <listitem>
     <para
->Cette condition ajoute les pistes trouvées par une recherche donnée. Elle utilise la même chaîne de caractères utilisée pour la recherche dans le navigateur de collection. Vous pouvez aussi utiliser la condition <guilabel
+>Cette condition ajoute les pistes trouvées par une recherche donnée. Elle utilise la même chaine de caractères utilisée pour la recherche dans le navigateur de collection. Vous pouvez aussi utiliser la condition <guilabel
 >correspondance par méta-balises</guilabel
 > pour faire correspondre aux balises de la même façon que dans l'éditeur de recherche de collection.</para>
      </listitem>
@@ -9872,7 +9710,7 @@
     <para
 >Cette condition ajoute des pistes depuis les sous-conditions en proportion. La fenêtre de modification pour cette condition contient des curseurs pour chaque sous-condition qu'il faut ajuster pour obtenir la proportion de correspondance souhaitée de la liste de lecture avec le critère. Par exemple, avec deux sous-conditions dont les curseurs indiquant les proportions de correspondances sont au même niveau, la moitié de la liste de lecture correspondra à l'une des conditions et l'autre moitié de la liste de lecture correspondra à l'autre condition.</para>
     <para
->Note : La liste de lecture dynamique travaille en interne avec plus de pistes qu'il n'est affiché, donc après avoir cliquer sur <quote
+>Remarque : la liste de lecture dynamique travaille en interne avec plus de pistes qu'il n'est affiché, donc après avoir cliquer sur <quote
 >repeupler</quote
 > la liste peut ne pas contenir une distribution de type 50 / 50 de chansons. Cependant au fur et à mesure de votre écoute de musique, vous vous apercevrez qu'en fin de compte il s'agit bien d'une distribution 50 / 50.</para>
      </listitem>
@@ -9898,9 +9736,9 @@
 ></term>
     <listitem>
     <para
->Cette condition ajoute les pistes qui satisfont certaines conditions sur une balise. L'interface de choix est la même que celle de l'éditeur du filtre de recherche dans le navigateur de collection. Choisissez un type de balise depuis la liste déroulante et renseignez les contraintes. (Conseil : vous pouvez utiliser cette condition à l'intérieur d'une condition <guilabel
+>Cette condition ajoute les pistes qui satisfont certaines conditions sur une balise. L'interface de choix est la même que celle de l'éditeur du filtre de recherche dans le navigateur de collection. Sélectionnez un type de balise depuis la liste déroulante et renseignez les contraintes. (Conseil : vous pouvez utiliser cette condition à l'intérieur d'une condition <guilabel
 >Et</guilabel
->.)</para>
+>)</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -9924,7 +9762,7 @@
 ></term>
     <listitem>
     <para
->Cette condition ajoute les pistes dont le premier caractère d'une balise donnée (titre, artiste ou album) est identique au dernier caractère de la même balise de la piste précédente. Par exemple, avec la balise artiste choisie, vous pouvez avoir la série suivante : Led Zeppeli<guilabel
+>Cette condition ajoute les pistes dont le premier caractère d'une balise donnée (titre, artiste ou album) est identique au dernier caractère de la même balise de la piste précédente. Par exemple, avec la balise artiste choisie, vous pouvez avoir la série suivante : comme Led Zeppeli<guilabel
 >n</guilabel
 > -&gt; <guilabel
 >N</guilabel
@@ -9938,11 +9776,11 @@
   <varlistentry
 ><term
 ><emphasis role="bold"
->Artistes similaires d'Echo Nest</emphasis
+>Artistes similaires sur EchoNest</emphasis
 ></term>
     <listitem>
     <para
->Cette condition ajoute les pistes qui sont similaires, selon Echonest, soit à la piste précédente, soit à n'importe quelle autre piste de la liste de lecture. Cela vous permet d'écouter un ensemble cohérent de chansons en ajoutant simplement une seule piste à la liste de lecture et en activant la liste de lecture dynamique, plutôt que de définir toutes les règles de correspondance vous-même.</para>
+>Cette condition ajoute les pistes qui sont similaires, selon EchoNest, soit à la piste précédente, soit à n'importe quelle autre piste de la liste de lecture. Cela vous permet d'écouter un ensemble cohérent de chansons en ajoutant simplement une seule piste à la liste de lecture et en activant la liste de lecture dynamique, plutôt que de définir toutes les règles de correspondance vous-même.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -9952,7 +9790,7 @@
 ></term>
     <listitem>
     <para
->Cette condition exécute la même fonction que celle d'EchoNest, mais utilise cette fois-ci Last.fm pour déterminer les similarités. Vous pouvez aussi choisir les similarités par rapport à la piste précédente ou par rapport à l'artiste précédent.</para>
+>Cette condition exécute la même fonction que celle pour EchoNest, mais utilise cette fois-ci Last.fm pour déterminer les similarités. Vous pouvez aussi choisir les similarités par rapport à la piste précédente ou par rapport à l'artiste précédent.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -10009,7 +9847,7 @@
 > </inlinemediaobject
 > pour les supprimer. </para>
 </sect2>
-<sect2 id="a-dynamic-playlist-in-use16"
+<sect2 id="a-dynamic-playlist-in-use13"
 ><title
 >Une liste de lecture dynamique en cours d'utilisation</title
 > 
@@ -10037,7 +9875,7 @@
 <para
 >Le <guilabel
 >générateur automatique de liste de lecture (GALL)</guilabel
-> génère automatiquement des listes de lecture sur la base des contraintes que vous avez renseignées. Ces dernières peuvent porter sur les données d'une chanson (artiste, genre, année) ou sur la date d'accès (dernière écoute). Il existe aussi des contraintes spéciales pour déterminer la façon dont &amarok; recherche les chansons.  Vous trouverez le <emphasis
+> génère automatiquement des listes de lecture sur la base des contraintes que vous avez renseignées. Ces dernières peuvent porter sur les données d'une chanson (artiste, genre, année) ou sur la date d'accès (dernière écoute). Il existe aussi des contraintes spéciales pour déterminer la façon dont &amarok; recherche les chansons. Vous trouverez le <emphasis
 >GALL</emphasis
 > dans votre panneau <guilabel
 >sources de média</guilabel
@@ -10050,7 +9888,7 @@
 >. </para>
 <sect2 id="apg-presets-toolbar"
 ><title
->Barre d'outils de la pré-configuration du GALL </title
+>Barre d'outils de la préconfiguration du GALL </title
 > 
 <para>
 <screenshot>
@@ -10069,34 +9907,34 @@
 </para>
 <para
 >Voici la barre d'outils de la <guilabel
->pré-configuration du GALL</guilabel
->.De gauche à droite, nous avons les boutons suivants : </para>
+>préconfiguration du GALL</guilabel
+>. De gauche à droite, nous avons les boutons suivants : </para>
 <itemizedlist>
 <listitem
 ><para
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject
-> </inlinemediaobject
-> ajoute un pré-réglage blanc qui peut être modifié.</para
+></inlinemediaobject
+> ajoute un préréglage vide pouvant être modifié.</para
 ></listitem>
 <listitem
 ><para
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Ouvre la fenêtre de <guilabel
->l'éditeur de pré-réglage du GALL</guilabel
-> pour modifier les contraintes du pré-réglage actuellement choisi.</para
+>l'éditeur de préréglage du GALL</guilabel
+> pour modifier les contraintes du préréglage actuellement choisi.</para
 ></listitem>
 <listitem
 ><para
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-list-remove.png" format="PNG"/> </imageobject
-> </inlinemediaobject
-> Supprime le pré-réglage choisi de la liste; <emphasis
+></inlinemediaobject
+> Supprime le préréglage choisi de la liste; <emphasis
 >ne</emphasis
 > peut <emphasis
 >pas</emphasis
@@ -10107,32 +9945,32 @@
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-import.png" format="PNG"/> </imageobject
-> </inlinemediaobject
-> Importe un pré-réglage depuis un fichier .xml. Il peut potentiellement être mal structuré s'il a été écrit en dehors d'&amarok;; veuillez utiliser le testeur de contrainte.</para
+></inlinemediaobject
+> Importe un préréglage depuis un fichier .xml. Il peut potentiellement être mal structuré s'il a été écrit en dehors d'&amarok;; veuillez utiliser le testeur de contrainte.</para
 ></listitem>
 <listitem
 ><para
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-export.png" format="PNG"/> </imageobject
-> </inlinemediaobject
-> Exporte le pré-réglage choisi vers un fichier .xml qui peut être importé.</para
+></inlinemediaobject
+> Exporte le préréglage choisi vers un fichier .xml qui peut être importé.</para
 ></listitem>
 <listitem
 ><para
 ><inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-go-next.png" format="PNG"/> </imageobject
-> </inlinemediaobject
+></inlinemediaobject
 > Charge le <guilabel
 >GALL</guilabel
-> avec les pré-réglages choisis et génère automatiquement une liste de lecture.</para
+> avec les préréglages choisis et génère automatiquement une liste de lecture.</para
 ></listitem>
 </itemizedlist>
 </sect2>
 <sect2 id="working-with-presets"
 ><title
->Travailler avec les pré-réglages</title
+>Travailler avec les préréglages</title
 > 
 <para>
 <screenshot>
@@ -10144,21 +9982,21 @@
     </imageobject>
     <textobject>
       <phrase
->Fenêtre de l'éditeur de pré-réglages du GALL</phrase>
+>Fenêtre de l'éditeur de préréglages du GALL</phrase>
     </textobject>
     <caption>
       <para
->Fenêtre de l'éditeur de pré-réglages du GALL</para>
+>Fenêtre de l'éditeur de préréglages du GALL</para>
     </caption>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Les pré-réglages sont un ensemble de règles que le <guilabel
+>Les préréglages sont un ensemble de règles que le <guilabel
 >GALL</guilabel
 > d'&amarok; utilisera lors de la création des listes de lecture. Ces règles seront appelées des <emphasis
 >contraintes</emphasis
-> à partir de maintenant; chaque pré-réglage est déterminé par les contraintes qui le compose. Les groupes de contraintes hiérarchiquement et logiquement organisés sont appelés arbres de contraintes. </para>
+> à partir de maintenant. Chaque préréglage est déterminé par les contraintes qui le compose. Les groupes de contraintes hiérarchiquement et logiquement organisés sont appelés arbres de contraintes. </para>
 <sect3 id="constraints"
 ><title
 >Contraintes</title
@@ -10166,19 +10004,19 @@
 <para
 >Les contraintes sont les briques de construction des arbres de contraintes. Ce sont de simples phrases que le <guilabel
 >GALL</guilabel
-> utilisera pour ajouter des chansons à la liste de lecture qu'il crée. Pour ajouter une contrainte à l'arbre de contraintes du pré-réglage actuellement choisi, appuyez sur le bouton <inlinemediaobject
+> utilisera pour ajouter des chansons à la liste de lecture qu'il crée. Pour ajouter une contrainte à l'arbre de contraintes du préréglage actuellement choisi, appuyez sur le bouton <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject
 > </inlinemediaobject
 > dans <guilabel
->la barre d'outils des pré-réglages du GALL</guilabel
+>la barre d'outils des préréglages du GALL</guilabel
 > et cliquez sur l'option <guilabel
 >Ajouter</guilabel
 > en haut à gauche de <guilabel
->la fenêtre de l'éditeur des pré-réglages du GALL</guilabel
->. Remarquez qur cela ajoutera la contrainte sous l'élément choisi ( contrainte ou groupe de contraintes). </para>
+>la fenêtre de l'éditeur des préréglages du GALL</guilabel
+>. Veuillez noter que cela ajoutera la contrainte sous l'élément choisi ( contrainte ou groupe de contraintes). </para>
 <para
->Beaucoup de sortes différentes de contraintes peuvent être ajoutées; chacune fonctionne de manière différente à l'intérieur de l'arbre. </para>
+>Beaucoup de sortes différentes de contraintes peuvent être ajoutées. Chacune fonctionne de manière différente à l'intérieur de l'arbre. </para>
 </sect3>
 <sect3 id="constraint-types"
 ><title
@@ -10269,9 +10107,9 @@
 <para
 >Une autre façon de modifier les contraintes présentes dans <guilabel
 >correspondre aux balises</guilabel
-> par une balise basée sur du texte dans la ligne en-dessous de la boîte d'option <guilabel
+> par une balise reposant sur du texte dans la ligne en-dessous de la boite d'option <guilabel
 >champ</guilabel
->.Dans le champ de texte à droite, vous écrivez le texte qui doit faire l'objet de la correspondance, et dans la boîte d'option à gauche du texte que vous venez de saisir, vous pouvez choisir <guilabel
+>. Dans le champ de texte à droite, vous écrivez le texte qui doit faire l'objet de la correspondance, et dans la boite d'option à gauche du texte que vous venez de saisir, vous pouvez choisir <guilabel
 >contient</guilabel
 > (toutes les chansons qui ont ce texte dans leur balise seront donc considérées), <guilabel
 >égal à</guilabel
@@ -10313,7 +10151,7 @@
 >Les groupes de contraintes peuvent être ajoutés grâce à l'option <guilabel
 >ajouter</guilabel
 > depuis la fenêtre de <guilabel
->l'éditeur de pré-réglages du GALL</guilabel
+>l'éditeur de préréglages du GALL</guilabel
 >, les contraintes sous un groupe sont logiquement liées, la même chose s'applique pour les groupes sous d'autres groupes. </para>
 <para
 >Il y a actuellement deux sortes de groupes de contraintes : les groupes <quote
@@ -10324,18 +10162,18 @@
 >correspondre à tout</quote
 > requiert que toutes les contraintes sous leur giron soient satisfaites par la chanson. Les groupes <quote
 >correspondre à n'importe quel</quote
-> requiert qu'au moins une des contraintes sous leur giron soit satisfaite par la chanson. Pour ajouter une contrainte sous un groupe spécifique, choisissez-le avec un clic dans l'éditeur des pré-réglages et utilisez l'option <guilabel
+> requiert qu'au moins une des contraintes sous leur giron soit satisfaite par la chanson. Pour ajouter une contrainte sous un groupe spécifique, choisissez-le avec un clic dans l'éditeur des préréglages et utilisez l'option <guilabel
 >Ajouter</guilabel
 > en haut à gauche. </para>
 </sect3>
 </sect2>
 <sect2 id="using-your-presets"
 ><title
->Utilisation de vos pré-réglages</title
+>Utilisation de vos préréglages</title
 > 
 <para
->Une fois un pré-réglage défini, vous n'avez plus qu'à le choisir dans le panneau des <guilabel
->pré-réglages du GALL</guilabel
+>Une fois un préréglage défini, vous n'avez plus qu'à le choisir dans le panneau des <guilabel
+>préréglages du GALL</guilabel
 > dans <guilabel
 >le générateur automatique de liste de lecture (GALL)</guilabel
 > et appuyez sur le bouton <inlinemediaobject
@@ -10344,7 +10182,7 @@
 > </inlinemediaobject
 > dans la barre d'outils pour lancer le <guilabel
 >GALL</guilabel
-> avec les pré-réglages choisis. Vous obtiendrez ensuite une liste de lecture qui correspond à vos critères, comme cela : </para>
+> avec les préréglages choisis. Vous obtiendrez ensuite une liste de lecture qui correspond à vos critères, comme cela : </para>
 <para>
 <screenshot>
 <screeninfo
@@ -10387,12 +10225,18 @@
 >Divers</title
 > 
 <para
->Les sujets qui ne correspondaient à  aucune des sections de ce manuel, tels que la barre d'humeur, Amarok sur d'autres plate-formes, dépannage, les problèmes usuels, et la FAQ : </para>
+>Les sujets qui ne correspondaient à aucune des sections de ce manuel, tels que la barre d'humeur, Amarok sur d'autres plate-formes, dépannage, les problèmes usuels, et la FAQ : </para>
 <itemizedlist>
 <listitem
 ><para
 ><link linkend="the-moodbar"
 >Barre d'humeur</link
+>&nbsp;</para
+></listitem>
+<listitem
+><para
+><link linkend="replay-gain"
+>Gain en lecture</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -10446,7 +10290,7 @@
 > d'une piste, que vous pouvez ensuite utiliser pour savoir quand quelque chose d'intéressant se produit dans la chanson. </para>
 <para
 >Afin qu'&amarok; affiche des barres d'humeur pour votre musique, vous aurez donc besoin du programme <guilabel
->Moodbar</guilabel
+>moodbar</guilabel
 > (reportez-vous un peu plus loin pour <link linkend="source-downloads"
 > les téléchargements</link
 > et les paquets binaires). </para>
@@ -10461,13 +10305,13 @@
 >n'</emphasis
 >aurez <emphasis
 >pas</emphasis
-> besoin du paquet phonon-backend-gstreamer pour créer des fichiers .mood.  </para>
+> besoin du paquet phonon-backend-gstreamer pour créer des fichiers « .mood ». </para>
 <para
 >Il y a deux parties constituant la nouvelle implémentation de <guilabel
 >la barre d'humeur</guilabel
 > : le paquet <guilabel
 >moodbar</guilabel
->, qui contient un programme qui prend un fichier musical et crée un fichier .mood en sortie, et la prise en charge du code dans les sources d'&amarok;, qui exécute le paquet binaire et affiche donc la barre d'humeur. Le paquet <guilabel
+>, qui contient un programme qui prend un fichier musical et crée un fichier « .mood » en sortie, et la prise en charge du code dans les sources d'&amarok;, qui exécute le paquet binaire et affiche donc la barre d'humeur. Le paquet <guilabel
 >moodbar</guilabel
 > dépend des librairies <emphasis
 >GStreamer</emphasis
@@ -10475,30 +10319,30 @@
 >moodbar</guilabel
 >, &amarok; ne peut pas créer de barres d'humeur pour votre musique. </para>
 <para
->Une alternative est d'utiliser le nouveau script qui créera les fichiers .mood pour les pistes dans une liste de lecture d'&amarok;; c'est une exception à ce qui précède. Le script n'a besoin que d'&amarok; pour fonctionner, mais il ne créera les fichiers .mood seulement si les pistes sont dans <guilabel
+>Une alternative est d'utiliser le nouveau script qui créera les fichiers « .mood » pour les pistes dans une liste de lecture d'&amarok;. C'est une exception à ce qui précède. Le script n'a besoin que d'&amarok; pour fonctionner, mais il ne créera les fichiers « .mood » seulement si les pistes sont dans <guilabel
 >une liste de lecture</guilabel
 >. </para>
 <para
 >Nous devons <guilabel
 >la barre d'humeur</guilabel
-> au travail de Gavin Wood et de Simon O'Keefe, qui ont construit les algorithmes; leur publication originale est <ulink url="http://cratoo.de/amarok/ismir-crc.pdf"
+> au travail de Gavin Wood et de Simon O'Keefe, qui ont construit les algorithmes. Leur publication originale est <ulink url="http://cratoo.de/amarok/ismir-crc.pdf"
 >ici</ulink
 >. </para>
 <sect2 id="summary-of-requirements"
 ><title
->Résumé des pré-requis</title
+>Résumé des prérequis</title
 > 
 <itemizedlist>
 <listitem
 ><para
 >Le paquet binaire de <guilabel
->la barre d'humeur</guilabel
-> dans votre variable PATH (elle devrait être listée une fois que vous aurez exécuté <userinput
+>Moodbar</guilabel
+> dans votre variable d'environnement « PATH » (Il devrait être listé une fois que vous aurez exécuté <userinput
 >which moodbar</userinput
-> dans une console) &mdash; N'oubliez pas de configurer le paquet <guilabel
+> dans une console) &mdash; Veuillez ne pas oublier de configurer le paquet <guilabel
 >moodbar</guilabel
-> avec la commande <userinput
->./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput
+> avec un emplacement correct, &pex; le compiler et l'installer avec les commandes <userinput
+>./autogen.sh --prefix=`pkg-config --variable=prefix gstreamer-1.0` &amp;&amp; make &amp;&amp; sudo make install</userinput
 ></para
 ></listitem>
 <listitem
@@ -10507,7 +10351,7 @@
 >les modules externes</link
 > pour les formats que vous voulez que <guilabel
 >la barre d'humeur</guilabel
-> soit capable d'analyser.</para
+> soit capable d'analyser. Une version antérieure de GStreamer reposant sur la version 0.10 est également disponible pour certaines distributions.</para
 ></listitem>
 <listitem
 ><para
@@ -10515,7 +10359,7 @@
 >the Fastest Fourier Transform In The West</emphasis
 > (<ulink url="http://www.fftw.org"
 >fftw.org</ulink
->). La librairie de FFTW version 3.0 ou supérieure (au moins la version simple précision à virgule flottante - libfftw3f) &mdash; Si votre plate-forme ne le fournit pas ou si vous devez compilez votre propre version, n'oubliez pas de configurer le paquet FFTW avec la commande <userinput
+>). La librairie « fftw » version 3.0 ou supérieure (au moins la version simple précision à virgule flottante - libfftw3f) &mdash; Si votre plate-forme ne le fournit pas ou si vous devez compilez votre propre version, n'oubliez pas de configurer le paquet « fftw » avec la commande <userinput
 >./configure --enable-single</userinput
 ></para
 ></listitem>
@@ -10531,7 +10375,7 @@
 <para
 ><note
 ><para
->Les systèmes avec des gestionnaires de paquets devraient installer automatiquement les modules externes GStreamer et FFTW avec le paquet de la barre d'humeur (moodbar); cette information est donnée surtout pour les personnes qui souhaitent ou qui ont besoin de compiler les sources ou d'installer les paquets manuellement.</para
+>Les systèmes avec des gestionnaires de paquets devraient installer automatiquement les modules externes pour GStreamer et FFTW avec le paquet de la barre d'humeur (moodbar). Cette information est fournie surtout pour les personnes souhaitant ou ayant besoin de compiler les sources ou d'installer les paquets manuellement ou lorsque les instructions spécifiques à la distribution sont obsolètes et qu'aucun paquet « moodbar » à jour n'est encore disponible.</para
 ></note>
 </para>
 </sect2>
@@ -10540,7 +10384,7 @@
 >Utilisation</title
 > 
 <para
->Actuellement les fichiers .mood doivent être créés manuellement. &amarok; ne peut pas le faire pour vous. Pour le faire pour votre collection toute entière, utilisez <link linkend="moodbar-file-generation-script"
+>Actuellement les fichiers « .mood » doivent être créés manuellement. &amarok; ne peut pas le faire pour vous. Pour le faire pour votre collection toute entière, utilisez <link linkend="moodbar-file-generation-script"
 >le script de création de fichier de barre d'humeur</link
 > décrit ci-dessous. </para>
 <para
@@ -10556,7 +10400,7 @@
 ></menuchoice
 >. Les barres d'humeur devraient maintenant s'afficher dans le curseur de la piste dans la fenêtre de lecture et de <guilabel
 >la liste de lecture</guilabel
->; il y a aura aussi un champ humeur que vous pouvez ajouter à l'organisation de votre liste de lecture. </para>
+>. Il y a aura aussi un champ humeur que vous pouvez ajouter à l'organisation de votre liste de lecture. </para>
 </sect2>
 <sect2 id="installation"
 ><title
@@ -10567,26 +10411,34 @@
 >Téléchargements des sources</title
 > 
 <para
->La dernière publication : <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz"
->moodbar-0.1.2.tar.gz</ulink
-> &mdash; il s'agit du paquet contenant les sources de la barre d'humeur, qui contient le programme <guilabel
+>Dernière publication : <ulink url="https://github.com/Mazhoon/moodbar/archive/v0.1.4.tar.gz"
+>moodbar-0.1.4.tar.gz</ulink
+> &mdash; il s'agit du paquet contenant les sources de la barre d'humeur (Moodbar, contenant le programme <guilabel
 >moodbar</guilabel
-> (qui crée les fichiers .mood à partir des fichiers fichiers musicaux), et un module externe GStreamer qui fait le travail.Le paquet de la barre d'humeur a besoin de GStreamer 0.10.* installé, plus la version 0.10.* de <link linkend="supported-filetypes"
+> (Qui crée les fichiers « .mood » à partir des fichiers fichiers musicaux) et un module externe de GStreamer faisant le traitement. Le paquet « moodbar » a besoin de d'une installation de la version 1.0 de GStreamer 0.10, en plus de la version 1.0 de <link linkend="supported-filetypes"
 >divers modules externes</link
->. Assurez-vous d'installer le paquet de la barre d'humeur dans le <emphasis
+>. Veuillez vous assurer de l'installation du paquet « moodbar » dans le <emphasis
 >même préfixe</emphasis
-> que GStreamer &mdash; suivez les instructions dans le fichier INSTALL. </para>
+> que GStreamer &mdash;. Veuillez suivre les instructions dans <ulink url="https://github.com/Mazhoon/moodbar/archive/v0.1.4.tar.gz"
+>le résumé des prérequis.</ulink
+>. La version 0.1.4 est un dérivé des sources originaux en version 0.1.2, mis à jour pour l'utilisation de GStreamer en version 1.0. Les anciens sources en version 0.1.2 ne sont plus disponibles de façon fiable en ligne mais les paquets pourraient être encore disponibles pour certaines distributions. </para>
 <para
->Si vous trouver des bugs, veuillez envoyer un rapport de bug à <ulink url="http://bugs.kde.org"
+>Si vous trouver des bugs, veuillez envoyer un rapport de bogue à <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
-> SVP. </para>
+>. </para>
 </sect3>
 <sect3 id="debian-packages"
 ><title
 >Paquets Debian</title
 > 
 <para
->Un paquet pour la barre d'humeur est maintenant disponible dans Debian instable (sid). Exécutez simplement <userinput
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
+>Un paquet pour la barre d'humeur est maintenant disponible dans Debian instable (SID). Exécutez simplement <userinput
 >apt-get install moodbar</userinput
 >. Vous voudrez peut-être aussi installer gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, et gstreamer0.10-plugins-bad pour la prise en charge de certains formats. </para>
 </sect3>
@@ -10595,7 +10447,13 @@
 >Paquets Ubuntu et Kubuntu</title
 > 
 <para
->Un paquet pour la barre d'humeur est disponible dans les dépôts officiels; assurez-vous que la section universe soit activée (ce qui devrait être le cas par défaut). Installez juste le paquet moodbar avec votre gestionnaire de paquets préféré (<guilabel
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
+>Un paquet pour la barre d'humeur est disponible dans les dépôts officiels. Veuillez vous assurer que la section « universe » soit activée (ce qui devrait être le cas par défaut). Installez juste le paquet « moodbar » avec votre gestionnaire de paquets préféré (<guilabel
 >Kpackagekit</guilabel
 >, <guilabel
 >Aptitude</guilabel
@@ -10605,11 +10463,11 @@
 >Synaptic</guilabel
 >, <guilabel
 >Muon</guilabel
->). Vous voudrez peut-être aussi installer gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, and gstreamer0.10-plugins-bad pour la prise en charge de certains formats. </para>
+>). Vous voudrez peut-être aussi installer « gstreamer0.10-plugins-ugly », « gstreamer0.10-plugins-good » et « gstreamer0.10-plugins-bad » pour la prise en charge de certains formats. </para>
 <para
 >Ou, pour installer, collez ceci dans <guilabel
 >Firefox</guilabel
-> ou &konqueror; et appuyez sur &Entree;. </para>
+> ou &konqueror; et appuyez sur Entrée;. </para>
 <para
 ><userinput
 >apt://moodbar,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad?section=universe?refresh=yep</userinput>
@@ -10620,6 +10478,12 @@
 >ebuilds Gentoo</title
 > 
 <para
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
 >La barre d'humeur est disponible dans Portage, tapez simplement <userinput
 >emerge moodbar</userinput
 > Les ebuilds non officiels ne sont plus nécessaires. </para>
@@ -10629,7 +10493,13 @@
 >Paquets RPM</title
 > 
 <para
->Si vous êtes un utilisateur d'une distribution basée sur le système de paquets RPM, vous pouvez construire un .rpm grâce à rpmbuild avec la dernière spécification </para>
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
+>Si vous êtes un utilisateur d'une distribution reposant sur le système de paquets « RPM », vous pouvez construire un paquet « .rpm » grâce au programme « rpmbuild » dans sa dernière version. </para>
 <para
 ><ulink url="http://cvs.pld-linux.org/cgi-bin/cvsweb/SPECS/gstreamer-plugins-moodbar.spec"
 >gstreamer-plugins-moodbar.spec</ulink
@@ -10642,7 +10512,13 @@
 >Fedora</title
 > 
 <para
->Dans Fedora 7 et supérieure (jusqu'à F16 lors de l'écriture de ce manuel), la barre d'humeur est disponible dans les dépôts par défaut. Installez-la simplement avec votre interface préférée de PackageKit ou avec la commande yum suivante : </para>
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
+>Dans Fedora 7 et supérieure (jusqu'à la version 16 lors de l'écriture de ce manuel), la barre d'humeur est disponible dans les dépôts par défaut. Installez-la simplement avec votre interface préférée de PackageKit ou avec la commande yum suivante : </para>
 <para
 ><userinput
 >yum install moodbar</userinput>
@@ -10653,91 +10529,46 @@
 >Paquets openSUSE</title
 > 
 <para
->openSUSE 11.0 et supérieure, installe automatiquement les paquets suivants : </para>
-<itemizedlist>
-<listitem
-><para
->gstreamer-0_10-fluendo-mp3</para
-></listitem>
-<listitem
-><para
->gstreamer-0_10-plugins-base</para
-></listitem>
-</itemizedlist>
-<para
->Aussi, si vos chansons contiennent des balises ID3, vous devez installer </para>
-<itemizedlist>
-<listitem
-><para
->gstreamer-0_10-plugins-good</para
-></listitem>
-</itemizedlist>
-<sect4 id="moodbar-installation"
-><title
->Installation de la barre d'humeur</title
-> 
-<para
->L'installation en 1 clic pour openSUSE 11. Choisissez juste votre version et la procédure d'installation fera le reste : </para>
-<itemizedlist>
-<listitem
-><para
-><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.2/moodbar.ymp"
->openSUSE 11.2</ulink
-></para
-></listitem>
-<listitem
-><para
-><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.1/moodbar.ymp"
->openSUSE 11.1</ulink
-></para
-></listitem>
-</itemizedlist>
-<para
->Pour installer, ajoutez le bon dépôt pour votre version d'openSUSE dans <guilabel
->YaST</guilabel
-> ensuite assurez-vous que les paquets suivants soient installés : </para>
-<itemizedlist>
-<listitem
-><para
->gstreamer-0_10-plugins-good</para
-></listitem>
-<listitem
-><para
->gstreamer-0_10-plugins-ugly</para
-></listitem>
-<listitem
-><para
->gstreamer-0_10-plugins-moodbar</para
-></listitem>
-<listitem
-><para
->mad</para
-></listitem>
-</itemizedlist>
+>La version 0.1.4 reposant sur GStreamer 1.0 est disponible dans le dépôt « KDE:Extra » pour OpenSuse Leap en version 42.3 et ultérieure. Une version 0.1.2 reposant sur GStreamer 0.10 antérieure est également toujours disponible dans le dépôt principal pour certaines versions de openSUSE. </para>
 <para
 >Pour des détails sur la façon d'ajouter des dépôts, rendez-vous sur le <ulink url="http://en.opensuse.org/SDB:Add_package_repositories"
 >wiki d'openSUSE</ulink
 >. </para>
 <para
->Si vous utilisez l'outil de gestion de paquets <guilabel
->intelligent</guilabel
->, ajoutez le canal en saisissant la commande suivante, pensez à modifier l'URL pour correspondre à votre version d'openSUSE: <userinput
-><command
->smart channel --add http://software.opensuse.org/download/home:/d7/openSUSE_10.2/home:d7.repo</command
-></userinput
-> . Puis saisissez <userinput
->smart update home:d7</userinput
-> . Vous pouvez maintenant installer les paquets nécessaires avec la commande <userinput
->smart install gstreamer10-plugins-moodbar</userinput
-> . Les dépendances sont automatiquement résolues. </para>
-</sect4>
+>L'installation en 1 clic pour openSUSE 11. Veuillez simplement sélectionner votre version et la procédure d'installation fera le reste : </para>
+<itemizedlist>
+<listitem
+><para
+><ulink url="https://software.opensuse.org/ymp/KDE:Extra/KDE_Frameworks5_openSUSE_Tumbleweed/moodbar.ymp"
+>openSUSE Tumbleweed</ulink
+></para
+></listitem>
+<listitem
+><para
+><ulink url="https://software.opensuse.org/ymp/KDE:Extra/openSUSE_Leap_15.0/moodbar.ymp"
+>openSUSE Leap 15.0</ulink
+></para
+></listitem>
+<listitem
+><para
+><ulink url="https://software.opensuse.org/ymp/KDE:Extra/openSUSE_Leap_42.3/moodbar.ymp"
+>openSUSE Leap 42.3</ulink
+></para
+></listitem>
+</itemizedlist>
 </sect3>
 <sect3 id="mandriva-packages"
 ><title
 >Paquets Mandriva</title
 > 
 <para
->Tout d'abord, vous devez ajouter les dépôts PLF, donc rendez-vous sur <ulink url="http://easyurpmi.zarb.org"
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
+>Tout d'abord, vous devez ajouter les dépôts « PLF », donc rendez-vous sur <ulink url="http://easyurpmi.zarb.org"
 >easyurpmi.zarb.org</ulink
 > et ajoutez-les à votre liste de dépôts. </para>
 <para
@@ -10766,20 +10597,32 @@
 >Arch &Linux;</title
 > 
 <para
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
+<para
 >Il y a un PKGBUILD pour la barre d'humeur dans le dépôt communautaire <ulink url="http://aur.archlinux.org"
 >Arch User Repository (AUR)</ulink
 > disponible <ulink url="http://aur.archlinux.org/packages.php?ID=6552"
 >ici</ulink
 >. </para>
 <para
->Pour davantage d'informations sur le dépôt AUR et les PKGBUILDs, rendez-vous sur <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines"
->le guide utilisateur d'AUR</ulink
+>Pour davantage d'informations sur le dépôt « AUR » et les PKGBUILD, rendez-vous sur <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines"
+>le guide utilisateur pour AUR</ulink
 >. </para>
 </sect3>
 <sect3 id="freebsd"
 ><title
 >FreeBSD</title
 > 
+<para
+><note
+><para
+>Cette section contient d'anciennes instructions concernant la barre d'humeur en version 0.1.2, reposant sur le module GSteamer en version 0.10. Elles pourraient être obsolètes.</para
+></note>
+</para>
 <para
 >Il existe un portage : <ulink url="http://www.freshports.org/audio/gstreamer-plugins-moodbar"
 >audio/gstreamer-plugins-moodbar ici</ulink
@@ -10799,7 +10642,7 @@
 >Script de création du fichier de la barre d'humeur</title
 > 
 <para
->Voici un simple script bash qui ajoutera les fichiers .mood à votre collection entière. Il ajoute les fichiers mood pour tous les fichiers correspondant aux extensions dans le dossier courant et tous les sous-dossiers, il est donc préférable de l'exécuter depuis la base de vos dossiers musicaux. </para>
+>Voici un simple script bash qui ajoutera les fichiers « .mood » à votre collection entière. Il ajoute les fichiers « mood » pour tous les fichiers correspondant aux extensions dans le dossier courant et tous les sous-dossiers, il est donc préférable de l'exécuter depuis la base de vos dossiers musicaux. </para>
 <para
 ><programlisting
 >#!/bin/bash
@@ -10816,7 +10659,7 @@
    read filetodelete &lt; "$LAST"
    rm "$filetodelete" "$LAST"
  fi
- exec 9&lt; &lt;(find "$DIR" -type f -regextype posix-awk -iregex '.*\.(mp3|ogg|flac|wma)') # vous aurez peut-etre besoin d'ajouter m4a et mp4
+ exec 9&lt; &lt;(find "$DIR" -type f -regextype posix-awk -iregex '.*\.(mp3|ogg|flac|wma)') # vous aurez peut-être besoin d'ajouter m4a et mp4
  while read i
  do
    TEMP="${i%.*}.mood"
@@ -10831,10 +10674,10 @@
 > 
 </para>
 <para
->Copiez et collez le script ci-dessus dans un fichier texte nommé moodbar.sh dans votre dossier musical et exécutez les commandes suivantes : </para>
+>Copiez et collez le script ci-dessus dans un fichier de texte nommé « moodbar.sh » dans votre dossier musical et exécutez les commandes suivantes : </para>
 <para
 ><userinput
->cd /chemin/vers/la/musique bash moodbar.sh </userinput
+>cd /emplacement/vers/la/musique bash moodbar.sh </userinput
 > 
 </para>
 <para
@@ -10847,31 +10690,25 @@
 <para
 >Cela peut prendre vraiment beaucoup de temps pour les grosses collections ! Remarquez que les barres d'humeur ne s'afficheront pas dans &amarok; jusqu'à qu'&amarok; réanalyse la collection. Les fichiers <filename
 >mood</filename
-> créés seront des fichiers cachés (&cad; préfixés d'un point). Donc gardez cela à l'esprit si vous ne pouvez pas trouver les fichiers mood créés. </para>
+> créés seront des fichiers cachés (&cad; préfixés d'un point). Donc gardez cela à l'esprit si vous ne pouvez pas trouver les fichiers « mood » créés. </para>
 <para
->Fondé sur le script précédent, une alternative pour les CPU multi-coeurs : </para>
+>Fondé sur le script précédent, une alternative pour les processeurs multi-cœurs : </para>
 <para
 ><programlisting
 >#!/bin/bash
  NUMCPU="$(grep ^processor /proc/cpuinfo | wc -l)"
  find . -type f -regextype posix-awk -iregex '.*\.(mp3|ogg|flac|wma)' | while read i ; do
-        while [ `jobs -p | wc -l` -ge $NUMCPU ] ; do
-                sleep 0.1
-        done
-        TEMP="${i%.*}.mood"
-        OUTF=`echo "$TEMP" | sed 's#\(.*\)/\([^,]*\)#\1/.\2#'`
-        if [ ! -e "$OUTF" ] ; then
-                moodbar -o "$OUTF" "$i" &amp;
-        fi
+    while [ `jobs -p | wc -l` -ge $NUMCPU ] ; do
+        sleep 0.1
+    done
+    TEMP="${i%.*}.mood"
+    OUTF=`echo "$TEMP" | sed 's#\(.*\)/\([^,]*\)#\1/.\2#'`
+    if [ ! -e "$OUTF" ] ; then
+        moodbar -o "$OUTF" "$i" &amp;
+    fi
  done</programlisting
 > 
 </para>
-<para
->Il existe un autre script sur <ulink url="https://github.com/aendruk/moodbar-preview-cli"
->Github</ulink
->, qui affiche un aperçu des fichiers mood créés sur la ligne de commande pendant qu'ils sont en cours de création. Informez-vous davantage sur <ulink url="https://aendruk.wordpress.com/2011/02/13/moodbar-previews-on-the-command-line/"
->le blog de l'auteur</ulink
->. </para>
 </sect2>
 <sect2 id="troubleshooting"
 ><title
@@ -10881,46 +10718,50 @@
 <listitem
 ><para
 >Si l'exécutable de <guilabel
->la barre d'humeur</guilabel
-> vous donne <emphasis
+>Moodbar</guilabel
+> provoque <emphasis
 >une erreur de bus</emphasis
->, cela signifie presque toujours qu'il ne peut pas décoder (ou trouver) votre fichier. Jetez un oeil aux <link linkend="supported-filetypes"
+>, cela signifie presque toujours qu'il ne peut pas décoder (Ou trouver) votre fichier. Veuillez regarder les <link linkend="supported-filetypes"
 >types de fichiers pris en charge</link
-> plus bas pour avoir des pistes pour savoir quels modules externes GStreamer installer. Vous pouvez aussi essayer la commande suivante pour tester si GStreamer peut décoder votre fichier : <userinput
->gst-launch filesrc location=[file] ! decodebin ! fakesink</userinput
+> plus bas pour trouver des pistes sur quels modules externes GStreamer il faut installer. Vous pouvez aussi essayer la commande suivante pour tester si GStreamer peut décoder votre fichier : <userinput
+>gst-launch-1.0 filesrc location=[file] ! decodebin ! fakesink</userinput
 ></para
 ></listitem>
 <listitem
 ><para
->Si vous utilisez le module externe ffmpeg pour décoder les mp3, vous pouvez aussi obtenir des erreurs de bus mystérieuses. La solution est d'arrêter d'utiliser le module externe ffmpeg, étant donné qu'il est extrêmement buggué &mdash; utilisez mad à la place.</para
+>Si vous utilisez le module externe de « FFmpeg » pour décoder les fichiers « mp3 », vous pouvez aussi obtenir des erreurs de bus mystérieuses. La solution est d'arrêter d'utiliser le module externe « ffmpeg », étant donné qu'il est affecté par de nombreux bogues. Veuillez utiliser « mad » à la place.</para
 ></listitem>
 <listitem
 ><para
 >Si l'exécutable de <guilabel
->la barre d'humeur</guilabel
-> vous indique qu'il ne peut pas trouver un élément &mdash; ie; s'il donne un message d'erreur comme <screen
->Could not create element of type fftwspectrum, please install it.</screen
->&mdash; cela signifie habituellement que soit vous n'avez pas les modules externes nécessaires installés (regardez la liste des modules externes <link linkend="supported-filetypes"
+>Moodbar</guilabel
+> vous indique qu'il ne peut pas trouver un élément &mdash; &cad; s'il donne un message d'erreur comme <screen
+>Impossible de créer un élément de type « fftwspectrum », veuillez installer ce dernier.</screen
+>&mdash; Cela signifie habituellement que soit vous n'avez pas installé les modules externes nécessaires (Veuillez consulter la liste des modules externes <link linkend="supported-filetypes"
 >ici</link
->), soit vous n'avez pas installé le paquet moodbar avec le même préfixe que GStreamer. Si libmoodbar.so et libgstdecodebin.so ne sont pas dans le même dossier, cela signifie que le paquet moodbar n'a pas été installé avec le même préfixe que GStreamer. Veuillez donc lire le fichier INSTALL pour obtenir les instructions sur la manière de configurer le paquet moodbar correctement. Alternativement, <emphasis
->si vous savez ce que vous faîtes</emphasis
->, il peut être plus facile pour vous de jeter un oeil à la variable d'environnement <filename
+>), soit vous n'avez pas installé le paquet « moodbar » avec le même préfixe que GStreamer. Si les bibliothèques « libmoodbar.so » et « libgstdecodebin.so » ne sont pas dans le même dossier, cela signifie que le paquet « moodbar » n'a pas été installé avec le même préfixe que GStreamer. Veuillez donc lire le fichier « INSTALL » pour obtenir les instructions sur la manière de configurer le paquet « moodbar » correctement. Alternativement, <emphasis
+>si vous savez ce que vous faites</emphasis
+>, il peut être plus facile pour vous de jeter un œil à la variable d'environnement <filename
 >GST_PLUGIN_PATH</filename
 >.</para
 ></listitem>
 <listitem
 ><para
->Si vous vous demandez pourquoi la barre d'humeur ne fonctionne pas, qu'elle ne fonctionne pas du tout ou qu'elle ne fonctionne pas pour un fichier particulier, exécutez la commande suivante, où [fichier] est un fichier musical : <userinput
+>Si vous vous demandez pourquoi <guilabel
+>Moodbar</guilabel
+> ne fonctionne pas, soit qu'elle ne fonctionne pas du tout ou soit qu'elle ne fonctionne pas pour un fichier particulier, veuillez lancer la commande suivante, où [fichier] est un fichier musical : <userinput
 >moodbar -o test.mood [fichier]</userinput
+>. Pour générer un aperçu d'une image de test, vous pouvez utiliser la commande :<userinput
+>gst-launch-1.0 filesrc location=[fichier] ! decodebin ! audioconvert ! fftwspectrum ! moodbar height=50 max-width=300 ! pngenc ! filesink location=mood.png</userinput
 ></para
 ></listitem>
 <listitem
 ><para
->Si vous avez plusieurs version de GStreamer installées, assurez-vous que tous les modules externes nécessaires soient installés <emphasis
+>Si vous avez plusieurs versions de GStreamer installées, veuillez vous assurer que tous les modules externes nécessaires soient installés <emphasis
 >pour la version 0.10.*</emphasis
-> -- différentes versions <emphasis
->ne peuvent pas</emphasis
-> utiliser les modules externes des unes et des autres.</para
+> -- Il est <emphasis
+>impossible</emphasis
+> que différentes versions puissent utiliser les modules externes des autres versions.</para
 ></listitem>
 </itemizedlist>
 </sect2>
@@ -10929,9 +10770,9 @@
 >Types de fichier pris en charge</title
 > 
 <para
->Vous aurez besoin de divers modules externes GStreamer pour activer <guilabel
+>Vous aurez besoin de divers modules externes pour GStreamer afin d'activer <guilabel
 >la barre d'humeur</guilabel
-> pour analyser vos fichiers. Voici une liste de modules externes dont vous aurez besoin; assurez-vous d'installer <emphasis
+> pour analyser vos fichiers. Voici une liste de modules externes dont vous aurez besoin. Veuillez vous assurer d'installer <emphasis
 >la version 0.10.*</emphasis
 > de chaque module externe : </para>
 <para>
@@ -10955,7 +10796,7 @@
     </entry>
     <entry>
     <para
->gstreamer-0.10.*, gst-plugins-base, gst-plugins-good</para>
+>gstreamer-1.0.*, gst-plugins-base, gst-plugins-good</para>
     </entry>
   </row>
   <row>
@@ -10965,13 +10806,13 @@
     </entry>
     <entry>
     <para
->gst-plugins-mad (dans gst-plugins-ugly)</para>
+>gst-plugins-mad (Dans le paquet « gst-plugins-ugly »)</para>
     </entry>
     <entry>
     <para
->Le module externe ffmpeg a des problèmes; <emphasis
->ne l'utilisez pas</emphasis
-> pour les mp3</para>
+>Le module externe « ffmpeg » présente des problèmes.<emphasis
+>Ne l'utilisez pas</emphasis
+> pour les fichiers « mp3 »</para>
     </entry>
   </row>
   <row>
@@ -11052,6 +10893,144 @@
   </mediaobject>
 </screenshot>
 </para>
+</sect2>
+</sect1>
+<sect1 id="replay-gain"
+><title
+>Gain en lecture</title
+> 
+<para
+>Le <ulink url = "https://en.wikipedia.org/wiki/replaygain"
+>Gain de relecture (en anglais)</ulink
+> ajustera automatiquement le volume de la chanson actuellement jouée, par rapport à d'autres chansons, selon ce que la personne ayant encodé le fichier audio a choisi. Pour activer le gain de relecture, voir <link linkend="settings-menu"
+>Menu de configuration</link
+>. </para>
+<para
+>Pour gérer cela, &amarok; s'appuiesur les métadonnées intégrées dans le fichier audio:  </para>
+<orderedlist>
+<listitem
+><para
+>Si aucune information de gain en lecture n'est intégrée, &amarok; n'ajustera pas le volume.</para
+></listitem>
+<listitem
+><para
+>Si des informations de gain en lecture sont trouvées, elles seront écrites dans la base de données de &amarok;</para
+></listitem>
+</orderedlist>
+<para
+>Pendant la lecture, &amarok; ne recherchera ces informations que dans sa propre base de données. Les mises à jour des métadonnées du fichier ne seront pas toujours écrites dans la base de données lors d'une mise à jour de la collection (Par exemple, le gain de relecture est supprimé du fichier). </para>
+<para
+>Ceci peut conduire à un comportement inattendu : les chansons du même artiste sont lues à différents niveaux de volume, &etc; </para>
+<sect2 id="is-replay-gain-being-used"
+><title
+>Le gain en lecture est-il utilisé ?</title
+> 
+<para
+>Pour déterminer si le problème de volume est causé par un gain en lecture ou un mauvais codage : </para>
+<itemizedlist>
+<listitem
+><para
+>Désactiver le traitement du gain en lecture (Voir ci-dessus)</para
+></listitem>
+<listitem
+><para
+>Démarrer &amarok; en mode de débogage et rechercher une sortie liée au gain :</para
+></listitem>
+</itemizedlist>
+<para
+><userinput
+><command
+>amarok -d --nofork | grep gain</command
+></userinput>
+</para>
+<para
+>Si le gain en lecture est actif pour la chanson jouée, la sortie sera </para>
+<para
+>Utilisation d'un gain de -10,28 avec un pic relatif de -1 </para>
+</sect2>
+<sect2 id="view-replay-gain-information"
+><title
+>Afficher les informations de gain en lecture</title
+> 
+<para
+>Pour les fichiers « .flac », la bibliothèque <quote
+>metaflac</quote
+> peut être utilisée pour afficher les données de gain en lecture intégrées : </para>
+<para
+><userinput
+><command
+>metaflac --list Millencolin\ -\ équilibré\ Boy.flac</command
+></userinput>
+</para>
+<para
+>Entre autres choses, cela affichera quelque chose comme ceci : </para>
+<para
+>Bloc de métadonnées n°2 </para>
+<para
+>Type : 4 (VORBIS_COMMENT) </para>
+<para
+>est le dernier : faux </para>
+<para
+>Longueur : 390 </para>
+<para
+>Chaîne  du fournisseur: référence pour la bibliothèque « libflac » en version 1.2.1 20070917 </para>
+<para
+>Commentaires : 14 </para>
+<para
+>Commentaire [9] : REPLAYGAIN_REFERENCE_LOUDNESS=89.0 dB </para>
+<para
+>Commentaire [10] : REPLAYGAIN_TRACK_GAIN=-1.55 dB </para>
+<para
+>Commentaire [11] : REPLAYGAIN_TRACK_PEAK=0.75894165 </para>
+<para
+>Commentaire [12] : REPLAYGAIN_ALBUM_GAIN=-4.19 dB </para>
+<para
+>Commentaire [13] : REPLAYGAIN_ALBUM_PEAK=0.98712158 </para>
+<para
+>Pour afficher les informations des pistes de la base de données de Amarok : </para>
+<para
+><userinput
+><command
+>Sélectionnez les paramètres id, title, albumgain, albumpeakgain, trackgain, trackpeakgain à partir de pistes avec un titre comme &quot;Équilibré%&quot; ; </command
+></userinput>
+</para>
+<para
+>Affichera : </para>
+<para
+>+-------+------------------+-----------+---------------+-----------+---------------+ </para>
+<para
+>|Id |Titre |gain-album |Pic-gain-album |Gain-piste |Pic-gain-piste | </para>
+<para
+>+-------+------------------+-----------+---------------+-----------+---------------+ </para>
+<para
+>|10459 |Garçon équilibré |0,53 |-5.60297 |0,44 |-5.60297 | </para>
+<para
+>Veuillez noter la différence entre les niveaux de volume sonore </para>
+</sect2>
+<sect2 id="delete-replay-gain-information"
+><title
+>Supprimer les informations de gain en lecture</title
+> 
+<para
+>Tout d'abord, veuillez supprimer les métadonnées du fichier : </para>
+<para
+><userinput
+><command
+>metaflac --remove-replay-gain Millencolin\ -\ Équilibré\ Boy.flac</command
+></userinput>
+</para>
+<para
+>Après cela, veuillez mettre à jour votre collection de &amarok;. Si elle utilise toujours le gain en lecture, veuillez mettre à jour l'entrée de la base de données : </para>
+<para
+><userinput
+><command
+>Mise à jour des pistes avec « set albumgain=-1, albumpeakgain=-1, trackgain = -1, trackpeakgain = -1 » où la valeur du paramètre « id » vaut 10459.</command
+></userinput>
+</para>
+<para
+>Redémarrer &amarok; et la sortie du journal doit désormais afficher les valeurs utilisées mises à jour. </para>
+<para
+>N'hésitez pas à essayer et à jouer avec les valeurs manuellement pour améliorer les niveaux de volume. </para>
 </sect2>
 </sect1>
 <sect1 id="amarok-on-other-platforms"
@@ -11150,7 +11129,7 @@
 <para
 >Bien qu'&amarok; soit l'une des applications KDE les plus connues, elle peut fonctionner sur d'autres environnements de bureau également. </para>
 <para
->Cette section décrit comment &amarok; peut être utilisé sur des environnements de bureau &Linux; autres que KDE. Voici donc quelques exemples; la liste n'est pas exhaustive. </para>
+>Cette section décrit comment &amarok; peut être utilisé sur des environnements de bureau &Linux; autres que KDE. Voici donc quelques exemples. La liste n'est pas exhaustive. </para>
 <sect3 id="gnome"
 ><title
 >GNOME</title
@@ -11171,7 +11150,7 @@
 </screenshot>
 </para>
 <para
->Pour configurer le proxy pour &amarok; dans GNOME, modifiez et ajoutez ceci dans <filename
+>Pour configurer le serveur mandataire pour &amarok; dans GNOME, modifiez et ajoutez ceci dans <filename
 >~/.kde/share/config/kioslaverc</filename
 > </para>
 <para
@@ -11204,10 +11183,10 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 <para
->L'icône dans la boîte à icônes (<foreignphrase
+>L'icône dans la boite à miniatures (<foreignphrase
 >systray</foreignphrase
 >) d'&amarok; ne fonctionne pas par défaut avec E17. Donc, on peut désactiver <guilabel
->l'affichage de l'icône dans la boîte à icônes</guilabel
+>l'affichage de l'icône dans la boite à icônes</guilabel
 > depuis <guilabel
 >les options générales</guilabel
 > dans les préférences d'&amarok;. </para>
@@ -11304,7 +11283,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><warning
 ><para
->Ces pages ont besoin de captures d'écran pour la version d'Amarok 2.8</para
+>Ces pages ont besoin de captures d'écran pour Amarok en version 2.8</para
 ></warning>
 </para>
 <para
@@ -11315,15 +11294,15 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <para
 >Si vous rencontrez des difficultés, rendez-vous sur <ulink url="http://community.kde.org/Amarok/GettingStarted/Download/Windows"
->la page du wiki d'Amarok sur Windows</ulink
-> où les liens les plus récents seront gardés à jour. Sinon, utilisez ces derniers liens : </para>
+>la page du wiki de Amarok sur Windows</ulink
+> où les liens les plus récents seront maintenus à jour. Sinon, utilisez ces derniers liens : </para>
 </sect3>
 <sect3 id="how-to-install"
 ><title
 >Comment installer</title
 > 
 <para
->L'installation est très simple, exécutez simplement le fichier .exe téléchargé. </para>
+>L'installation est très simple, exécutez simplement le fichier « .exe » téléchargé. </para>
 <para
 ><warning
 ><para
@@ -11440,7 +11419,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><warning
 ><para
->L'actuel Macports 2.1.3 ne comprend qu'une version obsolète d'Amarok 2.6.0</para
+>L'actuel MacPorts 2.1.3 ne comprend qu'une version obsolète de Amarok 2.6.0</para
 ></warning>
 </para>
 <para
@@ -11477,7 +11456,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >port</varname
 > téléchargera toutes les dépendances, les compilera, les construira et les installera. Ce processus peut prendre pas mal de temps, quatre à cinq heures sur une installation récente. </para>
 </sect3>
-<sect3 id="screenshots17"
+<sect3 id="screenshots14"
 ><title
 >Captures d'écran</title
 > 
@@ -11515,10 +11494,10 @@ ftpProxy=http://username:password@proxyserver:port/
 >Dépannage et problèmes usuels</title
 > 
 <para
->Si vous avez essayé les procédures décrites ici sans succès, veuillez vous rendre sur IRC (irc://irc.freenode.org/amarok), postez dans <ulink url="http://forum.kde.org/viewforum.php?f=127"
->la section d'Amarok</ulink
-> sur le forum KDE, ou écrivez à <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->la liste d'Amarok</ulink
+>Si vous avez essayé les procédures décrites ici mais sans succès, veuillez vous rendre sur le forum IRC (irc://irc.libera.chat/amarok), postez sur le forum « Discuss » votre message dans la <ulink url="https://discuss.kde.org/tag/amarok"
+>section concernant Amarok</ulink
+> ou écrivez votre message sur la <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>liste concernant Amarok</ulink
 >. </para>
 <sect2 id="problems-installing"
 ><title
@@ -11526,10 +11505,10 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect3 id="bad-packaging"
 ><title
->Mauvais empaquêtement</title
+>Mauvaise mise en paquet</title
 > 
 <para
->Occasionnellement, les utilisateurs feront face à un mauvaise empaquêtement de la part des  mainteneurs du paquet de leur distribution; soit une mauvaise version d'un composant a été incluse, soit certaines parties utiles n'ont pas été empaquetées. Pour certaines raisons, cela arrive souvent avec les dépendances MySQL. Les rapports de bug dans ces cas là doivent être faits auprès de votre distribution, et non à bugs.kde.org. </para>
+>Occasionnellement, les utilisateurs feront face à un mauvaise mise en paquets de la part des mainteneurs du paquet de leur distribution : soit une mauvaise version d'un composant a été incluse, soit certaines parties utiles n'ont pas été empaquetées. Pour certaines raisons, cela arrive souvent avec les dépendances MySQL. Les rapports de bug dans ces cas là doivent être faits auprès de votre distribution, et non à bugs.kde.org. </para>
 </sect3>
 <sect3 id="difficulties-building-from-source"
 ><title
@@ -11537,22 +11516,20 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <para
 >Pour ceux qui souhaitent apporter leur aide en testant les nouvelles versions d'&amarok;, une installation locale est conseillée. Utilisez cet excellent guide (en anglais) : <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/"
->Compiler Amarok depuis GIT localement; un résumé complet</ulink
+>Compiler Amarok depuis GIT localement. Un résumé complet</ulink
 >. Des informations détaillées sur git peuvent être trouvées ici : <ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial?setlang=fr"
->Tutoriel Techbase sur GIT</ulink
+>Tutoriel de TechBase sur GIT</ulink
 >. </para>
 <para
 >Si vous avez construit le paquet avec succès les fois précédentes et que vous rencontrez maintenant des erreurs, essayez de supprimer <filename
 >CMakeCache.txt</filename
 > et essayez à nouveau. Si vous obtenez toujours des erreurs, supprimez le dossier Build en entier et construisez sur une base fraîche. </para>
 <para
->L'URL pour la récupération et la fusion (<foreignphrase
->git pull</foreignphrase
->) depuis git a récemment changé. Exécutez <userinput
+>L'URL pour le téléchargement (git pull) depuis git a récemment été modifiée. Veuillez saisir la commande <userinput
 ><command
 >git remote set-url origin git://anongit.kde.org/amarok</command
 ></userinput
-> si vous utilisez encore l'ancienne URL. Dites-nous si vous trouvez l'ancien lien dans nos documents pour que nous puissions le mettre à jour. </para>
+> si vous utilisez encore l'ancienne URL. Dites-nous si vous trouvez l'ancien lien dans nos documents afin que nous puissions la mettre à jour. </para>
 </sect3>
 </sect2>
 <sect2 id="problems-starting-up"
@@ -11566,7 +11543,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >La liste de lecture courante peut occasionnellement être corrompue, ce qui empêchera &amarok; de se lancer. Cela peut se régler en supprimant le fichier de la liste de lecture actuelle dans le dossier d'&amarok;, <filename
 >$HOME/.kde/share/apps/amarok/current.xspf</filename
-> . Remarquez que sur certains systèmes, cela peut être <filename
+>. Remarquez que sur certains systèmes, cela peut être <filename
 >.kde4</filename
 > au lieu de <filename
 >.kde</filename
@@ -11604,7 +11581,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Problèmes d'analyse, de tri des fichiers</title
 > 
 <para
->&amarok; analyse vos fichiers musicaux lors du premier démarrage, et gardera à jour votre collection automatiquement, si vous choisissez <menuchoice
+>&amarok; analyse vos fichiers musicaux lors du premier démarrage, et conservera à jour votre collection automatiquement, si vous choisissez <menuchoice
 ><guimenu
 >configuration</guimenu
 ><guisubmenu
@@ -11625,7 +11602,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > lorsque vous apportez des changements à votre collection. </para>
 <para
 >Plus d'informations sur <link linkend="collection-scanning"
->l'analyse de la collection d'Amarok ici</link
+>l'analyse de la collection de Amarok ici</link
 >. </para>
 <sect3 id="corrupt-tags"
 ><title
@@ -11650,10 +11627,10 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <para
 >Si &amarok; n'enregistre pas les modifications des balises, vous avez peut-être des problèmes de permissions. Assurez-vous que votre utilisateur possède les droits d'écriture sur votre musique. Par exemple, <userinput
->chown -R votre_utilisateur Musique/</userinput
-> pour transférer la propriété du dossier Musique à votre_utilisateur, ou <userinput
+>chown -R votre-utilisateur Musique/</userinput
+> pour transférer la propriété du dossier « Musique » à votre-utilisateur, ou <userinput
 >chmod -R +w Musique/</userinput
-> pour ajouter les droits d'écriture sur le dossier Musique au propriétaire. </para>
+> pour ajouter les droits d'écriture sur le dossier « Musique » au propriétaire. </para>
 </sect3>
 <sect3 id="incorrect-sorting-various-artists"
 ><title
@@ -11700,7 +11677,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <orderedlist>
 <listitem
 ><para
->Les sont identiques bit à bit<itemizedlist>
+>Les fichiers sont identiques bit à bit<itemizedlist>
 <listitem
 ><para
 >Vous pouvez utiliser, par exemple, la commande <varname
@@ -11716,25 +11693,25 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Les fichiers ont le même identifiant unique Amarok AFT<itemizedlist>
+>Les fichiers ont le même identifiant unique Amarok « AFT »<itemizedlist>
 <listitem
 ><para
->C'est souvent le résultat de l'exécution d'amarok_afttagger puis de la création de multiples copies d'un fichier balisé; les lecteurs de balises tels que Kid3 ou MP3Diags peuvent être utilisés pour vérifier cela, recherchez la chaîne <varname
+>C'est souvent le résultat de l'exécution de « amarok_afttagger » puis de la création de multiples copies d'un fichier balisé. Les lecteurs de balises tels que Kid3 ou MP3Diags peuvent être utilisés pour vérifier cela, recherchez la chaine <varname
 >Amarok 2 AFTv1</varname
-> dans les balises</para
+> dans les balises.</para
 ></listitem>
 <listitem
 ><para
 >Vous pouvez utiliser l'utilitaire en ligne de commandes <varname
 >amarok_afttagger</varname
 > pour redéfinir l'identifiant unique d'une des pistes : <userinput
->amarok_afttagger --newid --verbose chemin/vers/une/des/pistes.mp3</userinput
+>amarok_afttagger --newid --verbose emplacement/vers/une/des/pistes.mp3</userinput
 ></para
 ></listitem>
 <listitem
 ><para
 >Alternativement, vous pouvez supprimer l'identifiant unique d'une des pistes, perdant la fonctionnalité synchro-de-la-piste-même-si-elle-est-modifiée-de-l'extérieur : <userinput
->amarok_afttagger --delete --verbose chemin/vers/une/des/pistes.mp3</userinput
+>amarok_afttagger --delete --verbose emplacement/vers/une/des/pistes.mp3</userinput
 ></para
 ></listitem>
 </itemizedlist>
@@ -11749,15 +11726,15 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Les versions publiées jusqu'à &amarok; 2.7 traitaient les identifiants MusicBrainz intégrés dans les balises (remplis par un baliseur MusicBrainz tel Picard) comme un identifiant unique de piste. Cependant, MusicBrainz a modifié les sémantiques des identifiants pour signifier <quote
 >identifiant enregistré</quote
-> puisqu'il était originalement implémenté dans &amarok;, ce qui signifie que vous pouvez obtenir de faux doublons, par exemple, pour les pistes qui apparaissent sur l'album original et sur le Best of. Rendez-vous sur <emphasis role="strikethrough"
+> puisqu'il était originalement implémenté dans &amarok;, ce qui signifie que vous pouvez obtenir de faux doublons, par exemple, pour les pistes apparaissant sur l'album original et sur les plus grands titres. Veuillez consulter <emphasis role="strikethrough"
 ><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329"
->le bug #315329</ulink
+>le bogue #315329</ulink
 ></emphasis
 > pour plus d'informations</para
 ></listitem>
 <listitem
 ><para
->Vous pouvez utiliser n'importe quel lecteur de balises avancé pour vérifier cela (recherchez la chaîne <varname
+>Vous pouvez utiliser n'importe quel lecteur de balises avancé pour vérifier cela (recherchez la chaine <varname
 >MusicBrainz</varname
 > dans les balises) et pour supprimer l'identifiant MusicBrainz de l'une des pistes</para
 ></listitem>
@@ -11766,7 +11743,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Une solution alternative est l'utilisation d'<varname
 >amarok_afttagger</varname
 > pour ajouter l'identifiant &amarok; AFT à l'une des pistes car &amarok; préférera ensuite son propre identifiant à celui de MusicBrainz : <userinput
->amarok_afttagger --newid --verbose chemin/vers/une/des/pistes.mp3</userinput
+>amarok_afttagger --newid --verbose emplacement/vers/une/des/pistes.mp3</userinput
 ></para
 ></listitem>
 </itemizedlist>
@@ -11805,13 +11782,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guimenuitem
 >Moteur</guimenuitem
 ></menuchoice
->. Essayez de passer à un moteur différent; les moteurs VLC, GStreamer et Xine devraient être disponibles depuis votre distribution, bien que Xine soit obsolète. Les moteurs GStreamer ou VLC sont habituellement recommandés, si votre distribution propose encore d'autres moteurs, ne les utilisez pas ! </para>
+>. Essayez de passer à un moteur différent. Les moteurs VLC, GStreamer et Xine devraient être disponibles depuis votre distribution, bien que Xine soit obsolète. Les moteurs GStreamer ou VLC sont habituellement recommandés, si votre distribution propose encore d'autres moteurs, ne les utilisez pas ! </para>
 <para
->Vérifiez aussi que le moteur seul peut lire les fichiers correctement; si ce n'est pas le cas, il s'agit d'un problème avec ce moteur et vous pourrez sans doute trouver des informations utiles dans ses fichiers d'aide. En d'autres termes, les moteurs GStreamer ou VLC peuvent-ils lire le même fichier ? <ulink url="help:/dragonplayer"
+>Vérifiez aussi que le moteur seul peut lire les fichiers correctement. Si ce n'est pas le cas, il s'agit d'un problème avec ce moteur et vous pourrez sans doute trouver des informations utiles dans ses fichiers d'aide. En d'autres termes, les moteurs GStreamer ou VLC peuvent-ils lire le même fichier ? <ulink url="help:/dragonplayer"
 >Dragon</ulink
 >, qui utilise aussi phonon, peut-il le lire ? </para>
 <para
->S'il paraît qu'il s'agisse d'un problème PulseAudio, et que vous souhaiter apporter un log aux développeurs de PulseAudio, la page de dépannage est <ulink url="https://wiki.ubuntu.com/PulseAudio/Log"
+>S'il parait qu'il s'agisse d'un problème PulseAudio, et que vous souhaiter apporter un log aux développeurs de PulseAudio, la page de dépannage est <ulink url="https://wiki.ubuntu.com/PulseAudio/Log"
 >ici</ulink
 >. </para>
 </sect3>
@@ -11825,9 +11802,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >&amarok; n'affiche aucune pochettes ou les images sont perdues lors du transfert sur le périphérique</title
 > 
 <para
->Il s'agit certainement de la mauvaise version de libgpod4 qui est installée. Sur Debian et ses dérivées comme Kubuntu, la version par défaut est libgpod4-nogtk, qui ne prend pas en charge les pochettes. Installez simplement la variante libgpod4 : <userinput
+>Il s'agit certainement de la mauvaise version de la bibliothèque « libgpod4 » qui est installée. Sur Debian et ses dérivées comme Kubuntu, la version par défaut est « libgpod4-nogtk », qui ne prend pas en charge les pochettes. Installez simplement la variante « libgpod4 » : <userinput
 >sudo apt-get install libgpod4</userinput
-> . Le paquet libgpod4-nogtk peut ensuite être supprimé sans problème. Depuis Kubuntu Quantal Quetzal (12.10) ce paquet a été supprimé et le paquet par défaut est libgpod4. </para>
+>. Le paquet « libgpod4-nogtk » peut ensuite être supprimé sans problème. Depuis Kubuntu Quantal Quetzal (12.10), ce paquet a été supprimé et le paquet par défaut est « libgpod4 ». </para>
 </sect3>
 </sect2>
 <sect2 id="crashes-and-bugs"
@@ -11843,13 +11820,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->&amarok; plante, mais <guilabel
+>&amarok; se plante, mais <guilabel
 >Dr Konqi</guilabel
-> ne s'affiche pas &mdash; exécutez amarok dans <guilabel
+> ne s'affiche pas &mdash; lancez amarok <guilabel
 >gdb</guilabel
 > avec la commande suivante : <userinput
 >gdb --args amarok --debug --nofork</userinput
-> . Dans la console de <guilabel
+>. Dans la console de <guilabel
 >gdb</guilabel
 >, saisissez <varname
 >run</varname
@@ -11871,13 +11848,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Comment obtenir une prise en charge personnelle de vos problèmes : <ulink url="irc://irc.freenode.net/#amarok"
+>Comment obtenir une prise en charge personnalisée de vos problèmes : <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok sur le réseau IRC  Freenode), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Forum</ulink
+> (#amarok sur IRC Libera Chat), <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->liste de diffusion</ulink
->.</para
+>Liste de diffusion</ulink
+></para
 ></listitem>
 </itemizedlist>
 </sect2>
@@ -11888,7 +11865,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect2 id="what-is-amarok"
 ><title
->Qu'est-ce qu'Amarok ?</title
+>Qu'est-ce que Amarok ?</title
 > 
 <para
 >&amarok; est un lecteur audio. Plus d'informations peuvent être trouvées dans <link linkend="amarok-menu"
@@ -11978,7 +11955,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Il y a beaucoup d'autres fonctionnalités intéressantes comme l'écriture de script avancée, les collections dynamiques, amélioration de la convivialité, gestion améliorée des périphériques multimédia, un nouveau gestionnaire de podcasts, prise en charge pour plus de plate-formes logicielles, et d'autres. </para>
 </sect2>
-<sect2 id="installation18"
+<sect2 id="installation15"
 ><title
 >Installation</title
 > 
@@ -11987,7 +11964,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Puis-je utiliser Amarok en dehors de KDE ?</title
 > 
 <para
->&amarok; requiert que des parties de KDE soit installées pour fonctionner, mais il fonctionnera très bien dans Gnom ou d'autres environnements de bureau, dont Windows et OS X. Pour qu'&amarok; puisse fonctionner, kdelibs et kdebase-runtime doivent être installées. </para>
+>&amarok; requiert que des éléments de KDE soient installées pour fonctionner correctement, mais il fonctionnera très bien dans Gnome ou d'autres environnements de bureau, dont Windows et OS X. Pour que &amarok; puisse fonctionner, les paquets « kdelibs » et « kdebase-runtime » doivent être installés. </para>
 <para
 >Pour que certaines fonctionnalités s'exécutent correctement, telles que l'affichage des notifications OSD, votre gestionnaire de fenêtres doit être configuré pour prendre en charge les standards appropriés de <emphasis
 >freedesktop.org</emphasis
@@ -11997,10 +11974,10 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="why-does-amarok-use-kdelibs"
 ><title
->Pourquoi Amarok utilise-t-il KDElibs ?</title
+>Pourquoi Amarok utilise-t-il le paquet « kdelibs » ?</title
 > 
 <para
->Nous nous sommes engagés à prendre en charge &amarok; sur toutes les plate-formes. Nous utilisons KDElibs et Qt car ils fournissent un excellent environnement de développement. À part &Linux; et BSD, &amarok; fonctionne sur Windows et MACOS, et des installateurs sont disponibles, mais malheureusement nous n'avons pas (encore) les ressources pour offrir une prise en charge complète pour ces systèmes d'exploitation. Presque tous nos développeurs utilisent des systèmes d'exploitation libres, et ils sont la priorité pour nous. Cependant, nous souhaitons la bienvenue aux développeurs Windows et OS X qui veulent aider, et améliorer &amarok; sur ces plate-formes. </para>
+>Nous nous sommes engagés à prendre en charge &amarok; sur toutes les plate-formes. Nous utilisons le paquet « kdelibs » et la bibliothèque Qt car ils fournissent un excellent environnement de développement. À part &Linux; et BSD, &amarok; fonctionne sur Windows et macOS, et des installateurs sont disponibles, mais malheureusement nous n'avons pas (encore) les ressources pour offrir une prise en charge complète pour ces systèmes d'exploitation. Presque tous nos développeurs utilisent des systèmes d'exploitation libres, et ils sont la priorité pour nous. Cependant, nous souhaitons la bienvenue aux développeurs Windows et OS X qui veulent aider, et améliorer &amarok; sur ces plate-formes. </para>
 </sect3>
 </sect2>
 <sect2 id="general-usage"
@@ -12012,7 +11989,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Comment puis-je contrôler Amarok depuis le clavier ?</title
 > 
 <para
->Des raccourcis claviers sont disponibles; rendez-vous sur <link linkend="keybinding-reference"
+>Des raccourcis claviers sont disponibles. Veuillez vous rendre sur <link linkend="keybinding-reference"
 >notre page de référence des raccourcis clavier</link
 > pour plus d'informations. </para>
 <para
@@ -12025,24 +12002,24 @@ ftpProxy=http://username:password@proxyserver:port/
 >Où puis-je obtenir de l'aide pour Amarok ?</title
 > 
 <para
->Il y a plusieurs options. Parfois, les problèmes que vous avez avec l'installation initiale d'&amarok; trouvent les meilleures réponses de la part d'experts de votre &UNIX; particulier ou de votre distribution &Linux;. Vous pouvez trouver de l'aide auprès de ces gentils utilisateurs et développeurs sur <ulink url="http://forum.kde.org/viewforum.php?f=127"
->le forum d'Amarok </ulink
-> et sur <ulink url="irc://irc.freenode.net/amarok"
->le canal IRC d'Amarok</ulink
-> à irc.freenode.net canal #amarok. </para>
+>Il y a plusieurs options. Parfois, les problèmes que vous avez avec l'installation initiale d'&amarok; trouvent de meilleures réponses auprès d'experts de votre &UNIX; spécifique ou de votre distribution &Linux;. Vous pouvez trouver de l'aide auprès de vos collègues ou des personnes de l'équipe de développement sur le <ulink url="https://discuss.kde.org/tag/amarok"
+>serveur « Discuss » dans la catégorie dédie à Amarok</ulink
+> et le <ulink url="irc://irc.libera.chat/amarok"
+>canal IRC pour Amarok</ulink
+> sur le canal irc.libera.chat #amarok. </para>
 <para
 >Remarquez que <ulink url="http://bugs.kde.org"
->bugzilla</ulink
-> n'est pas l'endroit pour rechercher une prise en charge ! Veuillez rapporter un bug si vous êtes sérieux en aidant à la résolution du bug dans &amarok; lui-même. </para>
+>Bugzilla</ulink
+> n'est pas l'endroit pour rechercher une prise en charge ! Veuillez rapporter un bug si vous êtes sérieux en aidant à la résolution du bogue dans &amarok; lui-même. </para>
 </sect3>
 <sect3 id="how-do-i-report-a-bug"
 ><title
->Comment rapporter un bug ?</title
+>Comment rapporter un bogue ?</title
 > 
 <para
->Si vous trouver un bug dans &amarok;, veuillez envoyer le rapport au <ulink url="https://bugs.kde.org"
->bugzilla de KDE</ulink
->. Pour faire un rapport de bug complet, incluez toujours les informations suivantes SVP : </para>
+>Si vous trouver un bogue dans &amarok;, veuillez envoyer le rapport au <ulink url="https://bugs.kde.org"
+>Bugzilla de KDE</ulink
+>. Pour faire un rapport de bug complet, veuillez toujours inclure les informations suivantes : </para>
 <itemizedlist>
 <listitem
 ><para
@@ -12050,9 +12027,9 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guimenu
 >aide</guimenu
 ><guimenuitem
->à propos d'Amarok</guimenuitem
+>à propos de Amarok</guimenuitem
 ></menuchoice
->). Vous ne devez pas rapporter les bugs pour les versions d'&amarok; plus anciennes que la version actuellement stable étant donné que nous nous fournissons pas de résolutions de bugs aux versions antérieures.</para
+>). Vous ne devez pas rapporter les bugs pour les versions de &amarok; plus anciennes que la version actuellement stable étant donné que nous nous fournissons pas de résolutions de bugs aux versions antérieures.</para
 ></listitem>
 <listitem
 ><para
@@ -12156,12 +12133,12 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect3 id="how-do-i-play-audio-cds"
 ><title
->Comment écouter des CDs audio ?</title
+>Comment écouter des CD audio ?</title
 > 
 <para
->Les CDs audio sont traités différemment des CDs de données, qui sont aussi pris en charge. Lorsque vous insérez un CD audio, il sera affiché comme une collection locale. Déposez-la dans la liste de lecture ou dans la fenêtre d'actions (<emphasis
->Pop-Up Dropper</emphasis
->), ou faites un clic droit sur les pistes choisies et choisissez <guilabel
+>Les CD audio sont traités différemment des CD de données, qui sont également pris en charge. Lorsque vous insérez un CD audio, il sera affiché comme une collection locale. Faites le glisser dans la liste de lecture ou faites <emphasis
+>apparaitre le compte-gouttes</emphasis
+> ou faites un clic droit sur les pistes choisies puis sélectionnez <guilabel
 >Ajouter à la liste de lecture</guilabel
 > ou <guilabel
 >Remplacer la liste de lecture</guilabel
@@ -12172,7 +12149,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Quels types de fichiers Amarok prend-il en charge ?</title
 > 
 <para
->&amarok; ne lit pas la musique par lui-même, mais délègue cette tâche à Phonon, spécifiquement aux moteurs VLC ou GStreamer. Par conséquent, &amarok; peut lire n'importe quel fichier que ces moteurs peuvent lire. Pour analyser les étiquettes des fichiers, &amarok; utilise Taglib qui prend en charge la plupart des types de fichiers qui contiennent des métadonnées. </para>
+>&amarok; ne lit pas la musique par lui-même, mais délègue cette tâche à Phonon, spécifiquement aux moteurs VLC ou GStreamer. Par conséquent, &amarok; peut lire n'importe quel fichier que ces moteurs peuvent lire. Pour analyser les étiquettes des fichiers, &amarok; utilise « Taglib » qui prend en charge la plupart des types de fichiers contenant des métadonnées. </para>
 </sect3>
 <sect3 id="what-is-phonon-what-are-phonon-backends"
 ><title
@@ -12201,7 +12178,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >J'ai installé les codecs, mais Amarok ne lit toujours pas les fichiers mp4 et mka</title
 > 
 <para
->Lors de l'utilisation de certains moteurs phonon, tels que gstreamer, &amarok; peut refuser de lire les fichiers <filename
+>Lors de l'utilisation de certains moteurs Phonon, tels que GStreamer, &amarok; peut refuser de lire les fichiers <filename
 >mp4</filename
 > et <filename
 >mka</filename
@@ -12219,7 +12196,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >mka</filename
 > modifiez-la en <filename
 >mkv</filename
->. Bien sûr, vous devez être sûr que les fichiers ne contiennent que de l'audio. Vous pouvez utiliser la commande ffprobe pour savoir quels flux de données sont présents dans le fichier. Si le fichier contient un flux vidéo, il doit être enlevé. Il existe beaucoup d'outils capable de modifier ces formats et la plupart d'entre eux son fondés sur <filename
+>. Bien sûr, vous devez être sûr que les fichiers ne contiennent que de l'audio. Vous pouvez utiliser la commande « ffprobe » pour savoir quels flux de données sont présents dans le fichier. Si le fichier contient un flux vidéo, il doit être enlevé. Il existe beaucoup d'outils capable de modifier ces formats et la plupart d'entre eux son fondés sur <filename
 >ffmpeg</filename
 >/<filename
 >libav</filename
@@ -12241,7 +12218,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><screen
 ><command
->Stream #0.1(und): Video: h264 (Baseline), yuv420p, 480x360 [PAR 1:1 DAR 4:3], 242 kb/s, 25 fps, 25 tbr, 25k tbn, 50k tbc</command
+>Stream #0.1(und): Video : h264 (Baseline), yuv420p, 480x360 [PAR 1:1 DAR 4:3], 242 kb/s, 25 fps, 25 tbr, 25k tbn, 50k tbc</command
 ></screen>
 </para>
 <para
@@ -12290,7 +12267,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"
 ><title
->Je possède une seconde carte son et j'utilise ALSA. Comment faire pour qu'Amarok l'utilise à la place de la carte par défaut ?</title
+>Je possède une seconde carte son et j'utilise ALSA. Comment faire pour que Amarok l'utilise à la place de la carte par défaut ?</title
 > 
 <para
 >Configurez cela dans le module Phonon de la configuration du système. <menuchoice
@@ -12320,7 +12297,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <para
 >La plupart des distributions actuelles embarquent le démon audio <guilabel
->Pulseaudio</guilabel
+>PulseAudio</guilabel
 > qui gère les paramètres audio du système. Si vous ne pouvez pas modifier le volume dans &amarok; indépendamment de &kmix;, alors les paramètres de <application
 >PulseAudio</application
 > ont l'option </para>
@@ -12333,18 +12310,18 @@ ftpProxy=http://username:password@proxyserver:port/
 >$HOME/.pulse/daemon.conf</guilabel
 >, soit dans le fichier du système <guilabel
 >/etc/pulse/daemon.conf</guilabel
->. Davantage d'informations sur les paramètres spécifiques à Pulseaudio peuvent être trouvées sur <ulink url="http://linux.die.net/man/5/pulse-daemon.conf"
+>. Davantage d'informations sur les paramètres spécifiques à PulseAudio peuvent être trouvées sur <ulink url="http://linux.die.net/man/5/pulse-daemon.conf"
 >la page man de pulse-daemon.conf</ulink
 >.  </para>
 </sect3>
 <sect3 id="how-do-i-turn-on-visualizations"
 ><title
->Comment activer les visualisations ?</title
+>Comment activer les afficheurs ?</title
 > 
 <para
->Les visualisations sont sous la forme d'un applet. Pour plus d'informations, visitez <link linkend="applets"
+>Les afficheurs sont sous la forme d'un applet. Pour plus d'informations, visitez <link linkend="applets"
 >la page des applets</link
->. Les visualisations sont actuellement en cours de développement et sont encore sujets à des bogues occasionnels. </para>
+>. Ils sont actuellement en cours de développement et sont encore sujets à des bogues occasionnels. </para>
 </sect3>
 <sect3 id="how-can-i-add-podcasts"
 ><title
@@ -12361,7 +12338,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >ici</link
 >. </para>
 <para
->vous avez aussi des services, tels que gpodder et dossiers de podcasts pour vous aider à trouver de très bons podcasts. Vous pouvez activer ces services et d'autres en allant dans le menu <guilabel
+>vous avez aussi des services, tels que « gpodder » et dossiers de podcasts pour vous aider à trouver de très bons podcasts. Vous pouvez activer ces services et d'autres en allant dans le menu <guilabel
 >configuration</guilabel
 > puis <menuchoice
 ><guimenu
@@ -12400,7 +12377,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >où <replaceable
 >dossier</replaceable
-> est le chemin vers le dossier qui pose problème. Puis, allez dans le menu <menuchoice
+> est l'emplacement vers le dossier qui pose problème. Puis, allez dans le menu <menuchoice
 ><guimenu
 >configuration</guimenu
 ><guimenuitem
@@ -12414,7 +12391,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><warning
 ><para
->cela ne fonctionnera pas sur Windows, vu que la commande touch est spécifique à &Linux; et aux systèmes de type BSD.</para
+>cela ne fonctionnera pas sur Windows, vu que la commande « touch » est spécifique à &Linux; et aux systèmes de type BSD.</para
 ></warning>
 </para>
 </sect3>
@@ -12423,7 +12400,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Puis-je utiliser des périphériques amovibles dans Amarok ?</title
 > 
 <para
->&amarok; a une prise en charge très poussée pour les périphériques multimédia basés sur Solid, la couche d'abstraction matérielle de KDE, qui requiert peu de configuration. Vous devez juste connecter votre périphérique et y accéder dans &amarok;. Aussi, grâce <emphasis
+>&amarok; a une prise en charge très poussée pour les périphériques multimédia reposant sur Solid, la couche d'abstraction matérielle de KDE, qui requiert peu de configuration. Vous devez juste connecter votre périphérique et y accéder dans &amarok;. Aussi, grâce <emphasis
 >aux collections dynamiques</emphasis
 >, vos périphériques multimédia peuvent faire partie de votre collection musicale, être incluses dans les recherches et être accessibles dans la section <guilabel
 >musique locale</guilabel
@@ -12445,7 +12422,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-two-will-my-tags-score-are-ratings-be-lost"
 ><title
->Puis-je utiliser l'ancienne collection d'Amarok dans Amarok 2 ? Mes balises, scores et notes seront-ils perdus ?</title
+>Puis-je utiliser l'ancienne collection de Amarok dans Amarok 2 ? Mes balises, scores et notes seront-ils perdus ?</title
 > 
 <para
 >Un importateur de base de données est disponible. Vous aurez la possibilité de conserver vos notes et autres statistiques. Plus d'informations <link linkend="collection"
@@ -12472,7 +12449,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >gestionnaire de scripts</guilabel
 > depuis le menu <guilabel
 >configuration</guilabel
->,  <menuchoice
+>, <menuchoice
 ><guimenu
 >configurer Amarok...</guimenu
 ><guimenuitem
@@ -12482,11 +12459,11 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="can-i-use-amarok-one-four-scripts-in-amarok-2"
 ><title
->Puis-je utiliser les scripts d'Amarok 1.4 dans Amarok 2 ?</title
+>Puis-je utiliser les scripts de Amarok 1.4 dans Amarok 2 ?</title
 > 
 <para
->Non. Une nouvelle et puissante API a été créée, elle fournit d'importantes améliorations mais ne vous permettra pas l'utilisation d'anciens scripts. Le nouveau système d'écriture de script est basé sur QtScript et réduira significativement les dépendances d'&amarok;, un énorme problème pour les utilisateurs non initiés et pour les utilisations sur d'autres plate-formes. en outre, il réduira grandement  le nombre de processus externes lancés lors de l'exécution. Un autre avantage est que la nouvelle API permettra une intégration plus poussée avec &amarok; qu'avec l'ancien système d'écriture de scripts. <ulink url="http://community.kde.org/Amarok/Development/Script_API"
->API pour l'écriture de scripts d'Amarok</ulink
+>Non. Une nouvelle et puissante API a été créée, elle fournit d'importantes améliorations mais ne vous permettra pas l'utilisation d'anciens scripts. Le nouveau système d'écriture de script repose sur QtScript et réduira significativement les dépendances d'&amarok;, un énorme problème pour les utilisateurs non initiés et pour les utilisations sur d'autres plate-formes. en outre, il réduira grandement le nombre de processus externes lancés lors de l'exécution. Un autre avantage est que la nouvelle API permettra une intégration plus poussée avec &amarok; qu'avec l'ancien système d'écriture de scripts. <ulink url="http://community.kde.org/Amarok/Development/Script_API"
+>API pour l'écriture de scripts de Amarok</ulink
 >. </para>
 </sect3>
 <sect3 id="what-are-moodbars"
@@ -12528,11 +12505,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >Vous avez ici un exemple de script qui peut calculer les scores : </para>
 <para
 ><screen
->if( playcount &lt;= 0 ) # not supposed to be less, but what the hell.
-       newscore = ( prevscore + percentage ) / 2
-   else
-       newscore = ( ( prevscore * playcount ) + percentage ) / ( playcount + 1 )
-   end
+>if( playcount &lt;= 0 ) # pas supposé être inférieur, mais tant pis.
+    newscore = ( prevscore + percentage ) / 2
+  else
+    newscore = ( ( prevscore * playcount ) + percentage ) / ( playcount + 1 )
+  end
 </screen>
 </para>
 <para
@@ -12558,14 +12535,16 @@ ftpProxy=http://username:password@proxyserver:port/
 >Mais je veux aussi ce système d'étoiles comme dans les autres lecteurs !</title
 > 
 <para
->&amarok;, bien sûr, prend en charge un système défini par l'utilisateur, et vous pouvez noter vos pistes avec un simple clic en utilisant l'applet <guilabel
->piste actuelle</guilabel
->. Vous pouvez aussi le faire via le menu contextuel (clic droit) <menuchoice
+>&amarok;, bien sûr, prend en charge un système de notation défini par l'utilisateur. Vous pouvez noter vos pistes avec un simple clic en utilisant l'applet <guilabel
+>Piste courante</guilabel
+>. Vous pouvez aussi le faire grâce au menu contextuel (Sur un clic droit) sur l'onglet <menuchoice
 ><guimenu
->modifier les informations de la piste</guimenu
+>Modifier les informations de piste</guimenu
 ><guimenuitem
->onglet résumé</guimenuitem
+>Résumé</guimenuitem
 ></menuchoice
+>. Si vous voyez les étoiles de notations affichées dans la disposition de votre liste de lecture, vous pouvez aussi faire les modifications ici avec le <emphasis
+>double clic lent</emphasis
 >. </para>
 </sect3>
 <sect3 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"
@@ -12573,7 +12552,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Puis-je glisser-déposer des applets Plasma à partir de la fenêtre principale vers le bureau ?</title
 > 
 <para
->Non, mais il existe plusieurs plasmoïds disponibles pour votre bureau qui vous permettront aussi bien d'afficher des informations fournies par &amarok; que de contrôler &amarok;. </para>
+>Non, mais il existe plusieurs composants graphiques disponibles pour votre bureau qui vous permettront aussi bien d'afficher des informations fournies par &amarok; que de contrôler &amarok;. </para>
 </sect3>
 <sect3 id="how-can-i-save-a-stream"
 ><title
@@ -12586,7 +12565,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guimenuitem
 >ajouter un flux...</guimenuitem
 ></menuchoice
->; entre autres. </para>
+>, entre autres. </para>
 <para
 >Une fois le flux chargé, vous pouvez l'enregistrer en appuyant sur l'icône <inlinemediaobject
 > <imageobject
@@ -12600,7 +12579,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="where-do-i-find-the-settings-for-amarok"
 ><title
->Où puis-je trouver les fichiers de configuration d'Amarok ?</title
+>Où puis-je trouver les fichiers de configuration pour Amarok ?</title
 > 
 <para
 ><userinput
@@ -12612,7 +12591,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 </sect3>
 </sect2>
-<sect2 id="troubleshooting19"
+<sect2 id="troubleshooting16"
 ><title
 >Dépannage</title
 > 
@@ -12639,8 +12618,8 @@ ftpProxy=http://username:password@proxyserver:port/
 >  
 </para>
 <para
->Puis, postez  juste la pile d'appels sur <ulink url="http://paste.kde.org/"
->PasteBin</ulink
+>Puis, postez juste la pile d'appels sur <ulink url="http://paste.kde.org/"
+>Pastebin</ulink
 >, comme décrit dans <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo"
 >le tutoriel sur le débogage</ulink
 >. </para>
@@ -12661,18 +12640,18 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect3 id="how-do-i-get-a-git-version-of-amarok"
 ><title
->Comment puis-je obtenir une version GIT d'Amarok ?</title
+>Comment puis-je obtenir une version GIT de Amarok ?</title
 > 
 <para
 >Rendez-vous sur la page d'instruction à propos de <ulink url="http://community.kde.org/Amarok/Development/Development_HowTo"
->la construction de la version de développement d'Amarok</ulink
+>la construction de la version de développement de Amarok</ulink
 >. Rendez-vous ici pour une construction locale : <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/"
 >construction depuis Git localement : résumé complet</ulink
 >. </para>
 </sect3>
 <sect3 id="why-isnt-amarok-part-of-kde-multimedia"
 ><title
->Pourquoi Amarok ne fait pas partie de KDE Multimedia ?</title
+>Pourquoi Amarok ne fait pas partie de KDE Multimédia ?</title
 > 
 <para
 >Les paquets dans la compilation de logiciels KDE (KDE SC) ont un calendrier de publication propre qui n'est pas adapté au cycle de développement d'&amarok;, et puisqu'aucune autre application de KDE ne dépend d'&amarok;, il n'est pas nécessaire de suivre ce calendrier de publication. </para>
@@ -12684,13 +12663,13 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Veuillez le rapporter sur <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
 >bugs.kde.org</ulink
->. Si vosu avez une liste de suggestions ou de souhaits, il ept être préférable de les envoyer à notre liste de diffusion : <ulink url="mailto:amarok@kde.org"
+>. Si vous avez une liste de suggestions ou de souhaits, il peut être préférable de les envoyer à notre liste de diffusion : <ulink url="mailto:amarok@kde.org"
 >amarok@kde.org</ulink
 >. Poster l'idée sur nos canaux IRC ou sur une page de wiki obscure ou bien encore sur une page de blog n'aidera pas tellement vu que l'information sera perdue. </para>
 </sect3>
 <sect3 id="do-you-accept-patches"
 ><title
->Acceptez-vous les patches ?</title
+>Acceptez-vous les correctifs ?</title
 > 
 <para
 >Avec joie ! Votre meilleur plan d'action est de nous faire savoir ce que vous avez en tête avant que vous fassiez quoi que ce soit pour que nous puissions en discuter. Mais ne vous inquiétez pas ! Nous n'avons pas encore refusé de patch ! La discussion est faite principalement pour vous aider à corriger le bon morceau de code d'&amarok;. Envoyez vos patchs et vos contributions au code sur git.reviewboard.kde.org. Rendez-vous aussi sur la page <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/"
@@ -12782,7 +12761,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <listitem
 ><para
 ><link linkend="amarok-shortcuts"
->Raccourcis clavier d'Amarok</link
+>Raccourcis clavier pour Amarok</link
 >&nbsp;</para
 ></listitem>
 </itemizedlist>
@@ -12801,7 +12780,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect2 id="amarok-top-level-menus"
 ><title
->Barre de menus d'Amarok</title
+>Barre de menus de Amarok</title
 > 
 <para>
 <screenshot>
@@ -12852,7 +12831,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><link linkend="view-menu"
->Modifie l'organisation d'Amarok</link
+>Modifie l'organisation de Amarok</link
 >&nbsp;</para>
     </entry>
   </row>
@@ -12908,7 +12887,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><link linkend="help-menu"
->Informations importantes à propos d'Amarok et KDE</link
+>Informations importantes à propos de Amarok et KDE</link
 >&nbsp;</para
 ></entry>
   </row>
@@ -12919,12 +12898,12 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="amarok-menu"
 ><title
->Menu Amarok</title
+>Menu de Amarok</title
 > 
 <para
 >Certains actions usuelles d'&amarok; sont ici, la plupart pour contrôler la lecture d'une piste. </para>
 </sect2>
-<sect2 id="contents20"
+<sect2 id="contents17"
 ><title
 >Contenu</title
 > 
@@ -12938,11 +12917,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->Le menu Amarok</phrase>
+>Le menu de Amarok</phrase>
     </textobject>
     <caption>
       <para
->Le menu Amarok</para>
+>Le menu de Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13090,7 +13069,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Menu Vue</title
 > 
 <para
->Ce menu contient les options pour ajuster l'organisation d'&amarok;, et d'une case pour verrouiller la configuration; utilisez-la pour éviter des modifications accidentelles à la disposition des éléments constituant la fenêtre d'&amarok;. </para>
+>Ce menu contient les options pour ajuster l'organisation d'&amarok;, et d'une case pour verrouiller la configuration. Utilisez-la pour éviter des modifications accidentelles à la disposition des éléments constituant la fenêtre d'&amarok;. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13112,22 +13091,22 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 <sect2 id="changing-the-amarok-toolbar"
 ><title
->Modifier la barre d'outils d'Amarok</title
+>Modifier la barre d'outils de Amarok</title
 > 
 <para
 >Il y a aussi deux boutons radios dans ce menu qui sont utilisés pour choisir quelle <emphasis
 >barre d'outils</emphasis
 > &amarok; utilisera. <emphasis
->La barre d'outils principale</emphasis
+>La barre principale d'outils</emphasis
 > est plus haute et possède des contrôles différents de <emphasis
->la barre d'outils compacte</emphasis
+>la barre réduite d'outils</emphasis
 >. <emphasis
->La barre d'outils principale</emphasis
+>La barre principale</emphasis
 > contient deux boutons de contrôle principaux : un bouton <guilabel
 >lecture</guilabel
 > / <guilabel
 >pause</guilabel
-> et un bouton pour contrôler le volume. Elle affiche aussi le nom du fichier multimédia en cours ainsi qu'un curseur pour indiquer, et modifier, la position de lecture.  Plus d'informations sur <link linkend="toolbar"
+> et un bouton pour contrôler le volume. Elle affiche aussi le nom du fichier multimédia en cours ainsi qu'un curseur pour indiquer, et modifier, la position de lecture. Plus d'informations sur <link linkend="toolbar"
 >la barre d'outils</link
 >. </para>
 <para>
@@ -13140,11 +13119,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->La barre d'outils principale</phrase>
+>La barre principale d'outils</phrase>
     </textobject>
     <caption>
       <para
->La barre d'outils principale</para>
+>La barre principale d'outils</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13171,7 +13150,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="amarok-window-layouts"
 ><title
->Dispositions de la fenêtre d'Amarok</title
+>Dispositions de la fenêtre de Amarok</title
 > 
 <para
 >Si la case<guilabel
@@ -13341,11 +13320,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->Le menu Liste de lecture d'Amarok</phrase>
+>Le menu Liste de lecture de Amarok</phrase>
     </textobject>
     <caption>
       <para
->Le menu Liste de lecture d'Amarok</para>
+>Le menu Liste de lecture de Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13399,7 +13378,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Enregistre vos listes de lecture préférées dans divers formats - flux mp3, Shoutcast, xspf</para>
+>Enregistre vos listes de lecture préférées dans divers formats - flux mp3, shoutcast, xspf</para>
     </entry>
   </row>
   <row>
@@ -13710,7 +13689,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Cette option vous permet de réaliser votre propre disposition de <guilabel
 >liste de lecture</guilabel
->; affichant le nom de l'artiste, le genre, l'année, le débit et plus encore. </para>
+> ; affichant le nom de l'artiste, le genre, l'année, le débit et plus encore. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13745,7 +13724,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-8menutools.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_menutools.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -13774,7 +13753,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Gestionnaire de favoris</guilabel
+>Gestionnaire de signets</guilabel
 ></para>
     </entry>
     <entry>
@@ -13815,7 +13794,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Affiche la visionneuse de requêtes réseau.</para>
+>Ouvre l'afficheur de requêtes réseau.</para>
     </entry>
   </row>
   <row>
@@ -13839,8 +13818,8 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Ouvre la boîte de dialogue de synchronisation des statistiques.</para>
-    </entry>
+>Ouvre la boite de dialogue de synchronisation des statistiques.</para
+></entry>
   </row>
   </tbody>
   </tgroup>
@@ -13887,7 +13866,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Mettre en favoris les applets de la vue de contexte</guilabel
+>Mettre en signets les applets de la vue de contexte</guilabel
 ></para>
     </entry>
     <entry>
@@ -13899,7 +13878,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Mettre en favoris la vue des sources de média</guilabel
+>Mettre en signets la vue des sources de média</guilabel
 ></para>
     </entry>
     <entry>
@@ -13911,7 +13890,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Mettre en favoris les paramètres de la liste de lecture</guilabel
+>Mettre en signets les paramètres de la liste de lecture</guilabel
 ></para>
     </entry>
     <entry>
@@ -13936,7 +13915,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </informaltable>
 </para>
 </sect3>
-<sect3 id="cover-manager21"
+<sect3 id="cover-manager18"
 ><title
 >Gestionnaire de pochettes</title
 >  
@@ -13989,9 +13968,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Visionneuse de requêtes réseau</title
 > 
 <para
->La <guilabel
->visionneuse de requêtes réseau</guilabel
-> vous permet de surveiller les requêtes réseau faites par &amarok;. Choisir cette ouvrira la fenêtre suivante : </para>
+><guilabel
+>L'afficheur de requêtes réseau</guilabel
+> vous permet de surveiller les requêtes réseau faites par &amarok;. La sélection de cette option permettra l'ouverture de la fenêtre suivante : </para>
 <para>
 <screenshot>
 <screeninfo
@@ -14041,11 +14020,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->Le menu de configuration d'Amarok</phrase>
+>Le menu de configuration de Amarok</phrase>
     </textobject>
     <caption>
       <para
->Le menu de configuration d'Amarok</para>
+>Le menu de configuration de Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -14066,12 +14045,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Afficher la barre de menu</guilabel
+>Afficher la barre de menus</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Masque la barre de menu. Affichez-la à nouveau en appuyant sur les touches <keycombo
+>Masque la barre de menus. Affichez-la à nouveau en appuyant sur les touches <keycombo
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
@@ -14082,12 +14061,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Mode « Replay Gain »</guilabel
+>Mode « Gain de lecture »</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Vous permet de régler le mode « Replay Gain »; <guilabel
+>Vous permet de régler le mode « Gain de relecture » ; <guilabel
 >désactivé</guilabel
 >, par <guilabel
 >album</guilabel
@@ -14184,13 +14163,13 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 <para
 >Configurez divers aspects d'&amarok;. Plus de détails dans la <link linkend="configuring-amarok"
->configuration d'Amarok</link
+>configuration de Amarok</link
 >. </para>
 </sect3>
 </sect2>
 <sect2 id="help-menu"
 ><title
->Menu Aide</title
+>Menu « Aide »</title
 > 
 <para
 >Informations importantes à propos d'&amarok; et KDE. </para>
@@ -14204,11 +14183,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->Le menu Aide d'Amarok</phrase>
+>Le menu « Aide » de Amarok</phrase>
     </textobject>
     <caption>
       <para
->Le menu Aide d'Amarok</para>
+>Le menu « Aide » de Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -14229,12 +14208,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Signaler un bug...</guilabel
+>Signaler un bogue...</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Signalez les bugs au concentrateur de bugs directement, avec beaucoup d'informations automatiquement prises en charge par le formulaire de la base de données.</para>
+>Signalez les bogues au site de gestion de bogues directement, avec beaucoup d'informations automatiquement prises en charge par le formulaire de la base de données.</para>
     </entry>
   </row>
   <row>
@@ -14289,24 +14268,24 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->À propos d'amarok</guilabel
+>À propos de Amarok</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Version d'&amarok;, site web, contributeurs et donateurs.</para>
+>Version d'&amarok;, site Internet, contributeurs et donateurs.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Diagnostiques</guilabel
+>Diagnostics</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Affiche des informations complètes nécessaires pour remplir des rapports de bugs utiles, telles que la version d'Amarok, de KDE, de Qt, de Phonon, des moteurs de Phonon, si PulseAudio est installé ou non, ainsi que l'identification des scripts Amarok installés, et s'ils sont en cours d'exécution ou non. Il y a un bouton en bas pour copier les informations dans le presse papier.</para>
+>Affiche des informations complètes nécessaires pour remplir des rapports de bugs utiles, telles que la version de Amarok, de KDE, de Qt, de Phonon, des moteurs de Phonon, si PulseAudio est installé ou non, ainsi que l'identification des scripts Amarok installés, et s'ils sont en cours d'exécution ou non. Il y a un bouton en bas pour copier les informations dans le presse-papier.</para>
     </entry>
   </row>
   <row>
@@ -14318,7 +14297,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Informations à propos de KDE, et des liens pour rejoindre et supporter KDE.</para
+>Informations à propos de KDE et des liens pour rejoindre et soutenir KDE.</para
 ></entry>
   </row>
   </tbody>
@@ -14373,7 +14352,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <listitem
 ><para
 ><link linkend="amarok-shortcuts"
->Raccourcis clavier d'Amarok</link
+>Raccourcis clavier pour Amarok</link
 >&nbsp;</para
 ></listitem>
 </itemizedlist>
@@ -14706,7 +14685,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="amarok-shortcuts"
 ><title
->Raccourcis d'Amarok</title
+>Raccourcis de Amarok</title
 > 
 <para
 >Contrôlez &amarok; grâce <emphasis
@@ -15236,7 +15215,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Copyright 2002, 2003 Mark Kretschmann (kretschmann kde.org). </para>
 <para
-> Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 L'équipe de développement d'Amarok </para>
+> Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 L'équipe de développement de Amarok </para>
 </sect1>
 <sect1 id="documentation-copyright"
 ><title
@@ -15245,7 +15224,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><note
 ><para
->Ajoutez votre nom ici si vous contribuez au manuel. Veuillez respecter l'ordre alphabétique s'il vous plaît</para
+>Ajoutez votre nom ici si vous contribuez au manuel. Veuillez respecter l'ordre alphabétique s'il vous plaît.</para
 ></note>
 </para>
 <para
@@ -15283,7 +15262,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Pedro Raimundo (pedrooraimundo gmail.com) </para>
 <para
->Pete Daniels (pete guerrillatechsupport.com), screenshots </para>
+>Pete Daniels (pete guerrillatechsupport.com), copies d'écran </para>
 <para
 >Salma Sultana (salma4534 yahoo.com) </para>
 <para
@@ -15313,7 +15292,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <!--userbase-content-->
 <para
 >Traduction française par &traducteurSimonDepiets;,&traducteurYohannHamon; et &traducteurFrederickAngelique;.</para
->  &underFDL; </sect1>
+> &underFDL; </sect1>
 </chapter>
 &documentation.index;
 </book>
