@@ -1,5 +1,5 @@
 # translation of amarok.po to
-# SPDX-FileCopyrightText: 2024, 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2025, 2026 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 # محمد سعد  Mohamed SAAD <metehyi@free.fr>, 2006.
 # Ahmad Farghal <ahmad.farghal@gmail.com>, 2007.
 # Youssef Chahibi <chahibi@gmail.com>, 2007, 2008.
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-02 00:43+0000\n"
-"PO-Revision-Date: 2025-10-15 17:26+0400\n"
+"PO-Revision-Date: 2026-01-08 12:00+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -5889,18 +5889,16 @@ msgid "Configure %1"
 msgstr "اضبط %1"
 
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:79
-#, fuzzy, kde-format
-#| msgid "One item"
-#| msgid_plural "%1 items"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] "لا عنصر"
-msgstr[1] "لا عنصر"
-msgstr[2] "لا عنصر"
-msgstr[3] "لا عنصر"
-msgstr[4] "لا عنصر"
-msgstr[5] "لا عنصر"
+msgstr[0] "%v عنصر"
+msgstr[1] "عنصر واحد"
+msgstr[2] "عنصرين"
+msgstr[3] "%v عناصر"
+msgstr[4] "%v عنصرًا"
+msgstr[5] "%v عنصر"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5974,19 +5972,16 @@ msgid "Already subscribed to %1."
 msgstr "مشترك في %1 فعلًا."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
 msgstr[0] "أقلّ من دقيقة"
-msgstr[1] "دقيقة واحدة"
-msgstr[2] "دقيقتان"
-msgstr[3] "%1 دقائق"
-msgstr[4] "%1 دقيقةً"
-msgstr[5] "%1 دقيقة"
+msgstr[1] "كل دقيقة واحدة"
+msgstr[2] "كل دقيقتان"
+msgstr[3] "كل %v دقائق"
+msgstr[4] "كل %v دقيقةً"
+msgstr[5] "كل %v دقيقة"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
