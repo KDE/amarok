@@ -1626,7 +1626,9 @@ PodcastReader::parsePubDate( const QString &dateString )
         parseInput.replace( lowerMonth, upperMonth );
     }
 
-    QDateTime pubDate = QDateTime::fromString( parseInput, Qt::RFC2822Date );
+    // Remove any GMT suffix to prevent RFC2822 parsing from breaking. Replacing with +0000 could also be option, but would
+    // break any date strings where the timezone is e.g. GMT+0000, and current parser considers no timezone GMT/UTC anyhow.
+    QDateTime pubDate = QDateTime::fromString( parseInput.remove( QStringLiteral("GMT") ), Qt::RFC2822Date );
 
     debug() << "result: " << pubDate.toString();
     return pubDate;
