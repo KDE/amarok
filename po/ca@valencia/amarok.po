@@ -1,8 +1,8 @@
 # Translation of amarok.po to Catalan (Valencian)
-# Copyright (C) 2005-2025 This_file_is_part_of_KDE
+# Copyright (C) 2005-2026 This_file_is_part_of_KDE
 #
 # SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Antoni Bella Pérez <antonibella5@yahoo.com>
-# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Josep M. Ferrer <txemaq@gmail.com>
 # SPDX-FileCopyrightText: 2005 Pau Capdevila Pujol <pau.capdevila@estudiant.upc.edu>
 # SPDX-FileCopyrightText: 2005 Pau Rul·lan Ferragut <paurullan@bulma.net>
 # SPDX-FileCopyrightText: 2006, 2007 Pau Tallada Crespí <pau_tallada@telefonica.net>
@@ -12,14 +12,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-02 00:43+0000\n"
-"PO-Revision-Date: 2025-12-27 10:21+0100\n"
+"PO-Revision-Date: 2026-01-09 11:40+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 25.12.0\n"
+"X-Generator: Lokalize 25.04.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 
@@ -667,8 +667,8 @@ msgstr "Expressió regular que s'ha de substituir."
 msgid ""
 "Organize files will replace substrings matching this regular expression."
 msgstr ""
-"En organitzar els fitxers, se substituiran les subcadenes que emparellen amb "
-"esta expressió regular."
+"En organitzar els fitxers, se substituiran les subcadenes que coincidisquen "
+"amb esta expressió regular."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:179
@@ -681,7 +681,7 @@ msgstr "Cadena de substitució."
 #, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
-"En organitzar els fitxers, se substituiran les cadenes que emparellen amb "
+"En organitzar els fitxers, se substituiran les cadenes que coincidisquen amb "
 "esta cadena."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -15435,7 +15435,7 @@ msgid ""
 "Can match tracks by: %1\n"
 "Can synchronize: %2"
 msgstr ""
-"Pot emparellar peces per: %1\n"
+"Pot buscar peces per: %1\n"
 "Pot sincronitzar: %2"
 
 #: statsyncing/Process.cpp:48
@@ -15446,7 +15446,7 @@ msgstr "Sincronitza les estadístiques"
 #: statsyncing/Process.cpp:113
 #, kde-format
 msgid "Matching Tracks for Statistics Synchronization"
-msgstr "Peces emparellades per a la sincronització d'estadístiques"
+msgstr "Peces coincidents per a la sincronització d'estadístiques"
 
 #: statsyncing/Process.cpp:230
 #, kde-format
