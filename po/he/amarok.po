@@ -4,13 +4,13 @@
 # Assaf Gillat <gillata@gmail.com>, 2005.
 # Chen Levy <contrib@chenlevy.com>, 2006.
 # tahmar1900 <tahmar1900@gmail.com>, 2008, 2009.
-# SPDX-FileCopyrightText: 2024, 2025 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2025, 2026 Yaron Shahrabani <sh.yaron@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-02 00:43+0000\n"
-"PO-Revision-Date: 2025-12-27 16:42+0200\n"
+"PO-Revision-Date: 2026-01-10 17:54+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 25.12.0\n"
+"X-Generator: Lokalize 25.12.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -12925,27 +12925,27 @@ msgstr ""
 #: playlistgenerator/PresetModel.cpp:249
 #, kde-format
 msgid "Example 1: new tracks added this week"
-msgstr ""
+msgstr "דוגמה 1: רצועות חדשות שנוספו השבוע"
 
 #: playlistgenerator/PresetModel.cpp:250
 #, kde-format
 msgid "Example 2: rock or pop music"
-msgstr ""
+msgstr "דוגמה 2: מוזיקת רוק או פופ"
 
 #: playlistgenerator/PresetModel.cpp:251
 #, kde-format
 msgid "Example 3: about one hour of tracks from different artists"
-msgstr ""
+msgstr "דוגמה 3: בערך שעה של רצועות של אומנים שונים"
 
 #: playlistgenerator/PresetModel.cpp:252
 #, kde-format
 msgid "Example 4: like my favorite radio station"
-msgstr ""
+msgstr "דוגמה 4: כמו תחנת הרדיו האהובה עליי"
 
 #: playlistgenerator/PresetModel.cpp:253
 #, kde-format
 msgid "Example 5: an 80-minute CD of rock, metal, and industrial"
-msgstr ""
+msgstr "דוגמה 5: תקליטור באורך 80 דקות של רוק, מטאל ותעשייתי"
 
 #: playlistgenerator/PresetModel.cpp:293
 #, kde-format
@@ -12955,7 +12955,7 @@ msgstr "ייצוא הערכה „%1”"
 #: playlistgenerator/PresetModel.cpp:295
 #, kde-format
 msgid "Preset files (*.xml)"
-msgstr ""
+msgstr "קובצי ערכות (‎*.xml)"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:92
 #, kde-format
@@ -13046,6 +13046,8 @@ msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
+"אי אפשר למצוא את רכיב עריכת הטקסט של KDE.\n"
+"נא לבדוק שהתקנת KDE שלך תקינה. המסוף נסגר!"
 
 # kde-il: don't translate
 #: scripting/scriptconsole/ScriptConsole.cpp:76
@@ -13508,16 +13510,16 @@ msgid "Updating the local Jamendo database."
 msgstr "מעדכן את בסיס־הנתונים המקומי של Jamendo"
 
 #: services/jamendo/JamendoXmlParser.cpp:171
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "First part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
-msgstr[0] "עדכון בסיס־הנתונים של Jamendo.com הסתיים. נוספה רצועה אחת תחת "
-msgstr[1] "עדכון בסיס־הנתונים של Jamendo.com הסתיים. נוספו %1 רצועות תחת "
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "עדכון מסד הנתונים של Jamendo.com הסתיים. נוספה רצועה אחת תחת "
+msgstr[1] "עדכון מסד הנתונים של Jamendo.com הסתיים. נוספו שתי רצועות תחת "
+msgstr[2] "עדכון מסד הנתונים של Jamendo.com הסתיים. נוספו %1 רצועות תחת "
+msgstr[3] "עדכון מסד הנתונים של Jamendo.com הסתיים. נוספו %1 רצועות תחת "
 
 #: services/jamendo/JamendoXmlParser.cpp:172
 #, kde-format
@@ -13604,13 +13606,13 @@ msgstr "רצועות מהרשימות המובילות ב־Last.fm מ־%1 עד %
 #, kde-format
 msgctxt "in WeeklyTopBias. Label for the date widget"
 msgid "from:"
-msgstr ""
+msgstr "מ־:"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:145
 #, kde-format
 msgctxt "in WeeklyTopBias. Label for the date widget"
 msgid "to:"
-msgstr ""
+msgstr "עד:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: services/lastfm/LastFmConfigWidget.ui:48
