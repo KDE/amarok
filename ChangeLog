@@ -8,6 +8,7 @@ VERSION 3.3.3 UNRELEASED
   CHANGES:
 
   BUGFIXES:
+   * Restore functionality for inhibiting system suspend when music is playing
 
 VERSION 3.3.2
   FEATURES:

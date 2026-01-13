@@ -17,10 +17,10 @@
 #ifndef AMAROK_POWERMANAGER_H
 #define AMAROK_POWERMANAGER_H
 
+#include <QDBusUnixFileDescriptor>
 #include <QObject>
 
 class EngineController;
-class QDBusInterface;
 
 /**
  * Handle Amarok behavior on system suspend
@@ -43,8 +43,7 @@ class PowerManager : public QObject
         void startInhibitingSuspend();
         void stopInhibitingSuspend();
 
-        int m_inhibitionCookie;
-        QDBusInterface *m_interface;
+        QDBusUnixFileDescriptor m_inhibitionFD;
 };
 
 #endif // AMAROK_POWERMANAGER_H

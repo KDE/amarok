@@ -26,22 +26,27 @@
 #include <QAction>
 #include <QDBusConnection>
 #include <QDBusInterface>
+#include <QDBusPendingReply>
+#include <QDBusUnixFileDescriptor>
 
 #include <KLocalizedString>
 
+const static QString s_login1Service = QStringLiteral("org.freedesktop.login1");
+const static QString s_login1Path = QStringLiteral("/org/freedesktop/login1");
+const static QString s_login1ManagerInterface = QStringLiteral("org.freedesktop.login1.Manager");
+
 PowerManager::PowerManager( EngineController *engine )
     : QObject( engine )
-    , m_inhibitionCookie( -1 )
+    , m_inhibitionFD()
 {
     connect( engine, &EngineController::stopped, this, &PowerManager::slotNotPlaying );
     connect( engine, &EngineController::paused, this, &PowerManager::slotNotPlaying );
     connect( engine, &EngineController::trackPlaying, this, &PowerManager::slotPlaying );
     connect( pApp, &App::settingsChanged, this, &PowerManager::slotSettingsChanged );
 
-    // TODO: Port this to the new Solid API when that is ready
-    QDBusConnection::systemBus().connect( QStringLiteral("org.freedesktop.login1"),
-                                          QStringLiteral("/org/freedesktop/login1"),
-                                          QStringLiteral("org.freedesktop.login1.Manager"),
+    QDBusConnection::systemBus().connect( s_login1Service,
+                                          s_login1Path,
+                                          s_login1ManagerInterface,
                                           QStringLiteral("PrepareForSleep"),
                                           this, SLOT( slotHandleSuspend() ) );
 }
@@ -85,18 +90,29 @@ PowerManager::slotSettingsChanged()
 void
 PowerManager::startInhibitingSuspend()
 {
-    // TODO: Port this to the new Solid API when that is ready
-//     if( m_inhibitionCookie == -1 )
-//         m_inhibitionCookie = Solid::PowerManagement::beginSuppressingSleep( i18n( "Amarok is currently playing a track" ) );
+    if( m_inhibitionFD.isValid())
+        return; // Already inhibiting
+
+    QDBusMessage message = QDBusMessage::createMethodCall(s_login1Service, s_login1Path, s_login1ManagerInterface, QStringLiteral("Inhibit"));
+    message.setArguments(QVariantList(
+        {QStringLiteral("sleep"), QStringLiteral("Amarok"),
+            i18nc("Reason for sleep block, shown in power and battery applet", "Playing music"), QStringLiteral("block")}));
+    QDBusPendingReply<QDBusUnixFileDescriptor> reply = QDBusConnection::systemBus().asyncCall(message, 1000);
+    QDBusPendingCallWatcher *callWatcher  = new QDBusPendingCallWatcher(reply, this);
+    connect(callWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *callWatcher) {
+        callWatcher->deleteLater();
+        QDBusPendingReply<QDBusUnixFileDescriptor> reply = *callWatcher;
+        if (reply.isValid()) {
+            reply.value().swap(m_inhibitionFD);
+        }
+    });
 }
 
 void
 PowerManager::stopInhibitingSuspend()
 {
-    if( m_inhibitionCookie != -1 )
-    {
-        // TODO: Port this to the new Solid API when that is ready
-//         Solid::PowerManagement::stopSuppressingSleep( m_inhibitionCookie );
-//         m_inhibitionCookie = -1;
-    }
+    if (!m_inhibitionFD.isValid())
+        return;
+
+    m_inhibitionFD = QDBusUnixFileDescriptor{};
 }
