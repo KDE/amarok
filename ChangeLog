@@ -16,6 +16,7 @@ VERSION 3.3.2 UNRELEASED
    * Fix some issues in playlist layout editor
    * Fix getting stuck in a loop if mute state was altered repeatedly
    * Fix podcast sort order for some channels (BR 511036)
+   * Fix saving stream URLs in playlist (BR 509204)
 
 VERSION 3.3.1
   FEATURES:
