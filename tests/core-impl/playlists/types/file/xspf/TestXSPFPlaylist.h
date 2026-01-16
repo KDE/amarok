@@ -57,7 +57,7 @@ private Q_SLOTS:
     void testUidUrl();
     void testIsWritable();
     void testSave();
-    void testSaveAndReload();
+    void testSaveAndReloadIncludingStream();
 
 private:
     Playlists::XSPFPlaylist *m_testPlaylist1;

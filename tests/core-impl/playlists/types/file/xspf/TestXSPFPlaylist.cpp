@@ -19,10 +19,12 @@
 
 #include "TestXSPFPlaylist.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "EngineController.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/file/File.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 
 #include <ThreadWeaver/Queue>
@@ -339,13 +341,16 @@ void TestXSPFPlaylist::testSave()
     QVERIFY( m_testPlaylist1->save( false ) );
 }
 
-void TestXSPFPlaylist::testSaveAndReload()
+void TestXSPFPlaylist::testSaveAndReloadIncludingStream()
 {
+    AmarokConfig::instance( QStringLiteral("amarokrc") );
+    m_testPlaylist1->addTrack( Meta::TrackPtr( new MetaFile::Track( QUrl( QStringLiteral("https://notarealdoma.in/stream" ) ) ) ), 24 );
     QVERIFY( m_testPlaylist1->save( false ) );
 
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
     const QString testTrack1Url = tracklist.at( 1 )->uidUrl();
     const QString testTrack2Url = tracklist.at( 23 )->uidUrl();
+    const QString testTrack3Url = tracklist.at( 24 )->uidUrl();
 
     const QUrl url = m_testPlaylist1->uidUrl();
     QFile playlistFile1( url.toLocalFile() );
@@ -363,9 +368,10 @@ void TestXSPFPlaylist::testSaveAndReload()
 
     tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.size(), 24 );
+    QCOMPARE( tracklist.size(), 25 );
     QCOMPARE( tracklist.at( 0 )->name(), QStringLiteral( "Sunset" ) );
     QCOMPARE( tracklist.at( 23 )->name(), QStringLiteral( "Test träck" ) );
     QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack1Url );
     QCOMPARE( tracklist.at( 23 )->uidUrl(), testTrack2Url );
+    QCOMPARE( tracklist.at( 24 )->uidUrl(), testTrack3Url );
 }
