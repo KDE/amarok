@@ -16346,19 +16346,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid " Item"
-#~ msgid_plural " Items"
-#~ msgstr[0] "Položka"
-#~ msgstr[1] "Položky"
-#~ msgstr[2] "Položky"
-
-#~ msgctxt "prefix to 'x minutes'"
-#~ msgid "every "
-#~ msgstr "každou "
-
-#~ msgid " minute"
-#~ msgid_plural " minutes"
-#~ msgstr[0] " minuta"
-#~ msgstr[1] " minuty"
-#~ msgstr[2] " minut"
