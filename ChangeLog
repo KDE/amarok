@@ -2,7 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
-VERSION 3.3.2 UNRELEASED
+VERSION 3.3.2
   FEATURES:
    * Show 'added to collection' time in tag dialog when available (BR 508899)
 
@@ -13,7 +13,8 @@ VERSION 3.3.2 UNRELEASED
 
   BUGFIXES:
    * Fixes to Magnatune collection update and playback (BR 508052)
-   * Fix some issues in playlist layout editor
+   * Fix some issues in playlist layout editor UI
+   * Fix disabling of notifications when using system notifications
    * Fix getting stuck in a loop if mute state was altered repeatedly
    * Fix podcast sort order for some channels (BR 511036)
    * Fix saving stream URLs in playlist (BR 509204)
