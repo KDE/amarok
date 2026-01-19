@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-02 00:43+0000\n"
+"POT-Creation-Date: 2026-01-19 00:42+0000\n"
 "PO-Revision-Date: 2025-12-02 11:05+0100\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -11138,6 +11138,13 @@ msgid ""
 msgstr ""
 "%1\n"
 "kHz"
+
+#: playback/PowerManager.cpp:99
+#, fuzzy, kde-format
+#| msgid "Scanning music"
+msgctxt "Reason for sleep block, shown in power and battery applet"
+msgid "Playing music"
+msgstr "Prohledávání adresářů s hudbou"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format

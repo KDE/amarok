@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-02 00:43+0000\n"
+"POT-Creation-Date: 2026-01-19 00:42+0000\n"
 "PO-Revision-Date: 2019-09-18 19:58+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
@@ -10457,6 +10457,12 @@ msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
+msgstr ""
+
+#: playback/PowerManager.cpp:99
+#, kde-format
+msgctxt "Reason for sleep block, shown in power and battery applet"
+msgid "Playing music"
 msgstr ""
 
 #: playlist/layouts/LayoutConfigAction.cpp:40

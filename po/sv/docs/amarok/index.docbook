@@ -11,9 +11,9 @@
 <author>
 <personname
 ><firstname
->Det här dokumentet är konverterat från &kde;:s användarbas sida <ulink url="http://userbase.kde.org/Amarok/Manual"
+>This documentation was converted from the KDE UserBase <ulink url=" http://userbase.kde.org/Amarok/Manual"
 >Amarok/Manual</ulink
->.</firstname
+> page.</firstname
 > <surname
 ></surname
 > </personname>
@@ -11540,10 +11540,10 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Felsökning och vanliga problem</title
 > 
 <para
->Om du går igenom procedurerna här och misslyckas, besök oss på IRC (irc://irc.libera.chat/amarok), skriv något på KDE:s diskussionsforum i <ulink url="http://forum.kde.org/viewforum.php?f=127"
->avdelningen Amarok</ulink
->, eller skriv till <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->Amaroks e-postlista</ulink
+>If you work through the procedures here, but don't have success, please come into IRC (irc://irc.libera.chat/amarok), post on the KDE Forum <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Amarok section</ulink
+>, or write to the <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>Amarok list</ulink
 >. </para>
 <sect2 id="problems-installing"
 ><title
@@ -11892,12 +11892,12 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Hur man får personlig hjälp vid problem: <ulink url="irc://irc.libera.chat/#amarok"
+>How to get personal support with problems: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok på Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Diskussionsforum</ulink
+> (#amarok on Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Forum</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->E-postlista</ulink
+>Mailing list</ulink
 ></para
 ></listitem>
 </itemizedlist>
@@ -12042,11 +12042,11 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Var kan jag få hjälp med Amarok?</title
 > 
 <para
->Det finns flera alternativ. Oftast får du bäst svar angående problem med själva installationen av &amarok; från experter på din egen &UNIX;- eller &Linux;-distribution. Du kan söka hjälp från medanvändare och programmerare på <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Amaroks diskussionsforum</ulink
-> och <ulink url="irc://irc.libera.chat/amarok"
->Amaroks IRC-kanal</ulink
-> på irc.libera.chat, kanal #amarok. </para>
+>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Amarok forum</ulink
+> and the <ulink url="irc://irc.libera.chat/amarok"
+>Amarok IRC channel</ulink
+> at irc.libera.chat channel #amarok. </para>
 <para
 >Observera att <ulink url="http://bugs.kde.org"
 >bugzilla</ulink

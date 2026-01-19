@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-02 00:43+0000\n"
+"POT-Creation-Date: 2026-01-19 00:42+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -11230,6 +11230,13 @@ msgid ""
 "kHz"
 msgstr "%1 кГц"
 
+#: playback/PowerManager.cpp:99
+#, fuzzy, kde-format
+#| msgid "Playing: %1"
+msgctxt "Reason for sleep block, shown in power and battery applet"
+msgid "Playing music"
+msgstr "Грае: %1"
+
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, fuzzy, kde-format
 #| msgid "&Playlist"
@@ -18233,9 +18240,6 @@ msgstr "Паўтарыць"
 #~| msgid "Autodetect"
 #~ msgid "Automatic Preview"
 #~ msgstr "Аўтаматычнае вызначэнне"
-
-#~ msgid "Playing: %1"
-#~ msgstr "Грае: %1"
 
 #, fuzzy
 #~| msgctxt "The quality of music"
