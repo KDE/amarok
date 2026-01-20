@@ -10694,11 +10694,10 @@ msgid ""
 msgstr ""
 
 #: playback/PowerManager.cpp:99
-#, fuzzy, kde-format
-#| msgid "Scanning music"
+#, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
-msgstr "正在扫描音乐"
+msgstr ""
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
