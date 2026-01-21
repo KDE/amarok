@@ -66,6 +66,7 @@
         "Description[sv]": "Insticksprogram med DAAP-samling för Amarok",
         "Description[tr]": "Amarok için DAAP koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки DAAP для Amarok",
+        "Description[zh_CN]": "Amarok 的 DAAP 收藏集插件",
         "Description[zh_TW]": "Amarok 的 DAAP 收藏外掛程式",
         "EnabledByDefault": false,
         "Icon": "network-workgroup",

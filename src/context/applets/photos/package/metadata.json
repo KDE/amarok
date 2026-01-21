@@ -68,6 +68,7 @@
         "Description[sv]": "Fotominiprogram för Amarok",
         "Description[tr]": "Amarok için fotoğraflar uygulamacığı",
         "Description[uk]": "Аплет фотографій для Amarok",
+        "Description[zh_CN]": "Amarok 的照片小程序",
         "Description[zh_TW]": "Amarok 的圖片小程式",
         "EnabledByDefault": true,
         "Icon": "photos-amarok",

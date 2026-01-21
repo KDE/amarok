@@ -68,6 +68,7 @@
         "Description[sv]": "Analysatorminiprogram för Amarok",
         "Description[tr]": "Amarok için çözümleyici uygulamacığı",
         "Description[uk]": "Аплет аналізатора для Amarok",
+        "Description[zh_CN]": "Amarok 的频谱分析器小程序",
         "Description[zh_TW]": "Amarok 的分析器小程式",
         "EnabledByDefault": true,
         "Icon": "view-media-analyzer-amarok",

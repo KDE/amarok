@@ -66,6 +66,7 @@
         "Description[sv]": "Importera statistik från Apple iTunes-databas",
         "Description[tr]": "İstatistikleri Apple iTunes veri tabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Apple iTunes",
+        "Description[zh_CN]": "从 Apple iTunes 数据库中导入统计数据",
         "Description[zh_TW]": "從 Apple iTunes 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "media-album-track",

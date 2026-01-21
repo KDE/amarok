@@ -66,6 +66,7 @@
         "Description[sv]": "Insticksprogram med MTP-samling för Amarok",
         "Description[tr]": "Amarok için MTP koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки MTP для Amarok",
+        "Description[zh_CN]": "Amarok 的 MTP 收藏集插件",
         "Description[zh_TW]": "Amarok 的 MTP 收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "media-flash-smart-media",

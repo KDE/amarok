@@ -68,6 +68,7 @@
         "Description[sv]": "Sångtextminiprogram för Amarok",
         "Description[tr]": "Amarok için şarkı sözü uygulamacığı",
         "Description[uk]": "Аплет слів пісні для Amarok",
+        "Description[zh_CN]": "Amarok 的歌词小程序",
         "Description[zh_TW]": "Amarok 的歌詞小程式",
         "EnabledByDefault": true,
         "Icon": "amarok_lyrics",

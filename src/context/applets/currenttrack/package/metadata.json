@@ -68,6 +68,7 @@
         "Description[sv]": "Miniprogram med aktuellt spår för Amarok",
         "Description[tr]": "Amarok için şu anda çalan parça uygulamacığı",
         "Description[uk]": "Аплет поточної композиції для Amarok",
+        "Description[zh_CN]": "Amarok 的当前曲目小程序",
         "Description[zh_TW]": "Amarok 的目前曲目小程式",
         "EnabledByDefault": true,
         "Icon": "current-track-amarok",

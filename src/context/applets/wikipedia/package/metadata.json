@@ -68,6 +68,7 @@
         "Description[sv]": "Wikipediaminiprogram för Amarok",
         "Description[tr]": "Amarok için Vikipedi uygulamacığı",
         "Description[uk]": "Аплет Вікіпедії для Amarok",
+        "Description[zh_CN]": "Amarok 的维基百科小程序",
         "Description[zh_TW]": "Amarok 的 Wikipedia 小程式",
         "EnabledByDefault": true,
         "Icon": "amarok-wikipedia",

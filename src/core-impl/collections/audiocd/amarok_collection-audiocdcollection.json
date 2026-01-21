@@ -66,6 +66,7 @@
         "Description[sv]": "Insticksprogram med musik cd-samling för Amarok",
         "Description[tr]": "Amarok için ses CD’si koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки звукових КД для Amarok",
+        "Description[zh_CN]": "Amarok 的音频 CD 收藏集插件",
         "Description[zh_TW]": "Amarok 的音效 CD 收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "media-optical-audio",

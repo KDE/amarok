@@ -66,6 +66,7 @@
         "Description[sv]": "Importera statistik från Amarok 1.4-databas",
         "Description[tr]": "İstatistikleri Amarok 1.4 veri tabanından içe aktar",
         "Description[uk]": "Імпортування статистичних даних з бази даних Amarok 1.4",
+        "Description[zh_CN]": "从 Amarok 1.4 数据库中导入统计数据",
         "Description[zh_TW]": "從 Amarok 1.4 資料庫中匯入統計資料",
         "EnabledByDefault": true,
         "Icon": "amarok",

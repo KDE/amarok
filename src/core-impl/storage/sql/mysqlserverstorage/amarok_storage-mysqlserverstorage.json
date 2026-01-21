@@ -66,6 +66,7 @@
         "Description[sv]": "Lagringsinsticksprogram för Amarok",
         "Description[tr]": "Amarok için depolama eklentisi",
         "Description[uk]": "Додаток сховища даних для Amarok",
+        "Description[zh_CN]": "Amarok 的存储插件",
         "Description[zh_TW]": "Amarok 的裝置外掛程式",
         "EnabledByDefault": true,
         "Icon": "network-server-database",

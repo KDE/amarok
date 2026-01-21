@@ -66,6 +66,7 @@
         "Description[sv]": "Insticksprogram med mediaenhetssamling för Amarok",
         "Description[tr]": "Amarok için ortam aygıtı koleksiyonu eklentisi",
         "Description[uk]": "Додаток збірки на носіях інформації для Amarok",
+        "Description[zh_CN]": "Amarok 的媒体设备收藏集插件",
         "Description[zh_TW]": "Amarok 的媒體裝置收藏外掛程式",
         "EnabledByDefault": true,
         "Icon": "multimedia-player",

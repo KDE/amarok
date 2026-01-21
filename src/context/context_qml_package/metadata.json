@@ -65,6 +65,7 @@
         "Description[sv]": "QML-baspaket för Amaroks sammanhangsområde",
         "Description[tr]": "Amarok bağlam alanı için QML temel paketi",
         "Description[uk]": "Базовий пакунок QML для області контексту Amarok",
+        "Description[zh_CN]": "Amarok 信息视图区域的 QML 基础包",
         "Description[zh_TW]": "Amarok 內容區塊的 QML 基本軟體包",
         "Icon": "amarok",
         "Id": "org.kde.amarok.context",

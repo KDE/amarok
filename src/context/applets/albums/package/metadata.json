@@ -68,6 +68,7 @@
         "Description[sv]": "Albumomslagshanterare för Amarok",
         "Description[tr]": "Amarok için albüm kapak görseli yöneticisi",
         "Description[uk]": "Керування зображеннями обкладинок альбомів для Amarok",
+        "Description[zh_CN]": "Amarok 专辑封面管理器",
         "Description[zh_TW]": "Amarok 的專輯封面管理員",
         "EnabledByDefault": false,
         "Icon": "media-album-cover-manager-amarok",
