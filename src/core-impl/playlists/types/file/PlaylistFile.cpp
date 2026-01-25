@@ -195,8 +195,8 @@ PlaylistFile::trackLocation( const Meta::TrackPtr &track ) const
 
     if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
     {
-        return ( !path.isLocalFile() || !m_url.isLocalFile() ) ? path.url( QUrl::FullyEncoded )
-                                                               : path.path( QUrl::EncodeDelimiters );
+        return ( path.isLocalFile() && m_url.isLocalFile() ) ? path.path( QUrl::EncodeDelimiters )
+                                                             : path.url( QUrl::FullyEncoded );
     }
 
     QDir playlistDir( m_url.adjusted(QUrl::RemoveFilename).path() );
