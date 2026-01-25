@@ -171,7 +171,8 @@ static void ensureFileTypeResolvers()
     if( !alreadyAdded ) {
         alreadyAdded = true;
 
-        TagLib::FileRef::addFileTypeResolver(new Meta::Tag::FileTypeResolver());
+        static auto resolver =  Meta::Tag::FileTypeResolver();
+        TagLib::FileRef::addFileTypeResolver(&resolver);
     }
 }
 
