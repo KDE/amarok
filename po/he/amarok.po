@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-01-10 17:54+0200\n"
+"PO-Revision-Date: 2026-01-27 22:43+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -10866,7 +10866,7 @@ msgstr "שיטה"
 #: network/NetworkRequests.ui:51
 #, kde-format
 msgid "Response"
-msgstr ""
+msgstr "תגובה"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: network/NetworkRequests.ui:56 playlist/PlaylistModel.cpp:943
@@ -11436,14 +11436,14 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: playlist/PlaylistInfoWidget.cpp:63
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "%1 is number of tracks"
 msgid "%1 track"
 msgid_plural "%1 tracks"
-msgstr[0] "%1 רצועה"
-msgstr[1] "%1 רצועות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "רצועה"
+msgstr[1] "שתי רצועות"
+msgstr[2] "%1 רצועות"
+msgstr[3] "%1 רצועות"
 
 #: playlist/PlaylistInfoWidget.cpp:67
 #, kde-format
