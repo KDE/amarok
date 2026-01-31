@@ -9,6 +9,7 @@ VERSION 3.3.3 UNRELEASED
 
   BUGFIXES:
    * Restore functionality for inhibiting system suspend when music is playing
+   * Fix restoring main window layout after restart (BR 514963)
 
 VERSION 3.3.2
   FEATURES:

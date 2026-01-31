@@ -300,7 +300,7 @@ MainWindow::init()
         PERF_LOG( "Created Podcast Category" )
 
     // If Amarok is started for the first time, set initial dock widget sizes
-        if( !Amarok::config( QStringLiteral("MainWindow") ).hasKey( "State" ) )
+        if( !stateConfigGroup().hasKey( "State" ) )
             QTimer::singleShot( 0, this, &MainWindow::setDefaultDockSizes );
 
         PERF_LOG( "finished MainWindow::init" )
