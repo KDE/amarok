@@ -49,9 +49,6 @@ namespace The {
     AMAROK_EXPORT MainWindow* mainWindow();
 }
 
-//This should only change if docks or toolbars are added or removed
-#define LAYOUT_VERSION 3
-
 /**
   * @class MainWindow
   * @short The MainWindow widget class.
