@@ -40,6 +40,7 @@ TestActionsCapability::testActions()
     QVERIFY( actions_capability );
 
     QVERIFY( actions_capability->actions() == actions );
+    delete actions_capability;
 }
 
 void
@@ -51,5 +52,6 @@ TestActionsCapability::testCapabilityInterfaceType()
     QVERIFY( actions_capability );
 
     QVERIFY( actions_capability->capabilityInterfaceType() == Capabilities::Capability::Actions );
+    delete actions_capability;
 }
 

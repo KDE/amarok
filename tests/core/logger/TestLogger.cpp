@@ -46,10 +46,9 @@ public:
 TestLogger::TestLogger()
 {
     int argc = 1;
-    char **argv = (char **) malloc(sizeof(char *));
-    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
-    ::testing::InitGoogleMock( &argc, argv );
-    free( argv );
+    std::vector<char*> argv;
+    argv.push_back(strdup( QCoreApplication::applicationName().toLocal8Bit().data() ));
+    ::testing::InitGoogleMock( &argc, argv.data() );
 }
 
 void

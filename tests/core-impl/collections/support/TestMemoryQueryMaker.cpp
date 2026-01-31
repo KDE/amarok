@@ -36,9 +36,9 @@ QTEST_GUILESS_MAIN( TestMemoryQueryMaker )
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {
     int argc = 1;
-    char **argv = (char **) malloc(sizeof(char *));
-    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
-    ::testing::InitGoogleMock( &argc, argv );
+    std::vector<char*> argv;
+    argv.push_back(strdup( QCoreApplication::applicationName().toLocal8Bit().data() ));
+    ::testing::InitGoogleMock( &argc, argv.data() );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();

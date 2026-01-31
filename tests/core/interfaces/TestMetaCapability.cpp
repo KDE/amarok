@@ -89,6 +89,7 @@ TestMetaCapability::testHas()
     // these should not
     QVERIFY( metaCapability->has<Capabilities::CollectionScanCapability>() == false );
     QVERIFY( metaCapability->has<Capabilities::MultiSourceCapability>() == false );
+    delete metaCapability;
 }
 
 void
@@ -105,4 +106,5 @@ TestMetaCapability::testCreate()
     // these should not
     QVERIFY( metaCapability->create<Capabilities::CollectionScanCapability>() == nullptr );
     QVERIFY( metaCapability->create<Capabilities::MultiSourceCapability>() == nullptr );
+    delete metaCapability;
 }

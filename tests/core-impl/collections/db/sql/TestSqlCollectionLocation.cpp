@@ -107,9 +107,9 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
     KLocalizedString::setApplicationDomain("amarok-test");
     std::atexit([]() { delete TestSqlCollectionLocation::s_tmpDir; } );
     int argc = 1;
-    char **argv = (char **) malloc(sizeof(char *));
-    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
-    ::testing::InitGoogleMock( &argc, argv );
+    std::vector<char*> argv;
+    argv.push_back(strdup( QCoreApplication::applicationName().toLocal8Bit().data() ));
+    ::testing::InitGoogleMock( &argc, argv.data() );
 }
 
 void

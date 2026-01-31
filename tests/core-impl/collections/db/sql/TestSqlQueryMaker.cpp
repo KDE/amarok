@@ -357,6 +357,7 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
     QVERIFY( args2.value(0).canConvert<Meta::AlbumList>() );
     QCOMPARE( args2.value(0).value<Meta::AlbumList>().count(), 0 );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
@@ -393,6 +394,7 @@ TestSqlQueryMaker::testAsyncArtistQuery()
     QVERIFY( args2.value(0).canConvert<Meta::ArtistList>() );
     QCOMPARE( args2.value(0).value<Meta::ArtistList>().count(), 0 );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
@@ -430,6 +432,7 @@ TestSqlQueryMaker::testAsyncComposerQuery()
     QVERIFY( args2.value(0).canConvert<Meta::ComposerList>() );
     QCOMPARE( args2.value(0).value<Meta::ComposerList>().count(), 0 );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
@@ -467,6 +470,7 @@ TestSqlQueryMaker::testAsyncTrackQuery()
     QVERIFY( args2.value(0).canConvert<Meta::TrackList>() );
     QCOMPARE( args2.value(0).value<Meta::TrackList>().count(), 0 );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
@@ -504,6 +508,7 @@ TestSqlQueryMaker::testAsyncGenreQuery()
     QVERIFY( args2.value(0).canConvert<Meta::GenreList>() );
     QCOMPARE( args2.value(0).value<Meta::GenreList>().count(), 0 );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
@@ -541,6 +546,7 @@ TestSqlQueryMaker::testAsyncYearQuery()
     QVERIFY( args2.value(0).canConvert<Meta::YearList>() );
     QCOMPARE( args2.value(0).value<Meta::YearList>().count(), 0 );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
@@ -582,6 +588,7 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     QCOMPARE( args2.value(0).value<QStringList>().count(), 1 );
     QCOMPARE( args2.value(0).value<QStringList>().first(), QStringLiteral( "0" ) );
     QCOMPARE( doneSpy2.count(), 1);
+    delete qm;
 }
 
 void
