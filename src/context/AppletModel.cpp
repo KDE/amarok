@@ -123,7 +123,7 @@ QVariant AppletModel::data(const QModelIndex& index, int role) const
             return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + QStringLiteral("_collapsed"), false);
 
         case ContentHeight:
-            return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + QStringLiteral("_contentHeight"), 300);
+            return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + QStringLiteral("_contentHeight"), 300.0);
     }
 
     return QVariant();
