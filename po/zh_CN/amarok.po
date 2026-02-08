@@ -20,12 +20,14 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "KDE 中国, Guo Yunhe, Wordless Echo"
+msgstr "KDE 中国, Guo Yunhe, Wordless Echo, Eric Zhao"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "kde-china@kde.org, i@guoyunhe.me, wordless@echo.moe"
+msgstr ""
+"kde-china@kde.org, i@guoyunhe.me, wordless@echo.moe, "
+"zhaojiale20060708@outlook.com"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3
@@ -413,7 +415,7 @@ msgstr "在浏览器面板中显示背景图片"
 #, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
-msgstr ""
+msgstr "自动滚动播放列表使当前播放的曲目始终可见"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -451,7 +453,7 @@ msgstr "启用后，在折叠信息小程序时将显示动画。"
 #, kde-format
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
-msgstr ""
+msgstr "如果曲目艺术家与专辑艺术家不同，则在收藏浏览器中显示曲目艺术家"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -460,6 +462,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"在集合浏览器中，针对歌手为 Various Artists 的专辑以及歌手与专辑艺人不同的曲"
+"目，显式显示歌手。"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -709,6 +713,7 @@ msgstr "启用后，将使用均衡器插件对音频流进行滤波。"
 #, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
+"包含前级功放在内的 11 种均衡器增益量，范围应为 -100 至 100，0 为正常值。"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -1105,13 +1110,13 @@ msgstr "使用 Mozilla 的字符集探测器猜测 ID3 标签的编码。"
 #: amarokconfig.kcfg:452
 #, kde-format
 msgid "Submit played tracks"
-msgstr ""
+msgstr "上传已播放的曲目信息"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
 #, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr ""
+msgstr "将已播放的曲目信息上传至 Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1166,7 +1171,7 @@ msgstr "获取相似艺人"
 #: amarokconfig.kcfg:473
 #, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr ""
+msgstr "从 Audioscrobbler 上获取相似曲目"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1732,13 +1737,13 @@ msgctxt "Error message box shown if there's a problem with Last.fm credentials"
 msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
-msgstr ""
+msgstr "无效的 Last.fm 会话密钥。请在插件设置中重新连接您的 Last.fm 账号。"
 
 #: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Last.fm 会话密钥错误"
 
 #: App.cpp:674
 #, kde-format
@@ -1753,19 +1758,19 @@ msgstr ""
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr ""
+msgstr "选择收藏文件夹"
 
 #: App.cpp:677
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr ""
+msgstr "使用"
 
 #: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "不要使用"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -1827,7 +1832,7 @@ msgstr "本月内添加"
 #, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr ""
+msgstr "从未播放过"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, kde-format
@@ -1867,7 +1872,7 @@ msgstr "显示音轨编号"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr ""
+msgstr "为 Various Artists 显示艺术家"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -2249,7 +2254,7 @@ msgstr "允许重复"
 #, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr ""
+msgstr "允许结果中出现重复曲目"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, kde-format
@@ -2449,7 +2454,7 @@ msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr ""
+msgstr "要从 %2 中删除播放列表<i>%1</i>吗？"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
 #, kde-format
@@ -2457,7 +2462,7 @@ msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr ""
+msgstr "要从 %2 中删除这 %1 个播放列表吗？"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
@@ -4073,13 +4078,13 @@ msgstr "宽度"
 #, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr ""
+msgstr "类似 <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 位听众<br>%2 次播放"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4087,7 +4092,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>被您播放 %1 次"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4240,7 +4245,7 @@ msgstr "前进"
 #, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr ""
+msgstr "不要自动更改页面"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4253,13 +4258,13 @@ msgstr "歌曲"
 #, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr ""
+msgstr "复制链接至剪贴板"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
 #, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr ""
+msgstr "复制图像到剪贴板"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4279,13 +4284,13 @@ msgstr "未找到信息..."
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ""
+msgstr ".*\\(.*(艺人|乐队).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ""
+msgstr ".*\\(.*(作曲家|音乐家).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
@@ -4316,7 +4321,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "点击可在网页浏览器中打开 %1"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -5235,13 +5240,13 @@ msgstr "删除空文件夹？"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "请勿移除"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -5635,7 +5640,7 @@ msgstr "配置 %1"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
+msgstr[0] "%v 项"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5713,7 +5718,7 @@ msgstr "已经订阅过 %1 了。"
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] ""
+msgstr[0] "每 %v 分钟"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -7689,6 +7694,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -9375,6 +9382,8 @@ msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
 msgstr ""
+"(C) 2002-2003, Mark Kretschmann\n"
+"(C) 2003-2025, The Amarok Development Squad"
 
 #: main.cpp:60
 #, kde-format
@@ -9387,6 +9396,13 @@ msgid ""
 "\n"
 "(Build Date: %1)"
 msgstr ""
+"IRC：\n"
+"irc.libera.chat - #amarok\n"
+"\n"
+"反馈：\n"
+"amarok@kde.org\n"
+"\n"
+" (构建日期: %1) "
 
 #: main.cpp:70
 #, kde-format
@@ -10684,6 +10700,8 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
 #, kde-format
@@ -10692,12 +10710,14 @@ msgid ""
 "%1\n"
 "kHz"
 msgstr ""
+"%1\n"
+"kHz"
 
 #: playback/PowerManager.cpp:99
 #, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
-msgstr ""
+msgstr "正在播放音乐"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -11444,7 +11464,7 @@ msgstr "由于正在进行搜索，歌曲已被隐藏。"
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr ""
+msgstr "从任意位置拖拽至此处即可添加曲目。"
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -11622,6 +11642,8 @@ msgid ""
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
+"您想让曲目在播放列表中所处的时、分、秒。注意：由于 Qt 限制，您能指定的最大位"
+"置为 24 小时。"
 
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_Duration)
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_TimeValue)
@@ -12865,13 +12887,13 @@ msgstr "删除脚本"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:468
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "请勿移除"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
@@ -12885,7 +12907,7 @@ msgstr "您完全确定吗？"
 #, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
-msgstr ""
+msgstr "是"
 
 #: scripting/scriptengine/AmarokScript.cpp:69
 #: scripting/scriptengine/AmarokScript.cpp:73
@@ -12894,7 +12916,7 @@ msgstr ""
 #, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
-msgstr ""
+msgstr "否"
 
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
@@ -12915,6 +12937,8 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
+"脚本 %1 调用了已废弃的脚本 API。请联系脚本作者 %2，并请他们在新版 Amarok 发布"
+"前更新脚本。"
 
 #: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
@@ -13345,7 +13369,7 @@ msgstr "Last.fm 配置文件"
 #: services/lastfm/LastFmConfigWidget.ui:54
 #, kde-format
 msgid "Username:"
-msgstr ""
+msgstr "用户名："
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
@@ -13353,26 +13377,26 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:250
 #, kde-format
 msgid "Connect to account"
-msgstr ""
+msgstr "连接账户"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:278
 #, kde-format
 msgid "Not connected"
-msgstr ""
+msgstr "未连接"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
 #, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
-msgstr ""
+msgstr "<a href=\"https://www.last.fm/join\">注册至 Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
 #, kde-format
 msgid "Disconnect account"
-msgstr ""
+msgstr "断开连接帐户"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13519,22 +13543,24 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"从 KWallet 迁移 Last.fm 用户名时出错。请在插件设置中重新连接您的 Last.fm 账"
+"号。"
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "您确定要断开 Amarok 与 Last.fm 账户 %1 的连接吗？"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "断开连接 Last.fm 账户？"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr ""
+msgstr "断开"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -13548,13 +13574,13 @@ msgstr "失败"
 #, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
-msgstr ""
+msgstr "打开 Last.fm 网页"
 
 #: services/lastfm/LastFmServiceSettings.cpp:163
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "完成连接账户"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -13563,6 +13589,8 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Last.fm 账户连接失败。请确保您已在打开的 Last.fm 网页上授权 Amarok 连接您的账"
+"户，然后重试。"
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -14311,6 +14339,10 @@ msgid ""
 "specified mood to the playlist. The mood argument must have spaces escaped "
 "with &#37;20"
 msgstr ""
+"Magnatune.com 服务接受以下信息：\n"
+"\n"
+"\taddMoodyTracks 心情 数量：将指定心情、一定数量的随机歌曲添加到播放列表中。"
+"心情参数中的空格必须用 &#37;20 代替"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -14397,6 +14429,11 @@ msgid ""
 "Feedback:\n"
 "amarok@kde.org"
 msgstr ""
+"IRC :\n"
+"服务器：irc.libera.chat / 频道：#amarok\n"
+"\n"
+"反馈:\n"
+"amarok@kde.org"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:41
 #, kde-format
@@ -14694,13 +14731,13 @@ msgstr ""
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr ""
+msgstr "保持同步"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "不要保持同步"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
