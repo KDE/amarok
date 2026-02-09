@@ -81,6 +81,7 @@
   <summary xml:lang="sv">Återupptäck din musik</summary>
   <summary xml:lang="tr">Müziğinizi yeniden keşfedin</summary>
   <summary xml:lang="uk">Відкрийте свою музику знову</summary>
+  <summary xml:lang="zh-CN">重新感悟音乐之美</summary>
   <summary xml:lang="zh-TW">重新探索您的音樂</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
@@ -310,6 +311,7 @@
       <li xml:lang="sv">Integrerade Internet-tjänster: last.fm, Magnatune, Ampache med flera.</li>
       <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Ampache ve daha fazlası</li>
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Ampache тощо;</li>
+      <li xml:lang="zh-CN">集成互联网服务：last.fm、Magnatune、Ampache 等。</li>
       <li xml:lang="zh-TW">整合了這些網路服務：last.fm、Magnatune、Ampache 等等。</li>
       <li>Scripting support</li>
       <li xml:lang="ar">دعم البرمجة النصية</li>
@@ -467,6 +469,7 @@
       <caption xml:lang="sv">Spela musik i Amarok 3.0</caption>
       <caption xml:lang="tr">Amarok 3.0’da müzik çalma</caption>
       <caption xml:lang="uk">Відтворення музики в Amarok 3.0</caption>
+      <caption xml:lang="zh-CN">在 Amarok 3.0 中播放音乐</caption>
       <caption xml:lang="zh-TW">Amarok 3.0 播放音樂時的畫面</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok30.png</image>
     </screenshot>
@@ -498,6 +501,7 @@
       <caption xml:lang="sv">Amarok 3.1 spelarfönster med en egen layout</caption>
       <caption xml:lang="tr">Özelleştirilmiş bir yerleşimle gösterilen Amarok 3.1 müzik çaları</caption>
       <caption xml:lang="uk">Вікно програвача Amarok 3.1 із нетиповим компонуванням</caption>
+      <caption xml:lang="zh-CN">带有自定义布局的 Amarok 3.1 播放器窗口</caption>
       <caption xml:lang="zh-TW">Amarok 3.1 播放器視窗，已自訂配置</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok31.png</image>
     </screenshot>
