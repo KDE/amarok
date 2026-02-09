@@ -30,6 +30,7 @@
         "Description[sv]": "Anpassa MP3tunes identifieringsinformation",
         "Description[tr]": "MP3tunes kimlik bilgilerini yapılandır",
         "Description[uk]": "Налаштувати реєстраційні дані у mp3tunes",
+        "Description[zh_CN]": "配置 mp3tunes 的登录信息",
         "Description[zh_TW]": "設定 mp3tunes 的認證資訊",
         "Icon": "view-services-mp3tunes-amarok",
         "Name": "MP3tunes Service Config",

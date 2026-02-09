@@ -29,6 +29,7 @@
         "Description[sv]": "Ställer in Ampache-server att ansluta till",
         "Description[tr]": "Bağlanılacak ampache sunucularını ayarlar",
         "Description[uk]": "Встановлює сервер ampache, з яким слід з’єднуватися",
+        "Description[zh_CN]": "设置要连接的 Ampache 服务器",
         "Description[zh_TW]": "設定要連結的 ampache 伺服器",
         "Icon": "view-services-ampache-amarok",
         "Name": "Ampache Service Config",

@@ -33,6 +33,7 @@
                 "Name[sv]": "Nikolaj Hald Nielsen",
                 "Name[tr]": "Nikolaj Hald Nielsen",
                 "Name[uk]": "Nikolaj Hald Nielsen",
+                "Name[zh_CN]": "Nikolaj Hald Nielsen",
                 "Name[zh_TW]": "Nikolaj Hald Nielsen"
             }
         ],
@@ -66,6 +67,7 @@
         "Description[sv]": "Lyssna på och ladda ner musik uppladdad av oberoende artister",
         "Description[tr]": "Bağımsız sanatçılar tarafından yüklenmiş müzikleri dinle ve indir",
         "Description[uk]": "Прослухайте і отримайте музику, записану незалежними виконавцями",
+        "Description[zh_CN]": "聆听和下载独立艺人上传的音乐",
         "Description[zh_TW]": "聆聽並下載由獨立藝人所上傳的音樂",
         "EnabledByDefault": true,
         "Icon": "view-services-jamendo-amarok",

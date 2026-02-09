@@ -30,6 +30,7 @@
         "Description[sv]": "Anpassa Magnatune butiksinställningar och medlemskapsinformation",
         "Description[tr]": "Magnatune mağaza ve üyelik ayarlarını yapılandır",
         "Description[uk]": "Налаштувати параметри і членських даних Magnatune",
+        "Description[zh_CN]": "配置 Magnatune 商店的设置和会员信息",
         "Description[zh_TW]": "調整 Magnatune 商店設定與會員憑證",
         "Icon": "view-services-magnatune-amarok",
         "Name": "MagnatuneStore Service Config",

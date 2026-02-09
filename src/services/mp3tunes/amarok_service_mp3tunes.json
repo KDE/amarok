@@ -33,6 +33,7 @@
                 "Name[sv]": "Nikolaj Hald Nielsen",
                 "Name[tr]": "Nikolaj Hald Nielsen",
                 "Name[uk]": "Nikolaj Hald Nielsen",
+                "Name[zh_CN]": "Nikolaj Hald Nielsen",
                 "Name[zh_TW]": "Nikolaj Hald Nielsen"
             }
         ],
@@ -66,6 +67,7 @@
         "Description[sv]": "Bläddra igenom och lyssna på musik lagrad på ditt MP3tunes-konto",
         "Description[tr]": "MP3tunes hesabınızdaki müzikleri incele ve dinle",
         "Description[uk]": "Перегляньте і прослухайте музику з вашого рахунку у MP3tunes",
+        "Description[zh_CN]": "查看和聆听储存在 MP3tunes 账户中的音乐",
         "Description[zh_TW]": "瀏覽並聆聽儲存在您 MP3tunes 帳戶中的音樂",
         "EnabledByDefault": false,
         "Icon": "view-services-mp3tunes-amarok",

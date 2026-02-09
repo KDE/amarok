@@ -30,6 +30,7 @@
         "Description[sv]": "Anpassa gpodder.net inloggningsinformation",
         "Description[tr]": "gpodder.net üyelik ayarlarını yapılandır",
         "Description[uk]": "Налаштувати реєстраційні дані у gpodder.net",
+        "Description[zh_CN]": "配置 gpodder.net 的登录信息",
         "Description[zh_TW]": "設定 gpodder.net 的認證資訊",
         "Icon": "view-services-gpodder-amarok",
         "Name": "gpodder.net Service Config",

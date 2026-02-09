@@ -29,6 +29,7 @@
         "Description[sv]": "Ställ in Last.fm användarnamn och lösenord",
         "Description[tr]": "Last.fm kullanıcı adı ve parolasını ayarlar",
         "Description[uk]": "Встановіть назву користувача і пароль Last.fm",
+        "Description[zh_CN]": "设置 Last.fm 的用户名和密码",
         "Description[zh_TW]": "設定 Last.fm 的使用者名稱與密碼",
         "Icon": "view-services-lastfm-amarok",
         "Name": "Last.fm Service Config",
