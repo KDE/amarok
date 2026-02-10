@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-01-29 14:18+0000\n"
+"PO-Revision-Date: 2026-02-08 12:52+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -10521,7 +10521,7 @@ msgstr "Tomasz Dudzik"
 #: main.cpp:283
 #, kde-format
 msgid "Splash screen"
-msgstr "Ecran de întîmpinare"
+msgstr "Ecran de întâmpinare"
 
 #: main.cpp:288
 #, kde-format
@@ -10585,10 +10585,9 @@ msgid "Lock Layout"
 msgstr "Blochează aranjamentul"
 
 #: MainWindow.cpp:374 MainWindow.cpp:1306
-#, fuzzy, kde-format
-#| msgid "Default Layout"
+#, kde-format
 msgid "Reset Layout"
-msgstr "Aranjament implicit"
+msgstr "Reinițializează aranjamentul"
 
 #: MainWindow.cpp:424
 #, kde-format
