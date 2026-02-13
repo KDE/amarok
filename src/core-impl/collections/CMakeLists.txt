@@ -4,7 +4,9 @@ include_directories(
 
 set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 
-add_subdirectory( daap )
+if(WITH_DAAP)
+    add_subdirectory( daap )
+endif()
 
 if(NOT WIN32)
     add_subdirectory( audiocd )

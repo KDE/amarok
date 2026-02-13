@@ -51,7 +51,6 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     CoreAddons
     Crash
     DBusAddons
-    DNSSD
     DocTools
     GlobalAccel
     GuiAddons
@@ -108,6 +107,11 @@ option(WITH_GPODDER "Enable gpodder.net support" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_LASTFM "Enable last.fm support" ON)
 option(WITH_EMBEDDED_DB "Build the embedded database library" ON)
+option(WITH_DAAP "Enable support for Digital Audio Access Protocol collections" ON)
+
+if(WITH_DAAP)
+    find_package(KF${KF_MAJOR_VERSION}DNSSD ${KF_MIN_VERSION} REQUIRED)
+endif()
 
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.12")
