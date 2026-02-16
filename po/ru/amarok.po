@@ -9,14 +9,14 @@
 # Артём Середа <overmind88@gmail.com>, 2009.
 # Yuri Efremov <yur.arh@gmail.com>, 2010.
 # Pavel Punegov <pavelpngv@gmail.com>, 2011.
-# Alexander Yavorsky <kekcuha@gmail.com>, 2020.
+# SPDX-FileCopyrightText: 2020, 2026 Alexander Yavorsky <kekcuha@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2020-04-24 16:21+0300\n"
-"Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
+"PO-Revision-Date: 2026-02-15 22:01+0200\n"
+"Last-Translator: Alexander Yavorskiy <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.04.0\n"
+"X-Generator: Lokalize 25.12.2\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -117,16 +117,13 @@ msgid "&About"
 msgstr "О п&рограмме"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:211
-#, fuzzy, kde-format
-#| msgid ""
-#| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
-#| "report bugs.\n"
+#, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"Используйте <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> для "
-"сообщений об ошибках.\n"
+"Cообщайте об ошибках на сайте <a href=\"https://bugs.kde.org\">https://bugs."
+"kde.org</a>.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:216
 #: aboutdialog/ExtendedAboutDialog.cpp:222
@@ -444,10 +441,7 @@ msgstr "Показывать фоновые изображения на пане
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
@@ -493,6 +487,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Показывать исполнителя дорожки в обозревателе коллекции, если он отличается "
+"от исполнителя альбома"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -501,6 +497,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Явное отображение исполнителя в браузере коллекции для альбомов и дорожек "
+"сборников, если исполнитель отличается от исполнителя альбома."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -763,11 +761,10 @@ msgstr "Пропускать звук через эквалайзер."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"Эквалайзер с 11-ю полосками, включая усиления, значения -100..100, 0 по "
+"Эквалайзер с 11-ю полосами, включая усиления, значения -100..100, 0 по "
 "умолчанию."
 
 #. i18n: ectx: label, entry, group (Playback)
@@ -836,10 +833,11 @@ msgstr "Длина длинной перемотки, в секундах"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:272
-#, fuzzy, kde-format
-#| msgid "Queue URLs after the currently playing track"
+#, kde-format
 msgid "Whether Amarok should pause the currently playing track on suspend."
-msgstr "Поставить адреса в очередь после текущей дорожки"
+msgstr ""
+"Приостанавливать воспроизведение текущей дорожки при переходе системы в "
+"спящий режим."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:276
@@ -847,7 +845,7 @@ msgstr "Поставить адреса в очередь после текущ�
 msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
 "track."
-msgstr ""
+msgstr "Запрет перехода системы в спящий режим во время воспроизведения"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:280
@@ -856,6 +854,7 @@ msgid ""
 "Whether Amarok should start playing if a track is added to playlist (and "
 "nothing else is playing)."
 msgstr ""
+"Начинать воспроизведение при добавлении дорожки в список воспроизведения."
 
 #. i18n: ectx: label, entry, group (Cover Manager)
 #: amarokconfig.kcfg:287
@@ -960,16 +959,13 @@ msgstr "Масштабирование шрифта экранного увед�
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:336
-#, fuzzy, kde-format
-#| msgid ""
-#| "The scaling multiplier for the OSD font, in percent-of-normal. 100 is "
-#| "&ldquo;normal size&rdquo;."
+#, kde-format
 msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
 "normal size&#8221;."
 msgstr ""
-"Масштабный множитель для шрифта текста в экранном уведомлении, в процентах. "
-"Обычному размеру шрифта соответствует значение 100%."
+"Коэффициент масштабирования шрифта экранного меню в процентах от обычного "
+"размера; 100 соответствует «нормальному размеру»."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:342
@@ -1085,10 +1081,9 @@ msgstr "Адрес дорожки для возобновления при за�
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:389
-#, fuzzy, kde-format
-#| msgid "&Resume playback on start"
+#, kde-format
 msgid "Internal: Resume playback in paused state"
-msgstr "&Продолжить воспроизведение при запуске"
+msgstr "Внутреннее: возобновить воспроизведение в приостановленном состоянии"
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:393
@@ -1191,17 +1186,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Отправлять сведения о проигранных песнях"
+msgstr "Отправлять статистику о прослушанных дорожках"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Отправлять сведения о проигранных песнях на аудиоскробблер"
+msgstr "Отправлять сведения о проигранных дорожках на аудиоскробблер"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1255,10 +1248,9 @@ msgstr "Получить списки схожих исполнителей"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Получать ли сведения о схожих песнях с аудиоскробблера"
+msgstr "Получать ли сведения о схожих дорожках с аудиоскробблера"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1459,14 +1451,13 @@ msgstr "Счётчик запусков, используемый для пер�
 #: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
-msgstr ""
+msgstr "Включение модуля сценариев Amarok."
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:588
-#, fuzzy, kde-format
-#| msgid "Enable/Disable splashscreen during Amarok startup."
+#, kde-format
 msgid "Enable/Disable Amarok's scripting module."
-msgstr "Показывать заставку при запуске."
+msgstr "Включение/отключение модуля сценариев Amarok."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:592
@@ -1483,10 +1474,9 @@ msgstr "Использовать автоматическое обновлени
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:597 amarokconfig.kcfg:598
-#, fuzzy, kde-format
-#| msgid "Whether to animate the systray icon"
+#, kde-format
 msgid "Whether to enable the script console."
-msgstr "Анимировать ли значок в системном лотке"
+msgstr "Включение консоли сценариев."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -1494,14 +1484,14 @@ msgstr "Анимировать ли значок в системном лотк�
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
+"Выводить предупреждение о доступе сценариев к устаревшим интерфейсам API."
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
 #: amarokconfig.kcfg:610 amarokconfig.kcfg:611
-#, fuzzy, kde-format
-#| msgid "Whether to hide the context view."
+#, kde-format
 msgid "Whether to save the current session on exit."
-msgstr "Показать контекстный просмотр."
+msgstr "Сохранение текущего сеанса при выходе."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:618
@@ -1819,12 +1809,7 @@ msgid "Database Error"
 msgstr "Ошибка базы данных"
 
 #: App.cpp:521
-#, fuzzy, kde-format
-#| msgid ""
-#| "The amarok database reported the following errors:\n"
-#| "%1\n"
-#| "In most cases you will need to resolve these errors before Amarok will "
-#| "run properly."
+#, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
 "%1\n"
@@ -1848,12 +1833,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Неверный ключ сеанса Last.fm. Повторно подключите учётную запись Last.fm в "
+"настройках модуля."
 
 #: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Ошибка ключа сеанса Last.fm"
 
 #: App.cpp:674
 #, kde-format
@@ -1865,24 +1852,22 @@ msgstr ""
 "Использовать её в качестве папки коллекции?"
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Папки коллекции"
+msgstr "Выбор папки коллекции"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "Пользователь"
+msgstr "Использовать"
 
 #: App.cpp:678
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Не использовать"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -1900,10 +1885,9 @@ msgid "&Media Sources"
 msgstr "&Источники музыки"
 
 #: browsers/BrowserDock.cpp:73
-#, fuzzy, kde-format
-#| msgid "Show in Media Sources"
+#, kde-format
 msgid "Go Up in Media Sources Pane"
-msgstr "Показать в источниках музыки"
+msgstr "Переход на уровень выше в панели источников медиа"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:144
 #, kde-format
@@ -1946,21 +1930,18 @@ msgstr "Добавленное в этом месяце"
 # Transcript: we store/restore the name of property of songs in _plural_ _accusative_. --aspotashev
 # https://bugs.kde.org/show_bug.cgi?id=334561
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Дата первого воспроизведения|/|$[store 'даты первого воспроизведения']"
+msgstr "Никогда не проигранные"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
-#, fuzzy, kde-format
-#| msgid " - "
+#, kde-format
 msgctxt ""
 "separator between collection browser level categories, i.e. the ' / ' in "
 "'Artist / Album'"
 msgid " / "
-msgstr " — "
+msgstr " / "
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:210
 #, kde-format
@@ -1989,11 +1970,10 @@ msgid "Show Track Numbers"
 msgstr "Показывать номера дорожек"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Показывать в категории «Различные исполнители»"
+msgstr "Показать исполнителя для сборников"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -2388,8 +2368,7 @@ msgid "Duplicates"
 msgstr "Повторы"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
 msgstr "Допускать повторение дорожек в результатах"
@@ -2607,22 +2586,20 @@ msgstr[2] "Удалить %1 дорожек из %2"
 msgstr[3] "Удалить дорожку из %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
-#, fuzzy, kde-format
-#| msgid "&Delete playlist"
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "&Удалить список воспроизведения"
+msgstr "Удалить список воспроизведения «<i>%1</i>» из «%2»?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgid "&Delete playlist"
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "&Удалить список воспроизведения"
+msgstr "Удалить %1 списков воспроизведения из «%2»?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
@@ -2970,7 +2947,7 @@ msgstr "Перекодировать дорожки:"
 #: configdialog/dialogs/DatabaseConfig.cpp:103
 #, kde-format
 msgid "Amarok was able to establish a successful connection to the database."
-msgstr ""
+msgstr "Установлено соединение с базой данных."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:104
 #, kde-format
@@ -2996,6 +2973,8 @@ msgid ""
 "Changes to database settings only take\n"
 "effect after Amarok is restarted."
 msgstr ""
+"Изменения в настройках базы данных вступят в силу\n"
+"только после перезапуска Amarok."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:138
 #, kde-format
@@ -3110,11 +3089,7 @@ msgstr "Проверить соединение с базой данных"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: configdialog/dialogs/DatabaseConfig.ui:206
-#, fuzzy, kde-format
-#| msgid ""
-#| "Amarok expects the above database and user account to already exist. This "
-#| "user also requires full access to the database. You MUST restart Amarok "
-#| "after changing these settings."
+#, kde-format
 msgid ""
 "Amarok expects the above database and user account to already exist. This "
 "user also requires full access to the database. Changes only take effect "
@@ -3335,50 +3310,43 @@ msgid "Huge (1600 px)"
 msgstr "Огромный (1600 пикс.)"
 
 #: configdialog/dialogs/MetadataConfig.cpp:104
-#, fuzzy, kde-format
-#| msgid "Synchronize Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Ratings"
-msgstr "Синхронизация статистики"
+msgstr "Синхронизация оценок"
 
 #: configdialog/dialogs/MetadataConfig.cpp:106
-#, fuzzy, kde-format
-#| msgid "Synchronize Statistics"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize First Played Times"
-msgstr "Синхронизация статистики"
+msgstr "Синхронизация времени первого проигрывания"
 
 #: configdialog/dialogs/MetadataConfig.cpp:108
-#, fuzzy, kde-format
-#| msgid "Synchronize Labels"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Last Played Times"
-msgstr "Синхронизировать метки"
+msgstr "Синхронизация времени последнего проигрывания"
 
 #: configdialog/dialogs/MetadataConfig.cpp:110
-#, fuzzy, kde-format
-#| msgid "Synchronize Labels"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Playcounts"
-msgstr "Синхронизировать метки"
+msgstr "Синхронизация количества воспроизведения"
 
 #: configdialog/dialogs/MetadataConfig.cpp:112
-#, fuzzy, kde-format
-#| msgid "Synchronize Labels"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Labels"
-msgstr "Синхронизировать метки"
+msgstr "Синхронизация меток"
 
 # Transcript: we store/restore the name of property of songs in _plural_ _accusative_. --aspotashev
 # https://bugs.kde.org/show_bug.cgi?id=334561
 #: configdialog/dialogs/MetadataConfig.cpp:120
-#, fuzzy, kde-format
-#| msgctxt "%1 is field name such as Play Count"
-#| msgid "Synchronize %1"
+#, kde-format
 msgctxt ""
 "%1 is field name such as Play Count (this string is only used as a fallback)"
 msgid "Synchronize %1"
-msgstr "Синхронизировать %1|/|Синхронизировать $[restore %1]"
+msgstr "Синхронизировать %1"
 
 #: configdialog/dialogs/MetadataConfig.cpp:231
 #, kde-format
@@ -3419,10 +3387,7 @@ msgstr "Записывать метаданные в файлы"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
@@ -3499,27 +3464,25 @@ msgstr ""
 #: configdialog/dialogs/MetadataConfig.ui:128
 #, kde-format
 msgid "Forget"
-msgstr ""
+msgstr "Забыть"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_configureTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:138
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgid "Configure…"
-msgstr "Настроить"
+msgstr "Настроить…"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_addTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:145
 #, kde-format
 msgid "Add…"
-msgstr ""
+msgstr "Добавить…"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_synchronizeButton)
 #: configdialog/dialogs/MetadataConfig.ui:155
-#, fuzzy, kde-format
-#| msgid "Synchronized on: %1"
+#, kde-format
 msgid "Synchronize…"
-msgstr "Синхронизировано: %1"
+msgstr "Синхронизировать…"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: configdialog/dialogs/NotificationsConfig.ui:17
@@ -3669,7 +3632,7 @@ msgstr "Использовать &системные уведомления"
 #: configdialog/dialogs/PlaybackConfig.cpp:36
 #, kde-format
 msgid "Current audio backend does not support volume fading"
-msgstr ""
+msgstr "Текущий аудиомодуль не поддерживает плавное изменение громкости"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -3699,6 +3662,10 @@ msgid ""
 "to the playlist using mouse, pressing Enter or when the playlist is "
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
+"<html>Включение этой опции запускает воспроизведение при добавлении дорожки "
+"или нескольких дорожек в список воспроизведения с помощью мыши, нажатием "
+"клавиши Enter или при замене списка воспроизведения. Ничего не происходит, "
+"если уже что-то воспроизводится.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #: configdialog/dialogs/PlaybackConfig.ui:42
@@ -3708,10 +3675,9 @@ msgstr "Запускать дорожки при их добавлении в с
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: configdialog/dialogs/PlaybackConfig.ui:52
-#, fuzzy, kde-format
-#| msgid "Fading"
+#, kde-format
 msgid "Volume Fading"
-msgstr "Слайд-шоу"
+msgstr "Затухание громкости"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FadeoutOnStop)
 #: configdialog/dialogs/PlaybackConfig.ui:58
@@ -3784,34 +3750,31 @@ msgid "Internet Services"
 msgstr "Службы Интернета"
 
 #: configdialog/dialogs/PluginsConfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgid "Statistics importers"
-msgstr "Статистика"
+msgstr "Импортёр статистики"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
+"Сценарии, установленные вручную, не обновляются автоматически. Продолжить?"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:136
-#, fuzzy, kde-format
-#| msgid "Search Scripts"
+#, kde-format
 msgid "Select Archived Script"
-msgstr "Поиск сценариев"
+msgstr "Выбор архивных сценариев"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:151
-#, fuzzy, kde-format
-#| msgid "Invalid encoder"
+#, kde-format
 msgid "Invalid Archive"
-msgstr "Недопустимый кодер"
+msgstr "Неверный архив"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
 #: configdialog/dialogs/ScriptsConfig.cpp:188
-#, fuzzy, kde-format
-#| msgid "&Install Script"
+#, kde-format
 msgid "Invalid Script File"
-msgstr "У&становить сценарий"
+msgstr "Недопустимый файл сценария"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
@@ -3820,6 +3783,9 @@ msgid ""
 "Existing Script's Version: %2\n"
 "Selected Script's Version: %3"
 msgstr ""
+"Сценарий с именем «%1» уже существует\n"
+"Версия существующего сценария: %2\n"
+"Версия выбранного сценария: %3"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:213
 #, kde-format
@@ -3849,18 +3815,16 @@ msgstr "Удалить сценарий"
 
 #. i18n: ectx: property (text), widget (QPushButton, installButton)
 #: configdialog/dialogs/ScriptsConfig.ui:43
-#, fuzzy, kde-format
-#| msgid "&Install Script"
+#, kde-format
 msgid "Install Local Script"
-msgstr "У&становить сценарий"
+msgstr "Установить локальный сценарий"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:72
-#, fuzzy, kde-format
-#| msgid "Scripts"
+#, kde-format
 msgid "Script Console"
-msgstr "Сценарии"
+msgstr "Консоль сценариев"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
@@ -3868,14 +3832,13 @@ msgstr "Сценарии"
 #: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
-msgstr ""
+msgstr "Включить консоль сценариев."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
 #: configdialog/dialogs/ScriptsConfig.ui:67
-#, fuzzy, kde-format
-#| msgid "Executable Scripts"
+#, kde-format
 msgid "Enable Script Console"
-msgstr "Исполняемые скрипты"
+msgstr "Включить консоль сценариев"
 
 #: configdialog/dialogs/ScriptSelector.cpp:40
 #, kde-format
@@ -3912,52 +3875,47 @@ msgstr "Изменить информацию о дорожке"
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
-msgstr ""
+msgstr "Настройка анализатора «%1»"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:64
-#, fuzzy, kde-format
-#| msgid "width"
+#, kde-format
 msgid "Bar width:"
-msgstr "на"
+msgstr "Ширина полосы:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:79
 #, kde-format
 msgid "%1 pixel"
 msgid_plural "%1 pixels"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%1 пиксель"
+msgstr[1] "%1 пикселя"
+msgstr[2] "%1 пикселей"
+msgstr[3] "%1 пиксель"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show fadebars:"
-msgstr "Показывать год"
+msgstr "Показывать полосы затухания:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
-#, fuzzy, kde-format
-#| msgid "Bar fall-rate:"
+#, kde-format
 msgid "Bars fall speed:"
-msgstr "Строка падения частоты:"
+msgstr "Скорость падения полос:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:124
-#, fuzzy, kde-format
-#| msgid "3D Frequency Waves"
+#, kde-format
 msgid "Frequency range:"
-msgstr "Трехмерные волны"
+msgstr "Диапазон частот:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:142
 #: context/applets/analyzer/package/contents/ui/main.qml:147
 #, kde-format
 msgid "%1 Hz"
-msgstr ""
+msgstr "%1 Гц"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
-#, fuzzy, kde-format
-#| msgid "Sample rate:"
+#, kde-format
 msgid "Sample size:"
-msgstr "Частота дискретизации:"
+msgstr "Размер выборки:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:948
@@ -4233,69 +4191,59 @@ msgid "Remove selected"
 msgstr "Удалить"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
-#, fuzzy, kde-format
-#| msgid "Lyrics Settings"
+#, kde-format
 msgid "Lyrics config"
-msgstr "Параметры текстов"
+msgstr "Настройка текстов песен"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
-#, fuzzy, kde-format
-#| msgid "Font scale:"
+#, kde-format
 msgid "Font size:"
-msgstr "Масштаб шрифта:"
+msgstr "Размер шрифта:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
-#, fuzzy, kde-format
-#| msgid "Alignment: "
+#, kde-format
 msgid "Text alignment:"
-msgstr "Выравнивание: "
+msgstr "Выравнивание текста:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align left"
-msgstr "Выравнивание"
+msgstr "Выровнять по левому краю"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Align OSD to"
+#, kde-format
 msgid "Align right"
-msgstr "Выравнивание экранного уведомления"
+msgstr "Выровнять по правому краю"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align center"
-msgstr "Выравнивание"
+msgstr "Выровнять по центру"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font:"
 msgstr "Шрифт:"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:57
-#, fuzzy, kde-format
-#| msgid "Toggle Full Screen"
+#, kde-format
 msgid "Toggle auto scroll"
-msgstr "Полный экран"
+msgstr "Автопрокрутка"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:67
-#, fuzzy, kde-format
-#| msgid "Reload Lyrics"
+#, kde-format
 msgid "Reload lyrics"
 msgstr "Обновить текст песни"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:111
-#, fuzzy, kde-format
-#| msgid "No covers found."
+#, kde-format
 msgid "No lyrics found"
-msgstr "Обложек не найдено."
+msgstr "Текст песни не найден"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:128
 #, kde-format
 msgid "Suggestions: "
-msgstr ""
+msgstr "Предложения: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
@@ -4323,18 +4271,16 @@ msgid "Width"
 msgstr "Ширина"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "из <b>%1</b>"
+msgstr "Похожие на <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 слушатель<br>%2 воспроизведений"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4342,7 +4288,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 прослушиваний вами"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4494,11 +4440,10 @@ msgid "Next"
 msgstr "Далее"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Updating the local Magnatune database."
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Обновление локальной базы данных Magnatune."
+msgstr "Отключить автоматическую смену страницы"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4508,18 +4453,16 @@ msgid "Track"
 msgstr "Дорожка"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Копировать в буфер обмена"
+msgstr "Копировать ссылку в буфер обмена"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Копировать в буфер обмена"
+msgstr "Копировать изображение в буфер обмена"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4536,20 +4479,16 @@ msgid "No information found..."
 msgstr "Сведений не найдено..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
 msgstr ".*\\(.*(исполнитель|группа).*\\))"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(композитор|музыкант).*\\))"
+msgstr ".*\\(.*(композитор|музыкант).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
@@ -4564,11 +4503,10 @@ msgid ".*\\(.*(song|track).*\\)"
 msgstr ".*\\(.*(песня|композиция).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:531
-#, fuzzy, kde-format
-#| msgid "The name of this track is needed before searching Wikipedia"
+#, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
-msgstr "Для поиска в Википедии требуется название этой дорожки."
+msgstr "Для поиска в Википедии требуется «%1»."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, kde-format
@@ -4581,7 +4519,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Открыть «%1» в веб-браузере"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -4644,12 +4582,11 @@ msgid "Playback Ended Markers"
 msgstr "Отметки прерванного воспроизведения"
 
 #: core-impl/collections/aggregate/AggregateCollection.cpp:51
-#, fuzzy, kde-format
-#| msgid "Update Collection"
+#, kde-format
 msgctxt ""
 "Name of the virtual collection that merges tracks from all collections"
 msgid "Aggregate Collection"
-msgstr "Обновить коллекцию"
+msgstr "Составить коллекцию"
 
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:403
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
@@ -4777,10 +4714,9 @@ msgid "Updating Amarok database schema"
 msgstr "Обновление схемы базы данных"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:530
-#, fuzzy, kde-format
-#| msgid "File does not exist: '%1'"
+#, kde-format
 msgid "Source track does not exist: %1"
-msgstr "Файл отсутствует: '%1'"
+msgstr "Дорожка источника не существует: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:541
 #, kde-format
@@ -5058,10 +4994,10 @@ msgstr[3] ""
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Не удалось скопировать/переместить/преобразовать %1 файл"
+msgstr[1] "Не удалось скопировать/переместить/преобразовать %1 файла"
+msgstr[2] "Не удалось скопировать/переместить/преобразовать %1 файлов"
+msgstr[3] "Не удалось скопировать/переместить/преобразовать файл"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
 #, kde-format
@@ -5090,7 +5026,7 @@ msgstr ""
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
-msgstr ""
+msgstr "Причины ошибок: %1<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodDeleteTracksJob.cpp:44
 #, kde-format
@@ -5270,11 +5206,15 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
+"Для семейства устройств %1, вероятно, используется hash-AB для генерации "
+"корректной контрольной суммы базы данных. Библиотека libgpod (версии 0.8.2) "
+"не умеет её вычислять, но пытается динамически загрузить внешнюю библиотеку "
+"libhashab.so для этой цели."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:262
 #, kde-format
 msgid "Autodetect (%1 file(s) present)"
-msgstr ""
+msgstr "Автоопределение (%1 файл(ов) присутствует)"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:286
 #, kde-format
@@ -5303,24 +5243,22 @@ msgid "Not supported"
 msgstr "не поддерживается"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:305
-#, fuzzy, kde-format
-#| msgid "Presets:"
+#, kde-format
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr "Предустановка:"
+msgstr "Предустановка"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:306
 #, kde-format
 msgctxt "In a dialog: Some file: Not found"
 msgid "<b>Not found</b>"
-msgstr ""
+msgstr "<b>Не найден</b>"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:307
-#, fuzzy, kde-format
-#| msgid "Not Mounted"
+#, kde-format
 msgctxt "In a dialog: Some file: Not needed"
 msgid "Not needed"
-msgstr "Не смонтирован"
+msgstr "Не требуется"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:350
 #, kde-format
@@ -5331,6 +5269,10 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
+"<b>%1</b><br><br>В целях безопасности Amarok <i>не будет выполнять запись</"
+"i> на iPod (изменение базы данных iTunes может привести к тому, что "
+"устройство будет отображать её как пустую).<br>Подробнее см. в файле <a "
+"href='%2'>README.overview</a> из исходного репозитория libgpod."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
 #, kde-format
@@ -5341,6 +5283,11 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
+"<b>%1</b><br><br>Из-за этой проблемы Amarok не может работать с вашим iPod. "
+"Можно попытаться воссоздать критически важные папки и файлы iPod (включая "
+"базу данных iTunes) с помощью кнопки <b>%2</b> ниже.<br><br> Инициализация "
+"iPod <b>уничтожает базу данных дорожек и фотографий iPod</b>, но не должна "
+"удалять сами дорожки. Дорожки станут не связанными с базой данных."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
 #, kde-format
@@ -5357,7 +5304,7 @@ msgstr "Не удалось записать файл SysInfo по неизве�
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr ""
+msgstr "Не удалось инициализировать iPod из-за неизвестной ошибки."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
@@ -5413,26 +5360,22 @@ msgid "The track failed to copy to the device"
 msgstr "Ошибка копирования дорожки на устройство"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:571
-#, fuzzy, kde-format
-#| msgid "Track not deleted:"
-#| msgid_plural "Tracks not deleted:"
+#, kde-format
 msgid "Track not deleted:"
 msgid_plural "Tracks not deleted:"
-msgstr[0] "%1 дорожка не удалена:"
-msgstr[1] "%1 дорожки не удалены:"
-msgstr[2] "%1 дорожек не удалено:"
-msgstr[3] "%1 дорожка не удалена:"
+msgstr[0] "Дорожка не удалена:"
+msgstr[1] "Дорожки не удалены:"
+msgstr[2] "Дорожек не удалено:"
+msgstr[3] "Дорожка не удалена:"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:572
-#, fuzzy, kde-format
-#| msgid "Deleting Track Failed"
-#| msgid_plural "Deleting Tracks Failed"
+#, kde-format
 msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
-msgstr[0] "Ошибка при удалении %1 дорожки"
-msgstr[1] "Ошибка при удалении %1 дорожек"
-msgstr[2] "Ошибка при удалении %1 дорожек"
-msgstr[3] "Ошибка при удалении дорожки"
+msgstr[0] "Не удалось удалить дорожки"
+msgstr[1] "Не удалось удалить дорожки"
+msgstr[2] "Не удалось удалить дорожки"
+msgstr[3] "Не удалось удалить дорожку"
 
 # %1 stands for "Track(s) not deleted:"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
@@ -5511,10 +5454,9 @@ msgid "Playdar Collection"
 msgstr "Коллекция Playdar"
 
 #: core-impl/collections/playdarcollection/PlaydarMeta.cpp:121
-#, fuzzy, kde-format
-#| msgid "Search collection"
+#, kde-format
 msgid "Source collection removed"
-msgstr "Поиск в коллекции"
+msgstr "Исходная коллекция удалена"
 
 #: core-impl/collections/support/ArtistHelper.cpp:31
 #, kde-format
@@ -5624,8 +5566,7 @@ msgid "Remove empty folders?"
 msgstr "Удаление пустых папок"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Удалить"
@@ -5634,7 +5575,7 @@ msgstr "Удалить"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Не удалять"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -5725,6 +5666,9 @@ msgid ""
 "File <i>%1</i> suggests that we should use <i>%2</i> as music folder on the "
 "device, but it doesn't exist. Falling back to <i>%3</i> instead"
 msgstr ""
+"Файл <i>%1</i> указывает на использование папки <i>%2</i> для музыки на "
+"устройстве, но она не существует. Вместо неё будет использована папка <i>%3</"
+"i>."
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:387
 #, kde-format
@@ -5810,11 +5754,10 @@ msgid "Unknown"
 msgstr "Неизвестно"
 
 #: core-impl/meta/multi/MultiTrack.h:59
-#, fuzzy, kde-format
-#| msgid "Retrieved lyrics is empty"
+#, kde-format
 msgctxt "Reason why a track is not playable"
 msgid "Underlying playlist is empty"
-msgstr "Получен пустой текст песни"
+msgstr "Основной список воспроизведения пуст"
 
 #: core-impl/meta/proxy/MetaProxy.cpp:157
 #, kde-format
@@ -5823,6 +5766,9 @@ msgid ""
 "this track on the filesystem or in any of your collections anymore. You may "
 "try plugging in the device this track might be on."
 msgstr ""
+"При последнем завершении работы Amarok эта дорожка находилась в позиции "
+"«%1», но сейчас она не найдена в файловой системе или в ваших коллекциях. "
+"Возможно, её можно найти на отключённом устройстве."
 
 #: core-impl/meta/stream/Stream.cpp:52
 #, kde-format
@@ -5832,7 +5778,7 @@ msgstr "Поток (%1)"
 #: core-impl/meta/timecode/TimecodeMeta.cpp:83
 #, kde-format
 msgid "Url is not a local file"
-msgstr ""
+msgstr "URL не является локальным файлом"
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:62
 #, kde-format
@@ -5845,11 +5791,10 @@ msgid "Downloading remote playlist"
 msgstr "Загрузка удалённого списка воспроизведения"
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:96
-#, fuzzy, kde-format
-#| msgid "Cannot read playlist (%1)."
+#, kde-format
 msgctxt "%1 is file path"
 msgid "Cannot read playlist from %1"
-msgstr "Невозможно прочитать список воспроизведения(%1)."
+msgstr "Невозможно прочитать список воспроизведения из %1"
 
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:122
 #, kde-format
@@ -6036,10 +5981,10 @@ msgstr "Настройка %1"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%v объект"
+msgstr[1] "%v объекта"
+msgstr[2] "%v объектов"
+msgstr[3] "%v объект"
 
 # Тут специально нет перевода?
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
@@ -6095,10 +6040,9 @@ msgid "&Write Feed Information to File"
 msgstr "Записать сведения из ленты в файл"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
-#, fuzzy, kde-format
-#| msgid "Replace downloaded label"
+#, kde-format
 msgid "&Keep downloaded file"
-msgstr "Заменять полученную из Интернета метку"
+msgstr "&Содержание загруженного файла"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
@@ -6107,6 +6051,8 @@ msgid ""
 "Downloaded files with this status wouldn't be deleted even if we apply a "
 "purge."
 msgstr ""
+"Переключить статус «сохранить» для загруженного файла этого эпизода "
+"подкаста. Файлы с этим статусом не будут удалены даже при очистке."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
@@ -6115,17 +6061,14 @@ msgstr "Вы уже подписаны на %1."
 
 # Не должно ли это сообщение быть в родительном падеже? (например, в случае "не старше ...")
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1 минута"
-msgstr[1] "%1 минуты"
-msgstr[2] "%1 минут"
-msgstr[3] "1 минута"
+msgstr[0] "каждые %v минуты"
+msgstr[1] "каждые %v минуты"
+msgstr[2] "каждые %v минут"
+msgstr[3] "каждую %v минуту"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -6268,10 +6211,9 @@ msgstr ""
 "Эта папка может быть выбрана отдельно для каждого подкаста."
 
 #: core-impl/storage/StorageManager.cpp:159
-#, fuzzy, kde-format
-#| msgid "The playlist file \"%1\" could not be loaded."
+#, kde-format
 msgid "The configured database plugin could not be loaded."
-msgstr "Не удалось загрузить файл списка воспроизведения «%1»."
+msgstr "Не удалось загрузить настроенный модуль базы данных."
 
 #: core/collections/CollectionLocation.cpp:381
 #, kde-format
@@ -6358,27 +6300,24 @@ msgstr[2] "Перекодирование и копирование %1 доро�
 msgstr[3] "Перекодирование и копирование дорожки в %2"
 
 #: core/meta/Meta.cpp:206
-#, fuzzy, kde-format
-#| msgid "Check Connection"
+#, kde-format
 msgid "No network connection"
-msgstr "Проверить соединение"
+msgstr "Нет сетевого подключения"
 
 #: core/meta/Meta.cpp:216
-#, fuzzy, kde-format
-#| msgid "does not end with"
+#, kde-format
 msgid "File does not exist"
-msgstr "не завершается на"
+msgstr "Файл не существует"
 
 #: core/meta/Meta.cpp:218
-#, fuzzy, kde-format
-#| msgid "Not a valid mp3 file"
+#, kde-format
 msgid "Not a file"
-msgstr "Неверный файл mp3"
+msgstr "Не является файлом"
 
 #: core/meta/Meta.cpp:220
 #, kde-format
 msgid "No read permissions"
-msgstr ""
+msgstr "Нет прав на чтение"
 
 #: core/meta/Meta.cpp:352
 #, kde-format
@@ -6387,16 +6326,12 @@ msgstr "Неизвестный композитор"
 
 # BUGME: should this be translatable?
 #: core/meta/support/MetaConstants.cpp:180
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "The field name in case nothing specific is selected e.g. in the automatic "
-#| "playlist generator"
-#| msgid "anything"
+#, kde-format
 msgctxt ""
 "Track field name (when nothing specific is selected e.g. in the automatic "
 "playlist generator)"
 msgid "anything"
-msgstr "всё"
+msgstr "любое"
 
 #: core/meta/support/MetaConstants.cpp:181
 #, kde-format
@@ -6579,7 +6514,7 @@ msgstr "Исполнитель альбома"
 #, kde-format
 msgctxt "Track field name"
 msgid "Label"
-msgstr ""
+msgstr "Метка"
 
 #: core/meta/support/MetaConstants.cpp:212
 #, kde-format
@@ -6588,8 +6523,7 @@ msgid "Last Modified"
 msgstr "Дата последнего изменения"
 
 #: core/meta/support/MetaConstants.cpp:213
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgctxt "Track field name"
 msgid "Lyrics"
 msgstr "Текст песни"
@@ -6790,11 +6724,10 @@ msgid "modified"
 msgstr "изменено"
 
 #: core/meta/support/MetaConstants.cpp:257
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "lyrics"
-msgstr "Текст песни"
+msgstr "текст песен"
 
 #: core/meta/support/MetaUtility.cpp:420
 #, kde-format
@@ -6973,11 +6906,10 @@ msgid "Unknown"
 msgstr "Неизвестно"
 
 #: core/support/Amarok.cpp:58
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgctxt "monthname year"
 msgid "%1"
-msgstr "%1%"
+msgstr "%1"
 
 #: core/support/Amarok.cpp:64
 #, kde-format
@@ -7144,6 +7076,13 @@ msgid ""
 "encoder is transparent at 128kbps for most samples tested with artifacts "
 "only appearing in extreme cases."
 msgstr ""
+"Битрейт измеряет объём данных, используемых для представления одной секунды "
+"звуковой дорожки.<br>Кодировщик, применяемый в Amarok, эффективнее работает "
+"с постоянным битрейтом.<br>Экспериментальный режим VBR может давать даже "
+"худшие результаты, чем CBR.<br>Поэтому значение битрейта на этом ползунке "
+"является достаточно точной оценкой битрейта кодированной дорожки.<br>Для "
+"большинства протестированных образцов кодировщик обеспечивает прозрачность "
+"звука при 128 кбит/с, артефакты появляются лишь в крайних случаях."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:59
@@ -7173,19 +7112,10 @@ msgstr "Лучшее качество"
 #: core/transcoding/formats/TranscodingAacFormat.cpp:56
 #, kde-format
 msgid "AAC"
-msgstr ""
+msgstr "AAC"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:64
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "Feel free to redirect the english Wikipedia link to a local version, if "
-#| "it exists."
-#| msgid ""
-#| "<a href=http://en.wikipedia.org/wiki/Advanced_Audio_Coding>Advanced Audio "
-#| "Coding</a> (AAC) is a patented lossy codec for digital audio.<br>AAC "
-#| "generally achieves better sound quality than MP3 at similar bit rates. It "
-#| "is a reasonable choice for the iPod and some other portable music "
-#| "players. Non-Free implementation."
+#, kde-format
 msgctxt ""
 "Feel free to redirect the english Wikipedia link to a local version, if it "
 "exists."
@@ -7199,7 +7129,7 @@ msgstr ""
 "Coding</a> (AAC) — это запатентованный аудиокодек для сжатия звука с "
 "потерями.<br>AAC обычно достигает лучшего качества звука, чем MP3, при том "
 "же битрейте. Этот формат подходит для iPod и некоторых других портативных "
-"плееров. Используется несвободная реализация кодека."
+"плееров."
 
 # переводится? --aspotashev
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
@@ -7335,21 +7265,7 @@ msgstr ""
 
 # В русской Википедии про переменный битрейт написано слишком мало. --aspotashev
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:28
-#, fuzzy, kde-format
-#| msgid ""
-#| "The bitrate is a measure of the quantity of data used to represent a "
-#| "second of the audio track.<br>The <b>MP3</b> encoder used by Amarok "
-#| "supports a <a href=http://en.wikipedia.org/wiki/MP3#VBR>variable bitrate "
-#| "(VBR)</a> setting, which means that the bitrate value fluctuates along "
-#| "the track based on the complexity of the audio content. More complex "
-#| "intervals of data are encoded with a higher bitrate than less complex "
-#| "ones; this approach yields overall better quality and a smaller file than "
-#| "having a constant bitrate throughout the track.<br>For this reason, the "
-#| "bitrate measure in this slider is just an estimate of the average bitrate "
-#| "of the encoded track.<br><b>160kb/s</b> is a good choice for music "
-#| "listening on a portable player.<br/>Anything below <b>120kb/s</b> might "
-#| "be unsatisfactory for music and anything above <b>205kb/s</b> is probably "
-#| "overkill."
+#, kde-format
 msgid ""
 "The bitrate is a measure of the quantity of data used to represent a second "
 "of the audio track.<br>The <b>Opus</b> encoder used by Amarok supports a <a "
@@ -7365,7 +7281,7 @@ msgid ""
 "anything above <b>256kb/s</b> is probably overkill."
 msgstr ""
 "Битрейт — это мера количества информации, используемой для представления "
-"одной секунды звуковой дорожки.<br>Кодер <b>MP3</b>, используемый в Amarok, "
+"одной секунды звуковой дорожки.<br>Кодер <b>Opus</b>, используемый в Amarok, "
 "имеет поддержку <a href=http://en.wikipedia.org/wiki/MP3#VBR>переменного "
 "битрейта (VBR)</a>, что означает, что битрейт может колебаться на протяжении "
 "дорожки в зависимости от сложности звукового содержимого. Более сложные "
@@ -7374,15 +7290,15 @@ msgstr ""
 "размера файла по сравнению с использованием постоянного битрейта.<br>Поэтому "
 "битрейт, устанавливаемый этим ползунком — это только оценочное значение <a "
 "href=http://www.ffmpeg.org/faq.html#SEC21>среднего битрейта</a> кодируемой "
-"дорожки. <br>Битрейт, равный <b>160 кбит/с</b> — хороший выбор для "
+"дорожки. <br>Битрейт, равный <b>128 кбит/с</b> — хороший выбор для "
 "прослушивания музыки на портативном проигрывателе.<br/>Значения меньше "
-"<b>120 кбит/с</b> могут приводить к неудовлетворительному качеству. Значения "
-"больше <b>205 кбит/с</b> обычно излишни."
+"<b>100 кбит/с</b> могут приводить к неудовлетворительному качеству. Значения "
+"больше <b>256 кбит/с</b> обычно излишни."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
 #, kde-format
 msgid "Opus"
-msgstr ""
+msgstr "Opus"
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:80
 #, kde-format
@@ -7393,6 +7309,8 @@ msgid ""
 "<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> is a "
 "patent-free digital audio codec using a form of lossy data compression."
 msgstr ""
+"<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> — это "
+"свободный от патентов цифровой аудиокодек, использующий сжатие с потерями."
 
 # BUGME: link to Russian wiki
 # "between -1 and 10": "-1" -> "1".
@@ -7504,16 +7422,14 @@ msgstr ""
 "плееров, которые не поддерживают формат Ogg Vorbis."
 
 #: core/transcoding/TranscodingConfiguration.cpp:110
-#, fuzzy, kde-format
-#| msgid "Invalid"
+#, kde-format
 msgid "Invalid"
-msgstr "Пакет с ошибкой"
+msgstr "Недопустимый"
 
 #: core/transcoding/TranscodingConfiguration.cpp:112
-#, fuzzy, kde-format
-#| msgid "Just copy or move"
+#, kde-format
 msgid "Just Copy"
-msgstr "Простое копирование или перемещение"
+msgstr "Простое копирование"
 
 #: core/transcoding/TranscodingConfiguration.cpp:136
 #, kde-format
@@ -7522,9 +7438,7 @@ msgid "%1 %2"
 msgstr "%1: %2"
 
 #: core/transcoding/TranscodingConfiguration.cpp:143
-#, fuzzy, kde-format
-#| msgctxt "A person's location: City, Country"
-#| msgid "%1, %2"
+#, kde-format
 msgctxt ""
 "Displayed next to the \"Transcode:\" label. %1 example: 'All Tracks to MP3' "
 "%2 example: 'VBR 175kb/s'"
@@ -7532,25 +7446,22 @@ msgid "%1, %2"
 msgstr "%1, %2"
 
 #: core/transcoding/TranscodingConfiguration.cpp:211
-#, fuzzy, kde-format
-#| msgid "Tracks"
+#, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "All Tracks to %1"
-msgstr "Дорожки"
+msgstr "Все дорожки в %1"
 
 #: core/transcoding/TranscodingConfiguration.cpp:215
-#, fuzzy, kde-format
-#| msgctxt "%1 is collection pretty name, e.g. My Little iPod"
-#| msgid "Transferred Tracks to %1"
+#, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "Non-%1 Tracks to %1"
-msgstr "Дорожки переданы на %1"
+msgstr "Дорожки не в формате %1 в формат %1"
 
 #: core/transcoding/TranscodingConfiguration.cpp:219
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "When Needed to %1"
-msgstr ""
+msgstr "При необходимости в %1"
 
 #: covermanager/CoverFetcher.cpp:178 covermanager/CoverFetcher.cpp:341
 #, kde-format
@@ -7969,24 +7880,21 @@ msgstr[3] "%1 альбом"
 #, kde-format
 msgctxt "Separator for artists"
 msgid ", "
-msgstr ""
+msgstr ", "
 
 #: covermanager/CoverManager.cpp:699
-#, fuzzy, kde-format
-#| msgctxt "%1 is track url, %2 artist name"
-#| msgid "%1 (by %2)"
+#, kde-format
 msgid "%1 by %2"
-msgstr "%1 (от %2)"
+msgstr "%2 — %1"
 
 #: covermanager/CoverManager.cpp:704
-#, fuzzy, kde-format
-#| msgid " - ( <b>%1</b> without cover )"
+#, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
-msgstr[0] " — (<b>%1</b> без обложек)"
-msgstr[1] " — (<b>%1</b> без обложек)"
-msgstr[2] " — (<b>%1</b> без обложек)"
-msgstr[3] " — (<b>%1</b> без обложек)"
+msgstr[0] "%2 — (<b>%1</b> без обложки)"
+msgstr[1] "%2 — (<b>%1</b> без обложки)"
+msgstr[2] "%2 — (<b>%1</b> без обложек)"
+msgstr[3] "%2 — (<b>1</b> без обложки)"
 
 #: covermanager/CoverManager.cpp:769
 #, kde-format
@@ -8014,16 +7922,13 @@ msgid "Could not open file \"%1\"."
 msgstr "Не удалось открыть файл «%1»."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid ""
-#| "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
-#| "amarok.kde.org/wiki/Batch_Mode\">Batch Mode</a>."
+#, kde-format
 msgid ""
 "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
 "community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>."
 msgstr ""
 "Входной файл, созданный сканером коллекции amarokcollectionscanner."
-"<br>Смотрите статью <a href=\"http://amarok.kde.org/wiki/Batch_Mode"
+"<br>Смотрите <a href=\"http://community.kde.org/Amarok/Development/BatchMode"
 "\">Пакетный режим</a>."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:43
@@ -8044,16 +7949,14 @@ msgstr ""
 "Сканирование всей коллекции заново. Статистика <i>не</i> будет удалена."
 
 #: dialogs/CollectionSetup.cpp:72
-#, fuzzy, kde-format
-#| msgid "Import OPML File"
+#, kde-format
 msgid "Import batch file..."
-msgstr "Импортировать из файла OPML"
+msgstr "Импортировать пакетный файл..."
 
 #: dialogs/CollectionSetup.cpp:73
-#, fuzzy, kde-format
-#| msgid "Amarok collection scanner"
+#, kde-format
 msgid "Import collection from file produced by amarokcollectionscanner."
-msgstr "Сканирование коллекции"
+msgstr "Импорт коллекции из файла, произведённого amarokcollectionscanner."
 
 #: dialogs/CollectionSetup.cpp:81
 #, kde-format
@@ -8090,10 +7993,9 @@ msgid "Import Collection"
 msgstr "Импорт коллекции"
 
 #: dialogs/DatabaseImporterDialog.cpp:47
-#, fuzzy, kde-format
-#| msgid "Podcast Configuration"
+#, kde-format
 msgid "Import configuration"
-msgstr "Настройка подкастов"
+msgstr "Импорт конфигурации"
 
 #: dialogs/DatabaseImporterDialog.cpp:67
 #, kde-format
@@ -8217,18 +8119,7 @@ msgid "No"
 msgstr "не используется"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8245,9 +8136,7 @@ msgstr ""
 "   Версия %1: %2\n"
 "   Версия KDE Frameworks: %3\n"
 "   Версия Qt: %4\n"
-"   Версия Phonon: %5\n"
-"   Библиотека воспроизведения Phonon: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   Версия GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -8260,6 +8149,12 @@ msgid ""
 "Enabled Applets:\n"
 "%3\n"
 msgstr ""
+"Включённые сценарии:\n"
+"%1\n"
+"Включённые модули:\n"
+"%2\n"
+"Включённые виджеты:\n"
+"%3\n"
 
 #: dialogs/EditFilterDialog.cpp:36
 #, kde-format
@@ -8283,10 +8178,9 @@ msgstr "Изменить фильтр"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: dialogs/EditFilterDialog.ui:55
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Condition"
-msgstr "Подключение"
+msgstr "Условие"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbInvert)
 #: dialogs/EditFilterDialog.ui:67
@@ -8329,6 +8223,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"дБ"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -8448,6 +8344,11 @@ msgid ""
 "suggestion; it may give even better results because it prevents mixing "
 "different album releases together."
 msgstr ""
+"Для каждой неопределённой дорожки использовать лучший результат. Также можно "
+"щёлкнуть правой кнопкой мыши по удачному варианту и выбрать в контекстном "
+"меню пункт <b>Выбрать лучшие совпадения из этого альбома</b>; это может дать "
+"ещё лучший результат, так как предотвращает смешивание разных изданий "
+"альбома."
 
 #: dialogs/MusicBrainzTagger.cpp:92
 #, fuzzy, kde-format
@@ -8458,7 +8359,7 @@ msgstr "Очистить фильтр"
 #: dialogs/MusicBrainzTagger.cpp:93
 #, kde-format
 msgid "Clear all choices, even manually made ones."
-msgstr ""
+msgstr "Очистить все выбранные элементы, включая установленные вручную."
 
 #: dialogs/MusicBrainzTagger.cpp:98
 #, kde-format
@@ -8515,14 +8416,12 @@ msgid "%1 or %2"
 msgstr "%1 или %2"
 
 #: dialogs/OrganizeCollectionDialog.cpp:112
-#, fuzzy, kde-format
-#| msgid "Album Artist"
+#, kde-format
 msgid "The Album Artist"
 msgstr "Исполнитель альбома"
 
 #: dialogs/OrganizeCollectionDialog.cpp:113
-#, fuzzy, kde-format
-#| msgid "Artist"
+#, kde-format
 msgid "The Artist"
 msgstr "Исполнитель"
 
@@ -8557,16 +8456,14 @@ msgstr ""
 "текст заключённый в скобки, будет скрыт."
 
 #: dialogs/OrganizeCollectionDialog.cpp:316
-#, fuzzy, kde-format
-#| msgid "Original"
+#, kde-format
 msgid "Original: %1"
-msgstr "Исходный файл"
+msgstr "Оригинальный: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:317
-#, fuzzy, kde-format
-#| msgid "Preview"
+#, kde-format
 msgid "Preview: %1"
-msgstr "Предварительный просмотр"
+msgstr "Предварительный просмотр: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:383
 #, kde-format
@@ -8615,6 +8512,8 @@ msgid ""
 "<html>Show/hide additional controls to specify destination track paths based "
 "on their metadata.</html>"
 msgstr ""
+"<html>Отображение/скрытие дополнительных элементов управления для задания "
+"путей дорожек на основе их метаданных.</html>"
 
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
@@ -9517,6 +9416,8 @@ msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
 msgstr ""
+"<a href=\"http://the.echonest.com/\">The Echo Nest</a> считает, что "
+"исполнитель похож на"
 
 #: dynamic/biases/EchoNestBias.cpp:144
 #: services/lastfm/biases/LastFmBias.cpp:144
@@ -9926,7 +9827,7 @@ msgstr "Дата добавления"
 #, kde-format
 msgctxt "Database type"
 msgid "external"
-msgstr ""
+msgstr "внешняя"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
@@ -9991,7 +9892,7 @@ msgstr "Имя базы данных"
 #: importers/amarok/AmarokConfigWidget.ui:163
 #, kde-format
 msgid "MySQL server binary"
-msgstr ""
+msgstr "Исполняемый файл сервера MySQL"
 
 #. i18n: ectx: property (nameFilter), widget (KUrlRequester, m_mysqlBinary)
 #: importers/amarok/AmarokConfigWidget.ui:170
@@ -10141,7 +10042,7 @@ msgstr ""
 #: main.cpp:70
 #, kde-format
 msgid "<i>Inactive authors</i>"
-msgstr ""
+msgstr "<i>Неактивные авторы</i>"
 
 #: main.cpp:71
 #, kde-format
@@ -10149,6 +10050,8 @@ msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
+"Amarok — это не просто хобби, это образ жизни. Но когда участники проекта "
+"уходят, мы продолжаем упоминать их здесь в знак уважения:"
 
 #: main.cpp:77
 #, kde-format
@@ -10188,7 +10091,7 @@ msgstr "Matěj Laitl"
 #: main.cpp:90
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
-msgstr ""
+msgstr "Переписан модуль iPod и другие изменения (strohel)"
 
 #: main.cpp:93
 #, kde-format
@@ -10489,7 +10392,7 @@ msgstr "John Atkinson"
 #: main.cpp:175
 #, kde-format
 msgid "Assorted patches"
-msgstr ""
+msgstr "Различные исправления"
 
 #: main.cpp:177
 #, kde-format
@@ -11242,7 +11145,7 @@ msgstr "Добавить в очередь воспроизведения"
 #: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr ""
+msgstr "Копировать в буфер обмена имя исполнителя и название текущей дорожки"
 
 #: MainWindow.cpp:984
 #, kde-format
@@ -11444,6 +11347,8 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Гц"
 
 #: playback/EqualizerController.cpp:84
 #, fuzzy, kde-format
@@ -12017,7 +11922,7 @@ msgstr "Длина очереди: %1"
 #: playlist/PlaylistModel.cpp:270 playlist/PlaylistModel.cpp:382
 #, kde-format
 msgid "<b>Note:</b> This track is not playable.<br>%1"
-msgstr ""
+msgstr "<b>Примечание:</b> Эта дорожка не воспроизводится.<br>%1"
 
 #: playlist/PlaylistModel.cpp:305
 #, kde-format
@@ -12236,7 +12141,7 @@ msgstr "Предупреждение: дорожки в списке воспр�
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr ""
+msgstr "Добавьте сюда дорожки, перетащив их из любого раздела."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -13613,6 +13518,12 @@ msgid ""
 "operations with them may result in losing them. Perhaps you have started an "
 "older version of Amarok with a database written by newer version?"
 msgstr ""
+"Обнаружена версия %1 схемы базы данных плейлистов, однако данная версия "
+"Amarok поддерживает только версию %2 (и более ранние, начиная с %2). "
+"Плейлисты, сохранённые в базе данных Amarok, скорее всего, не будут "
+"работать, а любые операции записи с ними могут привести к их потере. "
+"Возможно, была запущена более старая версия Amarok с базой данных, созданной "
+"более новой версией?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:280
 #, kde-format
@@ -13620,7 +13531,7 @@ msgctxt ""
 "the user's 'database version' is newer and unsupported by this software "
 "version"
 msgid "Future version of Playlist Database?"
-msgstr ""
+msgstr "Новая версия базы данных списка воспроизведения?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 #, kde-format
@@ -13642,6 +13553,8 @@ msgstr "<пусто>"
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
 msgstr ""
+"Не удалось найти ни одного модуля. Возможно, приложение установлено "
+"неправильно."
 
 #: scanner/AbstractScanResultProcessor.cpp:66
 #, kde-format
@@ -13651,7 +13564,7 @@ msgstr "Идёт сканирование"
 #: scanner/GenericScannerJob.cpp:117
 #, kde-format
 msgid "Abort for scanner requested"
-msgstr ""
+msgstr "Прервано сканирование"
 
 #: scanner/GenericScannerJob.cpp:146
 #, kde-format
@@ -13707,7 +13620,7 @@ msgstr "Консоль"
 #: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Output"
-msgstr ""
+msgstr "Вывод"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
@@ -13760,12 +13673,12 @@ msgstr "&Вид"
 #: scripting/scriptconsole/ScriptConsole.cpp:223
 #, kde-format
 msgid "This will stop this script! Continue?"
-msgstr ""
+msgstr "Остановить выполнение сценария?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:268
 #, kde-format
 msgid "Choose where to save your scripts"
-msgstr ""
+msgstr "Выбор папки для сохранения сценариев"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
 #, fuzzy, kde-format
@@ -13791,12 +13704,12 @@ msgstr "Удалить"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Не удалять"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
 msgid "Are you absolutely certain?"
-msgstr ""
+msgstr "Вы уверены?"
 
 #: scripting/scriptengine/AmarokScript.cpp:68
 #: scripting/scriptengine/AmarokScript.cpp:72
@@ -13823,12 +13736,12 @@ msgstr "не используется"
 #: scripting/scriptmanager/ScriptItem.cpp:92
 #, kde-format
 msgid "Terminate"
-msgstr ""
+msgstr "Завершить"
 
 #: scripting/scriptmanager/ScriptItem.cpp:171
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
-msgstr ""
+msgstr "Завершить выполнение сценария «%1»?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:339
 #, kde-format
@@ -13839,6 +13752,8 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
+"Сценарий «%1» использует устаревшие вызовы API. Обратитесь к авторам "
+"сценария, %2, с просьбой обновить его до следующего выпуска Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
@@ -14011,6 +13926,7 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
+"Ошибка получения данных с сервера службой GPodder. Повтор через 10 секунд…"
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
@@ -14363,12 +14279,14 @@ msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
 "during statistics synchronization"
 msgstr ""
+"Использование меток Last.fm, например <b>7 из 10 звёзд</b>, для "
+"представления оценок Amarok при синхронизации статистики"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:139
 #, kde-format
 msgid "Use fancy tags to represent ratings"
-msgstr ""
+msgstr "Использовать специальные метки для оценки"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:146
@@ -14378,12 +14296,16 @@ msgid ""
 "track tags like artist, album and title. Check this to be notified when this "
 "happens and what the autocorrection was</html>"
 msgstr ""
+"<html>При отправке дорожек в Last.fm выполняется автоматическое исправление "
+"распространённых ошибок в метках, таких как исполнитель, альбом и название. "
+"Отметить для получения уведомлений о таких исправлениях и их содержании</"
+"html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:149
 #, kde-format
 msgid "Announce correction suggestions for track tags"
-msgstr ""
+msgstr "Озвучивать предложения по исправлению меток дорожек"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:158
@@ -14392,6 +14314,8 @@ msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
 "updated to Last.fm now playing</html>"
 msgstr ""
+"<html>Отметить, если определённые дорожки не должны отправляться в Last.fm и "
+"обновлять информацию о текущей композиции</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:161
@@ -14407,6 +14331,8 @@ msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
 "will not be scrobbled</html>"
 msgstr ""
+"<html>Выбрать предпочитаемую метку (или ввести новую). Дорожки с этой меткой "
+"не будут отправлены в Last.fm</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -14484,7 +14410,7 @@ msgstr "Личное радио друзей"
 #: services/lastfm/LastFmServiceConfig.cpp:138
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
-msgstr ""
+msgstr "Не удалось открыть KDE Wallet для чтения учётных данных Last.fm"
 
 #: services/lastfm/LastFmServiceConfig.cpp:155
 #, kde-format
@@ -14492,16 +14418,18 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Ошибка переноса имени пользователя Last.fm из KWallet. Подключите учётную "
+"запись Last.fm заново в настройках модуля."
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Отключить Amarok от учётной записи Last.fm «%1»?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Отключить учётную запись Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, fuzzy, kde-format
@@ -14529,7 +14457,7 @@ msgstr "Открыть страницу этого события на Last.fm"
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Завершить подключение учётной записи"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14538,6 +14466,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Не удалось подключить учётную запись Last.fm. Убедитесь, что вы предоставили "
+"Amarok доступ к своей учётной записи на открытой веб-странице Last.fm и "
+"повторите попытку."
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -14557,10 +14488,10 @@ msgstr "%1 (%2)"
 msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%2 (%1 прослушивание)"
+msgstr[1] "%2 (%1 прослушивания)"
+msgstr[2] "%2 (%1 прослушиваний)"
+msgstr[3] "%2 (%1 прослушивание)"
 
 #: services/lastfm/LastFmTreeModel.cpp:299
 #, kde-format
@@ -14695,6 +14626,10 @@ msgid ""
 "announcements/radio2013'>supported country</a>. All other Last.fm features "
 "work fine."
 msgstr ""
+"Для прослушивания потоков и радио Last.fm требуется платная подписка Last.fm "
+"и подключение из <a href='http://www.last.fm/ announcements/"
+"radio2013'>поддерживаемой страны</a>. Все остальные функции Last.fm работают "
+"нормально."
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:106
 #, kde-format
@@ -14808,6 +14743,8 @@ msgid ""
 "If you check this box, Amarok will periodically check for Magnatune database "
 "updates and download them automatically."
 msgstr ""
+"При установке этого флажка Amarok будет периодически проверять наличие "
+"обновлений базы данных Magnatune и загружать их автоматически."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdate)
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdateDatabase)
@@ -15094,7 +15031,7 @@ msgstr "Обновление локальной базы данных Magnatune.
 msgid ""
 "Amarok needs to download Magnatune database in order to enable Magnatune "
 "store."
-msgstr ""
+msgstr "Для работы с магазином Magnatune требуется загрузить его базу данных."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:59
@@ -15104,6 +15041,9 @@ msgid ""
 "and download them automatically. You can always disable this option later in "
 "Magnatune service configuration."
 msgstr ""
+"При включении следующей опции Amarok будет проверять обновления Magnatune и "
+"загружать их автоматически. Опцию можно отключить в настройках службы "
+"Magnatune."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -15719,7 +15659,7 @@ msgstr "Ошибка: неизвестное сообщение"
 #: services/ServiceMetaBase.cpp:249
 #, kde-format
 msgid "Neither playable nor downloadable url specified."
-msgstr ""
+msgstr "Не указан адрес для воспроизведения или загрузки."
 
 #: services/ServicePluginManager.cpp:147 services/ServicePluginManager.cpp:164
 #: services/ServicePluginManager.cpp:181
@@ -15730,7 +15670,7 @@ msgstr "Не загружено службы с именем %1"
 #: statsyncing/Config.cpp:100
 #, kde-format
 msgid "This collection is currently offline"
-msgstr ""
+msgstr "Коллекция находится в автономном режиме"
 
 #: statsyncing/Controller.cpp:112
 #, kde-format
@@ -15741,6 +15681,11 @@ msgid ""
 "\n"
 "You can always change the decision in Amarok configuration."
 msgstr ""
+"%1 может синхронизировать метаданные дорожек, например, счётчик "
+"воспроизведений или оценку, с другими коллекциями. Сохранить синхронизацию "
+"для %1?\n"
+"\n"
+"Это решение всегда можно изменить в настройках Amarok."
 
 #: statsyncing/Controller.cpp:118
 #, fuzzy, kde-format
@@ -15762,6 +15707,8 @@ msgid ""
 "You only seem to have the Local Collection. Statistics synchronization only "
 "makes sense if there is more than one collection."
 msgstr ""
+"Похоже, что у вас есть только локальная коллекция. Синхронизация статистики "
+"имеет смысл только при наличии более одной коллекции."
 
 #: statsyncing/models/CommonModel.cpp:162
 #, fuzzy, kde-format
@@ -15781,7 +15728,7 @@ msgstr "%1 (%2)"
 #, kde-format
 msgctxt "comma between list words"
 msgid ", "
-msgstr ""
+msgstr ", "
 
 #: statsyncing/models/CommonModel.cpp:177
 #, kde-format
@@ -15789,9 +15736,17 @@ msgid "Played %2 times of which one play is recent and unique to this source"
 msgid_plural ""
 "Played %2 times of which %1 plays are recent and unique to this source"
 msgstr[0] ""
+"Проиграно %2 раз, из них %1 проигрывания недавние и уникальны для этого "
+"источника"
 msgstr[1] ""
+"Проиграно %2 раза, из них %1 проигрывания недавние и уникальны для этого "
+"источника"
 msgstr[2] ""
+"Проиграно %2 раз, из них %1 проигрываний недавние и уникальны для этого "
+"источника"
 msgstr[3] ""
+"Проиграно %2 раз, из них один проигрыш недавний и уникален для этого "
+"источника"
 
 #: statsyncing/models/CommonModel.cpp:189
 #, fuzzy, kde-format
@@ -15819,6 +15774,8 @@ msgid ""
 "Can match tracks by: %1\n"
 "Can synchronize: %2"
 msgstr ""
+"Возможность сопоставления дорожек: %1\n"
+"Возможность синхронизации: %2"
 
 #: statsyncing/Process.cpp:48
 #, kde-format
@@ -15828,7 +15785,7 @@ msgstr "Синхронизация статистики"
 #: statsyncing/Process.cpp:113
 #, kde-format
 msgid "Matching Tracks for Statistics Synchronization"
-msgstr ""
+msgstr "Сопоставление дорожек для синхронизации статистики"
 
 #: statsyncing/Process.cpp:230
 #, kde-format
@@ -15840,47 +15797,47 @@ msgstr "Синхронизация статистики дорожек"
 msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Синхронизация %2 завершена. Обновлена <b>%1</b> дорожка."
+msgstr[1] "Синхронизация %2 завершена. Обновлены <b>%1</b> дорожки."
+msgstr[2] "Синхронизация %2 завершена. Обновлено <b>%1</b> дорожек."
+msgstr[3] "Синхронизация %2 завершена. Обновлена <b>одна</b> дорожка."
 
 #: statsyncing/Process.cpp:273
 #, kde-format
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "<b>%1</b> дорожка поставлена в очередь для скробблинга в %2;"
+msgstr[1] "<b>%1</b> дорожки поставлены в очередь для скробблинга в %2;"
+msgstr[2] "<b>%1</b> дорожек поставлено в очередь для скробблинга в %2;"
+msgstr[3] "<b>Одна</b> дорожка поставлена в очередь для скробблинга в %2."
 
 #: statsyncing/Process.cpp:280
 #, kde-format
 msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "<b>%1</b> дорожка была слишком короткой для скробблинга."
+msgstr[1] "<b>%1</b> дорожки были слишком короткими для скробблинга."
+msgstr[2] "<b>%1</b> дорожек были слишком короткими для скробблинга."
+msgstr[3] "<b>Одна</b> дорожка была слишком короткой для скробблинга."
 
 #: statsyncing/Process.cpp:284
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "<b>%1</b> дорожка имела недостаточно метаданных для скробблинга."
+msgstr[1] "<b>%1</b> дорожки имели недостаточно метаданных для скробблинга."
+msgstr[2] "<b>%1</b> дорожек имели недостаточно метаданных для скробблинга."
+msgstr[3] "<b>Одна</b> дорожка имела недостаточно метаданных для скробблинга."
 
 #: statsyncing/Process.cpp:288
 #, kde-format
 msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "<b>%1</b> дорожка была воспроизведена в будущем."
+msgstr[1] "<b>%1</b> дорожки были воспроизведены в будущем."
+msgstr[2] "<b>%1</b> дорожек были воспроизведены в будущем."
+msgstr[3] "<b>Одна</b> дорожка была воспроизведена в будущем."
 
 #: statsyncing/Process.cpp:292
 #, kde-format
@@ -15888,19 +15845,24 @@ msgid "<b>One</b> track was last played in too distant past to be scrobbled."
 msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
 msgstr[0] ""
+"<b>%1</b> дорожка была воспроизведена слишком давно для отправки в Last.fm."
 msgstr[1] ""
+"<b>%1</b> дорожки были воспроизведены слишком давно для отправки в Last.fm."
 msgstr[2] ""
+"<b>%1</b> дорожек были воспроизведены слишком давно для отправки в Last.fm."
 msgstr[3] ""
+"<b>Одна</b> дорожка была воспроизведена слишком давно для отправки в Last.fm."
 
 #: statsyncing/Process.cpp:296
 #, kde-format
 msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Скробблинг <b>%1</b> дорожки пропущен по настройкам пользователя."
+msgstr[1] "Скробблинг <b>%1</b> дорожек пропущен по настройкам пользователя."
+msgstr[2] "Скробблинг <b>%1</b> дорожек пропущен по настройкам пользователя."
 msgstr[3] ""
+"Скробблинг <b>одной</b> дорожки пропущен по настройкам пользователя."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
@@ -15921,18 +15883,20 @@ msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
 msgstr ""
+"В выбранной коллекции не поддерживается запись %1 — синхронизация не имеет "
+"смысла."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:17
 #, kde-format
 msgid "Select Collections to Synchronize"
-msgstr ""
+msgstr "Выбор коллекций для синхронизации"
 
 #. i18n: ectx: property (title), widget (QGroupBox, fieldsBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:49
 #, kde-format
 msgid "Select Fields to Synchronize"
-msgstr ""
+msgstr "Выбор полей для синхронизации"
 
 #: statsyncing/ui/ConfigureProviderDialog.cpp:35
 #, fuzzy, kde-format
@@ -15953,6 +15917,9 @@ msgid ""
 "synchronizing tracks with a file-based target always make sure that the "
 "database file is not currently in use!"
 msgstr ""
+"<span style=\"color:red; font-weight:bold;\">Важно:</span> перед "
+"синхронизацией дорожек с файловым устройством убедитесь, что файл базы "
+"данных в данный момент не используется!"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:60
 #, fuzzy, kde-format
@@ -15983,16 +15950,17 @@ msgid ""
 "There are no tracks unique to one of the sources participating in the "
 "synchronization"
 msgstr ""
+"Нет дорожек, уникальных для одного из источников, участвующих в синхронизации"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:151
 #, kde-format
 msgid "There are no tracks excluded from synchronization"
-msgstr ""
+msgstr "Нет дорожек, исключённых из синхронизации"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:155
 #, kde-format
 msgid "Expand Tracks With Conflicts"
-msgstr ""
+msgstr "Развернуть дорожки с конфликтами"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:157
 #, fuzzy, kde-format
@@ -16003,7 +15971,7 @@ msgstr "Дата истечения срока действия:"
 #: statsyncing/ui/MatchedTracksPage.cpp:163
 #, kde-format
 msgid "Collapse Tracks Without Conflicts"
-msgstr ""
+msgstr "Сворачивать дорожки без конфликтов"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:165
 #, fuzzy, kde-format
@@ -16014,24 +15982,24 @@ msgstr "Свернуть аплет"
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
 msgid "Reset All Ratings to Undecided"
-msgstr ""
+msgstr "Сбросить все рейтинги"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:194
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Include Labels from %1"
-msgstr ""
+msgstr "Включить метки из «%1»"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:198
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Exclude Labels from %1"
-msgstr ""
+msgstr "Исключить метки из «%1»"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
 msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
-msgstr ""
+msgstr "Сбросить все метки в состояние «Не решено» (не синхронизировать)"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
 #, fuzzy, kde-format
@@ -16048,27 +16016,27 @@ msgstr "&Записать теги"
 #: statsyncing/ui/MatchedTracksPage.cpp:230
 #, kde-format
 msgid "Tracks With Conflicts"
-msgstr ""
+msgstr "Композиции с конфликтами"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:239
 #, kde-format
 msgid "There are no tracks with conflicts"
-msgstr ""
+msgstr "Конфликтующих дорожек нет"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:245
 #, kde-format
 msgid "There are no tracks going to be updated"
-msgstr ""
+msgstr "Нет треков для обновления"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:272
 #, kde-format
 msgid "Tracks that are unique to their sources"
-msgstr ""
+msgstr "Композиции, уникальные для своих источников"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
 msgid "Tracks that have been excluded from synchronization due to ambiguity"
-msgstr ""
+msgstr "Композиции, исключённые из синхронизации из-за неоднозначности"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
 #, kde-format
@@ -16084,16 +16052,16 @@ msgstr[3] "<b>Одно</b> воспроизведение"
 msgctxt "%2 is the 'X plays message above'"
 msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%2 из <b>%1</b> трека будет отправлено в %3."
+msgstr[1] "%2 из <b>%1</b> треков будет отправлено в %3."
+msgstr[2] "%2 из <b>%1</b> треков будет отправлено в %3."
+msgstr[3] "%2 из <b>одного</b> трека будет отправлено в %3."
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
 msgctxt "%2 is the above '%1 track(s)' message"
 msgid "Showing %1 out of %2"
-msgstr ""
+msgstr "Показано %1 из %2"
 
 #. i18n: ectx: attribute (title), widget (QWidget, matchedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:21
@@ -16118,7 +16086,7 @@ msgstr "Удалить дорожки"
 #: statsyncing/ui/MatchedTracksPage.ui:84
 #, kde-format
 msgid "Affects all applicable tracks, not just shown ones"
-msgstr ""
+msgstr "Изменение всех подходящих дорожек, а не только отображаемых"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
@@ -16279,6 +16247,7 @@ msgstr "В данный момент недоступно на вашей сис
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
 msgstr ""
+"Целевая коллекция указывает, что этот формат не может быть воспроизведён."
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)
@@ -16286,7 +16255,7 @@ msgstr ""
 #: transcoding/TranscodingAssistantDialog.ui:226
 #, kde-format
 msgid "Transcode all tracks to the selected format"
-msgstr ""
+msgstr "Перекодировать все треки в выбранный формат"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeAllRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:229
@@ -16304,12 +16273,14 @@ msgid ""
 "Transcode tracks only when needed for playability in the destination "
 "collection"
 msgstr ""
+"Преобразовывать композиции только при необходимости для воспроизведения в "
+"целевой коллекции"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:242
 #, kde-format
 msgid "Transcode only when needed for playability"
-msgstr ""
+msgstr "Перекодировать только при необходимости для воспроизведения"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
@@ -16318,12 +16289,13 @@ msgstr ""
 #, kde-format
 msgid "Transcode only when source and destination file formats different"
 msgstr ""
+"Преобразовывать только при различии форматов исходного и конечного файлов"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:255
 #, kde-format
 msgid "Transcode only when source and destination formats are different"
-msgstr ""
+msgstr "Перекодировать только при разных форматах исходного файла и назначения"
 
 #. i18n: ectx: property (text), widget (QLabel, encoderNotFoundLabel)
 #: transcoding/TranscodingAssistantDialog.ui:265
@@ -16335,6 +16307,11 @@ msgid ""
 "for the next time</i> option in order to skip this dialog for future "
 "transfers."
 msgstr ""
+"<b>Примечание:</b> Нет доступных кодировщиков. Для преобразования дорожек "
+"установите пакет <i>ffmpeg</i> или <i>libav</i> (с обёрткой <i>ffmpeg</i>) с "
+"подходящими кодировщиками. В противном случае можно выбрать параметр "
+"<i>Запомнить этот выбор для следующих раз</i>, чтобы пропускать это окно при "
+"следующих передачах."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
@@ -16419,7 +16396,7 @@ msgstr "Скопировать адрес в буфер обмена"
 #: widgets/FilenameLayoutWidget.cpp:78
 #, kde-format
 msgid "Scheme"
-msgstr ""
+msgstr "Схема"
 
 #: widgets/FilenameLayoutWidget.cpp:84
 #, fuzzy, kde-format
