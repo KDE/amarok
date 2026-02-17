@@ -8597,19 +8597,15 @@ msgstr "&Заменить пробелы на «_» (нижнее подчёрк
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:54
-#, fuzzy, kde-format
-#| msgid "If checked, postfix artists' names starting with 'The' with ', The'."
+#, kde-format
 msgid "If checked, append ', The' to the artists' names starting with 'The'."
 msgstr ""
-"Имена исполнителей, начинающиеся на «The», станут оканчиваться на «, The »."
+"При включённом параметре имена исполнителей, начинающиеся на «The», станут "
+"оканчиваться на «The»."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:57
-#, fuzzy, kde-format
-#| msgid ""
-#| "If checked all artists that have the word \"The\" at the beginning will "
-#| "be treated as if the \"The\" was not there. Example, \"The Beatles\" "
-#| "would become \"Beatles, The\""
+#, kde-format
 msgid ""
 "If checked all artists starting with \"The\" will have it moved to the end. "
 "Example, \"The Beatles\" would become \"Beatles, The\""
@@ -8620,10 +8616,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:60
-#, fuzzy, kde-format
-#| msgid "I&gnore 'The' in artist names"
+#, kde-format
 msgid "&Append 'The' to artist names"
-msgstr "&Игнорировать «The» в именах исполнителей"
+msgstr "&Добавить «The» в именах исполнителей"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:75
@@ -8843,11 +8838,9 @@ msgid "None"
 msgstr "Нет"
 
 #: dialogs/TagDialog.cpp:995
-#, fuzzy, kde-format
-#| msgid "One track not playable on media device"
-#| msgid_plural "%1 tracks not playable on media device"
+#, kde-format
 msgid "The track is not playable. %1"
-msgstr "%1 дорожка не может быть воспроизведена с устройства"
+msgstr "Дорожка не может быть воспроизведена. %1"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, TagDialogBase)
 #: dialogs/TagDialogBase.ui:20
