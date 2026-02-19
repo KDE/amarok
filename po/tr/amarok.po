@@ -23,15 +23,15 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-01-19 10:24+0300\n"
-"Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
+"PO-Revision-Date: 2026-02-18 18:12+0300\n"
+"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.12.1\n"
+"X-Generator: Lokalize 25.12.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1922,7 +1922,7 @@ msgid ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and CDs."
 msgstr ""
-"Yerel müziğinizin yanı sıra taşınabilir müzik çalarlardan ve CD’lerden gelen "
+"Yerel müziğinizin yanı sıra taşınabilir müzikçalarlardan ve CD’lerden gelen "
 "müziği de burada bulacaksınız."
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:165 MainWindow.cpp:940
@@ -6985,7 +6985,7 @@ msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Advanced_Audio_Coding>Gelişmiş Ses "
 "Kodlama</a> (AAC), sayısal ses için patentli bir kayıplı kodlayıcı "
 "bileşenidir.<br> AAC, genellikle benzer bit hızlarında MP3’den daha iyi bir "
-"ses kalitesine ulaşır. iPod ve diğer taşınabilir müzik çalarlar için makul "
+"ses kalitesine ulaşır. iPod ve diğer taşınabilir müzikçalarlar için makul "
 "bir seçimdir."
 
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
@@ -7006,7 +7006,7 @@ msgid ""
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Apple_Lossless>Apple Kayıpsız</a> "
 "(ALAC), sayısal müzikte kayıpsız sıkıştırma için kullanılan bir ses "
-"kodlayıcısıdır.<br>Yalnızca Apple müzik çalarlar ve FLAC’i desteklemeyen "
+"kodlayıcısıdır.<br>Yalnızca Apple müzikçalarlar ve FLAC’i desteklemeyen "
 "çalarlar için önerilir."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:30
@@ -7112,7 +7112,7 @@ msgstr ""
 "<a href=http://en.wikipedia.org/wiki/MP3>MPEG Ses Katmanı 3</a> (MP3), "
 "kayıplı bir veri sıkıştırma biçimini kullanan patentli bir sayısal ses "
 "kodlayıcısı bileşenidir.<br>Eksiklerine rağmen, tüketicilerin ses depolaması "
-"için ortak bir biçimdir ve taşınabilir müzik çalarlarda yaygın olarak "
+"için ortak bir biçimdir ve taşınabilir müzikçalarlarda yaygın olarak "
 "desteklenir."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:28
@@ -7219,7 +7219,7 @@ msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Vorbis>Ogg Vorbis</a>, kayıplı ses "
 "sıkıştırması için açık ve özgür bir ses kodlayıcısıdır.<br> Eşdeğerinde "
 "MP3’den daha küçük dosyalar veya daha yüksek kaliteli dosyalar üretir. Ogg "
-"Vorbis, özellikle onu destekleyen taşınabilir müzik çalarlar için mükemmel "
+"Vorbis, özellikle onu destekleyen taşınabilir müzikçalarlar için mükemmel "
 "bir seçimdir."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:28
@@ -7266,7 +7266,7 @@ msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Windows_Media_Audio>Windows Media "
 "Audio</a> (WMA), Microsoft tarafından kayıplı ses sıkıştırması için "
 "geliştirilen özel bir kodlayıcı bileşenidir. Yalnızca Ogg Vorbis’i "
-"desteklemeyen taşınabilir müzik çalarlar için önerilir."
+"desteklemeyen taşınabilir müzikçalarlar için önerilir."
 
 #: core/transcoding/TranscodingConfiguration.cpp:110
 #, kde-format
@@ -9762,7 +9762,7 @@ msgstr "Bu parça için kullanılabilir bilgi yok"
 #: main.cpp:57
 #, kde-format
 msgid "The audio player by KDE"
-msgstr "KDE tarafından yapılmış ses çalar"
+msgstr "KDE tarafından yapılmış sesçalar"
 
 #: main.cpp:59
 #, kde-format
@@ -15721,7 +15721,7 @@ msgid ""
 msgstr ""
 "Kopyalama sırasında müzik dosyalarınızı bir kodlayıcı (kodek) kullanarak "
 "başka bir biçime dönüştürmeyi seçebilirsiniz. Bu, yerden tasarruf etmek veya "
-"dosyalarınızı taşınabilir bir müzik çalar veya belirli bir yazılım programı "
+"dosyalarınızı taşınabilir bir müzikçalar veya belirli bir yazılım programı "
 "tarafından okunabilir hale getirmek için yapılabilir."
 
 #: transcoding/TranscodingAssistantDialog.cpp:70
@@ -15745,7 +15745,7 @@ msgid ""
 msgstr ""
 "Taşıma yaparken müzik dosyalarınızı bir kodlayıcı (kodek) kullanarak başka "
 "bir biçime dönüştürmeyi seçebilirsiniz. Bu, yerden tasarruf etmek veya "
-"dosyalarınızı taşınabilir bir müzik çalar veya belirli bir yazılım programı "
+"dosyalarınızı taşınabilir bir müzikçalar veya belirli bir yazılım programı "
 "tarafından okunabilir hale getirmek için yapılabilir. Başarıyla arakodlanan "
 "dosyalar özgün konumlarından kaldırılacaktır."
 
