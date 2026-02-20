@@ -118,7 +118,7 @@
     <p xml:lang="sk">Amarok je bezplatný, multiplatformový, všestranný, výkonný a funkčne bohatý prehrávač hudby a správca hudobných zbierok.</p>
     <p xml:lang="sl">Amarok je prost program, dostopen na več platformah, vsestranski, močan in s funkcijami nabil predvajalnik glasbe in upravljalnik glasbene zbirke.</p>
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
-    <p xml:lang="tr">Amarok; ücretsiz, çapraz platformlu, çok amaçlı, güçlü ve çok özellikli bir müzik çalar ve koleksiyon yöneticisidir.</p>
+    <p xml:lang="tr">Amarok; ücretsiz, çapraz platformlu, çok amaçlı, güçlü ve çok özellikli bir müzikçalar ve koleksiyon yöneticisidir.</p>
     <p xml:lang="uk">Amarok — вільна, універсальна, різнобічна та потужна програма для відтворення звукових даних та керування фонотеками.</p>
     <p xml:lang="zh-CN">Amarok 是一个自由、跨平台、多用途、强大且多功能的音乐播放器及收藏集管理器。</p>
     <p xml:lang="zh-TW">Amarok 是款自由、跨平台、多功能且強大的音樂播放和收藏管理器。</p>
@@ -285,7 +285,7 @@
       <li xml:lang="sr-ijekavian">Подршка за основне МТП и УМС музичке плејере, и и‑под.</li>
       <li xml:lang="sr-ijekavianlatin">Podrška za osnovne MTP i UMS muzičke plejere, i iPod.</li>
       <li xml:lang="sv">Stöd för grundläggande iPod-, MTP- och UMS-musikspelare</li>
-      <li xml:lang="tr">Temel iPod, MTP ve UMS müzik çalar aygıtlar desteği</li>
+      <li xml:lang="tr">Temel iPod, MTP ve UMS müzikçalar aygıtlar desteği</li>
       <li xml:lang="uk">підтримка базової роботи з пристроями відтворення, що працюють за протоколами iPod, MTP та UMS;</li>
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
       <li xml:lang="zh-TW">支援基本的 iPod、MTP 和 UMS 音樂播放裝置</li>
@@ -510,7 +510,7 @@
       <caption xml:lang="ru">Окно проигрывателя Amarok 3.1 с изменённой компоновкой</caption>
       <caption xml:lang="sl">Okno predvajalnika Amarok 3.1 postavitvijo po meri</caption>
       <caption xml:lang="sv">Amarok 3.1 spelarfönster med en egen layout</caption>
-      <caption xml:lang="tr">Özelleştirilmiş bir yerleşimle gösterilen Amarok 3.1 müzik çaları</caption>
+      <caption xml:lang="tr">Özelleştirilmiş bir yerleşimle gösterilen Amarok 3.1 müzikçalar</caption>
       <caption xml:lang="uk">Вікно програвача Amarok 3.1 із нетиповим компонуванням</caption>
       <caption xml:lang="zh-CN">带有自定义布局的 Amarok 3.1 播放器窗口</caption>
       <caption xml:lang="zh-TW">Amarok 3.1 播放器視窗，已自訂配置</caption>
