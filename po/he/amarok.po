@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-02-02 21:19+0200\n"
+"PO-Revision-Date: 2026-02-27 12:04+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -7612,7 +7612,7 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:68
 #, kde-format
 msgid "Full rescan"
-msgstr ""
+msgstr "סריקה מלא מחדש"
 
 #: dialogs/CollectionSetup.cpp:69
 #, kde-format
@@ -7670,7 +7670,7 @@ msgstr "ייבוא הגדרות"
 #: dialogs/DatabaseImporterDialog.cpp:67
 #, kde-format
 msgid "Migrating"
-msgstr ""
+msgstr "הסבה"
 
 #: dialogs/DatabaseImporterDialog.cpp:99
 #, kde-format
@@ -9691,7 +9691,7 @@ msgstr "בנייה ל־Windows ‏(TheOneRing)"
 #: main.cpp:104
 #, kde-format
 msgid "Rick W. Chen"
-msgstr ""
+msgstr "ריק ו. צ׳ן"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:105
@@ -10827,7 +10827,7 @@ msgstr "להחיל את השינויים לפריסה?"
 #: musicbrainz/MusicBrainzTagsModel.cpp:157
 #, kde-format
 msgid "MusicBrainz match ratio: %1%"
-msgstr ""
+msgstr "יחס התאמה מול MusicBrainz:‏ %1%"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -10931,11 +10931,10 @@ msgstr ""
 "קה״צ"
 
 #: playback/PowerManager.cpp:99
-#, fuzzy, kde-format
-#| msgid "Scanning music"
+#, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
-msgstr "סורק מוזיקה"
+msgstr "השמעת מוזיקה"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -12996,7 +12995,7 @@ msgctxt ""
 "the user's 'database version' is newer and unsupported by this software "
 "version"
 msgid "Future version of Playlist Database?"
-msgstr ""
+msgstr "גרסה עתידית של מסד נתוני רשימות הנגינה?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 #, kde-format
@@ -13006,7 +13005,7 @@ msgstr "מסד הנתונים של Amarok"
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 #, kde-format
 msgid "Local playlists stored in the database"
-msgstr ""
+msgstr "רשימות נגינה מקומיות מאוחסנות במסד הנתונים"
 
 #: playlistmanager/SyncedPlaylist.cpp:43 playlistmanager/SyncedPlaylist.cpp:51
 #, kde-format
@@ -13017,7 +13016,7 @@ msgstr "<ריקה>"
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
-msgstr ""
+msgstr "Amarok לא הצליח למצוא תוספים כלשהם. זה מעיד על בעיה בהתקנה."
 
 #: scanner/AbstractScanResultProcessor.cpp:66
 #, kde-format
@@ -13032,7 +13031,7 @@ msgstr ""
 #: scanner/GenericScannerJob.cpp:146
 #, kde-format
 msgid "Aborting scanner with error: %1"
-msgstr ""
+msgstr "הסורק מבוטל עם שגיאה: %1"
 
 #: scanner/GenericScannerJob.cpp:207
 #, kde-format
