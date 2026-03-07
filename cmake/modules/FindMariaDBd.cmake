@@ -40,6 +40,8 @@ if(MYSQLCONFIG_EXECUTABLE)
 
     if ("${MC_return_embedded}" STREQUAL "0")
         set(MARIADBD_LIBRARIES ${MC_MYSQLE_LIBRARIES})
+        # some bug might cause broken bits to be present in mysql_conf --libmysqld-libs output, clean them up
+        string(REPLACE " -%%LOCALBASE%%/lib" "" MARIADBD_LIBRARIES "${MARIADBD_LIBRARIES}")
     endif()
 endif()
 
