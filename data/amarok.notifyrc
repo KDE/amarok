@@ -258,6 +258,6 @@ Comment[sr@latin]=Amarok je izdao opštu tekstualnu poruku
 Comment[sv]=Amarok skickade ett okategoriserat textmeddelande
 Comment[tr]=Amarok kategorilenmemiş bir metin iletisi oluşturdu
 Comment[uk]=Програмою Amarok надіслано текстове повідомлення, що не належить до певної категорії
-Comment[zh_CN]=Amarok 发出了一条未分类的文字消息
+Comment[zh_CN]=Amarok 发出了一条未分类的文本消息
 Comment[zh_TW]=Amarok 發出了一個未分類的文字訊息
 Action=Popup
