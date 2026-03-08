@@ -628,7 +628,7 @@ msgid ""
 "scheme, in advanced mode the images are replaced with text."
 msgstr ""
 "在基础模式下，您可以可视化地拖放指代词来创建文件命名规则；在高级模式下，指代"
-"词按钮会被文字替代。"
+"词按钮会被文本替代。"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:189
@@ -890,7 +890,7 @@ msgstr "OSD 的字体颜色"
 msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
-msgstr "OSD 文字的颜色。颜色应以逗号分隔，按 RGB 填写 0 至 255 之间的三个数。"
+msgstr "OSD 文本的颜色。颜色应以逗号分隔，按 RGB 填写 0 至 255 之间的三个数。"
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:335
