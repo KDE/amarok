@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-02-18 18:12+0300\n"
+"PO-Revision-Date: 2026-03-09 21:37+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -2808,7 +2808,7 @@ msgid ""
 "integrates directly into Amarok. Amarok ships with a number of these "
 "sources, but many more can be added using scripts."
 msgstr ""
-"İnternet tarayıcısı, doğrudan Amarok’a tümleşen çevrimiçi içerik "
+"İnternet tarayıcısı, doğrudan Amarok’a tümleşen çevrim içi içerik "
 "kaynaklarına göz atmanızı sağlar. Amarok bu kaynakların bir kısmıyla "
 "birlikte gelir; ancak betikler kullanılarak çok daha fazlası eklenebilir."
 
@@ -10649,7 +10649,7 @@ msgstr "İnternet"
 #: MainWindow.cpp:274
 #, kde-format
 msgid "Online sources of content"
-msgstr "Çevrimiçi içerik kaynakları"
+msgstr "Çevrim içi içerik kaynakları"
 
 #: MainWindow.cpp:280
 #, kde-format
@@ -13596,7 +13596,7 @@ msgstr "gpodder.net: Pod Yayını Dizini Hizmeti"
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr ""
-"gpodder.net, çevrimiçi bir pod yayını dizini ve eşzamanlama hizmetidir."
+"gpodder.net, çevrim içi bir pod yayını dizini ve eşzamanlama hizmetidir."
 
 #: services/gpodder/GpodderService.cpp:225
 #: services/opmldirectory/OpmlDirectoryService.cpp:130
@@ -13989,10 +13989,10 @@ msgid ""
 "friends"
 msgstr ""
 "Last.fm, kişisel radyo istasyonları ve müzik önerileri sunan popüler bir "
-"çevrimiçi hizmettir. Kişisel bir dinleme istasyonu, dinleme alışkanlıklarına "
-"göre uyarlanır ve size yeni müzik önerileri sunar. Belirli bir sanatçıya "
-"benzer müzik içeren istasyonları çalmanın yanı sıra, arkadaş olarak "
-"eklediğiniz akışları dinlemeniz de olanaklıdır"
+"çevrim içi hizmettir. Kişisel bir dinleme istasyonu, dinleme "
+"alışkanlıklarına göre uyarlanır ve size yeni müzik önerileri sunar. Belirli "
+"bir sanatçıya benzer müzik içeren istasyonları çalmanın yanı sıra, arkadaş "
+"olarak eklediğiniz akışları dinlemeniz de olanaklıdır"
 
 #: services/lastfm/LastFmService.cpp:127 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
@@ -14801,7 +14801,7 @@ msgstr "Kapat"
 #: services/magnatune/MagnatuneStore.cpp:105
 #, kde-format
 msgid "\"Fair trade\" online music store"
-msgstr "“Adil Ticaret” çevrimiçi müzik marketi"
+msgstr "“Adil Ticaret” çevrim içi müzik marketi"
 
 #: services/magnatune/MagnatuneStore.cpp:109
 #, no-c-format, kde-format
@@ -15080,7 +15080,7 @@ msgid ""
 "Online music locker where you can safely store and access your music: http://"
 "mp3tunes.com"
 msgstr ""
-"Müziğinizi güvenle saklayabileceğiniz ve erişebileceğiniz çevrimiçi müzik "
+"Müziğinizi güvenle saklayabileceğiniz ve erişebileceğiniz çevrim içi müzik "
 "dolabı: http://mp3tunes.com"
 
 #: services/mp3tunes/Mp3tunesService.cpp:108
@@ -15253,7 +15253,7 @@ msgstr "Şu anda %1 adlı bir hizmet yüklü değil"
 #: statsyncing/Config.cpp:100
 #, kde-format
 msgid "This collection is currently offline"
-msgstr "Bu koleksiyon şu anda çevrimdışı"
+msgstr "Bu koleksiyon şu anda çevrim dışı"
 
 #: statsyncing/Controller.cpp:112
 #, kde-format
