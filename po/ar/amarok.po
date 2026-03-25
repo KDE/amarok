@@ -14731,12 +14731,12 @@ msgstr "من Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:164
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
-msgstr "يُحَمِّل الصفحة الرئيسية لـ Magnatune.com..."
+msgstr "يُحَمِّل الصفحة الرئيسة لـ Magnatune.com..."
 
 #: services/magnatune/MagnatuneInfoParser.cpp:167
 #, kde-format
 msgid "Fetching Magnatune.com front page"
-msgstr "يَجلُب الصفحة الرئيسية لـ Magnatune.com"
+msgstr "يَجلُب الصفحة الرئيسة لـ Magnatune.com"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:178
 #: services/magnatune/MagnatuneInfoParser.cpp:192
