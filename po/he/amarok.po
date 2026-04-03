@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-02-27 12:04+0200\n"
+"PO-Revision-Date: 2026-04-02 10:22+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 25.12.1\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -5334,12 +5334,12 @@ msgstr ""
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:95
 #, kde-format
 msgid "Do you want to remove empty folders?"
-msgstr ""
+msgstr "להסיר תיקיות ריקות?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:96
 #, kde-format
 msgid "Remove empty folders?"
-msgstr ""
+msgstr "להסיר תיקיות ריקות?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
 #, kde-format
@@ -5351,7 +5351,7 @@ msgstr "הסרה"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "לא להסיר"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -5379,7 +5379,7 @@ msgstr "היום"
 #: core-impl/collections/support/TextualQueryFilter.cpp:293
 #, kde-format
 msgid "last week"
-msgstr ""
+msgstr "שבוע שעבר"
 
 #: core-impl/collections/support/TextualQueryFilter.cpp:295
 #, kde-format
@@ -5389,7 +5389,7 @@ msgstr "חודש שעבר"
 #: core-impl/collections/support/TextualQueryFilter.cpp:297
 #, kde-format
 msgid "two months ago"
-msgstr ""
+msgstr "לפני חודשיים"
 
 #: core-impl/collections/support/TextualQueryFilter.cpp:299
 #, kde-format
@@ -5551,12 +5551,12 @@ msgstr "שידור־זורם (%1)"
 #: core-impl/meta/timecode/TimecodeMeta.cpp:83
 #, kde-format
 msgid "Url is not a local file"
-msgstr ""
+msgstr "כתובת URL היא לא קובץ מקומי"
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:62
 #, kde-format
 msgid "Could not create a temporary file to download playlist."
-msgstr ""
+msgstr "לא ניתן ליצור קובץ זמני להורדת רשימת נגינה."
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:70
 #, kde-format
@@ -5630,7 +5630,7 @@ msgstr "הגדרות הסכת"
 #: services/opmldirectory/AddOpmlWidget.ui:65
 #, kde-format
 msgid "URL:"
-msgstr ""
+msgstr "כתובת:"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -5748,10 +5748,10 @@ msgstr "הגדר %1"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "פריט"
+msgstr[1] "שני פריטים"
+msgstr[2] "%v פריטים"
+msgstr[3] "%v פריטים"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5877,7 +5877,7 @@ msgstr[3] ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
 msgid "Cancel Download and Quit."
-msgstr ""
+msgstr "ביטול ההורדה ולצאת."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1160
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
@@ -6090,12 +6090,12 @@ msgstr "הקובץ לא קיים"
 #: core/meta/Meta.cpp:218
 #, kde-format
 msgid "Not a file"
-msgstr ""
+msgstr "לא קובץ"
 
 #: core/meta/Meta.cpp:220
 #, kde-format
 msgid "No read permissions"
-msgstr ""
+msgstr "אין הרשאות קריאה"
 
 #: core/meta/Meta.cpp:352
 #, kde-format
@@ -6524,15 +6524,14 @@ msgid "m:ss"
 msgstr ""
 
 #: core/meta/support/MetaUtility.cpp:427
-#, fuzzy, kde-format
-#| msgid " plays"
+#, kde-format
 msgctxt "number of days with spacing for the pretty time"
 msgid "%1 day, "
 msgid_plural "%1 days, "
-msgstr[0] "סידור %1"
-msgstr[1] "סידור %1"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "יום, "
+msgstr[1] "יומיים, "
+msgstr[2] "%1 ימים, "
+msgstr[3] "%1 ימים, "
 
 #: core/meta/support/MetaUtility.cpp:428
 #, kde-format
@@ -6540,74 +6539,68 @@ msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
-msgstr ""
+msgstr "h:mm:ss"
 
 #: core/meta/support/MetaUtility.cpp:442
-#, fuzzy, kde-format
-#| msgid "year"
+#, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "שנה"
-msgstr[1] "שנה"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שנתיים"
+msgstr[2] "%1 שנים"
+msgstr[3] "%1 שנים"
 
 #: core/meta/support/MetaUtility.cpp:444
-#, fuzzy, kde-format
-#| msgid "Months"
+#, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
 msgid_plural "%1 months"
-msgstr[0] "חודשים"
-msgstr[1] "חודשים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "חודש"
+msgstr[1] "חודשיים"
+msgstr[2] "%1 חודשים"
+msgstr[3] "%1 חודשים"
 
 #: core/meta/support/MetaUtility.cpp:446
-#, fuzzy, kde-format
-#| msgid " plays"
+#, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
 msgid_plural "%1 days"
-msgstr[0] "סידור %1"
-msgstr[1] "סידור %1"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "יום"
+msgstr[1] "יומיים"
+msgstr[2] "%1 ימים"
+msgstr[3] "%1 ימים"
 
 #: core/meta/support/MetaUtility.cpp:448
-#, fuzzy, kde-format
-#| msgid "Hours"
+#, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
 msgid_plural "%1 hours"
-msgstr[0] "שעות"
-msgstr[1] "שעות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "שעה"
+msgstr[1] "שעתיים"
+msgstr[2] "%1 שעות"
+msgstr[3] "%1 שעות"
 
 #: core/meta/support/MetaUtility.cpp:450
-#, fuzzy, kde-format
-#| msgid "Minutes"
+#, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] "דקות"
-msgstr[1] "דקות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "דקה"
+msgstr[1] "שתי דקות"
+msgstr[2] "%1 דקות"
+msgstr[3] "%1 דקות"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: core/meta/support/MetaUtility.cpp:452
-#, fuzzy, kde-format
-#| msgid "Seconds"
+#, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
 msgid_plural "%1 seconds"
-msgstr[0] "שניות"
-msgstr[1] "שניות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "שנייה"
+msgstr[1] "שתי שניות"
+msgstr[2] "%1 שניות"
+msgstr[3] "%1 שניות"
 
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
@@ -15048,7 +15041,7 @@ msgstr ""
 #: statsyncing/Process.cpp:230
 #, kde-format
 msgid "Synchronizing Track Statistics"
-msgstr ""
+msgstr "סטטיסטיקת הרצועות מסתנכרנת"
 
 #: statsyncing/Process.cpp:258
 #, kde-format
