@@ -20,8 +20,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 21.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -436,10 +436,7 @@ msgstr "Či ukazovať obrázky pozadia v paneli prehliadača"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
@@ -483,6 +480,8 @@ msgstr "Ak je nastavené, kontextové applety sa zbalia použitím animácie."
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Zobraziť interpreta skladby v prehliadači kolekcií, ak sa líši od interpreta "
+"albumu"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -491,6 +490,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Explicitne zobraziť interpreta v prehliadači kolekcií pre albumy rôznych "
+"interpretov a skladby, kde sa interpret líši od interpreta albumu."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -762,8 +763,7 @@ msgstr "Ak je povolené, zásuvný modul ekvalizéra filtruje zvukový stream."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr "Hodnota predzosilenia ekvalizéra, rozsah -100..100, 0 je normálna."
 
@@ -1188,15 +1188,13 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
 msgstr "Odoslať informácie o prehraných piesňach"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
 msgstr "Odosielať informácie o prehraných piesňach na Audioscrobbler"
 
@@ -1251,8 +1249,7 @@ msgstr "Získať podobných umelcov"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
 msgstr "Získavať podobné piesne z Audioscrobbleru"
 
@@ -1833,12 +1830,14 @@ msgid ""
 "Invalid Last.fm session key. Please reconnect your Last.fm account in Plugin "
 "Settings."
 msgstr ""
+"Neplatný kľúč relácie Last.fm. Znovu pripojte svoj účet Last.fm v "
+"nastaveniach modulov."
 
 #: App.cpp:613
 #, kde-format
 msgctxt "Error message box title"
 msgid "Last.fm session key error"
-msgstr ""
+msgstr "Chyba kľúča relácie Last.fm"
 
 #: App.cpp:674
 #, kde-format
@@ -1850,15 +1849,13 @@ msgstr ""
 "Chcete tieto nastavenia použiť ako priečinok pre kolekciu?"
 
 #: App.cpp:676
-#, fuzzy, kde-format
-#| msgid "Collection Folders"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
 msgstr "Priečinky kolekcie"
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
 msgstr "Používateľ"
@@ -1867,7 +1864,7 @@ msgstr "Používateľ"
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Don't use"
-msgstr ""
+msgstr "Nepoužívať"
 
 #: browsers/BrowserBreadcrumbItem.cpp:68
 #, kde-format
@@ -1928,9 +1925,7 @@ msgid "Added This Month"
 msgstr "Pridané tento mesiac"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
 msgstr "Prvýkrát prehrávané"
@@ -1970,8 +1965,7 @@ msgid "Show Track Numbers"
 msgstr "Zobraziť čísla skladieb"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
 msgstr "Ukazovať pod rôznymi umelcami"
@@ -2363,8 +2357,7 @@ msgid "Duplicates"
 msgstr "Duplikáty"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
 msgstr "Povoliť duplicitné piesne vo výsledku"
@@ -2573,24 +2566,20 @@ msgstr[1] "Odstrániť %1 skladby z %2"
 msgstr[2] "Odstrániť %1 skladieb z %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:464
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Odstrániť zoznam skladieb z %1."
+msgstr "Odstrániť zoznam skladieb <i>%1</i> z %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:466
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Odstrániť zoznam skladieb z %1."
+msgstr "Odstrániť %1 zoznamov skladieb z %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
@@ -3368,10 +3357,7 @@ msgstr "Zapísať metadáta do súboru"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
@@ -3613,8 +3599,7 @@ msgid "Use &system notifications"
 msgstr "Použiť systémové upozornenia"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:36
-#, fuzzy, kde-format
-#| msgid "Current Phonon backend does not support volume fading"
+#, kde-format
 msgid "Current audio backend does not support volume fading"
 msgstr "Aktuálny Phonon backend nepodporuje zoslabovanie hlasitosti"
 
@@ -4251,9 +4236,7 @@ msgid "Width"
 msgstr "Šírka"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
 msgstr "od <b>%1</b>"
@@ -4262,7 +4245,7 @@ msgstr "od <b>%1</b>"
 #, kde-format
 msgctxt "Artist's listener and playcount from Last.fm"
 msgid "%1 listeners<br>%2 plays"
-msgstr ""
+msgstr "%1 poslucháčov<br>%2 prehratí"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:85
 #, kde-format
@@ -4270,7 +4253,7 @@ msgctxt ""
 "Number of user's own scrobbles of an artist on Last.fm, appended to previous "
 "string if not 0"
 msgid "<br>%1 plays by you"
-msgstr ""
+msgstr "<br>%1 prehratí od vás"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4422,8 +4405,7 @@ msgid "Next"
 msgstr "Ďalej"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
 msgstr "Aktualizovať databázu Magnatune automaticky"
@@ -4436,15 +4418,13 @@ msgid "Track"
 msgstr "Skladba"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
 msgstr "Kopírovať do schránky"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
 msgstr "Kopírovať do schránky"
@@ -4464,17 +4444,13 @@ msgid "No information found..."
 msgstr "Nenájdená žiadna informácia..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
 msgstr ".*\\(.*(umelec|skupina).*\\))"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
 msgstr ".*\\(.*(skladateľ|hudobník).*\\))"
@@ -4508,7 +4484,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Kliknutím otvoríte %1 vo webovom prehliadači"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -5525,8 +5501,7 @@ msgid "Remove empty folders?"
 msgstr "Odstrániť prázdne priečinky?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "Odstrániť"
@@ -5535,7 +5510,7 @@ msgstr "Odstrániť"
 #, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Neodstraňovať"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -5939,9 +5914,9 @@ msgstr "Nastaviť %1"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%v položka"
+msgstr[1] "%v položky"
+msgstr[2] "%v položiek"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6016,16 +5991,13 @@ msgid "Already subscribed to %1."
 msgstr "%1 už odoberáte."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1 minúta"
-msgstr[1] "%1 minúty"
-msgstr[2] "%1 minút"
+msgstr[0] "každú %v minútu"
+msgstr[1] "každé %v minúty"
+msgstr[2] "každých %v minút"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -8018,18 +7990,7 @@ msgid "No"
 msgstr "Nie"
 
 #: dialogs/DiagnosticDialog.cpp:114
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7, %8)\n"
-#| "   PulseAudio: %9\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8042,13 +8003,11 @@ msgid ""
 msgstr ""
 "%1 Diagnostika\n"
 "\n"
-"Základné informácie:\n"
+"Všeobecné informácie:\n"
 "   %1 Verzia: %2\n"
-"   Verzia KDE Frameworks: %3\n"
-"   Verzia Qt: %4\n"
-"   Verzia Phonon: %5\n"
-"   Phonon Backend: %6 (%7, %8)\n"
-"   PulseAudio: %9\n"
+"   KDE Frameworks Verzia: %3\n"
+"   Qt Verzia: %4\n"
+"   GStreamer: %5\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:125
@@ -8130,6 +8089,8 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"dB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
@@ -8824,8 +8785,7 @@ msgstr "Naposledy prehrávané:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
 msgstr "pridané do kolekcie"
 
@@ -9861,10 +9821,7 @@ msgid "The audio player by KDE"
 msgstr "Audio prehrávač od KDE"
 
 #: main.cpp:59
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2025, The Amarok Development Squad"
@@ -9873,15 +9830,7 @@ msgstr ""
 "(C) 2003-2013, Skupina vývojárov aplikácie Amarok"
 
 #: main.cpp:60
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok\n"
@@ -10882,8 +10831,7 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "Upraviť podrobnosti aktuálne vybranej skladby"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
@@ -10891,8 +10839,7 @@ msgid "Seek Forward by %1"
 msgstr "Hľadať dopredu o %1 sekúnd"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
@@ -11199,23 +11146,21 @@ msgid ""
 "%1\n"
 "Hz"
 msgstr ""
+"%1\n"
+"Hz"
 
 #: playback/EqualizerController.cpp:84
-#, fuzzy, kde-format
-#| msgid ""
-#| "%0\n"
-#| "kHz"
+#, kde-format
 msgctxt "label for equalizer band frequency"
 msgid ""
 "%1\n"
 "kHz"
 msgstr ""
-"%0\n"
+"%1\n"
 "kHz"
 
 #: playback/PowerManager.cpp:99
-#, fuzzy, kde-format
-#| msgid "Scanning music"
+#, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
 msgstr "Prehľadávanie hudby"
@@ -11980,8 +11925,7 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Skladby boli skryté kvôli aktívnemu vyhľadávaniu."
 
 #: playlist/view/listview/PrettyListView.cpp:700
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
 msgstr "Sem pridať niekoľko piesní pretiahnutím zovšadiaľ okolo."
@@ -12162,11 +12106,7 @@ msgstr "Pozícia:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
@@ -13483,8 +13423,7 @@ msgid "Remove Script"
 msgstr "Odstrániť skript"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Odstrániť"
@@ -13493,7 +13432,7 @@ msgstr "Odstrániť"
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
-msgstr ""
+msgstr "Neodstraňovať"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:498
 #, kde-format
@@ -13504,9 +13443,7 @@ msgstr "Ste si absolútne istí?"
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "Áno"
@@ -13515,9 +13452,7 @@ msgstr "Áno"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "Nie"
@@ -13533,14 +13468,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Script %1 je už teraz vyhodnocovaný viac ako 5 sekúnd, ukončiť?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:339
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 is the name of the offending script, %2 the name of the script author, "
-#| "and %3 the author's email"
-#| msgid ""
-#| "The script %1 uses deprecated scripting API calls. Please contact the "
-#| "script author, %2 at %3, and ask him to upgrade it before the next Amarok "
-#| "release."
+#, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
 "emails"
@@ -13548,9 +13476,9 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "authors, %2, and ask them to upgrade it before the next Amarok release."
 msgstr ""
-"Skript %1 používa zastarané volanie skriptovacieho API. Prosím, obráťte sa "
-"na autora skriptu, %2 v %3, a požiadajte ho, aby ho inovoval pred ďalším "
-"vydaním Amarok."
+"Skript %1 používa zastarané volania skriptovacieho API. Kontaktujte prosím "
+"autorov skriptu, %2, a požiadajte ich o aktualizáciu pred ďalším vydaním "
+"Amaroku."
 
 #: scripting/scriptmanager/ScriptManager.cpp:276
 #, kde-format
@@ -14005,42 +13933,35 @@ msgstr "Profil Last.fm"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
-msgstr "Používateľské meno:"
+msgstr "Užívateľské meno:"
 
 #. i18n: ectx: property (text), widget (QPushButton, connectToAccount)
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:226
 #: services/lastfm/LastFmServiceSettings.cpp:250
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
 msgstr "Pripojenie zlyhalo"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:278
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "Nepotrebné"
+msgstr "Not connected"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
-#, fuzzy, kde-format
-#| msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to Last.fm</a>"
+#, kde-format
 msgid "<a href=\"https://www.last.fm/join\">Sign up to Last.fm</a>"
 msgstr ""
 "<a href=\"http://www.last.fm:80/signup.php\">Zaregistrovať sa na Last.fm</a>"
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
 msgstr "&Odpojiť zariadenie"
 
@@ -14198,20 +14119,21 @@ msgid ""
 "Error migrating Last.fm username from KWallet. Please reconnect your Last.fm "
 "account in Plugin Settings."
 msgstr ""
+"Chyba: migrating Last.fm username from KWallet. Please reconnect your Last."
+"fm account in Plugin Settings."
 
 #: services/lastfm/LastFmServiceSettings.cpp:91
 #, kde-format
 msgid "Do you want to disconnect Amarok from Last.fm account %1?"
-msgstr ""
+msgstr "Naozaj chcete disconnect Amarok from Last.fm account %1?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
 #, kde-format
 msgid "Disconnect Last.fm account?"
-msgstr ""
+msgstr "Odpojiť účet Last.fm?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
 msgstr "&Odpojiť zariadenie"
@@ -14225,8 +14147,7 @@ msgid "Failed"
 msgstr "Zlyhalo"
 
 #: services/lastfm/LastFmServiceSettings.cpp:145
-#, fuzzy, kde-format
-#| msgid "Open Last.fm webpage for this event"
+#, kde-format
 msgctxt "Last.fm authentication process status"
 msgid "Opening Last.fm web page"
 msgstr "Otvoriť webovú stránku Last.fm pre túto udalosť"
@@ -14235,7 +14156,7 @@ msgstr "Otvoriť webovú stránku Last.fm pre túto udalosť"
 #, kde-format
 msgctxt "Pushbutton to complete Last.fm authentication process"
 msgid "Finish connecting account"
-msgstr ""
+msgstr "Dokončiť pripojenie účtu"
 
 #: services/lastfm/LastFmServiceSettings.cpp:188
 #, kde-format
@@ -14244,6 +14165,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
+"Pripojenie účtu Last.fm nebolo úspešné. Uistite sa, že ste na webovej "
+"stránke Last.fm autorizovali Amarok na pripojenie k vášmu účtu Last.fm that "
+"was opened and try again."
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -15006,13 +14930,7 @@ msgid "Updating the local Magnatune database."
 msgstr "Aktualizujem miestnu databázu Magnatune."
 
 #: services/magnatune/MagnatuneStore.cpp:620
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Magnatune.com service accepts the following messages: \n"
-#| "\n"
-#| "\taddMoodyTracks mood count: Adds a number of random tracks with the "
-#| "specified mood to the playlist. The mood argument must have spaces "
-#| "escaped with %%20"
+#, kde-format
 msgid ""
 "The Magnatune.com service accepts the following messages: \n"
 "\n"
@@ -15022,10 +14940,8 @@ msgid ""
 msgstr ""
 "Služba Magnatune.com prijíma nasledujúce správy: \n"
 "\n"
-"\taddMoodyTracks mood count (pridať skladby podľa nálady nálada počet): "
-"Pridá do zoznamu skladieb určitý počet náhodných skladieb so stanovenou "
-"náladou. Nezávisle premenná nálady, jej argument, musí mať medzery medzi "
-"slovami s %%20"
+"\taddMoodyTracks mood count: Pridá počet náhodných skladieb so zadanou "
+"náladou do playlist. The mood argument must have spaces escaped with &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -15116,14 +15032,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Riadi automatickú synchronizáciu služby MP3tunes v aplikácii Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, "
-#| "#amarok-fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channel: #amarok\n"
@@ -15442,8 +15351,7 @@ msgstr ""
 "Môžete kedykoľvek zmeniť rozhodnutie v nastavení Amarok."
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
 msgstr "Synchronizovať"
@@ -15452,7 +15360,7 @@ msgstr "Synchronizovať"
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Don't keep synchronized"
-msgstr ""
+msgstr "Nesynchronizovať"
 
 #: statsyncing/Controller.cpp:380
 #, kde-format
