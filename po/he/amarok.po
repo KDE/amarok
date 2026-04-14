@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-04-02 10:22+0300\n"
+"PO-Revision-Date: 2026-04-13 21:28+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -2037,7 +2037,7 @@ msgstr "מחיקת רצועות"
 #: browsers/CollectionTreeView.cpp:712 services/lastfm/LastFmTreeView.cpp:157
 #, kde-format
 msgid "More..."
-msgstr "עוד..."
+msgstr "עוד…"
 
 #: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
@@ -3048,7 +3048,7 @@ msgstr "סמן כדי לאפשר סמל Amarok במגש המערכת."
 #: configdialog/dialogs/GeneralConfig.ui:35
 #, kde-format
 msgid "Show tray &icon"
-msgstr "הצג &סמל במגש־המערכת"
+msgstr "הצגת &סמל במגש־המערכת"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoGetCoverArt)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -3127,7 +3127,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:120
 #, kde-format
 msgid "Show Moodbar in Progress Slider"
-msgstr "הצג את סרגל האווירה במחוון ההתקדמות"
+msgstr "הצגת סרגל האווירה במחוון ההתקדמות"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: configdialog/dialogs/GeneralConfig.ui:127
@@ -4430,7 +4430,7 @@ msgstr "אל תציג תחת אמנים שונים"
 #: core-impl/capabilities/AlbumActionsCapability.cpp:43
 #, kde-format
 msgid "Show under Various Artists"
-msgstr "הצג תחת אמנים שונים"
+msgstr "הצגה תחת אמנים שונים"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:102
 #, fuzzy, kde-format
@@ -6647,17 +6647,17 @@ msgstr ""
 #: core/podcasts/PodcastReader.cpp:1012
 #, kde-format
 msgid "%1 is not an RSS version 2.0 feed."
-msgstr ""
+msgstr "%1 הוא לא ערוץ של הזנת RSS בגרסה 2.0."
 
 #: core/podcasts/PodcastReader.cpp:1042
 #, kde-format
 msgid "%1 is not a valid RSS version 1.0 feed."
-msgstr ""
+msgstr "%1 הוא לא ערוץ תקני של הזנת RSS בגרסה 1.0."
 
 #: core/podcasts/PodcastReader.cpp:1050
 #, kde-format
 msgid "%1 is not a valid Atom feed."
-msgstr ""
+msgstr "%1 הוא לא ערוץ תקני של הזנת Atom."
 
 #: core/podcasts/PodcastReader.cpp:1133
 #, kde-format
@@ -6689,13 +6689,13 @@ msgid "%1"
 msgstr "%1"
 
 #: core/support/Amarok.cpp:64
-#, fuzzy, kde-format
+#, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "לפני שבוע"
-msgstr[1] "לפני %1 שבועות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "לפני שבועיים"
+msgstr[2] "לפני %1 שבועות"
+msgstr[3] "לפני %1 שבועות"
 
 #: core/support/Amarok.cpp:70
 #, kde-format
@@ -6703,31 +6703,31 @@ msgid "Yesterday"
 msgstr "אתמול"
 
 #: core/support/Amarok.cpp:71
-#, fuzzy, kde-format
+#, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "לפני יום"
-msgstr[1] "לפני %1 ימים"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שלשום"
+msgstr[2] "לפני %1 יום"
+msgstr[3] "לפני %1 ימים"
 
 #: core/support/Amarok.cpp:74
-#, fuzzy, kde-format
+#, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "לפני שעה"
-msgstr[1] "לפני %1 שעות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "לפני שעתיים"
+msgstr[2] "לפני %1 שעות"
+msgstr[3] "לפני %1 שעות"
 
 #: core/support/Amarok.cpp:80
-#, fuzzy, kde-format
+#, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "לפני דקה"
-msgstr[1] "לפני %1 דקות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "לפני שתי דקות"
+msgstr[2] "לפני %1 דקות"
+msgstr[3] "לפני %1 דקות"
 
 #: core/support/Amarok.cpp:81
 #, kde-format
@@ -6877,7 +6877,7 @@ msgstr "קובץ קטן יותר"
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:60
 #, kde-format
 msgid "Better sound quality"
-msgstr ""
+msgstr "איכות שמע טובה יותר"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:56
 #, kde-format
@@ -6932,12 +6932,12 @@ msgstr ""
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:41
 #, kde-format
 msgid "Compression level"
-msgstr ""
+msgstr "רמת דחיסה"
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:42
 #, kde-format
 msgid "Faster compression"
-msgstr "דחיסה טובה יותר"
+msgstr "דחיסה מהירה יותר"
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:57
 #, kde-format
@@ -7132,7 +7132,7 @@ msgstr ""
 #: covermanager/CoverFetcher.cpp:178 covermanager/CoverFetcher.cpp:341
 #, kde-format
 msgid "Fetching Cover"
-msgstr "צרף עטיפות"
+msgstr "העטיפה מתקבלת"
 
 #: covermanager/CoverFetcher.cpp:202
 #, kde-format
@@ -7181,7 +7181,7 @@ msgstr[3] ""
 #: covermanager/CoverFoundDialog.cpp:380
 #, kde-format
 msgid "Display Cover"
-msgstr "הצג עטיפה"
+msgstr "הצגת עטיפה"
 
 #: covermanager/CoverFetchingActions.cpp:75
 #, kde-format
@@ -10655,17 +10655,17 @@ msgstr "הרצועה הבאה"
 #: MainWindow.cpp:913
 #, kde-format
 msgid "Increase Volume"
-msgstr "הגבר עצמת־קול"
+msgstr "הגברת עצמת־קול"
 
 #: MainWindow.cpp:919
 #, kde-format
 msgid "Decrease Volume"
-msgstr "הנמך עוצמת־קול"
+msgstr "הנמכת עוצמת־קול"
 
 #: MainWindow.cpp:925
 #, kde-format
 msgid "Toggle Main Window"
-msgstr "החלף לחלון הראשי"
+msgstr "החלפה לחלון הראשי"
 
 #: MainWindow.cpp:930
 #, kde-format
@@ -10680,17 +10680,17 @@ msgstr "חיפוש ברשימת הנגינה"
 #: MainWindow.cpp:945
 #, kde-format
 msgid "Show active track"
-msgstr "&הראה הרצועה פעילה"
+msgstr "ה&צגת הרצועה הפעילה"
 
 #: MainWindow.cpp:949
 #, kde-format
 msgid "Show Notification Popup"
-msgstr "הצג התרעות בחלונית קופצת"
+msgstr "הצגת התראות בחלונית קופצת"
 
 #: MainWindow.cpp:954
 #, kde-format
 msgid "Mute Volume"
-msgstr "השתק קול"
+msgstr "השתקת קול"
 
 #: MainWindow.cpp:959
 #, kde-format
@@ -10705,12 +10705,12 @@ msgstr "Last.fm: חסימת הרצועה הנוכחית"
 #: MainWindow.cpp:969
 #, kde-format
 msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: דלג על הרצועה הנוכחית"
+msgstr "Last.fm: דילוג על הרצועה הנוכחית"
 
 #: MainWindow.cpp:974 playlist/view/PlaylistViewCommon.cpp:118
 #, kde-format
 msgid "Queue Track"
-msgstr "הכנס רצועה לתור"
+msgstr "הכנסת רצועה לתור"
 
 #: MainWindow.cpp:979
 #, kde-format
@@ -10720,27 +10720,27 @@ msgstr ""
 #: MainWindow.cpp:984
 #, kde-format
 msgid "Rate Current Track: 1"
-msgstr "דרג את הרצועה הנוכחית: 1"
+msgstr "דירוג הרצועה הנוכחית: 1"
 
 #: MainWindow.cpp:989
 #, kde-format
 msgid "Rate Current Track: 2"
-msgstr "דרג את הרצועה הנוכחית: 2"
+msgstr "דירוג הרצועה הנוכחית: 2"
 
 #: MainWindow.cpp:994
 #, kde-format
 msgid "Rate Current Track: 3"
-msgstr "דרג את הרצועה הנוכחית: 3"
+msgstr "דירוג הרצועה הנוכחית: 3"
 
 #: MainWindow.cpp:999
 #, kde-format
 msgid "Rate Current Track: 4"
-msgstr "דרג את הרצועה הנוכחית: 4"
+msgstr "דירוג הרצועה הנוכחית: 4"
 
 #: MainWindow.cpp:1004
 #, kde-format
 msgid "Rate Current Track: 5"
-msgstr "דרג את הרצועה הנוכחית: 5"
+msgstr "דירוג הרצועה הנוכחית: 5"
 
 #: MainWindow.cpp:1010
 #, kde-format
@@ -10750,7 +10750,7 @@ msgstr "מציג בקשות רשת"
 #: MainWindow.cpp:1028
 #, kde-format
 msgid "&About Amarok"
-msgstr "&אודות Amarok"
+msgstr "&על Amarok"
 
 #: MainWindow.cpp:1032
 #, kde-format
@@ -10786,7 +10786,7 @@ msgstr "&כלים"
 #: MainWindow.cpp:1141
 #, kde-format
 msgid "&Settings"
-msgstr "&הגדרות"
+msgstr "ה&גדרות"
 
 #: MainWindow.cpp:1176
 #, kde-format
@@ -13990,7 +13990,7 @@ msgstr "רדיו האמן"
 #: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
-msgstr "Last.fm זה מגניב..."
+msgstr "Last.fm זה מגניב…"
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:98
 #, kde-format
@@ -15671,7 +15671,7 @@ msgstr "שורש האוספים"
 #: widgets/FilenameLayoutWidget.cpp:277
 #, kde-format
 msgid "&Basic..."
-msgstr "&בסיסי..."
+msgstr "&בסיסי…"
 
 # kde-il: don't translate
 #: widgets/FilenameLayoutWidget.cpp:282
