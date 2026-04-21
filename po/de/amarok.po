@@ -1,22 +1,22 @@
 # SPDX-FileCopyrightText: 2004 Moritz Moeller-Herrmann <mmh@gmx.net>
 # SPDX-FileCopyrightText: 2004 Stefan Bogner <bochi@online.ms>
-# SPDX-FileCopyrightText: 2004, 2005, 2006, 2007, 2008, 2009 Thomas Reitelbach <tr@erdfunkstelle.de>
+# SPDX-FileCopyrightText: 2004-2009 Thomas Reitelbach <tr@erdfunkstelle.de>
 # SPDX-FileCopyrightText: 2005 Harald Sitter <sitter.harald@gmail.com>
-# SPDX-FileCopyrightText: 2008, 2009, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Burkhard Lück <lueck@hube-lueck.de>
-# SPDX-FileCopyrightText: 2009, 2010 Markus Slopianka <markus.s@kdemail.net>
-# SPDX-FileCopyrightText: 2009, 2010 Panagiotis Papadopoulos <pano_90@gmx.net>
-# SPDX-FileCopyrightText: 2009, 2010, 2011 Johannes Obermayr <johannesobermayr@gmx.de>
-# SPDX-FileCopyrightText: 2009, 2010, 2011, 2012, 2013, 2014, 2016, 2018, 2020, 2022, 2023 Frederik Schwarzer <schwarzer@kde.org>
+# SPDX-FileCopyrightText: 2008-2009, 2011-2021 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2009-2010 Markus Slopianka <markus.s@kdemail.net>
+# SPDX-FileCopyrightText: 2009-2010 Panagiotis Papadopoulos <pano_90@gmx.net>
+# SPDX-FileCopyrightText: 2009-2011 Johannes Obermayr <johannesobermayr@gmx.de>
+# SPDX-FileCopyrightText: 2009-2014, 2016, 2018, 2020, 2022-2023 Frederik Schwarzer <schwarzer@kde.org>
 # SPDX-FileCopyrightText: 2022 Frank Steinmetzger <dev-kde@felsenfleischer.de>
-# SPDX-FileCopyrightText: 2024, 2025 Alois Spitzbart <spitz234@hotmail.com>
+# SPDX-FileCopyrightText: 2024-2025 Alois Spitzbart <spitz234@hotmail.com>
+# SPDX-FileCopyrightText: 2025-2026 Alexander Becker <alex-at-kde-l10n-de@freenet.de>
 # SPDX-FileCopyrightText: 2025 Flori G <Renner03@protonmail.com>
-# SPDX-FileCopyrightText: 2025 Alexander Becker <alex-at-kde-l10n-de@freenet.de>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2025-11-11 20:53+0100\n"
+"PO-Revision-Date: 2026-04-19 21:55+0200\n"
 "Last-Translator: Alexander Becker <alex-at-kde-l10n-de@freenet.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.08.2\n"
+"X-Generator: Lokalize 26.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1378,7 +1378,7 @@ msgid ""
 "device is connected."
 msgstr ""
 "Ist diese Einstellung aktiviert, werden bereits wiedergegebene Podcasts "
-"automatisch entfernt sobald das Mediengerät verbunden ist."
+"automatisch entfernt, sobald das Mediengerät verbunden ist."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:500
@@ -1557,8 +1557,8 @@ msgstr "Ob die Skriptkonsole aktiviert werden sollen."
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
-"Legt fest, ob eine Warnung über Skripte angezeigt wird, die veraltete API-"
-"Zugriffe benutzen."
+"Legt fest, ob eine Warnung angezeigt werden soll, wenn Skripte auf veraltete "
+"APIs zugreifen."
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
@@ -2428,7 +2428,7 @@ msgstr "An"
 #: browsers/playlistbrowser/DynamicCategory.cpp:104
 #, kde-format
 msgid "Turn dynamic mode on."
-msgstr "Dynamischen Modus einschalten"
+msgstr "Dynamischen Modus aktivieren."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:108
 #, kde-format
@@ -2665,7 +2665,7 @@ msgstr "Löschen der Wiedergabeliste bestätigen"
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:515 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
-msgstr "&Relative Pfade benutzen"
+msgstr "&Relative Pfade beim Speichern verwenden"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:528
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
@@ -5016,11 +5016,11 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
-"1 Stück ist nicht kopiert worden, weil es nicht abspielbar ist - das Format "
-"%2 ist nicht unterstützt.<br>"
+"1 Stück ist nicht kopiert worden, weil es nicht abspielbar wäre – das Format "
+"%2 wird nicht unterstützt.<br>"
 msgstr[1] ""
-"%1 Stücke sind nicht kopiert worden, weil sie nicht abspielbar sind - die "
-"Formate %2 sind nicht unterstützt.<br>"
+"%1 Stücke sind nicht kopiert worden, weil sie nicht abspielbar wären – die "
+"Formate %2 werden nicht unterstützt.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
 #, kde-format
@@ -6012,8 +6012,8 @@ msgstr "%1 einrichten"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%v Element"
+msgstr[1] "%v Elemente"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6088,15 +6088,12 @@ msgid "Already subscribed to %1."
 msgstr "%1 ist bereits abonniert."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1 Minute"
-msgstr[1] "%1 Minuten"
+msgstr[0] "jede %v Minute"
+msgstr[1] "alle %v Minuten"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -7784,8 +7781,8 @@ msgstr "Das Cover für %1 wird abgerufen …"
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
-msgstr[0] "1 Cover wird abgerufen:"
-msgstr[1] "<b>%1</b> Cover werden abgerufen ...:"
+msgstr[0] "1 Cover wird abgerufen: "
+msgstr[1] "<b>%1</b> Cover werden abgerufen …: "
 
 #: covermanager/CoverManager.cpp:652
 #, kde-format
@@ -7841,7 +7838,7 @@ msgstr "%1 von %2"
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
-msgstr[0] "%2 - (<b>1</b> ohne Cover)"
+msgstr[0] "%2 – (<b>1</b> ohne Cover)"
 msgstr[1] "%2 – (<b>%1</b> ohne Cover)"
 
 #: covermanager/CoverManager.cpp:769
@@ -11053,7 +11050,7 @@ msgstr "Stück in Warteschlange einstellen"
 #: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr "Interpret - Titel des aktuellen Stücks in die Zwischenablage kopieren"
+msgstr "Interpret – Titel des aktuellen Stücks in die Zwischenablage kopieren"
 
 #: MainWindow.cpp:984
 #, kde-format
@@ -11265,11 +11262,10 @@ msgstr ""
 "kHz"
 
 #: playback/PowerManager.cpp:99
-#, fuzzy, kde-format
-#| msgid "Scanning music"
+#, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
-msgstr "Musik wird durchsucht"
+msgstr "Musik wird wiedergegeben"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -11903,7 +11899,7 @@ msgstr "Dateigröße"
 #, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
-msgstr "%1: %2 - %3"
+msgstr "%1: %2 – %3"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PlaylistQueueEditor)
 #: playlist/PlaylistQueueEditor.ui:14
@@ -13380,7 +13376,7 @@ msgstr ""
 "die mit %2 beginnen. In der Amarok-Datenbank gespeicherte Wiedergabelisten "
 "werden wahrscheinlich nicht funktionieren und alle Schreibzugriffe darauf "
 "können zu Datenverlusten führen. Haben Sie möglicherweise eine ältere "
-"Version von Amarok gestartet und benutzen eine Datenbank, die von einer "
+"Version von Amarok gestartet und verwenden eine Datenbank, die von einer "
 "neueren Version erstellt wurde?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:280
@@ -14855,7 +14851,7 @@ msgid ""
 msgstr ""
 "Wenn Sie die folgende Einstellung aktivieren, wird Amarok Magnatune auf "
 "Aktualisierungen überprüfen und sie automatisch herunterladen. Sie können "
-"diese Einstellung später der Einrichtung des Magnatune-Dienstes abschalten."
+"diese Einstellung später der Einrichtung des Magnatune-Dienstes deaktivieren."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -15645,7 +15641,7 @@ msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
 msgstr ""
-"Keine ausgewählte Sammlung unterstützt das Schreiben auf %1 - ein Abgleich "
+"Keine ausgewählte Sammlung unterstützt das Schreiben von %1 – ein Abgleich "
 "ist nicht sinnvoll."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)

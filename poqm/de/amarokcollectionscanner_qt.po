@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2009, 2011, 2013, 2018 Burkhard Lück <lueck@hube-lueck.de>
 # SPDX-FileCopyrightText: 2009 Thomas Reitelbach <tr@erdfunkstelle.de>
-# SPDX-FileCopyrightText: 2009, 2010 Johannes Obermayr <johannesobermayr@gmx.de>
+# SPDX-FileCopyrightText: 2009, 2011, 2013, 2018 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2009-2010 Johannes Obermayr <johannesobermayr@gmx.de>
 # SPDX-FileCopyrightText: 2010 Panagiotis Papadopoulos <pano_90@gmx.net>
 # SPDX-FileCopyrightText: 2010, 2018 Frederik Schwarzer <schwarzer@kde.org>
 msgid ""
