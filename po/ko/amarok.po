@@ -1,7 +1,7 @@
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the amarok package.
 # Cho Sung Jae <cho.sungjae@gmail.com>, 2006, 2007.
-# SPDX-FileCopyrightText: 2007, 2008, 2009, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Shinjo Park <kde@peremen.name>
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2015, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Shinjo Park <kde@peremen.name>
 # Cho Sangjin <sangjin3901@chol.com>, 2007.
 # 이정희 <daemul72@gmail.com>, 2019, 2020.
 #
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2025-07-21 00:34+0200\n"
+"PO-Revision-Date: 2026-04-26 22:54+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 24.12.3\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3280,16 +3280,13 @@ msgstr "파일에 메타데이터 쓰기"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
-#, fuzzy, kde-format
-#| msgid ""
-#| "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
-#| "as tags back to the file."
+#, kde-format
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
 "재생 시 변경되는 통계(별점, 마지막 재생, 재생 시간)를\n"
-"파일에 태그로 기록합니다."
+"오디오 파일에 태그로 기록합니다."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:40
@@ -5731,7 +5728,7 @@ msgstr "%1 설정"
 msgctxt "Spinbox label"
 msgid "%v item"
 msgid_plural "%v items"
-msgstr[0] ""
+msgstr[0] "항목 %v개"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -5806,14 +5803,11 @@ msgstr ""
 "이미 %1을(를) 구독하고 있습니다.|/|이미 %1$[을를 %1] 구독하고 있습니다."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1분"
+msgstr[0] "매 %v분마다"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -8497,10 +8491,9 @@ msgstr "마지막 재생:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "added to collection"
+#, kde-format
 msgid "Added to collection:"
-msgstr "모음집에 추가됨"
+msgstr "모음집에 추가됨:"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
@@ -10861,11 +10854,10 @@ msgstr ""
 "kHz"
 
 #: playback/PowerManager.cpp:99
-#, fuzzy, kde-format
-#| msgid "Scanning music"
+#, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
-msgstr "음악 검색 중"
+msgstr "음악 재생 중"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
