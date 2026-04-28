@@ -5225,9 +5225,9 @@ msgstr ""
 "<b>%1</b><br><br>Vyššie uvedený problém zabraňuje aplikácii Amarok v "
 "používaní zariadenia iPod. Môžete sa pokúsiť znova vytvoriť kritické "
 "priečinky pre iPod a súbory (vrátane databázy iTunes) nižšie pomocou "
-"tlačidla<b>%2</b>.<br><br> Inicializácia zariadenia iPod<b> zničí iPod "
-"skladbu a fotografickú databázu</b>, ale to by nemalo vymazať všetky "
-"skladby. Skladby sa stanú opustené."
+"tlačidla <b>%2</b>.<br><br> Inicializácia zariadenia iPod <b>zničí databázu "
+"skladieb a fotografií iPod</b>, ale nemala by vymazať žiadne skladby. "
+"Skladby sa stanú opustenými."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
 #, kde-format
@@ -12004,9 +12004,9 @@ msgid ""
 "constraints within the group are satisfied.  This is analogous to a logical "
 "AND: \"the tracks should match properties A, B, and C\"."
 msgstr ""
-"APG bude považovať skupinu obmedzení za splnenú, ak sú všetky z obmedzení v "
-"nej splnené. Toto je analogické s logickým AND: \"skladby by mala vyhovovať "
-"vlastnosti A, B, a C\"."
+"APG bude považovať skupinu obmedzení za splnenú, iba ak sú splnené všetky "
+"obmedzenia v skupine. Toto je analogické s logickým AND: \"skladby by mali "
+"zodpovedať vlastnostiam A, B a C\"."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAll)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:32
@@ -12022,9 +12022,9 @@ msgid ""
 "constraints within it is satisfied.  This is analogous to a logical OR: "
 "\"the tracks should match properties A, B, or C\"."
 msgstr ""
-"APG bude považovať skupinu obmedzení za splnenú, ak je niektoré z obmedzení "
-"v nej splnené. Toto je analogické s logickým OR: \"skladby by mala vyhovovať "
-"vlastnosti A, B, alebo C\"."
+"APG bude považovať skupinu obmedzení za splnenú, ak je splnené aspoň jedno z "
+"obmedzení v nej. Toto je analogické s logickým OR: \"skladby by mali "
+"zodpovedať vlastnostiam A, B alebo C\"."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAny)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:42
@@ -12233,9 +12233,9 @@ msgid ""
 "the APG should match that duration."
 msgstr ""
 "Editor pre obmedzenie doby trvania zoznamu skladieb. Používateľ môže "
-"nastaviť názov obmedzenia; cieľovú dobu trvania a či zoznam skladieb by mal "
-"byť menší, rovnaký alebo väčší než je doba trvania; a presnosť, s ktorou by "
-"mala prispôsobovať uvedená doba trvania s APG."
+"nastaviť názov obmedzenia; cieľovú dobu trvania a to, či zoznam skladieb by "
+"mal byť kratší, rovnaký alebo dlhší než táto doba trvania; a presnosť, s "
+"ktorou by mal APG tejto dobe trvania zodpovedať."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:21
@@ -12892,8 +12892,8 @@ msgid ""
 "specific date; or whether it should choose tracks that are within a certain "
 "time range."
 msgstr ""
-"Či by mal APG zvoliť skladby, ktoré sú pred, rovnako, alebo po určenom "
-"dátume; alebo či by mal zvoliť skladby, ktoré sú v určitom časovom rozmedzí."
+"Či by mal APG zvoliť skladby, ktoré sú pred, v alebo po určenom dátume; "
+"alebo či by mal zvoliť skladby, ktoré sú v určitom časovom rozmedzí."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:248
@@ -14007,9 +14007,10 @@ msgid ""
 "track tags like artist, album and title. Check this to be notified when this "
 "happens and what the autocorrection was</html>"
 msgstr ""
-"<html>Keď je scrobbling skladby na Last.fm, to automaticky opravuje bežné "
-"chyby v značkách skladby, ako umelec, album a názov. Toto zaškrtnúť na "
-"obdržanie  upozornenia, keď sa to a čo bolo automaticky opravené</html>"
+"<html>Pri scrobblovaní skladieb na Last.fm sa automaticky opravujú bežné "
+"chyby v značkách skladieb, ako je umelec, album a názov. Zaškrtnite toto, "
+"aby ste boli upozornení, keď sa to stane, a aká bola automatická oprava.</"
+"html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:149
@@ -14165,9 +14166,9 @@ msgid ""
 "authorized Amarok to connect to your Last.fm account on the Last.fm web page "
 "that was opened and try again."
 msgstr ""
-"Pripojenie účtu Last.fm nebolo úspešné. Uistite sa, že ste na webovej "
-"stránke Last.fm autorizovali Amarok na pripojenie k vášmu účtu Last.fm that "
-"was opened and try again."
+"Pripojenie účtu Last.fm nebolo úspešné. Uistite sa, že ste na otvorenej "
+"webovej stránke Last.fm autorizovali Amarok na pripojenie k vášmu účtu Last."
+"fm a skúste to znova."
 
 #: services/lastfm/LastFmServiceSettings.cpp:249
 #, kde-format
@@ -14940,8 +14941,9 @@ msgid ""
 msgstr ""
 "Služba Magnatune.com prijíma nasledujúce správy: \n"
 "\n"
-"\taddMoodyTracks mood count: Pridá počet náhodných skladieb so zadanou "
-"náladou do playlist. The mood argument must have spaces escaped with &#37;20"
+"\taddMoodyTracks mood count: Pridá určitý počet náhodných skladieb so "
+"zadanou náladou do zoznamu skladieb. Argument nálady musí mať medzery "
+"escapované pomocou &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
