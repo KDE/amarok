@@ -1852,7 +1852,7 @@ msgstr ""
 #, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Select collection folder"
-msgstr "Priečinky kolekcie"
+msgstr "Vybrať priečinok kolekcie"
 
 #: App.cpp:677
 #, kde-format
@@ -1928,7 +1928,7 @@ msgstr "Pridané tento mesiac"
 #, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Prvýkrát prehrávané"
+msgstr "Nikdy neprehrávané"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, kde-format
@@ -1968,12 +1968,12 @@ msgstr "Zobraziť čísla skladieb"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Ukazovať pod rôznymi umelcami"
+msgstr "Zobraziť interpreta pre rôznych umelcov"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
 msgid "Show Cover Art"
-msgstr "Zobraziť obal"
+msgstr "Zobraziť grafiku obalu"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:268
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:85
@@ -2078,7 +2078,7 @@ msgstr "Rok"
 #: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
-msgstr "Popis"
+msgstr "Označenie"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
@@ -3764,7 +3764,7 @@ msgstr "Skript %1 bol úspešne nainštalovaný"
 #: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
 msgid "Generic"
-msgstr "Všeobecné"
+msgstr "Generické"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
 #, kde-format
@@ -3939,7 +3939,7 @@ msgstr "Popisy"
 #: context/applets/labels/LabelsApplet.cpp:104
 #, kde-format
 msgid "Reload"
-msgstr "Obnoviť"
+msgstr "Znovu načítať"
 
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/labels/LabelsApplet.cpp:114
@@ -4216,7 +4216,7 @@ msgstr "Návrhy: "
 #: dialogs/TagGuessOptions.ui:101 services/opmldirectory/AddOpmlWidget.ui:78
 #, kde-format
 msgid "Title:"
-msgstr "Názov:"
+msgstr "Titul:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_22)
 #: context/applets/lyrics/package/contents/ui/main.qml:140
@@ -4239,7 +4239,7 @@ msgstr "Šírka"
 #, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "od <b>%1</b>"
+msgstr "Podobné ako <b>%1</b>"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
@@ -4408,7 +4408,7 @@ msgstr "Ďalej"
 #, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Aktualizovať databázu Magnatune automaticky"
+msgstr "Automaticky nemeniť stránku"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:376
@@ -4421,13 +4421,13 @@ msgstr "Skladba"
 #, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Kopírovať do schránky"
+msgstr "Kopírovať odkaz do schránky"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
 #, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Kopírovať do schránky"
+msgstr "Kopírovať obrázok do schránky"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -8895,7 +8895,7 @@ msgstr "&Popisy"
 #: dialogs/TagDialogBase.ui:961
 #, kde-format
 msgid "Label:"
-msgstr "Popis:"
+msgstr "Označenie:"
 
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
 #: dialogs/TagDialogBase.ui:977
@@ -11163,7 +11163,7 @@ msgstr ""
 #, kde-format
 msgctxt "Reason for sleep block, shown in power and battery applet"
 msgid "Playing music"
-msgstr "Prehľadávanie hudby"
+msgstr "Prehrávanie hudby"
 
 #: playlist/layouts/LayoutConfigAction.cpp:40
 #, kde-format
@@ -11474,7 +11474,7 @@ msgstr "Náhľad"
 #: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
 msgid "Track Progression"
-msgstr "Priebeh skladby"
+msgstr "Postup skladby"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
@@ -12277,7 +12277,7 @@ msgstr "rovné"
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:49
 #, kde-format
 msgid "longer than"
-msgstr "väčšie ako"
+msgstr "dlhšie ako"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Duration)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:62
@@ -13943,7 +13943,7 @@ msgstr "Užívateľské meno:"
 #: services/lastfm/LastFmServiceSettings.cpp:250
 #, kde-format
 msgid "Connect to account"
-msgstr "Pripojenie zlyhalo"
+msgstr "Pripojiť k účtu"
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
@@ -13963,7 +13963,7 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:97
 #, kde-format
 msgid "Disconnect account"
-msgstr "&Odpojiť zariadenie"
+msgstr "Odpojiť účet"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -14137,7 +14137,7 @@ msgstr "Odpojiť účet Last.fm?"
 #, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "&Odpojiť zariadenie"
+msgstr "Odpojiť"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -14448,7 +14448,7 @@ msgstr "Aktualizovať databázu Magnatune automaticky"
 #: services/magnatune/MagnatuneConfigWidget.ui:43
 #, kde-format
 msgid "Redownloads"
-msgstr "Opakované stiahnutie"
+msgstr "Opakované stiahnutia"
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: services/magnatune/MagnatuneConfigWidget.ui:49
@@ -15356,7 +15356,7 @@ msgstr ""
 #, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "Synchronizovať"
+msgstr "Udržiavať synchronizované"
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
