@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-03-09 21:37+0300\n"
+"PO-Revision-Date: 2026-05-02 19:53+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,12 +31,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.12.2\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Serdar Soytetir, Işıl Poyraz, Kaan Özdinçer, Emir SARI"
+msgstr "Serdar SOYTETİR, Işıl Poyraz, Kaan ÖZDİNÇER, Emir SARI"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
@@ -1338,7 +1338,7 @@ msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
 msgstr ""
-"Ortam aygıtı bağlandığında, halihazırda çalınan pod yayını şovlarının "
+"Ortam aygıtı bağlandığında, hâlihazırda çalınan pod yayını şovlarının "
 "kendiliğinden silinip silinmeyeceği"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
@@ -3096,7 +3096,7 @@ msgid ""
 "user also requires full access to the database. Changes only take effect "
 "after Amarok is restarted."
 msgstr ""
-"Amarok yukarıdaki veri tabanının ve kullanıcı hesabının halihazırda var "
+"Amarok yukarıdaki veri tabanının ve kullanıcı hesabının hâlihazırda var "
 "olmasını beklemektedir. Bu kullanıcının ayrıca veri tabanına tam erişime "
 "gereksinimi vardır. Değişiklikler Amarok yeniden başlatıldıktan sonra "
 "geçerli olur."
@@ -3661,7 +3661,7 @@ msgstr ""
 "<html>Fareyi kullanarak çalma listesine bir veya daha fazla parça "
 "eklendiğinde, Giriş düğmesine basıldığında veya çalma listesi "
 "değiştirildiğinde çalmayı başlatmak için bu seçeneği etkinleştirin. "
-"Halihazırda çalınan bir parça varsa hiçbir şey yapılmaz.</html>"
+"Hâlihazırda çalınan bir parça varsa hiçbir şey yapılmaz.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #: configdialog/dialogs/PlaybackConfig.ui:42
@@ -3778,7 +3778,7 @@ msgid ""
 "Existing Script's Version: %2\n"
 "Selected Script's Version: %3"
 msgstr ""
-"%1 adlı başka bir betik halihazırda var.\n"
+"%1 adlı başka bir betik hâlihazırda var.\n"
 "Var olan betiğin sürümü: %2\n"
 "Seçili betiğin sürümü: %3"
 
@@ -4881,8 +4881,8 @@ msgstr[1] "Aktarım iptal edildi. %1 parça aktarılabildi."
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] "%2 1 parça halihazırda oradaydı."
-msgstr[1] "%2 %1 parça halihazırda oradaydı."
+msgstr[0] "%2 1 parça hâlihazırda oradaydı."
+msgstr[1] "%2 %1 parça hâlihazırda oradaydı."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, kde-format
@@ -5252,7 +5252,7 @@ msgstr "Parçalar Kopyalanamadı"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:318
 #, kde-format
 msgid "Tracks not copied: the device is already being copied to"
-msgstr "Parçalar kopyalanmadı: Aygıta halihazırda kopyalama yapılıyor."
+msgstr "Parçalar kopyalanmadı: Aygıta hâlihazırda kopyalama yapılıyor."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:351
 #, kde-format
@@ -5262,12 +5262,12 @@ msgstr "Desteklenmeyen biçim: %1"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:394
 #, kde-format
 msgid "Already on device"
-msgstr "Halihazırda Aygıtta"
+msgstr "Hâlihazırda Aygıtta"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:410
 #, kde-format
 msgid "Tracks not copied: the device already has these tracks"
-msgstr "Parçalar kopyalanmadı: Bu parçalar aygıtta halihazırda var."
+msgstr "Parçalar kopyalanmadı: Bu parçalar aygıtta hâlihazırda var."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:431
 #, kde-format
@@ -5308,7 +5308,7 @@ msgstr[1] "Parçalar Silinemedi"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, kde-format
 msgid "%1 tracks are already being deleted from the device."
-msgstr "%1 parça halihazırda aygıttan siliniyor."
+msgstr "%1 parça hâlihazırda aygıttan siliniyor."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
 #, kde-format
@@ -5971,7 +5971,7 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
-msgstr "%1 aboneliği halihazırda var."
+msgstr "%1 aboneliği hâlihazırda var."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
 #, kde-format
@@ -10579,7 +10579,7 @@ msgstr "Roman Becker"
 #: main.cpp:275
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
-msgstr "Resmi Amarok logosu, eski açılış görseli, eski simgeler"
+msgstr "Resmî Amarok logosu, eski açılış görseli, eski simgeler"
 
 #: main.cpp:277
 #, kde-format
@@ -14524,7 +14524,7 @@ msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
 msgstr ""
-"Amarok tarafından halihazırda izlenen bir konuma indirirseniz albüm "
+"Amarok tarafından hâlihazırda izlenen bir konuma indirirseniz albüm "
 "kendiliğinden koleksiyonunuza eklenecektir."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
