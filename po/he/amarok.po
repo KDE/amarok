@@ -4,13 +4,13 @@
 # Assaf Gillat <gillata@gmail.com>, 2005.
 # Chen Levy <contrib@chenlevy.com>, 2006.
 # tahmar1900 <tahmar1900@gmail.com>, 2008, 2009.
-# SPDX-FileCopyrightText: 2024, 2025, 2026 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2024-2026 Yaron Shahrabani <sh.yaron@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-04-13 21:28+0300\n"
+"PO-Revision-Date: 2026-05-07 10:30+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 25.12.3\n"
+"X-Generator: Lokalize 26.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1132,7 +1132,7 @@ msgstr "שליחת רצועות שנוגנו"
 #: amarokconfig.kcfg:453
 #, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "האם רצועות שהושמעו נשלחות ל־Audioscrobbler"
+msgstr "האם רצועות שמושמעות נשלחות ל־Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1145,7 +1145,7 @@ msgstr "שם משתמש"
 #: amarokconfig.kcfg:458
 #, kde-format
 msgid "The username to use for connecting to Audioscrobbler"
-msgstr "שם המשתמש עבור חיבור ל-Audioscrobbler"
+msgstr "שם המשתמש לטובת חיבור ל־Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
@@ -1157,13 +1157,13 @@ msgstr "שם המשתמש עבור חיבור ל-Audioscrobbler"
 #: services/ampache/NewServerWidget.ui:60
 #, kde-format
 msgid "Password"
-msgstr "ססמה"
+msgstr "סיסמה"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:463
 #, kde-format
 msgid "The password to use for connecting to Audioscrobbler"
-msgstr "הססמה עבור חיבור ל-Audioscrobbler"
+msgstr "הסיסמה לטובת חיבור ל־Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:467
@@ -1181,7 +1181,7 @@ msgstr ""
 #: amarokconfig.kcfg:472
 #, kde-format
 msgid "Retrieve similar artists"
-msgstr "אחזר אמנים דומים"
+msgstr "משיכת אמנים דומים"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
@@ -1199,7 +1199,7 @@ msgstr "סוג התקן"
 #: amarokconfig.kcfg:481
 #, kde-format
 msgid "The type of media device."
-msgstr "סוג התקן־המדיה."
+msgstr "סוג התקן המדיה."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:484
@@ -1241,7 +1241,7 @@ msgstr "פקודת ביטול העגינה בשימוש עבור חיבור הת
 #: amarokconfig.kcfg:496
 #, kde-format
 msgid "Auto delete podcasts"
-msgstr "מחיקה אוטומטית של פוד־קסטים"
+msgstr "מחיקה אוטומטית של הסכתים"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:497
@@ -1255,7 +1255,7 @@ msgstr "האם פרקי הסכתים שכבר נוגנו נמחקים אוטומ
 #: amarokconfig.kcfg:500
 #, kde-format
 msgid "Sync stats"
-msgstr "סנכרן סטטיסטיקה"
+msgstr "סנכרון סטטיסטיקה"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:501
@@ -1264,26 +1264,26 @@ msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
-"האם הסטטיסטיקה של Amarok צריכה להסתנכרן עם כמות השמעות/דיגורים במכשיר והאם "
+"האם הסטטיסטיקה של Amarok צריכה להסתנכרן עם כמות השמעות/דירוגים במכשיר והאם "
 "שמות הרצועות שנוגנו יישלחו ל־Last.fm."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:507
 #, kde-format
 msgid "Manually added servers"
-msgstr "שרתים־מוספים־ידנית"
+msgstr "שרתים שנוספו ידנית"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
 #: amarokconfig.kcfg:508
 #, kde-format
 msgid "Music Sharing servers added by the user."
-msgstr "שרתי שיתוף מוזיקה נוספו על־ידי המשתמש."
+msgstr "שרתי שיתוף מוזיקה נוספו על ידי המשתמש."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:511
 #, kde-format
 msgid "Server passwords"
-msgstr "ססמת השרת"
+msgstr "סיסמת השרת"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
 #: amarokconfig.kcfg:512
@@ -2446,7 +2446,7 @@ msgstr "&חדשה"
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:83
 #, kde-format
 msgid "&Rename..."
-msgstr "&שנה שם..."
+msgstr "&שינוי שם…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:90
 #, kde-format
@@ -2568,7 +2568,7 @@ msgstr "למחוק את התיקייה הזאת על תוכנה?"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:136
 #, kde-format
 msgid "Podcasts"
-msgstr "פוד־קסטים"
+msgstr "הסכתים"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:79
 #, kde-format
@@ -2642,7 +2642,7 @@ msgstr "הוספת הסכת…"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
 #, kde-format
 msgid "Refresh All Podcasts"
-msgstr "רענן את כל הפוד־קסטים"
+msgstr "ריענון כל ההסכתים"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, configurePodcastsButton)
 #. i18n: ectx: property (text), widget (QToolButton, configurePodcastsButton)
@@ -2650,7 +2650,7 @@ msgstr "רענן את כל הפוד־קסטים"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "הגדרת פוד־קסטים..."
+msgstr "הגדרת הסכתים…"
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
@@ -2728,7 +2728,7 @@ msgstr "כללי"
 #: configdialog/ConfigDialog.cpp:59
 #, kde-format
 msgid "Configure General Options"
-msgstr "הגדר אפשרויות כלליות"
+msgstr "הגדרת אפשרויות כלליות"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
@@ -2745,7 +2745,7 @@ msgstr "הגדרת אוסף מקומי"
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
 msgid "Metadata"
-msgstr "נתוני־על"
+msgstr "נתוני על"
 
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
@@ -2780,7 +2780,7 @@ msgstr "מסד נתונים"
 #: configdialog/ConfigDialog.cpp:64
 #, kde-format
 msgid "Configure Database"
-msgstr "הגדר בסיס־נתונים"
+msgstr "הגדרת מסד נתונים"
 
 #: configdialog/ConfigDialog.cpp:65
 #, kde-format
@@ -2807,13 +2807,13 @@ msgstr "הגדרת סקריפטים"
 #: configdialog/dialogs/CollectionConfig.ui:14
 #, kde-format
 msgid "Collection Setup"
-msgstr "התקנת האוסף"
+msgstr "הקמת האוסף"
 
 #. i18n: ectx: property (title), widget (QGroupBox, collectionFoldersBox)
 #: configdialog/dialogs/CollectionConfig.ui:20
 #, kde-format
 msgid "Collection Folders"
-msgstr "תיקיות־האוסף"
+msgstr "תיקיות האוסף"
 
 #. i18n: ectx: property (text), widget (QLabel, descriptionLabel)
 #: configdialog/dialogs/CollectionConfig.ui:26
@@ -2823,8 +2823,8 @@ msgid ""
 "right-click on a folder to individually rescan it, if it was previously "
 "selected:"
 msgstr ""
-"תיקיות אלו יסרקו אחר מדיה אשר תרכיב את האוסף. אם תיקייה נבחרה כבר בעבר, ניתן "
-"ללחוץ עליה לחיצה ימנית על מנת לסרוק אותה מחדש:"
+"תיקיות אלו ייסרקו לאיתור מדיה שתרכיב את האוסף. אם תיקייה נבחרה כבר בעבר, "
+"ניתן ללחוץ עליה לחיצה ימנית כדי לסרוק אותה מחדש:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, importingBox)
 #: configdialog/dialogs/CollectionConfig.ui:58
@@ -2901,7 +2901,7 @@ msgstr ""
 #: configdialog/dialogs/DatabaseConfig.ui:23
 #, kde-format
 msgid "Use &external MySQL database"
-msgstr "השתמש &בבסיס־נתונים חיצוני של MySQL"
+msgstr "להשתמש במסד נתונים &חיצוני מסוג MySQL"
 
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, group_Connection)
@@ -2926,7 +2926,7 @@ msgstr ""
 #: configdialog/dialogs/DatabaseConfig.ui:71
 #, kde-format
 msgid "P&ort:"
-msgstr "מ&פתח:"
+msgstr "&פתחה:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, kcfg_Port)
 #: configdialog/dialogs/DatabaseConfig.ui:91
@@ -2954,7 +2954,7 @@ msgstr ""
 #: services/gpodder/GpodderConfigWidget.ui:45
 #, kde-format
 msgid "&Password:"
-msgstr "&ססמה:"
+msgstr "&סיסמה:"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, kcfg_User)
 #: configdialog/dialogs/DatabaseConfig.ui:151
@@ -2967,7 +2967,7 @@ msgstr ""
 #: configdialog/dialogs/DatabaseConfig.ui:161
 #, kde-format
 msgid "&Database:"
-msgstr "שם ב&סיס־נתונים:"
+msgstr "שם מסד ה&נתונים:"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, kcfg_Database)
 #: configdialog/dialogs/DatabaseConfig.ui:178
@@ -3004,8 +3004,8 @@ msgid ""
 "If your database is not already set up, you can use the following S&QL "
 "commands (after replacing the password with the correct one):"
 msgstr ""
-"אם בסיס־הנתונים עדיין לא מוכן, ניתן להשתמש בפקודות ה-S&QL הבאות (לאחר החלפת "
-"הססמה עם הססמה הנכונה):"
+"אם מסד הנתונים עדיין לא מוכן, ניתן להשתמש בפקודות ה־SQL ה&באות (לאחר החלפת "
+"הסיסמה בסיסמה הנכונה):"
 
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:50
 #, kde-format
@@ -4380,10 +4380,9 @@ msgid "Click to open %1 in a web browser"
 msgstr ""
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
-#, fuzzy, kde-format
-#| msgid "Configure Podcasts..."
+#, kde-format
 msgid "Configure Applets..."
-msgstr "הגדרת פוד־קסטים..."
+msgstr "הגדרת יישומונים…"
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -5644,7 +5643,7 @@ msgstr "מקום שמירה:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:102
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
-msgstr "אם סומן, Amarok יסרוק אוטומטית את הפוד־קסטים לעדכונים"
+msgstr "אם האפשרות מסומנת, Amarok יבדוק אוטומטית אם יש עדכונים בהסכתים"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:105
@@ -5680,7 +5679,7 @@ msgstr "להוריד כאשר ז&מין"
 msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
-msgstr "מדיה מחוייבת בהורדה בבקשה מפורשת, אחרת הפוד־קסט יושמע משרת מרוחק."
+msgstr "חובה להוריד את המדיה מפורשות, אחרת ההסתכת יושמע משרת מרוחק."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:140
@@ -5694,7 +5693,7 @@ msgstr "שידור זורם או הורדה על־פי ד&רישה"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "אם סומן, Amarok יזרוק את קטעי הפוד־קסט הישנים"
+msgstr "אם האפשרות מסומנת, Amarok ישליך את קטעי ההסכת הישנים"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -5714,7 +5713,7 @@ msgstr "השאר מספר מרבי של:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:194
 #, kde-format
 msgid "The maximum number of podcast items to store"
-msgstr "המספר המרבי של פוד־קסטים לשמירה"
+msgstr "מספר ההסכתים המרבי לשמירה"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:208
@@ -5757,7 +5756,7 @@ msgstr[3] "%v פריטים"
 #: core/podcasts/PodcastMeta.h:385
 #, kde-format
 msgid "Podcast"
-msgstr "פוד־קסט"
+msgstr "הסכת"
 
 # kde-il: don't translate
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
@@ -5883,7 +5882,7 @@ msgstr "ביטול ההורדה ולצאת."
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
-msgstr "אין אפשרות לשמור קובץ של פרק פוד־קסט ל־%1"
+msgstr "אי אפשר לשמור קובץ של פרק הסכת ל־%1"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1170
 #, kde-format
@@ -7653,7 +7652,7 @@ msgstr "סרוק מחדש את '%1'"
 #: dialogs/DatabaseImporterDialog.cpp:39
 #, kde-format
 msgid "Import Collection"
-msgstr "יבא האוסף"
+msgstr "ייבוא אוסף"
 
 #: dialogs/DatabaseImporterDialog.cpp:47
 #, kde-format
@@ -7668,7 +7667,7 @@ msgstr "הסבה"
 #: dialogs/DatabaseImporterDialog.cpp:99
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> No tracks were imported"
-msgstr "<b><font color='red'>נכשל:</font></b> לא הוספו רצועות"
+msgstr "<b><font color='red'>נכשל:</font></b> לא נוספו רצועות"
 
 #: dialogs/DatabaseImporterDialog.cpp:101
 #, kde-format
@@ -7682,7 +7681,7 @@ msgstr[3] ""
 #: dialogs/DatabaseImporterDialog.cpp:113
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> Unable to import statistics"
-msgstr "<b><font color='red'>נכשל:</font></b> אין אפשרות לייבא סטטיסטיקות"
+msgstr "<b><font color='red'>נכשל:</font></b> אי אפשר לייבא סטטיסטיקה"
 
 #: dialogs/DatabaseImporterDialog.cpp:130
 #, kde-format
@@ -7699,13 +7698,13 @@ msgstr "<b>%1</b> יובא"
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
-msgstr "Imported <b>%1 - %2</b>"
+msgstr "<b>%1 - %2</b> יובא"
 
 #: dialogs/DatabaseImporterDialog.cpp:151
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
-msgstr "Imported <b>%1 - %2 (%3)</b>"
+msgstr "<b>%1 - %2 (%3)</b> יובא"
 
 #: dialogs/DatabaseImporterDialog.cpp:160
 #, kde-format
@@ -9412,7 +9411,7 @@ msgstr "חיצוני"
 #: services/ampache/NewServerWidget.ui:50
 #, kde-format
 msgid "Username"
-msgstr "שם־משתמש"
+msgstr "שם משתמש"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/amarok/AmarokConfigWidget.ui:58
@@ -13423,7 +13422,7 @@ msgstr "הצלחה"
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
-msgstr "שם־המשתמש או הססמה שגויים. יש לתקן ולנסות שנית"
+msgstr "שם המשתמש או הסיסמה שגויים. יש לתקן ולנסות שנית"
 
 #: services/gpodder/GpodderServiceSettings.cpp:187
 #, kde-format
@@ -13940,12 +13939,12 @@ msgstr "רדיו תג של המשתמש: \"%1\""
 #: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
-msgstr "אמנים דומים ל־\"%1\""
+msgstr "אמנים דומים ל־„%1”"
 
 #: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
-msgstr "רדיו מעריצי האמן: \"%1\""
+msgstr "רדיו מעריצי האמן: „%1”"
 
 #: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
@@ -13970,7 +13969,7 @@ msgstr "הרדיו האהוב על %1"
 #: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
-msgstr "רדיו מומלץ על־ידי %1 (פופלאריות %2)"
+msgstr "רדיו מומלץ על ידי %1 (פופולריות %2)"
 
 #: services/lastfm/meta/LastFmMeta.cpp:315
 #, kde-format
@@ -14049,14 +14048,14 @@ msgid "slows down track matching"
 msgstr "מאט התאמת רצועות"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
-#, kde-format
+#, fuzzy, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
 msgstr "מוריד '%1' של %2 מ-Magnatune.com"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:71
 #, kde-format
 msgid "Downloading album from Magnatune.com"
-msgstr "מוריד אלבום מ־Magnatune.com"
+msgstr "אלבום יורד מ־Magnatune.com"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:100
 #, kde-format
@@ -14066,12 +14065,12 @@ msgstr ""
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format
 msgid "Uncompressing Magnatune.com download..."
-msgstr "פורש את ההורדה מ-Magnatune.com..."
+msgstr "ההורדה מ־Magnatune.com מחולצת…"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:133
 #, kde-format
 msgid "Adding album cover to collection"
-msgstr "מוסיף עטיפת אלבום לאוסף"
+msgstr "עטיפת אלבום נוספת לאוסף"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:41
 #, kde-format
@@ -14169,7 +14168,7 @@ msgstr "שם משתמש:"
 #: services/magnatune/MagnatuneConfigWidget.ui:143
 #, kde-format
 msgid "Password:"
-msgstr "ססמה:"
+msgstr "סיסמה:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:161
@@ -14210,13 +14209,13 @@ msgstr ""
 #: services/magnatune/MagnatuneConfigWidget.ui:183
 #, kde-format
 msgid "Stream Options"
-msgstr "אפשרויות זרימה"
+msgstr "אפשרויות תזרים"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: services/magnatune/MagnatuneConfigWidget.ui:189
 #, kde-format
 msgid "Preview stream type:"
-msgstr "סוג זרימת תצוגה מקדימה:"
+msgstr "סוג תזרים תצוגה מקדימה:"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:197
@@ -14252,7 +14251,7 @@ msgstr "אפשרויות הורדה"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:25
 #, kde-format
 msgid "Select Format:"
-msgstr "בחר תבנית:"
+msgstr "בחירת תבנית:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:38
@@ -14262,7 +14261,7 @@ msgstr "להוריד אל:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:51
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
@@ -14274,18 +14273,18 @@ msgstr ""
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:67
 #, kde-format
 msgid "Magnatune info"
-msgstr "מידע אודות Magnatune"
+msgstr "פרטים מ־Magnatune"
 
 #. i18n: ectx: property (text), widget (QPushButton, downloadButton)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:83
 #, kde-format
 msgid "&Download"
-msgstr "&הורד"
+msgstr "הו&רדה"
 
 #: services/magnatune/MagnatuneDownloadHandler.cpp:83
 #, kde-format
 msgid "Processing download"
-msgstr "מבצע הורדה"
+msgstr "ההורדה עוברת עיבוד"
 
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
@@ -14297,7 +14296,7 @@ msgstr ""
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid "Could not process download"
-msgstr "אין אפשרות לבצע את הליך ההורדה"
+msgstr "לא ניתן לעבד את מה שירד"
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:210
 #, kde-format
@@ -14312,7 +14311,7 @@ msgstr ""
 #: services/magnatune/MagnatuneInfoParser.cpp:32
 #, kde-format
 msgid "Loading artist info..."
-msgstr "טוען מידע אודות האמן..."
+msgstr "נטען מידע על האומן…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:42
 #, kde-format
@@ -14322,7 +14321,7 @@ msgstr ""
 #: services/magnatune/MagnatuneInfoParser.cpp:51
 #, kde-format
 msgid "Loading album info..."
-msgstr "טוען מידע אודות האלבום..."
+msgstr "פרטי האלבום נטענים…"
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
 #: services/magnatune/MagnatuneInfoParser.cpp:73
@@ -14343,18 +14342,18 @@ msgstr "מ־Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:164
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
-msgstr "טוען את העמוד הראשי של Magnatune.com..."
+msgstr "העמוד הראשי של Magnatune.com נטען…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:167
 #, kde-format
 msgid "Fetching Magnatune.com front page"
-msgstr "מוריד את העמוד הראשי של Magnatune.com"
+msgstr "העמוד הראשי של Magnatune.com מתקבל"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:178
 #: services/magnatune/MagnatuneInfoParser.cpp:192
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
-msgstr "טוען את דף המועדפים שלך מ-Magnatune.com..."
+msgstr "עמוד המועדפים שלך מ־Magnatune.com נטען…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:203
 #: services/magnatune/MagnatuneInfoParser.cpp:217
@@ -14513,7 +14512,7 @@ msgstr "הורדה מחדש"
 #: services/magnatune/MagnatuneStore.cpp:246
 #, kde-format
 msgid "Update Database"
-msgstr "עדכן את בסיס־נתונים"
+msgstr "עדכון מסד הנתונים"
 
 #: services/magnatune/MagnatuneStore.cpp:249
 #, kde-format
@@ -14644,7 +14643,7 @@ msgstr ""
 #: services/mp3tunes/harmonydaemon/main.cpp:38
 #, kde-format
 msgid "(C) 2008, Casey Link"
-msgstr "(C) 2008, Casey Link"
+msgstr "(C) 2008, קייסי לינק"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:39
 #, kde-format
@@ -14680,7 +14679,7 @@ msgstr "המזהה שבו הסוכן צריך להשתמש."
 #: services/mp3tunes/harmonydaemon/main.cpp:49
 #, kde-format
 msgid "The email to be used for authentication."
-msgstr "הדוא\"ל שישומש לוידוא הזהות."
+msgstr "כתובת הדוא״ל שתשמש לאימות הזהות."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:50
 #, kde-format
@@ -14698,14 +14697,14 @@ msgstr "התחברות ל־MP3tunes"
 #, kde-format
 msgctxt "The e-mail address for Mp3Tunes logins"
 msgid "E-Mail:"
-msgstr "דוא\"ל:"
+msgstr "דוא״ל:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:32
 #, kde-format
 msgctxt "The MP3Tunes password"
 msgid "Password:"
-msgstr "ססמה:"
+msgstr "סיסמה:"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, enableHarmony)
 #. i18n: ectx: property (toolTip), widget (QLabel, label_3)
@@ -14738,7 +14737,7 @@ msgstr "הפעלת סנכרון אוטומטי"
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:62
 #, kde-format
 msgid "PIN Code:"
-msgstr "קוד PIN:"
+msgstr "קוד PIN אישי:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:89
@@ -14767,7 +14766,8 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
 "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">הורדת נועל MP3tunes</span></a></p></body></html>"
+"underline; color:#0057ae;\">הורדת MP3tunes Locker</span></a></p></body></"
+"html>"
 
 #: services/mp3tunes/Mp3tunesMeta.cpp:48
 #, kde-format
@@ -14784,23 +14784,23 @@ msgstr "MP3tunes Locker: המוזיקה שלך בכל מקום!"
 #: services/mp3tunes/Mp3tunesService.cpp:221
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
-msgstr "MP3tunes AutoSync מאופשר"
+msgstr "MP3tunes AutoSync מופעל"
 
 #: services/mp3tunes/Mp3tunesService.cpp:237
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
-msgstr "MP3tunes AutoSync מנוטרל"
+msgstr "MP3tunes AutoSync מושבת"
 
 # kde-il: don't translate
 #: services/mp3tunes/Mp3tunesService.cpp:257
 #, kde-format
 msgid "Authenticating"
-msgstr "וידוא זהות"
+msgstr "אימות זהות"
 
 #: services/mp3tunes/Mp3tunesService.cpp:269
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
-msgstr "MP3tunes נכשל באימות."
+msgstr "האימות מול MP3tune נכשל."
 
 #: services/mp3tunes/Mp3tunesService.cpp:299
 #, kde-format
@@ -14811,12 +14811,12 @@ msgstr "MP3tunes Harmony: מנותק"
 #: services/mp3tunes/Mp3tunesService.cpp:319
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
-msgstr "MP3tunes Harmony: ממתין להכנסת קוד PIN"
+msgstr "MP3tunes Harmony: ממתין למילוי קוד PIN אישי"
 
 #: services/mp3tunes/Mp3tunesService.cpp:331
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
-msgstr "MP3tunes Harmony: התחבר בהצלחה"
+msgstr "MP3tunes Harmony: החיבור הצליח"
 
 #: services/mp3tunes/Mp3tunesService.cpp:346
 #, kde-format
@@ -14839,18 +14839,18 @@ msgid ""
 "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, "
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
-"אפשר להעלות ל־MP3tunes רק רצועות מהסוגים האלו: mp3, mp4' m4a' m4p' aac' wma "
-"ו־ogg."
+"אפשר להעלות ל־MP3tunes רק רצועות מהסוגים האלו: mp3,‏ mp4,‏ m4a,‏ m4p,‏ aac,‏ wma "
+"ו־ogg. "
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
 msgid "Upload to MP3tunes Initiated"
-msgstr "הותחלה ההעלאה ל־MP3tunes"
+msgstr "הוזנקה העלאה ל־MP3tunes"
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:370
 #, kde-format
 msgid "Uploading Track %1/%2"
-msgstr "מעלה רצועות %1/%2"
+msgstr "רצועות %1/%2 נשלחות"
 
 #. i18n: ectx: property (text), widget (QLabel, instructionsLabel)
 #: services/opmldirectory/AddOpmlWidget.ui:37
@@ -14867,12 +14867,12 @@ msgstr ""
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr "טוען מידע אודות הפוד־קסט..."
+msgstr "פרטי ההסכת נטענים…"
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:67
 #, kde-format
 msgid "Fetching Podcast Info"
-msgstr "מצרף מידע על הפוד־קסט"
+msgstr "פרטי ההסכת נמשכים"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
 #: services/opmldirectory/OpmlDirectoryService.cpp:139
@@ -14894,12 +14894,12 @@ msgstr "תיקייה חדשה"
 #: services/opmldirectory/OpmlDirectoryService.cpp:53
 #, kde-format
 msgid "Podcast Directory"
-msgstr "תיקיית פוד־קסט"
+msgstr "תיקיית הסכתים"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
 msgid "A large listing of podcasts"
-msgstr "רשימה גדולה של פוד־קסטים"
+msgstr "רשימה גדולה של הסכתים"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:76
 #, kde-format
@@ -14920,7 +14920,7 @@ msgstr "הוספת קובץ OPML לרשימה."
 #: services/scriptable/ScriptableServiceInfoParser.cpp:88
 #, kde-format
 msgid "Loading info..."
-msgstr "טוען מידע..."
+msgstr "המידע נטען…"
 
 #: services/ServiceBase.cpp:337
 #, kde-format
@@ -14941,7 +14941,7 @@ msgstr "הכתובת שצוינה אינה מיועדת לנגינה או להו
 #: services/ServicePluginManager.cpp:181
 #, kde-format
 msgid "No service named %1 is currently loaded"
-msgstr "אין שרות בשם %1 הרץ כרגע"
+msgstr "אין שירות בשם %1 שנטען כרגע"
 
 #: statsyncing/Config.cpp:100
 #, kde-format
