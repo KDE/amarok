@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-05-07 10:30+0300\n"
+"PO-Revision-Date: 2026-05-14 20:51+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -2275,11 +2275,10 @@ msgid "Duplicates"
 msgstr "כפילויות"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:112
-#, fuzzy, kde-format
-#| msgid "Turn dynamic mode on."
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "הדלק מצב דינמי"
+msgstr "לאפשר רצועות כפולות בתוצאות"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:116
 #, kde-format
@@ -3316,7 +3315,7 @@ msgstr ""
 #: configdialog/dialogs/MetadataConfig.ui:87
 #, kde-format
 msgid "&Enable character set detection in ID3 tags"
-msgstr "אפ&שר זיהוי קידוד תווים בתגי ID3"
+msgstr "לאפ&שר זיהוי קידוד תווים בתגי ID3"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_statSyncingGroup)
 #: configdialog/dialogs/MetadataConfig.ui:97
@@ -3372,14 +3371,14 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"סמן כדי לאפשר תצוגה־על־המסך, המציגה לזמן קצר את פרטי הרצועה המתנגנת בתחילת "
-"השמעתה."
+"יש לסמן כדי לאפשר תצוגה־על־המסך, המציגה לזמן קצר את פרטי הרצועה המתנגנת "
+"בתחילת השמעתה."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
 #, kde-format
 msgid "Use &On-Screen-Display"
-msgstr "&השתמש בתצוגה־על־המסך"
+msgstr "ל&השתמש בתצוגה־על־המסך"
 
 #. i18n: ectx: property (text), widget (QLabel, fadeoutLengthLabel)
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
@@ -3444,7 +3443,7 @@ msgstr "סמן לאפשור צבעים מותאמים אישית בתצוגה־�
 #: configdialog/dialogs/NotificationsConfig.ui:139
 #, kde-format
 msgid "Use &custom colors"
-msgstr "השתמש בצבעים &מותאמים־אישית "
+msgstr "להשתמש בצבעים &מותאמים־אישית "
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, textLabel2)
 #. i18n: ectx: property (whatsThis), widget (KColorButton, kcfg_OsdTextColor)
@@ -3464,7 +3463,7 @@ msgstr "צבע טקסט:"
 #: configdialog/dialogs/NotificationsConfig.ui:188
 #, kde-format
 msgid "Click to select the color of the OSD text."
-msgstr "לחץ לבחירת צבע הטקסט בתצוגה־על־המסך."
+msgstr "יש ללחוץ כדי לבחור את צבע הטקסט בתצוגה־על־המסך."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseTranslucency)
 #: configdialog/dialogs/NotificationsConfig.ui:211
@@ -9652,7 +9651,7 @@ msgstr "שכתוב אוספים ב־iPod ועוד (strohel)"
 #: main.cpp:93
 #, kde-format
 msgid "Myriam Schweingruber"
-msgstr "Myriam Schweingruber"
+msgstr "מרים שוויינגרובר"
 
 #: main.cpp:93
 #, kde-format
@@ -9705,7 +9704,7 @@ msgstr "מפתח (Sentynel)"
 #: main.cpp:112
 #, kde-format
 msgid "Sven Krohlas"
-msgstr "Sven Krohlas"
+msgstr "סוון קרוהלאס"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:112
@@ -9737,7 +9736,7 @@ msgstr ""
 #: main.cpp:123
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
-msgstr "Ian 'The Beard' Monroe"
+msgstr "איאן ‚הזקן’ מונרו"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:123
@@ -9759,7 +9758,7 @@ msgstr "מפתח (jefferai)"
 #: main.cpp:129
 #, kde-format
 msgid "Leo Franchi"
-msgstr "Leo Franchi"
+msgstr "ליאו פראנצ׳י"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:129
@@ -9780,7 +9779,7 @@ msgstr ""
 #: main.cpp:135
 #, kde-format
 msgid "Max Howell"
-msgstr "Max Howell"
+msgstr "מקס האוול"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:135
@@ -9791,7 +9790,7 @@ msgstr "מפתח, חזון"
 #: main.cpp:138
 #, kde-format
 msgid "Maximilian Kossick"
-msgstr "Maximilian Kossick"
+msgstr "מקסימיליאן קוסיק"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:138
@@ -9825,7 +9824,7 @@ msgstr "מפתח (sebr)"
 #: main.cpp:149
 #, kde-format
 msgid "Alejandro Wainzinger"
-msgstr "Alejandro Wainzinger"
+msgstr "אלחנדרו ויינציגר"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:149
@@ -9836,7 +9835,7 @@ msgstr "מפתח (xevix)"
 #: main.cpp:151
 #, kde-format
 msgid "Alex Merry"
-msgstr "Alex Merry"
+msgstr "אלכס מרי"
 
 #: main.cpp:151
 #, kde-format
@@ -9846,7 +9845,7 @@ msgstr "מפתח, תמיכה באיזון עוצמת שמע רצועות"
 #: main.cpp:153
 #, kde-format
 msgid "Casey Link"
-msgstr "Casey Link"
+msgstr "קייסי לינק"
 
 #: main.cpp:153
 #, kde-format
@@ -9866,7 +9865,7 @@ msgstr "הסבה ל־Windows"
 #: main.cpp:157
 #, kde-format
 msgid "Christie Harris"
-msgstr "Christie Harris"
+msgstr "קריסטי האריס"
 
 #: main.cpp:157
 #, kde-format
@@ -9876,7 +9875,7 @@ msgstr ""
 #: main.cpp:159
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
-msgstr "Dan Leinir Turthra Jensen"
+msgstr "דן לייניר טורסתרה ג׳נסן"
 
 #: main.cpp:159
 #, kde-format
@@ -9886,7 +9885,7 @@ msgstr "שימושיות"
 #: main.cpp:161
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
-msgstr "Dan 'Hey, it compiled...' Meltzer"
+msgstr "דן ‚היי, זה התקמפל…’ מלצר"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:161
@@ -14048,9 +14047,9 @@ msgid "slows down track matching"
 msgstr "מאט התאמת רצועות"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
-#, fuzzy, kde-format
+#, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
-msgstr "מוריד '%1' של %2 מ-Magnatune.com"
+msgstr "‚%1’ של %2 יורד מ־Magnatune.com"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:71
 #, kde-format
@@ -14261,13 +14260,13 @@ msgstr "להוריד אל:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:51
-#, fuzzy, kde-format
+#, kde-format
 msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
 msgstr ""
-"אם אתה מוריד קבצים למקום שכבר מנוטר על־ידי Amarok, האלבום יתווסף באופן "
-"אוטומטי לאוסף שלך."
+"אם בחרת להוריד למקום ש־Amarok כבר עוקב אחריו, האלבום יתווסף לאוסף שלך "
+"אוטומטית."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:67
