@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-05-14 20:51+0300\n"
+"PO-Revision-Date: 2026-05-26 09:08+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -4617,10 +4617,9 @@ msgid "&Eject Device"
 msgstr "&ניתוק מכשיר"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:126
-#, fuzzy, kde-format
-#| msgid "Moving files to trash"
+#, kde-format
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "מעביר קבצים לסל־המחזור"
+msgstr "להוסיף יתומים מחדש ולשכוח רצועות מיושנות"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:484
 #, kde-format
@@ -4843,11 +4842,10 @@ msgid "Reading iPod tracks"
 msgstr "רצועות ה־iPod נקראות"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:118
-#, fuzzy, kde-format
-#| msgid "Selected Tracks"
+#, kde-format
 msgctxt "iPod playlist name"
 msgid "Stale tracks"
-msgstr "רצועות מסומנות"
+msgstr "רצועות מיושנות"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:127
 #, kde-format
@@ -5154,11 +5152,9 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
-#, fuzzy, kde-format
-#| msgid "One track already on media device"
-#| msgid_plural "%1 tracks already on media device"
+#, kde-format
 msgid "%1 tracks are already being deleted from the device."
-msgstr "רצועה אחת כבר קיימת על התקן־המדיה"
+msgstr "%1 רצועות כבר נמחקות מהמכשיר."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
 #, fuzzy, kde-format
@@ -8228,10 +8224,9 @@ msgstr "ה&חלפת רווחים בקווים תחתיים"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:54
-#, fuzzy, kde-format
-#| msgid "If checked, postfix artists' names starting with 'The' with ', The'."
+#, kde-format
 msgid "If checked, append ', The' to the artists' names starting with 'The'."
-msgstr "אם מסומן, צרף סיומות \"The ,\" לשמות־האומנים המתחילים ב־ \"‎The\"."
+msgstr "אם האפשרות מסומנת, להוסיף ‚‎, The’ לשמות האומנים שמתחילים ב־‚The’."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:57
@@ -8243,10 +8238,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:60
-#, fuzzy, kde-format
-#| msgid "I&gnore 'The' in Artist Names"
+#, kde-format
 msgid "&Append 'The' to artist names"
-msgstr "ה&תעלם מהמילה 'The' בשם האמן"
+msgstr "הו&ספת ‚The’ אחרי שמות אומנים"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:75
@@ -11171,6 +11165,8 @@ msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Saved as new layout '%2'"
 msgstr ""
+"הפריסה ‚%1’ ששינית היא אחת מפריסות ברירות המחדל ולא ניתן לדרוס אותה. נשמרה "
+"בתור הפריסה החדשה ‚%2’"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
 #, kde-format
@@ -11230,7 +11226,7 @@ msgstr "התקדמות הרצועה"
 #: playlist/navigators/NavigatorConfigAction.cpp:39
 #, kde-format
 msgid "Standard"
-msgstr ""
+msgstr "רגיל"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:44
 #, kde-format
@@ -11285,7 +11281,7 @@ msgstr "לא נוגנו לאחרונה"
 #: playlist/PlaylistBreadcrumbItem.cpp:48
 #, kde-format
 msgid "Shuffle"
-msgstr ""
+msgstr "ערבוב"
 
 #: playlist/PlaylistBreadcrumbItem.cpp:135
 #, kde-format
@@ -11410,6 +11406,8 @@ msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
+"<a href='%1'>מצב דינמי</a> פעיל. <a href='%2'>מילוי מחדש</a> | <a "
+"href='%3'>כיבוי</a>"
 
 #: playlist/PlaylistDock.cpp:177
 #, kde-format
@@ -11422,14 +11420,14 @@ msgid "&Save playlist to \"%1\""
 msgstr "&שמירת רשימת הנגינה אל „%1”"
 
 #: playlist/PlaylistInfoWidget.cpp:58
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "%1 is number of tracks, %2 is time"
 msgid "%1 track (%2)"
 msgid_plural "%1 tracks (%2)"
-msgstr[0] "%1 רצועה (%2)"
-msgstr[1] "%1 רצועות (%2)"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "רצועה (%2)"
+msgstr[1] "שתי רצועות (%2)"
+msgstr[2] "%1 רצועות (%2)"
+msgstr[3] "%1 רצועות (%2)"
 
 #: playlist/PlaylistInfoWidget.cpp:63
 #, kde-format
@@ -11585,12 +11583,12 @@ msgstr "פינוי התור"
 #: playlist/PlaylistSortWidget.cpp:44
 #, kde-format
 msgid "Clear the playlist sorting configuration."
-msgstr ""
+msgstr "איפוס הגדרות מיון רשימת הנגינה."
 
 #: playlist/PlaylistSortWidget.cpp:54
 #, kde-format
 msgid "Add a playlist sorting level."
-msgstr ""
+msgstr "הוספת רמת מיון רשימות נגינה."
 
 #: playlist/PlaylistViewUrlGenerator.cpp:83
 #, kde-format
@@ -11618,7 +11616,7 @@ msgstr "רשימת נגינה"
 #: playlist/ProgressiveSearchWidget.cpp:51
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
-msgstr ""
+msgstr "יש להתחיל להקליד כדי לחפש בהדרגה ברשימת הנגינה"
 
 #: playlist/ProgressiveSearchWidget.cpp:72
 #, kde-format
@@ -11679,7 +11677,7 @@ msgstr "רצועות הוסתרו עקב החיפוש הפעיל."
 #, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr ""
+msgstr "אפשר להוסיף לכאן כמה רצועות על ידי גרירתן מכל מקום שהוא."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -15127,7 +15125,7 @@ msgctxt "%1 is field name such as Rating"
 msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
-msgstr ""
+msgstr "אין אוסף נבחר שתומך בכתיבת %1 - זה לא הגיוני לסנכרן אותו."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:17
@@ -15158,6 +15156,8 @@ msgid ""
 "synchronizing tracks with a file-based target always make sure that the "
 "database file is not currently in use!"
 msgstr ""
+"<span style=\"color:red; font-weight:bold;\">חשוב:</span> לפני סנכרון רצועות "
+"עם יעד מבוסס קבצים תמיד לוודא שקובץ מסד הנתונים לא נמצא כבר בשימוש!"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:60
 #, kde-format
@@ -15184,7 +15184,7 @@ msgstr "סנכרון"
 msgid ""
 "There are no tracks unique to one of the sources participating in the "
 "synchronization"
-msgstr ""
+msgstr "אין רצועות שייחודיות לאחד המקורות שמשתתפים בסנכרון"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:151
 #, kde-format
@@ -15267,7 +15267,7 @@ msgstr "רצועות שהן ייחודיות למקורות שלהן"
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
 msgid "Tracks that have been excluded from synchronization due to ambiguity"
-msgstr ""
+msgstr "רצועות שהוחרגו מהסנכרון עקב אי ודאות"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
 #, kde-format
@@ -15316,7 +15316,7 @@ msgstr "סינון רצועות…"
 #: statsyncing/ui/MatchedTracksPage.ui:84
 #, kde-format
 msgid "Affects all applicable tracks, not just shown ones"
-msgstr ""
+msgstr "חל על כל הרצועות שזה תקף עליהן, לא רק אלו שמופיעות"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
@@ -15415,6 +15415,9 @@ msgid ""
 "your files readable by a portable music player or a particular software "
 "program."
 msgstr ""
+"בזמן ההעתקה, אפשר לבחור להתמיר את קובצי המוזיקה שלך לתסדיר אחר עם מקודד "
+"(מפענח). אפשר לעשות זאת כדי לחסוך מקום או כדי שהקבצים שלך יותאמו לקריאה על "
+"ידי נגן מוזיקה נייד או תוכנות מסוימות."
 
 #: transcoding/TranscodingAssistantDialog.cpp:70
 #, kde-format
@@ -15534,7 +15537,7 @@ msgstr "לזכור את הבחירה הזאת לפעם הבאה"
 msgid ""
 "In order to configure the parameters of the transcoding operation, please "
 "pick an encoder from the list."
-msgstr ""
+msgstr "כדי להגדיר את משתני פעולת ההתמרה, נא לבחור מצפין מהרשימה."
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:99
 #, kde-format
