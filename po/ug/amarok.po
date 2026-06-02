@@ -8,24 +8,25 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2013-09-08 07:04+0900\n"
-"Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
+"PO-Revision-Date: 2026-05-28 17:02-0400\n"
+"Last-Translator: Abduqadir Abliz <sahranbay@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: ug\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.9\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "ئابدۇقادىر ئابلىز, غەيرەت كەنجى"
+msgstr "ئابدۇقادىر ئابلىز، غەيرەت كەنجى"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "sahran.ug@gmail.com,  gheyret@gmail.com"
+msgstr "sahranbay@gmail.com, gheyret@gmail.com"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3
@@ -95,15 +96,11 @@ msgid "&About"
 msgstr "ھەققىدە(&A)"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:211
-#, fuzzy, kde-format
-#| msgid ""
-#| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
-#| "report bugs.\n"
+#, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"<html>كەمتۈكلەرنى <link>http://bugs.kde.org</link> غا مەلۇم قىلىڭ.</html>\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:216
 #: aboutdialog/ExtendedAboutDialog.cpp:222
@@ -140,7 +137,7 @@ msgstr "تەرجىمە(&R)"
 #: aboutdialog/OcsPersonItem.cpp:82
 #, kde-format
 msgid "Email contributor"
-msgstr "تۆھپىكارلارغا ئېلخەت"
+msgstr "تۆھپىكارغا ئېلخەت يوللاش"
 
 #: aboutdialog/OcsPersonItem.cpp:90
 #, kde-format
@@ -170,7 +167,7 @@ msgstr ""
 #: ActionClasses.cpp:186
 #, kde-format
 msgid "Play/Pause"
-msgstr "قويۇش/توختىتىش"
+msgstr "ياڭرات/ۋاقىتلىق توختا"
 
 #: ActionClasses.cpp:323
 #, kde-format
@@ -197,7 +194,7 @@ msgstr ""
 #: ActionClasses.cpp:344
 #, kde-format
 msgid "&Album"
-msgstr "ئالبوم(&A)"
+msgstr "ناخشا توپلىمى(&A)"
 
 #: ActionClasses.cpp:359 scripting/scriptconsole/ScriptConsole.cpp:98
 #, kde-format
@@ -233,7 +230,7 @@ msgstr ""
 #: MainWindow.cpp:1232
 #, kde-format
 msgid "Amarok"
-msgstr "Amarok"
+msgstr "Amarok ۋاسىتە ياڭراتقۇچ"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:13
@@ -1098,10 +1095,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Recently Played Tracks"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "يېقىندىن بېرى ئاڭلىغان نەغمىلەر"
+msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
@@ -1435,7 +1431,7 @@ msgstr ""
 #, kde-format
 msgctxt "The command type of this url is not known"
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: amarokurls/BookmarkCurrentButton.cpp:32 amarokurls/BookmarkModel.cpp:535
 #, kde-format
@@ -1487,13 +1483,13 @@ msgstr "گۇرۇپپا"
 #: browsers/playlistbrowser/PodcastModel.cpp:319 playlist/PlaylistModel.cpp:942
 #, kde-format
 msgid "Type"
-msgstr "تىپى"
+msgstr "تۈرى"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
 #: amarokurls/BookmarkModel.cpp:259 network/NetworkRequests.ui:46
 #, kde-format
 msgid "URL"
-msgstr "URL"
+msgstr "تور ئادرېسى"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: amarokurls/BookmarkModel.cpp:260
@@ -1542,7 +1538,7 @@ msgstr ""
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:499 MainWindow.cpp:1232
 #, kde-format
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: amarokurls/ContextUrlGenerator.cpp:55
 #, kde-format
@@ -1563,7 +1559,7 @@ msgstr "مەزمۇن"
 #: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:288
 #, kde-format
 msgid "Files"
-msgstr "ھۆججەتلەر"
+msgstr "ھۆججەت"
 
 #: amarokurls/NavigationUrlGenerator.cpp:143
 #, kde-format
@@ -1599,7 +1595,7 @@ msgstr ""
 #, kde-format
 msgctxt "A type of command that affects the view in the browser category"
 msgid "Navigate"
-msgstr "يول باشلا"
+msgstr "يولباشچى"
 
 #: amarokurls/PlayUrlGenerator.cpp:103
 #, kde-format
@@ -1611,7 +1607,7 @@ msgstr ""
 msgctxt ""
 "A type of command that starts playing at a specific position in a track"
 msgid "Play"
-msgstr "قوي"
+msgstr "ياڭرات"
 
 #: App.cpp:363
 #, kde-format
@@ -1656,7 +1652,7 @@ msgstr ""
 #: App.cpp:372
 #, kde-format
 msgid "Additional options:"
-msgstr "قوشۇمچە تاللانمىلار:"
+msgstr "قوشۇمچە تاللانما:"
 
 #: App.cpp:373
 #, kde-format
@@ -1745,11 +1741,10 @@ msgid "Select collection folder"
 msgstr ""
 
 #: App.cpp:677
-#, fuzzy, kde-format
-#| msgid "User"
+#, kde-format
 msgctxt "Select if should use a path as collection folder"
 msgid "Use"
-msgstr "ئىشلەتكۈچى"
+msgstr ""
 
 #: App.cpp:678
 #, kde-format
@@ -1799,26 +1794,25 @@ msgstr ""
 #, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added Today"
-msgstr ""
+msgstr "بۈگۈن قوشقان"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:174
 #, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Week"
-msgstr ""
+msgstr "بۇ ھەپتە قوشقان"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:176
 #, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
-msgstr ""
+msgstr "بۇ ئايدا قوشقان"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy, kde-format
-#| msgid "Last Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "ئاخىرقى قويۇلغان"
+msgstr "ھەرگىز قويۇلمىغان"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:197
 #, kde-format
@@ -1826,7 +1820,7 @@ msgctxt ""
 "separator between collection browser level categories, i.e. the ' / ' in "
 "'Artist / Album'"
 msgid " / "
-msgstr " / "
+msgstr ""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:210
 #, kde-format
@@ -1855,11 +1849,10 @@ msgid "Show Track Numbers"
 msgstr ""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
-#, fuzzy, kde-format
-#| msgid "Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "ھەر خىل ئورۇنلىغۇچىلار"
+msgstr ""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:261
 #, kde-format
@@ -1902,7 +1895,7 @@ msgstr[0] ""
 #, kde-format
 msgctxt "The Name is not known"
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: browsers/CollectionTreeItemModelBase.cpp:397
 #: core-impl/collections/db/sql/SqlMeta.cpp:408
@@ -1914,7 +1907,7 @@ msgstr "نامەلۇم"
 #: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
-msgstr "ھەر خىل ئورۇنلىغۇچىلار"
+msgstr "نۇرغۇن ئورۇنلىغۇچى"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
@@ -1943,7 +1936,7 @@ msgstr "نەغمە ئورۇنلىغۇچى"
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:932
 #, kde-format
 msgid "Album Artist"
-msgstr "ئالبوم ئورۇنلىغۇچىسى"
+msgstr "ناخشا توپلىمى سەنئەتكارى"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1171
 #: context/applets/wikipedia/package/contents/ui/main.qml:104
@@ -1967,7 +1960,7 @@ msgstr "يىل"
 #: browsers/CollectionTreeItemModelBase.cpp:1177
 #, kde-format
 msgid "Label"
-msgstr "ئەن"
+msgstr "بەلگە"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1179
 #: playlist/navigators/NavigatorConfigAction.cpp:81
@@ -1979,7 +1972,7 @@ msgstr "يوق"
 #: statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
-msgstr "ھەممىنى قاتلا"
+msgstr "ھەممىنى يىغ"
 
 #: browsers/CollectionTreeView.cpp:387
 #, kde-format
@@ -2091,7 +2084,7 @@ msgstr[0] ""
 #: browsers/InfoProxy.cpp:168
 #, kde-format
 msgid "Home"
-msgstr "ماكان"
+msgstr "باش بەت"
 
 #: browsers/playlistbrowser/APGCategory.cpp:38
 #, kde-format
@@ -2251,7 +2244,7 @@ msgstr "يېڭى قويۇش تىزىمى"
 #: browsers/playlistbrowser/DynamicCategory.cpp:122
 #, kde-format
 msgid "Edit"
-msgstr "تەھرىرلەش"
+msgstr "تەھرىر"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:124
 #, kde-format
@@ -2332,7 +2325,7 @@ msgstr ""
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
 #, kde-format
 msgid "Add Folder"
-msgstr "قىسقۇچ قوشۇش"
+msgstr "قىسقۇچ قوش"
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:80
 #, kde-format
@@ -2361,7 +2354,7 @@ msgstr[0] ""
 #, kde-format
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
-msgstr "ئوقۇۋاتىدۇ…"
+msgstr "يۈكلەۋاتىدۇ…"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:171
 #, kde-format
@@ -2402,30 +2395,24 @@ msgid "&Export As..."
 msgstr ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
-#, fuzzy, kde-format
-#| msgid "Track"
+#, kde-format
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
 msgid_plural "%1 Tracks"
-msgstr[0] "نەغمە"
+msgstr[0] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:368
-#, fuzzy, kde-format
-#| msgid "Remove From Playlist"
+#, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
-msgstr "قويۇش تىزىمىدىن چىقىرىۋېتىش"
+msgstr ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:369
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "A type of command that affects the sorting, layout and filtering int he "
-#| "Playlist"
-#| msgid "Playlist"
+#, kde-format
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
 msgid_plural "%1 Playlists"
-msgstr[0] "قويۇش تىزىمى"
+msgstr[0] ""
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:373
 #, kde-format
@@ -2503,7 +2490,7 @@ msgstr ""
 #: core-impl/collections/umscollection/UmsConfiguration.ui:136
 #, kde-format
 msgid "Podcasts"
-msgstr "Podcasts"
+msgstr ""
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:79
 #, kde-format
@@ -2564,7 +2551,7 @@ msgstr "ھالقىلىق سۆز:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Podcast قوشۇش…"
+msgstr "تارقاتقۇ قوش…"
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
@@ -2611,12 +2598,12 @@ msgstr "ماۋزۇ"
 #: browsers/playlistbrowser/PodcastModel.cpp:321 dialogs/TagDialog.cpp:516
 #, kde-format
 msgid "Summary"
-msgstr "ئۈزۈندى"
+msgstr "ئۈزۈندە"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:341
 #, kde-format
 msgid "Add Podcast"
-msgstr "Podcast قوشۇش"
+msgstr "تارقاتقۇ قوش"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:342
 #, kde-format
@@ -2675,7 +2662,7 @@ msgstr ""
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
 msgid "Metadata"
-msgstr "مېتا سانلىق-مەلۇماتى"
+msgstr "تەپسىلىي ئۇچۇر"
 
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
@@ -2685,7 +2672,7 @@ msgstr ""
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
 msgid "Playback"
-msgstr "قويۇش"
+msgstr "ياڭرات"
 
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
@@ -2695,12 +2682,12 @@ msgstr ""
 #: configdialog/ConfigDialog.cpp:63
 #, kde-format
 msgid "Notifications"
-msgstr "ئۇقتۇرۇشلار"
+msgstr "ئۇقتۇرۇش"
 
 #: configdialog/ConfigDialog.cpp:63
 #, kde-format
 msgid "Configure Notifications"
-msgstr "ئۇقتۇرۇش سەپلەش"
+msgstr "ئۇقتۇرۇش سەپلە"
 
 #: configdialog/ConfigDialog.cpp:64
 #, kde-format
@@ -2720,7 +2707,7 @@ msgstr "قىستۇرما"
 #: configdialog/ConfigDialog.cpp:65
 #, kde-format
 msgid "Configure Plugins"
-msgstr "قىستۇرمىلارنى سەپلەش"
+msgstr "قىستۇرما سەپلەش"
 
 #: configdialog/ConfigDialog.cpp:66
 #: scripting/scriptconsole/ScriptConsole.cpp:422
@@ -2782,9 +2769,7 @@ msgid "Amarok was able to establish a successful connection to the database."
 msgstr ""
 
 #: configdialog/dialogs/DatabaseConfig.cpp:104
-#, fuzzy, kde-format
-#| msgctxt "The operation completed as expected"
-#| msgid "Success"
+#, kde-format
 msgid "Success"
 msgstr "مۇۋەپپەقىيەتلىك بولدى"
 
@@ -2805,10 +2790,9 @@ msgid ""
 msgstr ""
 
 #: configdialog/dialogs/DatabaseConfig.cpp:138
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database settings changed"
-msgstr "ساندان ئاتى"
+msgstr ""
 
 #: configdialog/dialogs/DatabaseConfig.cpp:161
 #, kde-format
@@ -2907,10 +2891,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Test database connection"
-msgstr "ساندان ئاتى"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: configdialog/dialogs/DatabaseConfig.ui:206
@@ -2956,7 +2939,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:23
 #, kde-format
 msgid "General Options"
-msgstr "ئادەتتىكى تاللانمىلار"
+msgstr "ئادەتتىكى تاللانما"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowTrayIcon)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowTrayIcon)
@@ -3091,7 +3074,7 @@ msgstr "خۇشال"
 #: configdialog/dialogs/GeneralConfig.ui:161
 #, kde-format
 msgid "Normal"
-msgstr "نورمال"
+msgstr "ئادەتتىكى"
 
 #: configdialog/dialogs/MetadataConfig.cpp:39
 #, kde-format
@@ -3118,11 +3101,10 @@ msgid "Huge (1600 px)"
 msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:104
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Ratings"
-msgstr "قەدەمداش"
+msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:106
 #, kde-format
@@ -3137,26 +3119,23 @@ msgid "Synchronize Last Played Times"
 msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:110
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Playcounts"
-msgstr "قەدەمداش"
+msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:112
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Labels"
-msgstr "قەدەمداش"
+msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:120
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt ""
 "%1 is field name such as Play Count (this string is only used as a fallback)"
 msgid "Synchronize %1"
-msgstr "قەدەمداش"
+msgstr ""
 
 #: configdialog/dialogs/MetadataConfig.cpp:231
 #, kde-format
@@ -3258,23 +3237,21 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, m_configureTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:138
-#, fuzzy, kde-format
-#| msgid "&Configure"
+#, kde-format
 msgid "Configure…"
-msgstr "سەپلە(&C)"
+msgstr "سەپلە…"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_addTargetButton)
 #: configdialog/dialogs/MetadataConfig.ui:145
 #, kde-format
 msgid "Add…"
-msgstr ""
+msgstr "قوش…"
 
 #. i18n: ectx: property (text), widget (QPushButton, m_synchronizeButton)
 #: configdialog/dialogs/MetadataConfig.ui:155
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgid "Synchronize…"
-msgstr "قەدەمداش"
+msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: configdialog/dialogs/NotificationsConfig.ui:17
@@ -3518,7 +3495,7 @@ msgstr ""
 #: configdialog/dialogs/PluginsConfig.cpp:44
 #, kde-format
 msgid "Collections"
-msgstr "توپلاملار"
+msgstr "توپلام"
 
 #: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
@@ -3526,10 +3503,9 @@ msgid "Internet Services"
 msgstr ""
 
 #: configdialog/dialogs/PluginsConfig.cpp:50
-#, fuzzy, kde-format
-#| msgid "Statistics"
+#, kde-format
 msgid "Statistics importers"
-msgstr "ستاتىستىكا"
+msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:130
 #, kde-format
@@ -3542,10 +3518,9 @@ msgid "Select Archived Script"
 msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:151
-#, fuzzy, kde-format
-#| msgid "Invalid"
+#, kde-format
 msgid "Invalid Archive"
-msgstr "ئىناۋەتسىز"
+msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
 #: configdialog/dialogs/ScriptsConfig.cpp:188
@@ -3562,10 +3537,9 @@ msgid ""
 msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:213
-#, fuzzy, kde-format
-#| msgid "Successfully installed %1"
+#, kde-format
 msgid "The script %1 was successfully installed"
-msgstr "%1 مۇۋەپپەقىيەتلىك ئورنىتىلدى"
+msgstr ""
 
 #: configdialog/dialogs/ScriptsConfig.cpp:225
 #, kde-format
@@ -3597,10 +3571,9 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:72
-#, fuzzy, kde-format
-#| msgid "Scripts"
+#, kde-format
 msgid "Script Console"
-msgstr "قوليازما"
+msgstr ""
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
@@ -3683,10 +3656,9 @@ msgid "%1 Hz"
 msgstr ""
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
-#, fuzzy, kde-format
-#| msgid "Sample rate:"
+#, kde-format
 msgid "Sample size:"
-msgstr "ئەۋرىشكە ئېلىش نىسبىتى:"
+msgstr ""
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:948
@@ -3701,10 +3673,9 @@ msgid "Score"
 msgstr "ئېرىشكەن نومۇر"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:55
-#, fuzzy, kde-format
-#| msgid "Last played:"
+#, kde-format
 msgid "Last played"
-msgstr "ئەڭ ئاخىرقى قويۇلغان:"
+msgstr ""
 
 #: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
@@ -3739,7 +3710,7 @@ msgstr ""
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
-msgstr "ئەنلەر"
+msgstr "ئەن"
 
 #: context/applets/labels/LabelsApplet.cpp:104
 #, kde-format
@@ -3755,7 +3726,7 @@ msgstr "قايتا يۈكلە"
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Settings"
-msgstr "تەڭشەكلەر"
+msgstr "تەڭشەك"
 
 #: context/applets/labels/LabelsApplet.cpp:199
 #, kde-format
@@ -3956,46 +3927,39 @@ msgid "Remove selected"
 msgstr "تاللىغاننى چىقىرىۋەت"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgid "Lyrics config"
-msgstr "ناخشا سۆزى"
+msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:59
-#, fuzzy, kde-format
-#| msgid "Fonts"
+#, kde-format
 msgid "Font size:"
-msgstr "خەت نۇسخىلىرى"
+msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
-#, fuzzy, kde-format
-#| msgid "Alignment: "
+#, kde-format
 msgid "Text alignment:"
-msgstr "توغرىلاش: "
+msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align left"
-msgstr "توغرىلاش"
+msgstr "سولغا توغرىلا"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align right"
-msgstr "توغرىلاش"
+msgstr "ئوڭغا توغرىلا"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align center"
-msgstr "توغرىلاش"
+msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font:"
-msgstr "خەت نۇسخا: "
+msgstr "خەت نۇسخا:"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:57
 #, kde-format
@@ -4003,10 +3967,9 @@ msgid "Toggle auto scroll"
 msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/main.qml:67
-#, fuzzy, kde-format
-#| msgid "Reload"
+#, kde-format
 msgid "Reload lyrics"
-msgstr "قايتا يۈكلە"
+msgstr ""
 
 #: context/applets/lyrics/package/contents/ui/main.qml:111
 #, kde-format
@@ -4044,11 +4007,10 @@ msgid "Width"
 msgstr "كەڭلىك"
 
 #: context/applets/similarartists/package/contents/ui/main.qml:40
-#, fuzzy, kde-format
-#| msgid "<b>%1</b>"
+#, kde-format
 msgctxt "%1 is the artist for which similars are currently shown"
 msgid "Similar to <b>%1</b>"
-msgstr "<b>%1</b>"
+msgstr ""
 
 #: context/applets/similarartists/package/contents/ui/main.qml:83
 #, kde-format
@@ -4072,7 +4034,7 @@ msgstr ""
 #: context/applets/songkick/SongkickApplet.cpp:63
 #, kde-format
 msgid "Concerts"
-msgstr "كونسېرتلار"
+msgstr "ئەلنەغمە كېچىلىكى"
 
 #: context/applets/songkick/SongkickApplet.cpp:70
 #, kde-format
@@ -4124,7 +4086,7 @@ msgstr "ئورۇنلىغۇچى"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs"
-msgstr "بەتكۈچلەر"
+msgstr "بەتكۈچ"
 
 #: context/applets/tabs/TabsApplet.cpp:99
 #, kde-format
@@ -4190,7 +4152,7 @@ msgstr ""
 #: context/applets/tabs/TabsSettings.ui:60
 #, kde-format
 msgid "Bass"
-msgstr "Bass مۇزىكىسى"
+msgstr "تۆۋەن ئاۋاز"
 
 #: context/applets/tabs/TabsView.cpp:174
 #, kde-format
@@ -4200,10 +4162,9 @@ msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:41
 #: context/applets/wikipedia/package/contents/ui/main.qml:153
-#, fuzzy, kde-format
-#| msgid "&Previous"
+#, kde-format
 msgid "Previous"
-msgstr "ئالدىنقى(&P)"
+msgstr "ئالدىنقى"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:52
 #: context/applets/wikipedia/package/contents/ui/main.qml:159
@@ -4226,18 +4187,16 @@ msgid "Track"
 msgstr "نەغمە"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "چاپلاش تاختىسىغا كۆچۈر"
+msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "چاپلاش تاختىسىغا كۆچۈر"
+msgstr ""
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
@@ -4297,16 +4256,14 @@ msgid "Click to open %1 in a web browser"
 msgstr ""
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
-#, fuzzy, kde-format
-#| msgctxt "change options"
-#| msgid "Configure %1"
+#, kde-format
 msgid "Configure Applets..."
-msgstr "%1 نى سەپلە"
+msgstr ""
 
 #: context/ContextDock.cpp:27
 #, kde-format
 msgid "&Context"
-msgstr ""
+msgstr "مەزمۇن(&C)"
 
 #: context/engines/labels/LabelsEngine.cpp:133
 #: context/engines/labels/LabelsEngine.cpp:195
@@ -4420,14 +4377,14 @@ msgstr "ئىشلەتكىلى بولىدىغان فورماتلار"
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:67
 #, kde-format
 msgid "Ogg Vorbis"
-msgstr "Ogg Vorbis"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QRadioButton, flacButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:39
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:49
 #, kde-format
 msgid "FLAC"
-msgstr "FLAC"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QRadioButton, wavButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:46
@@ -4440,7 +4397,7 @@ msgstr ""
 #: core/transcoding/formats/TranscodingMp3Format.cpp:63
 #, kde-format
 msgid "MP3"
-msgstr "MP3"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, advancedButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:82
@@ -4771,7 +4728,7 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:109
 #, kde-format
 msgid "Model:"
-msgstr "تىپى:"
+msgstr "ئەندىزە:"
 
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
@@ -4796,7 +4753,7 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
 #, kde-format
 msgid "Video:"
-msgstr "كۆرگۈ"
+msgstr "سىن:"
 
 #. i18n: ectx: property (text), widget (QLabel, albumArtworkLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
@@ -4890,7 +4847,7 @@ msgstr ""
 #, kde-format
 msgctxt "Unknown iPod model, generation..."
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:303
 #, kde-format
@@ -5098,7 +5055,7 @@ msgstr ""
 #, kde-format
 msgctxt "The genre name for classical music"
 msgid "Classical"
-msgstr "كلاسسىك"
+msgstr "كىلاسسىك"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:36
 #, kde-format
@@ -5178,8 +5135,7 @@ msgid "Remove empty folders?"
 msgstr ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Select if empty folders should be removed"
 msgid "Remove"
 msgstr "چىقىرىۋەت"
@@ -5318,7 +5274,7 @@ msgstr ""
 #: core-impl/collections/umscollection/UmsConfiguration.ui:51
 #, kde-format
 msgid "Music"
-msgstr "مۇزىكا"
+msgstr "نەغمە"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:88
@@ -5349,13 +5305,13 @@ msgstr ""
 #, kde-format
 msgctxt "The value is not known"
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: core-impl/meta/default/DefaultMetaTypes.h:58
 #, kde-format
 msgctxt "The Value is not known"
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: core-impl/meta/multi/MultiTrack.h:59
 #, kde-format
@@ -5456,7 +5412,7 @@ msgstr ""
 #: services/opmldirectory/AddOpmlWidget.ui:65
 #, kde-format
 msgid "URL:"
-msgstr "URL:"
+msgstr "تور ئادرېسى:"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -5646,14 +5602,11 @@ msgid "Already subscribed to %1."
 msgstr ""
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgctxt "number of minutes for the pretty time"
-#| msgid "%1 minute"
-#| msgid_plural "%1 minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "%1 مىنۇت"
+msgstr[0] ""
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -5734,7 +5687,7 @@ msgstr "چەكلەنگەن"
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:79
 #, kde-format
 msgid "Base directory:"
-msgstr ""
+msgstr "ئاساسىي مۇندەرىجە:"
 
 #. i18n: ectx: property (toolTip), widget (KUrlRequester, m_baseDirUrl)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:107
@@ -6040,13 +5993,13 @@ msgstr ""
 #, kde-format
 msgctxt "Track field name"
 msgid "Album Artist"
-msgstr "ئالبوم ئورۇنلىغۇچىسى"
+msgstr "ناخشا توپلىمى سەنئەتكارى"
 
 #: core/meta/support/MetaConstants.cpp:211
 #, kde-format
 msgctxt "Track field name"
 msgid "Label"
-msgstr "ئەن"
+msgstr "بەلگە"
 
 #: core/meta/support/MetaConstants.cpp:212
 #, kde-format
@@ -6055,8 +6008,7 @@ msgid "Last Modified"
 msgstr "ئاخىرقى ئۆزگەرتىش"
 
 #: core/meta/support/MetaConstants.cpp:213
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgctxt "Track field name"
 msgid "Lyrics"
 msgstr "ناخشا سۆزى"
@@ -6135,7 +6087,7 @@ msgstr ""
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "bpm"
-msgstr "bpm"
+msgstr ""
 
 #: core/meta/support/MetaConstants.cpp:236
 #, kde-format
@@ -6147,19 +6099,19 @@ msgstr "ئۇزۇنلۇق"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "bitrate"
-msgstr "bitrate"
+msgstr ""
 
 #: core/meta/support/MetaConstants.cpp:238
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "samplerate"
-msgstr "samplerate"
+msgstr ""
 
 #: core/meta/support/MetaConstants.cpp:239
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "filesize"
-msgstr "filesize"
+msgstr ""
 
 #: core/meta/support/MetaConstants.cpp:240
 #, kde-format
@@ -6241,7 +6193,7 @@ msgstr ""
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumartist"
-msgstr "albumartist"
+msgstr ""
 
 #: core/meta/support/MetaConstants.cpp:255
 #, kde-format
@@ -6256,11 +6208,10 @@ msgid "modified"
 msgstr "ئۆزگەرتكەن"
 
 #: core/meta/support/MetaConstants.cpp:257
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "lyrics"
-msgstr "ناخشا سۆزى"
+msgstr ""
 
 #: core/meta/support/MetaUtility.cpp:420
 #, kde-format
@@ -6283,7 +6234,7 @@ msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
-msgstr "h:mm:ss"
+msgstr ""
 
 #: core/meta/support/MetaUtility.cpp:442
 #, kde-format
@@ -6405,14 +6356,13 @@ msgstr "ھەرگىز"
 #, kde-format
 msgctxt "When this track was last played"
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: core/support/Amarok.cpp:58
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgctxt "monthname year"
 msgid "%1"
-msgstr "%1%"
+msgstr "%1"
 
 #: core/support/Amarok.cpp:64
 #, kde-format
@@ -6463,7 +6413,7 @@ msgstr "0"
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
-msgstr "%1M"
+msgstr ""
 
 #: core/support/Amarok.cpp:112
 #, kde-format
@@ -6481,13 +6431,13 @@ msgstr "ئەتە"
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
-msgstr "%1d"
+msgstr ""
 
 #: core/support/Amarok.cpp:124
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
-msgstr "%1h"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, qLabel_collection)
 #. i18n: ectx: property (text), widget (QLabel, qLabel_length)
@@ -6520,22 +6470,20 @@ msgid "0"
 msgstr "0"
 
 #: core/support/Amarok.cpp:168
-#, fuzzy, kde-format
-#| msgid "Playlist_%1"
+#, kde-format
 msgctxt ""
 "A saved playlist with the current time (KLocalizedString::Shortdate) added "
 "between                           the parentheses"
 msgid "Empty Playlist (%1)"
-msgstr "قويۇش تىزىمى _%1"
+msgstr ""
 
 #: core/support/Amarok.cpp:196
-#, fuzzy, kde-format
-#| msgid "Previous Track"
+#, kde-format
 msgctxt ""
 "A saved playlist with the current time (KLocalizedString::Shortdate) added "
 "between                           the parentheses"
 msgid "Various Tracks (%1)"
-msgstr "ئالدىنقى Track"
+msgstr ""
 
 #: core/support/Amarok.cpp:203
 #, kde-format
@@ -6955,12 +6903,12 @@ msgstr ""
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
 msgid "Last.fm"
-msgstr "Last.fm"
+msgstr ""
 
 #: covermanager/CoverFoundDialog.cpp:137
 #, kde-format
 msgid "Google"
-msgstr "گۇگىل(Google)"
+msgstr "Google"
 
 #: covermanager/CoverFoundDialog.cpp:138
 #, kde-format
@@ -6998,10 +6946,9 @@ msgid "Download Progress"
 msgstr "چۈشۈرۈش سۈرئىتى"
 
 #: covermanager/CoverFoundDialog.cpp:541
-#, fuzzy, kde-format
-#| msgid "&Cancel"
+#, kde-format
 msgid "Cancel"
-msgstr "ۋاز كەچ(&C)"
+msgstr "ۋاز كەچ"
 
 #: covermanager/CoverFoundDialog.cpp:702
 #, kde-format
@@ -7069,7 +7016,7 @@ msgstr "ماۋزۇ"
 #, kde-format
 msgctxt "@item::intable Release Type"
 msgid "Type"
-msgstr "تىپى"
+msgstr "تۈرى"
 
 #: covermanager/CoverFoundDialog.cpp:823
 #, kde-format
@@ -7105,7 +7052,7 @@ msgstr "ئۇلانما"
 #, kde-format
 msgctxt "@item::intable"
 msgid "URL"
-msgstr "URL"
+msgstr "تور ئادرېسى"
 
 #: covermanager/CoverManager.cpp:111 MainWindow.cpp:806
 #, kde-format
@@ -7130,7 +7077,7 @@ msgstr "ئىزدەيدىغان سۆزنى بۇ يەرگە كىرگۈزۈڭ"
 #: covermanager/CoverManager.cpp:191
 #, kde-format
 msgid "All Albums"
-msgstr "بارلىق ئالبوملار"
+msgstr "بارلىق سۈرەتدان"
 
 #: covermanager/CoverManager.cpp:192
 #, kde-format
@@ -7221,18 +7168,15 @@ msgid_plural "%1 albums"
 msgstr[0] ""
 
 #: covermanager/CoverManager.cpp:699
-#, fuzzy, kde-format
-#| msgctxt "comma between list words"
-#| msgid ", "
+#, kde-format
 msgctxt "Separator for artists"
 msgid ", "
 msgstr "، "
 
 #: covermanager/CoverManager.cpp:699
-#, fuzzy, kde-format
-#| msgid " by "
+#, kde-format
 msgid "%1 by %2"
-msgstr " ئارىلىق "
+msgstr ""
 
 #: covermanager/CoverManager.cpp:704
 #, kde-format
@@ -7289,10 +7233,9 @@ msgid ""
 msgstr ""
 
 #: dialogs/CollectionSetup.cpp:72
-#, fuzzy, kde-format
-#| msgid "Not a file"
+#, kde-format
 msgid "Import batch file..."
-msgstr "ھۆججەت ئەمەس"
+msgstr ""
 
 #: dialogs/CollectionSetup.cpp:73
 #, kde-format
@@ -7332,10 +7275,9 @@ msgid "Import Collection"
 msgstr ""
 
 #: dialogs/DatabaseImporterDialog.cpp:47
-#, fuzzy, kde-format
-#| msgid "Configuration"
+#, kde-format
 msgid "Import configuration"
-msgstr "سەپلىمە"
+msgstr ""
 
 #: dialogs/DatabaseImporterDialog.cpp:67
 #, kde-format
@@ -7472,12 +7414,12 @@ msgstr ""
 #: dialogs/EditFilterDialog.cpp:36
 #, kde-format
 msgid "AND"
-msgstr "AND"
+msgstr "ۋە"
 
 #: dialogs/EditFilterDialog.cpp:37
 #, kde-format
 msgid "OR"
-msgstr "OR"
+msgstr "ياكى"
 
 #: dialogs/EditFilterDialog.cpp:38
 #, kde-format
@@ -7707,16 +7649,14 @@ msgid "%1 or %2"
 msgstr "%1 ياكى %2"
 
 #: dialogs/OrganizeCollectionDialog.cpp:112
-#, fuzzy, kde-format
-#| msgid "Album Artist"
+#, kde-format
 msgid "The Album Artist"
-msgstr "ئالبوم ئورۇنلىغۇچىسى"
+msgstr ""
 
 #: dialogs/OrganizeCollectionDialog.cpp:113
-#, fuzzy, kde-format
-#| msgid "Artist"
+#, kde-format
 msgid "The Artist"
-msgstr "ئورۇنلىغۇچى"
+msgstr ""
 
 #: dialogs/OrganizeCollectionDialog.cpp:115
 #, kde-format
@@ -7746,16 +7686,14 @@ msgid ""
 msgstr ""
 
 #: dialogs/OrganizeCollectionDialog.cpp:316
-#, fuzzy, kde-format
-#| msgid "Original"
+#, kde-format
 msgid "Original: %1"
-msgstr "ئەسلى"
+msgstr ""
 
 #: dialogs/OrganizeCollectionDialog.cpp:317
-#, fuzzy, kde-format
-#| msgid "Preview"
+#, kde-format
 msgid "Preview: %1"
-msgstr "ئالدىن كۆزەت"
+msgstr ""
 
 #: dialogs/OrganizeCollectionDialog.cpp:383
 #, kde-format
@@ -8001,13 +7939,13 @@ msgstr ""
 #: dialogs/TagDialog.cpp:517
 #, kde-format
 msgid "Tags"
-msgstr "خەتكۈشلەر"
+msgstr "بەلگە"
 
 #: dialogs/TagDialog.cpp:674 dialogs/TagDialog.cpp:682
 #, kde-format
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
-msgstr "نامەلۇم"
+msgstr "يوچۇن"
 
 #: dialogs/TagDialog.cpp:719
 #, kde-format
@@ -8075,7 +8013,7 @@ msgstr "خاسلىق"
 #: dialogs/TagDialogBase.ui:157
 #, kde-format
 msgid "Statistics"
-msgstr "ستاتىستىكا"
+msgstr "ئىستاتىستىكا"
 
 #. i18n: ectx: property (text), widget (QLabel, lenghtLabel)
 #: dialogs/TagDialogBase.ui:167
@@ -8145,10 +8083,9 @@ msgstr "ئەڭ ئاخىرقى قويۇلغان:"
 
 #. i18n: ectx: property (text), widget (QLabel, addedToCollectionLabel)
 #: dialogs/TagDialogBase.ui:467
-#, fuzzy, kde-format
-#| msgid "Collection:"
+#, kde-format
 msgid "Added to collection:"
-msgstr "توپلام:"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, noteLabel)
 #: dialogs/TagDialogBase.ui:499
@@ -8398,7 +8335,7 @@ msgstr ""
 #: dialogs/TagGuessOptions.ui:331
 #, kde-format
 msgid "<empty>"
-msgstr "<قۇرۇق>"
+msgstr "<بوش>"
 
 #. i18n: ectx: property (text), widget (QLabel, label_23)
 #: dialogs/TagGuessOptions.ui:153
@@ -8428,7 +8365,7 @@ msgstr "ئىزاھات:"
 #: dialogs/TagGuessOptions.ui:289
 #, kde-format
 msgid "Album:"
-msgstr "ئالبوم:"
+msgstr "سۈرەتدان:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_28)
 #: dialogs/TagGuessOptions.ui:315
@@ -8477,11 +8414,10 @@ msgid "Unknown year"
 msgstr ""
 
 #: dynamic/Bias.cpp:141 dynamic/biases/SearchQueryBias.cpp:113
-#, fuzzy, kde-format
-#| msgid "tracks"
+#, kde-format
 msgctxt "Random bias representation"
 msgid "Random tracks"
-msgstr "tracks"
+msgstr ""
 
 #: dynamic/Bias.cpp:233
 #, kde-format
@@ -8830,7 +8766,7 @@ msgstr ""
 #: dynamic/DynamicModel.cpp:915 equalizer/EqualizerPresets.cpp:93
 #, kde-format
 msgid "Rock"
-msgstr "روك"
+msgstr "تولغىما ئۇسسۇل"
 
 #: dynamic/DynamicModel.cpp:919 equalizer/EqualizerPresets.cpp:91
 #, kde-format
@@ -8885,7 +8821,7 @@ msgstr "قولدا"
 #: equalizer/EqualizerPresets.cpp:81
 #, kde-format
 msgid "Classical"
-msgstr "كلاسسىك"
+msgstr "كىلاسسىك"
 
 #: equalizer/EqualizerPresets.cpp:82
 #, kde-format
@@ -8905,7 +8841,7 @@ msgstr "ئېغىر تۆۋەن ئاۋاز"
 #: equalizer/EqualizerPresets.cpp:85
 #, kde-format
 msgid "Full Treble"
-msgstr "Full Treble"
+msgstr ""
 
 #: equalizer/EqualizerPresets.cpp:86
 #, kde-format
@@ -8935,7 +8871,7 @@ msgstr "يىغىلىش"
 #: equalizer/EqualizerPresets.cpp:92
 #, kde-format
 msgid "Reggae"
-msgstr "Reggae"
+msgstr "رېگگا"
 
 #: equalizer/EqualizerPresets.cpp:94
 #, kde-format
@@ -8955,7 +8891,7 @@ msgstr "يۇمشاق Rock"
 #: equalizer/EqualizerPresets.cpp:97
 #, kde-format
 msgid "Techno"
-msgstr "Techno"
+msgstr ""
 
 #: equalizer/EqualizerPresets.cpp:98
 #, kde-format
@@ -8963,12 +8899,10 @@ msgid "Zero"
 msgstr "نۆل"
 
 #: importers/amarok/AmarokConfigWidget.cpp:81
-#, fuzzy, kde-format
-#| msgctxt "One word translation used in the collection filter"
-#| msgid "added"
+#, kde-format
 msgctxt "Database type"
 msgid "embedded"
-msgstr "قوشۇلدى"
+msgstr ""
 
 #: importers/amarok/AmarokConfigWidget.cpp:82
 #, kde-format
@@ -8989,10 +8923,9 @@ msgstr "ئىشلەتكۈچى ئاتى"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/amarok/AmarokConfigWidget.ui:58
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database type"
-msgstr "ساندان ئاتى"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, m_databaseLocationLabel)
 #: importers/amarok/AmarokConfigWidget.ui:71
@@ -9001,18 +8934,16 @@ msgstr "ساندان ئاتى"
 #: importers/fastforward/FastForwardConfigWidget.ui:79
 #: importers/itunes/ITunesConfigWidget.cpp:30
 #: importers/rhythmbox/RhythmboxConfigWidget.cpp:35
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database location"
-msgstr "ساندان ئاتى"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, m_targetNameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:91
 #: importers/fastforward/FastForwardConfigWidget.ui:99
-#, fuzzy, kde-format
-#| msgid "New name"
+#, kde-format
 msgid "Target name"
-msgstr "يېڭى ئات"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, m_hostnameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:104
@@ -9026,15 +8957,14 @@ msgstr "كومپيۇتېر ئاتى"
 #: importers/fastforward/FastForwardConfigWidget.ui:125
 #, kde-format
 msgid "Port"
-msgstr ""
+msgstr "ئېغىز"
 
 #. i18n: ectx: property (text), widget (QLabel, m_databaseNameLabel)
 #: importers/amarok/AmarokConfigWidget.ui:127
 #: importers/fastforward/FastForwardConfigWidget.ui:135
-#, fuzzy, kde-format
-#| msgid "Database Name"
+#, kde-format
 msgid "Database name"
-msgstr "ساندان ئاتى"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, m_mysqlBinaryLabel)
 #: importers/amarok/AmarokConfigWidget.ui:163
@@ -9049,10 +8979,9 @@ msgid "mysqld"
 msgstr ""
 
 #: importers/amarok/AmarokManager.cpp:39
-#, fuzzy, kde-format
-#| msgid "Amarok"
+#, kde-format
 msgid "Amarok 2.x"
-msgstr "Amarok"
+msgstr ""
 
 #: importers/amarok/AmarokManager.cpp:45
 #, kde-format
@@ -9062,7 +8991,7 @@ msgstr ""
 #: importers/banshee/BansheeManager.cpp:27
 #, kde-format
 msgid "Banshee"
-msgstr "بانشى(Banshee)"
+msgstr "Banshee"
 
 #: importers/banshee/BansheeManager.cpp:28
 #, kde-format
@@ -9081,10 +9010,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/fastforward/FastForwardConfigWidget.ui:66
-#, fuzzy, kde-format
-#| msgid "Connection"
+#, kde-format
 msgid "Connection type"
-msgstr "باغلىنىش"
+msgstr ""
 
 #: importers/fastforward/FastForwardManager.cpp:25
 #, kde-format
@@ -9109,7 +9037,7 @@ msgstr ""
 #: importers/rhythmbox/RhythmboxManager.cpp:27
 #, kde-format
 msgid "Rhythmbox"
-msgstr "Rhythmbox"
+msgstr ""
 
 #: importers/rhythmbox/RhythmboxManager.cpp:28
 #, kde-format
@@ -9117,11 +9045,10 @@ msgid "Rhythmbox Statistics Importer"
 msgstr ""
 
 #: importers/SimpleImporterConfigWidget.cpp:48
-#, fuzzy, kde-format
-#| msgid "New name"
+#, kde-format
 msgctxt "Name of the synchronization target"
 msgid "Target name"
-msgstr "يېڭى ئات"
+msgstr ""
 
 #: KNotificationBackend.cpp:132 TrayIcon.cpp:146
 #, kde-format
@@ -9322,7 +9249,7 @@ msgstr ""
 #: main.cpp:129
 #, kde-format
 msgid "Leo Franchi"
-msgstr "Leo Franchi"
+msgstr ""
 
 #: main.cpp:129
 #, kde-format
@@ -9342,7 +9269,7 @@ msgstr ""
 #: main.cpp:135
 #, kde-format
 msgid "Max Howell"
-msgstr ""
+msgstr "Max Howell"
 
 #: main.cpp:135
 #, kde-format
@@ -9527,7 +9454,7 @@ msgstr ""
 #: main.cpp:177
 #, kde-format
 msgid "Icons"
-msgstr "سىنبەلگىلەر"
+msgstr "سىنبەلگە"
 
 #: main.cpp:179
 #, kde-format
@@ -9552,7 +9479,7 @@ msgstr ""
 #: main.cpp:183
 #, kde-format
 msgid "Lee Olson"
-msgstr "Lee Olson"
+msgstr ""
 
 #: main.cpp:183 main.cpp:195
 #, kde-format
@@ -9597,7 +9524,7 @@ msgstr ""
 #: main.cpp:193
 #, kde-format
 msgid "Nikhil Marathe"
-msgstr "Nikhil Marathe"
+msgstr ""
 
 #: main.cpp:193
 #, kde-format
@@ -9652,7 +9579,7 @@ msgstr ""
 #: main.cpp:205
 #, kde-format
 msgid "Scott Wheeler"
-msgstr "Scott Wheeler"
+msgstr ""
 
 #: main.cpp:205
 #, kde-format
@@ -9699,7 +9626,7 @@ msgstr ""
 #: main.cpp:279
 #, kde-format
 msgid "Developer"
-msgstr "ئىجادىيەتچى"
+msgstr "ئىجادكار"
 
 #: main.cpp:215
 #, kde-format
@@ -9754,22 +9681,22 @@ msgstr ""
 #: main.cpp:227 main.cpp:235
 #, kde-format
 msgid "Patches"
-msgstr "ياماقلار"
+msgstr "ياماق"
 
 #: main.cpp:229
 #, kde-format
 msgid "Alexandre Oliveira"
-msgstr ""
+msgstr "Alexandre Oliveira"
 
 #: main.cpp:231
 #, kde-format
 msgid "Andreas Mair"
-msgstr ""
+msgstr "Andreas Mair"
 
 #: main.cpp:231
 #, kde-format
 msgid "MySQL support"
-msgstr ""
+msgstr "MySQL قوللاش"
 
 #: main.cpp:233
 #, kde-format
@@ -9799,7 +9726,7 @@ msgstr ""
 #: main.cpp:239
 #, kde-format
 msgid "Christian Muehlhaeuser"
-msgstr "Christian Muehlhaeuser"
+msgstr ""
 
 #: main.cpp:241
 #, kde-format
@@ -9814,7 +9741,7 @@ msgstr ""
 #: main.cpp:243
 #, kde-format
 msgid "Enrico Ros"
-msgstr ""
+msgstr "Enrico Ros"
 
 #: main.cpp:243
 #, kde-format
@@ -9829,7 +9756,7 @@ msgstr ""
 #: main.cpp:247
 #, kde-format
 msgid "Gábor Lehel"
-msgstr "Gábor Lehel"
+msgstr ""
 
 #: main.cpp:249
 #, kde-format
@@ -9844,7 +9771,7 @@ msgstr ""
 #: main.cpp:251
 #, kde-format
 msgid "Giovanni Venturi"
-msgstr "Giovanni Venturi"
+msgstr ""
 
 #: main.cpp:251
 #, kde-format
@@ -9874,7 +9801,7 @@ msgstr ""
 #: main.cpp:257
 #, kde-format
 msgid "Marco Gulino"
-msgstr "Marco Gulino"
+msgstr ""
 
 #: main.cpp:257
 #, kde-format
@@ -9889,7 +9816,7 @@ msgstr ""
 #: main.cpp:261
 #, kde-format
 msgid "Melchior Franz"
-msgstr "Melchior Franz"
+msgstr ""
 
 #: main.cpp:261
 #, kde-format
@@ -9984,7 +9911,7 @@ msgstr ""
 #: main.cpp:283
 #, kde-format
 msgid "Splash screen"
-msgstr ""
+msgstr "مەرھابا ئېكرانى"
 
 #: main.cpp:288
 #, kde-format
@@ -10172,7 +10099,7 @@ msgstr ""
 #: MainWindow.cpp:878
 #, kde-format
 msgid "Previous Track"
-msgstr "ئالدىنقى Track"
+msgstr "ئالدىنقى نەغمە"
 
 #: MainWindow.cpp:885
 #, kde-format
@@ -10197,17 +10124,17 @@ msgstr ""
 #: MainWindow.cpp:908
 #, kde-format
 msgid "Next Track"
-msgstr "كېيىنكى Track"
+msgstr "كېيىنكى نەغمە"
 
 #: MainWindow.cpp:913
 #, kde-format
 msgid "Increase Volume"
-msgstr "ئاۋازنى چوڭايتىش"
+msgstr "ئاۋازنى يۇقىرىلات"
 
 #: MainWindow.cpp:919
 #, kde-format
 msgid "Decrease Volume"
-msgstr "ئاۋازنى كىچىكلىتىش"
+msgstr "ئاۋازنى تۆۋەنلەت"
 
 #: MainWindow.cpp:925
 #, kde-format
@@ -10307,7 +10234,7 @@ msgstr ""
 #: MainWindow.cpp:1036
 #, kde-format
 msgid "&Report Bug..."
-msgstr "كەمتۈك مەلۇم قىل(&R)"
+msgstr "كەمتۈك مەلۇم قىل(&R)…"
 
 #: MainWindow.cpp:1083
 #, kde-format
@@ -10328,7 +10255,7 @@ msgstr "قويۇش تىزىمى(&P)"
 #: MainWindow.cpp:1126
 #, kde-format
 msgid "&Tools"
-msgstr "قوراللار(&T)"
+msgstr "قورال(&T)"
 
 #: MainWindow.cpp:1141
 #, kde-format
@@ -10517,7 +10444,7 @@ msgstr ""
 #: playlist/layouts/LayoutEditDialog.cpp:104
 #, kde-format
 msgid "Fit content"
-msgstr ""
+msgstr "مەزمۇنغا ماسلاشتۇر"
 
 #: playlist/layouts/LayoutEditDialog.cpp:105
 #, kde-format
@@ -10753,7 +10680,7 @@ msgstr "گۇرۇپپىلاش"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:279
 #, kde-format
 msgid "Show tooltips"
-msgstr "ئەسكەرتمىلەرنى كۆرسەت"
+msgstr "قورال ئەسكەرتىشىنى كۆرسىتىدۇ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
@@ -10901,7 +10828,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Labels' playlist column name and token for playlist layouts"
 msgid "Labels"
-msgstr "ئەنلەر"
+msgstr "ئەن"
 
 #: playlist/PlaylistDefines.cpp:110
 #, kde-format
@@ -11036,7 +10963,7 @@ msgstr "نەغمە"
 #: playlist/PlaylistModel.cpp:938
 #, kde-format
 msgid "BPM"
-msgstr "BPM"
+msgstr ""
 
 #: playlist/PlaylistModel.cpp:940
 #, kde-format
@@ -11102,7 +11029,7 @@ msgstr "ئۈستىگە"
 #: playlist/PlaylistQueueEditor.ui:48
 #, kde-format
 msgid "Move Down"
-msgstr "پەسكە"
+msgstr "ئاستىغا"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
 #: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:118
@@ -11162,7 +11089,7 @@ msgstr "نەغمىلەر"
 #: playlist/ProgressiveSearchWidget.cpp:79
 #, kde-format
 msgid "Albums"
-msgstr "ئالبوملار"
+msgstr "سۈرەتدان"
 
 #: playlist/ProgressiveSearchWidget.cpp:86
 #, kde-format
@@ -11223,7 +11150,7 @@ msgstr ""
 #: playlist/view/listview/SourceSelectionPopup.cpp:39
 #, kde-format
 msgid "OK"
-msgstr "تامام"
+msgstr "جەزملە"
 
 #: playlist/view/PlaylistViewCommon.cpp:158
 #, kde-format
@@ -11390,7 +11317,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:507
 #, kde-format
 msgid "h:mm:ss"
-msgstr "h:mm:ss"
+msgstr ""
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Strictness)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
@@ -11657,25 +11584,25 @@ msgstr ""
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:82
 #, kde-format
 msgid "kB"
-msgstr "كىلوبايت"
+msgstr "kB"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:87
 #, kde-format
 msgid "MB"
-msgstr "مېگابايت"
+msgstr "MB"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:92
 #, kde-format
 msgid "GB"
-msgstr "گىگابايت"
+msgstr "GB"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:97
 #, kde-format
 msgid "TB"
-msgstr "تېرابايت"
+msgstr "TB"
 
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:145
@@ -11818,7 +11745,7 @@ msgstr ""
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:51
 #, kde-format
 msgid "tracks"
-msgstr "tracks"
+msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:56
@@ -12048,7 +11975,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:87
 #, kde-format
 msgid "Invert:"
-msgstr ""
+msgstr "ئەكسى:"
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonInt)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:106
@@ -12224,9 +12151,7 @@ msgid "composer"
 msgstr "مۇزىكىسىنى ئىشلىگۈچى"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:93
-#, fuzzy, kde-format
-#| msgid "year"
-#| msgid_plural "years"
+#, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr "يىل"
@@ -12358,10 +12283,9 @@ msgid "Import preset"
 msgstr ""
 
 #: playlistgenerator/PresetModel.cpp:153
-#, fuzzy, kde-format
-#| msgid "Presets"
+#, kde-format
 msgid "Preset files"
-msgstr "ئالدىن تەڭشەش"
+msgstr ""
 
 #: playlistgenerator/PresetModel.cpp:212
 #, kde-format
@@ -12511,22 +12435,22 @@ msgstr ""
 #: scripting/scriptconsole/ScriptConsole.cpp:76
 #, kde-format
 msgid "Code"
-msgstr ""
+msgstr "كودى"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:77
 #, kde-format
 msgid "Console"
-msgstr ""
+msgstr "تىزگىن سۇپا"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
 msgid "Output"
-msgstr ""
+msgstr "چىقار"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
 msgid "Error"
-msgstr ""
+msgstr "خاتالىق"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
@@ -12534,16 +12458,14 @@ msgid "Execute Script"
 msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:106
-#, fuzzy, kde-format
-#| msgid "Scripts"
+#, kde-format
 msgid "&New Script"
-msgstr "قوليازما"
+msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:110
-#, fuzzy, kde-format
-#| msgid "&Delete"
+#, kde-format
 msgid "&Delete Script"
-msgstr "ئۆچۈر(&D)"
+msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:113
 #, kde-format
@@ -12551,21 +12473,17 @@ msgid "&Clear All Scripts"
 msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:116
-#, fuzzy, kde-format
-#| msgid "Previous Track"
+#, kde-format
 msgid "Previous Script"
-msgstr "ئالدىنقى Track"
+msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:119
-#, fuzzy, kde-format
-#| msgid "Scripts"
+#, kde-format
 msgid "Next Script"
-msgstr "قوليازما"
+msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:126
-#, fuzzy, kde-format
-#| msgctxt "@item:inmenu"
-#| msgid "&View"
+#, kde-format
 msgid "&View"
 msgstr "كۆرۈنۈش(&V)"
 
@@ -12585,14 +12503,12 @@ msgid "Remove script file from disk?"
 msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
-#, fuzzy, kde-format
-#| msgid "Remove selected"
+#, kde-format
 msgid "Remove Script"
-msgstr "تاللىغاننى چىقىرىۋەت"
+msgstr ""
 
 #: scripting/scriptconsole/ScriptConsole.cpp:467
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "چىقىرىۋەت"
@@ -12612,9 +12528,7 @@ msgstr ""
 #: scripting/scriptengine/AmarokScript.cpp:72
 #: scripting/scriptengine/AmarokScript.cpp:76
 #: scripting/scriptengine/AmarokScript.cpp:82
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "Yes"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "Yes"
 msgstr "ھەئە"
@@ -12623,9 +12537,7 @@ msgstr "ھەئە"
 #: scripting/scriptengine/AmarokScript.cpp:73
 #: scripting/scriptengine/AmarokScript.cpp:77
 #: scripting/scriptengine/AmarokScript.cpp:83
-#, fuzzy, kde-format
-#| msgctxt "Usage"
-#| msgid "No"
+#, kde-format
 msgctxt "Generic script dialog answer button"
 msgid "No"
 msgstr "ياق"
@@ -12675,7 +12587,7 @@ msgstr "باغلىنىش مەغلۇپ بولدى"
 #: services/ampache/AmpacheAccountLogin.cpp:173
 #, kde-format
 msgid "Authentication failed."
-msgstr "دەلىللەش مەغلۇپ بولدى."
+msgstr "دەلىللىيەلمىدى."
 
 #: services/ampache/AmpacheAccountLogin.cpp:174
 #: services/ampache/AmpacheAccountLogin.cpp:259
@@ -12721,10 +12633,9 @@ msgid "Ampache Server %1"
 msgstr ""
 
 #: services/ampache/LastfmInfoParser.cpp:66
-#, fuzzy, kde-format
-#| msgid "Update"
+#, kde-format
 msgid "Updated: %1"
-msgstr "يېڭىلا"
+msgstr ""
 
 #: services/ampache/LastfmInfoParser.cpp:68
 #, kde-format
@@ -13060,9 +12971,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #: services/lastfm/LastFmConfigWidget.ui:54
-#, fuzzy, kde-format
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
+#, kde-format
 msgid "Username:"
 msgstr "ئىشلەتكۈچى ئاتى:"
 
@@ -13070,19 +12979,16 @@ msgstr "ئىشلەتكۈچى ئاتى:"
 #: services/lastfm/LastFmConfigWidget.ui:64
 #: services/lastfm/LastFmServiceSettings.cpp:226
 #: services/lastfm/LastFmServiceSettings.cpp:250
-#, fuzzy, kde-format
-#| msgid "Connection failure"
+#, kde-format
 msgid "Connect to account"
-msgstr "باغلىنىش مەغلۇپ بولدى"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, kcfg_ScrobblerUsername)
 #: services/lastfm/LastFmConfigWidget.ui:71
 #: services/lastfm/LastFmServiceSettings.cpp:278
-#, fuzzy, kde-format
-#| msgctxt "In a dialog: Some file: Not needed"
-#| msgid "Not needed"
+#, kde-format
 msgid "Not connected"
-msgstr "زۆرۈر ئەمەس"
+msgstr "باغلانمىغان"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:84
@@ -13092,10 +12998,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, disconnectAccount)
 #: services/lastfm/LastFmConfigWidget.ui:97
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgid "Disconnect account"
-msgstr "ئۈسكۈنىنى ئۈزۈۋەت(&D)"
+msgstr ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/lastfm/LastFmConfigWidget.ui:107
@@ -13190,7 +13095,7 @@ msgstr ""
 #: services/lastfm/LastFmService.cpp:129
 #, kde-format
 msgid "Ctrl+L"
-msgstr "Ctrl+L"
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:318
 #, kde-format
@@ -13246,11 +13151,10 @@ msgid "Disconnect Last.fm account?"
 msgstr ""
 
 #: services/lastfm/LastFmServiceSettings.cpp:92
-#, fuzzy, kde-format
-#| msgid "&Disconnect Device"
+#, kde-format
 msgctxt "Disconnect Last.fm account in settings"
 msgid "Disconnect"
-msgstr "ئۈسكۈنىنى ئۈزۈۋەت(&D)"
+msgstr "ئۈز"
 
 #: services/lastfm/LastFmServiceSettings.cpp:140
 #: services/lastfm/LastFmServiceSettings.cpp:197
@@ -13336,7 +13240,7 @@ msgstr ""
 #: services/lastfm/meta/LastFmMeta.cpp:81
 #, kde-format
 msgid "Ctrl+B"
-msgstr "Ctrl+B"
+msgstr ""
 
 #: services/lastfm/meta/LastFmMeta.cpp:82
 #, kde-format
@@ -13351,7 +13255,7 @@ msgstr ""
 #: services/lastfm/meta/LastFmMeta.cpp:87
 #, kde-format
 msgid "Ctrl+S"
-msgstr "Ctrl+S"
+msgstr ""
 
 #: services/lastfm/meta/LastFmMeta.cpp:88
 #, kde-format
@@ -13522,7 +13426,7 @@ msgstr ""
 #: services/magnatune/MagnatuneConfigWidget.ui:17
 #, kde-format
 msgid "Updates"
-msgstr "يېڭىلانمىلار"
+msgstr "يېڭىلانما"
 
 #. i18n: ectx: property (text), widget (QLabel, label_8)
 #: services/magnatune/MagnatuneConfigWidget.ui:23
@@ -13583,7 +13487,7 @@ msgstr ""
 #: services/magnatune/MagnatuneConfigWidget.ui:116
 #, kde-format
 msgid "Stream"
-msgstr "سانلىق-مەلۇمات ئېقىمى"
+msgstr "سانلىق مەلۇمات ئېقىمى"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/magnatune/MagnatuneConfigWidget.ui:129
@@ -13927,7 +13831,7 @@ msgstr "سانداننى يېڭىلا"
 #: services/magnatune/MagnatuneStore.cpp:249
 #, kde-format
 msgid "Tools"
-msgstr "قوراللار"
+msgstr "قورال"
 
 #: services/magnatune/MagnatuneStore.cpp:270
 #, kde-format
@@ -14319,11 +14223,10 @@ msgid ""
 msgstr ""
 
 #: statsyncing/Controller.cpp:118
-#, fuzzy, kde-format
-#| msgid "Synchronize"
+#, kde-format
 msgctxt "Select if collection should be synchronized"
 msgid "Keep synchronized"
-msgstr "قەدەمداش"
+msgstr ""
 
 #: statsyncing/Controller.cpp:119
 #, kde-format
@@ -14371,7 +14274,7 @@ msgstr ""
 #: statsyncing/models/CommonModel.cpp:208
 #, kde-format
 msgid "%1 - %2 - %3"
-msgstr "%1 - %2 - %3"
+msgstr ""
 
 #: statsyncing/models/ProvidersModel.cpp:67
 #, kde-format
@@ -14479,10 +14382,9 @@ msgid "Select Fields to Synchronize"
 msgstr ""
 
 #: statsyncing/ui/ConfigureProviderDialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure Notifications"
+#, kde-format
 msgid "Configure Synchronization Target"
-msgstr "ئۇقتۇرۇش سەپلەش"
+msgstr ""
 
 #: statsyncing/ui/CreateProviderDialog.cpp:37
 #, kde-format
@@ -14498,22 +14400,19 @@ msgid ""
 msgstr ""
 
 #: statsyncing/ui/CreateProviderDialog.cpp:60
-#, fuzzy, kde-format
-#| msgid "Content Type"
+#, kde-format
 msgid "Choose Target Type"
-msgstr "مەزمۇن تىپى"
+msgstr ""
 
 #: statsyncing/ui/CreateProviderDialog.cpp:86
-#, fuzzy, kde-format
-#| msgctxt "change options"
-#| msgid "Configure %1"
+#, kde-format
 msgid "Configure Target"
-msgstr "%1 نى سەپلە"
+msgstr ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:138
 #, kde-format
 msgid "Back"
-msgstr "كەينى"
+msgstr "قايت"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:140
 #, kde-format
@@ -14662,13 +14561,13 @@ msgstr ""
 #: statsyncing/ui/MatchedTracksPage.ui:110
 #, kde-format
 msgid "Expand"
-msgstr "كېڭەيت"
+msgstr "ياي"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedCollapseButton)
 #: statsyncing/ui/MatchedTracksPage.ui:126
 #, kde-format
 msgid "Collapse"
-msgstr "ئابزاس ئايرىمىسى يوشۇر"
+msgstr "يىغ"
 
 #. i18n: ectx: attribute (title), widget (QWidget, uniqueTab)
 #: statsyncing/ui/MatchedTracksPage.ui:152
@@ -14721,10 +14620,9 @@ msgstr "زىلۋا قورال بالدىقى"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
 #: widgets/Osd.cpp:209
-#, fuzzy, kde-format
-#| msgid "Volume: %1%"
+#, kde-format
 msgid "Volume: %1% (muted)"
-msgstr "ئاۋاز مىقدارى: %1%"
+msgstr ""
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
 #: widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
@@ -15081,14 +14979,13 @@ msgstr "Hz"
 #, kde-format
 msgctxt "Unit for file size in mega byte"
 msgid "MiB"
-msgstr "مېگابايت"
+msgstr "MiB"
 
 #: widgets/MetaQueryWidget.cpp:841
-#, fuzzy, kde-format
-#| msgid "h:mm:ss"
+#, kde-format
 msgctxt "time format for specifying track length - hours, minutes, seconds"
 msgid "h:m:ss"
-msgstr "h:mm:ss"
+msgstr ""
 
 #: widgets/MetaQueryWidget.cpp:996
 #, kde-format
@@ -15162,7 +15059,7 @@ msgstr "ۋاقىتلىق توختىدى"
 #: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:82
 #, kde-format
 msgid "Play"
-msgstr "قوي"
+msgstr "ياڭرات"
 
 #: widgets/PlayPauseButton.cpp:82
 #, kde-format
@@ -15213,27 +15110,27 @@ msgstr "100%"
 #: widgets/SliderWidget.cpp:243
 #, kde-format
 msgid "80%"
-msgstr "80%"
+msgstr ""
 
 #: widgets/SliderWidget.cpp:244
 #, kde-format
 msgid "60%"
-msgstr "60%"
+msgstr ""
 
 #: widgets/SliderWidget.cpp:245
 #, kde-format
 msgid "40%"
-msgstr "40%"
+msgstr ""
 
 #: widgets/SliderWidget.cpp:246
 #, kde-format
 msgid "20%"
-msgstr "20%"
+msgstr ""
 
 #: widgets/SliderWidget.cpp:247
 #, kde-format
 msgid "0%"
-msgstr "0%"
+msgstr ""
 
 #: widgets/SliderWidget.cpp:408
 #, kde-format
@@ -15302,12 +15199,10 @@ msgstr "بوش"
 #~ msgid "User"
 #~ msgstr "ئىشلەتكۈچى"
 
-#, fuzzy
 #~| msgid "First played:"
 #~ msgid "Display"
 #~ msgstr "تۇنجى قويۇلغان:"
 
-#, fuzzy
 #~| msgid "Scripts"
 #~ msgid "Main Script File"
 #~ msgstr "قوليازما"
@@ -15404,7 +15299,6 @@ msgstr "بوش"
 #~ msgid "Upgrade the applet at <path>"
 #~ msgstr "يول <path> نىڭدىكى قوللانچاقنى يۈكسەلدۈرۈش"
 
-#, fuzzy
 #~| msgid "List installed applets"
 #~ msgid "Most installed applets"
 #~ msgstr "ئورنىتىلغان قوللانچاقلارنى تىزىپ كۆرسىتىش"
@@ -15493,7 +15387,6 @@ msgstr "بوش"
 #~ msgid "Street:"
 #~ msgstr "كوچا:"
 
-#, fuzzy
 #~| msgctxt "In a dialog: Video: Supported"
 #~| msgid "Supported"
 #~ msgctxt "@label:textbox Supporting acts for an event"
@@ -15527,7 +15420,6 @@ msgstr "بوش"
 #~ msgid "Scanning %1"
 #~ msgstr "تەكشۈرۈۋاتقىنى %1"
 
-#, fuzzy
 #~| msgid "Scripts"
 #~ msgid "Loaded Scripts"
 #~ msgstr "قوليازما"

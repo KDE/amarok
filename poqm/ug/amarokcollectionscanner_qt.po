@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-14 01:25+0000\n"
-"PO-Revision-Date: 2013-09-08 07:04+0900\n"
-"Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
+"PO-Revision-Date: 2026-05-28 17:02-0400\n"
+"Last-Translator: Abduqadir Abliz <sahranbay@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: ug\n"
 "MIME-Version: 1.0\n"
@@ -17,28 +17,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Qt-Contexts: true\n"
+"X-Generator: Poedit 3.9\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:117
 #: utilities/collectionscanner/CollectionScanner.cpp:140
-#, fuzzy, qt-format
-#| msgid "File \"%1\" not found."
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
-msgstr "ھۆججەت «%1» تېپىلمىدى."
+msgstr "«%1» ھۆججەت تېپىلمىدى."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:120
-#, fuzzy, qt-format
-#| msgid "Could not open file \"%1\"."
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "ھۆججەت «%1» نى ئاچقىلى بولمىدى."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:367
-#, fuzzy, qt-format
-#| msgid "Missing argument for option %1"
+#, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
-msgstr "تاللانما %1 نىڭ ئارگۇمېنتى يوق"
+msgstr ""
 
 #: utilities/collectionscanner/CollectionScanner.cpp:401
 msgctxt "CollectionScanner::Scanner|"
