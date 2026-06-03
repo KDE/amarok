@@ -54,6 +54,7 @@
   <name xml:lang="sr-ijekavianlatin">Amarok</name>
   <name xml:lang="sv">Amarok</name>
   <name xml:lang="tr">Amarok</name>
+  <name xml:lang="ug">Amarok ۋاسىتە ياڭراتقۇچ</name>
   <name xml:lang="uk">Amarok</name>
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
@@ -82,6 +83,7 @@
   <summary xml:lang="sl">Ponovno odkrijte vašo glasbo</summary>
   <summary xml:lang="sv">Återupptäck din musik</summary>
   <summary xml:lang="tr">Müziğinizi yeniden keşfedin</summary>
+  <summary xml:lang="ug">نەغمىلىرىڭىزنى قايتا بايقايدۇ</summary>
   <summary xml:lang="uk">Відкрийте свою музику знову</summary>
   <summary xml:lang="zh-CN">重新感悟音乐之美</summary>
   <summary xml:lang="zh-TW">重新探索您的音樂</summary>
@@ -163,6 +165,7 @@
     <p xml:lang="sr-ijekavianlatin">Mogućnosti:</p>
     <p xml:lang="sv">Funktioner:</p>
     <p xml:lang="tr">Özellikler:</p>
+    <p xml:lang="ug">ئىقتىدار:</p>
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="zh-CN">功能：</p>
     <p xml:lang="zh-TW">功能：</p>
@@ -360,6 +363,7 @@
       <li xml:lang="sr-ijekavianlatin">Podrška za skriptovanje.</li>
       <li xml:lang="sv">Stöd för skript</li>
       <li xml:lang="tr">Betik yazımı desteği</li>
+      <li xml:lang="ug">قوليازما قوللاش</li>
       <li xml:lang="uk">підтримка роботи зі скриптами;</li>
       <li xml:lang="zh-CN">支持脚本</li>
       <li xml:lang="zh-TW">支援指令碼</li>
