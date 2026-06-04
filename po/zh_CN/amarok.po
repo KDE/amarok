@@ -627,8 +627,8 @@ msgid ""
 "In basic mode graphical drag/droppable tokens are used to create a filename "
 "scheme, in advanced mode the images are replaced with text."
 msgstr ""
-"在基础模式下，您可以可视化地拖放指代词来创建文件命名规则；在高级模式下，指代"
-"词按钮会被文本替代。"
+"在基础模式下，您可以可视化地拖放标记来创建文件命名规则；在高级模式下，标记按"
+"钮会被文本替代。"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:189
@@ -640,7 +640,7 @@ msgstr "格式预设："
 #: amarokconfig.kcfg:190
 #, kde-format
 msgid "A list of preset formats (token schemas)."
-msgstr "列出格式预设 (指代词结构)。"
+msgstr "列出格式预设 (标记结构)。"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:197
@@ -7902,7 +7902,7 @@ msgstr "音轨编号"
 #: dialogs/OrganizeCollectionDialog.cpp:119
 #, kde-format
 msgid "You can use the following tokens:"
-msgstr "您可使用以下指代词："
+msgstr "您可使用以下标记："
 
 #: dialogs/OrganizeCollectionDialog.cpp:126
 #, kde-format
@@ -7910,8 +7910,8 @@ msgid ""
 "If you surround sections of text that contain a token with curly-braces, "
 "that section will be hidden if the token is empty."
 msgstr ""
-"如果您使用大括号将含有指代词的一段文本包围起来，且指代词为空时，这部分内容就"
-"会被隐藏。"
+"如果您使用大括号将含有标记的一段文本包围起来，且标记为空时，这部分内容就会被"
+"隐藏。"
 
 #: dialogs/OrganizeCollectionDialog.cpp:316
 #, kde-format
@@ -8547,7 +8547,7 @@ msgid ""
 "%albumartist%</font>, <font color=\"%8\">%comment%</"
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 msgstr ""
-"您可使用以下指代词来定义文件命名规则：<br>                           <font "
+"您可使用以下标记来定义文件命名规则：<br>                           <font "
 "color=\"%1\">%track%</font>、<font color=\"%2\">%title%</"
 "font>、                           <font color=\"%3\">%artist%</font>、<font "
 "color=\"%4\">%composer%</font>、                           <font color="
