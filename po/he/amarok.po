@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-19 00:42+0000\n"
-"PO-Revision-Date: 2026-05-26 09:08+0300\n"
+"PO-Revision-Date: 2026-06-04 22:44+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 26.04.0\n"
+"X-Generator: Lokalize 26.04.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -2132,13 +2132,13 @@ msgstr "בית"
 #: browsers/playlistbrowser/APGCategory.cpp:38
 #, kde-format
 msgid "Automated Playlist Generator"
-msgstr ""
+msgstr "יצרן רשימות נגינה אוטומטי"
 
 #: browsers/playlistbrowser/APGCategory.cpp:39
 #: browsers/playlistbrowser/APGCategory.cpp:46
 #, kde-format
 msgid "Create playlists by specifying criteria"
-msgstr ""
+msgstr "יצירת רשימות נגינה על ידי בחירת תנאים"
 
 #: browsers/playlistbrowser/APGCategory.cpp:62
 #, kde-format
@@ -2168,29 +2168,27 @@ msgstr "ייצוא הערכה הנבחרת"
 #: browsers/playlistbrowser/APGCategory.cpp:86
 #, kde-format
 msgid "Run APG with selected preset"
-msgstr ""
+msgstr "הרצת יצרן רשימות נגינה אוטומטיות עם ערכה נבחרת"
 
 #: browsers/playlistbrowser/APGCategory.cpp:92
-#, fuzzy, kde-format
-#| msgid "Presets"
+#, kde-format
 msgid "APG Presets"
-msgstr "אפשרויות קבועות"
+msgstr "ערכות של יצרן רשימות נגינה אוטומטיות"
 
 #: browsers/playlistbrowser/APGCategory.cpp:106
-#, fuzzy, kde-format
-#| msgid "General Options"
+#, kde-format
 msgid "Generator Optimization"
-msgstr "אפשרויות כלליות"
+msgstr "מיטוב יצרן"
 
 #: browsers/playlistbrowser/APGCategory.cpp:110
 #, kde-format
 msgid "Speed"
-msgstr ""
+msgstr "מהירות"
 
 #: browsers/playlistbrowser/APGCategory.cpp:115
 #, kde-format
 msgid "Accuracy"
-msgstr ""
+msgstr "דיוק"
 
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:43
 #, fuzzy, kde-format
@@ -3666,10 +3664,9 @@ msgid "Lyrics"
 msgstr "מילות־שיר"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:233
-#, fuzzy, kde-format
-#| msgid "Simple Search"
+#, kde-format
 msgid "Scriptable Service"
-msgstr "חיפוש פשוט"
+msgstr "שירות נשלט סקריפטים"
 
 #. i18n: ectx: property (text), widget (QPushButton, uninstallButton)
 #: configdialog/dialogs/ScriptsConfig.ui:36
@@ -4431,10 +4428,9 @@ msgid "Show under Various Artists"
 msgstr "הצגה תחת אמנים שונים"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:102
-#, fuzzy, kde-format
-#| msgid "%1 - %2"
+#, kde-format
 msgid "%1 - Stopped %2"
-msgstr "%1 - %2"
+msgstr "%1 - נעצר %2"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:107
 #, kde-format
@@ -11748,6 +11744,8 @@ msgid ""
 "constraints within the group are satisfied.  This is analogous to a logical "
 "AND: \"the tracks should match properties A, B, and C\"."
 msgstr ""
+"יצרן רשימות הנגינה האוטומטיות יחשיב שקבוצת המגבלות חלה אם כל המגבלות בקבוצה "
+"תקפות. בדומה לתנאי „וגם/AND” לוגי: הרצועה חייבת לעמוד בתנאים א׳, ב׳ וג׳”."
 
 # kde-il: don't translate
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAll)
@@ -12874,10 +12872,9 @@ msgstr "קבוצת הגבלה"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, PresetEditDialog)
 #: playlistgenerator/PresetEditDialog.ui:15
-#, fuzzy, kde-format
-#| msgid "Presets"
+#, kde-format
 msgid "APG Preset Editor"
-msgstr "אפשרויות קבועות"
+msgstr "עורך תצורות ביצרן רשימות נגינה אוטומטיות"
 
 # kde-il: don't translate
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Tree)
@@ -12888,10 +12885,9 @@ msgstr "עץ הגבלות"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Title)
 #: playlistgenerator/PresetEditDialog.ui:41
-#, fuzzy, kde-format
-#| msgid "Enter preset name:"
+#, kde-format
 msgid "APG Preset Name"
-msgstr "הכנס שם של אפשרות קבועה:"
+msgstr "שם ערכה של יצרן רשימות נגינה אוטומטית"
 
 #: playlistgenerator/PresetModel.cpp:151
 #, kde-format
