@@ -23,7 +23,7 @@
 /** A synchronized playlist that will try to get the attached slaves into the same state as the
   * master. The first playlist attached (through constructor) is the master.
   */
-class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObserver
+class __attribute__((visibility("default"))) SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObserver
 {
     public:
         explicit SyncedPlaylist( const Playlists::PlaylistPtr &playlist );
