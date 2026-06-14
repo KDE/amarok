@@ -452,10 +452,15 @@ FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions op
 
     // let tracks & playlists appear in playlist as they are shown in the view:
     std::sort( indices.begin(), indices.end() );
+    QSet<int> addedRows;
 
     QList<QUrl> urls;
     for( const QModelIndex &index : indices )
     {
+         // one index is included for each visible column in file browser, so we need to skip duplicate entries for same row
+        if( addedRows.contains( index.row() ) )
+            continue;
+        addedRows << index.row();
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         QUrl url = file.url();
         if( file.isDir() || Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) )

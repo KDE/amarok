@@ -12,6 +12,7 @@ VERSION 3.3.3 UNRELEASED
    * Fix restoring main window layout after restart (BR 514963)
    * Fix context applet height saving sometimes not working (BR 514190)
    * Adapt parsing in Wikipedia applet to handle some page syntax changes
+   * Don't multiply tracks when dragging from file browser to PUD (BR 521425)
 
 VERSION 3.3.2
   FEATURES:
