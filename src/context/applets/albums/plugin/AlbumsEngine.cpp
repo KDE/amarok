@@ -76,9 +76,6 @@ void AlbumsEngine::slotTrackMetadataChanged( Meta::TrackPtr track )
         return;
     }
 
-    if( track->album()->albumArtist() == m_artist )
-        return;
-
     m_artist = track->album()->albumArtist();
     update();
 }
