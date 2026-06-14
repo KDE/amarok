@@ -632,7 +632,7 @@ WikipediaEngine::wikiParse( QString &wiki )
     }
 
     QString copyright;
-    const QString copyrightMark = QLatin1String("<li id=\"f-copyright\">");
+    const QString copyrightMark = QLatin1String("<li id=\"copyright\">");
     int copyrightIndex = wiki.indexOf( copyrightMark );
     if( copyrightIndex != -1 )
     {
@@ -648,8 +648,8 @@ WikipediaEngine::wikiParse( QString &wiki )
     const QString title = wiki.mid( titleIndex, bsTitleIndex );
 
     // Ok lets remove the top and bottom parts of the page
-    const int contentStart = wiki.indexOf( QLatin1String("<!-- start content -->") );
-    const int contentEnd = wiki.indexOf( QLatin1String("<div class=\"printfooter\">"), contentStart );
+    const int contentStart = wiki.indexOf( QLatin1String("<div id=\"mw-content-text\"") );
+    const int contentEnd = wiki.indexOf( QLatin1String("<div class=\"printfooter\""), contentStart );
 
     wiki = wiki.mid( contentStart, contentEnd - contentStart );
 
@@ -687,12 +687,12 @@ WikipediaEngine::wikiParse( QString &wiki )
 //     removeTag( "<audio", "</audio>" );
 
     // Adding back style and license information
-    wiki = QLatin1String("<div id=\"bodyContent\"") + wiki;
+    wiki = QLatin1String("<div id=\"bodyContent\">") + wiki;
     wiki += copyright;
     wiki.append( QLatin1String("</div>") );
     wiki.remove( QRegularExpression( QLatin1String("<h3 id=\"siteSub\">[^<]*</h3>") ) );
 
-    wiki.remove( QRegularExpression( QLatin1String("<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<span class=\"mw-editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*[^>]*>[^<]*[^>]*>[^<]*[^>]*></span>") ) );
     wiki.remove( QRegularExpression( QLatin1String("<p><span[^>]*><[^\"]*\"#_skip_noteTA\">[^<]*<[^<]*</span></p>") ) );
 
     wiki.replace( QRegularExpression( QLatin1String("<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>") ), QLatin1String("\\1") );

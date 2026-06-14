@@ -11,6 +11,7 @@ VERSION 3.3.3 UNRELEASED
    * Restore functionality for inhibiting system suspend when music is playing
    * Fix restoring main window layout after restart (BR 514963)
    * Fix context applet height saving sometimes not working (BR 514190)
+   * Adapt parsing in Wikipedia applet to handle some page syntax changes
 
 VERSION 3.3.2
   FEATURES:
