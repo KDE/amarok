@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-19 00:42+0000\n"
+"POT-Creation-Date: 2026-06-15 00:42+0000\n"
 "PO-Revision-Date: 2026-06-04 22:44+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
@@ -1946,7 +1946,7 @@ msgstr "אמנים שונים"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
-#: context/applets/albums/plugin/AlbumsEngine.cpp:300
+#: context/applets/albums/plugin/AlbumsEngine.cpp:297
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
@@ -2041,14 +2041,14 @@ msgstr "עוד…"
 
 #: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
-#: context/applets/albums/plugin/AlbumsEngine.cpp:285
+#: context/applets/albums/plugin/AlbumsEngine.cpp:282
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "הוס&פה לרשימת נגינה"
 
 #: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
-#: context/applets/albums/plugin/AlbumsEngine.cpp:286
+#: context/applets/albums/plugin/AlbumsEngine.cpp:283
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2090,14 +2090,14 @@ msgstr ""
 msgid "&Move to Trash"
 msgstr "ה&עברה לאשפה"
 
-#: browsers/filebrowser/FileView.cpp:566
+#: browsers/filebrowser/FileView.cpp:571
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "אישור מחיקה"
 
-#: browsers/filebrowser/FileView.cpp:567
+#: browsers/filebrowser/FileView.cpp:572
 #, fuzzy, kde-format
 #| msgctxt "@info"
 #| msgid "Do you really want to delete these %1 tracks?"
@@ -2108,14 +2108,14 @@ msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועו
 msgstr[2] ""
 msgstr[3] ""
 
-#: browsers/filebrowser/FileView.cpp:573
+#: browsers/filebrowser/FileView.cpp:578
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "אשר העברה אל פח האשפה"
 
-#: browsers/filebrowser/FileView.cpp:574
+#: browsers/filebrowser/FileView.cpp:579
 #, fuzzy, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
@@ -3716,17 +3716,17 @@ msgstr[1] "%1 רצועות"
 msgstr[2] ""
 msgstr[3] ""
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:212
+#: context/applets/albums/plugin/AlbumsEngine.cpp:209
 #, kde-format
 msgid "Disc %1"
 msgstr "דיסק %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:287
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #, kde-format
 msgid "&Queue"
 msgstr "&הכנס רצועה לתור"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:288
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: playlist/view/PlaylistViewCommon.cpp:266
 #, kde-format
 msgid "Edit Track Details"

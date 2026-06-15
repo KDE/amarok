@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-19 00:42+0000\n"
+"POT-Creation-Date: 2026-06-15 00:42+0000\n"
 "PO-Revision-Date: 2026-01-19 08:27+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -2054,7 +2054,7 @@ msgstr "Різні виконавці"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
-#: context/applets/albums/plugin/AlbumsEngine.cpp:300
+#: context/applets/albums/plugin/AlbumsEngine.cpp:297
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
@@ -2149,14 +2149,14 @@ msgstr "Більше…"
 
 #: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
-#: context/applets/albums/plugin/AlbumsEngine.cpp:285
+#: context/applets/albums/plugin/AlbumsEngine.cpp:282
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Додати до списку відтворення"
 
 #: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
-#: context/applets/albums/plugin/AlbumsEngine.cpp:286
+#: context/applets/albums/plugin/AlbumsEngine.cpp:283
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2202,14 +2202,14 @@ msgstr ""
 msgid "&Move to Trash"
 msgstr "&Пересунути до смітника"
 
-#: browsers/filebrowser/FileView.cpp:566
+#: browsers/filebrowser/FileView.cpp:571
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "Підтвердження вилучення"
 
-#: browsers/filebrowser/FileView.cpp:567
+#: browsers/filebrowser/FileView.cpp:572
 #, kde-format
 msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
@@ -2218,14 +2218,14 @@ msgstr[1] "Ви впевнені, що хочете вилучити цей %1 �
 msgstr[2] "Ви впевнені, що хочете вилучити цей %1 записів?"
 msgstr[3] "Ви впевнені, що хочете вилучити цей %1 запис?"
 
-#: browsers/filebrowser/FileView.cpp:573
+#: browsers/filebrowser/FileView.cpp:578
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "Підтвердження пересування до смітника"
 
-#: browsers/filebrowser/FileView.cpp:574
+#: browsers/filebrowser/FileView.cpp:579
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
@@ -3875,17 +3875,17 @@ msgstr[1] "%1 композиції"
 msgstr[2] "%1 композицій"
 msgstr[3] "%1 композиція"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:212
+#: context/applets/albums/plugin/AlbumsEngine.cpp:209
 #, kde-format
 msgid "Disc %1"
 msgstr "Диск №%1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:287
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #, kde-format
 msgid "&Queue"
 msgstr "Поставити до &черги"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:288
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: playlist/view/PlaylistViewCommon.cpp:266
 #, kde-format
 msgid "Edit Track Details"

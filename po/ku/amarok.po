@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-19 00:42+0000\n"
+"POT-Creation-Date: 2026-06-15 00:42+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -2022,7 +2022,7 @@ msgstr "Hunermendên cur bi cur"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
-#: context/applets/albums/plugin/AlbumsEngine.cpp:300
+#: context/applets/albums/plugin/AlbumsEngine.cpp:297
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
@@ -2120,7 +2120,7 @@ msgstr "Zêdetir..."
 
 #: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
-#: context/applets/albums/plugin/AlbumsEngine.cpp:285
+#: context/applets/albums/plugin/AlbumsEngine.cpp:282
 #, fuzzy, kde-format
 #| msgid "Add to playlist"
 msgid "&Add to Playlist"
@@ -2128,7 +2128,7 @@ msgstr "lîsteya lêdanê"
 
 #: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
-#: context/applets/albums/plugin/AlbumsEngine.cpp:286
+#: context/applets/albums/plugin/AlbumsEngine.cpp:283
 #, fuzzy, kde-format
 #| msgid "Repeat Playlist"
 msgctxt "Replace the currently loaded tracks with these"
@@ -2173,7 +2173,7 @@ msgstr ""
 msgid "&Move to Trash"
 msgstr "&Bişîne Sergo"
 
-#: browsers/filebrowser/FileView.cpp:566
+#: browsers/filebrowser/FileView.cpp:571
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, fuzzy, kde-format
 #| msgid "Configure Playback"
@@ -2181,7 +2181,7 @@ msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "Lêdanê Veava Bike"
 
-#: browsers/filebrowser/FileView.cpp:567
+#: browsers/filebrowser/FileView.cpp:572
 #, fuzzy, kde-format
 #| msgctxt "@info"
 #| msgid "Do you really want to delete these %1 tracks?"
@@ -2190,7 +2190,7 @@ msgid_plural "Are you sure you want to delete these %1 items?"
 msgstr[0] "Tu bi rastî dixwazî wan stranên %1 jê bibî?"
 msgstr[1] "Tu bi rastî dixwazî wan stranên %1 jê bibî?"
 
-#: browsers/filebrowser/FileView.cpp:573
+#: browsers/filebrowser/FileView.cpp:578
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, fuzzy, kde-format
 #| msgid "Moving files to trash"
@@ -2198,7 +2198,7 @@ msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "Pelan bavêje sergo"
 
-#: browsers/filebrowser/FileView.cpp:574
+#: browsers/filebrowser/FileView.cpp:579
 #, fuzzy, kde-format
 #| msgctxt "@info"
 #| msgid "Do you really want to delete these %1 tracks?"
@@ -3865,17 +3865,17 @@ msgid_plural "%1 tracks"
 msgstr[0] "%1 stran"
 msgstr[1] "%1 stranan "
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:212
+#: context/applets/albums/plugin/AlbumsEngine.cpp:209
 #, kde-format
 msgid "Disc %1"
 msgstr "Dîska %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:287
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #, kde-format
 msgid "&Queue"
 msgstr "&Rêz bike"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:288
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: playlist/view/PlaylistViewCommon.cpp:266
 #, kde-format
 msgid "Edit Track Details"

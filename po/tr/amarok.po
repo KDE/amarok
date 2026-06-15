@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-19 00:42+0000\n"
+"POT-Creation-Date: 2026-06-15 00:42+0000\n"
 "PO-Revision-Date: 2026-06-04 14:32+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -2058,7 +2058,7 @@ msgstr "Çeşitli Sanatçılar"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1165
 #: browsers/CollectionTreeView.cpp:367
-#: context/applets/albums/plugin/AlbumsEngine.cpp:300
+#: context/applets/albums/plugin/AlbumsEngine.cpp:297
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: musicbrainz/MusicBrainzTagsModel.cpp:38 playlist/PlaylistModel.cpp:935
 #: playlist/view/PlaylistViewCommon.cpp:66
@@ -2153,14 +2153,14 @@ msgstr "Daha Fazla…"
 
 #: browsers/CollectionTreeView.cpp:1104 browsers/filebrowser/FileView.cpp:378
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:67
-#: context/applets/albums/plugin/AlbumsEngine.cpp:285
+#: context/applets/albums/plugin/AlbumsEngine.cpp:282
 #, kde-format
 msgid "&Add to Playlist"
 msgstr "&Çalma Listesine Ekle"
 
 #: browsers/CollectionTreeView.cpp:1115 browsers/filebrowser/FileView.cpp:389
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:72
-#: context/applets/albums/plugin/AlbumsEngine.cpp:286
+#: context/applets/albums/plugin/AlbumsEngine.cpp:283
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -2206,28 +2206,28 @@ msgstr ""
 msgid "&Move to Trash"
 msgstr "&Çöp Kutusuna Taşı"
 
-#: browsers/filebrowser/FileView.cpp:566
+#: browsers/filebrowser/FileView.cpp:571
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "Silmeyi Onayla"
 
-#: browsers/filebrowser/FileView.cpp:567
+#: browsers/filebrowser/FileView.cpp:572
 #, kde-format
 msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
 msgstr[0] "Bu ögeyi silmek istediğinizden emin misiniz?"
 msgstr[1] "Bu %1 ögeyi silmek istediğinizden emin misiniz?"
 
-#: browsers/filebrowser/FileView.cpp:573
+#: browsers/filebrowser/FileView.cpp:578
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "Çöp Kutusuna Taşımayı Onayla"
 
-#: browsers/filebrowser/FileView.cpp:574
+#: browsers/filebrowser/FileView.cpp:579
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
@@ -3848,17 +3848,17 @@ msgid_plural "%1 tracks"
 msgstr[0] "%1 parça"
 msgstr[1] "%1 parça"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:212
+#: context/applets/albums/plugin/AlbumsEngine.cpp:209
 #, kde-format
 msgid "Disc %1"
 msgstr "Disk %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:287
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #, kde-format
 msgid "&Queue"
 msgstr "&Kuyruğa Ekle"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:288
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: playlist/view/PlaylistViewCommon.cpp:266
 #, kde-format
 msgid "Edit Track Details"
