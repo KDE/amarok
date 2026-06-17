@@ -6518,7 +6518,7 @@ msgctxt ""
 "The field name in case nothing specific is selected e.g. in the automatic "
 "playlist generator. Use a one word translation."
 msgid "anything"
-msgstr "n'importe quoi"
+msgstr "partout"
 
 #: core/meta/support/MetaConstants.cpp:225
 #, kde-format
@@ -6526,7 +6526,7 @@ msgctxt ""
 "One word translation used in the collection filter. The name of the file "
 "this track is stored in"
 msgid "filename"
-msgstr "nom du fichier"
+msgstr "fichier"
 
 #: core/meta/support/MetaConstants.cpp:226
 #, kde-format
@@ -6574,13 +6574,13 @@ msgstr "commentaire"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "tracknumber"
-msgstr "numéro de la piste"
+msgstr "numéropiste"
 
 #: core/meta/support/MetaConstants.cpp:234
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "discnumber"
-msgstr "numéro du disque"
+msgstr "numérodisque"
 
 #: core/meta/support/MetaConstants.cpp:235
 #, kde-format
@@ -6610,7 +6610,7 @@ msgstr "échantillonnage"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "filesize"
-msgstr "taille du fichier"
+msgstr "taillefichier"
 
 #: core/meta/support/MetaConstants.cpp:240
 #, kde-format
@@ -6642,7 +6642,7 @@ msgctxt ""
 "One word translation used in the collection filter. First played time / "
 "access date"
 msgid "firstplay"
-msgstr "première écoute"
+msgstr "premièreécoute"
 
 # unreviewed-context
 #: core/meta/support/MetaConstants.cpp:245
@@ -6651,49 +6651,49 @@ msgctxt ""
 "One word translation used in the collection filter. Last played time / "
 "access date"
 msgid "lastplay"
-msgstr "dernière écoute"
+msgstr "dernièreécoute"
 
 #: core/meta/support/MetaConstants.cpp:246
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "playcount"
-msgstr "nombre d'écoutes"
+msgstr "nombreécoutes"
 
 #: core/meta/support/MetaConstants.cpp:247
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "uniqueid"
-msgstr "ID unique"
+msgstr "IDunique"
 
 #: core/meta/support/MetaConstants.cpp:249
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "trackgain"
-msgstr "gain de piste"
+msgstr "gain"
 
 #: core/meta/support/MetaConstants.cpp:250
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "trackgainpeak"
-msgstr "pic du gain de la piste"
+msgstr "picgain"
 
 #: core/meta/support/MetaConstants.cpp:251
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumgain"
-msgstr "gain de l'album"
+msgstr "gainalbum"
 
 #: core/meta/support/MetaConstants.cpp:252
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumgainpeak"
-msgstr "pic du gain de l'album"
+msgstr "picgainalbum"
 
 #: core/meta/support/MetaConstants.cpp:254
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumartist"
-msgstr "artiste de l'album"
+msgstr "artistealbum"
 
 #: core/meta/support/MetaConstants.cpp:255
 #, kde-format
@@ -11738,7 +11738,7 @@ msgid ""
 "href='%3'>Turn off</a>"
 msgstr ""
 "<a href='%1'>Mode dynamique</a> activé. <a href='%2'>Repeupler</a> | <a "
-"href='%3'>désactivé</a>"
+"href='%3'>Désactiver</a>"
 
 #: playlist/PlaylistDock.cpp:177
 #, kde-format
