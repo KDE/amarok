@@ -2,9 +2,10 @@ Amarok Release process
 ----------------------
 
 SECTION -1: Before you even start
- * Review https://community.kde.org/ReleasingSoftware , https://invent.kde.org/sdk/releaseme
-   or other up-to-date KDE release instructions and compare with this HOWTO to find out if
-   this document contains outdated information. Update this document where appropriate.
+ * Review https://develop.kde.org/docs/getting-started/add-project/release/ ,
+   https://invent.kde.org/sdk/releaseme or other up-to-date KDE release
+   instructions and compare with this HOWTO to find out if this document
+   contains outdated information. Update this document where appropriate.
 --------------------------------------------------------------------------------
 
 Dependencies:
@@ -84,8 +85,6 @@ SECTION 4: The Release Day
  * Update the amarok.kde.org front-page
  * Send a witty, intelligent and diligently crafted email to the following lists:
      To:  kde-announce-apps@kde.org, amarok@kde.org
-     BCC: kde-multimedia@kde.org, kde-distro-packagers@kde.org,
-          (kde-press-announce@kde.org)
  * Update IRC channel topics
  * Update social networks
  * Write blog post
