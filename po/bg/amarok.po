@@ -16334,17 +16334,3 @@ msgstr "Изпълнител: %1"
 #, kde-format
 msgid "empty"
 msgstr "празно"
-
-#~ msgid " Item"
-#~ msgid_plural " Items"
-#~ msgstr[0] " бр."
-#~ msgstr[1] " бр."
-
-#~ msgctxt "prefix to 'x minutes'"
-#~ msgid "every "
-#~ msgstr "на всеки "
-
-#~ msgid " minute"
-#~ msgid_plural " minutes"
-#~ msgstr[0] " минута"
-#~ msgstr[1] " минути"
