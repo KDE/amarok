@@ -12,16 +12,28 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QCheckBox" name="kcfg_UseServer">
+    <widget class="QComboBox" name="kcfg_DatabaseBackend">
      <property name="toolTip">
-      <string>Check to enable the use of an external database. By default there is already an embedded MySQL database running.</string>
+      <string>Select the database backend to use.</string>
      </property>
      <property name="whatsThis">
-      <string>Check to enable the use of an external database. By default there is already an embedded MySQL database running.</string>
+      <string>Select the database backend to use. Options are Embedded MySQL, External MySQL server, or SQLite.</string>
      </property>
-     <property name="text">
-      <string>Use &amp;external MySQL database</string>
-     </property>
+     <item>
+      <property name="text">
+       <string>Embedded MySQL</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>External MySQL</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>SQLite</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="1" column="0">

@@ -423,7 +423,7 @@ void BookmarkModel::createTables()
             QStringLiteral(", parent_id INTEGER"
             ", name ") + sqlStorage->textColumnType() +
             QStringLiteral(", description ") + sqlStorage->textColumnType() +
-            QStringLiteral(", custom ") + sqlStorage->textColumnType() + QStringLiteral(" ) ENGINE = MyISAM;") );
+            QStringLiteral(", custom ") + sqlStorage->textColumnType() + QStringLiteral(")") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";") );
 
     sqlStorage->query( QStringLiteral( "CREATE TABLE bookmarks ("
             " id ") + sqlStorage->idType() +
@@ -431,7 +431,7 @@ void BookmarkModel::createTables()
             ", name ") + sqlStorage->textColumnType() +
             QStringLiteral(", url ") + sqlStorage->exactTextColumnType() +
             QStringLiteral(", description ") + sqlStorage->exactTextColumnType() +
-            QStringLiteral(", custom ") + sqlStorage->textColumnType() + QStringLiteral(" ) ENGINE = MyISAM;") );
+            QStringLiteral(", custom ") + sqlStorage->textColumnType() + QStringLiteral(")") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";") );
 
 }
 
@@ -461,7 +461,7 @@ void BookmarkModel::checkTables()
     QStringList values = sqlStorage->query( QStringLiteral("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
 
     //also check if the db  version is correct but the table is simply missing... can happen due to a bug in 2.2.0 beta1 and beta2
-    QStringList values2 = sqlStorage->query( QStringLiteral("show tables like 'bookmarks';"));
+    QStringList values2 = sqlStorage->query( QStringLiteral("SELECT count(*) FROM bookmarks"));
     
     if( values.isEmpty() || values2.isEmpty() )
     {

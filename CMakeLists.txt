@@ -222,27 +222,33 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     endif()
 endif()
 
+option(WITH_MYSQL "Build with MySQL/MariaDB storage backend (disable for SQLite only)" ON)
+
 add_subdirectory( data )
 add_subdirectory( images )
 
 if( WITH_PLAYER )
     find_package(Threads REQUIRED)
 
-    find_package(MySQL)
+    if( WITH_MYSQL )
+        find_package(MySQL)
+        if( NOT MySQL_FOUND )
+            find_package(MariaDB REQUIRED)
+        endif()
 
-    if( NOT MySQL_FOUND )
-        find_package(MariaDB REQUIRED)
-    endif()
-
-    if( WITH_EMBEDDED_DB )
-        find_package(MariaDBd REQUIRED)
-        set( BUILD_MYSQLE_COLLECTION TRUE )
-        # zlib is required for mysql embedded
-        find_package(ZLIB REQUIRED)
-        set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
+        if( WITH_EMBEDDED_DB )
+            find_package(MariaDBd REQUIRED)
+            set( BUILD_MYSQLE_COLLECTION TRUE )
+            # zlib is required for mysql embedded
+            find_package(ZLIB REQUIRED)
+            set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
+        else()
+            add_definitions( "-DNO_MYSQL_EMBEDDED" )
+            message(STATUS "Building without embedded MariaDB/MySQL as requested")
+        endif()
     else()
         add_definitions( "-DNO_MYSQL_EMBEDDED" )
-        message("Building without embedded MariaDB/MySQL as requested")
+        message(STATUS "Building with SQLite storage backend (no MySQL/MariaDB)")
     endif()
 
 

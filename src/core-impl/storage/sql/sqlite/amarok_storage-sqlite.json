@@ -1,0 +1,40 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "amarok@kde.org",
+                "Name": "Amarok Team"
+            }
+        ],
+        "Category": "Storage",
+        "Description": "Storage plugin for Amarok using SQLite",
+        "Description[de]": "Speicher-Modul für Amarok mit SQLite",
+        "Description[en_GB]": "Storage plugin for Amarok using SQLite",
+        "Description[es]": "Complemento de almacenamiento para Amarok usando SQLite",
+        "Description[fr]": "Module d'enregistrement pour Amarok utilisant SQLite",
+        "EnabledByDefault": true,
+        "Icon": "server-database",
+        "License": "GPL",
+        "Name": "SQLite Storage",
+        "Name[de]": "SQLite-Speicher",
+        "Name[en_GB]": "SQLite Storage",
+        "Name[es]": "Almacenamiento SQLite",
+        "Name[fr]": "Stockage SQLite",
+        "ServiceTypes": [
+            "Amarok/Plugin"
+        ],
+        "Version": "1.0"
+    },
+    "NoDisplay": "true",
+    "X-KDE-Amarok-authors": [
+        "Amarok Team"
+    ],
+    "X-KDE-Amarok-email": [
+        "amarok@kde.org"
+    ],
+    "X-KDE-Amarok-framework-version": 87,
+    "X-KDE-Amarok-name": "sqlite-storage",
+    "X-KDE-Amarok-rank": 90,
+    "X-KDE-Amarok-version": 1,
+    "X-KDE-Amarok-vital": true
+}

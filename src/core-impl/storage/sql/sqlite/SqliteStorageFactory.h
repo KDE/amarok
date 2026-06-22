@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                   *
+ * Copyright (c) 2025 Amarok Team <amarok@kde.org>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,46 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlEmbeddedStorageFactory.h"
-#include "MySqlEmbeddedStorage.h"
+#ifndef AMAROK_STORAGE_SQLITE_STORAGE_FACTORY_H
+#define AMAROK_STORAGE_SQLITE_STORAGE_FACTORY_H
 
-#include <core/support/Amarok.h>
+#include "core/storage/StorageFactory.h"
 
-
-MySqleStorageFactory::MySqleStorageFactory()
-    : StorageFactory()
+class SqliteStorageFactory : public StorageFactory
 {
-}
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_storage-sqlite.json")
+    Q_INTERFACES(Plugins::PluginFactory)
+    Q_OBJECT
 
-MySqleStorageFactory::~MySqleStorageFactory()
-{
-}
+public:
+    SqliteStorageFactory();
+    ~SqliteStorageFactory() override;
 
-void
-MySqleStorageFactory::init()
-{
-    if( m_initialized )
-        return;
+    void init() override;
+};
 
-    m_initialized = true;
 
-    // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
-    const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend != 0 )
-        return;
-
-    {
-        MySqlEmbeddedStorage* storage = new MySqlEmbeddedStorage();
-        bool initResult = storage->init();
-
-        // handle errors during creation
-        if( !storage->getLastErrors().isEmpty() )
-            Q_EMIT newError( storage->getLastErrors() );
-        storage->clearLastErrors();
-
-        if( initResult )
-            Q_EMIT newStorage( QSharedPointer<SqlStorage>( storage ) );
-        else
-            delete storage;
-    }
-}
+#endif

@@ -552,9 +552,13 @@
 </group>
 
 <group name="MySQL">
-    <entry key="UseServer" type="Bool">
-        <label>Whether Amarok uses its own internal database, as opposed to an external engine.</label>
+    <entry key="UseDatabase" type="Bool">
+        <label>Whether Amarok uses MySQL database.</label>
         <default>false</default>
+    </entry>
+    <entry key="DatabaseBackend" type="Int">
+        <label>Which database backend to use: 0=Embedded MySQL, 1=External MySQL</label>
+        <default>0</default>
     </entry>
     <entry key="Host" type="String">
         <label>The hostname of the external server to connect to.</label>
@@ -579,6 +583,13 @@
     <entry key="CheckCount" type="Int">
         <label>Keeps a running count to know when run a CHECK.</label>
         <default>0</default>
+    </entry>
+</group>
+
+<group name="SQLite">
+    <entry key="DatabasePath" type="String">
+        <label>The path to the SQLite database file.</label>
+        <default></default>
     </entry>
 </group>
 

@@ -222,11 +222,6 @@ DatabaseUpdater::upgradeVersion4to5()
 {
     auto storage = m_collection->sqlStorage();
 
-    //first the database
-    storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci") );
-
-    //now the tables
-
     //first, drop tables that can easily be recreated by doing an update
     QStringList dropTables;
     dropTables << QStringLiteral("jamendo_albums") << QStringLiteral("jamendo_artists") << QStringLiteral("jamendo_genre") << QStringLiteral("jamendo_tracks");
@@ -236,107 +231,114 @@ DatabaseUpdater::upgradeVersion4to5()
     for( const QString &table : dropTables )
         storage->query( QStringLiteral("DROP TABLE ") + table );
 
-    //now, the rest of them
-    QStringList tables;
-    tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
-    tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
-    tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
-    tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
-    tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
-    tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
-
-    for( const QString &table : tables )
-        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci") );
-
-    //now the columns (ugh)
-    //first, varchar
-    typedef QPair<QString, int> vcpair;
-    QMultiMap<QString, vcpair> columns;
-    columns.insert( QStringLiteral("admin"), vcpair( QStringLiteral("component"), 255 ) );
-    columns.insert( QStringLiteral("albums"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("asin"), 20 ) );
-    columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("locale"), 2 ) );
-    columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("filename"), 33 ) );
-    columns.insert( QStringLiteral("artists"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("custom"), 255 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("url"), 1024 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("description"), 1024 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("custom"), 255 ) );
-    columns.insert( QStringLiteral("composers"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("type"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("label"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("lastmountpoint"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("uuid"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 255 ) );
-    columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1024 ) );
-    columns.insert( QStringLiteral("genres"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("images"), vcpair( QStringLiteral("path"), 255 ) );
-    columns.insert( QStringLiteral("labels"), vcpair( QStringLiteral("label"), textColumnLength() ) );
-    columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("url"), 1024 ) );
-    columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1024 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("title"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("album"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("artist"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("uniqueid"), 128 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1024 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("copyright"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("directory"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("labels"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("subscribedate"), 255 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1024 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("mimetype"), 255 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("pubdate"), 255 ) );
-    columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 1024 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 255 ) );
-    columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("title"), textColumnLength() ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 1024 ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
-    columns.insert( QStringLiteral("years"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-
-    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
-    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+    // -- MySQL-specific charset/engine conversions below --
+    if( storage->isMySQL() )
     {
-        storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" VARBINARY(") + QString::number( i.value().second ) + QLatin1Char(')') );
-        storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first +
-            QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL") );
+        //first the database
+        storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci") );
+
+        //now, the rest of them
+        QStringList tables;
+        tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
+        tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
+        tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
+        tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
+        tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
+        tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
+
+        for( const QString &table : tables )
+            storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci") );
+
+        //now the columns (ugh)
+        //first, varchar
+        typedef QPair<QString, int> vcpair;
+        QMultiMap<QString, vcpair> columns;
+        columns.insert( QStringLiteral("admin"), vcpair( QStringLiteral("component"), 255 ) );
+        columns.insert( QStringLiteral("albums"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("asin"), 20 ) );
+        columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("locale"), 2 ) );
+        columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("filename"), 33 ) );
+        columns.insert( QStringLiteral("artists"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("custom"), 255 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("url"), 1024 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("description"), 1024 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("custom"), 255 ) );
+        columns.insert( QStringLiteral("composers"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("type"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("label"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("lastmountpoint"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("uuid"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 255 ) );
+        columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1024 ) );
+        columns.insert( QStringLiteral("genres"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("images"), vcpair( QStringLiteral("path"), 255 ) );
+        columns.insert( QStringLiteral("labels"), vcpair( QStringLiteral("label"), textColumnLength() ) );
+        columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("url"), 1024 ) );
+        columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1024 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("title"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("album"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("artist"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("uniqueid"), 128 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1024 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("copyright"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("directory"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("labels"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("subscribedate"), 255 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1024 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("mimetype"), 255 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("pubdate"), 255 ) );
+        columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 1024 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 255 ) );
+        columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("title"), textColumnLength() ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 1024 ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
+        columns.insert( QStringLiteral("years"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+
+        QMultiMap<QString, vcpair>::const_iterator i, iEnd;
+        for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+        {
+            storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" VARBINARY(") + QString::number( i.value().second ) + QLatin1Char(')') );
+            storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first +
+                QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL") );
+        }
+
+        columns.clear();
+
+        //text fields, not varchars
+        columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("lyrics"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("url"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("title"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("weblink"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("image"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("description"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("url"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("localurl"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("title"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("subtitle"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("description"), 0 ) );
+        columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
+
+        storage->query( QStringLiteral("DROP INDEX url_podchannel ON podcastchannels") );
+        storage->query( QStringLiteral("DROP INDEX url_podepisode ON podcastepisodes") );
+        storage->query( QStringLiteral("DROP INDEX localurl_podepisode ON podcastepisodes") );
+        for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+        {
+            storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" BLOB") );
+            storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" TEXT CHARACTER SET utf8 NOT NULL") );
+        }
+        storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )") );
+        storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )") );
+        storage->query( QStringLiteral("CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )") );
     }
-
-    columns.clear();
-
-    //text fields, not varchars
-    columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("lyrics"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("url"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("title"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("weblink"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("image"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("description"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("url"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("localurl"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("title"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("subtitle"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("description"), 0 ) );
-    columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
-
-    storage->query( QStringLiteral("DROP INDEX url_podchannel ON podcastchannels") );
-    storage->query( QStringLiteral("DROP INDEX url_podepisode ON podcastepisodes") );
-    storage->query( QStringLiteral("DROP INDEX localurl_podepisode ON podcastepisodes") );
-    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
-    {
-        storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" BLOB") );
-        storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" TEXT CHARACTER SET utf8 NOT NULL") );
-    }
-    storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )") );
-    storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )") );
-    storage->query( QStringLiteral("CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )") );
 }
 
 void
@@ -364,30 +366,33 @@ DatabaseUpdater::upgradeVersion5to6()
     tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
     tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
 
-    for( const QString &table : tables )
-        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" ENGINE = MyISAM") );
+    if( storage->isMySQL() )
+    {
+        for( const QString &table : tables )
+            storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" ENGINE = MyISAM") );
 
-    typedef QPair<QString, int> vcpair;
-    QMultiMap<QString, vcpair> columns;
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("url"), 1000 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("description"), 1000 ) );
-    columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1000 ) );
-    columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("url"), 324 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1000 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1000 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1000 ) );
-    columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 324 ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 324 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 80 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 240 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 108 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 108 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("album"), 108 ) );
+        typedef QPair<QString, int> vcpair;
+        QMultiMap<QString, vcpair> columns;
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("url"), 1000 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("description"), 1000 ) );
+        columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1000 ) );
+        columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("url"), 324 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1000 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1000 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1000 ) );
+        columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 324 ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 324 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 80 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 240 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 108 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 108 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("album"), 108 ) );
 
-    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
+        QMultiMap<QString, vcpair>::const_iterator i, iEnd;
 
-    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
-        storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") ") );
+        for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+            storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") ") );
+    }
 
     storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername, sharename );") );
     storage->query( QStringLiteral("CREATE UNIQUE INDEX lyrics_url ON lyrics(url);") );
@@ -402,22 +407,22 @@ DatabaseUpdater::upgradeVersion6to7()
 
     auto storage = m_collection->sqlStorage();
 
-    typedef QPair<QString, int> vcpair;
-    QMultiMap<QString, vcpair> columns;
-    columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1000 ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 324 ) );
-    columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 324 ) );
-
-    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
-
-    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+    if( storage->isMySQL() )
     {
-        storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first +
-            QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") COLLATE utf8_bin NOT NULL") );
+        typedef QPair<QString, int> vcpair;
+        QMultiMap<QString, vcpair> columns;
+        columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1000 ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 324 ) );
+        columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 324 ) );
+
+        QMultiMap<QString, vcpair>::const_iterator i, iEnd;
+
+        for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+        {
+            storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first +
+                QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") COLLATE utf8_bin NOT NULL") );
+        }
     }
-
-    columns.clear();
-
 }
 
 
@@ -461,11 +466,6 @@ DatabaseUpdater::upgradeVersion9to10()
 
     auto storage = m_collection->sqlStorage();
 
-    //first the database
-    storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin") );
-
-    //now the tables
-
     //first, drop tables that can easily be recreated by doing an update
     QStringList dropTables;
     dropTables << QStringLiteral("jamendo_albums") << QStringLiteral("jamendo_artists") << QStringLiteral("jamendo_genre") << QStringLiteral("jamendo_tracks");
@@ -475,80 +475,86 @@ DatabaseUpdater::upgradeVersion9to10()
     for( const QString &table : dropTables )
         storage->query( QStringLiteral("DROP TABLE ") + table );
 
-    //now, the rest of them
-    QStringList tables;
-    tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
-    tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
-    tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
-    tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
-    tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
-    tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
-
-    for( const QString &table : tables )
-        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM") );
-
-    //now the columns (ugh)
-    //first, varchar
-    typedef QPair<QString, int> vcpair;
-    QMultiMap<QString, vcpair> columns;
-    columns.insert( QStringLiteral("admin"), vcpair( QStringLiteral("component"), 255 ) );
-    columns.insert( QStringLiteral("albums"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("asin"), 20 ) );
-    columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("locale"), 2 ) );
-    columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("filename"), 33 ) );
-    columns.insert( QStringLiteral("artists"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("custom"), 255 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("url"), 1000 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("description"), 1000 ) );
-    columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("custom"), 255 ) );
-    columns.insert( QStringLiteral("composers"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("type"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("label"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("lastmountpoint"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("uuid"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 80 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 240 ) );
-    columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1000 ) );
-    columns.insert( QStringLiteral("genres"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-    columns.insert( QStringLiteral("images"), vcpair( QStringLiteral("path"), 255 ) );
-    columns.insert( QStringLiteral("labels"), vcpair( QStringLiteral("label"), textColumnLength() ) );
-    columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("url"), 324 ) );
-    columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1000 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("title"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("album"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("artist"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("uniqueid"), 128 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1000 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("copyright"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("directory"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("labels"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("subscribedate"), 255 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1000 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("mimetype"), 255 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("pubdate"), 255 ) );
-    columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 324 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 108 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 108 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("album"), 108 ) );
-    columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("title"), textColumnLength() ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 324 ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
-    columns.insert( QStringLiteral("years"), vcpair( QStringLiteral("name"), textColumnLength() ) );
-
-    QMultiMap<QString, vcpair>::const_iterator i, iEnd;
-
-    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+    if( storage->isMySQL() )
     {
-        storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" VARBINARY(") + QString::number( i.value().second ) + QLatin1Char(')') );
-        storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first +
-            QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") CHARACTER SET utf8 COLLATE utf8_bin NOT NULL") );
+        //first the database
+        storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin") );
+
+        //now, the rest of them
+        QStringList tables;
+        tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
+        tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
+        tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
+        tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
+        tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
+        tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
+
+        for( const QString &table : tables )
+            storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM") );
+
+        //now the columns (ugh)
+        //first, varchar
+        typedef QPair<QString, int> vcpair;
+        QMultiMap<QString, vcpair> columns;
+        columns.insert( QStringLiteral("admin"), vcpair( QStringLiteral("component"), 255 ) );
+        columns.insert( QStringLiteral("albums"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("asin"), 20 ) );
+        columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("locale"), 2 ) );
+        columns.insert( QStringLiteral("amazon"), vcpair( QStringLiteral("filename"), 33 ) );
+        columns.insert( QStringLiteral("artists"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("bookmark_groups"), vcpair( QStringLiteral("custom"), 255 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("url"), 1000 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("description"), 1000 ) );
+        columns.insert( QStringLiteral("bookmarks"), vcpair( QStringLiteral("custom"), 255 ) );
+        columns.insert( QStringLiteral("composers"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("type"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("label"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("lastmountpoint"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("uuid"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 80 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 240 ) );
+        columns.insert( QStringLiteral("directories"), vcpair( QStringLiteral("dir"), 1000 ) );
+        columns.insert( QStringLiteral("genres"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+        columns.insert( QStringLiteral("images"), vcpair( QStringLiteral("path"), 255 ) );
+        columns.insert( QStringLiteral("labels"), vcpair( QStringLiteral("label"), textColumnLength() ) );
+        columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("url"), 324 ) );
+        columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1000 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("title"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("album"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("artist"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("uniqueid"), 128 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1000 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("copyright"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("directory"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("labels"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("subscribedate"), 255 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1000 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("mimetype"), 255 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("pubdate"), 255 ) );
+        columns.insert( QStringLiteral("statistics_permanent"), vcpair( QStringLiteral("url"), 324 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 108 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 108 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("album"), 108 ) );
+        columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("title"), textColumnLength() ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("rpath"), 324 ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
+        columns.insert( QStringLiteral("years"), vcpair( QStringLiteral("name"), textColumnLength() ) );
+
+        QMultiMap<QString, vcpair>::const_iterator i, iEnd;
+
+        for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+        {
+            storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" VARBINARY(") + QString::number( i.value().second ) + QLatin1Char(')') );
+            storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first +
+                QStringLiteral(" VARCHAR(") + QString::number( i.value().second ) + QStringLiteral(") CHARACTER SET utf8 COLLATE utf8_bin NOT NULL") );
+        }
     }
 
     storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername, sharename );") );
@@ -556,33 +562,39 @@ DatabaseUpdater::upgradeVersion9to10()
     storage->query( QStringLiteral("CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);") );
     storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)") );
 
-    columns.clear();
-
-    //text fields, not varchars
-    columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("lyrics"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("url"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("title"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("weblink"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("image"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("description"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("url"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("localurl"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("title"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("subtitle"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("description"), 0 ) );
-    columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
-
-    storage->query( QStringLiteral("DROP INDEX url_podchannel ON podcastchannels") );
-    storage->query( QStringLiteral("DROP INDEX url_podepisode ON podcastepisodes") );
-    storage->query( QStringLiteral("DROP INDEX localurl_podepisode ON podcastepisodes") );
-    for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
+    if( storage->isMySQL() )
     {
-        storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" BLOB") );
-        storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" TEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL") );
+        typedef QPair<QString, int> vcpair;
+        QMultiMap<QString, vcpair> columns;
+
+        //text fields, not varchars
+        columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("lyrics"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("url"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("title"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("weblink"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("image"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("description"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("url"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("localurl"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("title"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("subtitle"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("description"), 0 ) );
+        columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
+
+        QMultiMap<QString, vcpair>::const_iterator i, iEnd = columns.constEnd();
+
+        storage->query( QStringLiteral("DROP INDEX url_podchannel ON podcastchannels") );
+        storage->query( QStringLiteral("DROP INDEX url_podepisode ON podcastepisodes") );
+        storage->query( QStringLiteral("DROP INDEX localurl_podepisode ON podcastepisodes") );
+        for( i = columns.constBegin(); i != iEnd; ++i )
+        {
+            storage->query( QStringLiteral("ALTER TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" BLOB") );
+            storage->query( QStringLiteral("ALTER IGNORE TABLE ") + i.key() + QStringLiteral(" MODIFY ") + i.value().first + QStringLiteral(" TEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL") );
+        }
+        storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )") );
+        storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )") );
+        storage->query( QStringLiteral("CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )") );
     }
-    storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )") );
-    storage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )") );
-    storage->query( QStringLiteral("CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )") );
 }
 
 void
@@ -616,162 +628,187 @@ DatabaseUpdater::upgradeVersion13to14()
     DEBUG_BLOCK
     auto storage = m_collection->sqlStorage();
 
-    /* Following commands transition lyrics table from text-based urls (in fact just rpath
-     * parts) to references to urls table. */
+    if( storage->isMySQL() )
+    {
+        /* Following commands transition lyrics table from text-based urls (in fact just rpath
+         * parts) to references to urls table. */
 
-    // first, rename column
-    storage->query( QStringLiteral("ALTER TABLE lyrics CHANGE url rpath VARCHAR(324) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL") );
-    // add integer column for url id
-    storage->query( QStringLiteral("ALTER TABLE lyrics ADD COLUMN url INT NULL DEFAULT NULL FIRST") );
-    // try to extract url id from urls table using rpath
-    storage->query( QStringLiteral("UPDATE lyrics l SET l.url = (SELECT u.id FROM urls u WHERE u.rpath = l.rpath LIMIT 1)") );
-    // delete entries with no matches in urls table; these should be just stale ones
-    storage->query( QStringLiteral("DELETE FROM lyrics WHERE url IS NULL") );
-    // make the url column non-null
-    storage->query( QStringLiteral("ALTER TABLE lyrics MODIFY url INT NOT NULL") );
-    // select duplicate ids into temporary table
-    storage->query( QStringLiteral("CREATE TEMPORARY TABLE duplicate_lyrics_ids ( id INT NOT NULL ) "
-        "ENGINE=MEMORY SELECT dupl.id FROM lyrics orig "
-        "LEFT JOIN lyrics dupl ON dupl.url = orig.url AND dupl.id > orig.id") );
-    // delete duplicate lyrics entries
-    storage->query( QStringLiteral("DELETE FROM lyrics WHERE id IN (SELECT id FROM duplicate_lyrics_ids)") );
-    // drop unwanted columns along with indexes defined on them
-    storage->query( QStringLiteral("ALTER TABLE lyrics DROP id, DROP rpath") );
-    // add primary key; should definitely not fail as we have removed duplicate entries
-    storage->query( QStringLiteral("ALTER TABLE lyrics ADD PRIMARY KEY(url)") );
+        // first, rename column
+        storage->query( QStringLiteral("ALTER TABLE lyrics CHANGE url rpath VARCHAR(324) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL") );
+        // add integer column for url id
+        storage->query( QStringLiteral("ALTER TABLE lyrics ADD COLUMN url INT NULL DEFAULT NULL FIRST") );
+        // try to extract url id from urls table using rpath
+        storage->query( QStringLiteral("UPDATE lyrics l SET l.url = (SELECT u.id FROM urls u WHERE u.rpath = l.rpath LIMIT 1)") );
+        // delete entries with no matches in urls table; these should be just stale ones
+        storage->query( QStringLiteral("DELETE FROM lyrics WHERE url IS NULL") );
+        // make the url column non-null
+        storage->query( QStringLiteral("ALTER TABLE lyrics MODIFY url INT NOT NULL") );
+        // select duplicate ids into temporary table
+        storage->query( QStringLiteral("CREATE TEMPORARY TABLE duplicate_lyrics_ids ( id INT NOT NULL ) "
+            "ENGINE=MEMORY SELECT dupl.id FROM lyrics orig "
+            "LEFT JOIN lyrics dupl ON dupl.url = orig.url AND dupl.id > orig.id") );
+        // delete duplicate lyrics entries
+        storage->query( QStringLiteral("DELETE FROM lyrics WHERE id IN (SELECT id FROM duplicate_lyrics_ids)") );
+        // drop unwanted columns along with indexes defined on them
+        storage->query( QStringLiteral("ALTER TABLE lyrics DROP id, DROP rpath") );
+        // add primary key; should definitely not fail as we have removed duplicate entries
+        storage->query( QStringLiteral("ALTER TABLE lyrics ADD PRIMARY KEY(url)") );
+    }
 }
 
 void
 DatabaseUpdater::upgradeVersion14to15()
 {
-    /* This update solves bug 302837. In short, updates
-     * 4 -> 5, 5 -> 6, 6 -> 7 and 9 -> 10 ignored NULL status of some columns and replaced
-     * them with NOT NULL columns, causing various consequences, one of them is Dynamic
-     * Collection not working. Fix it back.
-     *
-     * A list of columns to fix was obtained by comparing a database created by
-     * Amarok 2.1.1 and then upgraded to current version with a db freshly created by
-     * Amarok 2.6-git.
-     */
     DEBUG_BLOCK
     auto storage = m_collection->sqlStorage();
 
-    // zero length = TEXT datatype
-    typedef QPair<QString, int> vcpair;
-    QMultiMap<QString, vcpair> columns;
-
-    columns.insert( QStringLiteral("admin"), vcpair( QStringLiteral("component"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("type"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("label"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("lastmountpoint"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("uuid"), 255 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 80 ) );
-    columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 240 ) );
-    columns.insert( QStringLiteral("labels"), vcpair( QStringLiteral("label"), textColumnLength() ) );
-    columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("lyrics"), 0 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1000 ) );
-    columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("name"), 255 ) );
-    columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("description"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1000 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("title"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("album"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("artist"), 255 ) );
-    columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("uniqueid"), 128 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("url"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("title"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("weblink"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("image"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("description"), 0 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("copyright"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("directory"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("labels"), 255 ) );
-    columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("subscribedate"), 255 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("url"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("localurl"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1000 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("title"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("subtitle"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("description"), 0 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("mimetype"), 255 ) );
-    columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("pubdate"), 255 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 108 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 108 ) );
-    columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("album"), 108 ) );
-    columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("title"), textColumnLength() ) );
-    columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
-    columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
-
-    QMultiMapIterator<QString, vcpair> it( columns );
-    while( it.hasNext() )
+    if( storage->isMySQL() )
     {
-        it.next();
-        QString table = it.key();
-        QString column = it.value().first;
-        int length = it.value().second;
+        /* This update solves bug 302837. In short, updates
+         * 4 -> 5, 5 -> 6, 6 -> 7 and 9 -> 10 ignored NULL status of some columns and replaced
+         * them with NOT NULL columns, causing various consequences, one of them is Dynamic
+         * Collection not working. Fix it back.
+         *
+         * A list of columns to fix was obtained by comparing a database created by
+         * Amarok 2.1.1 and then upgraded to current version with a db freshly created by
+         * Amarok 2.6-git.
+         */
 
-        QString query;
-        if( length > 0 )
-            query = QStringLiteral( "ALTER TABLE `%1` CHANGE `%2` `%2` VARCHAR(%3) CHARACTER SET utf8 "
-                    "COLLATE utf8_bin NULL DEFAULT NULL" ).arg( table, column ).arg( length );
-        else
-            query = QStringLiteral( "ALTER TABLE `%1` CHANGE `%2` `%2` TEXT CHARACTER SET utf8 "
-                    "COLLATE utf8_bin" ).arg( table, column );
-        storage->query( query );
+        // zero length = TEXT datatype
+        typedef QPair<QString, int> vcpair;
+        QMultiMap<QString, vcpair> columns;
+
+        columns.insert( QStringLiteral("admin"), vcpair( QStringLiteral("component"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("type"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("label"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("lastmountpoint"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("uuid"), 255 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("servername"), 80 ) );
+        columns.insert( QStringLiteral("devices"), vcpair( QStringLiteral("sharename"), 240 ) );
+        columns.insert( QStringLiteral("labels"), vcpair( QStringLiteral("label"), textColumnLength() ) );
+        columns.insert( QStringLiteral("lyrics"), vcpair( QStringLiteral("lyrics"), 0 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("playlists"), vcpair( QStringLiteral("urlid"), 1000 ) );
+        columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("name"), 255 ) );
+        columns.insert( QStringLiteral("playlist_groups"), vcpair( QStringLiteral("description"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("url"), 1000 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("title"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("album"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("artist"), 255 ) );
+        columns.insert( QStringLiteral("playlist_tracks"), vcpair( QStringLiteral("uniqueid"), 128 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("url"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("title"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("weblink"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("image"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("description"), 0 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("copyright"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("directory"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("labels"), 255 ) );
+        columns.insert( QStringLiteral("podcastchannels"), vcpair( QStringLiteral("subscribedate"), 255 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("url"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("localurl"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("guid"), 1000 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("title"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("subtitle"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("description"), 0 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("mimetype"), 255 ) );
+        columns.insert( QStringLiteral("podcastepisodes"), vcpair( QStringLiteral("pubdate"), 255 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("name"), 108 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("artist"), 108 ) );
+        columns.insert( QStringLiteral("statistics_tag"), vcpair( QStringLiteral("album"), 108 ) );
+        columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("title"), textColumnLength() ) );
+        columns.insert( QStringLiteral("tracks"), vcpair( QStringLiteral("comment"), 0 ) );
+        columns.insert( QStringLiteral("urls"), vcpair( QStringLiteral("uniqueid"), 128 ) );
+
+        QMultiMapIterator<QString, vcpair> it( columns );
+        while( it.hasNext() )
+        {
+            it.next();
+            QString table = it.key();
+            QString column = it.value().first;
+            int length = it.value().second;
+
+            QString query;
+            if( length > 0 )
+                query = QStringLiteral( "ALTER TABLE `%1` CHANGE `%2` `%2` VARCHAR(%3) CHARACTER SET utf8 "
+                        "COLLATE utf8_bin NULL DEFAULT NULL" ).arg( table, column ).arg( length );
+            else
+                query = QStringLiteral( "ALTER TABLE `%1` CHANGE `%2` `%2` TEXT CHARACTER SET utf8 "
+                        "COLLATE utf8_bin" ).arg( table, column );
+            storage->query( query );
+        }
     }
 
     // there may be a stale unique index on the urls table, remove it if it is there:
-    QStringList results = storage->query( QStringLiteral("SHOW CREATE TABLE urls") );
-    bool oldIndexFound = results.value( 1 ).contains( QStringLiteral("UNIQUE KEY `uniqueid`") );
-    if( oldIndexFound )
+    if( storage->isMySQL() )
     {
-        debug() << "dropping obsolete INDEX uniqueid on table urls";
-        storage->query( QStringLiteral("DROP INDEX uniqueid ON urls") );
+        QStringList results = storage->query( QStringLiteral("SHOW CREATE TABLE urls") );
+        bool oldIndexFound = results.value( 1 ).contains( QStringLiteral("UNIQUE KEY `uniqueid`") );
+        if( oldIndexFound )
+        {
+            debug() << "dropping obsolete INDEX uniqueid on table urls";
+            storage->query( QStringLiteral("DROP INDEX uniqueid ON urls") );
+        }
+    }
+    else
+    {
+        // On SQLite, check for the index via sqlite_master
+        QStringList results = storage->query( QStringLiteral("SELECT name FROM sqlite_master WHERE type='index' AND name='uniqueid' AND tbl_name='urls'") );
+        if( !results.isEmpty() )
+        {
+            debug() << "dropping obsolete INDEX uniqueid on table urls";
+            storage->query( QStringLiteral("DROP INDEX IF EXISTS uniqueid") );
+        }
     }
 }
 
 void
 DatabaseUpdater::upgradeVersion15to16()
 {
-    /* This update solves bugs 426807 and 462268
-     * It changes database charset to utf8mb4 (from the deprecated utf8 = utf8mb3)
-     * and directories' changedate, and tracks' createdate and modifydate from INTEGER to BIGINT
-     * */
-
     auto storage = m_collection->sqlStorage();
 
-    storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin") );
-
-    // due to increased memory usage, servername(80)+sharename(240) doesn't fit in 1000 byte max key any more,
-    // avoid by creating only prefix indexes. The index is not unique so shouldn't probably cause problems.
-    storage->query( QStringLiteral("DROP INDEX devices_rshare ON devices") );
-    storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername(60), sharename(180) );") );
-
-
-
-    QStringList tables;
-    tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
-    tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
-    tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
-    tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
-    tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
-    tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
-    tables << QStringLiteral("jamendo_albums") << QStringLiteral("jamendo_artists") << QStringLiteral("jamendo_genre") << QStringLiteral("jamendo_tracks");
-    tables << QStringLiteral("magnatune_albums") << QStringLiteral("magnatune_artists") << QStringLiteral("magnatune_genre") << QStringLiteral("magnatune_moods") << QStringLiteral("magnatune_tracks");
-    tables << QStringLiteral("opmldirectory_albums") << QStringLiteral("opmldirectory_artists") << QStringLiteral("opmldirectory_genre") << QStringLiteral("opmldirectory_tracks");
-
-
-    for( const QString &table : tables )
+    if( storage->isMySQL() )
     {
-        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin COLLATE utf8mb4_bin ENGINE = MyISAM") );
-        storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin") );
+        /* This update solves bugs 426807 and 462268
+         * It changes database charset to utf8mb4 (from the deprecated utf8 = utf8mb3)
+         * and directories' changedate, and tracks' createdate and modifydate from INTEGER to BIGINT
+         * */
+
+        storage->query( QStringLiteral("ALTER DATABASE ") + storage->databaseName() + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin") );
+
+        // due to increased memory usage, servername(80)+sharename(240) doesn't fit in 1000 byte max key any more,
+        // avoid by creating only prefix indexes. The index is not unique so shouldn't probably cause problems.
+        storage->query( QStringLiteral("DROP INDEX devices_rshare ON devices") );
+        storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername(60), sharename(180) );") );
+
+        QStringList tables;
+        tables << QStringLiteral("admin") << QStringLiteral("albums") << QStringLiteral("amazon") << QStringLiteral("artists") << QStringLiteral("bookmark_groups") << QStringLiteral("bookmarks");
+        tables << QStringLiteral("composers") << QStringLiteral("devices") << QStringLiteral("directories") << QStringLiteral("genres") << QStringLiteral("images") << QStringLiteral("labels") << QStringLiteral("lyrics");
+        tables << QStringLiteral("playlist_groups") << QStringLiteral("playlist_tracks") << QStringLiteral("playlists");
+        tables << QStringLiteral("podcastchannels") << QStringLiteral("podcastepisodes");
+        tables << QStringLiteral("statistics") << QStringLiteral("statistics_permanent") << QStringLiteral("statistics_tag");
+        tables << QStringLiteral("tracks") << QStringLiteral("urls") << QStringLiteral("urls_labels") << QStringLiteral("years");
+        tables << QStringLiteral("jamendo_albums") << QStringLiteral("jamendo_artists") << QStringLiteral("jamendo_genre") << QStringLiteral("jamendo_tracks");
+        tables << QStringLiteral("magnatune_albums") << QStringLiteral("magnatune_artists") << QStringLiteral("magnatune_genre") << QStringLiteral("magnatune_moods") << QStringLiteral("magnatune_tracks");
+        tables << QStringLiteral("opmldirectory_albums") << QStringLiteral("opmldirectory_artists") << QStringLiteral("opmldirectory_genre") << QStringLiteral("opmldirectory_tracks");
+
+        for( const QString &table : tables )
+        {
+            storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin COLLATE utf8mb4_bin ENGINE = MyISAM") );
+            storage->query( QStringLiteral("ALTER TABLE ") + table + QStringLiteral(" CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin") );
+        }
+
+        storage->query( QStringLiteral("ALTER TABLE directories MODIFY changedate BIGINT") );
+        storage->query( QStringLiteral("ALTER TABLE tracks MODIFY createdate BIGINT") );
+        storage->query( QStringLiteral("ALTER TABLE tracks MODIFY modifydate BIGINT") );
     }
-
-
-    storage->query( QStringLiteral("ALTER TABLE directories MODIFY changedate BIGINT") );
-    storage->query( QStringLiteral("ALTER TABLE tracks MODIFY createdate BIGINT") );
-    storage->query( QStringLiteral("ALTER TABLE tracks MODIFY modifydate BIGINT") );
+    else
+    {
+        // For SQLite, recreate the devices_rshare index without prefix (prefix indexes not supported)
+        storage->query( QStringLiteral("DROP INDEX IF EXISTS devices_rshare") );
+        storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername, sharename )") );
+    }
 }
 
 void
@@ -787,11 +824,14 @@ DatabaseUpdater::checkTables( bool full )
 
     auto storage = m_collection->sqlStorage();
 
-    QStringList res = storage->query( QStringLiteral("SHOW TABLES") );
-    if( res.count() > 0 )
+    if( storage->isMySQL() )
     {
-        for( const QString &table : res )
-            storage->query( QStringLiteral("CHECK TABLE ") + table + ( full ? QStringLiteral(" EXTENDED;") : QStringLiteral(" MEDIUM;") ) );
+        QStringList res = storage->query( QStringLiteral("SHOW TABLES") );
+        if( res.count() > 0 )
+        {
+            for( const QString &table : res )
+                storage->query( QStringLiteral("CHECK TABLE ") + table + ( full ? QStringLiteral(" EXTENDED;") : QStringLiteral(" MEDIUM;") ) );
+        }
     }
 }
 
@@ -805,7 +845,7 @@ DatabaseUpdater::createTables() const
 
     // see docs/database/amarokTables.svg for documentation about database layout
     {
-        QString c = QStringLiteral("CREATE TABLE admin (component ") + storage->textColumnType() + QStringLiteral(", version INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+        QString c = QStringLiteral("CREATE TABLE admin (component ") + storage->textColumnType() + QStringLiteral(", version INTEGER)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( c );
     }
     {
@@ -816,13 +856,16 @@ DatabaseUpdater::createTables() const
                          QStringLiteral(",lastmountpoint ") + storage->textColumnType() +
                          QStringLiteral(",uuid ") + storage->textColumnType() +
                          QStringLiteral(",servername ") + storage->textColumnType(80) +
-                         QStringLiteral(",sharename ") + storage->textColumnType(240) + QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                         QStringLiteral(",sharename ") + storage->textColumnType(240) + QStringLiteral(")") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE INDEX devices_type ON devices( type );") );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX devices_uuid ON devices( uuid );") );
         // changing from utf8 to utf8mb4 increased bytes per character, so servername(80)+sharename(240) doesn't fit in 1000 byte max key
         // avoid by creating only prefix indexes. this index is not unique so shouldn't probably cause problems in any case
-        storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername(60), sharename(180) );") );
+        if (storage->supportsPrefixIndexes())
+            storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername(60), sharename(180) );") );
+        else
+            storage->query( QStringLiteral("CREATE INDEX devices_rshare ON devices( servername, sharename );") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE urls "
@@ -830,7 +873,7 @@ DatabaseUpdater::createTables() const
                          QStringLiteral(",deviceid INTEGER"
                          ",rpath ") + storage->exactIndexableTextColumnType() + QStringLiteral(" NOT NULL") +
                          QStringLiteral(",directory INTEGER"
-                         ",uniqueid ") + storage->exactTextColumnType(128) + QStringLiteral(" UNIQUE) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                          ",uniqueid ") + storage->exactTextColumnType(128) + QStringLiteral(" UNIQUE)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);") );
         storage->query( QStringLiteral("CREATE INDEX urls_uniqueid ON urls(uniqueid);") );
@@ -841,21 +884,21 @@ DatabaseUpdater::createTables() const
                          "(id ") + storage->idType() +
                          QStringLiteral(",deviceid INTEGER"
                          ",dir ") + storage->exactTextColumnType() + QStringLiteral(" NOT NULL") +
-                         QStringLiteral(",changedate BIGINT) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                          QStringLiteral(",changedate BIGINT)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE INDEX directories_deviceid ON directories(deviceid);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE artists "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                          QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX artists_name ON artists(name);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE images "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",path ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                         QStringLiteral(",path ") + storage->textColumnType() + QStringLiteral(" NOT NULL)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX images_name ON images(path);") );
     }
@@ -864,7 +907,7 @@ DatabaseUpdater::createTables() const
                     "(id ") + storage->idType() +
                     QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL"
                     ",artist INTEGER") +
-                    QStringLiteral(",image INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                    QStringLiteral(",image INTEGER)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( c );
         storage->query( QStringLiteral("CREATE INDEX albums_name ON albums(name);") );
         storage->query( QStringLiteral("CREATE INDEX albums_artist ON albums(artist);") );
@@ -876,21 +919,21 @@ DatabaseUpdater::createTables() const
     {
         QString create = QStringLiteral("CREATE TABLE genres "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                          QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX genres_name ON genres(name);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE composers "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX composers_name ON composers(name);") );
     }
     {
         QString create = QStringLiteral("CREATE TABLE years "
                          "(id ") + storage->idType() +
-                         QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                          QStringLiteral(",name ") + storage->textColumnType() + QStringLiteral(" NOT NULL)") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( create );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX years_name ON years(name);") );
     }
@@ -919,7 +962,7 @@ DatabaseUpdater::createTables() const
                     ",albumpeakgain FLOAT" // decibels, relative to albumgain
                     ",trackgain FLOAT"
                     ",trackpeakgain FLOAT" // decibels, relative to trackgain
-                    ") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                    ")") + storage->sqlCreateTableOptions() + QStringLiteral(";");
 
         storage->query( c );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX tracks_url ON tracks(url);") );
@@ -943,7 +986,7 @@ DatabaseUpdater::createTables() const
                     ",rating INTEGER NOT NULL DEFAULT 0" // the "default" undefined rating is 0. We cannot display anything else.
                     ",playcount INTEGER NOT NULL DEFAULT 0" // a track is either played or not.
                     ",deleted BOOL NOT NULL DEFAULT ") + storage->boolFalse() +
-                    QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                     QStringLiteral(")") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( c );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX statistics_url ON statistics(url);") );
         QStringList indices;
@@ -958,7 +1001,7 @@ DatabaseUpdater::createTables() const
         QString q = QStringLiteral("CREATE TABLE labels "
                     "(id ") + storage->idType() +
                     QStringLiteral(",label ") + storage->textColumnType() +
-                    QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                    QStringLiteral(")") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( q );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX labels_label ON labels(label);") );
 
@@ -972,7 +1015,7 @@ DatabaseUpdater::createTables() const
                     "asin ") + storage->textColumnType( 20 ) +
                     QStringLiteral(",locale ") + storage->textColumnType( 2 ) +
                     QStringLiteral(",filename ") + storage->textColumnType( 33 ) +
-                    QStringLiteral(",refetchdate INTEGER ) COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                    QStringLiteral(",refetchdate INTEGER )") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( q );
         storage->query( QStringLiteral("CREATE INDEX amazon_date ON amazon(refetchdate);") );
     }
@@ -980,10 +1023,10 @@ DatabaseUpdater::createTables() const
         QString q = QStringLiteral("CREATE TABLE lyrics ("
                     "url INTEGER PRIMARY KEY"
                     ",lyrics ") + storage->longTextColumnType() +
-                    QStringLiteral(") COLLATE = utf8mb4_bin ENGINE = MyISAM;");
+                    QStringLiteral(")") + storage->sqlCreateTableOptions() + QStringLiteral(";");
         storage->query( q );
     }
-    storage->query( QStringLiteral("INSERT INTO admin(component,version) "
+    storage->query( QStringLiteral("INSERT INTO admin(component,version) " 
                           "VALUES('AMAROK_TRACK',") + QString::number( DB_VERSION ) + QStringLiteral(");") );
     {
          storage->query( QStringLiteral("CREATE TABLE statistics_permanent "
@@ -992,7 +1035,7 @@ DatabaseUpdater::createTables() const
                             ",lastplayed DATETIME"
                             ",score FLOAT"
                             ",rating INTEGER DEFAULT 0"
-                            ",playcount INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM;") );
+                            ",playcount INTEGER)") + storage->sqlCreateTableOptions() + QStringLiteral(";") );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)") );
 
         storage->query( QStringLiteral("CREATE TABLE statistics_tag "
@@ -1003,7 +1046,7 @@ DatabaseUpdater::createTables() const
                              ",lastplayed DATETIME"
                              ",score FLOAT"
                              ",rating INTEGER DEFAULT 0"
-                             ",playcount INTEGER) COLLATE = utf8mb4_bin ENGINE = MyISAM") );
+                             ",playcount INTEGER)") + storage->sqlCreateTableOptions() + QStringLiteral("") );
         storage->query( QStringLiteral("CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)") );
     }
 }
@@ -1012,12 +1055,6 @@ int
 DatabaseUpdater::adminValue( const QString &key ) const
 {
     auto storage = m_collection->sqlStorage();
-
-    QStringList columns = storage->query(
-            QStringLiteral( "SELECT column_name FROM INFORMATION_SCHEMA.columns "
-                     "WHERE table_name='admin'" ) );
-    if( columns.isEmpty() )
-        return 0; //no table with that name
 
     QStringList values = storage->query(
             QStringLiteral( "SELECT version FROM admin WHERE component = '%1';")

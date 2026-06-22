@@ -44,17 +44,20 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
         QStringList res = m_storage->query( QStringLiteral("SHOW VARIABLES LIKE 'max_allowed_packet';") );
         if( res.size() < 2 || res[1].toInt() == 0 )
         {
-            warning() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
-            return;
+            warning() << "Cannot determine max_allowed_packet, using default batch size.";
+            maxSize = 1 * 1024 * 1024; // 1MB default for non-MySQL backends
         }
-        debug() << "obtained max_allowed_packet is " << res[1];
-        maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
+        else
+        {
+            debug() << "obtained max_allowed_packet is " << res[1];
+            maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
+        }
     }
 
 
     QStringList fields = getFields();
 
-    const QString updateQueryStart = QStringLiteral("UPDATE LOW_PRIORITY ")+tableName()+QStringLiteral(" SET ");
+    const QString updateQueryStart = QStringLiteral("UPDATE ")+tableName()+QStringLiteral(" SET ");
     const QString insertQueryStart = QStringLiteral("INSERT INTO ")+tableName()+
         QStringLiteral(" (")+fields.join(QStringLiteral(","))+QStringLiteral(") VALUES ");
 

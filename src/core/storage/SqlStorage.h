@@ -54,10 +54,26 @@ public:
     virtual QString longTextColumnType() const = 0;
     virtual QString randomFunc() const = 0;
 
+    /** Returns options appended to CREATE TABLE (e.g. engine, collation).
+     *  MySQL default: COLLATE = utf8mb4_bin ENGINE = MyISAM
+     *  SQLite: empty string
+     */
+    virtual QString sqlCreateTableOptions() const { return QStringLiteral(" COLLATE = utf8mb4_bin ENGINE = MyISAM"); }
+
+    /** If true, index columns can include prefix length e.g. col(60).
+     *  MySQL supports this; SQLite does not.
+     */
+    virtual bool supportsPrefixIndexes() const { return true; }
+
     /** Returns a list of the last sql errors.
       The list might not include every one error if the number
       is beyond a sensible limit.
       */
+    /** Returns true if using MySQL/MariaDB backend, false otherwise.
+     *  SQLite backend should return false.
+     */
+    virtual bool isMySQL() const { return true; }
+
     virtual QStringList getLastErrors() const = 0;
 
     /** Clears the list of the last errors. */

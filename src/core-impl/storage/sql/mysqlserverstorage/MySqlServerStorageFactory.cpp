@@ -37,7 +37,11 @@ MySqlServerStorageFactory::init()
 
     m_initialized = true;
 
-    if( Amarok::config( QStringLiteral("MySQL") ).readEntry( "UseServer", false ) )
+    // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
+    const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
+    if( backend != 1 )
+        return;
+
     {
         auto storage = QSharedPointer<MySqlServerStorage>::create();
         bool initResult = storage->init( Amarok::config( QStringLiteral("MySQL") ).readEntry( "Host", "localhost" ),

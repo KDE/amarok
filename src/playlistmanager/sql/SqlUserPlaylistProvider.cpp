@@ -185,7 +185,7 @@ SqlUserPlaylistProvider::createTables()
             " id ") + sqlStorage->idType() +
             QStringLiteral(", parent_id INTEGER"
             ", name ") + sqlStorage->textColumnType() +
-            QStringLiteral(", description ") + sqlStorage->textColumnType() + QStringLiteral(" ) ENGINE = MyISAM;" ) );
+            QStringLiteral(", description ") + sqlStorage->textColumnType() + QStringLiteral(")") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";" ) );
     sqlStorage->query( QStringLiteral("CREATE INDEX parent_podchannel ON playlist_groups( parent_id );") );
 
 
@@ -193,7 +193,7 @@ SqlUserPlaylistProvider::createTables()
             " id ") + sqlStorage->idType() +
             QStringLiteral(", parent_id INTEGER"
             ", name ") + sqlStorage->textColumnType() +
-            QStringLiteral(", urlid ") + sqlStorage->exactTextColumnType() + QStringLiteral(" ) ENGINE = MyISAM;" ) );
+            QStringLiteral(", urlid ") + sqlStorage->exactTextColumnType() + QStringLiteral(")") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";" ) );
     sqlStorage->query( QStringLiteral("CREATE INDEX parent_playlist ON playlists( parent_id );") );
 
     sqlStorage->query( QStringLiteral( "CREATE TABLE playlist_tracks ("
@@ -205,7 +205,7 @@ SqlUserPlaylistProvider::createTables()
             QStringLiteral(", album ") + sqlStorage->textColumnType() +
             QStringLiteral(", artist ") + sqlStorage->textColumnType() +
             QStringLiteral(", length INTEGER "
-            ", uniqueid ") + sqlStorage->textColumnType(128) + QStringLiteral(") ENGINE = MyISAM;" ) );
+            ", uniqueid ") + sqlStorage->textColumnType(128) + QStringLiteral(")") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";" ) );
 
     sqlStorage->query( QStringLiteral("CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );") );
     sqlStorage->query( QStringLiteral("CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );") );

@@ -1448,7 +1448,7 @@ SqlPodcastProvider::createTables() const
                                 QStringLiteral(",subscribedate ") + sqlStorage->textColumnType() +
                                 QStringLiteral(",autoscan BOOL, fetchtype INTEGER"
                                 ",haspurge BOOL, purgecount INTEGER"
-                                ",writetags BOOL, filenamelayout VARCHAR(1024) ) ENGINE = MyISAM;" ) );
+                                 ",writetags BOOL, filenamelayout VARCHAR(1024) )") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";" ) );
 
     sqlStorage->query( QStringLiteral( "CREATE TABLE podcastepisodes ("
                                 "id ") + sqlStorage->idType() +
@@ -1465,12 +1465,12 @@ SqlPodcastProvider::createTables() const
                                 QStringLiteral(",duration INTEGER"
                                 ",filesize INTEGER"
                                 ",isnew BOOL"
-                                ",iskeep BOOL) ENGINE = MyISAM;" ) );
+                                ",iskeep BOOL)") + sqlStorage->sqlCreateTableOptions() + QStringLiteral(";" ) );
 
-    sqlStorage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );") );
-    sqlStorage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );") );
+    sqlStorage->query( QStringLiteral("CREATE INDEX url_podchannel ON podcastchannels( url );") );
+    sqlStorage->query( QStringLiteral("CREATE INDEX url_podepisode ON podcastepisodes( url );") );
     sqlStorage->query(
-            QStringLiteral("CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );") );
+            QStringLiteral("CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );") );
 }
 
 void

@@ -4,3 +4,6 @@ endif()
 if( MySQL_FOUND OR MariaDB_FOUND )
     add_subdirectory( mysqlserverstorage )
 endif()
+
+# Always add sqlite
+add_subdirectory( sqlite )

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                   *
+ * Copyright (c) 2025 Amarok Team <amarok@kde.org>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,23 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlEmbeddedStorageFactory.h"
-#include "MySqlEmbeddedStorage.h"
+#include "SqliteStorageFactory.h"
+#include "SqliteStorage.h"
 
 #include <core/support/Amarok.h>
 
+#include <QDir>
+#include <QStandardPaths>
 
-MySqleStorageFactory::MySqleStorageFactory()
+
+SqliteStorageFactory::SqliteStorageFactory()
     : StorageFactory()
 {
 }
 
-MySqleStorageFactory::~MySqleStorageFactory()
+SqliteStorageFactory::~SqliteStorageFactory()
 {
 }
 
 void
-MySqleStorageFactory::init()
+SqliteStorageFactory::init()
 {
     if( m_initialized )
         return;
@@ -39,21 +42,27 @@ MySqleStorageFactory::init()
 
     // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
     const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend != 0 )
+    if( backend != 2 )
         return;
 
+    QString dbPath = Amarok::config( QStringLiteral("SQLite") ).readEntry( "DatabasePath", QString() );
+
+    if( dbPath.isEmpty() )
     {
-        MySqlEmbeddedStorage* storage = new MySqlEmbeddedStorage();
-        bool initResult = storage->init();
-
-        // handle errors during creation
-        if( !storage->getLastErrors().isEmpty() )
-            Q_EMIT newError( storage->getLastErrors() );
-        storage->clearLastErrors();
-
-        if( initResult )
-            Q_EMIT newStorage( QSharedPointer<SqlStorage>( storage ) );
-        else
-            delete storage;
+        QString dataDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+        QDir().mkpath( dataDir );
+        dbPath = dataDir + QStringLiteral("/amarok.db");
     }
+
+    SqliteStorage *storage = new SqliteStorage();
+    bool initResult = storage->init( dbPath );
+
+    if( !storage->getLastErrors().isEmpty() )
+        Q_EMIT newError( storage->getLastErrors() );
+    storage->clearLastErrors();
+
+    if( initResult )
+        Q_EMIT newStorage( QSharedPointer<SqlStorage>( storage ) );
+    else
+        delete storage;
 }

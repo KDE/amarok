@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -46,19 +46,21 @@ DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton
     {
         // check the meta object if there is a testSettings slot available
         if( factory->metaObject()->
-            indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)").constData() ) >= 0 )
+             indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)").constData() ) >= 0 )
             testFunctionAvailable = true;
     }
     button_Test->setEnabled( testFunctionAvailable );
 
-    // connect slots
-    connect( kcfg_UseServer, &QCheckBox::checkStateChanged, this, &DatabaseConfig::toggleExternalConfigAvailable );
+    // connect slots - handle backend selection
+    connect( kcfg_DatabaseBackend, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &DatabaseConfig::toggleExternalConfigAvailable );
 
     connect( kcfg_Database, &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
     connect( kcfg_User,     &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
     connect( button_Test,   &QAbstractButton::clicked,  this, &DatabaseConfig::testDatabaseConnection );
 
-    toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
+    // Initial state based on config
+    toggleExternalConfigAvailable( kcfg_DatabaseBackend->currentIndex() );
 
     updateSQLQuery();
 
@@ -69,9 +71,44 @@ DatabaseConfig::~DatabaseConfig()
 {}
 
 void
-DatabaseConfig::toggleExternalConfigAvailable( const int checkBoxState ) //SLOT
+DatabaseConfig::toggleExternalConfigAvailable( const int backendIndex ) //SLOT
 {
-    group_Connection->setEnabled( checkBoxState == Qt::Checked );
+    // 0 = Embedded MySQL (show basic info, hide connection settings)
+    // 1 = External MySQL (show connection settings)
+    // 2 = SQLite (show database path)
+    const bool isExternalMySQL = (backendIndex == 1);
+    const bool isSQLite = (backendIndex == 2);
+
+    group_Connection->setEnabled( isExternalMySQL || isSQLite );
+
+    // Show/hide relevant fields
+    label_Host->setVisible( isExternalMySQL );
+    kcfg_Host->setVisible( isExternalMySQL );
+    label_Port->setVisible( isExternalMySQL );
+    kcfg_Port->setVisible( isExternalMySQL );
+    label_User->setVisible( isExternalMySQL );
+    kcfg_User->setVisible( isExternalMySQL );
+    label_Password->setVisible( isExternalMySQL );
+    kcfg_Password->setVisible( isExternalMySQL );
+
+    // Database field label changes based on backend
+    if( isSQLite )
+    {
+        label_Database->setText( i18nc( "@label", "Database &path:" ) );
+        kcfg_Database->setToolTip( i18n( "Enter the path for the SQLite database file." ) );
+    }
+    else if( isExternalMySQL )
+    {
+        label_Database->setText( i18nc( "@label", "&Database:" ) );
+        kcfg_Database->setToolTip( i18n( "Enter the name of the database. Default preset is amarokdb." ) );
+    }
+    else
+    {
+        label_Database->setText( i18nc( "@label", "&Database:" ) );
+        kcfg_Database->setToolTip( i18n( "Enter the name of the database. Default preset is amarokdb." ) );
+    }
+
+    button_Test->setVisible( isExternalMySQL );
 }
 
 void
@@ -112,9 +149,9 @@ DatabaseConfig::testDatabaseConnection() //SLOT
     }
 }
 
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 // REIMPLEMENTED METHODS from ConfigDialogBase
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 
 bool
 DatabaseConfig::hasChanged()
@@ -140,16 +177,16 @@ DatabaseConfig::updateSettings()
 }
 
 
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 // PRIVATE METHODS
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 
 void
 DatabaseConfig::updateSQLQuery() //SLOT
 {
     QString query;
 
-    if( isSQLInfoPresent() )
+    if( kcfg_DatabaseBackend->currentIndex() == 1 && isSQLInfoPresent() )
     {
         // Query template:
         // GRANT ALL ON amarokdb.* TO 'amarokuser'@'localhost' IDENTIFIED BY 'mypassword'; FLUSH PRIVILEGES;
@@ -171,7 +208,3 @@ DatabaseConfig::isSQLInfoPresent() const
 {
     return !kcfg_Database->text().isEmpty() && !kcfg_User->text().isEmpty() && !kcfg_Host->text().isEmpty();
 }
-
-
-
-

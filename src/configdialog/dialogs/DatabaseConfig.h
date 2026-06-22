@@ -37,7 +37,7 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
         void updateSettings() override;
 
     public Q_SLOTS:
-        void toggleExternalConfigAvailable( int checkBoxState );
+        void toggleExternalConfigAvailable( int backendIndex );
         void testDatabaseConnection();
 
     private Q_SLOTS:
