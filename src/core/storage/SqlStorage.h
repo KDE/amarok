@@ -54,6 +54,38 @@ public:
     virtual QString longTextColumnType() const = 0;
     virtual QString randomFunc() const = 0;
 
+    /** Returns options appended to CREATE TABLE (e.g. engine, collation).
+     *  MySQL overrides with: COLLATE = utf8mb4_bin ENGINE = MyISAM
+     *  Standard SQL (base): empty string
+     */
+    virtual QString sqlCreateTableOptions() const { return QString(); }
+
+    /** If true, index columns can include prefix length e.g. col(60).
+     *  MySQL supports this; other backends do not.
+     */
+    virtual bool supportsPrefixIndexes() const { return false; }
+
+    /** Returns a COLLATE clause for the given collation name.
+     *  Standard SQL (base): empty string
+     */
+    virtual QString sqlCollate( const QString &collation ) const { Q_UNUSED( collation ); return QString(); }
+
+    /** Returns the list of table names in the database. */
+    virtual QStringList queryTables() = 0;
+
+    /** Returns the list of column names for the given table. */
+    virtual QStringList queryColumns( const QString &table ) = 0;
+
+    /** Drops the specified index. */
+    virtual void dropIndex( const QString &indexName, const QString &tableName ) = 0;
+
+    /** Runs CHECK TABLE equivalent (MySQL only — no-op in base). */
+    virtual void checkTable( const QString &table, bool full )
+    {
+        Q_UNUSED( table )
+        Q_UNUSED( full )
+    }
+
     /** Returns a list of the last sql errors.
       The list might not include every one error if the number
       is beyond a sensible limit.

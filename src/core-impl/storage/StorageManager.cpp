@@ -59,6 +59,10 @@ public:
     QString longTextColumnType() const override { return QString(); }
     QString randomFunc() const override { return QString(); }
 
+    QStringList queryTables() override { return QStringList(); }
+    QStringList queryColumns( const QString & ) override { return QStringList(); }
+    void dropIndex( const QString &, const QString & ) override {}
+
     QStringList getLastErrors() const override { return QStringList(); }
 
     /** Clears the list of the last errors. */

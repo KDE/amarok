@@ -1152,8 +1152,10 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
             ret += QLatin1Char('%');
         ret += QLatin1Char('\'');
 
-        //Case insensitive collation for queries
-        ret += QStringLiteral(" COLLATE utf8mb4_unicode_ci ");
+        if( m_collection )
+            ret += m_collection->sqlStorage()->sqlCollate( QStringLiteral("utf8mb4_unicode_ci") );
+
+        ret += QLatin1Char(' ');
 
         //Use \ as the escape character
         //ret += " ESCAPE '\\' ";
@@ -1162,7 +1164,10 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
     }
     else
     {
-        return QStringLiteral( " = '%1' COLLATE utf8mb4_unicode_ci " ).arg( escape( text ) );
+        if( m_collection )
+            return QStringLiteral( " = '%1'%2 " ).arg( escape( text ), m_collection->sqlStorage()->sqlCollate( QStringLiteral("utf8mb4_unicode_ci") ) );
+        else
+            return QStringLiteral( " = '%1' " ).arg( escape( text ) );
     }
 }
 

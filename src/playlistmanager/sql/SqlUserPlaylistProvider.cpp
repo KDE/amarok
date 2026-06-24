@@ -224,10 +224,10 @@ SqlUserPlaylistProvider::deleteTables()
         return;
     }
 
-    sqlStorage->query( QStringLiteral("DROP INDEX parent_podchannel ON playlist_groups;") );
-    sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist ON playlists;") );
-    sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist_tracks ON playlist_tracks;") );
-    sqlStorage->query( QStringLiteral("DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;") );
+    sqlStorage->dropIndex( QStringLiteral("parent_podchannel"), QStringLiteral("playlist_groups") );
+    sqlStorage->dropIndex( QStringLiteral("parent_playlist"), QStringLiteral("playlists") );
+    sqlStorage->dropIndex( QStringLiteral("parent_playlist_tracks"), QStringLiteral("playlist_tracks") );
+    sqlStorage->dropIndex( QStringLiteral("playlist_tracks_uniqueid"), QStringLiteral("playlist_tracks") );
 
     sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlist_groups;") );
     sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlists;") );
