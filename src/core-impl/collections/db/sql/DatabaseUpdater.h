@@ -22,10 +22,14 @@
 
 #include "amarok_sqlcollection_export.h"
 
+class SqlStorage;
 
 namespace Collections {
     class SqlCollection;
 }
+
+/** Function type for MySQL-specific database upgrade operations. */
+extern "C" typedef void (*MySqlUpgradeFunc)( SqlStorage *storage, int fromVersion );
 
 /** The DatabaseUpdater class is a collection of function that can update the sql database from previous versions or create it from new.
  */
@@ -35,6 +39,15 @@ public:
     ~DatabaseUpdater();
 
     static int expectedDatabaseVersion();
+
+    /** Registers a function for MySQL-specific upgrade operations.
+     *  Called automatically by the MySQL plugin's static initializer.
+     *  The function receives the SqlStorage and the database version
+     *  before upgrades began, and applies backend-specific schema
+     *  changes (charset/engine conversions, FULLTEXT indexes, etc.).
+     */
+    static void setMySqlUpgradeFunc( MySqlUpgradeFunc func );
+    static MySqlUpgradeFunc mySqlUpgradeFunc();
 
     /**
      * Return true if the current database schema is outdated or non-existent and needs to

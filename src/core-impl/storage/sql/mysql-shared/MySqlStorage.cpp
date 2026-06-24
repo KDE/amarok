@@ -219,6 +219,60 @@ MySqlStorage::randomFunc() const
 }
 
 QString
+MySqlStorage::sqlCreateTableOptions() const
+{
+    return QStringLiteral(" COLLATE = utf8mb4_bin ENGINE = MyISAM");
+}
+
+bool
+MySqlStorage::supportsPrefixIndexes() const
+{
+    return true;
+}
+
+QString
+MySqlStorage::sqlCollate( const QString &collation ) const
+{
+    Q_UNUSED( collation )
+    return QStringLiteral(" COLLATE utf8mb4_unicode_ci");
+}
+
+QStringList
+MySqlStorage::queryTables()
+{
+    return query( QStringLiteral("SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_schema='amarok'") );
+}
+
+QStringList
+MySqlStorage::queryColumns( const QString &table )
+{
+    return query( QStringLiteral("SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_name='%1'").arg( escape( table ) ) );
+}
+
+void
+MySqlStorage::dropIndex( const QString &indexName, const QString &tableName )
+{
+    // Only drop if the index exists (safe check before DROP)
+    QString createSql = showCreateTable( tableName );
+    if( createSql.contains( QStringLiteral("KEY `%1`").arg( indexName ) ) || createSql.contains( QStringLiteral("INDEX `%1`").arg( indexName ) ) )
+        query( QStringLiteral("DROP INDEX %1 ON %2").arg( indexName, tableName ) );
+}
+
+void
+MySqlStorage::checkTable( const QString &table, bool full )
+{
+    query( QStringLiteral("CHECK TABLE %1%2").arg( table, full ? QStringLiteral(" EXTENDED") : QStringLiteral(" MEDIUM") ) );
+}
+
+QString
+MySqlStorage::showCreateTable( const QString &table )
+{
+    QStringList result = query( QStringLiteral("SHOW CREATE TABLE %1").arg( table ) );
+    // SHOW CREATE TABLE returns 2 columns: Table, Create Table
+    return result.size() >= 2 ? result.value( 1 ) : QString();
+}
+
+QString
 MySqlStorage::boolTrue() const
 {
     return QStringLiteral("1");

@@ -55,25 +55,45 @@ public:
     virtual QString randomFunc() const = 0;
 
     /** Returns options appended to CREATE TABLE (e.g. engine, collation).
-     *  MySQL default: COLLATE = utf8mb4_bin ENGINE = MyISAM
-     *  SQLite: empty string
+     *  MySQL overrides with: COLLATE = utf8mb4_bin ENGINE = MyISAM
+     *  Standard SQL (base): empty string
      */
-    virtual QString sqlCreateTableOptions() const { return QStringLiteral(" COLLATE = utf8mb4_bin ENGINE = MyISAM"); }
+    virtual QString sqlCreateTableOptions() const { return QString(); }
 
     /** If true, index columns can include prefix length e.g. col(60).
-     *  MySQL supports this; SQLite does not.
+     *  MySQL supports this; other backends do not.
      */
-    virtual bool supportsPrefixIndexes() const { return true; }
+    virtual bool supportsPrefixIndexes() const { return false; }
+
+    /** Returns a COLLATE clause for the given collation name.
+     *  MySQL overrides with: " COLLATE utf8mb4_unicode_ci"
+     *  Standard SQL (base): empty string
+     */
+    virtual QString sqlCollate( const QString &collation ) const { Q_UNUSED( collation ); return QString(); }
+
+    /** Returns the list of table names in the database. */
+    virtual QStringList queryTables() = 0;
+
+    /** Returns the list of column names for the given table. */
+    virtual QStringList queryColumns( const QString &table ) = 0;
+
+    /** Drops the specified index. */
+    virtual void dropIndex( const QString &indexName, const QString &tableName ) = 0;
+
+    /** Runs CHECK TABLE equivalent (MySQL only — no-op in base). */
+    virtual void checkTable( const QString &table, bool full )
+    {
+        Q_UNUSED( table )
+        Q_UNUSED( full )
+    }
+
+    /** Returns the CREATE TABLE statement for the given table. */
+    virtual QString showCreateTable( const QString &table ) = 0;
 
     /** Returns a list of the last sql errors.
       The list might not include every one error if the number
       is beyond a sensible limit.
       */
-    /** Returns true if using MySQL/MariaDB backend, false otherwise.
-     *  SQLite backend should return false.
-     */
-    virtual bool isMySQL() const { return true; }
-
     virtual QStringList getLastErrors() const = 0;
 
     /** Clears the list of the last errors. */

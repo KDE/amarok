@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2025 Amarok Team <amarok@kde.org>                                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlCollectionFactory.h"
+#include "SqliteCollectionFactory.h"
 
 #include <core-impl/storage/StorageManager.h>
 #include <core-impl/collections/db/sql/SqlCollection.h>
@@ -28,14 +27,14 @@ using namespace Collections;
 
 
 void
-MySqlCollectionFactory::init()
+SqliteCollectionFactory::init()
 {
     if( m_initialized )
         return;
 
     // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
     const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend == 2 )
+    if( backend != 2 )
         return;
 
     SqlCollectionFactory fac;

@@ -50,6 +50,15 @@ class MySqlStorage: public SqlStorage
         QString escape( const QString &text ) const override;
         QString randomFunc() const override;
 
+        QString sqlCreateTableOptions() const override;
+        bool supportsPrefixIndexes() const override;
+        QString sqlCollate( const QString &collation ) const override;
+        QStringList queryTables() override;
+        QStringList queryColumns( const QString &table ) override;
+        void dropIndex( const QString &indexName, const QString &tableName ) override;
+        void checkTable( const QString &table, bool full ) override;
+        QString showCreateTable( const QString &table ) override;
+
         QString boolTrue() const override;
         QString boolFalse() const override;
         QString idType() const override;

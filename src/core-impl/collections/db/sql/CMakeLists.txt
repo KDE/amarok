@@ -19,6 +19,10 @@ set( amarok_collection-sqlcollection_SRCS
     device/smb/SmbDeviceHandler.cpp
 )
 
+if(WITH_MYSQL)
+    list(APPEND amarok_collection-sqlcollection_SRCS DatabaseUpdaterMySql.cpp)
+endif()
+
 add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 generate_export_header(amarok-sqlcollection BASE_NAME amarok_sqlcollection)
 
@@ -42,3 +46,4 @@ set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 
 install(TARGETS amarok-sqlcollection ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
 add_subdirectory( mysqlcollection )
+add_subdirectory( sqlitecollection )

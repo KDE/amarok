@@ -198,12 +198,6 @@ SqliteStorage::escape( const QString &text ) const
     return escaped;
 }
 
-bool
-SqliteStorage::isMySQL() const
-{
-    return false;
-}
-
 QString
 SqliteStorage::randomFunc() const
 {
@@ -220,6 +214,37 @@ bool
 SqliteStorage::supportsPrefixIndexes() const
 {
     return false;
+}
+
+QStringList
+SqliteStorage::queryTables()
+{
+    return query( QStringLiteral("SELECT name FROM sqlite_master WHERE type='table'") );
+}
+
+QStringList
+SqliteStorage::queryColumns( const QString &table )
+{
+    QStringList result;
+    QStringList rows = query( QStringLiteral("SELECT name FROM pragma_table_info('%1')").arg( escape( table ) ) );
+    // PRAGMA table_info returns flat list: cid, name, type, notnull, dflt_value, pk per column
+    for( int i = 1; i < rows.size(); i += 6 )
+        result << rows[i];
+    return result;
+}
+
+void
+SqliteStorage::dropIndex( const QString &indexName, const QString &tableName )
+{
+    Q_UNUSED( tableName )
+    query( QStringLiteral("DROP INDEX IF EXISTS %1").arg( indexName ) );
+}
+
+QString
+SqliteStorage::showCreateTable( const QString &table )
+{
+    QStringList result = query( QStringLiteral("SELECT sql FROM sqlite_master WHERE type='table' AND name='%1'").arg( escape( table ) ) );
+    return result.isEmpty() ? QString() : result.first();
 }
 
 QString

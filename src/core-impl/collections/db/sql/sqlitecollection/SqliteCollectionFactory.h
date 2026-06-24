@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2025 Amarok Team <amarok@kde.org>                                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,33 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlCollectionFactory.h"
+#ifndef AMAROK_COLLECTION_SQLITECOLLECTION_FACTORY_H
+#define AMAROK_COLLECTION_SQLITECOLLECTION_FACTORY_H
 
-#include <core-impl/storage/StorageManager.h>
-#include <core-impl/collections/db/sql/SqlCollection.h>
-#include <core-impl/collections/db/sql/SqlCollectionFactory.h>
-#include <core/support/Amarok.h>
+#include "core/collections/Collection.h"
 
-#include <KLocalizedString>
+namespace Collections {
 
-using namespace Collections;
-
-
-void
-MySqlCollectionFactory::init()
+class SqliteCollectionFactory : public Collections::CollectionFactory
 {
-    if( m_initialized )
-        return;
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-sqlitecollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
+    Q_OBJECT
 
-    // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
-    const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend == 2 )
-        return;
+    public:
+        SqliteCollectionFactory()
+            : Collections::CollectionFactory() {}
 
-    SqlCollectionFactory fac;
-    auto storage = StorageManager::instance()->sqlStorage();
-    SqlCollection *collection = fac.createSqlCollection( storage );
-    m_initialized = true;
+        ~SqliteCollectionFactory() override {}
 
-    Q_EMIT newCollection( collection );
-}
+        void init() override;
+};
+
+} //namespace Collections
+
+#endif

@@ -43,6 +43,11 @@ public:
     QString sqlCreateTableOptions() const override;
     bool supportsPrefixIndexes() const override;
 
+    QStringList queryTables() override;
+    QStringList queryColumns( const QString &table ) override;
+    void dropIndex( const QString &indexName, const QString &tableName ) override;
+    QString showCreateTable( const QString &table ) override;
+
     QString boolTrue() const override;
     QString boolFalse() const override;
     QString idType() const override;
@@ -50,8 +55,6 @@ public:
     QString exactTextColumnType( int length = 1000 ) const override;
     QString exactIndexableTextColumnType( int length = 324 ) const override;
     QString longTextColumnType() const override;
-
-    bool isMySQL() const override;
 
     QStringList getLastErrors() const override;
     void clearLastErrors() override;
