@@ -222,7 +222,7 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     endif()
 endif()
 
-option(WITH_MYSQL "Build with MySQL/MariaDB storage backend (disable for SQLite only)" ON)
+option(WITH_MYSQL "Build with MySQL/MariaDB storage backend (adds MySQL support)" OFF)
 
 add_subdirectory( data )
 add_subdirectory( images )

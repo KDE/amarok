@@ -557,8 +557,8 @@
         <default>false</default>
     </entry>
     <entry key="DatabaseBackend" type="Int">
-        <label>Which database backend to use: 0=Embedded MySQL, 1=External MySQL</label>
-        <default>0</default>
+        <label>Which database backend to use: 0=Embedded MySQL, 1=External MySQL, 2=SQLite</label>
+        <default>2</default>
     </entry>
     <entry key="Host" type="String">
         <label>The hostname of the external server to connect to.</label>

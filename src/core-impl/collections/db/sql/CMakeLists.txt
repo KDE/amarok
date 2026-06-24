@@ -45,5 +45,7 @@ endif()
 set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok-sqlcollection ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
-add_subdirectory( mysqlcollection )
+if(WITH_MYSQL)
+    add_subdirectory( mysqlcollection )
+endif()
 add_subdirectory( sqlitecollection )
