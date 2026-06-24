@@ -443,7 +443,11 @@ SqlCollection::dumpDatabaseContent()
 {
     DatabaseUpdater updater( this );
 
-    QStringList tables = m_sqlStorage->query( QStringLiteral( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" ) );
+    QStringList tables;
+    if( m_sqlStorage->isMySQL() )
+        tables = m_sqlStorage->query( QStringLiteral( "SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" ) );
+    else
+        tables = m_sqlStorage->query( QStringLiteral( "SELECT name FROM sqlite_master WHERE type='table'" ) );
     for( const QString &table : tables )
     {
         QString filePath =

@@ -131,7 +131,55 @@ SqliteStorage::insert( const QString &statement, const QString & )
         return 0;
     }
 
-    return query.lastInsertId().toInt();
+    int lastId = query.lastInsertId().toInt();
+    if( lastId <= 0 )
+        return 0;
+
+    // SQLite's lastInsertId() returns the ROWID of the last row in a batch
+    // INSERT, but Amarok's committer code expects the first (MySQL behavior).
+    // Count rows in the VALUES clause to compute the correct first ID.
+    int valuesIdx = statement.indexOf( QStringLiteral("VALUES ") );
+    if( valuesIdx < 0 )
+        return lastId;
+
+    int rowCount = 1;
+    int depth = 0;
+    bool inString = false;
+    for( int i = valuesIdx + 7; i < statement.length(); i++ )
+    {
+        const QChar c = statement[i];
+        if( inString )
+        {
+            if( c == QLatin1Char('\'') )
+            {
+                if( i + 1 < statement.length() && statement[i+1] == QLatin1Char('\'') )
+                    i++; // escaped single quote in string
+                else
+                    inString = false;
+            }
+        }
+        else if( c == QLatin1Char('\'') )
+            inString = true;
+        else if( c == QLatin1Char('(') )
+            depth++;
+        else if( c == QLatin1Char(')') )
+        {
+            depth--;
+            if( depth == 0 )
+            {
+                int j = i + 1;
+                while( j < statement.length() && statement[j].isSpace() )
+                    j++;
+                if( j < statement.length() && statement[j] == QLatin1Char(',') )
+                    rowCount++;
+            }
+        }
+    }
+
+    if( rowCount > 1 )
+        return lastId - rowCount + 1;
+
+    return lastId;
 }
 
 QString

@@ -1132,9 +1132,15 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
         return;
 
     QString ctable = table;
-    QStringList columns = storage->query(
-            QStringLiteral( "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_name='%1'" )
-            .arg( storage->escape( ctable ) ) );
+    QStringList columns;
+    if( storage->isMySQL() )
+        columns = storage->query(
+                QStringLiteral( "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_name='%1'" )
+                .arg( storage->escape( ctable ) ) );
+    else
+        columns = storage->query(
+                QStringLiteral( "SELECT name FROM pragma_table_info('%1')" )
+                .arg( storage->escape( ctable ) ) );
 
     if( columns.isEmpty() )
         return; //no table with that name

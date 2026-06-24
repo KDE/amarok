@@ -224,10 +224,20 @@ SqlUserPlaylistProvider::deleteTables()
         return;
     }
 
-    sqlStorage->query( QStringLiteral("DROP INDEX parent_podchannel ON playlist_groups;") );
-    sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist ON playlists;") );
-    sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist_tracks ON playlist_tracks;") );
-    sqlStorage->query( QStringLiteral("DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;") );
+    if( sqlStorage->isMySQL() )
+    {
+        sqlStorage->query( QStringLiteral("DROP INDEX parent_podchannel ON playlist_groups;") );
+        sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist ON playlists;") );
+        sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist_tracks ON playlist_tracks;") );
+        sqlStorage->query( QStringLiteral("DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;") );
+    }
+    else
+    {
+        sqlStorage->query( QStringLiteral("DROP INDEX IF EXISTS parent_podchannel;") );
+        sqlStorage->query( QStringLiteral("DROP INDEX IF EXISTS parent_playlist;") );
+        sqlStorage->query( QStringLiteral("DROP INDEX IF EXISTS parent_playlist_tracks;") );
+        sqlStorage->query( QStringLiteral("DROP INDEX IF EXISTS playlist_tracks_uniqueid;") );
+    }
 
     sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlist_groups;") );
     sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlists;") );
