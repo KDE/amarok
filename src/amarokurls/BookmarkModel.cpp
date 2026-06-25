@@ -461,6 +461,9 @@ void BookmarkModel::checkTables()
     QStringList values = sqlStorage->query( QStringLiteral("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
 
     //also check if the db  version is correct but the table is simply missing... can happen due to a bug in 2.2.0 beta1 and beta2
+    // This query returns empty list when the table doesn't exist, triggering table creation below.
+    // The logged SQL warning ("no such table") on SQLite is harmless.
+    // TODO: use sqlStorage->queryTables() instead to avoid the expected error.
     QStringList values2 = sqlStorage->query( QStringLiteral("SELECT count(*) FROM bookmarks"));
     
     if( values.isEmpty() || values2.isEmpty() )

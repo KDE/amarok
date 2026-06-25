@@ -247,9 +247,7 @@ if( WITH_PLAYER )
         add_definitions( "-DNO_MYSQL_EMBEDDED" )
     endif()
 
-    if( NOT WITH_MYSQL )
-        message(STATUS "Building with SQLite storage backend (no MySQL/MariaDB)")
-    endif()
+    message(STATUS "Building SQLite storage backend")
 
 
     # Qt6 support is currently only available in liblastfm forks

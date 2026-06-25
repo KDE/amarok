@@ -552,8 +552,8 @@
 </group>
 
 <group name="MySQL">
-    <entry key="UseDatabase" type="Bool">
-        <label>Whether Amarok uses MySQL database.</label>
+    <entry key="UseServer" type="Bool">
+        <label>Whether Amarok uses an external MySQL server, as opposed to embedded or SQLite.</label>
         <default>false</default>
     </entry>
     <entry key="DatabaseBackend" type="Int">
