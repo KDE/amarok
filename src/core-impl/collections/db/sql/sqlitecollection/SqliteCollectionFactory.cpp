@@ -20,6 +20,7 @@
 #include <core-impl/collections/db/sql/SqlCollection.h>
 #include <core-impl/collections/db/sql/SqlCollectionFactory.h>
 #include <core/support/Amarok.h>
+#include <amarokconfig.h>
 
 #include <KLocalizedString>
 
@@ -32,9 +33,7 @@ SqliteCollectionFactory::init()
     if( m_initialized )
         return;
 
-    // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
-    const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend != 2 )
+    if( AmarokConfig::databaseBackend() != 2 )
         return;
 
     SqlCollectionFactory fac;

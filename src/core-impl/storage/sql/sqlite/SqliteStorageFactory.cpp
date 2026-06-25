@@ -18,6 +18,7 @@
 #include "SqliteStorage.h"
 
 #include <core/support/Amarok.h>
+#include <amarokconfig.h>
 
 #include <QDir>
 #include <QStandardPaths>
@@ -40,9 +41,7 @@ SqliteStorageFactory::init()
 
     m_initialized = true;
 
-    // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
-    const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend != 2 )
+    if( AmarokConfig::databaseBackend() != 2 )
         return;
 
     QString dbPath = Amarok::config( QStringLiteral("SQLite") ).readEntry( "DatabasePath", QString() );

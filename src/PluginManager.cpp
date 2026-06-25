@@ -226,7 +226,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
 bool
 Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
 {
-    // mysql storage and collection are vital. They need to be loaded always
+    // storage and collection plugins are vital. They need to be loaded always
 
     auto raw = plugin.rawData();
     int version = raw.value( QStringLiteral("X-KDE-Amarok-framework-version") ).toInt();

@@ -37,9 +37,7 @@ MySqlServerStorageFactory::init()
 
     m_initialized = true;
 
-    // DatabaseBackend: 0 = Embedded MySQL, 1 = External MySQL, 2 = SQLite
-    const int backend = Amarok::config( QStringLiteral("MySQL") ).readEntry( "DatabaseBackend", 0 );
-    if( backend != 1 )
+    if( AmarokConfig::databaseBackend() != 1 )
         return;
 
     {
