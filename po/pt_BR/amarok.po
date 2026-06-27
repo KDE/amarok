@@ -15,21 +15,21 @@
 # SPDX-FileCopyrightText: 2010, 2011, 2012, 2025, 2026 Marcus Vinícius de Andrade Gama <marcus.gama@gmail.com>
 # André Marcelo Alvarenga <alvarenga@kde.org>, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019, 2020.
 # Thiago Masato Costa Sueto <herzenschein@gmail.com>, 2021.
-# SPDX-FileCopyrightText: 2025 Guilherme Marçal Silva <guimarcalsilva@gmail.com>
+# SPDX-FileCopyrightText: 2025-2026 Guilherme Marçal Silva <guimarcalsilva@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-15 00:42+0000\n"
-"PO-Revision-Date: 2026-01-19 07:28-0300\n"
-"Last-Translator: Marcus Gama <marcus.gama@gmail.com>\n"
+"PO-Revision-Date: 2026-06-26 03:30-0300\n"
+"Last-Translator: Guilherme Marçal Silva <guimarcalsilva@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.12.1\n"
+"X-Generator: Lokalize 26.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -908,13 +908,13 @@ msgstr "Usar o suporte ao KNotify"
 #: amarokconfig.kcfg:310
 #, kde-format
 msgid "Use On-Screen Display"
-msgstr "Usar mensagem na tela"
+msgstr "Usar indicador na tela"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:311
 #, kde-format
 msgid "Enable/Disable the On-Screen Display."
-msgstr "Habilitar/desabilitar a mensagem na tela (OSD)."
+msgstr "Habilitar/desabilitar o indicador na tela."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:49
@@ -938,27 +938,27 @@ msgstr "Alternar transparência"
 #: amarokconfig.kcfg:321
 #, kde-format
 msgid "Make the background of the OSD translucent."
-msgstr "Faz com que o fundo da mensagem na tela fique transparente."
+msgstr "Faz com que o fundo do indicador na tela fique transparente."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:325
 #, kde-format
 msgid "Whether to use custom colors for the OSD"
-msgstr "Usar cores personalizadas para a mensagem na tela"
+msgstr "Usar cores personalizadas para o indicador na tela"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:326
 #, kde-format
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr ""
-"Você pode usar cores personalizadas para a mensagem na tela, se você "
+"Você pode usar cores personalizadas para o indicador na tela, se você "
 "selecionar esta opção."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:330
 #, kde-format
 msgid "Font color for OSD"
-msgstr "Cor da fonte para a mensagem na tela"
+msgstr "Cor da fonte para o indicador na tela"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:331
@@ -967,7 +967,7 @@ msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
 msgstr ""
-"A cor da fonte usada para o texto da mensagem na tela. A cor é especificada "
+"A cor da fonte usada para o texto do indicador na tela. A cor é especificada "
 "em RGB, com uma lista de valores separados por vírgula contendo três "
 "inteiros entre 0 e 255."
 
@@ -975,7 +975,7 @@ msgstr ""
 #: amarokconfig.kcfg:335
 #, kde-format
 msgid "Font scaling for OSD"
-msgstr "Escala da fonte da mensagem na tela"
+msgstr "Escala da fonte do indicador na tela"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:336
@@ -984,7 +984,7 @@ msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
 "normal size&#8221;."
 msgstr ""
-"A escala para a fonte da mensagem na tela, como um porcentual do valor "
+"A escala para a fonte do indicador na tela, como um porcentual do valor "
 "normal. O 100 corresponde ao &#8220;tamanho normal&#8221;."
 
 #. i18n: ectx: label, entry, group (OSD)
@@ -1000,7 +1000,7 @@ msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
 "default value is 5000 ms."
 msgstr ""
-"O tempo para mostrar a mensagem na tela, em milissegundos. Um valor de 0 "
+"O tempo para mostrar o indicador na tela, em milissegundos. Um valor de 0 "
 "significa nunca ocultar. O valor padrão é de 5000 ms."
 
 #. i18n: ectx: label, entry, group (OSD)
@@ -1019,10 +1019,10 @@ msgid ""
 "offset is the space between the bottom part of the OSD and the bottom of the "
 "screen."
 msgstr ""
-"A posição Y da mensagem na tela, relativa à área de trabalho escolhida e ao "
-"alinhamento da mensagem na tela. Se o alinhamento Topo for escolhido, o "
-"deslocamento de Y será o espaço entre a parte superior da mensagem na tela e "
-"o topo da área de trabalho. Se for escolhido o alinhamento Base, então o "
+"A posição Y do indicador na tela, relativa à área de trabalho escolhida e ao "
+"alinhamento do indicador na tela. Se o alinhamento Topo for escolhido, o "
+"deslocamento de Y será o espaço entre a parte superior do indicador na tela "
+"e o topo da área de trabalho. Se for escolhido o alinhamento Base, então o "
 "deslocamento de Y é o espaço entre a parte da base da mensagem na tela e a "
 "base da área de trabalho."
 
@@ -1030,7 +1030,7 @@ msgstr ""
 #: amarokconfig.kcfg:355
 #, kde-format
 msgid "OSD screen"
-msgstr "Mensagem na tela"
+msgstr "Indicador na tela"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:356
@@ -1039,14 +1039,14 @@ msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr ""
-"À área de trabalho que deve exibir a mensagem na tela. Para ambientes com "
+"À área de trabalho que deve exibir o indicador na tela. Para ambientes com "
 "uma única área de trabalho, esse valor deve ser 0."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:360
 #, kde-format
 msgid "Align OSD to"
-msgstr "Alinhar mensagem na tela à"
+msgstr "Alinhar indicador na tela à"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:361
@@ -1055,7 +1055,7 @@ msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
 "and Center."
 msgstr ""
-"A posição relativa da mensagem na tela. Possíveis escolhas são esquerda, "
+"A posição relativa do indicador na tela. Possíveis escolhas são esquerda, "
 "meio, direita e centralizado."
 
 #. i18n: ectx: label, entry, group (OSD)
@@ -1073,8 +1073,8 @@ msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
 "running in fullscreen mode."
 msgstr ""
-"Não mostrar a mensagem na tela (OSD) se outro aplicativo estiver em primeiro "
-"plano e executando em tela cheia."
+"Não mostrar o indicador na tela (OSD) se outro aplicativo estiver em "
+"primeiro plano e executando em tela cheia."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:380
@@ -3499,14 +3499,14 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Selecione para habilitar a mensagem na tela. A mensagem na tela exibirá "
+"Selecione para habilitar o indicador na tela. O indicador na tela exibirá "
 "brevemente os dados da faixa, quando uma nova faixa for reproduzida."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
 #, kde-format
 msgid "Use &On-Screen-Display"
-msgstr "Usar m&ensagem na tela"
+msgstr "Usar indicador na t&ela"
 
 #. i18n: ectx: property (text), widget (QLabel, fadeoutLengthLabel)
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
@@ -3525,7 +3525,7 @@ msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
-"O tempo, em milissegundos, para mostrar a mensagem na tela. O valor deve "
+"O tempo, em milissegundos, para mostrar o indicador na tela. O valor deve "
 "estar entre 500 e 10000 ms."
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
@@ -3554,7 +3554,7 @@ msgstr "Te&la:"
 #: configdialog/dialogs/NotificationsConfig.ui:115
 #, kde-format
 msgid "The screen that should display the OSD."
-msgstr "A área de trabalho que deverá exibir a mensagem na tela."
+msgstr "A área de trabalho que deverá exibir o indicador na tela."
 
 #. i18n: ectx: property (toolTip), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, kcfg_OsdUseCustomColors)
@@ -3562,7 +3562,8 @@ msgstr "A área de trabalho que deverá exibir a mensagem na tela."
 #: configdialog/dialogs/NotificationsConfig.ui:136
 #, kde-format
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr "Selecione para habilitar cores personalizadas para a mensagem na tela."
+msgstr ""
+"Selecione para habilitar cores personalizadas para o indicador na tela."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #: configdialog/dialogs/NotificationsConfig.ui:139
@@ -3576,7 +3577,7 @@ msgstr "Usar &cores personalizadas"
 #: configdialog/dialogs/NotificationsConfig.ui:191
 #, kde-format
 msgid "The color of the OSD text."
-msgstr "A cor do texto da mensagem na tela."
+msgstr "A cor do texto do indicador na tela."
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: configdialog/dialogs/NotificationsConfig.ui:166
@@ -3588,7 +3589,7 @@ msgstr "Cor do texto:"
 #: configdialog/dialogs/NotificationsConfig.ui:188
 #, kde-format
 msgid "Click to select the color of the OSD text."
-msgstr "Clique para selecionar a cor do texto da mensagem na tela."
+msgstr "Clique para selecionar a cor do texto do indicador na tela."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseTranslucency)
 #: configdialog/dialogs/NotificationsConfig.ui:211
@@ -16226,7 +16227,7 @@ msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
-"Prévia da mensagem na tela\n"
+"Prévia do indicador na tela\n"
 "Arraste para reposicionar"
 
 #: widgets/Osd.cpp:772
