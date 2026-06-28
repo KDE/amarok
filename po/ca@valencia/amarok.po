@@ -705,7 +705,7 @@ msgstr ""
 #: amarokconfig.kcfg:189
 #, kde-format
 msgid "Format Presets"
-msgstr "Predefinicions de format"
+msgstr "Ajustaments predefinits de format"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:190
@@ -771,7 +771,7 @@ msgstr "La duració de l'esvaïment en mil·lisegons."
 #: amarokconfig.kcfg:225
 #, kde-format
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
-msgstr "Mode equalitzador - 0 = inactiu, 1 a n = núm. d'ambient"
+msgstr "Mode equalitzador – 0 = inactiu, 1 a n = núm. d'ambient"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:226
@@ -1798,7 +1798,7 @@ msgstr "Opcions addicionals:"
 #: App.cpp:373
 #, kde-format
 msgid "Append files/URLs to playlist"
-msgstr "Afig fitxers i URL a la llista de reproducció"
+msgstr "Afig els fitxers i URL a la llista de reproducció"
 
 #: App.cpp:374
 #, kde-format
@@ -2076,7 +2076,7 @@ msgstr "Àlbum"
 #: browsers/CollectionTreeItemModelBase.cpp:1165
 #, kde-format
 msgid "Year - Album"
-msgstr "Any - Àlbum"
+msgstr "Any – Àlbum"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1167
 #, kde-format
@@ -2288,7 +2288,7 @@ msgstr "Executa GALR amb el predefinit seleccionat"
 #: browsers/playlistbrowser/APGCategory.cpp:92
 #, kde-format
 msgid "APG Presets"
-msgstr "Predefinits de GALR"
+msgstr "Ajustaments predefinits de GALR"
 
 #: browsers/playlistbrowser/APGCategory.cpp:106
 #, kde-format
@@ -3834,7 +3834,7 @@ msgstr "Instal·la script local"
 #: scripting/scriptconsole/ScriptConsole.cpp:72
 #, kde-format
 msgid "Script Console"
-msgstr "Consola de script"
+msgstr "Consola de scripts"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
@@ -4174,7 +4174,7 @@ msgid ""
 msgstr ""
 "Açò vos ajudarà a mantindre ordenades les etiquetes de la col·lecció "
 "substituint les etiquetes descarregades segons les vostres preferències.\n"
-"P. ex., «hip hop» -> «hip-hop»"
+"P. ex., «hip hop» → «hip-hop»"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
@@ -4386,7 +4386,7 @@ msgstr "Tabulatures: S'ha produït un error de recuperació"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: %1 - %2"
-msgstr "Tabulatures: %1 - %2"
+msgstr "Tabulatures: %1 – %2"
 
 #: context/applets/tabs/TabsApplet.cpp:280
 #, kde-format
@@ -4578,7 +4578,7 @@ msgstr "Mostra davall Artistes diversos"
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:102
 #, kde-format
 msgid "%1 - Stopped %2"
-msgstr "%1 - Parat %2"
+msgstr "%1 – Parat %2"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:107
 #, kde-format
@@ -4651,7 +4651,7 @@ msgstr ""
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:114
 #, kde-format
 msgid "Audio CD settings - Amarok"
-msgstr "Configureu els CD d'àudio - Amarok"
+msgstr "Configureu els CD d'àudio – Amarok"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
@@ -4959,10 +4959,10 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
-"No s'ha copiat una peça perquè no es pot reproduir - el seu format %2 no "
+"No s'ha copiat una peça perquè no es pot reproduir – el seu format %2 no "
 "està admés.<br>"
 msgstr[1] ""
-"No s'han copiat %1 peces perquè no es poden reproduir - els seus formats no "
+"No s'han copiat %1 peces perquè no es poden reproduir – els seus formats no "
 "estan admesos (%2).<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:410
@@ -6956,7 +6956,7 @@ msgstr "Àlbums diversos"
 #, kde-format
 msgctxt "A saved playlist titled <artist> - <album>"
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 – %2"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:30
 #, kde-format
@@ -7690,7 +7690,7 @@ msgstr[1] " <b>%1</b> caràtules no trobades"
 #: covermanager/CoverManager.cpp:638
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
-msgstr "S'està descarregant la caràtula per a %1 - %2…"
+msgstr "S'està descarregant la caràtula per a %1 – %2…"
 
 #: covermanager/CoverManager.cpp:644
 #, kde-format
@@ -7714,7 +7714,7 @@ msgstr[1] "%1 arreplegades"
 #: covermanager/CoverManager.cpp:656
 #, kde-format
 msgid " - "
-msgstr " - "
+msgstr " – "
 
 #: covermanager/CoverManager.cpp:657
 #, kde-format
@@ -7758,8 +7758,8 @@ msgstr "%1 de %2"
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
-msgstr[0] "%2 - ( <b>1</b> sense caràtula )"
-msgstr[1] "%2 - ( <b>%1</b> sense caràtula )"
+msgstr[0] "%2 – ( <b>1</b> sense caràtula )"
+msgstr[1] "%2 – ( <b>%1</b> sense caràtula )"
 
 #: covermanager/CoverManager.cpp:769
 #, kde-format
@@ -7769,7 +7769,7 @@ msgstr "Caràtula"
 #: covermanager/CoverManager.cpp:844
 #, kde-format
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 – %2"
 
 #: covermanager/CoverManager.cpp:861
 #, kde-format
@@ -7904,13 +7904,13 @@ msgstr "S'ha importat <b>%1</b>"
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
-msgstr "S'ha importat <b>%1 - %2</b>"
+msgstr "S'ha importat <b>%1 – %2</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:151
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
-msgstr "S'ha importat <b>%1 - %2 (%3)</b>"
+msgstr "S'ha importat <b>%1 – %2 (%3)</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:160
 #, kde-format
@@ -7936,7 +7936,7 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from "
 "%3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
-"S'ha importat <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;des "
+"S'ha importat <b><font color='green'>%1 – %2</font></b><br/>&nbsp;&nbsp;des "
 "de %3<br/>&nbsp;&nbsp;a %4"
 
 #: dialogs/DatabaseImporterDialog.cpp:181
@@ -7948,7 +7948,7 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from "
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
-"S'ha importat <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;"
+"S'ha importat <b><font color='green'>%1 – %2 (%3)</font></b><br/>&nbsp;&nbsp;"
 "des de %4<br/>&nbsp;&nbsp;a %5"
 
 #: dialogs/DatabaseImporterDialog.cpp:193
@@ -8458,7 +8458,7 @@ msgstr "Substituïx els espais per g&uions baixos"
 #, kde-format
 msgid "If checked, append ', The' to the artists' names starting with 'The'."
 msgstr ""
-"Si està marcada, s'afegirà «, The» als noms dels artistes que comencen per "
+"Si està marcada, s'annexarà «, The» als noms dels artistes que comencen per "
 "«The»."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ignoreTheCheck)
@@ -8475,7 +8475,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:60
 #, kde-format
 msgid "&Append 'The' to artist names"
-msgstr "Afi&g «The» als noms dels artistes"
+msgstr "&Annexa «The» als noms dels artistes"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:75
@@ -9848,7 +9848,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"iirc.libera.chat - #amarok\n"
+"iirc.libera.chat – #amarok\n"
 "\n"
 "Comentaris:\n"
 "amarok@kde.org\n"
@@ -10958,7 +10958,7 @@ msgstr "Posa la peça a la cua"
 #: MainWindow.cpp:979
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr "Posa l'«Artista - Títol» de la peça actual en el porta-retalls"
+msgstr "Posa l'«Artista – Títol» de la peça actual en el porta-retalls"
 
 #: MainWindow.cpp:984
 #, kde-format
@@ -11056,7 +11056,7 @@ msgstr "En pausa :: %1"
 #: MainWindow.cpp:1232
 #, kde-format
 msgid "%1 - %2  ::  %3"
-msgstr "%1. %2 - %3"
+msgstr "%1. %2 – %3"
 
 #: MainWindow.cpp:1306
 #, kde-format
@@ -11469,7 +11469,7 @@ msgstr "Agrupa per"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:279
 #, kde-format
 msgid "Show tooltips"
-msgstr "Mostra els consells"
+msgstr "Mostra els consells d'eina"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:515
@@ -11582,7 +11582,7 @@ msgstr "Caràtula"
 #, kde-format
 msgctxt "'Directory' playlist column name and token for playlist layouts"
 msgid "Directory"
-msgstr "Directori"
+msgstr "Carpeta"
 
 #: playlist/PlaylistDefines.cpp:100
 #, kde-format
@@ -11767,7 +11767,7 @@ msgstr "Comentari"
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
-msgstr "Directori"
+msgstr "Carpeta"
 
 #: playlist/PlaylistModel.cpp:944
 #, kde-format
@@ -11804,7 +11804,7 @@ msgstr "Mida de fitxer"
 #, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
-msgstr "%1: %2 - %3"
+msgstr "%1: %2 – %3"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PlaylistQueueEditor)
 #: playlist/PlaylistQueueEditor.ui:14
@@ -13196,7 +13196,7 @@ msgstr "Importa una predefinició"
 #: playlistgenerator/PresetModel.cpp:153
 #, kde-format
 msgid "Preset files"
-msgstr "Fitxers de predefinits"
+msgstr "Fitxers d'ajustaments predefinits"
 
 #: playlistgenerator/PresetModel.cpp:212
 #, kde-format
@@ -13211,7 +13211,7 @@ msgstr "No s'ha pogut exportar la predefinició a %1"
 #: playlistgenerator/PresetModel.cpp:237
 #, kde-format
 msgid "Presets could not be imported from %1"
-msgstr "No s'han pogut importar les predefinicions des de %1"
+msgstr "No s'han pogut importar els ajustaments predefinits des de %1"
 
 #: playlistgenerator/PresetModel.cpp:244
 #, kde-format
@@ -13251,7 +13251,7 @@ msgstr "Exporta el predefinit «%1»"
 #: playlistgenerator/PresetModel.cpp:295
 #, kde-format
 msgid "Preset files (*.xml)"
-msgstr "Fitxers de predefinits (*.xml)"
+msgstr "Fitxers d'ajustaments predefinits (*.xml)"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:92
 #, kde-format
@@ -13993,7 +13993,7 @@ msgstr "&Envia les peces"
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
-"Utilit&za les dades del compositor si estan disponibles a Last.fm com a "
+"&Utilitza les dades del compositor si estan disponibles a Last.fm com a "
 "artista"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
@@ -14373,7 +14373,7 @@ msgstr "%1 <b>%2</b> s'ha de corregir a <b>%3</b>"
 #, kde-format
 msgctxt "%1 is artist, %2 is title"
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 – %2"
 
 #: services/lastfm/ScrobblerAdapter.cpp:270
 #, kde-format
@@ -14783,7 +14783,7 @@ msgstr "&Torna a baixar"
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:60
 #, kde-format
 msgid "Artist - Album"
-msgstr "Artista - Àlbum"
+msgstr "Artista – Àlbum"
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:148
 #, kde-format
@@ -14883,9 +14883,9 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Després d'inscriure-vos, "
-"aneu fins a la configuració de Magnatune en «Configuració -> Configura "
-"Amarok… -> Connectors» i introduïu la vostra informació de soci. </p></"
-"body></html>"
+"aneu fins a la configuració de Magnatune en «Configuració → Configura "
+"Amarok… → Connectors» i introduïu la vostra informació de soci. </p></body></"
+"html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:45
@@ -15427,7 +15427,7 @@ msgstr "Etiquetes ignorades: %1"
 #: statsyncing/models/CommonModel.cpp:208
 #, kde-format
 msgid "%1 - %2 - %3"
-msgstr "%1 - %2 - %3"
+msgstr "%1 – %2 – %3"
 
 #: statsyncing/models/ProvidersModel.cpp:67
 #, kde-format
@@ -15548,7 +15548,7 @@ msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
 msgstr ""
-"No hi ha cap col·lecció seleccionada que permeta l'escriptura de %1 - no té "
+"No hi ha cap col·lecció seleccionada que permeta l'escriptura de %1 – no té "
 "sentit sincronitzar-ho."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)
@@ -16057,8 +16057,8 @@ msgstr "Predefinició:"
 #, kde-format
 msgid "A list of selectable filename scheme/format presets."
 msgstr ""
-"Una llista seleccionable dels noms de fitxer de predefinicions d'esquema/"
-"format."
+"Una llista seleccionable dels noms de fitxer d'ajustaments predefinits "
+"d'esquema/format."
 
 #: widgets/FilenameLayoutWidget.cpp:92
 #, kde-format
