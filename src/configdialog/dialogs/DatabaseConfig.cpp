@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -46,7 +46,7 @@ DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton
     {
         // check the meta object if there is a testSettings slot available
         if( factory->metaObject()->
-            indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)").constData() ) >= 0 )
+		indexOfMethod( QMetaObject::normalizedSignature("testSettings(QString, QString, QString, int, QString)").constData() ) >= 0 )
             testFunctionAvailable = true;
     }
     button_Test->setEnabled( testFunctionAvailable );
@@ -171,7 +171,3 @@ DatabaseConfig::isSQLInfoPresent() const
 {
     return !kcfg_Database->text().isEmpty() && !kcfg_User->text().isEmpty() && !kcfg_Host->text().isEmpty();
 }
-
-
-
-
