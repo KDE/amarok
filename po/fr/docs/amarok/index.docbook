@@ -1154,7 +1154,7 @@
 </screenshot>
 </para>
 <para
->Cliquer sur la bannière d'un périphérique (la barre bleue pour MPMAN Mass Storage sur la capture ci-dessus) affiche ou cache le contenu de ce périphérique. La direction de la flèche sur la droite indique si le contenu du périphérique est affiché ou caché. Le contenu d'un périphérique particulier peut être caché ou affiché en utilisant le même principe, en cliquant sur l'artiste ou l'album approprié. Une flèche pointant vers le bas à gauche d'un artiste ou d'un album indique que le contenu est affiché. Une flèche pointant vers la droite indique que des informations sur cette catégorie sont disponibles mais actuellement cachées. Sur la capture ci-dessus, les informations sur le CD de <emphasis
+>Cliquer sur la bannière d'un périphérique (la barre bleue pour « MPMAN Mass Storage » sur la capture ci-dessus) affiche ou masque le contenu de ce périphérique. La direction de la flèche sur la droite indique si le contenu du périphérique est affiché ou caché. Le contenu d'un périphérique particulier peut être masqué ou affiché en utilisant le même principe, en cliquant sur l'artiste ou l'album approprié. Une flèche pointant vers le bas à gauche d'un artiste ou d'un album indique que le contenu est affiché. Une flèche pointant vers la droite indique que des informations sur cette catégorie sont disponibles mais actuellement cachées. Sur la capture ci-dessus, les informations sur le CD de <emphasis
 >Travis - The invisible Band</emphasis
 > sont développées, affichant les pistes individuelles. En revanche, les albums et les pistes dans la <guilabel
 >collection locale</guilabel
@@ -7195,7 +7195,7 @@
 >Correction orthographique automatique</title
 > 
 <para
->Last.fm active par défaut une fonctionnalité qui auto-corrigera les fautes d'orthographes usuelles lors de la synchronisation. Il peut arriver que même si vous scrobblez beaucoup de pistes écoutées, cela ne s'affichera pas dans les pistes correspondantes vu que Last.fm connaît la piste sous un nom sensiblement différent. </para>
+>Last.fm active par défaut une fonctionnalité qui corrigera automatiquement les fautes d'orthographes usuelles lors de la synchronisation. Il peut arriver que même si vous faites beaucoup de scrobbling des pistes écoutées, cela ne s'affichera pas dans les pistes correspondantes parce que Last.fm connaît la piste sous un nom sensiblement différent. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7212,7 +7212,7 @@
 </screenshot>
 </para>
 <para
->Vous pouvez désactiver cette fonctionnalité sur le site de Last.fm, et les modifications seront aussi appliquées à vos scrobbles passés. Vous avez deux options : </para>
+>Vous pouvez désactiver cette fonctionnalité sur le site de Last.fm. Les modifications seront aussi appliquées à vos scrobbling passés. Vous avez deux options : </para>
 <variablelist>
   <varlistentry
 ><term
@@ -10723,7 +10723,7 @@
 >une erreur de bus</emphasis
 >, cela signifie presque toujours qu'il ne peut pas décoder (Ou trouver) votre fichier. Veuillez regarder les <link linkend="supported-filetypes"
 >types de fichiers pris en charge</link
-> plus bas pour trouver des pistes sur quels modules externes GStreamer il faut installer. Vous pouvez aussi essayer la commande suivante pour tester si GStreamer peut décoder votre fichier : <userinput
+> plus bas pour trouver des pistes sur quels modules externes GStreamer sur lesquels les installer. Vous pouvez aussi essayer la commande suivante pour tester si GStreamer peut décoder votre fichier : <userinput
 >gst-launch-1.0 filesrc location=[file] ! decodebin ! fakesink</userinput
 ></para
 ></listitem>
@@ -12218,7 +12218,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><screen
 ><command
->Stream #0.1(und): Video : h264 (Baseline), yuv420p, 480x360 [PAR 1:1 DAR 4:3], 242 kb/s, 25 fps, 25 tbr, 25k tbn, 50k tbc</command
+>Stream #0.1(und): Video : h264 (Baseline), yuv420p, 480x360 [PAR 1 : 1 DAR 4 : 3], 242 kb / s, 25 fps, 25 tbr, 25k tbn, 50k (TBC)</command
 ></screen>
 </para>
 <para
@@ -12353,7 +12353,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Comment puis-je utiliser Amarok pour diffuser ma propre station de radio ?</title
 > 
 <para
->Si vous souhaiter diffuser directement vers un serveur icecast ou shoutcast, la réponse est simple : ce n'est pas pris en charge. vous pouvez utiliser <ulink url="http://giss.tv/sahabuntu/doc/idjc.html"
+>Si vous souhaiter diffuser directement vers un serveur « icecast » ou « shoutcast », la réponse est simple : cela est non pris en charge. Vous pouvez utiliser <ulink url="http://giss.tv/sahabuntu/doc/idjc.html"
 >IDJC</ulink
 > pour cela. </para>
 </sect3>
