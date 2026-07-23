@@ -11453,9 +11453,9 @@ ftpProxy=http://username:password@proxyserver:port/
 >Fehlerbeseitigung und häufige Probleme</title
 > 
 <para
->Haben Sie die hier genannten Anweisungen ohne Erfolg ausgeführt, fragen Sie im IRC (irc://irc.ibera.chat/amarok) oder im KDE-Forum in Abschnitt <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Amarok</ulink
-> oder schreiben Sie an die <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
+>Haben Sie die hier genannten Anweisungen ohne Erfolg ausgeführt, fragen Sie im IRC (irc://irc.ibera.chat/amarok) oder auf Discuss im <ulink url="https://discuss.kde.org/tag/amarok"
+>Amarok-Abschnitt</ulink
+> nach oder schreiben Sie an die <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
 >Amarok-Mailingliste</ulink
 >. </para>
 <sect2 id="problems-installing"
@@ -11801,10 +11801,10 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Hier erhalten Sie direkte Unterstützung bei Problemen: <ulink url="irc://irc.libera.chat/#amarok"
 >IRC</ulink
-> (#amarok auf Libera Chat IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Forum</ulink
+> (#amarok auf Libera Chat IRC), <ulink url="https://discuss.kde.org/tag/amarok"
+>Discuss</ulink
 >, <ulink url="https://mail.kde.org/mailman/listinfo/amarok"
->Mailinglisten</ulink
+>Mailingliste</ulink
 ></para
 ></listitem>
 </itemizedlist>
@@ -11949,8 +11949,8 @@ ftpProxy=http://username:password@proxyserver:port/
 >Wo erhalte ich Unterstützung für Amarok?</title
 > 
 <para
->Es gibt einige Möglichkeiten. Die meisten Installationsprobleme mit &amarok; klären sich am leichtesten durch die Hilfe eines Experten für Ihre &UNIX;- oder &Linux;-Distribution. Sie können auch Hilfe bei anderen Anwendern oder bei den Entwicklern suchen. Verwenden sie dafür das <ulink url="http://forum.kde.org/viewforum.php?f=127"
->Amarok-Forum</ulink
+>Es gibt einige Möglichkeiten. Die meisten Installationsprobleme mit &amarok; klären sich am leichtesten durch die Hilfe eines Experten für Ihre &UNIX;- oder &Linux;-Distribution. Sie können auch Hilfe bei anderen Anwendern oder bei den Entwicklern suchen. Verwenden Sie dafür den <ulink url="https://discuss.kde.org/tag/amarok"
+>Amarok-Abschnitt auf Discuss</ulink
 > und das <ulink url="irc://irc.libera.chat/amarok"
 >IRC</ulink
 > unter irc.libera.chat im Kanal #amarok. </para>
