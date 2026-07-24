@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-15 00:42+0000\n"
-"PO-Revision-Date: 2026-06-04 22:44+0300\n"
+"PO-Revision-Date: 2026-07-23 09:25+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -3632,7 +3632,7 @@ msgstr "בחירת סקריפטים שבארכיון"
 #: configdialog/dialogs/ScriptsConfig.cpp:151
 #, kde-format
 msgid "Invalid Archive"
-msgstr ""
+msgstr "ארכיון שגוי"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
 #: configdialog/dialogs/ScriptsConfig.cpp:188
@@ -3693,7 +3693,7 @@ msgstr "מסוף סקריפטים"
 #: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
-msgstr ""
+msgstr "הפעלת מסוף הסקריפטים."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
 #: configdialog/dialogs/ScriptsConfig.ui:67
@@ -3708,13 +3708,13 @@ msgstr "מחפש תסריטים"
 
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 track"
 msgid_plural "%1 tracks"
-msgstr[0] "%1 רצועה"
-msgstr[1] "%1 רצועות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "רצועה"
+msgstr[1] "שתי רצועות"
+msgstr[2] "%1 רצועות"
+msgstr[3] "%1 רצועות"
 
 #: context/applets/albums/plugin/AlbumsEngine.cpp:209
 #, kde-format
@@ -3765,13 +3765,13 @@ msgstr ""
 #: context/applets/analyzer/package/contents/ui/main.qml:124
 #, kde-format
 msgid "Frequency range:"
-msgstr ""
+msgstr "טווח תדר:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:142
 #: context/applets/analyzer/package/contents/ui/main.qml:147
 #, kde-format
 msgid "%1 Hz"
-msgstr ""
+msgstr "%1 הרץ"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
 #, kde-format
@@ -4044,7 +4044,7 @@ msgstr "החלפה"
 #: playlistgenerator/PresetEditDialog.cpp:73
 #, kde-format
 msgid "Remove selected"
-msgstr ""
+msgstr "הסרת הנבחרים"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:48
 #, kde-format
@@ -4059,7 +4059,7 @@ msgstr "גודל כתב:"
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:75
 #, kde-format
 msgid "Text alignment:"
-msgstr ""
+msgstr "יישור טקסט:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
@@ -4074,7 +4074,7 @@ msgstr "יישור לימין"
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:82
 #, kde-format
 msgid "Align center"
-msgstr ""
+msgstr "יישור למרכז"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:101
 #, kde-format
@@ -4084,7 +4084,7 @@ msgstr "גופן:"
 #: context/applets/lyrics/package/contents/ui/main.qml:57
 #, kde-format
 msgid "Toggle auto scroll"
-msgstr ""
+msgstr "הפעלת/כיבוי גלילה אוטומטית"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:67
 #, kde-format
@@ -4099,7 +4099,7 @@ msgstr "לא נמצאו מילות שיר"
 #: context/applets/lyrics/package/contents/ui/main.qml:128
 #, kde-format
 msgid "Suggestions: "
-msgstr ""
+msgstr "הצעות: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
@@ -4500,27 +4500,27 @@ msgstr ""
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:67
 #, kde-format
 msgid "Ogg Vorbis"
-msgstr ""
+msgstr "Ogg Vorbis"
 
 #. i18n: ectx: property (text), widget (QRadioButton, flacButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:39
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:49
 #, kde-format
 msgid "FLAC"
-msgstr ""
+msgstr "FLAC"
 
 #. i18n: ectx: property (text), widget (QRadioButton, wavButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:46
 #, kde-format
 msgid "Wav"
-msgstr ""
+msgstr "Wav"
 
 #. i18n: ectx: property (text), widget (QRadioButton, mp3Button)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:53
 #: core/transcoding/formats/TranscodingMp3Format.cpp:63
 #, kde-format
 msgid "MP3"
-msgstr ""
+msgstr "MP3"
 
 # kde-il: don't translate
 #. i18n: ectx: property (text), widget (QPushButton, advancedButton)
@@ -4813,13 +4813,13 @@ msgstr ""
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:424
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
-msgstr ""
+msgstr "השאר לא הועבר כיוון שהאוסף ב־iPod נעלם.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:429
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
-msgstr ""
+msgstr "גורמים לשגיאה: %1<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodDeleteTracksJob.cpp:44
 #, fuzzy, kde-format
@@ -4860,7 +4860,7 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 #, kde-format
 msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr ""
+msgstr "התחברות ל־iPhone,‏ iPad או iPod touch נכשלה."
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
@@ -4888,7 +4888,7 @@ msgstr "התמרה:"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:109
 #, kde-format
 msgid "Model:"
-msgstr ""
+msgstr "דגם:"
 
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
@@ -4925,19 +4925,19 @@ msgstr "עיצוב אומנותי לאלבום:"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
 #, kde-format
 msgid "Troubleshooting"
-msgstr ""
+msgstr "פתרון תקלות"
 
 #. i18n: ectx: property (text), widget (QLabel, sysInfoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:174
 #, kde-format
 msgid "SysInfo file:"
-msgstr ""
+msgstr "קובץ SysInfo:"
 
 #. i18n: ectx: property (text), widget (QLabel, sysInfoExtendedLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:188
 #, kde-format
 msgid "SysInfoExtended file:"
-msgstr ""
+msgstr "קובץ SysInfoExtended:"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:48
 #, kde-format
@@ -4948,7 +4948,7 @@ msgstr ""
 #, kde-format
 msgctxt "iPod model that is not (yet) recognized"
 msgid "Unrecognized model"
-msgstr ""
+msgstr "דגם לא ידוע"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:60
 #, kde-format
@@ -4956,13 +4956,13 @@ msgctxt ""
 "Name of the iPod collection; %1 is iPod name, %2 is iPod model; example: My "
 "iPod: Nano (Blue)"
 msgid "%1: %2"
-msgstr ""
+msgstr "%1: %2"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:69
 #, kde-format
 msgctxt "default iPod name (when user-set name is empty)"
 msgid "iPod"
-msgstr ""
+msgstr "iPod"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:214
 #, kde-format
