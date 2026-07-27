@@ -230,18 +230,11 @@ Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
 
     auto raw = plugin.rawData();
     int version = raw.value( QStringLiteral("X-KDE-Amarok-framework-version") ).toInt();
-    int rank = raw.value( QStringLiteral("X-KDE-Amarok-rank") ).toInt();
 
     if( version != s_pluginFrameworkVersion )
     {
         warning() << "Plugin" << plugin.pluginId() << "has frameworks version" << version
                   << ". Version" << s_pluginFrameworkVersion << "is required";
-        return false;
-    }
-
-    if( rank == 0 )
-    {
-        warning() << "Plugin" << plugin.pluginId() << "has rank 0";
         return false;
     }
 
