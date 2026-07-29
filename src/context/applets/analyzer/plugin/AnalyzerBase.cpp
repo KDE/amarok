@@ -124,12 +124,12 @@ Analyzer::Base::drawNeedChanged( const bool drawingNeeded )
     if( drawingNeeded )
     {
         connectSignals();
-        QTimer::singleShot( 0, m_worker, [=]() { m_worker->setHibernate( false ); } );
+        QTimer::singleShot( 0, m_worker, [&m_worker = m_worker]() { m_worker->setHibernate( false ); } );
     }
     else
     {
         disconnectSignals();
-        QTimer::singleShot( 0, m_worker, [=]() { m_worker->setHibernate( true ); } );
+        QTimer::singleShot( 0, m_worker, [&m_worker = m_worker]() { m_worker->setHibernate( true ); } );
     }
 }
 

@@ -406,7 +406,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     // Only show position if the track didn't just start playing
     if( pos > m_duration + 500 )
     {
-        QTimer::singleShot( 1000, this, [=] () { update(); });
+        QTimer::singleShot( 1000, this, [this] () { update(); });
         osdtext.replace( QStringLiteral("%{\033A%}"), QString(Meta::msToPrettyTime( pos ) + QLatin1Char('/') ) );
     }
     else

@@ -62,8 +62,8 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
     scriptObject.setProperty( QStringLiteral("Category"), engine->enumObject( m_categoryEnum ) );
 
     qRegisterMetaType<CollectionTreeItem*>();
-    QMetaType::registerConverter<CollectionTreeItem*, QJSValue>( [=] (CollectionTreeItem* item) { return CollectionViewItem::toScriptValue( m_engine, item ); } );
-    QMetaType::registerConverter<QJSValue, CollectionTreeItem*>( [=] (QJSValue jsValue) {
+    QMetaType::registerConverter<CollectionTreeItem*, QJSValue>( [&m_engine = m_engine] (CollectionTreeItem* item) { return CollectionViewItem::toScriptValue( m_engine, item ); } );
+    QMetaType::registerConverter<QJSValue, CollectionTreeItem*>( [] (QJSValue jsValue) {
         CollectionTreeItem* item;
         fromScriptValue<CollectionTreeItem*, CollectionViewItem>( jsValue, item );
         return item;

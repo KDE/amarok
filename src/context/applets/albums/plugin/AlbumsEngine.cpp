@@ -146,7 +146,7 @@ void AlbumsEngine::resultReady( const Meta::AlbumList &albums )
     // Include currently playing album in results even when album artist is not current artist
     Meta::AlbumList amended;
     if( m_currentTrack && m_currentTrack->album() && std::find_if( albums.cbegin(), albums.cend(),
-                        [=](auto a) { return *m_currentTrack->album() == *a; } ) == albums.cend() )
+                        [&m_currentTrack = m_currentTrack](auto a) { return *m_currentTrack->album() == *a; } ) == albums.cend() )
     {
         amended.append( albums );
         amended.append( m_currentTrack->album() );

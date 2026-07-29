@@ -154,10 +154,10 @@ LastFmServiceSettings::onAuthTokenReady()
     if( QDesktopServices::openUrl( QUrl( QStringLiteral( "https://www.last.fm/api/auth/?api_key=%1&token=%2" )
         .arg( QLatin1String( Amarok::lastfmApiKey() ), lfm[ QStringLiteral("token") ].text() ) ) ) )
     {
-        QTimer::singleShot( 2000, [=] () // wait a moment for the browser to open, as connecting won't succeed before interaction in browser
+        QTimer::singleShot( 2000, [this, lfm] () // wait a moment for the browser to open, as connecting won't succeed before interaction in browser
         {
             disconnect( m_configDialog->connectToAccount, &QPushButton::clicked, this, &LastFmServiceSettings::initiateTokenAuth );
-            connect( m_configDialog->connectToAccount, &QPushButton::clicked, [=]() { this->getSessionToken( lfm[ QStringLiteral("token") ].text() ); } );
+            connect( m_configDialog->connectToAccount, &QPushButton::clicked, [this, lfm]() { this->getSessionToken( lfm[ QStringLiteral("token") ].text() ); } );
             m_configDialog->connectToAccount->setEnabled( true );
             m_configDialog->connectToAccount->setText( i18nc( "Pushbutton to complete Last.fm authentication process",
                                                               "Finish connecting account" ) );

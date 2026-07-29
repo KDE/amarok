@@ -98,7 +98,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
     switch( fetchSource() )
     {
     case CoverFetch::LastFm:
-        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Interactive, fetchSource() ); } );
+        QTimer::singleShot( 0, m_queue, [this, album] () { m_queue->add( album, CoverFetch::Interactive, fetchSource() ); } );
         break;
 
     case CoverFetch::Discogs:
@@ -114,7 +114,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Automatic ); } );
+    QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, album] () { m_queue->add( album, CoverFetch::Automatic ); } );
     debug() << "Queueing automatic cover fetch for:" << album->name();
 }
 
@@ -123,14 +123,14 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
     for( Meta::AlbumPtr album : albums )
     {
-        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Automatic ); } );
+        QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, album] () { m_queue->add( album, CoverFetch::Automatic ); } );
     }
 }
 
 void
 CoverFetcher::queueQuery( const Meta::AlbumPtr &album, const QString &query, int page )
 {
-    QTimer::singleShot( 0, m_queue, [=] () { m_queue->addQuery( query, fetchSource(), page, album ); } );
+    QTimer::singleShot( 0, m_queue, [this, album, page, query] () { m_queue->addQuery( query, fetchSource(), page, album ); } );
     debug() << QStringLiteral( "Queueing cover fetch query: '%1' (page %2)" ).arg( query, QString::number( page ) );
 }
 
@@ -193,7 +193,7 @@ CoverFetcher::slotResult( const QUrl &url, const QByteArray &data, const Network
     const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
     if( !unit )
     {
-        QTimer::singleShot( 0, m_queue, [=] () { m_queue->remove( unit ); } );
+        QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, unit] () { m_queue->remove( unit ); } );
         return;
     }
 
@@ -207,12 +207,12 @@ CoverFetcher::slotResult( const QUrl &url, const QByteArray &data, const Network
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( unit->album(), unit->options(), payload->source(), data );
+        QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, data, payload, unit] () { m_queue->add( unit->album(), unit->options(), payload->source(), data );
                                                  m_queue->remove( unit ); } );
         break;
 
     case CoverFetchPayload::Search:
-        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( unit->options(), fetchSource(), data );
+        QTimer::singleShot( 0, m_queue, [this, &m_queue = m_queue, data, unit] () { m_queue->add( unit->options(), fetchSource(), data );
                                                  m_queue->remove( unit ); } );
         break;
 
@@ -264,7 +264,7 @@ CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteAr
         if( reader.read( &image ) )
         {
             showCover( unit, image, metadata );
-            QTimer::singleShot( 0, m_queue, [=] () {  m_queue->remove( unit ); } );
+            QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, unit] () {  m_queue->remove( unit ); } );
             return;
         }
     }
@@ -387,7 +387,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
 void
 CoverFetcher::abortFetch( const CoverFetchUnit::Ptr &unit )
 {
-    QTimer::singleShot( 0, m_queue, [=] () {  m_queue->remove( unit ); } );
+    QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, unit] () {  m_queue->remove( unit ); } );
     m_selectedImages.remove( unit );
     QList<QUrl> urls = m_urls.keys( unit );
     for( const QUrl &url : urls )
@@ -453,7 +453,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr &unit,
         break;
     }
 
-    QTimer::singleShot( 0, m_queue, [=] () { m_queue->remove( unit ); } );
+    QTimer::singleShot( 0, m_queue, [&m_queue = m_queue, unit] () { m_queue->remove( unit ); } );
 
     Q_EMIT finishedSingle( static_cast< int >( state ) );
 }

@@ -707,7 +707,7 @@ CoverManager::updateStatusBar()
         m_fetchButton->setEnabled( missingCounter );
     }
 
-    QTimer::singleShot( 0, this, [=]() { setStatusText( text ); } );
+    QTimer::singleShot( 0, this, [this, text]() { setStatusText( text ); } );
 }
 
 void

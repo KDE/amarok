@@ -46,7 +46,7 @@ AmarokBookmarkScript::AmarokBookmarkScript( QJSEngine *engine )
     m_engine->globalObject().setProperty( QStringLiteral("Bookmark"), bookmarkCtor );
 
     qRegisterMetaType<BookmarkGroupList>();
-    QMetaType::registerConverter<BookmarkGroupList, QJSValue>( [=] (BookmarkGroupList bgList) { return toScriptArray<BookmarkGroupList>( m_engine, bgList ); } );
+    QMetaType::registerConverter<BookmarkGroupList, QJSValue>( [&m_engine = m_engine] (BookmarkGroupList bgList) { return toScriptArray<BookmarkGroupList>( m_engine, bgList ); } );
     QMetaType::registerConverter<QJSValue, BookmarkGroupList>( [] (QJSValue jsValue) {
         BookmarkGroupList bgList;
         fromScriptArray<BookmarkGroupList>( jsValue, bgList );
@@ -54,7 +54,7 @@ AmarokBookmarkScript::AmarokBookmarkScript( QJSEngine *engine )
     } );
 
     qRegisterMetaType<BookmarkList>();
-    QMetaType::registerConverter<BookmarkList,QJSValue>( [=] (BookmarkList bList) { return toScriptArray<BookmarkList>( m_engine, bList); } );
+    QMetaType::registerConverter<BookmarkList,QJSValue>( [&m_engine = m_engine] (BookmarkList bList) { return toScriptArray<BookmarkList>( m_engine, bList); } );
     QMetaType::registerConverter<QJSValue,BookmarkList>( [] (QJSValue jsValue) {
         BookmarkList bList;
         fromScriptArray<BookmarkList>( jsValue, bList );
