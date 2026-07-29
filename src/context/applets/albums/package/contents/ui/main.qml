@@ -36,6 +36,7 @@ AmarokQml.Applet {
             id: selectionModel
             model: AlbumsEngine.model
         }
+        property int previousSelectedRow
         TapHandler {
             acceptedButtons: Qt.LeftButton
             onSingleTapped: {
@@ -88,12 +89,9 @@ AmarokQml.Applet {
                             selectionModel.select(treeIndex, ItemSelectionModel.Toggle)
                         break;
                         case Qt.ShiftModifier:
-                            if(selectionModel.currentIndex.row >= 0 )
+                            for(let i=Math.min(row, treeView.previousSelectedRow); i<Math.max(row, treeView.previousSelectedRow) + 1; i++)
                             {
-                                for(let i=Math.min(row, selectionModel.currentIndex.row); i<Math.max(row, selectionModel.currentIndex.row); i++)
-                                {
-                                    selectionModel.select(treeView.index(i, column), ItemSelectionModel.Select)
-                                }
+                                selectionModel.select(treeView.index(i, column), ItemSelectionModel.Select)
                             }
                             selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
                         break;
@@ -103,6 +101,7 @@ AmarokQml.Applet {
                             selectionModel.setCurrentIndex(treeIndex, ItemSelectionModel.NoUpdate)
                         break;
                     }
+                    treeView.previousSelectedRow = row
                 }
             }
 

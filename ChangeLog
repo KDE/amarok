@@ -8,6 +8,7 @@ VERSION 3.3.4 UNRELEASED
   CHANGES:
 
   BUGFIXES:
+   * Fix shift-selecting multiple tracks in albums context applet
 
 VERSION 3.3.3
   FEATURES:
