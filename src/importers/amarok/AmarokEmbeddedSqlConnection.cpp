@@ -63,8 +63,13 @@ AmarokEmbeddedSqlConnection::connection()
 
     QTemporaryFile pidFile( QDir::temp().filePath( QStringLiteral("amarok_importer-XXXXXX.pid") ) );
     QTemporaryFile socket( QDir::temp().filePath( QStringLiteral("amarok_importer-XXXXXX.socket") ) );
-    pidFile.open();
-    socket.open();
+    bool pidOpen = pidFile.open();
+    bool socketOpen = socket.open();
+    if( !pidOpen || !socketOpen )
+    {
+        warning() << "Failed to create temporary files for AmarokEmbeddedSqlConnection";
+        return QSqlDatabase();
+    }
 
     // Get random port in range 3307 - 65535
     const int port = ( QRandomGenerator::global()->generate() % ( 65536 - 3307 ) ) + 3307;

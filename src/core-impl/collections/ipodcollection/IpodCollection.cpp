@@ -539,7 +539,10 @@ IpodCollection::slotStartWriteDatabaseTimer()
         m_preventUnmountTempFile = new QTemporaryFile();
         QString name( QStringLiteral("/.itunes_database_dirty_in_amarok_prevent_unmounting") );
         m_preventUnmountTempFile->setFileTemplate( m_mountPoint + name );
-        m_preventUnmountTempFile->open();
+        if( !m_preventUnmountTempFile->open() )
+        {
+            debug() << "failed to open unmount preventer file on iPod, hopefully everything goes ok";
+        }
     }
 }
 

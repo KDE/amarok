@@ -82,7 +82,7 @@ public:
 private:
     Meta::TrackPtr findTrackForUrl( const QUrl &url ) const
     {
-        QReadLocker( mc->mapLock() );
+        QReadLocker lock( mc->mapLock() );
 
         for( auto const &track : mc->trackMap().values() )
             if( track->playableUrl() == url )
@@ -116,7 +116,7 @@ private:
         {
             Q_UNUSED( configuration );
 
-            QWriteLocker( m_mc->mapLock() );
+            QWriteLocker lock( m_mc->mapLock() );
 
             for( auto const &track : sources.keys() )
             {
@@ -131,7 +131,7 @@ private:
         {
             Q_UNUSED( url );
 
-            QWriteLocker( m_mc->mapLock() );
+            QWriteLocker lock( m_mc->mapLock() );
 
             if( m_mc->trackMap().contains( track->uidUrl() ) )
                 return false;

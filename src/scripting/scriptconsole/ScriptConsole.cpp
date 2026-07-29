@@ -245,8 +245,10 @@ ScriptConsole::loadScripts()
             i++;
             ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( nullptr ) );
             QFile scriptText = QFile( scriptPath + QStringLiteral("/main.js") );
-            scriptText.open( QIODevice::ReadOnly );
-            document->setText( QString::fromUtf8( scriptText.readAll() ) );
+            if( scriptText.open( QIODevice::ReadOnly ) )
+                document->setText( QString::fromUtf8( scriptText.readAll() ) );
+            else
+                debug() << "Error loading script from " << scriptPath << QStringLiteral("/main.js");
             scriptText.close();
             scriptItem = new ScriptConsoleItem( this, dir, QStringLiteral("Generic"), scriptPath, document );
             m_scriptListDock->addScript( scriptItem );

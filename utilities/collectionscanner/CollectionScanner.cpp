@@ -147,7 +147,8 @@ void
 CollectionScanner::Scanner::doJob() //SLOT
 {
     QFile xmlFile;
-    xmlFile.open( stdout, QIODevice::WriteOnly );
+    if( !xmlFile.open( stdout, QIODevice::WriteOnly ) )
+        qWarning() << Q_FUNC_INFO << "uh oh, failed to open stdout for writing, things probably don't work";
     QXmlStreamWriter xmlWriter( &xmlFile );
     xmlWriter.setAutoFormatting( true );
 

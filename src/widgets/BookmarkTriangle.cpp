@@ -99,7 +99,7 @@ void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 void BookmarkTriangle::mouseMoveEvent ( QMouseEvent * event )
 {
     event->accept();
-    int distance_x = event->x() - m_offset.x();
+    int distance_x = event->position().x() - m_offset.x();
     QPoint pt(distance_x, 0);
     move(mapToParent( pt ));
 }

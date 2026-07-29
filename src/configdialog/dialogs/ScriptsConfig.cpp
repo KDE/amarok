@@ -171,7 +171,12 @@ ScriptsConfig::installLocalScript()
     }
 
     QTemporaryFile tempFile;
-    tempFile.open();
+    if( !tempFile.open() )
+    {
+        debug() << "Couldn't open temporary file for script processing";
+        KMessageBox::error( this, i18n( "Error" ) );
+        return;
+    }
     QIODevice *device = metadataFile->createDevice();
     tempFile.write( device->readAll() );
     delete device;

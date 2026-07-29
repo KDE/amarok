@@ -1113,7 +1113,8 @@ TestSqlScanManager::testPartialUpdate()
 
     // Updating mtime for the directory triggered the bug this test was made for; do it here by creating a file within
     QFile f( m_tmpCollectionDir->path() + QStringLiteral("/Pop/Thriller/touch") );
-    f.open(QIODevice::WriteOnly);
+    if( !f.open(QIODevice::WriteOnly) )
+        qWarning() << "Failed to create a file in " << m_tmpCollectionDir->path() << QStringLiteral("/Pop/Thriller/touch");
     f.close();
     directoryWatcherSimulator.clear();
     directoryWatcherSimulator << QUrl::fromUserInput( m_tmpCollectionDir->path() + QStringLiteral("/Pop/Thriller") );

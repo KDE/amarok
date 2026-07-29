@@ -213,7 +213,8 @@ ScriptItem::start( bool silent )
     m_output.clear();
 
     QFile scriptFile( m_url.path() );
-    scriptFile.open( QIODevice::ReadOnly );
+    QString scriptContents = scriptFile.open( QIODevice::ReadOnly )
+        ? QString::fromUtf8(scriptFile.readAll()) : QStringLiteral( "Failed to read script file" );
     m_running = true;
 
     m_log << QStringLiteral( "%1 Script started" ).arg( QTime::currentTime().toString() );
@@ -226,10 +227,10 @@ ScriptItem::start( bool silent )
                 QStringLiteral("const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *="),
                 QRegularExpression::DotMatchesEverythingOption );
         m_engineResult = m_engine->evaluate(
-               QString::fromUtf8(scriptFile.readAll()).replace( removeConst, QStringLiteral("var \\1 =") ),
+               scriptContents.replace( removeConst, QStringLiteral("var \\1 =") ),
                 m_name);
     } else {
-        m_engineResult = m_engine->evaluate(QString::fromUtf8(scriptFile.readAll()), m_name);
+        m_engineResult = m_engine->evaluate( scriptContents, m_name );
     }
     m_output << m_engineResult.toString();
     debug() << "After Evaluation "<< m_name;

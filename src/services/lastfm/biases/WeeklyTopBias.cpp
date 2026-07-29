@@ -461,7 +461,11 @@ void
 Dynamic::WeeklyTopBias::loadFromFile()
 {
     QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_topweeklyartists.xml") );
-    file.open( QIODevice::ReadOnly | QIODevice::Text );
+    if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        debug() << "Failed to open " << Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_topweeklyartists.xml") << " for reading";
+        return;
+    }
     QTextStream in( &file );
     while( !in.atEnd() )
     {
@@ -476,7 +480,11 @@ void
 Dynamic::WeeklyTopBias::saveDataToFile() const
 {
     QFile file( Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_topweeklyartists.xml") );
-    file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
+    if( !file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+        debug() << "Failed to open " << Amarok::saveLocation() + QStringLiteral("dynamic_lastfm_topweeklyartists.xml") << " for writing";
+        return;
+    }
     QTextStream out( &file );
     for( uint key : m_weeklyArtistMap.keys() )
     {
