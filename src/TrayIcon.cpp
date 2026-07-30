@@ -75,7 +75,7 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( QStringLiteral("next")       ) );
 
     m_separator = contextMenu()->addSeparator();
-    contextMenu()->addActions( actionCollection() ); // quit and restore
+    contextMenu()->addActions( contextMenu()->actions() ); // quit and restore
 
     contextMenu()->setObjectName( QStringLiteral("TrayIconContextMenu") );
 
@@ -307,7 +307,8 @@ Amarok::TrayIcon::updateMenu()
     if( m_extraActions.count() > 0 )
     {
         // remove the 2 bottom items, so we can push them to the bottom again
-        for( const auto action : actionCollection() )
+        const QList<QAction *> actions = contextMenu()->actions();
+        for( const auto action : actions )
             contextMenu()->removeAction( action );
 
         for( const auto action : m_extraActions )
@@ -315,7 +316,7 @@ Amarok::TrayIcon::updateMenu()
 
         m_separator = contextMenu()->addSeparator();
         // readd
-        contextMenu()->addActions( actionCollection() );
+        contextMenu()->addActions( actions );
     }
 }
 

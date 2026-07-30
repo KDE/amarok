@@ -2,10 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2025 the Amarok authors.
 
-VERSION 3.3.4 UNRELEASED
+VERSION 3.3.81 UNRELEASED
   FEATURES:
 
   CHANGES:
+   * Amarok now depends on KDE Frameworks 6.6.
 
   BUGFIXES:
    * Fix shift-selecting multiple tracks in albums context applet
