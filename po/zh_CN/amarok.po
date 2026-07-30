@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -2743,7 +2743,7 @@ msgid "Configure Plugins"
 msgstr "配置插件"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "脚本"
@@ -3584,12 +3584,18 @@ msgid "Invalid Archive"
 msgstr "无效的压缩文件"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr "无效的脚本文件"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr "错误"
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3600,22 +3606,22 @@ msgstr ""
 "已存在脚本的版本号：%2\n"
 "所选脚本的版本号：%3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "已成功安装脚本 %1"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "通用"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "歌词"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "脚本服务"
@@ -4587,19 +4593,19 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "初始化成功。"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "已成功将 iTunes 数据库写入到 %1 内"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr "无法将 iTunes 数据库写入至 %1，且没有错误提示"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -12823,11 +12829,6 @@ msgstr "控制台"
 msgid "Output"
 msgstr "输出"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr "错误"
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
@@ -12868,34 +12869,34 @@ msgstr "视图(&V)"
 msgid "This will stop this script! Continue?"
 msgstr "此操作会停止该脚本，确认要继续吗？"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "选择保存脚本的位置"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "要从磁盘中删除此脚本文件吗？"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove Script"
 msgstr "删除脚本"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "移除"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "请勿移除"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "您完全确定吗？"
@@ -12928,7 +12929,7 @@ msgstr "终止"
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "脚本 %1 的运行时间已超过了 5 秒，要停止运行吗？"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2021-06-17 23:03+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -3015,7 +3015,7 @@ msgid "Configure Plugins"
 msgstr "Configurar os 'Plugins'"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "Programas"
@@ -3904,12 +3904,18 @@ msgid "Invalid Archive"
 msgstr "Pacote Inválido"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr "Ficheiro de Programa Inválido"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr "Erro"
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3920,22 +3926,22 @@ msgstr ""
 "Versão do Programa Existente: %2\n"
 "Versão do Programa Seleccionado: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "O programa %1 foi instalado com sucesso"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "Genérico"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "Letras Musicais"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Serviço Programável"
@@ -4929,13 +4935,13 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "A inicialização terminou com sucesso."
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "A base de dados do iTunes foi gravada com sucesso em %1"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
@@ -4943,7 +4949,7 @@ msgstr ""
 "A gravação da base de dados do iTunes em %1 falhou, mas sem qualquer "
 "indicação de erro"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -13540,11 +13546,6 @@ msgstr "Consola"
 msgid "Output"
 msgstr "Resultado"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr "Erro"
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
@@ -13585,35 +13586,35 @@ msgstr "&Ver"
 msgid "This will stop this script! Continue?"
 msgstr "Isto irá interromper este programa! Deseja continuar?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Escolha onde gravar os seus programas"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Deseja remover o ficheiro do programa do disco?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove Script"
 msgstr "Remover o Programa"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Remover"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Tem a certeza absoluta?"
@@ -13651,7 +13652,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 "O programa %1 está em avaliação há mais de 5 segundos; deseja terminá-lo?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "%1 is the name of the offending script, %2 the name of the script author, "

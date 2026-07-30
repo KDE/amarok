@@ -35,14 +35,14 @@ msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "No s'ha pogut obrir el fitxer «%1»."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:367
+#: utilities/collectionscanner/CollectionScanner.cpp:368
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr "Manca l'argument per a l'opció %1"
 
 # skip-rule: t-sp_2p
-#: utilities/collectionscanner/CollectionScanner.cpp:401
+#: utilities/collectionscanner/CollectionScanner.cpp:402
 msgctxt "CollectionScanner::Scanner|"
 msgid ""
 "Amarok Collection Scanner\n"

@@ -34,14 +34,14 @@ msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "មិន​អាច​បើក​ឯកសារ​ \"%1\" ​។"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:367
+#: utilities/collectionscanner/CollectionScanner.cpp:368
 #, fuzzy, qt-format
 #| msgid "Missing argument for option %1"
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr "បាត់​អាគុយម៉ង់​សម្រាប់​ជម្រើស​ %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:401
+#: utilities/collectionscanner/CollectionScanner.cpp:402
 #, fuzzy
 #| msgid ""
 #| "Amarok Collection Scanner\n"

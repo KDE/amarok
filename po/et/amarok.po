@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2020-06-05 19:27+0300\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -2844,7 +2844,7 @@ msgid "Configure Plugins"
 msgstr "Pluginate seadistamine"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "Skriptid"
@@ -3714,12 +3714,18 @@ msgid "Invalid Archive"
 msgstr "Vigane arhiiv"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr "Vigane skriptifail"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr "Tõrge"
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3730,22 +3736,22 @@ msgstr ""
 "Olemasoleva skripti versioon: %2\n"
 "Valitud skripti versioon: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "Skript %1 paigaldati edukalt"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "Üldine"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "Sõnad"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Skriptitavad teenused"
@@ -4736,13 +4742,13 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "iPodi initsialiseerimine õnnestus."
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "iTunesi andmebaas kirjutati edukalt kogusse %1"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
@@ -4750,7 +4756,7 @@ msgstr ""
 "iTunesi andmebaasi kirjutamine kogusse %1 nurjus, ilma et oleks tõrkest "
 "teada antud"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -13265,11 +13271,6 @@ msgstr "Konsool"
 msgid "Output"
 msgstr "Silumisväljund"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr "Tõrge"
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
@@ -13310,35 +13311,35 @@ msgstr "&Vaade"
 msgid "This will stop this script! Continue?"
 msgstr "See peatab skripti töö! Kas jätkata?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Skriptide salvestamiskoha valimine"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Kas eemaldada skript kettalt?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove Script"
 msgstr "Skripti eemaldamine"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Eemalda"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Kas oled täiesti kindel?"
@@ -13376,7 +13377,7 @@ msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 "Skript %1 on hindamisega tegelnud juba üle 5 sekundi. Kas lõpetada selle töö?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "%1 is the name of the offending script, %2 the name of the script author, "

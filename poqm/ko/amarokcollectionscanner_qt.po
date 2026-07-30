@@ -31,13 +31,13 @@ msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "파일 \"%1\"을(를) 열 수 없습니다."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:367
+#: utilities/collectionscanner/CollectionScanner.cpp:368
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr "옵션 %1의 인자 없음"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:401
+#: utilities/collectionscanner/CollectionScanner.cpp:402
 msgctxt "CollectionScanner::Scanner|"
 msgid ""
 "Amarok Collection Scanner\n"

@@ -36,14 +36,14 @@ msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
 msgstr "Nisam mogao da otvorim datoteku \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:367
+#: utilities/collectionscanner/CollectionScanner.cpp:368
 #, fuzzy, qt-format
 #| msgid "Missing argument for option %1"
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
 msgstr "Nedostaje argument za opciju %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:401
+#: utilities/collectionscanner/CollectionScanner.cpp:402
 #, fuzzy
 #| msgid ""
 #| "Amarok Collection Scanner\n"

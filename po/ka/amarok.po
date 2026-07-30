@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2026-01-19 11:28+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -2854,7 +2854,7 @@ msgid "Configure Plugins"
 msgstr "დამატებების მორგება"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "სკრიპტები"
@@ -3723,12 +3723,18 @@ msgid "Invalid Archive"
 msgstr "არასწორი არქივი"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr "არასწორი სკრიპტის ფაილი"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr "შეცდომა"
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3739,22 +3745,22 @@ msgstr ""
 "არსებული სკრიპტის ვერსია: %2\n"
 "არჩეული სკრიპტის ვერსია: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "სკრიპტის %1 დაყენება წარმატებით დასრულდა"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "ზოგადი"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "ლირიკა"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "სკრიპტვადი სერვისი"
@@ -4737,19 +4743,19 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "ინიციალიზაცია წარმატებულია."
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "iTunes-ის მონაცემთა ბაზა წარმატებით ჩაიწერა %1-ში"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr "iTunes-ის მონაცემთა ბაზების ჩაწერა %1-ში ჩავარდა შეცდომის გარეშე"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -13232,11 +13238,6 @@ msgstr "კონსოლი"
 msgid "Output"
 msgstr "გამოტანა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr "შეცდომა"
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
@@ -13277,34 +13278,34 @@ msgstr "&ნახვა"
 msgid "This will stop this script! Continue?"
 msgstr "ეს გააჩერებს ამ სკრიპტს! გავაგრძელო?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "აირჩიეთ, სად მოხდება თქვენი სკრიპტების შენახვა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "წავშალო სკრიპტის ფაილი დისკიდან?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove Script"
 msgstr "სკრიპტის წაშლა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "წაშლა"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "არ წაშალო"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "დარწმუნებული ბრძანდებით?"
@@ -13337,7 +13338,7 @@ msgstr "შეწყვეტა"
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "სკრიპტის %1 შემოწმება უკვე 5 წამზე მეტია, მიმდინარეობს. შევწყვიტო?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "

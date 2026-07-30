@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4 Applications\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2022-09-27 18:12+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -2866,7 +2866,7 @@ msgid "Configure Plugins"
 msgstr "Konfigurasikan Plugin"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "Skrip"
@@ -3747,12 +3747,18 @@ msgid "Invalid Archive"
 msgstr "Arsip Tidak Absah"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr "File Skrip Tidak Absah"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr "Error"
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3763,22 +3769,22 @@ msgstr ""
 "Versi Skrip yang Sudah Ada: %2\n"
 "Versi Skrip yang Dipilih: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "Skrip %1 dengan sukses diinstal"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "Umum"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "Lirik"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "Layanan Tabel Skrip"
@@ -4769,19 +4775,19 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "Inisialisasi sukses."
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "Database iTunes dengan sukses ditulis ke %1"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr "Penulisan iTunes database ke %1 gagal disebabkan karena error indikasi"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -13324,11 +13330,6 @@ msgstr "Konsol"
 msgid "Output"
 msgstr "Output"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr "Error"
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
@@ -13369,35 +13370,35 @@ msgstr "&Tampilan"
 msgid "This will stop this script! Continue?"
 msgstr "Ini akan menghentikan skrip ini! Lanjutkan?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "Menentukan tempat menyimpan skripmu"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "Buang file skrip dari disk?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove Script"
 msgstr "Buang Skrip"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "Buang"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "Apakah kamu yakin?"
@@ -13434,7 +13435,7 @@ msgstr "Matikan"
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "Skrip %1 telah mengevaluasi lebih dari 5 detik dari sekarang, matikan?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "%1 is the name of the offending script, %2 the name of the script author, "

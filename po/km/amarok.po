@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -2835,7 +2835,7 @@ msgid "Configure Plugins"
 msgstr "កំណត់​រចនាសម្ព័ន្ធ​កម្មវិធី​ជំនួយ"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "ស្គ្រីប"
@@ -3690,12 +3690,18 @@ msgid "Invalid Archive"
 msgstr "អ៊ិនកូឌ័រ​មិន​ត្រឹមត្រូវ"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr ""
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3703,23 +3709,23 @@ msgid ""
 "Selected Script's Version: %3"
 msgstr ""
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, fuzzy, kde-format
 #| msgid "Successfully installed %1"
 msgid "The script %1 was successfully installed"
 msgstr "បាន​ដំឡើង %1 ដោយ​ជោគជ័យ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "​ទូទៅ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "Lyrics"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "សេវាកម្ម​ដែល​អាច​ជា​ស្គ្រីប"
@@ -4735,19 +4741,19 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "បាន​ជោគជ័យ​ក្នុង​ការចាប់ផ្ដើម ។​"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "បាន​សរសេរ​មូលដ្ឋាន​ទិន្នន័យ iTunes ដោយ​ជោគជ័យ​ទៅកាន់ %1"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr "ការ​សរសេរ​មូលដ្ឋាន​ទិន្នន័យ iTunes ទៅកាន់ %1 បាន​បរាជ័យ​ដោយ​មិន​បង្ហាញ​កំហុស"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -13203,11 +13209,6 @@ msgstr ""
 msgid "Output"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr ""
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
@@ -13254,37 +13255,37 @@ msgstr "ទិដ្ឋភាព"
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, fuzzy, kde-format
 #| msgid "Remove empty folders?"
 msgid "Remove script file from disk?"
 msgstr "យក​ថត​ទទេ​ចេញ​ឬ ?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "យក​ការ​ជាវ​ចេញ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, fuzzy, kde-format
 #| msgid "Remove"
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "យក​ចេញ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
@@ -13319,7 +13320,7 @@ msgstr ""
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr ""
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "

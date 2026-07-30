@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-15 00:42+0000\n"
+"POT-Creation-Date: 2026-07-30 00:43+0000\n"
 "PO-Revision-Date: 2025-12-06 17:11+0700\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -2757,7 +2757,7 @@ msgid "Configure Plugins"
 msgstr "ຕັ້ງຄ່າປັ໊ກອິນ"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:424
 #, kde-format
 msgid "Scripts"
 msgstr "ສະຄຣິບ"
@@ -3603,12 +3603,18 @@ msgid "Invalid Archive"
 msgstr "ໄຟລ໌ Archive ບໍ່ຖືກຕ້ອງ"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:169
-#: configdialog/dialogs/ScriptsConfig.cpp:188
+#: configdialog/dialogs/ScriptsConfig.cpp:193
 #, kde-format
 msgid "Invalid Script File"
 msgstr "ໄຟລ໌ສະຄຣິບບໍ່ຖືກຕ້ອງ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:195
+#: configdialog/dialogs/ScriptsConfig.cpp:177
+#: scripting/scriptconsole/ScriptConsole.cpp:79
+#, kde-format
+msgid "Error"
+msgstr "ຂໍ້ຜິດພາດ"
+
+#: configdialog/dialogs/ScriptsConfig.cpp:200
 #, kde-format
 msgid ""
 "Another script with the name %1 already exists\n"
@@ -3619,22 +3625,22 @@ msgstr ""
 "ເວີຊັນຂອງສະຄຣິບທີ່ມີຢູ່: %2\n"
 "ເວີຊັນຂອງສະຄຣິບທີ່ເລືອກ: %3"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:213
+#: configdialog/dialogs/ScriptsConfig.cpp:218
 #, kde-format
 msgid "The script %1 was successfully installed"
 msgstr "ຕິດຕັ້ງສະຄຣິບ %1 ສຳເລັດແລ້ວ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:225
+#: configdialog/dialogs/ScriptsConfig.cpp:230
 #, kde-format
 msgid "Generic"
 msgstr "ທົ່ວໄປ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:229 dialogs/TagDialog.cpp:518
+#: configdialog/dialogs/ScriptsConfig.cpp:234 dialogs/TagDialog.cpp:518
 #, kde-format
 msgid "Lyrics"
 msgstr "ເນື້ອເພງ"
 
-#: configdialog/dialogs/ScriptsConfig.cpp:233
+#: configdialog/dialogs/ScriptsConfig.cpp:238
 #, kde-format
 msgid "Scriptable Service"
 msgstr "ບໍລິການທີ່ຂຽນສະຄຣິບໄດ້"
@@ -4609,19 +4615,19 @@ msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr "ການເລີ່ມຕົ້ນລະບົບສຳເລັດ."
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:705
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:708
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr "ຂຽນຖານຂໍ້ມູນ iTunes ລົງໃນ %1 ສຳເລັດແລ້ວ"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:713
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:716
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr "ການຂຽນຖານຂໍ້ມູນ iTunes ລົງໃນ %1 ລົ້ມເຫຼວໂດຍບໍ່ມີການລະບຸຂໍ້ຜິດພາດ"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:717
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:720
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
@@ -12984,11 +12990,6 @@ msgstr "ຄອນໂຊນ"
 msgid "Output"
 msgstr "ຜົນທີ່ໄດ້"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
-#, kde-format
-msgid "Error"
-msgstr "ຂໍ້ຜິດພາດ"
-
 #: scripting/scriptconsole/ScriptConsole.cpp:102
 #, kde-format
 msgid "Execute Script"
@@ -13029,34 +13030,34 @@ msgstr "&ມຸມມອງ"
 msgid "This will stop this script! Continue?"
 msgstr "ສິ່ງນີ້ຈະຢຸດສະຄຣິບນີ້! ດຳເນີນການຕໍ່ບໍ່?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:268
+#: scripting/scriptconsole/ScriptConsole.cpp:270
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr "ເລືອກບ່ອນທີ່ຈະບັນທຶກສະຄຣິບຂອງທ່ານ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove script file from disk?"
 msgstr "ລຶບໄຟລ໌ສະຄຣິບອອກຈາກດິດບໍ່?"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgid "Remove Script"
 msgstr "ລຶບສະຄຣິບອອກ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:467
+#: scripting/scriptconsole/ScriptConsole.cpp:469
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Remove"
 msgstr "ລຶບອອກ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:468
+#: scripting/scriptconsole/ScriptConsole.cpp:470
 #, kde-format
 msgctxt "Confirm if script file should be removed"
 msgid "Don't remove"
 msgstr "ບໍ່ຕ້ອງລຶບ"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:498
+#: scripting/scriptconsole/ScriptConsole.cpp:500
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr "ທ່ານແນ່ໃຈແລ້ວບໍ່?"
@@ -13089,7 +13090,7 @@ msgstr "ຍຸດຕິ"
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
 msgstr "ສະຄຣິບ %1 ໄດ້ປະມວນຜົນມາເປັນເວລາຫຼາຍກວ່າ 5 ວິນາທີແລ້ວ, ຍຸດຕິບໍ່?"
 
-#: scripting/scriptmanager/ScriptItem.cpp:339
+#: scripting/scriptmanager/ScriptItem.cpp:340
 #, kde-format
 msgctxt ""
 "%1 is the name of the offending script, %2 the script authors and their "
