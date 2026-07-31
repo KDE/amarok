@@ -610,8 +610,8 @@ msgid ""
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
 "Wenn diese Einstellung aktiviert ist, werden beim Einordnen alle Zeichen "
-"ersetzt, die nicht mit VFAT-Dateisystemen kompatibel sind. Dazu gehören z. "
-"B. „:“, „*“ und „?“."
+"ersetzt, die nicht mit VFAT-Dateisystemen kompatibel sind. Dazu gehören "
+"z. B. „:“, „*“ und „?“."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:159
@@ -3289,7 +3289,7 @@ msgid ""
 "tool."
 msgstr ""
 "Das Stimmungsbarometer ermöglicht das visuelle Durchsuchen der Musik.\n"
-"Zur Nutzung dieser Funktion wird ein externes Werkzeug (z. B. „moodbar“) "
+"Zur Nutzung dieser Funktion wird ein externes Werkzeug (z. B. „moodbar“) "
 "benötigt."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
@@ -3446,7 +3446,7 @@ msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the audio file."
 msgstr ""
-"Die Wiedergabestatistiken (z. B. Punkte, letzte Wiedergabe oder\n"
+"Die Wiedergabestatistiken (z. B. Punkte, letzte Wiedergabe oder\n"
 "Wiedergabezähler) werden als Metadaten in die Audiodatei geschrieben."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBackStatistics)
@@ -11315,7 +11315,7 @@ msgstr "Benutzerdefiniert"
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
 msgstr ""
-"Entweder ein fester (absoluter) oder ein relativer Wert (z. B. 128 px oder "
+"Entweder ein fester (absoluter) oder ein relativer Wert (z. B. 128 px oder "
 "12 %)."
 
 #: playlist/layouts/LayoutEditDialog.cpp:104
@@ -15228,7 +15228,7 @@ msgid ""
 "location and have it download instantly to other locations."
 msgstr ""
 "Auto-Abgleich ist eine Funktion von MP3tunes, mit der Sie Ihre Musik "
-"automatisch zwischen Rechnern und Geräten verteilen können. Sie können z. B. "
+"automatisch zwischen Rechnern und Geräten verteilen können. Sie können z. B. "
 "Musik von einem Ort hochladen, die dann sofort an andere Orte übertragen "
 "wird."
 

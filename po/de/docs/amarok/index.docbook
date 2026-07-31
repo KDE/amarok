@@ -596,7 +596,7 @@
 ></listitem>
 </orderedlist>
 <para
->Zusätzlich kann bei Bedarf einige Musik auf ein tragbares Mediengerät (z. B. iPod) übertragen werden. Die nächsten Abschnitte beschreiben die hierfür notwendigen Schritte. </para>
+>Zusätzlich kann bei Bedarf einige Musik auf ein tragbares Mediengerät (z. B. iPod) übertragen werden. Die nächsten Abschnitte beschreiben die hierfür notwendigen Schritte. </para>
 </sect2>
 </sect1>
 <sect1 id="the-music-collection"
@@ -758,7 +758,7 @@
 <para
 >Im Kontextmenü oben, können Sie auch <guilabel
 >Metadaten bearbeiten</guilabel
-> auswählen. Benutzen Sie diese Aktion, wenn Sie die Metadaten für ein Stück bearbeiten möchten. Dies ist wichtig, wenn Sie Musik in das Format „.WAV“ auslesen und dabei einige Daten verloren gehen. Möchten Sie die Metadaten vieler Stücke in Ihrer Sammlung bearbeiten, sollte Sie speziell dafür entwickelte Software verwenden, wie zum Beispiel </para>
+> auswählen. Verwenden Sie diese Aktion, wenn Sie die Metadaten für ein Stück bearbeiten möchten. Dies ist wichtig, wenn Sie Musik in das Format „.WAV“ auslesen und dabei einige Daten verloren gehen. Möchten Sie die Metadaten vieler Stücke in Ihrer Sammlung bearbeiten, sollte Sie speziell dafür entwickelte Software verwenden, wie zum Beispiel </para>
 <itemizedlist>
 <listitem
 ><para
@@ -1195,7 +1195,7 @@
 > </inlinemediaobject
 > oben in den <guilabel
 >Medienquellen</guilabel
-> benutzen: </para>
+> verwenden: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1383,7 +1383,7 @@
 >Wiedergabeliste</guilabel
 > bereit. </para>
 <para
->Klicken Sie auf das runde Symbol an der linken Seite, um die Wiedergabe zu starten und klicken Sie wieder darauf, um die Wiedergabe anzuhalten. Auf der rechten Seite finden Sie die Steuerung von Lautstärke und zum Stummschalten, klicken Sie dazu mitten in das Symbol. Benutzen Sie das Mausrad, um die Lautstärke zu verändern oder ziehen Sie mit dem Mauszeiger auf dem äußeren Ring der Volumensteuerung. </para>
+>Klicken Sie auf das runde Symbol an der linken Seite, um die Wiedergabe zu starten und klicken Sie wieder darauf, um die Wiedergabe anzuhalten. Auf der rechten Seite finden Sie die Steuerung von Lautstärke und zum Stummschalten, klicken Sie dazu mitten in das Symbol. Verwenden Sie das Mausrad, um die Lautstärke zu verändern oder ziehen Sie mit dem Mauszeiger auf dem äußeren Ring der Volumensteuerung. </para>
 <para
 >Wenn die Wiedergabe eine Stücks oder Streams beginnt, wird <emphasis
 >Interpret / Album /Titel des Stücks</emphasis
@@ -1711,7 +1711,7 @@
 </screenshot>
 </para>
 <para
->In der Voreinstellung hat die gespeicherte Wiedergabeliste einen Namen aus dem Datum und der Zeit der Speicherung. Benutzen Sie das Kontextmenü, um die Wiedergabeliste umzubenennen. Mit dem Kontextmenü können Sie eine Wiedergabeliste zu Ihrer vorhandenen Wiedergabeliste hinzufügen oder sie ersetzen. </para>
+>In der Voreinstellung hat die gespeicherte Wiedergabeliste einen Namen aus dem Datum und der Zeit der Speicherung. Verwenden Sie das Kontextmenü, um die Wiedergabeliste umzubenennen. Mit dem Kontextmenü können Sie eine Wiedergabeliste zu Ihrer vorhandenen Wiedergabeliste hinzufügen oder sie ersetzen. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1916,7 +1916,7 @@
 >Sammlung</title
 > 
 <para
->Alle Klangdateien, die sich in der &amarok;-Datenbank befinden. Die Sammlung kann sich in Größe und Zusammenstellung der Musikstücke unterscheiden (abhängig von den angeschlossenen und eingehängten externen Geräten [z. B. Audio-CDs oder Mediengeräte mit Musik]). </para>
+>Alle Klangdateien, die sich in der &amarok;-Datenbank befinden. Die Sammlung kann sich in Größe und Zusammenstellung der Musikstücke unterscheiden (abhängig von den angeschlossenen und eingehängten externen Geräten [z. B. Audio-CDs oder Mediengeräte mit Musik]). </para>
 </sect2>
 <sect2 id="collection-browser"
 ><title
@@ -2181,7 +2181,7 @@
 >Werkzeugleiste</emphasis
 > wird das aktuell wiedergegebene Stück verwaltet. Sie können zwischen der Hauptwerkzeugleiste und der schmalen Werkzeugleiste mit dem Menü <guilabel
 >Ansicht</guilabel
-> in der Menüleiste. Die Menüleiste kann auch ausgeblendet werden, benutzen Sie <keycombo
+> in der Menüleiste. Die Menüleiste kann auch ausgeblendet werden, verwenden Sie <keycombo
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
@@ -2926,7 +2926,7 @@
 </screenshot>
 </para>
 <para
->Möchten Sie lieber nach einem Eintrag suchen oder filtern als zu navigieren, benutzen Sie das <emphasis
+>Möchten Sie lieber nach einem Eintrag suchen oder filtern als zu navigieren, verwenden Sie das <emphasis
 >Filterfeld</emphasis
 >, um den gewünschten Inhalt zu finden. Geben Sie eine Teil des Namens ein und das Ergebnis wird wie in diesem Beispiel angezeigt. </para>
 <para>
@@ -3076,7 +3076,7 @@
 > können Sie verschiedene Miniprogramme hinzufügen, die Informationen oder Medien zur aktuellen Musik bieten. Für die meisten dieser Miniprogramme ist eine Verbindung zum Internet nötig, damit Liedtexte, Informationen, Fotos und sogar Gitarren- oder Bassgriffe geholt werden können, abhängig von den ausgewählten Miniprogrammen. </para>
 <sect2 id="using-the-context-pane"
 ><title
->Kontext-Ansicht benutzen</title
+>Kontext-Ansicht verwenden</title
 > 
 <para>
 <screenshot>
@@ -3100,7 +3100,7 @@
 <para
 >Gezeigt wird die <emphasis
 >Kontext</emphasis
->-Ansicht, wenn kein Stück abgespielt wird. Ist dies ausgeblendet, benutzen Sie <menuchoice
+>-Ansicht, wenn kein Stück abgespielt wird. Ist dies ausgeblendet, verwenden Sie <menuchoice
 ><guimenu
 >Ansicht</guimenu
 ><guimenuitem
@@ -3153,7 +3153,7 @@
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
->, klicken Sie darauf, um es zu entfernen. Außerdem wird eine Liste aller vorhandenen Miniprogramme angezeigt. Um ein neues Miniprogramme zu installieren, klicken Sie darauf und es wird in der Kontext-Ansicht angezeigt und kann sofort benutzt werden. Um die Reihenfolge der Miniprogramme zu ändern, ziehen Sie sie in der Leiste an den gewünschten Platz. </para>
+>, klicken Sie darauf, um es zu entfernen. Außerdem wird eine Liste aller vorhandenen Miniprogramme angezeigt. Um ein neues Miniprogramme zu installieren, klicken Sie darauf und es wird in der Kontext-Ansicht angezeigt und kann sofort verwendet werden. Um die Reihenfolge der Miniprogramme zu ändern, ziehen Sie sie in der Leiste an den gewünschten Platz. </para>
 </sect3>
 </sect2>
 <sect2 id="applets"
@@ -3786,7 +3786,7 @@
 </sect2>
 <sect2 id="sorting-levels-and-bookmarking"
 ><title
->Ebenen sortieren und Lesezeichen benutzen</title
+>Ebenen sortieren und Lesezeichen verwenden</title
 > 
 <para>
 <screenshot>
@@ -3966,7 +3966,7 @@
     </entry>
     <entry>
     <para
->Speichen Sie Ihre Wiedergabeliste. Benutzen Sie das Kontextmenü zur Umbenennung, als Voreinstellung wird das Datum als Name benutzt. Klicken Sie mit der &LMBn;. um das Menü <emphasis
+>Speichen Sie Ihre Wiedergabeliste. Verwenden Sie das Kontextmenü zur Umbenennung, als Voreinstellung wird das Datum als Name verwendet. Klicken Sie mit der &LMBn;. um das Menü <emphasis
 >Wiedergabeliste speichern</emphasis
 > zu öffnen, speichern Sie Ihre Wiedergabeliste auf die Festplatte anstatt der Datenbank.</para>
     </entry>
@@ -4175,7 +4175,7 @@
 </screenshot>
 </para>
 <para
->Favoriten ist eine neue innovative Methode, um das nächste Stück zur Wiedergabe zu bestimmen, wenn der Zufallsmodus zur Wiedergabe benutzt wird. Das nächste wiedergegebene Stück wird abhängig davon, wie oft sie abgespielt wurden, von der benutzerdefinierten Bewertung oder ob sie kürzlich nicht abgespielt wurden. </para>
+>Favoriten ist eine neue innovative Methode, um das nächste Stück zur Wiedergabe zu bestimmen, wenn der Zufallsmodus zur Wiedergabe verwendet wird. Das nächste wiedergegebene Stück wird abhängig davon, wie oft sie abgespielt wurden, von der benutzerdefinierten Bewertung oder ob sie kürzlich nicht abgespielt wurden. </para>
 </sect4>
 </sect3>
 </sect2>
@@ -4788,7 +4788,7 @@
 >PulseAudio</guilabel
 > oder ein anderes Standard-Wiedergabegerät verwenden. Um ein funktionierendes Backend zu finden, drücken Sie den Knopf <guilabel
 >Test</guilabel
-> und wenden Sie das auf alle Arten der Ausgaben an. Es ist auch möglich, verschiedene Arten von Ausgaben mit verschiedenen Geräten zu benutzen. </para>
+> und wenden Sie das auf alle Arten der Ausgaben an. Es ist auch möglich, verschiedene Arten von Ausgaben mit verschiedenen Geräten zu verwenden. </para>
 </sect3>
 <sect3 id="speaker-setup-tab"
 ><title
@@ -5012,7 +5012,7 @@
     </entry>
     <entry>
     <para
->Aktivieren Sie diese Einstellung, um Systembenachrichtigungen zu benutzen, Dies kann abhängig von Ihren Arbeitsflächensystem und der verwendeten Distribution unterschiedlich sein. </para
+>Aktivieren Sie diese Einstellung, um Systembenachrichtigungen zu verwenden, Dies kann abhängig von Ihren Arbeitsflächensystem und der verwendeten Distribution unterschiedlich sein. </para
 ></entry>
   </row>
   </tbody>
@@ -5048,7 +5048,7 @@
 >MySQL</guilabel
 > verwendet. In den meisten Fällen gibt es keine Grund, eine externe Datenbank einzustellen, da dies keine zusätzliche Leistung bringt. Möchten Sie eine Datenbank gemeinsam mit anderen nutzen oder eine Datenbank auf einem entfernten Rechner verwenden, können Sie dafür eine externe <guilabel
 >MySQL</guilabel
->-Datenbank benutzen. </para>
+>-Datenbank verwenden. </para>
 <para
 >&amarok; erwartet, dass die externe Datenbank und der Datenbank-Benutzer bereits vorhanden sind. Der Datenbank-Benutzer muss vollen Zugriff auf die Datenbank haben. &amarok; muss nach der Änderung dieser Einstellung neu gestartet werden. </para>
 <para
@@ -5584,7 +5584,7 @@
 ></listitem>
 </itemizedlist>
 <para
->Ändern Sie die Ländereinstellung, wird Ihr Warenkorb ungültig. Ist Ihr Land nicht in der Liste enthalten, können Sie den MP§-Laden von Amazon nicht benutzen, das das von Amazon nicht unterstützt wird. </para>
+>Ändern Sie die Ländereinstellung, wird Ihr Warenkorb ungültig. Ist Ihr Land nicht in der Liste enthalten, können Sie den MP§-Laden von Amazon nicht verwenden, das das von Amazon nicht unterstützt wird. </para>
 </sect2>
 <sect2 id="mp3tunes-configuration"
 ><title
@@ -6264,7 +6264,7 @@
 <para
 >Dieser Prozess wird Erfassung der Sammlung genannt. </para>
 <para
->Es ist hilfreich, diesen Prozess zu verstehen, um &amarok; besser benutzen zu können. </para>
+>Es ist hilfreich, diesen Prozess zu verstehen, um &amarok; besser verwenden zu können. </para>
 <sect3 id="incremental-scan---update-collection"
 ><title
 >Inkrementelles Einlesen / Sammlung aktualisieren</title
@@ -6440,7 +6440,7 @@
 <para
 >Mit <emphasis
 >Sammlung durchsuchen</emphasis
-> können Sie komplexe Filter für die Suche nach bestimmten Stücken in Ihrer Sammlung festlegen. Benutzen Sie das Eingabefeld in den <emphasis
+> können Sie komplexe Filter für die Suche nach bestimmten Stücken in Ihrer Sammlung festlegen. Verwenden Sie das Eingabefeld in den <emphasis
 >Medienquellen</emphasis
 > oder klicken Sie auf den Knopf <inlinemediaobject
 > <imageobject
@@ -6481,7 +6481,7 @@
 >&gt;</quote
 > und <quote
 >&lt;</quote
-> können für allgemeinere Bedingungen benutzt werden. Es können mehrere durch Leerzeichen getrennte Bedingungen verwendet werden. Für Zeitbedingungen können Sie folgende Abkürzungen verwendet; d=Tag, w=Woche, m=month, y=Jahr. </para>
+> können für allgemeinere Bedingungen verwendet werden. Es können mehrere durch Leerzeichen getrennte Bedingungen verwendet werden. Für Zeitbedingungen können Sie folgende Abkürzungen verwendet; d=Tag, w=Woche, m=month, y=Jahr. </para>
 </sect3>
 <sect3 id="tags5"
 ><title
@@ -6602,7 +6602,7 @@
 >Operatoren</title
 > 
 <para
->Mit numerischen Stichwörtern können folgende Operatoren für eine Bedingung benutzt werden: </para>
+>Mit numerischen Stichwörtern können folgende Operatoren für eine Bedingung verwendet werden: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -6739,7 +6739,7 @@
 <para
 >Wählen Sie einen Ausdruck und kreuzen Sie <guilabel
 >Bedingung umkehren</guilabel
-> an, um auf diesen Ausdruck zutreffende Einträge aus der Suche auszuschließen. Benutzen Sie <guilabel
+> an, um auf diesen Ausdruck zutreffende Einträge aus der Suche auszuschließen. Verwenden Sie <guilabel
 >Und</guilabel
 > oder <guilabel
 >Oder</guilabel
@@ -6795,7 +6795,7 @@
 <para
 ><warning
 ><para
->Mit dieser Aktion können Sie Dateien an einen neuen Ort verschieben, daher brauchen Sie die nötigen Berechtigungen sowohl für die Quell als auch das Ziel, aber auch ausreichend Platz, normalerweise das doppelte der Größe der Datei, die Sie verschieben möchten. Sind Sie unsicher, verwenden Sie diese Aktion nicht.</para
+>Mit dieser Aktion können Sie Dateien an einen neuen Ort verschieben, daher benötigen Sie die nötigen Berechtigungen sowohl für die Quell als auch das Ziel, aber auch ausreichend Platz, normalerweise das doppelte der Größe der Datei, die Sie verschieben möchten. Sind Sie unsicher, verwenden Sie diese Aktion nicht.</para
 ></warning>
 </para>
 <para>
@@ -7089,7 +7089,7 @@
 ><guimenuitem
 >Lokale Musik</guimenuitem
 ></menuchoice
-> und mit dem Web-Dienst Last.fm abgeglichen werden, wenn Sie Last.fm benutzen. </para>
+> und mit dem Web-Dienst Last.fm abgeglichen werden, wenn Sie Last.fm verwenden. </para>
 <sect3 id="manual-syncing"
 ><title
 >Manueller Abgleich</title
@@ -7168,7 +7168,7 @@
     <para
 >Diese Stücke wurden nur in einer Sammlung gefunden. Sie können dies als <emphasis
 >Ansicht der Unterschiede</emphasis
-> benutzen. Das Ziehen und Ablegen von Stücken wird hier unterstützt.</para>
+> verwenden. Das Ziehen und Ablegen von Stücken wird hier unterstützt.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -7189,7 +7189,7 @@
 >Abgleich mit Last.fm</title
 > 
 <para
->Wenn Sie das Last.fm-Modul aktiviert und richtig mit Ihrem Last.fm-Konto eingerichtet haben, können Sie wählen, ob Sie auch Ihre &amarok; Wiedergabezahlen, Bewertungen und Stichwörter mit Ihrer Last.fm-Bibliothek abgleichen möchten. Der Abgleich dauert einige Zeit, aber Sie können &amarok; während dessen weiter benutzen. Bitte beachten Sie, dass der unbeaufsichtigte Abgleich, der später noch erklärt wird, mit Last.fm nicht möglich ist und der Abgleich von Last.fm zu &amarok; manuell eingeleitet werden muss. </para>
+>Wenn Sie das Last.fm-Modul aktiviert und richtig mit Ihrem Last.fm-Konto eingerichtet haben, können Sie wählen, ob Sie auch Ihre &amarok; Wiedergabezahlen, Bewertungen und Stichwörter mit Ihrer Last.fm-Bibliothek abgleichen möchten. Der Abgleich dauert einige Zeit, aber Sie können &amarok; während dessen weiter verwenden. Bitte beachten Sie, dass der unbeaufsichtigte Abgleich, der später noch erklärt wird, mit Last.fm nicht möglich ist und der Abgleich von Last.fm zu &amarok; manuell eingeleitet werden muss. </para>
 <sect4 id="spelling-auto-correction"
 ><title
 >Automatische Rechtschreibkorrektur</title
@@ -7277,7 +7277,7 @@
 >Sammlungen auf anderen Rechnern</title
 > 
 <para
->Oft ist es sehr nützlich, wenn Sie Ihre Mediendateien im Netzwerk freigeben, besonders wenn Sie sie auf verschiedenen Rechnern benutzen. Dies ist auf mehrere Arten möglich: </para>
+>Oft ist es sehr nützlich, wenn Sie Ihre Mediendateien im Netzwerk freigeben, besonders wenn Sie sie auf verschiedenen Rechnern verwenden. Dies ist auf mehrere Arten möglich: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -7419,7 +7419,7 @@
 <para
 >DAAP ist eine Protokoll, um Medien über ein Netzwerk freizugeben, Es wurde zuerst vom Programm <guilabel
 >iTunes</guilabel
-> benutzt und ist heute weit verbreitet. Derzeit funktioniert das DAAP-Modul nicht mit einem aktuellen iTunes, aber der Firefly-Medienserver funktioniert. </para>
+> verwendet und ist heute weit verbreitet. Derzeit funktioniert das DAAP-Modul nicht mit einem aktuellen iTunes, aber der Firefly-Medienserver funktioniert. </para>
 </sect3>
 <sect3 id="client"
 ><title
@@ -7473,7 +7473,7 @@
 >Client</title
 > 
 <para
->Sie müssen eine Freigabe einhängen, um sie mit &amarok; benutzen zu können. Dazu installieren Sie das Paket <emphasis
+>Sie müssen eine Freigabe einhängen, um sie mit &amarok; verwenden zu können. Dazu installieren Sie das Paket <emphasis
 >smbfs</emphasis
 > und geben folgenden Befehl ein: </para>
 <para
@@ -7557,7 +7557,7 @@
 >DLNA</ulink
 > vermarktet. </para>
 <para
->&amarok; hat einen eingebauten Client zur Freigabe von UPnP-Medien, so dass Sie freigegebene Stücke im Neuwerk wiedergeben können. Zur Aktivierung benutzen Sie <menuchoice
+>&amarok; hat einen eingebauten Client zur Freigabe von UPnP-Medien, so dass Sie freigegebene Stücke im Neuwerk wiedergeben können. Zur Aktivierung verwenden Sie <menuchoice
 ><guimenu
 >Einstellungen</guimenu
 ><guisubmenu
@@ -7792,7 +7792,7 @@
 >/usr/sbin/mysqld --defaults-file=`pwd`/my.cnf --default-storage-engine=MyISAM --datadir=`pwd`/mysqle --socket=`pwd`/sock --skip-grant-tables</userinput>
 </para>
 <para
->Die Option „skip-grant-tables“ bedeutet, dass Sie ein beliebiges Passwort oder Benutzername zur Verbindung mit der Datenbank verwenden können. „localhost“ funktioniert nicht, der MySQL-Klient versucht einen &UNIX;-Socket zu benutzen. Mit „127.0.0.1“ als Rechner funktioniert es. Auf manchen Systemen wird der Zugriff durch AppArmor oder SELinux eingeschränkt. Dies kann temporär deaktiviert werden mit </para>
+>Die Option „skip-grant-tables“ bedeutet, dass Sie ein beliebiges Passwort oder Benutzername zur Verbindung mit der Datenbank verwenden können. „localhost“ funktioniert nicht, der MySQL-Klient versucht einen &UNIX;-Socket zu verwenden. Mit „127.0.0.1“ als Rechner funktioniert es. Auf manchen Systemen wird der Zugriff durch AppArmor oder SELinux eingeschränkt. Dies kann temporär deaktiviert werden mit </para>
 <para
 ><userinput
 >sudo /etc/init.d/apparmor stop</userinput>
@@ -7829,7 +7829,7 @@
 >Umgang mit Mediengeräten</title
 > 
 <para
->Benutzen Sie &amarok;, um Musik von Geräten wie MTP-Geräten, iPods, und allgemeinen USB-Geräten wiederzugeben. </para>
+>Verwenden Sie &amarok;, um Musik von Geräten wie MTP-Geräten, iPods, und allgemeinen USB-Geräten wiederzugeben. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8150,7 +8150,7 @@
 <para
 >Mit der <guilabel
 >Cover-Verwaltung</guilabel
-> können Sie die Cover durchsehen. Wählen Sie in der Liste auf der linken Seite ein Album aus oder benutzen Sie das Suchfeld, um bestimmte Alben zu finden. In der Statusleiste wird die Anzahl der Alben und der fehlenden Cover angezeigt. Oben im Dialog können Sie auswählen, ob Alben mit oder ohne Cover oder alle Alben angezeigt werden. Klicken Sie mit der &RMBn; auf ein Cover-Bild und wählen Sie dann <guilabel
+> können Sie die Cover durchsehen. Wählen Sie in der Liste auf der linken Seite ein Album aus oder verwenden Sie das Suchfeld, um bestimmte Alben zu finden. In der Statusleiste wird die Anzahl der Alben und der fehlenden Cover angezeigt. Oben im Dialog können Sie auswählen, ob Alben mit oder ohne Cover oder alle Alben angezeigt werden. Klicken Sie mit der &RMBn; auf ein Cover-Bild und wählen Sie dann <guilabel
 >Cover anzeigen</guilabel
 >, um das Bild in Originalgröße zu betrachten. </para>
 </sect2>
@@ -8341,7 +8341,7 @@
     </entry>
     <entry>
     <para
->Das Genre des Stücks. Das kann auch ein benutzerdefiniertes Genre sein, aber normalerweise werden die vordefinierten Genres benutzt.</para>
+>Das Genre des Stücks. Das kann auch ein benutzerdefiniertes Genre sein, aber normalerweise werden die vordefinierten Genres verwendet.</para>
     </entry>
   </row>
   <row>
@@ -8991,7 +8991,7 @@
 <para
 ><emphasis
 >Gespeicherte Wiedergabelisten</emphasis
-> sind die traditionelle Art von Wiedergabelisten. Sie funktionieren in &amarok; wie die aktuelle Wiedergabeliste und können in der &amarok;-Datenbank oder im Dateisystem gespeichert werden. Sie können diese Art der Wiedergabeliste zum Beispiel für Ereignisse benutzen, um bestimmte Stücke abzuspielen. </para>
+> sind die traditionelle Art von Wiedergabelisten. Sie funktionieren in &amarok; wie die aktuelle Wiedergabeliste und können in der &amarok;-Datenbank oder im Dateisystem gespeichert werden. Sie können diese Art der Wiedergabeliste zum Beispiel für Ereignisse verwenden, um bestimmte Stücke abzuspielen. </para>
 <para
 >Das Erstellen einer gespeicherten Wiedergabeliste mit festgelegten Stücken und der Reihenfolge der Wiedergabe ist einfach. Für den täglichen Gebrauch ist es manchmal schneller, <link linkend="dynamic-playlists"
 >dynamische Wiedergabelisten</link
@@ -9419,7 +9419,7 @@
 >Warteschlange</emphasis
 > vornehmen, können Sie den <guilabel
 >Warteschlangen-Editor</guilabel
-> benutzen. Starten Sie den <guilabel
+> verwenden. Starten Sie den <guilabel
 >Warteschlangen-Editor</guilabel
 > im Menü mit <menuchoice
 ><guimenu
@@ -9612,7 +9612,7 @@
 > </inlinemediaobject
 > erstellen. </para>
 <para
->Um den Namen einer Wiedergabeliste zu ändern, benutzen Sie entweder den Knopf <inlinemediaobject
+>Um den Namen einer Wiedergabeliste zu ändern, verwenden Sie entweder den Knopf <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -9683,7 +9683,7 @@
 ></term>
     <listitem>
     <para
->Dieser Gruppen-Gewichtung passt Stücke aus den Untervorgaben im Verhältnis an. Das Bearbeitungsfenster für diese Vorgabe hat Schieberegler für jede Untervorgabe, um die Aufteilung anzupassen. Wenn z. B. die Schieberegler für die Aufteilung von zwei Untervorgaben gleich eingestellt sind, passt die Hälfte der Wiedergabeliste zu einer Vorgabe und die andere Hälfte zur anderen.</para>
+>Dieser Gruppen-Gewichtung passt Stücke aus den Untervorgaben im Verhältnis an. Das Bearbeitungsfenster für diese Vorgabe hat Schieberegler für jede Untervorgabe, um die Aufteilung anzupassen. Wenn z. B. die Schieberegler für die Aufteilung von zwei Untervorgaben gleich eingestellt sind, passt die Hälfte der Wiedergabeliste zu einer Vorgabe und die andere Hälfte zur anderen.</para>
     <para
 >Hinweis: Die dynamische Wiedergabeliste arbeitet intern mit mehr Titeln, als Sie sehen können, so dass nach dem Klicken auf <quote
 >Neu füllen</quote
@@ -9783,7 +9783,7 @@
 </sect2>
 <sect2 id="a-dynamic-playlist-in-use"
 ><title
->Dynamische Wiedergabelisten benutzen</title
+>Dynamische Wiedergabelisten verwenden</title
 > 
 <para>
 <screenshot>
@@ -9803,7 +9803,7 @@
 </sect2>
 <sect2 id="using-your-dynamic-playlist"
 ><title
->Dynamische Wiedergabelisten benutzen</title
+>Dynamische Wiedergabelisten verwenden</title
 > 
 <para
 >Um die erstellte dynamische Wiedergabeliste zu aktivieren, kreuzen Sie das Feld <guilabel
@@ -9830,7 +9830,7 @@
 </sect2>
 <sect2 id="a-dynamic-playlist-in-use13"
 ><title
->Dynamische Wiedergabelisten benutzen</title
+>Dynamische Wiedergabelisten verwenden</title
 > 
 <para>
 <screenshot>
@@ -10264,7 +10264,7 @@
 >Stimmungsbarometer</emphasis
 > zeigt die <quote
 >Stimmung</quote
-> eines Stücks an, die Sie benutzen können, um anzuzeigen, wenn etwas interessantes im Stück passiert. </para>
+> eines Stücks an, die Sie verwenden können, um anzuzeigen, wenn etwas interessantes im Stück passiert. </para>
 <para
 >Damit &amarok; Stimmungsbarometer für Ihre Musik anzeigen kann, müssen Sie das Programm <guilabel
 >Moodbar</guilabel
@@ -10278,7 +10278,7 @@
 >GStreamer</guilabel
 > und verschiedene Module abhängig von den von Ihnen benutzten Dateiarten, siehe <link linkend="supported-filetypes"
 >unterstützte Dateiarten</link
->. Sie brauchen das Paket phonon-backend-gstreamer <emphasis
+>. Sie benötigen das Paket phonon-backend-gstreamer <emphasis
 >nicht </emphasis
 > für das Generieren von mood-Dateien. </para>
 <para
@@ -10357,7 +10357,7 @@
 <para
 >Zurzeit <emphasis
 >müssen</emphasis
-> mood-Dateien manuell generiert werden, &amarok; kann das nicht. Um diese Dateien für die gesamte Sammlung zu generieren, benutzen Sie das <link linkend="moodbar-file-generation-script"
+> mood-Dateien manuell generiert werden, &amarok; kann das nicht. Um diese Dateien für die gesamte Sammlung zu generieren, verwenden Sie das <link linkend="moodbar-file-generation-script"
 >Skript zum Generieren von Moodbar-Dateien</link
 >. </para>
 <para
@@ -10464,7 +10464,7 @@
 ></note>
 </para>
 <para
->Benutzen Sie RPM-Pakete, dann können Sie ein RPM-Paket mit rpmbuild erstellen </para>
+>Verwenden Sie RPM-Pakete, dann können Sie ein RPM-Paket mit rpmbuild erstellen </para>
 <para
 ><ulink url="http://cvs.pld-linux.org/cgi-bin/cvsweb/SPECS/gstreamer-plugins-moodbar.spec"
 >gstreamer-plugins-moodbar.spec</ulink
@@ -10696,7 +10696,7 @@
 ></listitem>
 <listitem
 ><para
->Wenn Sie das Modul „ffmpeg“ zum Dekodieren von MP3-Dateien verwenden, erhalten Sie möglicherweise merkwürdige Busfehler. Dann sollten Sie das Modul „ffmpeg“ nicht verwenden, da es sehr fehlerhaft ist &mdash; benutzen Sie statt dessen „mad“.</para
+>Wenn Sie das Modul „ffmpeg“ zum Dekodieren von MP3-Dateien verwenden, erhalten Sie möglicherweise merkwürdige Busfehler. Dann sollten Sie das Modul „ffmpeg“ nicht verwenden, da es sehr fehlerhaft ist &mdash; verwenden Sie statt dessen „mad“.</para
 ></listitem>
 <listitem
 ><para
@@ -10706,7 +10706,7 @@
 >Could not create element of type fftwspectrum, please install it.</screen
 > ausgibt, bedeutet das normalerweise, dass Sie entweder nicht die erforderlichen Module (siehe <link linkend="supported-filetypes"
 >Modulliste</link
->) oder dass das Paket Moodbar nicht im gleichen Pfad wie GStreamer installiert ist. D. h. libmoodbar.so und libgstdecodebin.so befinden sich nicht im selben Ordner. Bitte lesen Sie die Anweisungen in der Datei INSTALL, wie das Paket moodbar richtig konfiguriert wird. Alternativ können Sie auch die Umgebungsvariable <filename
+>) oder dass das Paket Moodbar nicht im gleichen Pfad wie GStreamer installiert ist. d. h. libmoodbar.so und libgstdecodebin.so befinden sich nicht im selben Ordner. Bitte lesen Sie die Anweisungen in der Datei INSTALL, wie das Paket moodbar richtig konfiguriert wird. Alternativ können Sie auch die Umgebungsvariable <filename
 >GST_PLUGIN_PATH</filename
 > anpassen.</para
 ></listitem>
@@ -10722,7 +10722,7 @@
 ></listitem>
 <listitem
 ><para
->Haben Sie verschiedene Versionen von GStreamer installiert, überprüfen Sie, das alle erforderlichen Module in Version 1.0.* installiert sein, verschiedene Versionen können dicht die Module anderer Versionen benutzen.</para
+>Haben Sie verschiedene Versionen von GStreamer installiert, überprüfen Sie, das alle erforderlichen Module in Version 1.0.* installiert sein, verschiedene Versionen können dicht die Module anderer Versionen verwenden.</para
 ></listitem>
 </itemizedlist>
 </sect2>
@@ -10771,7 +10771,7 @@
     </entry>
     <entry>
     <para
->Mit dem Modul ffmpeg gibt es Probleme; Benutzen Sie es <emphasis
+>Mit dem Modul ffmpeg gibt es Probleme; Verwenden Sie es <emphasis
 >nicht</emphasis
 > für mp3-Dateien</para>
     </entry>
@@ -10867,7 +10867,7 @@
 >Einstellungsmenü</link
 >. </para>
 <para
->Dafür benutzt &amarok; die in der Audiodatei eingebetteten Metadaten: </para>
+>Dafür verwendet &amarok; die in der Audiodatei eingebetteten Metadaten: </para>
 <orderedlist>
 <listitem
 ><para
@@ -10999,7 +10999,7 @@
 >Amarok unter anderen Betriebssystemen</title
 > 
 <para
->&amarok; wurde für die KDE-Arbeitsumgebung entwickelt, kann aber in anderen Plattformen verwendet werden. Wenn dazu auch einiger Aufwand nötig ist, kann Amarok mit diesen Einstellungen benutzt werden: </para>
+>&amarok; wurde für die KDE-Arbeitsumgebung entwickelt, kann aber in anderen Plattformen verwendet werden. Wenn dazu auch einiger Aufwand nötig ist, kann Amarok mit diesen Einstellungen verwendet werden: </para>
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -11088,7 +11088,7 @@
 >Amarok unter Nicht-KDE-Arbeitsumgebungen</title
 > 
 <para
->Obwohl &amarok; eines der bekanntesten KDE-Anwendungen ist, kann sie auch unter anderen Arbeitsumgebungen benutzt werden. </para>
+>Obwohl &amarok; eines der bekanntesten KDE-Anwendungen ist, kann sie auch unter anderen Arbeitsumgebungen verwendet werden. </para>
 <para
 >In diesem Abschnitt wird gezeigt, wie &amarok; unter &Linux;-Arbeitsumgebungen ohne KDE verwendet werden kann. Hier einige Beispiele, möglicherweise gibt es mehr. </para>
 <sect3 id="gnome"
@@ -11202,7 +11202,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 <para
->Braucht &amarok; beim Starten sehr lange, fügen Sie <userinput
+>Benötigt &amarok; beim Starten sehr lange, fügen Sie <userinput
 >exec kdeinit</userinput
 > in die Datei <filename
 >~/.fluxbox/startup</filename
@@ -11382,13 +11382,13 @@ ftpProxy=http://username:password@proxyserver:port/
 ></warning>
 </para>
 <para
->&amarok; kann unter &MacOS; X installiert und benutzt werden. </para>
+>&amarok; kann unter &MacOS; X installiert und verwendet werden. </para>
 <sect3 id="installation-using-macports"
 ><title
 >Installation mit MacPorts</title
 > 
 <para
->Um &amarok;  auf &MacOS; X zu installieren, brauchen Sie zuerst die <ulink url="http://www.macports.org/install.php"
+>Um &amarok;  auf &MacOS; X zu installieren, benötigen Sie zuerst die <ulink url="http://www.macports.org/install.php"
 >MacPorts</ulink
 >. Haben Sie MacPorts installiert, müssen Sie folgenden Befehl in einem Terminal eingeben: </para>
 <para
@@ -11585,7 +11585,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Stichwörter werden nicht geschrieben</title
 > 
 <para
->Wenn &amarok; Änderungen an Stichwörtern nicht speichert, liegt vielleicht ein Problem mit den Berechtigungen vor. Überprüfen Sie, dass Ihr Benutzer Schreibrechte an den Ordnern mit Ihrer Musik hat, Benutzen Sie zum Beispiel <userinput
+>Wenn &amarok; Änderungen an Stichwörtern nicht speichert, liegt vielleicht ein Problem mit den Berechtigungen vor. Überprüfen Sie, dass Ihr Benutzer Schreibrechte an den Ordnern mit Ihrer Musik hat, Verwenden Sie zum Beispiel <userinput
 >chown -R youruser Music/</userinput
 >, um den Benutzer als Eigentümer zu setzen oder <userinput
 >chmod -R +w Music/</userinput
@@ -11636,7 +11636,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 <para
->Dies bedeutet häufig, dass eine identische Datei mehrfach in Ihrer Sammlung an verschiedenen Orten auftaucht. Sie können den Datei-Browser von &amarok; benutzen, um die Dateien einzeln zu überprüfen. Die übliche Aktion ist es, eine der doppelten Dateien zu löschen. Sind Sie sicher, dass die Stücke keine Duplikate sind, dann gibt es mehrere Gründe, warum Sie in &amarok; als Duplikate angesehen werden: </para>
+>Dies bedeutet häufig, dass eine identische Datei mehrfach in Ihrer Sammlung an verschiedenen Orten auftaucht. Sie können den Datei-Browser von &amarok; verwenden, um die Dateien einzeln zu überprüfen. Die übliche Aktion ist es, eine der doppelten Dateien zu löschen. Sind Sie sicher, dass die Stücke keine Duplikate sind, dann gibt es mehrere Gründe, warum Sie in &amarok; als Duplikate angesehen werden: </para>
 <orderedlist>
 <listitem
 ><para
@@ -11741,7 +11741,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Überprüfen Sie auch, ob die Software der Backends die Dateien korrekt wiedergeben kann. Falls nicht, ist es ein Problem dieser Software und in deren Dokumentation finden Sie möglicherweise weitere Informationen. Können GStreamer oder VLC die gleiche Datei wiedergeben? funktioniert das in <ulink url="help:/dragonplayer"
 >Dragon</ulink
->, der gleichfalls Phonon benutzt? </para>
+>, der gleichfalls Phonon verwendet? </para>
 <para
 >Dies scheint ein Problem in PulseAudio zu sein. Wenn Sie ein Fehlerprotokoll an die PulseAudio-Entwickler schicken möchten, gehen Sie auf diese <ulink url="https://wiki.ubuntu.com/PulseAudio/Log"
 >Webseite</ulink
@@ -11908,7 +11908,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect3 id="can-i-use-amarok-without-kde"
 ><title
->Kann ich Amarok ohne KDE benutzen?</title
+>Kann ich Amarok ohne KDE verwenden?</title
 > 
 <para
 >Für &amarok; müssen einige Bestandteile von KDE installiert sein, es läuft aber auch problemlos unter Gnome und anderen Arbeitsflächenumgebungen einschließlich Windows und OS X. Damit &amarok; ausgeführt werden kann, müssen die Pakete kdelibs und kdebase-runtime installiert sein. </para>
@@ -11921,10 +11921,10 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="why-does-amarok-use-kdelibs"
 ><title
->Warum benutzt Amarok KDElibs?</title
+>Warum verwendet Amarok KDElibs?</title
 > 
 <para
->Wir arbeiten engagiert an der Unterstützung von &amarok; auf allen Plattformen. KDElibs und Qt werden, verwendet, weil sie eine exzellente Entwicklungsumgebung bieten. Neben &Linux; und BSD funktioniert &amarok; auch auf Windows und MacOS. Es gibt dafür Installationsprogramme, aber leider hat das &amarok;-Team keine Ressourcen, um eine vollständige Unterstützung für diese Betriebssysteme bereit zu stellen. Fast alle &amarok;-Entwickler benutzen freie Betriebssysteme, die haben für und Priorität. Windows- und OS X-Entwickler sollten u mithelfen, die Unterstützung von &amarok; auf diesen Plattformen verbessern. </para>
+>Wir arbeiten engagiert an der Unterstützung von &amarok; auf allen Plattformen. KDElibs und Qt werden, verwendet, weil sie eine exzellente Entwicklungsumgebung bieten. Neben &Linux; und BSD funktioniert &amarok; auch auf Windows und MacOS. Es gibt dafür Installationsprogramme, aber leider hat das &amarok;-Team keine Ressourcen, um eine vollständige Unterstützung für diese Betriebssysteme bereit zu stellen. Fast alle &amarok;-Entwickler verwenden freie Betriebssysteme, die haben für und Priorität. Windows- und OS X-Entwickler sollten u mithelfen, die Unterstützung von &amarok; auf diesen Plattformen verbessern. </para>
 </sect3>
 </sect2>
 <sect2 id="general-usage"
@@ -12107,7 +12107,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >hier</link
 >. </para>
 <para
->Zurzeit werden sowohl die Backends GStreamer und VLC empfohlen, da beide aktiv weiterentwickelt werden. Möchten Sie Streams abspielen, sollten Sie nur das Backend VLC benutzen, da das Backend GStreamer dafür einige Nachteile hat. Benutzen Sie keine anderen Backends, da sie veraltet sind. </para>
+>Zurzeit werden sowohl die Backends GStreamer und VLC empfohlen, da beide aktiv weiterentwickelt werden. Möchten Sie Streams abspielen, sollten Sie nur das Backend VLC verwenden, da das Backend GStreamer dafür einige Nachteile hat. Verwenden Sie keine anderen Backends, da sie veraltet sind. </para>
 <para
 >Wenn Sie das Phonon-Backend GStreamer verwenden, überprüfen Sie, ob Sie nur Module aus der gleichen GStreamer-Version verwenden, sonst könnte der Sound beeinträchtigt sein. </para>
 </sect3>
@@ -12182,7 +12182,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >avconv</filename
 > anstelle von <filename
 >ffmpeg</filename
-> mit den gleichen Optionen benutzen, dabei sind: </para>
+> mit den gleichen Optionen verwenden, dabei sind: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -12194,7 +12194,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 ><emphasis
 >-acodec copy</emphasis
-> wird benutzt, um den Audio-Stream nicht wieder zu kodieren, sondern nur zu kopieren. Dies vermeidet einen Qualitätsverlust. Sie können aber auch in ein anderes Format kodieren, falls gewünscht, und Sie müssen in diesem Fall keinen m4a-Container benutzen.</para
+> wird verwendet, um den Audio-Stream nicht wieder zu kodieren, sondern nur zu kopieren. Dies vermeidet einen Qualitätsverlust. Sie können aber auch in ein anderes Format kodieren, falls gewünscht, und Sie müssen in diesem Fall keinen m4a-Container verwenden.</para
 ></listitem>
 <listitem
 ><para
@@ -12214,7 +12214,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"
 ><title
->Ich habe eine zweite Soundkarte und benutze ALSA. Wie kann ich mit Amarok diese Karte anstelle der Standardkarte benutzen?</title
+>Ich habe eine zweite Soundkarte und benutze ALSA. Wie kann ich mit Amarok diese Karte anstelle der Standardkarte verwenden?</title
 > 
 <para
 >Stellen Sie dies im Systemeinstellungs-Modul Phonon ein, das Sie mit  <menuchoice
@@ -12234,7 +12234,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Wo finde ich den Equalizer?</title
 > 
 <para
->Der Equalizer ist nur verfügbar, wenn Sie phonon-backend-gstreamer benutzen. Den Equalizer finden Sie im Menü <guilabel
+>Der Equalizer ist nur verfügbar, wenn Sie phonon-backend-gstreamer verwenden. Den Equalizer finden Sie im Menü <guilabel
 >Extras</guilabel
 >. </para>
 </sect3>
@@ -12312,7 +12312,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Ordner mit Mediendatei fehlen in der Sammlung</title
 > 
 <para
->Sofern der überwiegende Teil der Musik mit Ausnahme der Musik in ein paar bestimmten Ordnern von &amarok; erkannt wird sollte die Eingabeaufforderung (z. B. Konsole) geöffnet und dort folgender Befehl ausgeführt werden: </para>
+>Sofern der überwiegende Teil der Musik mit Ausnahme der Musik in ein paar bestimmten Ordnern von &amarok; erkannt wird sollte die Eingabeaufforderung (z. B. Konsole) geöffnet und dort folgender Befehl ausgeführt werden: </para>
 <para
 ><userinput
 >touch <replaceable
@@ -12355,7 +12355,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Lokale Sammlung</guilabel
 > in den <guilabel
 >Medienquellen</guilabel
-> durchsucht und benutzt werden. </para>
+> durchsucht und verwendet werden. </para>
 <para
 >Sie können Ihre Stücke, Alben und Interpreten aus der lokalen Sammlung übertragen, indem im Kontextmenü <guilabel
 >Zur Sammlung kopieren</guilabel
@@ -12371,7 +12371,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-two-will-my-tags-score-are-ratings-be-lost"
 ><title
->Kann ich die alte Amarok-Sammlung in Amarok 2 weiter benutzen? Gehen meine Stichwörter und Bewertungen verloren?</title
+>Kann ich die alte Amarok-Sammlung in Amarok 2 weiter verwenden? Gehen meine Stichwörter und Bewertungen verloren?</title
 > 
 <para
 >Es gibt ein Datenbankimportmodul. Sie behalten Ihre Bewertungen und Statistiken vollständig, Weitere Informationen in diesem <link linkend="collection"
@@ -12571,7 +12571,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="amarok-takes-a-lot-of-time-to-start"
 ><title
->&amarok; braucht lange zum Starten</title
+>&amarok; benötigt lange zum Starten</title
 > 
 <para
 >Wenn dies passiert, sollten Sie überprüfen, welche Skripte Sie installiert haben und welche Internet-Dienste ausgeführt werden, da einige von Ihnen den Start verlangsamen können. Wenn Sie außerdem viele Streams in der Wiedergabeliste haben, kann das Öffnen von &amarok;ein wenig länger dauern. Das passiert ebenfalls, wenn Sie viele Stücke (mehr als 300) in der Wiedergabeliste haben. </para>
@@ -13014,7 +13014,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Das Menü Ansicht</title
 > 
 <para
->In diesem Menü finden Sie Aktionen zur Anpassung der Anordnung von &amarok; und ein Ankreuzfeld, um die Einstellung zu sperren. Benutzen Sie dies, um unbeabsichtigte Änderungen der Fensteranordnung von &amarok; zu verhindern. </para>
+>In diesem Menü finden Sie Aktionen zur Anpassung der Anordnung von &amarok; und ein Ankreuzfeld, um die Einstellung zu sperren. Verwenden Sie dies, um unbeabsichtigte Änderungen der Fensteranordnung von &amarok; zu verhindern. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -14184,7 +14184,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Öffnet einen Dialog, um einen kurzen Kommentar an die Entwickler von &amarok; zu senden. Bitte benutzen Sie diesen Dialog <emphasis
+>Öffnet einen Dialog, um einen kurzen Kommentar an die Entwickler von &amarok; zu senden. Bitte verwenden Sie diesen Dialog <emphasis
 >nicht</emphasis
 > für Fehlerberichte.</para>
     </entry>
