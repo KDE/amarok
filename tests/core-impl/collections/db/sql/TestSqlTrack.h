@@ -17,59 +17,15 @@
 #ifndef TESTSQLTRACK_H
 #define TESTSQLTRACK_H
 
-#include <QSharedPointer>
-#include <QtTest>
+#include "../TestSqlTrackBase.h"
 
-#include <QTemporaryDir>
-
-class MySqlEmbeddedStorage;
-class SqlRegistry;
-
-namespace Collections {
-    class SqlCollection;
-}
-namespace Meta {
-    class SqlTrack;
-}
-
-class TestSqlTrack : public QObject
+class TestSqlTrack : public TestSqlTrackBase
 {
     Q_OBJECT
 
-public:
-    TestSqlTrack();
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void init();
-    void cleanup();
-
-    void testGetTrack();
-
-    void testSetAllValuesSingleNotExisting();
-    void testSetAllValuesSingleExisting();
-    void testSetAllValuesBatch();
-
-    void testUnsetValues();
-
-    void testFinishedPlaying();
-
-    void testAlbumRemainsCompilationAfterChangingAlbumName();
-    void testAlbumRemaingsNonCompilationAfterChangingAlbumName();
-    void testRemoveLabelFromTrack();
-    void testRemoveLabelFromTrackWhenNotInCache();
-
-    void testFullUtf8();
-
-private:
-    void setAllValues( Meta::SqlTrack *track );
-    void getAllValues( Meta::SqlTrack *track );
-
-    Collections::SqlCollection *m_collection;
-    QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    static QTemporaryDir *s_tmpDir;
+protected Q_SLOTS:
+    void initTestCase() override;
+    void cleanup() override;
 };
 
 #endif // TESTSQLTRACK_H

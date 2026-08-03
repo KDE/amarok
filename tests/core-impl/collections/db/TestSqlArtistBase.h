@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2026 Tuomas Nurmi <tuomas@norsumanageri.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,16 +15,42 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTSQLALBUM_H
-#define TESTSQLALBUM_H
+#ifndef TESTSQLARTISTBASE_H
+#define TESTSQLARTISTBASE_H
 
-#include "../TestSqlAlbumBase.h"
+#include <QSharedPointer>
+#include <QtTest>
+#include <QTemporaryDir>
 
-class TestSqlAlbum : public TestSqlAlbumBase
+class SqlStorage;
+
+namespace Collections {
+    class SqlCollection;
+}
+
+class TestSqlArtistBase : public QObject
 {
-protected Q_SLOTS:
-    void initTestCase() override;
-    void cleanup() override;
+    Q_OBJECT
+public:
+    TestSqlArtistBase();
+
+private Q_SLOTS:
+    virtual void initTestCase() = 0;
+    virtual void cleanup() = 0;
+
+private Q_SLOTS:
+    void cleanupTestCase();
+
+    void init();
+
+    void testSortableName();
+
+protected:
+    Collections::SqlCollection *m_collection;
+    QSharedPointer<SqlStorage> m_storage;
+    static QTemporaryDir *s_tmpDir;
+
+    public:
 };
 
-#endif // TESTSQLALBUM_H
+#endif // TESTSQLARTISTBASE_H

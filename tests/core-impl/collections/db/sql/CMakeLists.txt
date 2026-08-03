@@ -59,6 +59,7 @@ add_database_test( testsqldatabaseupdater "${databaseupdatertest_SRCS}" )
 #-------------------------------- Test SqlAlbum -----------------------
 
 set( testsqlalbum_SRCS
+        ../TestSqlAlbumBase.cpp
         TestSqlAlbum.cpp
         ${GOOGLEMOCK_SRCS}
     )
@@ -68,6 +69,7 @@ add_database_test( testsqlalbum "${testsqlalbum_SRCS}" )
 #-------------------------------- Test SqlArtist -----------------------
 
 set( testsqlartist_SRCS
+        ../TestSqlArtistBase.cpp
         TestSqlArtist.cpp
         ${GOOGLEMOCK_SRCS}
     )
@@ -77,6 +79,7 @@ add_database_test( testsqlartist "${testsqlartist_SRCS}" )
 #-------------------------------- Test SqlCollection -----------------------
 
 set( testsqlcollection_SRCS
+        ../TestSqlCollectionBase.cpp
         TestSqlCollection.cpp
         ${GOOGLEMOCK_SRCS}
     )
@@ -87,6 +90,7 @@ add_database_test( testsqlcollection "${testsqlcollection_SRCS}" )
 #-------------------------------- Test SqlQueryMaker -----------------------
 
 set( testsqlquerymaker_SRCS
+        ../TestSqlQueryMakerBase.cpp
         TestSqlQueryMaker.cpp
         ${GOOGLEMOCK_SRCS}
     )
@@ -97,6 +101,7 @@ add_database_test( testsqlquerymaker "${testsqlquerymaker_SRCS}" )
 #-------------------------------- Test SqlScanManager -----------------------
 
 set( testsqlscanmanager_SRCS
+        ../TestSqlScanManagerBase.cpp
         TestSqlScanManager.cpp
         ${GOOGLEMOCK_SRCS}
     )
@@ -106,6 +111,7 @@ add_database_test( testsqlscanmanager "${testsqlscanmanager_SRCS}" )
 #-------------------------------- Test SqlTrack -----------------------
 
 set( testsqltrack_SRCS
+        ../TestSqlTrackBase.cpp
         TestSqlTrack.cpp
         ${AMAROK_TEST_TREE}/MetaNotificationSpy.cpp
         ${GOOGLEMOCK_SRCS}
@@ -117,6 +123,7 @@ add_database_test( testsqltrack "${testsqltrack_SRCS}" )
 #-------------------------------- Test SqlCollectionLocation -----------------------
 
 set(testsqlcollectionlocation_SRCS
+        ../TestSqlCollectionLocationBase.cpp
     TestSqlCollectionLocation.cpp
     ${AMAROK_SOURCE_TREE}/core/logger/Logger.cpp
     ${GOOGLEMOCK_SRCS}

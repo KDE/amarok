@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2010, 2013 Ralf Engels <ralf-engels@gmx.de>                            *
+ * Copyright (c) 2026 Tuomas Nurmi <tuomas@norsumanageri.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,17 +15,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTSQLSCANMANAGER_H
-#define TESTSQLSCANMANAGER_H
+#ifndef TESTSQLALBUMBASE_H
+#define TESTSQLALBUMBASE_H
 
+#include <QSharedPointer>
+#include <QTemporaryDir>
+#include <QTest>
 
-#include "../TestSqlScanManagerBase.h"
+class SqlStorage;
+class SqlRegistry;
 
-class TestSqlScanManager : public TestSqlScanManagerBase
+namespace Collections {
+    class SqlCollection;
+}
+
+class TestSqlAlbumBase : public QObject
 {
+    Q_OBJECT
+public:
+    TestSqlAlbumBase();
+    ~TestSqlAlbumBase() override;
+
 protected Q_SLOTS:
-    void initTestCase() override;
-    void cleanup() override;
+    virtual void initTestCase() = 0;
+    virtual void cleanup() = 0;
+
+private Q_SLOTS:
+    void cleanupTestCase();
+
+    void init();
+
+    void testTracks();
+    void testIsCompilation();
+    void testAlbumArtist();
+    void testImage();
+
+    void testCapabilities();
+
+    void testSetCompilationWithoutExistingCompilation();
+    void testSetCompilationWithExistingCompilation();
+    void testUnsetCompilationWithoutExistingAlbum();
+    void testUnsetCompilationWithExistingAlbum();
+    void testUnsetCompilationWithMultipleExistingAlbums();
+
+    void testUnsetCompilationWithArtistAFeaturingB();
+    void testUnsetCompilationWithMultipleArtists();
+
+protected:
+    Collections::SqlCollection *m_collection;
+    QSharedPointer<SqlStorage> m_storage;
+    static QTemporaryDir *s_tmpDir;
 };
 
-#endif // TESTSQLSCANMANAGER_H
+#endif // TESTSQLALBUMBASE_H

@@ -16,59 +16,22 @@
 
 #include "TestSqlArtist.h"
 
-#include "DefaultSqlQueryMakerFactory.h"
-#include "core/meta/Meta.h"
 #include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
-#include "SqlMountPointManagerMock.h"
+#include "../SqlMountPointManagerMock.h"
 
 
 QTEST_GUILESS_MAIN( TestSqlArtist )
-
-QTemporaryDir *TestSqlArtist::s_tmpDir = nullptr;
-
-TestSqlArtist::TestSqlArtist()
-    : QObject()
-    , m_collection( nullptr )
-    , m_storage( nullptr )
-{
-    std::atexit([]() { delete TestSqlArtist::s_tmpDir; } );
-}
 
 void
 TestSqlArtist::initTestCase()
 {
     if( !s_tmpDir )
         s_tmpDir = new QTemporaryDir();
-    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( s_tmpDir->path() ) );
+    MySqlEmbeddedStorage *storage = new MySqlEmbeddedStorage();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( storage );
+    QVERIFY( storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
-}
-
-void
-TestSqlArtist::cleanupTestCase()
-{
-    delete m_collection;
-}
-
-void
-TestSqlArtist::init()
-{
-    //setup base data
-    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (1, 'The Foo');") );
-    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (2, 'No The Foo');") );
-    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (3, 'artist3');") );
-    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (4, 'DJ Bar');") );
-    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (5, 'Bar Like No DJ');") );
-    
-    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (1, 'composer1');") );
-    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (1, 'genre1');") );
-    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (1, '1');") );
-
-    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');") );
-    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');") );
-    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');") );
 }
 
 void
@@ -84,21 +47,3 @@ TestSqlArtist::cleanup()
     m_storage->query( QStringLiteral("TRUNCATE TABLE labels;") );
     m_storage->query( QStringLiteral("TRUNCATE TABLE urls_labels;") );
 }
-
-void
-TestSqlArtist::testSortableName()
-{
-    Meta::ArtistPtr artistWithThe = m_collection->registry()->getArtist( 1 );
-    QCOMPARE( artistWithThe->sortableName(), QStringLiteral( "Foo, The" ) );
-
-    Meta::ArtistPtr artistWithoutThe = m_collection->registry()->getArtist( 2 );
-    QCOMPARE( artistWithoutThe->sortableName(), QStringLiteral( "No The Foo" ) );
-
-    Meta::ArtistPtr artistWithDJ = m_collection->registry()->getArtist( 4 );
-    QCOMPARE( artistWithDJ->sortableName(), QStringLiteral( "Bar, DJ" ) );
-
-    Meta::ArtistPtr artistWithoutDJ = m_collection->registry()->getArtist( 5 );
-    QCOMPARE( artistWithoutDJ->sortableName(), QStringLiteral( "Bar Like No DJ" ) );
-}
-
-

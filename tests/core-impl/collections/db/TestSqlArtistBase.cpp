@@ -1,0 +1,76 @@
+/****************************************************************************************
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2026 Tuomas Nurmi <tuomas@norsumanageri.org>                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
+#include "TestSqlArtistBase.h"
+
+#include "DefaultSqlQueryMakerFactory.h"
+#include "core/meta/Meta.h"
+#include "SqlCollection.h"
+#include "SqlMountPointManagerMock.h"
+
+
+QTemporaryDir *TestSqlArtistBase::s_tmpDir = nullptr;
+
+TestSqlArtistBase::TestSqlArtistBase()
+    : QObject()
+    , m_collection( nullptr )
+    , m_storage( nullptr )
+{
+    std::atexit([]() { delete TestSqlArtistBase::s_tmpDir; } );
+}
+void
+TestSqlArtistBase::cleanupTestCase()
+{
+    delete m_collection;
+}
+
+void
+TestSqlArtistBase::init()
+{
+    //setup base data
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (1, 'The Foo');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (2, 'No The Foo');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (3, 'artist3');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (4, 'DJ Bar');") );
+    m_storage->query( QStringLiteral("INSERT INTO artists(id, name) VALUES (5, 'Bar Like No DJ');") );
+
+    m_storage->query( QStringLiteral("INSERT INTO composers(id, name) VALUES (1, 'composer1');") );
+    m_storage->query( QStringLiteral("INSERT INTO genres(id, name) VALUES (1, 'genre1');") );
+    m_storage->query( QStringLiteral("INSERT INTO years(id, name) VALUES (1, '1');") );
+
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');") );
+    m_storage->query( QStringLiteral("INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');") );
+}
+
+void
+TestSqlArtistBase::testSortableName()
+{
+    Meta::ArtistPtr artistWithThe = m_collection->registry()->getArtist( 1 );
+    QCOMPARE( artistWithThe->sortableName(), QStringLiteral( "Foo, The" ) );
+
+    Meta::ArtistPtr artistWithoutThe = m_collection->registry()->getArtist( 2 );
+    QCOMPARE( artistWithoutThe->sortableName(), QStringLiteral( "No The Foo" ) );
+
+    Meta::ArtistPtr artistWithDJ = m_collection->registry()->getArtist( 4 );
+    QCOMPARE( artistWithDJ->sortableName(), QStringLiteral( "Bar, DJ" ) );
+
+    Meta::ArtistPtr artistWithoutDJ = m_collection->registry()->getArtist( 5 );
+    QCOMPARE( artistWithoutDJ->sortableName(), QStringLiteral( "Bar Like No DJ" ) );
+}
+
+

@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2026 Tuomas Nurmi <tuomas@norsumanageri.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,16 +15,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTSQLALBUM_H
-#define TESTSQLALBUM_H
+#ifndef TESTSQLCOLLECTIONBASE_H
+#define TESTSQLCOLLECTIONBASE_H
 
-#include "../TestSqlAlbumBase.h"
+#include <QSharedPointer>
+#include <QtTest>
 
-class TestSqlAlbum : public TestSqlAlbumBase
+#include <QTemporaryDir>
+
+class SqlMountPointManagerMock;
+class SqlStorage;
+
+namespace Collections {
+    class SqlCollection;
+}
+
+class TestSqlCollectionBase : public QObject
 {
+    Q_OBJECT
+
+public:
+    TestSqlCollectionBase();
+
 protected Q_SLOTS:
-    void initTestCase() override;
-    void cleanup() override;
+    virtual void initTestCase() = 0;
+private Q_SLOTS:
+    void cleanupTestCase();
+
+    void testDeviceAddedWithTracks();
+    void testDeviceAddedWithoutTracks();
+    void testDeviceRemovedWithTracks();
+    void testDeviceRemovedWithoutTracks();
+
+protected:
+    Collections::SqlCollection *m_collection;
+    SqlMountPointManagerMock *m_mpmMock;
+    QSharedPointer<SqlStorage> m_storage;
+    static QTemporaryDir *s_tmpDir;
 };
 
-#endif // TESTSQLALBUM_H
+#endif // TESTSQLCOLLECTIONBASE_H

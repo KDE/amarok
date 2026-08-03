@@ -236,11 +236,11 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
         friend class SqlScanResultProcessor;
 
         // all those classes need to call emptyCache
-        friend class TestSqlScanManager;
-        friend class TestSqlAlbum;
-        friend class TestSqlArtist;
-        friend class TestSqlTrack;
-        friend class TestSqlCollectionLocation;
+        friend class TestSqlScanManagerBase;
+        friend class TestSqlAlbumBase;
+        friend class TestSqlArtistBase;
+        friend class TestSqlTrackBase;
+        friend class TestSqlCollectionLocationBase;
 };
 
 #endif /* SQLREGISTRY_H */

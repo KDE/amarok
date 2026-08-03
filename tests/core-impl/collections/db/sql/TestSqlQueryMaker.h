@@ -17,90 +17,12 @@
 #ifndef TESTSQLQUERYMAKER_H
 #define TESTSQLQUERYMAKER_H
 
-#include <QSharedPointer>
-#include <QTest>
-#include <core/collections/QueryMaker.h>
+#include "../TestSqlQueryMakerBase.h"
 
-#include <QTemporaryDir>
-
-class MySqlEmbeddedStorage;
-class SqlMountPointManagerMock;
-
-namespace Collections {
-    class SqlCollection;
-    class SqlQueryMaker;
-}
-
-class TestSqlQueryMaker : public QObject
+class TestSqlQueryMaker : public TestSqlQueryMakerBase
 {
-    Q_OBJECT
-public:
-    TestSqlQueryMaker();
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void cleanup();
-
-    void testQueryTracks();
-    void testQueryAlbums();
-    void testQueryGenres();
-    void testQueryYears();
-    void testQueryComposers();
-    void testQueryArtists();
-    void testAlbumQueryMode();
-
-    void testDeleteQueryMakerWithRunningQuery();
-
-    void testAsyncTrackQuery();
-    void testAsyncArtistQuery();
-    void testAsyncGenreQuery();
-    void testAsyncComposerQuery();
-    void testAsyncAlbumQuery();
-    void testAsyncYearQuery();
-    void testAsyncCustomQuery();
-
-    void testFilter();
-    void testFilter_data();
-
-    void testDynamicCollection();
-
-    void testSpecialCharacters_data();
-    void testSpecialCharacters();
-
-    void testNumberFilter();
-    void testNumberFilter_data();
-
-    void testReturnFunctions_data();
-    void testReturnFunctions();
-
-    void testEmptyMatch();
-    void testNotEmptyMatch();
-
-    void testLabelMatch();
-    void testMultipleLabelMatches();
-
-    void testQueryTypesWithLabelMatching_data();
-    void testQueryTypesWithLabelMatching();
-
-    void testFilterOnLabelsAndCombination();
-    void testFilterOnLabelsOrCombination();
-    void testFilterOnLabelsNegationAndCombination();
-    void testFilterOnLabelsNegationOrCombination();
-    void testComplexLabelsFilter();
-
-    void testLabelQueryMode_data();
-    void testLabelQueryMode();
-
-private:
-    void checkResultCount( Collections::SqlQueryMaker* qm,
-                           Collections::QueryMaker::QueryType type, int count );
-
-    Collections::SqlCollection *m_collection;
-    SqlMountPointManagerMock *m_mpm;
-    QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    static QTemporaryDir *s_tmpDir;
+protected Q_SLOTS:
+    void initTestCase() override;
 };
 
 #endif // TESTSQLQUERYMAKER_H

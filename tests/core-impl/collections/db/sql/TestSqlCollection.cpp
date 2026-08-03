@@ -16,32 +16,19 @@
 
 #include "TestSqlCollection.h"
 
-#include <core/collections/Collection.h>
-#include <core-impl/collections/db/sql/SqlCollection.h>
-#include <core-impl/collections/db/sql/DatabaseUpdater.h>
-#include <core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h>
-
-#include "SqlMountPointManagerMock.h"
-
-#include <QSignalSpy>
-
+#include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
+#include "../SqlMountPointManagerMock.h"
 
 QTEST_GUILESS_MAIN( TestSqlCollection )
-
-QTemporaryDir *TestSqlCollection::s_tmpDir = nullptr;
-
-TestSqlCollection::TestSqlCollection()
-{
-    std::atexit([]() { delete TestSqlCollection::s_tmpDir; } );
-}
 
 void
 TestSqlCollection::initTestCase()
 {
     if( !s_tmpDir )
         s_tmpDir = new QTemporaryDir();
-    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( s_tmpDir->path() ) );
+    MySqlEmbeddedStorage *storage = new MySqlEmbeddedStorage();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( storage );
+    QVERIFY( storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_mpmMock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( m_mpmMock );
@@ -51,44 +38,3 @@ TestSqlCollection::initTestCase()
 
     m_storage->query( QStringLiteral("INSERT INTO tracks(id, url,title) VALUES ( 1,1,'test1');") );
 }
-
-void
-TestSqlCollection::cleanupTestCase()
-{
-    delete m_collection;
-    //m_mpMock is deleted by SqlCollection
-
-}
-
-void
-TestSqlCollection::testDeviceAddedWithTracks()
-{
-    QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
-    m_mpmMock->emitDeviceAdded( 1 );
-    QCOMPARE( spy.count(), 1 );
-}
-
-void
-TestSqlCollection::testDeviceAddedWithoutTracks()
-{
-    QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
-    m_mpmMock->emitDeviceAdded( 2 );
-    QCOMPARE( spy.count(), 0 );
-}
-
-void
-TestSqlCollection::testDeviceRemovedWithTracks()
-{
-    QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
-    m_mpmMock->emitDeviceRemoved( 1 );
-    QCOMPARE( spy.count(), 1 );
-}
-
-void
-TestSqlCollection::testDeviceRemovedWithoutTracks()
-{
-    QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
-    m_mpmMock->emitDeviceRemoved( 0 );
-    QCOMPARE( spy.count(), 0 );
-}
-

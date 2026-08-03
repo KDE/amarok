@@ -17,37 +17,13 @@
 #ifndef TESTSQLARTIST_H
 #define TESTSQLARTIST_H
 
-#include <QSharedPointer>
-#include <QtTest>
-#include <QTemporaryDir>
+#include "../TestSqlArtistBase.h"
 
-class MySqlEmbeddedStorage;
-
-namespace Collections {
-    class SqlCollection;
-}
-
-class TestSqlArtist : public QObject
+class TestSqlArtist : public TestSqlArtistBase
 {
-    Q_OBJECT
-public:
-    TestSqlArtist();
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void init();
-    void cleanup();
-
-    void testSortableName();
-
-private:
-    Collections::SqlCollection *m_collection;
-    QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    static QTemporaryDir *s_tmpDir;
-
-    public:
+protected Q_SLOTS:
+    void initTestCase() override;
+    void cleanup() override;
 };
 
 #endif // TESTSQLARTIST_H

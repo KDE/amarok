@@ -17,39 +17,12 @@
 #ifndef TESTSQLCOLLECTION_H
 #define TESTSQLCOLLECTION_H
 
-#include <QSharedPointer>
-#include <QtTest>
+#include "../TestSqlCollectionBase.h"
 
-#include <QTemporaryDir>
-
-class SqlMountPointManagerMock;
-class MySqlEmbeddedStorage;
-
-namespace Collections {
-    class SqlCollection;
-}
-
-class TestSqlCollection : public QObject
+class TestSqlCollection : public TestSqlCollectionBase
 {
-    Q_OBJECT
-
-public:
-    TestSqlCollection();
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void testDeviceAddedWithTracks();
-    void testDeviceAddedWithoutTracks();
-    void testDeviceRemovedWithTracks();
-    void testDeviceRemovedWithoutTracks();
-
-private:
-    Collections::SqlCollection *m_collection;
-    SqlMountPointManagerMock *m_mpmMock;
-    QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    static QTemporaryDir *s_tmpDir;
+protected Q_SLOTS:
+    void initTestCase() override;
 };
 
 #endif // TESTSQLCOLLECTION_H

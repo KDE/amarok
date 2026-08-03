@@ -17,43 +17,13 @@
 #ifndef TESTSQLCOLLECTIONLOCATION_H
 #define TESTSQLCOLLECTIONLOCATION_H
 
-#include <QtTest>
+#include "../TestSqlCollectionLocationBase.h"
 
-#include <QTemporaryDir>
-
-class MySqlEmbeddedStorage;
-namespace Collections
+class TestSqlCollectionLocation : public TestSqlCollectionLocationBase
 {
-    class SqlCollection;
-}
-class SqlRegistry;
-
-class TestSqlCollectionLocation : public QObject
-{
-    Q_OBJECT
-public:
-    TestSqlCollectionLocation();
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void init();
-    void cleanup();
-
-    void testOrganizingCopiesLabels();
-    void testCopiesLabelFromExternalTracks();
-    void testCopyTrackToDirectoryWithExistingTracks();
-
-    void test2100sChangeDate();
-
-private:
-    QString setupFileInTempDir( const QString &relativeName );
-
-private:
-    Collections::SqlCollection *m_collection;
-    QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    static QTemporaryDir *s_tmpDir;
+protected Q_SLOTS:
+    void initTestCase() override;
+    void cleanup() override;
 };
 
 #endif // TESTSQLCOLLECTIONLOCATION_H
