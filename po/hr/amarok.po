@@ -4323,8 +4323,7 @@ msgstr ""
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:41
 #: context/applets/wikipedia/package/contents/ui/main.qml:153
-#, fuzzy, kde-format
-#| msgid "Previous"
+#, kde-format
 msgid "Previous"
 msgstr "Prethodni"
 
@@ -4333,7 +4332,7 @@ msgstr "Prethodni"
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, kde-format
 msgid "Next"
-msgstr ""
+msgstr "Sljedeći"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
 #, kde-format
