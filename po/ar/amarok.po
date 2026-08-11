@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-30 00:43+0000\n"
-"PO-Revision-Date: 2026-01-19 22:02+0400\n"
+"PO-Revision-Date: 2026-08-10 18:11+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1380,8 +1380,8 @@ msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
 "access permissions."
 msgstr ""
-"اسم قاعدة البيانات التي سيستخدمها أماروك. يجب أن يكون لدى المستخدم صلاحيات "
-"وصول كافية."
+"اسم قاعدة البيانات التي سيستخدمها أماروك. يجب أن يكون لدى المستخدم أذون وصول "
+"كافية."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:572
@@ -6249,7 +6249,7 @@ msgstr "ليس ملفًّا"
 #: core/meta/Meta.cpp:220
 #, kde-format
 msgid "No read permissions"
-msgstr "لا صلاحيّات قراءة"
+msgstr "لا توجد أذون قراءة"
 
 #: core/meta/Meta.cpp:352
 #, kde-format
