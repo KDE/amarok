@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-30 00:43+0000\n"
-"PO-Revision-Date: 2026-07-23 09:25+0300\n"
+"PO-Revision-Date: 2026-08-11 10:17+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 26.04.1\n"
+"X-Generator: Lokalize 26.04.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -2191,19 +2191,17 @@ msgid "Accuracy"
 msgstr "דיוק"
 
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:43
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgctxt "Bias dialog window title"
 msgid "Edit bias"
-msgstr "מילות־שיר"
+msgstr "עריכת העדפה"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:48
-#, fuzzy, kde-format
-#| msgid "Match:"
+#, kde-format
 msgctxt "Bias selection label in bias view."
 msgid "Match Type:"
-msgstr "התאמה:"
+msgstr "סוג התאמה:"
 
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:128
 #, kde-format
@@ -2256,11 +2254,10 @@ msgid "Number of upcoming tracks to add to the playlist."
 msgstr "מספר הרצועות הבאות שתתווספנה לרשימת הנגינה."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:101
-#, fuzzy, kde-format
-#| msgid "On"
+#, kde-format
 msgctxt "Turn dynamic mode on"
 msgid "On"
-msgstr "פועל"
+msgstr "הפעלה"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:104
 #, kde-format
@@ -2294,10 +2291,9 @@ msgid "Edit"
 msgstr "עריכה"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:124
-#, fuzzy, kde-format
-#| msgid "About to delete selected files"
+#, kde-format
 msgid "Edit the selected playlist or bias"
-msgstr "עמוד למחוק קבצים מסומנים"
+msgstr "עריכת רשימת הנגינה או ההעדפה הנבחרת"
 
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
 #: browsers/playlistbrowser/DynamicCategory.cpp:128
@@ -2307,10 +2303,9 @@ msgid "Delete"
 msgstr "מחיקה"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:131
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "Delete the selected playlist or bias"
-msgstr "המחיקה נכשלה"
+msgstr "מחיקת רשימת הנגינה או ההעדפה הנבחרת"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:135
 #, kde-format
@@ -2328,10 +2323,9 @@ msgid "&Rename playlist"
 msgstr "&שינוי שם רשימת נגינה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:223
-#, fuzzy, kde-format
-#| msgid "Add new"
+#, kde-format
 msgid "&Add new Bias"
-msgstr "הוסף חדש"
+msgstr "הו&ספת העדפה חדשה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:227
 #, kde-format
@@ -2344,10 +2338,9 @@ msgid "&Delete playlist"
 msgstr "מ&חיקת רשימת נגינה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:245
-#, fuzzy, kde-format
-#| msgid "&Add Media..."
+#, kde-format
 msgid "&Edit bias..."
-msgstr "&הוסף מדיה..."
+msgstr "&עריכת העדפה…"
 
 #: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
@@ -2355,16 +2348,14 @@ msgid "&Clone bias"
 msgstr ""
 
 #: browsers/playlistbrowser/DynamicView.cpp:259
-#, fuzzy, kde-format
-#| msgid "Delete failed"
+#, kde-format
 msgid "&Delete bias"
-msgstr "המחיקה נכשלה"
+msgstr "מ&חיקת העדפה"
 
 #: browsers/playlistbrowser/DynamicView.cpp:266
-#, fuzzy, kde-format
-#| msgid "Add new"
+#, kde-format
 msgid "&Add new bias"
-msgstr "הוסף חדש"
+msgstr "הו&ספת העדפה חדשה"
 
 #: browsers/playlistbrowser/PlaylistBrowser.cpp:41
 #, kde-format
@@ -3535,10 +3526,9 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #: configdialog/dialogs/PlaybackConfig.ui:42
-#, fuzzy, kde-format
-#| msgid "Start playing current playlist"
+#, kde-format
 msgid "Start playing when tracks are added to playlist"
-msgstr "התחל לנגן את רשימת־ההשמעה הנוכחית"
+msgstr "להתחיל לנגן כשרצועות מתווספות לרשימת השמעה"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: configdialog/dialogs/PlaybackConfig.ui:52
@@ -4919,7 +4909,7 @@ msgstr "דור:"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
 #, kde-format
 msgid "Video:"
-msgstr ""
+msgstr "וידאו:"
 
 #. i18n: ectx: property (text), widget (QLabel, albumArtworkLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
@@ -4948,7 +4938,7 @@ msgstr "קובץ SysInfoExtended:"
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:48
 #, kde-format
 msgid "Cannot parse iTunes database due to an unreported error."
-msgstr ""
+msgstr "לא ניתן לפענח את מסד הנתונים של ITunes עקב שגיאה לא מדווחת."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
 #, kde-format
@@ -5069,33 +5059,33 @@ msgstr ""
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr ""
+msgstr "כתיבת SysInfo נכשלה: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:439
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
-msgstr ""
+msgstr "כתיבת קובץ SysInfo נכשלה עקב שגיאה לא מדווחת"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr ""
+msgstr "לא ניתן לאתחל את iPod עקב שגיאה לא מדווחת."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
 msgid "Copying Tracks Failed"
-msgstr ""
+msgstr "העתקת רצועות נכשלה"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:318
 #, kde-format
 msgid "Tracks not copied: the device is already being copied to"
-msgstr ""
+msgstr "רצועות לא הועתקו: כבר מתבצעת העתקה למכשיר"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:351
 #, kde-format
 msgid "Unsupported format: %1"
-msgstr ""
+msgstr "תסדיר לא נתמך: %1"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:394
 #, kde-format
@@ -5105,12 +5095,12 @@ msgstr "כבר במכשיר"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:410
 #, kde-format
 msgid "Tracks not copied: the device already has these tracks"
-msgstr ""
+msgstr "רצועות לא הועתקו: במכשיר כבר יש את הרצועות האלה"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:431
 #, kde-format
 msgid "Tracks not copied: the device has insufficient space"
-msgstr ""
+msgstr "רצועות לא הועתקו: אין מספיק מקום במכשיר"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:441
 #, kde-format
@@ -5134,24 +5124,22 @@ msgid "The track failed to copy to the device"
 msgstr "העתקת הרצועה למכשיר נכשלה"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:571
-#, fuzzy, kde-format
-#| msgid "Tracks Removed"
+#, kde-format
 msgid "Track not deleted:"
 msgid_plural "Tracks not deleted:"
-msgstr[0] "רצועות נמחקו"
-msgstr[1] "רצועות נמחקו"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "רצועה שלא נמחקה:"
+msgstr[1] "רצועות שלא נמחקו:"
+msgstr[2] "רצועות שלא נמחקו:"
+msgstr[3] "רצועות שלא נמחקו:"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:572
-#, fuzzy, kde-format
-#| msgid "Deleting Tracks from MTP"
+#, kde-format
 msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
-msgstr[0] "מוחק רצועות מ־MTP"
-msgstr[1] "מוחק רצועות מ־MTP"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "מחיקת רצועה נכשלה"
+msgstr[1] "מחיקת רצועות נכשלה"
+msgstr[2] "מחיקת רצועות נכשלה"
+msgstr[3] "מחיקת רצועות נכשלה"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, kde-format
@@ -5159,12 +5147,11 @@ msgid "%1 tracks are already being deleted from the device."
 msgstr "%1 רצועות כבר נמחקות מהמכשיר."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
-#, fuzzy, kde-format
-#| msgid "Deleting Tracks from iPod"
+#, kde-format
 msgid "Removing Track from Device"
 msgid_plural "Removing Tracks from Device"
-msgstr[0] "מוחק רצועות מ־iPod"
-msgstr[1] "מוחק רצועות מ־iPod"
+msgstr[0] ""
+msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
@@ -5240,12 +5227,10 @@ msgstr "אוסף המקור הוסר"
 #, kde-format
 msgctxt "The genre name for classical music"
 msgid "Classical"
-msgstr ""
+msgstr "קלסית"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:36
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete this track? It will be removed from %2 and from "
@@ -5253,15 +5238,13 @@ msgid ""
 msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
-msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "למחוק את הרצועה הזאת? היא תוסר מתוך %2 ומאמצעי האחסון שתחתיו."
+msgstr[1] "למחוק את שתי הרצועות האלה? הן תוסרנה מתוך %2 ומאמצעי האחסון שתחתיו."
+msgstr[2] "למחוק את %1 הרצועות האלה? הן תוסרנה מתוך %2 ומאמצעי האחסון שתחתיו."
+msgstr[3] "למחוק את %1 הרצועות האלה? הן תוסרנה מתוך %2 ומאמצעי האחסון שתחתיו."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to move this track to the trash? It will be removed from "
@@ -5269,15 +5252,13 @@ msgid ""
 msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
-msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "להעביר את הרצועה הזאת לאשפה? היא תוסר מתוך %2."
+msgstr[1] "להעביר את שתי הרצועות האלה לאשפה? הן תוסרנה מתוך %2."
+msgstr[2] "להעביר את %1 הרצועות האלה לאשפה? הן תוסרנה מתוך %2."
+msgstr[3] "להעביר את %1 הרצועות האלה לאשפה? הן תוסרנה מתוך %2."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to move this track? It will be renamed and the original "
@@ -5285,8 +5266,8 @@ msgid ""
 msgid_plural ""
 "Do you really want to move these %1 tracks? They will be renamed and the "
 "originals deleted."
-msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
+msgstr[0] ""
+msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
@@ -5325,7 +5306,7 @@ msgstr "לא ניתן להסיר רצועות"
 #, kde-format
 msgid ""
 "The collection does not have enough free space available or is not writable."
-msgstr ""
+msgstr "אין מספיק מקום פנוי זמין לאוסף או שאי אפשר לכתוב אליו."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:95
 #, kde-format
@@ -5353,7 +5334,7 @@ msgstr "לא להסיר"
 #, kde-format
 msgctxt "%1 is track url, %2 track title, %3 track artist"
 msgid "%1 (%2 by %3)"
-msgstr ""
+msgstr "%1 (%2 של %3)"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:136
 #, kde-format
@@ -5408,20 +5389,18 @@ msgid "&Delete Episode"
 msgstr "מ&חיקת פרק"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:261
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
-msgstr[0] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[1] "האם הנך בטוח שברצונך למחוק את %1 הרצועות?"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "למחוק את הפרק הזה?"
+msgstr[1] "למחוק את שני הפרקים האלה?"
+msgstr[2] "למחוק את %1 הפרקים האלה?"
+msgstr[3] "למחוק את %1 הפרקים האלה?"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:279
 #, kde-format
 msgid "Yes, delete from %1."
-msgstr ""
+msgstr "כן, למחוק מ־%1."
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:334
 #: services/gpodder/GpodderProvider.cpp:350
@@ -6401,15 +6380,13 @@ msgid "filesize"
 msgstr "גודל_קובץ"
 
 #: core/meta/support/MetaConstants.cpp:240
-#, fuzzy, kde-format
-#| msgid "Format:"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "format"
-msgstr "תבנית:"
+msgstr "תסדיר"
 
 #: core/meta/support/MetaConstants.cpp:241
-#, fuzzy, kde-format
-#| msgid "Add"
+#, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "added"
 msgstr "הוספה"
@@ -6427,22 +6404,20 @@ msgid "rating"
 msgstr "דירוג"
 
 #: core/meta/support/MetaConstants.cpp:244
-#, fuzzy, kde-format
-#| msgid "First Played"
+#, kde-format
 msgctxt ""
 "One word translation used in the collection filter. First played time / "
 "access date"
 msgid "firstplay"
-msgstr "הושמע לראשונה"
+msgstr "השמעה_ראשונה"
 
 #: core/meta/support/MetaConstants.cpp:245
-#, fuzzy, kde-format
-#| msgid "Last played"
+#, kde-format
 msgctxt ""
 "One word translation used in the collection filter. Last played time / "
 "access date"
 msgid "lastplay"
-msgstr "הושמע לאחרונה"
+msgstr "השמעה_אחרונה"
 
 #: core/meta/support/MetaConstants.cpp:246
 #, kde-format
@@ -6878,7 +6853,7 @@ msgstr "איכות שמע טובה יותר"
 #: core/transcoding/formats/TranscodingAacFormat.cpp:56
 #, kde-format
 msgid "AAC"
-msgstr ""
+msgstr "AAC"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:64
 #, kde-format
@@ -7002,7 +6977,7 @@ msgstr ""
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
 #, kde-format
 msgid "Opus"
-msgstr ""
+msgstr "אופוס"
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:80
 #, kde-format
@@ -7013,6 +6988,8 @@ msgid ""
 "<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> is a "
 "patent-free digital audio codec using a form of lossy data compression."
 msgstr ""
+"<a href=https://he.wikipedia.org/wiki/אופוס_(מקודד)>אופוס</a> הוא מפענח שמע "
+"דיגיטלי חף מפטנטים שמשתמש בסוג של דחיסה שאינה מאבדת איכות."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:28
 #, kde-format
@@ -9947,7 +9924,7 @@ msgstr "Harald Sitter"
 #: main.cpp:173
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
-msgstr ""
+msgstr "Phonon, נשיא העל של המולטימדיה של KDE‏ (apachelogger)"
 
 #: main.cpp:175
 #, kde-format
@@ -9983,7 +9960,7 @@ msgstr "מפתח, ערכת עיצוב האתר (KRF)"
 #: main.cpp:181
 #, kde-format
 msgid "Kuba Serafinowski"
-msgstr ""
+msgstr "קובה סרפינובסקי"
 
 #: main.cpp:181
 #, kde-format
@@ -14028,7 +14005,7 @@ msgstr "%1 - %2"
 #: services/lastfm/ScrobblerAdapter.cpp:270
 #, kde-format
 msgid "Last.fm suggests that some tags of track <b>%1</b> should be corrected:"
-msgstr ""
+msgstr "Last.fm מציע שתגיות מסוימות של הרצועה <b>%1</b> דורשות תיקון:"
 
 #: services/lastfm/SimilarArtistsAction.cpp:27
 #, kde-format
@@ -14054,7 +14031,7 @@ msgstr "אלבום יורד מ־Magnatune.com"
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:100
 #, kde-format
 msgid "Magnatune download seems to have failed. Cannot read zip file"
-msgstr ""
+msgstr "הורדת Magnatune כנראה נכשלה. לא ניתן לקרוא את קובץ ה־zip."
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format

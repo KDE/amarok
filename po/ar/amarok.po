@@ -1359,7 +1359,7 @@ msgstr "اسم التّخطيط الذي سيُحمَّل عند بدء التّ
 msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
-msgstr "هل يستخدم أماروك قاعدة بياناته الداخلية، بدلاً من محرّك خارجي."
+msgstr "هل يستخدم أماروك قاعدة بياناته الداخلية، بدلًا من محرّك خارجي."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:560
@@ -3868,7 +3868,7 @@ msgstr "النّقاط"
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:55
 #, kde-format
 msgid "Last played"
-msgstr "شُغلت مؤخراً"
+msgstr "شُغلت مؤخرًا"
 
 #: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
@@ -4249,7 +4249,7 @@ msgstr "معلومات الحفلة تُجلب."
 msgid ""
 "Songkick was not able to be downloaded. Please check your Internet "
 "connection: %1"
-msgstr "تعذّر تنزيل Songkick. فضلاً، تحقّق من اتّصالك بالإنترنت: %1"
+msgstr "تعذّر تنزيل Songkick. فضلًا، تحقّق من اتّصالك بالإنترنت: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:202
 #, kde-format
@@ -4560,7 +4560,7 @@ msgid ""
 msgstr ""
 "WAV هو تنسيق ملف صوتي أساسي وغير مضغوط. يستهلك مساحة كبيرة ولكنه يحافظ على "
 "جودة مثالية. لا يُنصح باستخدامه بشكل عام إلا إذا كنت تعرف ما تفعله. إذا كنت "
-"تريد جودة مثالية، فاستخدم FLAC بدلاً منه."
+"تريد جودة مثالية، فاستخدم FLAC بدلًا منه."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:81
 #, kde-format
@@ -7106,7 +7106,7 @@ msgstr ""
 "ضغط <b>8</b> يجعل الضغط بطيئًا جدًا ولكنه ينتج أصغر ملف.<br/>لاحظ أنه بما أن "
 "FLAC هو ترميز بلا ضياع حسب التعريف، فإن جودة الصوت الناتجة هي نفسها تمامًا "
 "بغض النظر عن مستوى الضغط.<br/>أيضًا، المستويات فوق <b>5</b> تزيد من وقت الضغط "
-"بشكل كبير ولكنها تنشئ ملفًا أصغر قليلاً فقط، ولا يُوصى بها."
+"بشكل كبير ولكنها تنشئ ملفًا أصغر قليلًا فقط، ولا يُوصى بها."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:41
 #, kde-format
@@ -13161,7 +13161,7 @@ msgstr "أوّل تشغيل"
 #: playlistgenerator/constraints/TagMatchSupport.cpp:102
 #, kde-format
 msgid "last played"
-msgstr "شُغلت مؤخراً"
+msgstr "شُغلت مؤخرًا"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:103
 #, kde-format
