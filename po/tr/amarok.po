@@ -784,7 +784,8 @@ msgstr "Etkinleştirildiğinde, bir ekolayzır eklentisi ses akışını süzer.
 #, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"11 ekolayzır kazancı ön amfiyi içerir; erim: −100..100, 0 olağan değerdir."
+"Ön yükselteci içeren 11 ekolayzır dengesi; erim: −100..100, 0 olağan "
+"değerdir."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -8125,7 +8126,7 @@ msgstr "−dB"
 #: dialogs/EqualizerDialog.ui:569
 #, kde-format
 msgid "Preamp"
-msgstr "Ön amplifikatör"
+msgstr "Ön yükselteç"
 
 #. i18n: ectx: property (text), widget (QLabel, eqBand0Label)
 #. i18n: ectx: property (text), widget (QLabel, eqBand1Label)

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-30 00:43+0000\n"
-"PO-Revision-Date: 2026-08-11 10:17+0300\n"
+"PO-Revision-Date: 2026-08-16 08:28+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -5800,15 +5800,14 @@ msgid "Already subscribed to %1."
 msgstr "כבר נרשמת ל־%1."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:604
-#, fuzzy, kde-format
-#| msgid "Minutes"
+#, kde-format
 msgctxt "Spinbox label"
 msgid "every %v minute"
 msgid_plural "every %v minutes"
-msgstr[0] "דקות"
-msgstr[1] "דקות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "כל דקה"
+msgstr[1] "כל שתי דקות"
+msgstr[2] "כל %v דקות"
+msgstr[3] "כל %v דקות"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:619
 #, kde-format
@@ -5823,12 +5822,12 @@ msgstr "העברת הסכתים"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:641
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
-msgstr ""
+msgstr "להעביר את כל הפרקים שירדו למקום החדש?"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:708
 #, kde-format
 msgid "Select file for OPML export"
-msgstr ""
+msgstr "בחירת קובץ לייצוא OPML"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:855
 #, kde-format
@@ -5844,10 +5843,10 @@ msgstr "מחיקת פרקים שירדו"
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "יש הורדת הסכת פעילה"
+msgstr[1] "יש הורדה פעילה של שני הסכתים"
+msgstr[2] "יש הורדה פעילה של %1 הסכתים"
+msgstr[3] "יש הורדה פעילה של %1 הסכתים"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:984
 #, kde-format
@@ -5886,7 +5885,7 @@ msgstr "עדכון אוטומטי:"
 #, kde-format
 msgctxt "automatic updates turned off"
 msgid "disabled"
-msgstr ""
+msgstr "כבויים"
 
 #. i18n: ectx: property (text), widget (QLabel, m_baseDirLabel)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:79
@@ -6033,14 +6032,13 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: core/collections/CollectionLocation.cpp:428
-#, fuzzy, kde-format
-#| msgid "tracks"
+#, kde-format
 msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
-msgstr[0] "רצועות"
-msgstr[1] "רצועות"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "רצועה מועתקת אל %2"
+msgstr[1] "שתי רצועות מועתקות אל %2"
+msgstr[2] "%1 רצועות מועתקות אל %2"
+msgstr[3] "%1 רצועות מועתקות אל %2"
 
 #: core/collections/CollectionLocation.cpp:431
 #, fuzzy, kde-format
@@ -6576,12 +6574,12 @@ msgstr[3] "%1 שניות"
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
 msgid "Importing podcast channel from %1"
-msgstr ""
+msgstr "ערוץ הסכתים מיובא מ־%1"
 
 #: core/podcasts/PodcastReader.cpp:457
 #, kde-format
 msgid "Updating podcast channel"
-msgstr ""
+msgstr "ערוץ הסכתים מתעדכן"
 
 #: core/podcasts/PodcastReader.cpp:458
 #, kde-format
@@ -6591,17 +6589,17 @@ msgstr "מעדכן את \"%1\""
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr ""
+msgstr "ייבוא הסכת מ־%1 נכשל עם שגיאה:\n"
 
 #: core/podcasts/PodcastReader.cpp:510 core/podcasts/PodcastReader.cpp:524
 #, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr ""
+msgstr "עדכון הסכת מ־%1 נכשל עם שגיאה:\n"
 
 #: core/podcasts/PodcastReader.cpp:511 core/podcasts/PodcastReader.cpp:525
 #, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr ""
+msgstr "עדכון „%1” נכשל עם שגיאה:\n"
 
 #: core/podcasts/PodcastReader.cpp:996
 #, kde-format
@@ -7100,7 +7098,7 @@ msgstr "רצועות שאינן %1 ל־%1"
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "When Needed to %1"
-msgstr ""
+msgstr "כשנחוץ ל־%1"
 
 #: covermanager/CoverFetcher.cpp:178 covermanager/CoverFetcher.cpp:341
 #, kde-format
@@ -7133,13 +7131,13 @@ msgid "Unable to find a cover for '%1'."
 msgstr "לא ניתן למצוא עטיפה עבור ‚%1’."
 
 #: covermanager/CoverFetchingActions.cpp:44
-#, fuzzy, kde-format
+#, kde-format
 msgid "Fetch Cover"
 msgid_plural "Fetch Covers"
-msgstr[0] "צרף עטיפה"
-msgstr[1] "צרף עטיפופת"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "משיכת עטיפה"
+msgstr[1] "משיכת עטיפות"
+msgstr[2] "משיכת עטיפות"
+msgstr[3] "משיכת עטיפות"
 
 #: covermanager/CoverFetchingActions.cpp:46
 #, kde-format
@@ -7832,12 +7830,14 @@ msgid ""
 "%1\n"
 "dB"
 msgstr ""
+"%1\n"
+"דציבל"
 
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
 #: dialogs/EqualizerDialog.ui:22
 #, kde-format
 msgid "Active"
-msgstr ""
+msgstr "פעיל"
 
 #. i18n: ectx: property (title), widget (QGroupBox, eqPresetsGroupBox)
 #: dialogs/EqualizerDialog.ui:29
@@ -7891,19 +7891,19 @@ msgstr "ערוצים"
 #: dialogs/EqualizerDialog.ui:112
 #, kde-format
 msgid "+dB"
-msgstr ""
+msgstr "+דציבלים"
 
 #. i18n: ectx: property (text), widget (QLabel, eqZero)
 #: dialogs/EqualizerDialog.ui:250
 #, kde-format
 msgid "0dB"
-msgstr ""
+msgstr "0דציבלים"
 
 #. i18n: ectx: property (text), widget (QLabel, eqMinEq)
 #: dialogs/EqualizerDialog.ui:559
 #, kde-format
 msgid "-dB"
-msgstr ""
+msgstr "-דציבלים"
 
 #. i18n: ectx: property (text), widget (QLabel, eqPreampLabel)
 #: dialogs/EqualizerDialog.ui:569
@@ -7928,7 +7928,7 @@ msgstr "קדם־מגבר"
 #: dialogs/EqualizerDialog.ui:659 dialogs/EqualizerDialog.ui:669
 #, kde-format
 msgid "Hz"
-msgstr ""
+msgstr " הרץ"
 
 #: dialogs/MusicBrainzTagger.cpp:90
 #, kde-format
@@ -9578,6 +9578,8 @@ msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
+"יצירת Amarok היא לא תחביב, היא סגנון חיים. אבל כשאנשים ממשיכים בחייהם אנחנו "
+"רוצים להמשיך להוקיר אותם על ידי אזכורם כאן:"
 
 #: main.cpp:77
 #, kde-format
@@ -9593,7 +9595,7 @@ msgstr "מפתח (Stecchino)"
 #: main.cpp:81
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
-msgstr ""
+msgstr "אדוארד „Hades” טורושצ׳ין"
 
 # kde-il: Developer's personal comment -  translate only when make sence.
 #: main.cpp:82
@@ -13509,16 +13511,16 @@ msgstr[2] "%1 אלבומים מתוך "
 msgstr[3] "%1 אלבומים מתוך "
 
 #: services/jamendo/JamendoXmlParser.cpp:173
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "Last part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "אמן אחד."
-msgstr[1] "%1 אמנים."
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "אומן אחד."
+msgstr[1] "שני אומנים."
+msgstr[2] "%1 אומנים."
+msgstr[3] "%1 אומנים."
 
 #: services/lastfm/biases/LastFmBias.cpp:45
 #, kde-format
@@ -13538,19 +13540,19 @@ msgstr ""
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
-msgstr ""
+msgstr "דומה לרצועה הקודמת (כפי שדווח על ידי Last.fm)"
 
 #: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
-msgstr ""
+msgstr "דומה לאומן הקודם (כפי שדווח על ידי Last.fm)"
 
 #: services/lastfm/biases/LastFmBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
-msgstr ""
+msgstr "<a href=\"http://www.last.fm/\">Last.fm</a> חושב שהרצועה דומה ל־"
 
 #: services/lastfm/biases/LastFmBias.cpp:145
 #, kde-format
