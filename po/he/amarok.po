@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-30 00:43+0000\n"
-"PO-Revision-Date: 2026-08-16 08:28+0300\n"
+"PO-Revision-Date: 2026-09-04 10:38+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 26.04.3\n"
+"X-Generator: Lokalize 26.08.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -66,14 +66,14 @@ msgstr "הסכם רישוי"
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
-msgstr ""
+msgstr "<qt>אין פרטים זמינים.<br />עצם ה־KAboutData שסופק לא קיים.</qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:104
 #, kde-format
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
-msgstr ""
+msgstr "<qt>אין פרטים זמינים.<br />עצם ה־OcsData שסופק לא קיים.</qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:115
 #, kde-format
@@ -86,6 +86,8 @@ msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
 "Frameworks %3</html>"
 msgstr ""
+"<html><font size=\"5\">%1</font><br /><b>גרסה %2</b><br />משתמשת בתשתיות KDE "
+"%3</html>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:180
 #, kde-format
@@ -239,7 +241,7 @@ msgstr "Amarok"
 #: amarokconfig.kcfg:13
 #, kde-format
 msgid "Whether to display a second, left time label."
-msgstr ""
+msgstr "האם להציג תווית זמן שנותר נוספת."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:14
@@ -406,7 +408,7 @@ msgstr "שם הקובץ של דפדפן הרשת החיצוני שיופעל ע�
 #: amarokconfig.kcfg:92
 #, kde-format
 msgid "Whether to automatically attempt to fetch cover art as needed"
-msgstr ""
+msgstr "האם לנסות למשוך יצירת אומנות של עטיפה אוטומטית לפי הצורך"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:96
@@ -437,7 +439,7 @@ msgstr "הצגת תצוגת ההקשר"
 #: amarokconfig.kcfg:112
 #, kde-format
 msgid "Play the first run jingle"
-msgstr ""
+msgstr "לנגן את הזמריר הראשון"
 
 #. i18n: ectx: label, entry, group (General Options)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnimateAppletCollapse)
@@ -666,13 +668,13 @@ msgstr "עוצמת הקול הראשית של Amarok, ערך בין 0 ל־ 100."
 #: amarokconfig.kcfg:204
 #, kde-format
 msgid "Mute state"
-msgstr ""
+msgstr "מצב השתקה"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:205
 #, kde-format
 msgid "Mute/Unmute sound."
-msgstr ""
+msgstr "השתקת/השמעת צליל."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:209
@@ -708,7 +710,7 @@ msgstr "אורך ההחלשה באלפיות־השנייה."
 #: amarokconfig.kcfg:225
 #, kde-format
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
-msgstr ""
+msgstr "מצב אקולייזר - 0 = כבוי, 1 עד n = ערכה מס׳"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:226
@@ -738,7 +740,7 @@ msgstr "רשימה עם ערכים של ערכות משתמש"
 #: amarokconfig.kcfg:241
 #, kde-format
 msgid "The mode for adjusting playback volume."
-msgstr ""
+msgstr "המצב לכוונון עוצמת שמע הנגינה."
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:242
@@ -758,13 +760,13 @@ msgstr "השבתת איזון עוצמת שמע"
 #: amarokconfig.kcfg:248
 #, kde-format
 msgid "Make each track the same volume"
-msgstr ""
+msgstr "לגרום לכך שכל הרצועות באותה עוצמת השמע"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:251
 #, kde-format
 msgid "Make each album the same volume"
-msgstr ""
+msgstr "לגרום לכך שכל האלבומים באותה עוצמת השמע"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:257
@@ -796,7 +798,7 @@ msgstr "האם על Amarok להשהות את הרצועה המתנגנת בעת 
 msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
 "track."
-msgstr ""
+msgstr "האם על Amarok למנוע מהמערכת לישון אם הוא מנגן רצועה."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:280
@@ -853,7 +855,7 @@ msgstr "הפעל/בטל את התצוגה־על־המסך."
 #: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:49
 #, kde-format
 msgid "Use Growl for notifications"
-msgstr ""
+msgstr "להשתמש ב־Growl להתראות"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:316
@@ -4262,7 +4264,7 @@ msgstr "משיכת תווים עבור"
 #: context/applets/tabs/TabsSettings.ui:47
 #, kde-format
 msgid "Guitar"
-msgstr ""
+msgstr "גיטרה"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbFetchBass)
 #: context/applets/tabs/TabsSettings.ui:60
@@ -4274,7 +4276,7 @@ msgstr "בס"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "tab provided from: "
-msgstr ""
+msgstr "התווים סופקו דרך: "
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:41
 #: context/applets/wikipedia/package/contents/ui/main.qml:153
@@ -4332,31 +4334,31 @@ msgstr "לא נמצא מידע"
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ""
+msgstr "‎.*\\(.*(אומן|להקה).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ""
+msgstr "‎.*\\(.*(מלחין|מוזיקאי).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
-msgstr ""
+msgstr "‎.*\\(.*(אלבום|ניקוד|נלווה).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
 msgctxt "Search pattern for a song"
 msgid ".*\\(.*(song|track).*\\)"
-msgstr ""
+msgstr "‎.*\\(.*(שיר|רצועה).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:531
 #, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
-msgstr ""
+msgstr "%1 נחוץ לטובת חיפוש בוויקיפדיה."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:739
 #, kde-format
@@ -4369,7 +4371,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "לחיצה תפתח את %1 בדפדפן"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -4389,7 +4391,7 @@ msgstr "ה&קשר"
 #: context/engines/labels/LabelsEngine.cpp:351
 #, kde-format
 msgid "No labels found on Last.fm"
-msgstr ""
+msgstr "לא נמצאו תוויות ב־Last.fm"
 
 #: context/engines/labels/LabelsEngine.cpp:319
 #, kde-format
@@ -14521,6 +14523,10 @@ msgid ""
 "specified mood to the playlist. The mood argument must have spaces escaped "
 "with &#37;20"
 msgstr ""
+"שירות Magnatune.com מקבל את ההודעות הבאות: \n"
+"\n"
+"\taddMoodyTracks mood count: מוסיף מספר מסוים של רצועות אקראיות לרשימת "
+"הנגינה. ארגומנט מצב הרוח חייב להיות עם רווחים ומילוט של &#37;20"
 
 #: services/magnatune/MagnatuneStore.cpp:631
 #, kde-format
@@ -14536,7 +14542,7 @@ msgstr ""
 #: services/magnatune/MagnatuneStore.cpp:646
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
-msgstr ""
+msgstr "שגיאה: שגיאת פענוח לארגומנט 2 ( כמות )"
 
 #: services/magnatune/MagnatuneStore.cpp:650
 #, kde-format
