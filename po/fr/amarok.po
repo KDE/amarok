@@ -3190,7 +3190,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:35
 #, kde-format
 msgid "Show tray &icon"
-msgstr "Afficher une icône dans la boî&te à miniatures"
+msgstr "Afficher une icône dans la boi&te à miniatures"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoGetCoverArt)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -10613,7 +10613,7 @@ msgstr "Giovanni Venturi"
 #: main.cpp:251
 #, kde-format
 msgid "Dialog to filter the collection titles"
-msgstr "Boîte de dialogue pour filtrer les titres de la collection"
+msgstr "Boite de dialogue pour filtrer les titres de la collection"
 
 #: main.cpp:253
 #, kde-format
