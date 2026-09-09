@@ -2210,7 +2210,7 @@ msgstr "Modifier les informations de la piste"
 #: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
-msgstr "Rafraîchir"
+msgstr "Rafraichir"
 
 #: browsers/filebrowser/FileBrowser.cpp:78
 #, kde-format
