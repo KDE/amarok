@@ -687,7 +687,7 @@ msgstr ""
 #: amarokconfig.kcfg:179
 #, kde-format
 msgid "Replacing string."
-msgstr "Chaîne de remplacement."
+msgstr "Chaine de remplacement."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:180
@@ -8702,7 +8702,7 @@ msgstr "Expression rationnelle"
 #: dialogs/OrganizeCollectionOptions.ui:200
 #, kde-format
 msgid "Character string"
-msgstr "Chaîne de caractères"
+msgstr "Chaine de caractères"
 
 #: dialogs/TagDialog.cpp:517
 #, kde-format
