@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-30 00:43+0000\n"
+"POT-Creation-Date: 2026-09-14 00:42+0000\n"
 "PO-Revision-Date: 2024-08-14 00:39+0330\n"
 "Last-Translator: Mohi Mirdamadi <mohi.pub@gmail.com>\n"
 "Language-Team: fa\n"
@@ -6009,7 +6009,7 @@ msgid ""
 "This can be changed for each channel individually."
 msgstr ""
 
-#: core-impl/storage/StorageManager.cpp:159
+#: core-impl/storage/StorageManager.cpp:163
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr ""

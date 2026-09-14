@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-30 00:43+0000\n"
+"POT-Creation-Date: 2026-09-14 00:42+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -6217,7 +6217,7 @@ msgstr ""
 "χρησιμοποιείται ως κατάλογος λήψης.\n"
 "Αυτό μπορεί να τροποποιηθεί για κάθε κανάλι ξεχωριστά."
 
-#: core-impl/storage/StorageManager.cpp:159
+#: core-impl/storage/StorageManager.cpp:163
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "Αδυναμία φόρτωσης του διαμορφωμένου πρόσθετου της βάσης δεδομένων."

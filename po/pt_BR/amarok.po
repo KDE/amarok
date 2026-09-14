@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-30 00:43+0000\n"
+"POT-Creation-Date: 2026-09-14 00:42+0000\n"
 "PO-Revision-Date: 2026-06-26 03:30-0300\n"
 "Last-Translator: Guilherme Marçal Silva <guimarcalsilva@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -6150,7 +6150,7 @@ msgstr ""
 "usada como pasta de download.\n"
 "Isto pode ser alterado para cada canal individualmente."
 
-#: core-impl/storage/StorageManager.cpp:159
+#: core-impl/storage/StorageManager.cpp:163
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "O plugin de banco de dados configurado não pôde ser carregado."

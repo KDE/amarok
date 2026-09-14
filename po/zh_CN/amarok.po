@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-30 00:43+0000\n"
+"POT-Creation-Date: 2026-09-14 00:42+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -5861,7 +5861,7 @@ msgstr ""
 "当一个播客频道添加后，<底层目录>/<频道名称> 会被用作为它的下载目录。\n"
 "您也可以单独调整每个频道的设置。"
 
-#: core-impl/storage/StorageManager.cpp:159
+#: core-impl/storage/StorageManager.cpp:163
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "无法加载已配置的数据库插件。"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-30 00:43+0000\n"
+"POT-Creation-Date: 2026-09-14 00:42+0000\n"
 "PO-Revision-Date: 2025-12-06 17:11+0700\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -5959,7 +5959,7 @@ msgstr ""
 "ເມື່ອມີການເພີ່ມຊ່ອງພອດແຄສ <ໂຟນເດີຫຼັກ>/<ຊື່ຊ່ອງ> ຈະຖືກໃຊ້ເປັນໂຟນເດີດາວໂຫຼດ.\n"
 "ອັນນີ້ສາມາດປ່ຽນແປງໄດ້ສຳລັບແຕ່ລະຊ່ອງ."
 
-#: core-impl/storage/StorageManager.cpp:159
+#: core-impl/storage/StorageManager.cpp:163
 #, kde-format
 msgid "The configured database plugin could not be loaded."
 msgstr "ບໍ່ສາມາດໂຫຼດປລັກອິນຖານຂໍ້ມູນທີ່ກຳນົດຄ່າໄວ້ໄດ້."
