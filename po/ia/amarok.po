@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-09-14 00:42+0000\n"
-"PO-Revision-Date: 2026-02-05 18:38+0100\n"
+"PO-Revision-Date: 2026-09-14 16:21+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1032,7 +1032,7 @@ msgstr ""
 #: amarokconfig.kcfg:371 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
-msgstr "Non monstar quando un application in schermo complete es active"
+msgstr "Non monstrar quando un application in schermo complete es active"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
@@ -2250,7 +2250,7 @@ msgstr ""
 #, kde-format
 msgctxt "Bias selection label in bias view."
 msgid "Match Type:"
-msgstr ""
+msgstr "Typo de correspondentia:"
 
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:128
 #, kde-format
@@ -5349,7 +5349,7 @@ msgstr "Corbe"
 #: core-impl/collections/support/TrashCollectionLocation.cpp:101
 #, kde-format
 msgid "Moving to trash: %1"
-msgstr ""
+msgstr "Movente a corbe: %1"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:195
 #, kde-format
@@ -11002,7 +11002,7 @@ msgstr "Repete album"
 #: playlist/navigators/NavigatorConfigAction.cpp:60
 #, kde-format
 msgid "Repeat Playlist"
-msgstr ""
+msgstr "Repete lista de reproduction"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:68
 #, kde-format
@@ -15272,7 +15272,7 @@ msgstr "Nove preregulation"
 #: widgets/FilenameLayoutWidget.cpp:434
 #, kde-format
 msgid "Preset Name"
-msgstr ""
+msgstr "Nomine de preregulation"
 
 #: widgets/MetaQueryWidget.cpp:130
 #, kde-format
@@ -15326,7 +15326,7 @@ msgstr[1] "annos"
 #: widgets/MetaQueryWidget.cpp:318
 #, kde-format
 msgid "Simple Search"
-msgstr ""
+msgstr "Cerca simplice"
 
 #: widgets/MetaQueryWidget.cpp:683
 #, kde-format
