@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-09-14 00:42+0000\n"
-"PO-Revision-Date: 2026-09-04 10:38+0300\n"
+"PO-Revision-Date: 2026-09-15 08:09+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -5428,7 +5428,7 @@ msgctxt ""
 "Name of the USB Mass Storage collection that has not yet been activated. See "
 "also the 'Activate This Collection' action; %1 is actual collection name"
 msgid "%1 (not activated)"
-msgstr ""
+msgstr "%1 (לא הופעל)"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:629
 #, kde-format
@@ -5461,7 +5461,7 @@ msgstr "שם:"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:34
 #, kde-format
 msgid "Use automatically when connected"
-msgstr ""
+msgstr "להשתמש אוטומטית כאשר יש חיבור"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_musicCheckBox)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:51
@@ -7485,13 +7485,13 @@ msgstr " - "
 
 # kde-il: don't translate
 #: covermanager/CoverManager.cpp:657
-#, fuzzy, kde-format
+#, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "אחד לא נמצא"
-msgstr[1] "%1 לא נמצאו"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "שניים לא נמצאו"
+msgstr[2] "%1 לא נמצאו"
+msgstr[3] "%1 לא נמצאו"
 
 #: covermanager/CoverManager.cpp:660
 #: services/lastfm/LastFmServiceSettings.cpp:107
@@ -9633,7 +9633,7 @@ msgstr "מרים שוויינגרובר"
 #: main.cpp:93
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
-msgstr ""
+msgstr "Rokymoter, אימות תקלות (Mamarok)"
 
 #: main.cpp:96
 #, kde-format
@@ -9708,7 +9708,7 @@ msgstr "ואלורי צימרמן"
 #: main.cpp:120
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
-msgstr ""
+msgstr "Rokymoter, ספרון הדרכה (valorie)"
 
 #: main.cpp:123
 #, kde-format
@@ -9832,7 +9832,7 @@ msgstr "התחברות ל־MP3tunes"
 #: main.cpp:155
 #, kde-format
 msgid "Casper van Donderen"
-msgstr ""
+msgstr "קספר ואן דונדרן"
 
 #: main.cpp:155
 #, kde-format
