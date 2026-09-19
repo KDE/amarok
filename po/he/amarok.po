@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-09-14 00:42+0000\n"
-"PO-Revision-Date: 2026-09-15 08:09+0300\n"
+"PO-Revision-Date: 2026-09-17 10:45+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -3383,16 +3383,13 @@ msgstr "&משך זמן:"
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, kcfg_OsdDuration)
 #: configdialog/dialogs/NotificationsConfig.ui:62
 #: configdialog/dialogs/NotificationsConfig.ui:65
-#, fuzzy, kde-format
-#| msgid ""
-#| "The time in milliseconds to show the OSD. The value must be between 500 "
-#| "ms and 10000 ms."
+#, kde-format
 msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
-"משך הזמן באלפיות־שנייה להצגת התצוגה־על־המסך. הערך חייב להיות בין 500 אלפיות־"
-"שנייה ל־10000 אלפיות־שנייה."
+"הזמן במילישניות להצגת התצוגה על המסך. הערך חייב להיות בין 500 ל־10000 "
+"מילישניות."
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
 #: configdialog/dialogs/NotificationsConfig.ui:71
@@ -3921,10 +3918,9 @@ msgstr "הגדרות תוויות"
 #. i18n: ectx: property (text), widget (QLabel, minAutoAddCountLabel)
 #: context/applets/labels/labelsGeneralSettings.ui:37
 #: context/applets/labels/labelsGeneralSettings.ui:169
-#, fuzzy, kde-format
-#| msgid "Retrieve similar artists"
+#, kde-format
 msgid "Minimum label score:"
-msgstr "אחזר אמנים דומים"
+msgstr "דירוג תווית מזערי:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, minCountSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:56
@@ -14841,7 +14837,7 @@ msgstr "הוספת קובץ OPML מקומי או מרוחק לכלול ברשי�
 #: services/opmldirectory/AddOpmlWidget.ui:88
 #, kde-format
 msgid "If left blank the title from the OPML will be used."
-msgstr ""
+msgstr "אם נשאר ריק ייעשה שימוש בכותרת מה־OPML."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:57
 #, kde-format
