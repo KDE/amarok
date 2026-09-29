@@ -13218,7 +13218,6 @@ msgstr "жанр"
 msgid "composer"
 msgstr "композитор"
 
-# BUGME: WTF?! Translation for plural shared with single-form string? --aspotashev
 #: playlistgenerator/constraints/TagMatchSupport.cpp:93
 #, kde-format
 msgctxt "Field name"
