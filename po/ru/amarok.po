@@ -1405,7 +1405,7 @@ msgid ""
 "engine."
 msgstr ""
 "Должен ли Amarok использовать свою внутреннюю базу или использовать внешний "
-"движок."
+"модуль."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:560
