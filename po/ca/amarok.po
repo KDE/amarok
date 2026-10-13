@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-09-14 00:42+0000\n"
-"PO-Revision-Date: 2026-09-06 16:29+0200\n"
+"PO-Revision-Date: 2026-10-12 11:59+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -5305,7 +5305,7 @@ msgstr "No s'han copiat les peces: el dispositiu ja té aquestes peces"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:431
 #, kde-format
 msgid "Tracks not copied: the device has insufficient space"
-msgstr "No s'han copiat les peces: el dispositiu no té suficient espai lliure"
+msgstr "No s'han copiat les peces: el dispositiu no té prou espai lliure"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:441
 #, kde-format
@@ -11982,7 +11982,7 @@ msgstr "Grup «Coincidència amb tots»"
 #, kde-format
 msgctxt "name of a type of constraint group"
 msgid "Unknown match group"
-msgstr "Grup de coincidència desconegut"
+msgstr "Grup de coincidències desconegut"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, ConstraintGroupEditWidget)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:15
@@ -12006,7 +12006,7 @@ msgstr ""
 #: playlistgenerator/ConstraintGroupEditWidget.ui:21
 #, kde-format
 msgid "Constraint Group Settings"
-msgstr "Arranjament de grups de restricció"
+msgstr "Arranjament de grups de restriccions"
 
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, radioButton_MatchAll)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:29
@@ -12148,7 +12148,7 @@ msgid ""
 "How strict the APG should be about placing the selected track at the "
 "specified time."
 msgstr ""
-"Grau de precisió del GALR quan a col·locar la peça seleccionada a l'hora "
+"Grau de precisió del GALR quant a col·locar la peça seleccionada a l'hora "
 "indicada."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Strictness)
@@ -12316,7 +12316,7 @@ msgid ""
 "How strict the APG should be about matching the playlist duration to the "
 "specified time."
 msgstr ""
-"Grau de precisió del GALR quan a igualar la durada de la llista de "
+"Grau de precisió del GALR quant a igualar la durada de la llista de "
 "reproducció a l'hora indicada."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
@@ -12452,9 +12452,9 @@ msgid ""
 "<html><head/><body><p>How strict the APG should be about matching the total "
 "size of all files in the playlist to the specified size.</p></body></html>"
 msgstr ""
-"<html><head/><body><p>Grau de precisió del GALR quan a igualar la mida total "
-"de tots els fitxers de la llista de reproducció a la mida indicada.</p></"
-"body></html>"
+"<html><head/><body><p>Grau de precisió del GALR quant a igualar la mida "
+"total de tots els fitxers de la llista de reproducció a la mida indicada.</"
+"p></body></html>"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:51
 #, kde-format
@@ -12530,7 +12530,7 @@ msgid ""
 "How strict the APG should be about matching the playlist length to the "
 "specified number of tracks."
 msgstr ""
-"Grau de precisió del GALR quan a igualar la longitud de la llista de "
+"Grau de precisió del GALR quant a igualar la longitud de la llista de "
 "reproducció al nombre de peces indicat."
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
@@ -12886,7 +12886,7 @@ msgstr ""
 #, kde-format
 msgid ""
 "How strict the APG should be about matching tracks to the specified value."
-msgstr "Grau de precisió del GALR quan a igualar les peces al valor indicat."
+msgstr "Grau de precisió del GALR quant a igualar les peces al valor indicat."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:226
@@ -12927,7 +12927,7 @@ msgstr ""
 msgid ""
 "How strict the APG should be about matching tracks to the specified date."
 msgstr ""
-"Grau de precisió del GALR quan a cercar les peces coincidents amb la data "
+"Grau de precisió del GALR quant a cercar les peces coincidents amb la data "
 "indicada."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonString)
@@ -12995,7 +12995,7 @@ msgstr "L'hora que el GALR utilitzarà per a les coincidències."
 msgid ""
 "How strict the APG should be about matching tracks to the specified time."
 msgstr ""
-"Grau de precisió del GALR quan a cercar les peces coincidents amb l'hora "
+"Grau de precisió del GALR quant a cercar les peces coincidents amb l'hora "
 "indicada."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
@@ -13022,7 +13022,7 @@ msgstr "La valoració que el GALR hauria d'intentar trobar."
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
-"Grau de precisió del GALR quan a cercar les peces coincidents amb la "
+"Grau de precisió del GALR quant a cercar les peces coincidents amb la "
 "valoració indicada."
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:87
@@ -14853,7 +14853,7 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">L'equip de l'Amarok rebrà "
-"el 10% del vostre pagament inicial com a soci, i per tant, en inscriure-us "
+"el 10% del vostre pagament inicial com a soci i, per tant, en inscriure-us "
 "també esteu donant suport el desenvolupament de l'Amarok.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
@@ -14866,7 +14866,7 @@ msgstr ""
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Per a llegir més quan als "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Per a llegir més quant als "
 "membres de Magnatune.com, o per a registrar-vos, cliqueu aquí: <a href="
 "\"http://magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
 "decoration: underline; color:#0057ae;\">Informació dels socis</span></a> </"
