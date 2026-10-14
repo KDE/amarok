@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-09-14 00:42+0000\n"
-"PO-Revision-Date: 2026-09-06 16:29+0200\n"
+"PO-Revision-Date: 2026-10-12 11:59+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -4628,9 +4628,9 @@ msgid ""
 msgstr ""
 "FLAC és un format d'àudio comprimit sense pèrdua lliure de qualsevol dret de "
 "patent o llicència. Té una qualitat d'àudio CD perfecte i reduïx la mida del "
-"fitxer aproximadament en un 50%. Com que la mida del fitxer és molt més gran "
-"que Ogg Vorbis o MP3, no es recomana si voleu transferir la música cap a un "
-"reproductor mòbil."
+"fitxer aproximadament en un 50 %. Com que la mida del fitxer és molt més "
+"gran que Ogg Vorbis o MP3, no es recomana si voleu transferir la música cap "
+"a un reproductor mòbil."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:75
 #, kde-format
@@ -5309,7 +5309,7 @@ msgstr "No s'han copiat les peces: el dispositiu ja té estes peces"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:431
 #, kde-format
 msgid "Tracks not copied: the device has insufficient space"
-msgstr "No s'han copiat les peces: el dispositiu no té suficient espai lliure"
+msgstr "No s'han copiat les peces: el dispositiu no té prou espai lliure"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:441
 #, kde-format
@@ -6694,7 +6694,7 @@ msgstr[1] "%1 anys"
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
 msgid_plural "%1 months"
-msgstr[0] "1% mes"
+msgstr[0] "1 % mes"
 msgstr[1] "%1 mesos"
 
 #: core/meta/support/MetaUtility.cpp:446
@@ -11222,7 +11222,7 @@ msgstr "Personalitzada"
 #, kde-format
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
-msgstr "Un valor fix (absolut), o un valor relatiu (p. ex., 128px o 12%)."
+msgstr "Un valor fix (absolut), o un valor relatiu (p. ex., 128px o 12 %)."
 
 #: playlist/layouts/LayoutEditDialog.cpp:104
 #, kde-format
@@ -11984,7 +11984,7 @@ msgstr "Grup «Coincidència amb tots»"
 #, kde-format
 msgctxt "name of a type of constraint group"
 msgid "Unknown match group"
-msgstr "Grup de coincidència desconegut"
+msgstr "Grup de coincidències desconegut"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, ConstraintGroupEditWidget)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:15
@@ -12008,7 +12008,7 @@ msgstr ""
 #: playlistgenerator/ConstraintGroupEditWidget.ui:21
 #, kde-format
 msgid "Constraint Group Settings"
-msgstr "Configuració de grups de restricció"
+msgstr "Configuració de grups de restriccions"
 
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, radioButton_MatchAll)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:29
@@ -12150,7 +12150,7 @@ msgid ""
 "How strict the APG should be about placing the selected track at the "
 "specified time."
 msgstr ""
-"Grau de precisió de GALR quan a col·locar la peça seleccionada a l'hora "
+"Grau de precisió de GALR quant a col·locar la peça seleccionada a l'hora "
 "indicada."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Strictness)
@@ -12318,7 +12318,7 @@ msgid ""
 "How strict the APG should be about matching the playlist duration to the "
 "specified time."
 msgstr ""
-"Grau de precisió de GALR quan a igualar la duració de la llista de "
+"Grau de precisió de GALR quant a igualar la duració de la llista de "
 "reproducció a l'hora indicada."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
@@ -12455,7 +12455,7 @@ msgid ""
 "<html><head/><body><p>How strict the APG should be about matching the total "
 "size of all files in the playlist to the specified size.</p></body></html>"
 msgstr ""
-"<html><head/><body><p>Grau de precisió de GALR quan a igualar la mida total "
+"<html><head/><body><p>Grau de precisió de GALR quant a igualar la mida total "
 "de tots els fitxers de la llista de reproducció a la mida indicada.</p></"
 "body></html>"
 
@@ -12533,7 +12533,7 @@ msgid ""
 "How strict the APG should be about matching the playlist length to the "
 "specified number of tracks."
 msgstr ""
-"Grau de precisió de GALR quan a igualar la llargària de la llista de "
+"Grau de precisió de GALR quant a igualar la llargària de la llista de "
 "reproducció al nombre de peces indicat."
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
@@ -12889,7 +12889,7 @@ msgstr ""
 #, kde-format
 msgid ""
 "How strict the APG should be about matching tracks to the specified value."
-msgstr "Grau de precisió de GALR quan a igualar les peces al valor indicat."
+msgstr "Grau de precisió de GALR quant a igualar les peces al valor indicat."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:226
@@ -12930,7 +12930,7 @@ msgstr ""
 msgid ""
 "How strict the APG should be about matching tracks to the specified date."
 msgstr ""
-"Grau de precisió de GALR quan es busquen les peces coincidents amb la data "
+"Grau de precisió de GALR quant a buscar les peces coincidents amb la data "
 "indicada."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonString)
@@ -12998,7 +12998,7 @@ msgstr "L'hora que GALR utilitzarà per a les coincidències."
 msgid ""
 "How strict the APG should be about matching tracks to the specified time."
 msgstr ""
-"Grau de precisió de GALR quan es busquen les peces coincidents amb l'hora "
+"Grau de precisió de GALR quant a buscar les peces coincidents amb l'hora "
 "indicada."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
@@ -13025,7 +13025,7 @@ msgstr "La valoració que GALR hauria d'intentar trobar."
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
-"Grau de precisió de GALR quan es busquen les peces coincidents amb la "
+"Grau de precisió de GALR quant a buscar les peces coincidents amb la "
 "valoració indicada."
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:87
@@ -14436,8 +14436,8 @@ msgstr ""
 "Les peces que esteu a punt de copiar són fluxos de vista prèvia de Magnatune."
 "com. Per a una millor qualitat i fluxos lliures d'anuncis, considereu la "
 "possibilitat de comprar una baixada d'àlbum. Recordeu que quan compreu des "
-"de Magnatune l'artista rep el 50%. També, si compreu utilitzant Amarok, "
-"esteu donant suport el projecte Amarok amb el 10%."
+"de Magnatune l'artista rep el 50 %. També, si compreu utilitzant Amarok, "
+"esteu donant suport el projecte Amarok amb el 10 %."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
@@ -14861,20 +14861,20 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">L'equip d'Amarok rebrà el "
-"10% del vostre pagament inicial com a soci, i per tant, en inscriure-vos "
+"10 % del vostre pagament inicial com a soci i, per tant, en inscriure-vos "
 "també esteu donant suport el desenvolupament d'Amarok.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Com sempre, els artistes "
-"obtenen el 50% del vostre pagament d'ingrés, distribuint-se segons els "
+"obtenen el 50 % del vostre pagament d'ingrés, distribuint-se segons els "
 "artistes que baixeu i escolteu.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Per a llegir més quan als "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Per a llegir més quant als "
 "membres de Magnatune.com, o per a registrar-vos, cliqueu ací: <a href="
 "\"http://magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
 "decoration: underline; color:#0057ae;\">Informació dels socis</span></a> </"
@@ -14909,10 +14909,10 @@ msgid ""
 "lets you download as much of their music as you like."
 msgstr ""
 "Magnatune.com és una classe diferent de companyia discogràfica amb el lema "
-"«No som el diable!» (We are not evil!). El 50% de cada compra va directament "
-"a l'artista i si compreu un àlbum a través d'Amarok, el projecte Amarok rep "
-"una comissió del 10%. Magnatune.com també oferix l'afiliació de «bufet "
-"lliure» que us permet baixar tota la seua música que vulgueu."
+"«No som el diable!» (We are not evil!). El 50 % de cada compra va "
+"directament a l'artista i si compreu un àlbum a través d'Amarok, el projecte "
+"Amarok rep una comissió del 10 %. Magnatune.com també oferix l'afiliació de "
+"«bufet lliure» que us permet baixar tota la seua música que vulgueu."
 
 #: services/magnatune/MagnatuneStore.cpp:219
 #, kde-format
@@ -15996,7 +15996,7 @@ msgstr "Silenciat"
 #: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
-msgstr "%1%"
+msgstr "%1 %"
 
 #: TrayIcon.cpp:160
 #, kde-format
@@ -16260,7 +16260,7 @@ msgstr "S'ha canviat la valoració"
 #: widgets/Osd.cpp:270
 #, kde-format
 msgid "Volume: 100% (muted)"
-msgstr "Volum: 100% (silenciat)"
+msgstr "Volum: 100 % (silenciat)"
 
 #: widgets/Osd.cpp:515
 #, kde-format
@@ -16330,32 +16330,32 @@ msgstr "Volum"
 #: widgets/SliderWidget.cpp:242
 #, kde-format
 msgid "100%"
-msgstr "100%"
+msgstr "100 %"
 
 #: widgets/SliderWidget.cpp:243
 #, kde-format
 msgid "80%"
-msgstr "80%"
+msgstr "80 %"
 
 #: widgets/SliderWidget.cpp:244
 #, kde-format
 msgid "60%"
-msgstr "60%"
+msgstr "60 %"
 
 #: widgets/SliderWidget.cpp:245
 #, kde-format
 msgid "40%"
-msgstr "40%"
+msgstr "40 %"
 
 #: widgets/SliderWidget.cpp:246
 #, kde-format
 msgid "20%"
-msgstr "20%"
+msgstr "20 %"
 
 #: widgets/SliderWidget.cpp:247
 #, kde-format
 msgid "0%"
-msgstr "0%"
+msgstr "0 %"
 
 #: widgets/SliderWidget.cpp:408
 #, kde-format
