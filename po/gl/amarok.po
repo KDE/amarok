@@ -10868,22 +10868,20 @@ msgid "Edit Details of Currently Selected Track"
 msgstr "Editar os detalles da pista seleccionada"
 
 #: MainWindow.cpp:822 MainWindow.cpp:829 MainWindow.cpp:837
-#, fuzzy, kde-format
-#| msgid "Seek Forward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Forward by %1"
-msgstr "Avanzar %1 segundos"
+msgstr "Localizar cara adiante en %1"
 
 #: MainWindow.cpp:845 MainWindow.cpp:852 MainWindow.cpp:860
-#, fuzzy, kde-format
-#| msgid "Seek Backward by %1 seconds"
+#, kde-format
 msgctxt ""
 "Keyboard shortcut setting. A localized fitting unit (seconds or minutes) is "
 "automatically included in %1."
 msgid "Seek Backward by %1"
-msgstr "Retroceder %1 segundos"
+msgstr "Localizar cara atrás en %1"
 
 #: MainWindow.cpp:866
 #, kde-format
