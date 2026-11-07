@@ -435,7 +435,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 void
 FileView::addSelectionToPlaylist( Playlist::AddOptions options )
 {
-    addIndicesToPlaylist( selectedIndexes(), options );
+    addIndicesToPlaylist( selectionModel()->selectedRows(), options );
 }
 
 void
@@ -457,10 +457,6 @@ FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions op
     QList<QUrl> urls;
     for( const QModelIndex &index : indices )
     {
-         // one index is included for each visible column in file browser, so we need to skip duplicate entries for same row
-        if( addedRows.contains( index.row() ) )
-            continue;
-        addedRows << index.row();
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         QUrl url = file.url();
         if( file.isDir() || Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) )
@@ -522,7 +518,7 @@ KFileItemList
 FileView::selectedItems() const
 {
     KFileItemList items;
-    QModelIndexList indices = selectedIndexes();
+    QModelIndexList indices = selectionModel()->selectedRows();
     if( indices.isEmpty() )
         return items;
 
@@ -539,7 +535,7 @@ FileView::tracksForEdit() const
 {
     Meta::TrackList tracks;
 
-    QModelIndexList indices = selectedIndexes();
+    QModelIndexList indices = selectionModel()->selectedRows();
     if( indices.isEmpty() )
         return tracks;
 
@@ -559,7 +555,7 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
     Q_UNUSED( buttons )
     DEBUG_BLOCK
 
-    QModelIndexList indices = selectedIndexes();
+    QModelIndexList indices = selectionModel()->selectedRows();
     if( indices.isEmpty() )
         return;
 

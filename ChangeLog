@@ -10,6 +10,7 @@ VERSION 3.3.81 UNRELEASED
 
   BUGFIXES:
    * Fix shift-selecting multiple tracks in albums context applet
+   * Avoid duplicate file entries in various file browser operations
 
 VERSION 3.3.3
   FEATURES:
