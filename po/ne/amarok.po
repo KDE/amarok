@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-09-14 00:42+0000\n"
+"POT-Creation-Date: 2026-11-08 02:56+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -2248,7 +2248,7 @@ msgstr ""
 msgid "&Move to Trash"
 msgstr "रद्दीटोकरीमा पठाउनुहोस्"
 
-#: browsers/filebrowser/FileView.cpp:571
+#: browsers/filebrowser/FileView.cpp:567
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, fuzzy, kde-format
 #| msgid "Configure Playback"
@@ -2256,7 +2256,7 @@ msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "प्लेब्याक कन्फिगर गर्नुहोस्"
 
-#: browsers/filebrowser/FileView.cpp:572
+#: browsers/filebrowser/FileView.cpp:568
 #, fuzzy, kde-format
 #| msgid "Are you sure you want to overwrite this cover?"
 msgid "Are you sure you want to delete this item?"
@@ -2264,7 +2264,7 @@ msgid_plural "Are you sure you want to delete these %1 items?"
 msgstr[0] "तपाईँ यो आवरण अधिलेखन गर्न निश्चित चाहनुहुन्छ ?"
 msgstr[1] "तपाईँ यो आवरण अधिलेखन गर्न निश्चित चाहनुहुन्छ ?"
 
-#: browsers/filebrowser/FileView.cpp:578
+#: browsers/filebrowser/FileView.cpp:574
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 #, fuzzy, kde-format
 #| msgid "Moving files to trash"
@@ -2272,7 +2272,7 @@ msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "रद्दीटोकरीमा फाइलहरू सार्दै"
 
-#: browsers/filebrowser/FileView.cpp:579
+#: browsers/filebrowser/FileView.cpp:575
 #, fuzzy, kde-format
 #| msgid "Are you sure you want to overwrite this cover?"
 msgid "Are you sure you want to move this item to trash?"
