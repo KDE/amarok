@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-08 02:56+0000\n"
-"PO-Revision-Date: 2026-10-16 20:02+0300\n"
+"PO-Revision-Date: 2026-11-10 21:38+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 26.08.0\n"
+"X-Generator: Lokalize 26.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1545,7 +1545,7 @@ msgstr ""
 #: amarokconfig.kcfg:623
 #, kde-format
 msgid "The style to use when painting the moodbar"
-msgstr "Ruh hali çubuğunu boyarken kullanılacak biçem"
+msgstr "Ruh hali çubuğunu boyarken kullanılacak stil"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:630
@@ -3248,7 +3248,7 @@ msgstr "Konum sürgüsünde ruh hali çubuğunu göster"
 #: configdialog/dialogs/GeneralConfig.ui:127
 #, kde-format
 msgid "Moodbar style"
-msgstr "Ruh hali çubuğu biçemi"
+msgstr "Ruh hali çubuğu stili"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_MoodbarPaintStyle)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -3256,7 +3256,7 @@ msgstr "Ruh hali çubuğu biçemi"
 #: configdialog/dialogs/GeneralConfig.ui:137
 #, kde-format
 msgid "Choose the mood display style"
-msgstr "Ruh hali görüntüleme biçemini seç"
+msgstr "Ruh hali görüntüleme stilini seç"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:141

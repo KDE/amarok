@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-08 02:56+0000\n"
-"PO-Revision-Date: 2026-02-20 13:54+0200\n"
-"Last-Translator: Alexander Yavorskiy <kekcuha@gmail.com>\n"
+"PO-Revision-Date: 2026-11-11 22:59+0200\n"
+"Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -11366,7 +11366,7 @@ msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
 msgstr ""
 "Указать абсолютное либо относительное значение (например, 128 пикселов или "
-"12%)."
+"12 %)."
 
 #: playlist/layouts/LayoutEditDialog.cpp:104
 #, kde-format
@@ -14587,8 +14587,8 @@ msgstr ""
 "Дорожки, которые вы собираетесь копировать, являются образцами потоков "
 "Magnatune.com. Для получения данных в более высоком качестве и бесплатных "
 "демонстрационных потоков, приобретите возможность загрузить весь альбом. При "
-"покупке в Magnatune исполнители получают 50% стоимости. При покупке через "
-"Amarok, проекту достаётся 10%."
+"покупке в Magnatune исполнители получают 50 % стоимости. При покупке через "
+"Amarok, проекту достаётся 10 %."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
@@ -15007,7 +15007,7 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Команда разработчиков "
-"Amarok получает 10% от вашего начального членского взноса, то есть, "
+"Amarok получает 10 % от вашего начального членского взноса, то есть, "
 "присоединяясь к Magnatune.com, вы также поддерживаете разработку Amarok.</"
 "p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
@@ -15015,7 +15015,7 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Как и всегда, те "
-"исполнители, которых вы слушаете, получают 50% от ваших членских взносов.</"
+"исполнители, которых вы слушаете, получают 50 % от ваших членских взносов.</"
 "p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
@@ -15054,9 +15054,9 @@ msgid ""
 "lets you download as much of their music as you like."
 msgstr ""
 "Magnatune.com — это особый лейбл, девиз которого — «We are not evil!» («Мы — "
-"не зло!»). Исполнители, которых вы слушаете, получают 50% от ваших членских "
+"не зло!»). Исполнители, которых вы слушаете, получают 50 % от ваших членских "
 "взносов. Если вы покупаете альбом через Amarok, команда разработчиков Amarok "
-"получает 10% от его стоимости. Magnatune.com также предоставляет учётные "
+"получает 10 % от его стоимости. Magnatune.com также предоставляет учётные "
 "записи, позволяющие загружать неограниченно много музыки."
 
 #: services/magnatune/MagnatuneStore.cpp:219
@@ -15987,13 +15987,13 @@ msgstr "Компактная панель инструментов"
 #: widgets/Osd.cpp:209
 #, kde-format
 msgid "Volume: %1% (muted)"
-msgstr "Громкость: %1% (выкл.)"
+msgstr "Громкость: %1 % (выкл.)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:209
 #: widgets/VolumeDial.cpp:304 widgets/VolumeDial.cpp:343
 #, kde-format
 msgid "Volume: %1%"
-msgstr "Громкость: %1%"
+msgstr "Громкость: %1 %"
 
 #: transcoding/TranscodingAssistantDialog.cpp:44
 #, kde-format
@@ -16166,7 +16166,7 @@ msgstr "Звук выключен"
 #: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
-msgstr "%1%"
+msgstr "%1 %"
 
 #: TrayIcon.cpp:160
 #, kde-format
@@ -16449,7 +16449,7 @@ msgstr "Оценка изменена"
 #: widgets/Osd.cpp:270
 #, kde-format
 msgid "Volume: 100% (muted)"
-msgstr "Громкость: 100% (выкл.)"
+msgstr "Громкость: 100 % (выкл.)"
 
 #: widgets/Osd.cpp:515
 #, kde-format
@@ -16519,32 +16519,32 @@ msgstr "Громкость"
 #: widgets/SliderWidget.cpp:242
 #, kde-format
 msgid "100%"
-msgstr "100%"
+msgstr "100 %"
 
 #: widgets/SliderWidget.cpp:243
 #, kde-format
 msgid "80%"
-msgstr "80%"
+msgstr "80 %"
 
 #: widgets/SliderWidget.cpp:244
 #, kde-format
 msgid "60%"
-msgstr "60%"
+msgstr "60 %"
 
 #: widgets/SliderWidget.cpp:245
 #, kde-format
 msgid "40%"
-msgstr "40%"
+msgstr "40 %"
 
 #: widgets/SliderWidget.cpp:246
 #, kde-format
 msgid "20%"
-msgstr "20%"
+msgstr "20 %"
 
 #: widgets/SliderWidget.cpp:247
 #, kde-format
 msgid "0%"
-msgstr "0%"
+msgstr "0 %"
 
 #: widgets/SliderWidget.cpp:408
 #, kde-format

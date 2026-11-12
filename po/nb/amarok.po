@@ -705,7 +705,7 @@ msgstr "Dempet tilstand"
 #: amarokconfig.kcfg:205
 #, kde-format
 msgid "Mute/Unmute sound."
-msgstr "Demp lyd av/på."
+msgstr "Demp lyd på/av."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:209
@@ -1458,7 +1458,7 @@ msgstr "Om innebygde skripter skal oppdateres automatisk"
 #: amarokconfig.kcfg:593
 #, kde-format
 msgid "Enable/Disable automatic update for built-in scripts."
-msgstr "Vend automatisk oppdatering for innebygde skripter av/på."
+msgstr "Vend automatisk oppdatering for innebygde skripter på/av."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -1495,7 +1495,7 @@ msgstr ""
 #: amarokconfig.kcfg:619
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
-msgstr "Slå av/på visning av stemningslinje, om den finnes, i framdriftslinja."
+msgstr "Slå på/av visning av stemningslinje, om den finnes, i framdriftslinja."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:623
@@ -10738,7 +10738,7 @@ msgstr "Slå på/av hovedvindu"
 #: MainWindow.cpp:930
 #, kde-format
 msgid "Toggle Full Screen"
-msgstr "Vend fullskjerm av/på"
+msgstr "Vend fullskjerm på/av"
 
 #: MainWindow.cpp:935 playlist/ProgressiveSearchWidget.cpp:47
 #, kde-format
