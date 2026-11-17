@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-08 02:56+0000\n"
-"PO-Revision-Date: 2026-11-15 19:54+0300\n"
+"PO-Revision-Date: 2026-11-16 19:00+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -8275,7 +8275,7 @@ msgstr "Özgün: %1"
 #: dialogs/OrganizeCollectionDialog.cpp:317
 #, kde-format
 msgid "Preview: %1"
-msgstr "Önizleme: %1"
+msgstr "Ön izleme: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:383
 #, kde-format
@@ -8336,7 +8336,7 @@ msgstr "Seçenekler"
 #: dialogs/OrganizeCollectionDialogBase.ui:94
 #, kde-format
 msgid "Destination Preview"
-msgstr "Hedef Önizlemesi"
+msgstr "Hedef Ön İzlemesi"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, overwriteCheck)
 #: dialogs/OrganizeCollectionDialogBase.ui:159
@@ -8981,7 +8981,7 @@ msgstr "&Alt çizgileri boşlukla değiştir"
 #: dialogs/TagGuessOptions.ui:95
 #, kde-format
 msgid "Result Preview"
-msgstr "Sonuç Önizlemesi"
+msgstr "Sonuç Ön İzlemesi"
 
 #. i18n: ectx: property (text), widget (QLabel, Title_result)
 #. i18n: ectx: property (text), widget (QLabel, Artist_result)
@@ -11421,7 +11421,7 @@ msgstr "Araç ipuçlarını göster"
 #: widgets/Osd.cpp:517
 #, kde-format
 msgid "Preview"
-msgstr "Önizle"
+msgstr "Ön İzle"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:34
 #, kde-format
@@ -14332,7 +14332,7 @@ msgstr "Albüm kapağı koleksiyona ekleniyor"
 #: services/magnatune/MagnatuneCollectionLocation.cpp:41
 #, kde-format
 msgid "Preview Tracks"
-msgstr "Parçaları Önizle"
+msgstr "Parçaları Ön İzle"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:53
 #, kde-format
@@ -14342,7 +14342,7 @@ msgid ""
 "Remember that when buying from Magnatune the artist gets 50%. Also if you "
 "buy using Amarok, you support the Amarok project with 10%."
 msgstr ""
-"Kopyalamak üzere olduğunuz parçalar, Magnatune.com önizleme akışlarıdır. "
+"Kopyalamak üzere olduğunuz parçalar, Magnatune.com ön izleme akışlarıdır. "
 "Daha kaliteli ve reklâmsız akışlar için bir albüm indirmesini satın almayı "
 "düşünün. Unutmayın, Magnatune’dan alırken sanatçı %​50 pay alır. Ayrıca  "
 "Amarok kullanarak alırsanız Amarok projesine %​10 katkıda bulunmuş olursunuz."
@@ -14475,7 +14475,7 @@ msgstr "Akış Seçenekleri"
 #: services/magnatune/MagnatuneConfigWidget.ui:189
 #, kde-format
 msgid "Preview stream type:"
-msgstr "Önizleme akış türü:"
+msgstr "Ön izleme akışı türü:"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:197
@@ -16141,7 +16141,7 @@ msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
-"Ekran Üzeri Görüntü önizlemesi\n"
+"Ekran Üzeri Görüntü ön izlemesi\n"
 "Konumlandırmak için sürükleyin"
 
 #: widgets/Osd.cpp:772

@@ -26,7 +26,7 @@
 ><affiliation
 ><address
 ><email
->marcus.gama@gmail.com</email
+>marcus.gama@kde.org</email
 ></address
 ></affiliation
 ><contrib
@@ -4951,13 +4951,13 @@
     <entry>
     <para
 ><guilabel
->Usar mensagem na tela</guilabel
+>Usar indicador na tela</guilabel
 ></para>
     </entry>
     <entry>
     <para
 >Assinale para ativar o <emphasis
->On-Screen Display</emphasis
+>Indicador na Tela (OSD)</emphasis
 >. O <emphasis
 >OSD</emphasis
 > mostra de repente os dados das faixas ao reproduzir uma nova faixa. Se a opção estiver assinalada, o OSD ficará visível na sua tela para que você possa arrastá-lo para o local desejado.</para>
@@ -4972,7 +4972,7 @@
     </entry>
     <entry>
     <para
->O tempo, em milissegundos, para mostrar a mensagem na tela. O valor deve estar entre 500 e 10000 ms.</para>
+>O tempo, em milissegundos, para mostrar o indicador na tela. O valor deve estar entre 500 e 10000 ms.</para>
     </entry>
   </row>
   <row>
@@ -4984,7 +4984,7 @@
     </entry>
     <entry>
     <para
->Permite-lhe escolher a tela que deverá mostrar o OSD, caso tenha uma configuração com vários monitores. Por padrão, o valor é 0.</para>
+>Permite-lhe escolher a tela que deverá mostrar o indicador OSD, caso tenha uma configuração com vários monitores. Por padrão, o valor é 0.</para>
     </entry>
   </row>
   <row>
@@ -5008,7 +5008,7 @@
     </entry>
     <entry>
     <para
->(escolha o tamanho da fonte no OSD)</para>
+>(escolha o tamanho da fonte no indicador OSD)</para>
     </entry>
   </row>
   <row>
@@ -5020,7 +5020,7 @@
     </entry>
     <entry>
     <para
->Não mostrar a 'Mensagem na tela', caso outro aplicativo estiver em primeiro plano e a execução estiver em tela cheia.</para>
+>Não mostrar o 'Indicador na tela' caso outro aplicativo estiver em primeiro plano e a execução estiver em tela cheia.</para>
     </entry>
   </row>
   <row>
@@ -5032,8 +5032,8 @@
     </entry>
     <entry>
     <para
->Assinale para ativar as cores personalizadas para o texto da <emphasis
->Mensagem na tela</emphasis
+>Assinale para ativar as cores personalizadas para o texto do <emphasis
+>Indicador na tela</emphasis
 >.</para>
     </entry>
   </row>
@@ -5046,8 +5046,8 @@
     </entry>
     <entry>
     <para
->Clique para selecionar a cor do texto da <emphasis
->mensagem na tela</emphasis
+>Clique para selecionar a cor do texto do <emphasis
+>indicador na tela</emphasis
 >.</para>
     </entry>
   </row>
@@ -12024,7 +12024,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 >O &amarok; necessita da instalação de componentes do KDE para ser executado, mas funcionará perfeitamente no Gnome ou em outros ambientes de trabalho, incluindo o Windows e o Mac OS X. Para executar o &amarok; é necessário ter os pacotes kdelibs e kdebase-runtime instalados. </para>
 <para
->Para o funcionamento correto de algumas funcionalidades, tais como a mensagem na tela, o seu gerenciador de janelas precisa estar configurado para suportar os padrões relevantes do <emphasis
+>Para o funcionamento correto de algumas funcionalidades, tais como o indicador na tela, o seu gerenciador de janelas precisa estar configurado para suportar os padrões relevantes do <emphasis
 >freedesktop.org</emphasis
 >. Para saber mais sobre a execução do &amarok; em outras plataformas clique <link linkend="amarok-on-other-platforms"
 >aqui</link
@@ -12076,7 +12076,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 > 
 <para
 >Se encontrar um erro no &amarok;, por favor, envie-o para o <ulink url="https://bugs.kde.org"
->Bugzilla do KDE</ulink
+>Bugzilla da KDE</ulink
 >. Para fazer um relatório de erro completo, inclua sempre as seguintes informações: </para>
 <itemizedlist>
 <listitem
@@ -12095,7 +12095,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Ajuda</guimenu
 ><guimenuitem
->Sobre o KDE</guimenuitem
+>Sobre a KDE</guimenuitem
 ></menuchoice
 >)</para
 ></listitem>
@@ -14350,12 +14350,12 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><guilabel
->Sobre o KDE</guilabel
+>Sobre a KDE</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Informações sobre o KDE e links para juntar-se e dar suporte ao KDE.</para
+>Informações sobre a KDE e links para juntar-se e dar suporte à KDE.</para
 ></entry>
   </row>
   </tbody>
@@ -15348,7 +15348,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <!--userbase-content-->
 <para
 >Tradução de Marcus Gama <email
->marcus.gama@gmail.com</email
+>marcus.gama@kde.org</email
 > e André Marcelo Alvarenga <email
 >alvarenga@kde.org</email
 ></para
