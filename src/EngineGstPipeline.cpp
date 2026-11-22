@@ -291,7 +291,7 @@ EngineGstPipeline::handleStateChange(GstState oldState, GstState newState)
         Q_EMIT tick(0);
     }
 
-    if (!m_doingEOS) {
+    if (!m_doingEOS && newState != GST_STATE_NULL) {
          Q_EMIT stateChanged(oldState, newState);
     }
 }
@@ -856,7 +856,10 @@ GstStateChangeReturn
 EngineGstPipeline::setState(GstState state)
 {
     DEBUG_BLOCK
-    if(m_currentState == state)
+    GstState current = GST_STATE_NULL;
+    GstState pending = GST_STATE_VOID_PENDING;
+    gst_element_get_state(GST_ELEMENT(m_pipeline), &current, &pending, 0);
+    if(m_currentState == state && current == state && pending == GST_STATE_VOID_PENDING)
     {
         debug() << "not reapplying gst state";
         return GST_STATE_CHANGE_SUCCESS;
@@ -871,7 +874,10 @@ EngineGstPipeline::requestState(GstState state)
 {
     DEBUG_BLOCK
     debug() << "requested state" << gst_element_state_get_name( state );
-    if(m_currentState == state)
+    GstState current = GST_STATE_NULL;
+    GstState pending = GST_STATE_VOID_PENDING;
+    gst_element_get_state(GST_ELEMENT(m_pipeline), &current, &pending, 0);
+    if(m_currentState == state && current == state && pending == GST_STATE_VOID_PENDING)
     {
         debug() << "not reapplying gst state";
         return;
@@ -886,6 +892,10 @@ EngineGstPipeline::requestState(GstState state)
             m_aboutToFinishWait.wakeAll();
         }
         m_aboutToFinishLock.unlock();
+    }
+    if (state <= GST_STATE_READY && pending != GST_STATE_VOID_PENDING) {
+        gst_element_set_state(GST_ELEMENT(m_pipeline), GST_STATE_NULL);
+        m_currentState = GST_STATE_NULL;
     }
     gst_element_set_state(GST_ELEMENT(m_pipeline), state);
 }
